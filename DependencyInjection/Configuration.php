@@ -1,6 +1,6 @@
 <?php
 
-namespace Terminalbd\DemoBundle\DependencyInjection;
+namespace Terminalbd\CrmBundle\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
