@@ -1,0 +1,352 @@
+{% extends 'admin/layout.html.twig' %}
+{#{% block body_id 'kpi_domain_new' %}#}
+{% block body %}
+    <div class="pcoded-inner-content">
+        <!-- [ breadcrumb ] start -->
+        <div class="page-header">
+            <div class="page-block">
+                <div class="row align-items-center">
+                    <ul class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/"><i class="feather icon-home"></i></a></li>
+                        <li class="breadcrumb-item"> <a href="{{ path('crm_broiler_new') }}">  {{ 'Life Cycle'|trans }}</a></li>
+                        {#<li class="breadcrumb-item"> <a href="javascript:">{{ 'Add New'|trans }}</a></li>#}
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!-- [ breadcrumb ] end -->
+        <!-- [ Main Content ] start -->
+        <div class="row">
+            <div class="card">
+                <div class="card-header">
+                    <h5>{{ 'Life Cycle'|trans }}</h5>
+                    <div class="card-header-right">
+                        <div class="btn-group btn-group-sm" role="group" aria-label="Button group with nested dropdown">
+                            <a href="{{ path('crm_broiler_new') }}" class="btn btn-sm  green-bg white-font"><i class="fas fa-plus"></i>{{ 'Add New'|trans }}</a>
+                            <a href="{{ path('crm_broiler') }}" class="btn btn-sm gray-bg white-font"><i class="fa fa-th-list"></i>{{ 'Broiler'|trans }}</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="card">
+                <div class="portlet box green ">
+                    <div class="portlet-title">
+                        <div class="caption">{{ ' Life Cycle'|trans }} </div>
+                    </div>
+
+                    <div class="portlet-body form">
+                        {{ form_start(form, {'attr': {'class': 'form-horizontal right'}}) }}
+                        <div class="row form-body">
+                            <div class="form-inner-no-space">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            {{ form_label(form.bird_mode, 'Bird Mode'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
+                                            <div class="col-md-8">
+                                                <span class="not-blank"> {{ 'Required'|trans }}</span>
+
+                                                {{ form_widget(form.bird_mode) }}
+                                                {{ form_errors(form.bird_mode) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            {{ form_label(form.reportingDate, 'Reporting Date'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
+                                            <div class="col-md-8">
+                                                <span class="not-blank"> {{ 'Required'|trans }}</span>
+                                                {{ form_widget(form.reportingDate) }}
+                                                {{ form_errors(form.reportingDate) }}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                {{ form_label(form.officer_name, 'Officer Name'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
+                                                <div class="col-md-8">
+                                                    <span class="not-blank"> {{ 'Required'|trans }}</span>
+                                                    {{ form_widget(form.officer_name) }}
+                                                    {{ form_errors(form.officer_name) }}
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            {{ form_label(form.region, 'Region'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
+                                            <div class="col-md-8">
+                                                <span class="not-blank"> {{ 'Required'|trans }}</span>
+                                                {{ form_widget(form.region) }}
+                                                {{ form_errors(form.region) }}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="clearfix"></div>
+                                <div class="row">
+
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            {{ form_label(form.visitingweek, 'Setting Type'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
+                                            <div class="col-md-8">
+                                                <span class="not-blank"> {{ 'Required'|trans }}</span>
+                                                {{ form_widget(form.visitingweek) }}
+                                                {{ form_errors(form.visitingweek) }}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            {{ form_label(form.totalbirds, 'Total Birds'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
+                                            <div class="col-md-8">
+                                                <span class="not-blank"> {{ 'Required'|trans }}</span>
+                                                {{ form_widget(form.totalbirds) }}
+                                                {{ form_errors(form.totalbirds) }}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            {{ form_label(form.age_days, 'Age Days'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
+                                            <div class="col-md-8">
+                                                <span class="not-blank"> {{ 'Required'|trans }}</span>
+                                                {{ form_widget(form.age_days) }}
+                                                {{ form_errors(form.age_days) }}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="clearfix"></div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            {{ form_label(form.mortality_pes, 'Mortality(Pes)'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
+                                            <div class="col-md-8">
+                                                <span class="not-blank"> {{ 'Required'|trans }}</span>
+                                                {{ form_widget(form.mortality_pes) }}
+                                                {{ form_errors(form.mortality_pes) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            {{ form_label(form.weightStandard, 'Weight(Standerd)'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
+                                            <div class="col-md-8">
+                                                <span class="not-blank"> {{ 'Required'|trans }}</span>
+                                                {{ form_widget(form.weightStandard) }}
+                                                {{ form_errors(form.weightStandard) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            {{ form_label(form.weightAchieved, 'Weight(Achieved)'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
+                                            <div class="col-md-8">
+                                                <span class="not-blank"> {{ 'Required'|trans }}</span>
+                                                {{ form_widget(form.weightAchieved) }}
+                                                {{ form_errors(form.weightAchieved) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                 </div>
+
+                                <div class="clearfix"></div>
+                                <div class="card-header grey-bg inner-header">
+                                    <h5>Feed Consumption</h5>
+                                    <div class="card-header-right">
+
+                                    </div>
+                                </div>
+
+                               <div class="row">
+                                   <div class="col-md-4">
+                                       <div class="form-group">
+                                           {{ form_label(form.feedTotalkg, 'Total(kg)'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
+                                           <div class="col-md-8">
+                                               <span class="not-blank"> {{ 'Required'|trans }}</span>
+                                               {{ form_widget(form.feedTotalkg) }}
+                                               {{ form_errors(form.feedTotalkg) }}
+                                           </div>
+                                       </div>
+                                   </div>
+                                   <div class="col-md-4">
+                                       <div class="form-group">
+                                           {{ form_label(form.feedBird, 'Per Bird(gm)'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
+                                           <div class="col-md-8">
+                                               <span class="not-blank"> {{ 'Required'|trans }}</span>
+                                               {{ form_widget(form.feedBird) }}
+                                               {{ form_errors(form.feedBird) }}
+                                           </div>
+                                       </div>
+                                   </div>
+                                   <div class="col-md-4">
+                                       <div class="form-group">
+                                           {{ form_label(form.feedStandard, 'Standard'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
+                                           <div class="col-md-8">
+                                               <span class="not-blank"> {{ 'Required'|trans }}</span>
+                                               {{ form_widget(form.feedStandard) }}
+                                               {{ form_errors(form.feedStandard) }}
+                                           </div>
+                                       </div>
+                                   </div>
+
+
+                               </div>
+                                <div class="clearfix"></div>
+                                <div class="card-header grey-bg inner-header">
+                                    <h5>F.C.R</h5>
+                                    <div class="card-header-right">
+                                    </div>
+                                </div>
+                             <div class="row">
+                                 <div class="col-md-6">
+                                     <div class="form-group">
+                                         {{ form_label(form.fcr_with_mortality, 'With Mortality'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
+                                         <div class="col-md-8">
+                                             <span class="not-blank"> {{ 'Required'|trans }}</span>
+                                             {{ form_widget(form.fcr_with_mortality) }}
+                                             {{ form_errors(form.fcr_with_mortality) }}
+                                         </div>
+                                     </div>
+                                 </div>
+
+                                 <div class="col-md-6">
+                                     <div class="form-group">
+                                         {{ form_label(form.fcr_without_mortality, 'Without Mortality'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
+                                         <div class="col-md-8">
+                                             <span class="not-blank"> {{ 'Required'|trans }}</span>
+                                             {{ form_widget(form.fcr_without_mortality) }}
+                                             {{ form_errors(form.fcr_without_mortality) }}
+                                         </div>
+                                     </div>
+                                 </div>
+
+                             </div>
+                                <div class="clearfix"></div>
+                                <div class="card-header grey-bg inner-header">
+                                    <h5>Additional Information</h5>
+                                    <div class="card-header-right">
+
+                                    </div>
+                                </div>
+                               <div class="row">
+                                   <div class="col-md-4">
+                                       <div class="form-group">
+                                           {{ form_label(form.hatchery, 'Hatchery'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
+                                           <div class="col-md-8">
+                                               <span class="not-blank"> {{ 'Required'|trans }}</span>
+                                               {{ form_widget(form.hatchery) }}
+                                               {{ form_errors(form.hatchery) }}
+                                           </div>
+                                       </div>
+                                   </div>
+                                   <div class="col-md-4">
+                                       <div class="form-group">
+                                           {{ form_label(form.breed, 'Breed'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
+                                           <div class="col-md-8">
+                                               <span class="not-blank"> {{ 'Required'|trans }}</span>
+                                               {{ form_widget(form.breed) }}
+                                               {{ form_errors(form.breed) }}
+                                           </div>
+                                       </div>
+                                   </div>
+                                   <div class="col-md-4">
+                                       <div class="form-group">
+                                           {{ form_label(form.feed, 'Feed'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
+                                           <div class="col-md-8">
+                                               <span class="not-blank"> {{ 'Required'|trans }}</span>
+                                               {{ form_widget(form.feed) }}
+                                               {{ form_errors(form.feed) }}
+                                           </div>
+                                       </div>
+                                   </div>
+
+                               </div>
+
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            {{ form_label(form.feedType, 'Feed Type'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
+                                            <div class="col-md-8">
+                                                <span class="not-blank"> {{ 'Required'|trans }}</span>
+                                                {{ form_widget(form.feedType) }}
+                                                {{ form_errors(form.feedType) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            {{ form_label(form.proDate, 'Production Date'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
+                                            <div class="col-md-8">
+                                                <span class="not-blank"> {{ 'Required'|trans }}</span>
+                                                {{ form_widget(form.proDate) }}
+                                                {{ form_errors(form.proDate) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            {{ form_label(form.batchNo, 'Batch No'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
+                                            <div class="col-md-8">
+                                                <span class="not-blank"> {{ 'Required'|trans }}</span>
+                                                {{ form_widget(form.batchNo) }}
+                                                {{ form_errors(form.batchNo) }}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="row">
+                                    <div class="form-group">
+                                        {{ form_label(form.remarks, 'Remarks'|trans, {'label_attr': {'class': 'col-md-6'}}) }}
+                                        <div class="col-md-12">
+                                            <span class="not-blank"> {{ 'Required'|trans }}</span>
+                                            {{ form_widget(form.remarks) }}
+                                            {{ form_errors(form.remarks) }}
+                                        </div>
+                                    </div>
+
+                                </div>
+
+
+
+                                <div class="form-actions">
+                                    <div class="col-md-6 ">
+
+                                    </div>
+                                    <div class="col-md-6 text-right">
+                                        <div class="btn-group" role="group" aria-label="Button group with nested dropdown"><button type="reset" class="btn btn-sm yellow-bg white-font"><i class="fa fa-refresh"></i>Restore</button>
+                                            {{ form_widget(form.SaveAndCreate, {label: 'label.save.continue',value:'label.save.continue', attr: { class: 'btn btn-info form-submit'}}) }}
+                                        </div>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                </div>
+                            </div>
+                        </div>
+                        {{ form_widget(form._token) }}
+                        {{ form_end(form) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- [ Main Content ] end -->
+    </div>
+{% endblock %}
+ {% block cssBlock %}
+     <link rel="stylesheet" href="{{ asset('assets/module/css/app.css') }}">
+ {% endblock  %}
+{% block javascripts %}
+    {{ parent() }}
+    <script type="application/javascript" src="{{ asset('assets/module/js/app.js') }}"></script>
+{% endblock  %}
