@@ -20,9 +20,8 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\NotBlank;
-use Terminalbd\CrmBundle\Entity\Setting;
+use Terminalbd\CrmBundle\Entity\BroilerStandard;
 //use Terminalbd\CrmBundle\Entity\SettingType;
-
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 /**
@@ -30,7 +29,7 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
  *
  * @author Md Shafiqul Islam <shafiqabs@gmail.com>
  */
-class SettingFormType extends AbstractType
+class BroilerStandardFormType extends AbstractType
 {
 
     /**
@@ -39,34 +38,22 @@ class SettingFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('name', TextType::class, [
+            ->add('age', TextType::class, [
                 'attr' => ['autofocus' => true],
-                'label' => 'label.name',
+                'label' => 'label.age',
                 'required' => true
             ])
-            ->add('settingType', ChoiceType::class, [
-            'choices'  => [
-                'Purpose' => 'PURPOSE',
-                'Farm Type' => 'FARM_TYPE',
-                'Farm Capacity' => 'FARM_CAPACITY',
-                'Customer Group' => 'CUSTOMER_GROUP',
-                'Visiting_Week'=>'Visiting_Week',
-                'Designation'=>'Designation'
-            ],
+            ->add('target_body_weight', TextType::class, [
+                'attr' => ['autofocus' => true],
+                'label' => 'label.target_body_weight',
+                'required' => true
+            ])
+            ->add('target_feed_consumption', TextType::class, [
+                'attr' => ['autofocus' => true],
+                'label' => 'label.target_feed_consumption',
+                'required' => true
             ])
 
-            ->add('status',CheckboxType::class,[
-                'required' => false,
-                'attr' => [
-                    'class' => 'checkboxToggle',
-                    'data-toggle' => "toggle",
-                    'data-style' => "slow",
-                    'data-offstyle' => "warning",
-                    'data-onstyle'=> "info",
-                    'data-on' => "Enabled",
-                    'data-off'=> "Disabled"
-                ],
-            ])
         ;
     }
 
@@ -76,7 +63,7 @@ class SettingFormType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Setting::class,
+            'data_class' => BroilerStandard::class,
         ]);
     }
 }

@@ -31,7 +31,7 @@ class Setting
     private $id;
 
     /**
-     * @var SettingType
+     * @var string
      *
      * @ORM\Column(type="string" )
      */

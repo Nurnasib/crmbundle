@@ -1,0 +1,135 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block body %}
+    <div class="pcoded-inner-content">
+        <!-- [ breadcrumb ] start -->
+        <div class="page-header">
+            <div class="page-block">
+                <div class="row align-items-center">
+                    <ul class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/"><i class="feather icon-home"></i></a></li>
+                        <li class="breadcrumb-item"> <a href="{{ path('layer_life_cycle') }}">  {{ 'Layer life Cycle'|trans }}</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!-- [ breadcrumb ] end -->
+        <!-- [ Main Content ] start -->
+        <div class="row">
+            <div class="card">
+                <div class="card-header">
+                    <h5>{{ 'Layer life Cycle'|trans }}</h5>
+                    <div class="card-header-right">
+                        <div class="btn-group btn-group-sm" role="group" aria-label="Button group with nested dropdown">
+                            <a href="{{ path('layer_life_cycle_new') }}" class="btn btn-sm  green-bg white-font"><i class="fas fa-plus"></i>{{ 'Add New'|trans }}</a>
+                            <a href="{{ path('layer_life_cycle') }}" class="btn btn-sm gray-bg white-font"><i class="fa fa-th-list"></i>{{ 'Layer life Cycle'|trans }}</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="card">
+                <div class="card-block">
+                    {#<h3 style="text-align: center">{{ entities.fcrOfFeed }}</h3>#}
+                    <table class="table table-striped table-bordered table-hover" id="datatable">
+                        <thead class="thead-dark">
+                        <tr>
+                            <th scope="col" rowspan="3">S/N</th>
+                            <th scope="col" rowspan="3">Visiting  Date</th>
+                            <th scope="col" rowspan="3">Average Week</th>
+                            <th scope="col" colspan="3">Birds</th>
+                            <th scope="col" colspan="2">Weight</th>
+                            <th scope="col" rowspan="3">Uniformity</th>
+                            <th scope="col" colspan="2">Feed</th>
+                            <th scope="col" colspan="3">Egg Production</th>
+                            <th scope="col" colspan="2">Egg Weight</th>
+                            <th scope="col" colspan="4">Feed Information</th>
+                            <th scope="col" rowspan="3">Vaccine</th>
+                            <th scope="col" rowspan="3">Remarks</th>
+                            <th scope="col text-center" rowspan="2"><i class="feather icon-settings"></i></th>
+                        </tr>
+                        <tr>
+                            <th scope="col">Total Birds</th>
+                            <th scope="col">Dead Birds</th>
+                            <th scope="col">Present Bird</th>
+                            <th scope="col">Avg.wt(gm)</th>
+                            <th scope="col">Target.Wt(gm)</th>
+                            <th scope="col">Feed/bird(gm)</th>
+                            <th scope="col">Target Feed/bird(gm)</th>
+                            <th scope="col">Total Eggs</th>
+                            <th scope="col">Egg Prod(%)</th>
+                            <th scope="col"> Target Egg Prod(%)</th>
+                            <th scope="col"> Actual</th>
+                            <th scope="col">Standard</th>
+                            <th scope="col">Feed Type</th>
+                            <th scope="col">P.Date</th>
+                            <th scope="col">Batch No</th>
+                            <th scope="col">Feed Mill</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% set presentBird =0 %}
+                        {% set eggProduction =0 %}
+
+
+                        {% for entity in entities %}
+
+                            {% set presentBird = ( entity.totalBirds - entity.deadBird) %}
+                            {% set eggProduction = (entity.totalEggs*100)/presentBird %}
+                            <tr>
+                            <td> {{ loop.index }} </td>
+                            <td> {{ entity.visitingDate }} </td>
+                            <td> {{ entity.ageWeek }} </td>
+                            <td> {{ entity.totalBirds }} </td>
+                            <td> {{ entity.deadBird }} </td>
+                            <td> {{ presentBird }} </td>
+                            <td> {{ entity.avgWeight }} </td>
+                            <td> {{ entity.targetWeight }} </td>
+                            <td> {{ entity.uniformity }} </td>
+                            <td> {{ entity.feedPerBird }} </td>
+                            <td> {{ entity.targetFeedPerBird }} </td>
+                            <td> {{ entity.totalEggs }} </td>
+                            <td> {{ eggProduction }} </td>
+                            <td> {{ entity.targetEggProduction }} </td>
+                            <td> {{ entity.eggWeightActual }} </td>
+                            <td> {{ entity.eggWeightStandard }} </td>
+                            <td> {{ entity.feedType }} </td>
+                            <td> {{ entity.productionDate }} </td>
+                            <td> {{ entity.BatchNo }} </td>
+                            <td> {{ entity.feedMill }} </td>
+                            <td> {{ entity.medicine }} </td>
+                            <td> {{ entity.remarks }} </td>
+
+                            <td>
+                                <a class="btn btn-mini yellow-bg white-font" href="{{ path('layer_life_cycle_edit',{'id':entity.id}) }}"><i class="feather icon-edit"></i> Edit</a>
+                                <a class="btn  btn-transparent btn-mini red-font remove" href="javascript:" data-action="{{ path('layer_life_cycle_delete',{'id':entity.id}) }}"><i class="fa fa-remove"></i></a>
+                            </td>
+
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <!-- [ Main Content ] end -->
+    </div>
+{% endblock %}
+{% block cssBlock %}
+    <link rel="stylesheet" href="{{ asset('assets/module/css/app.css') }}">
+{% endblock  %}
+{% block javascripts %}
+    {{ parent() }}
+    <script type="application/javascript" src="{{ asset('assets/module/js/app.js') }}"></script>
+{% endblock  %}
+{% block documentready %}
+    {{ parent() }}
+    $('#datatable').DataTable( {
+    "pageLength": 25,
+    'columnDefs': [ {
+    'targets': [0,4],
+    'orderable': false
+    }]
+    });
+{% endblock %}

@@ -21,7 +21,7 @@ use Doctrine\ORM\EntityRepository;
  *
  * @author Md Shafiqul islam <shafiqabs@gmail.com>
  */
-class SettingRepository extends EntityRepository
+class ChickLifeCycleRepository extends EntityRepository
 {
 
 
