@@ -1,4 +1,0 @@
-crm_controllers:
-    resource: '../../Controller/'
-    type: annotation
-
