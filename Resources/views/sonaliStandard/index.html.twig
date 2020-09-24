@@ -1,0 +1,92 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block body %}
+    <div class="pcoded-inner-content">
+        <!-- [ breadcrumb ] start -->
+        <div class="page-header">
+            <div class="page-block">
+                <div class="row align-items-center">
+                    <ul class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/"><i class="feather icon-home"></i></a></li>
+                        <li class="breadcrumb-item"> <a href="{{ path('sonali_standard') }}">  {{ 'Sonali Standard'|trans }}</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!-- [ breadcrumb ] end -->
+        <!-- [ Main Content ] start -->
+        <div class="row">
+            <div class="card">
+                <div class="card-header">
+                    <h5>{{ 'Sonali Standard'|trans }}</h5>
+                    <div class="card-header-right">
+                        <div class="btn-group btn-group-sm" role="group" aria-label="Button group with nested dropdown">
+                            <a href="{{ path('sonali_standard_new') }}" class="btn btn-sm  green-bg white-font"><i class="fas fa-plus"></i>{{ 'Add New'|trans }}</a>
+                            <a href="{{ path('sonali_standard') }}" class="btn btn-sm gray-bg white-font"><i class="fa fa-th-list"></i>{{ 'Sonali  Standard'|trans }}</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="card">
+                <div class="card-block">
+                    <table class="table table-striped table-bordered table-hover" id="datatable">
+                        <thead class="thead-dark">
+                        <tr>
+                            <th scope="col">S/N</th>
+                            <th scope="col">Age </th>
+                            <th scope="col">Feed Intake Per day(gm)</th>
+                            <th scope="col">Cumulative Feed Intake(gm)</th>
+                            <th scope="col">Target Body Weight(gm)</th>
+                            <th scope="col">F.C.R</th>
+
+                            <th scope="col text-center"><i class="feather icon-settings"></i></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% set cumulative =0 %}
+                        {% for entity in entities %}
+                            {% set cumulative =cumulative +  entity.feedIntakePerDay  %}
+                            {% set fcr =cumulative / entity.targetBodyWeight %}
+
+                        <tr>
+                            <td>{{ loop.index }}</td>
+                            <td>{{ entity.age }}</td>
+                            <td>{{ entity.feedIntakePerDay }}</td>
+                            <td>{{ cumulative }}</td>
+                            <td>{{ entity.targetBodyWeight }}</td>
+                            <td>{{ fcr | round(2,'ceil') }}</td>
+
+                            <td>
+                                <a class="btn btn-mini yellow-bg white-font" href="{{ path('sonali_edit',{'id':entity.id}) }}"><i class="feather icon-edit"></i> Edit</a>
+                                <a class="btn  btn-transparent btn-mini red-font remove" href="javascript:" data-action="{{ path('sonali_delete',{'id':entity.id}) }}"><i class="fa fa-remove"></i></a>
+                            </td>
+
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <!-- [ Main Content ] end -->
+    </div>
+{% endblock %}
+{% block cssBlock %}
+    <link rel="stylesheet" href="{{ asset('assets/module/css/app.css') }}">
+{% endblock  %}
+{% block javascripts %}
+    {{ parent() }}
+    <script type="application/javascript" src="{{ asset('assets/module/js/app.js') }}"></script>
+{% endblock  %}
+{% block documentready %}
+    {{ parent() }}
+    $('#datatable').DataTable( {
+    "pageLength": 25,
+    'columnDefs': [ {
+    'targets': [0,4],
+    'orderable': false
+    }]
+    });
+{% endblock %}
