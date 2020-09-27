@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Sep 23, 2020 at 01:05 PM
+-- Generation Time: Sep 24, 2020 at 11:37 AM
 -- Server version: 5.7.31-0ubuntu0.18.04.1
 -- PHP Version: 7.2.33-1+ubuntu18.04.1+deb.sury.org+1
 
@@ -473,7 +473,45 @@ INSERT INTO `crm_broiler_standard` (`id`, `age`, `target_body_weight`, `target_f
 (1, '1', '56', '13'),
 (3, '2', '72', '30'),
 (4, '3', '89', '51'),
-(5, '4', '109', '74');
+(5, '4', '109', '74'),
+(6, '5', '131', '101'),
+(7, '6', '157', '132'),
+(8, '7', '185', '167'),
+(9, '8', '215', '206'),
+(10, '9', '247', '250'),
+(11, '10', '283', '298'),
+(12, '11', '321', '352'),
+(13, '12', '364', '410'),
+(14, '13', '412', '474'),
+(15, '14', '465', '542'),
+(16, '15', '524', '617'),
+(17, '16', '586', '698'),
+(18, '17', '651', '785'),
+(19, '18', '719', '878'),
+(20, '19', '790', '976'),
+(21, '20', '865', '1081'),
+(22, '21', '943', '1192'),
+(23, '22', '1023', '1309'),
+(24, '23', '1104', '1432'),
+(25, '24', '1186', '1562'),
+(26, '25', '1269', '1696'),
+(27, '26', '1353', '1837'),
+(28, '27', '1438', '1985'),
+(29, '28', '1524', '2137'),
+(30, '29', '1613', '2295'),
+(31, '30', '1705', '2458'),
+(32, '31', '1799', '2627'),
+(33, '32', '1895', '2801'),
+(34, '33', '1993', '2981'),
+(35, '34', '2092', '3163'),
+(36, '35', '2191', '3352'),
+(37, '36', '2289', '3545'),
+(38, '37', '2386', '3742'),
+(39, '38', '2482', '3943'),
+(40, '39', '2577', '4148'),
+(41, '40', '2671', '4357'),
+(42, '41', '2764', '4570'),
+(43, '42', '2857', '4786');
 
 -- --------------------------------------------------------
 
@@ -550,6 +588,38 @@ INSERT INTO `crm_customers` (`id`, `name`, `mobile`, `address`, `custom_group`, 
 (35, 'sa', '32', 's', '1', '1', '1', 'dsa', '2020-09-15 05:01:47', NULL),
 (37, 'ssa', '12', 'sa', '8', '2', '2', 'ds', '2020-09-15 06:40:52', NULL),
 (38, 'sa', '21', 'sa', 'Group A', '3', '3', 'ds', '2020-09-15 06:41:38', NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `crm_expense`
+--
+
+CREATE TABLE `crm_expense` (
+  `id` int(11) NOT NULL,
+  `setting_id` int(11) DEFAULT NULL,
+  `schedule_visit` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `visiting_area` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `conveyance` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `daily_allowance` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `hotel_rent` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `photostate` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `courier` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `food` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `mobile` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `maintenace` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `toll_bill` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `service_charge` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `others` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `crm_expense`
+--
+
+INSERT INTO `crm_expense` (`id`, `setting_id`, `schedule_visit`, `visiting_area`, `conveyance`, `daily_allowance`, `hotel_rent`, `photostate`, `courier`, `food`, `mobile`, `maintenace`, `toll_bill`, `service_charge`, `others`) VALUES
+(1, 11, '1', 'dhaka', '12', '21', '21', '21', '12', '12', '12', '12', '12', '12', '12'),
+(2, 17, '2', 'Barisal', '222', '21', '5000', '100', '50', '600', '50', '600', '120', '630', NULL);
 
 -- --------------------------------------------------------
 
@@ -727,7 +797,64 @@ INSERT INTO `crm_sonali_standard` (`id`, `age`, `feed_intake_per_day`, `target_b
 (1, '0', '0', '20'),
 (2, '1', '5', '25'),
 (3, '2', '6', '30'),
-(4, '3', '7', '35');
+(4, '3', '7', '35'),
+(5, '4', '8', '40'),
+(6, '5', '9', '50'),
+(7, '6', '10', '65'),
+(8, '7', '11', '70'),
+(9, '8', '11.9', '87'),
+(10, '9', '12.8', '94'),
+(11, '10', '13.65', '100'),
+(12, '11', '14.5', '105'),
+(13, '12', '15.3', '110'),
+(14, '13', '16.1', '115'),
+(15, '14', '16.85', '120'),
+(16, '15', '17.7', '130'),
+(17, '16', '18.4', '145'),
+(18, '17', '19.1', '155'),
+(19, '18', '19.75', '165'),
+(20, '19', '20.4', '175'),
+(21, '20', '21', '185'),
+(22, '21', '21.6', '200'),
+(23, '22', '23.18', '225'),
+(24, '23', '23.77', '245'),
+(25, '24', '24.36', '255'),
+(26, '25', '24.95', '265'),
+(28, '26', '25.54', '275'),
+(29, '27', '26.13', '285'),
+(30, '28', '26.72', '300'),
+(31, '29', '27.49', '325'),
+(32, '30', '28.26', '345'),
+(33, '31', '30.03', '355'),
+(34, '32', '30.8', '365'),
+(35, '33', '31.57', '375'),
+(36, '34', '32.34', '385'),
+(37, '35', '33.11', '400'),
+(38, '36', '33.73', '425'),
+(39, '37', '34.35', '445'),
+(40, '38', '34.97', '455'),
+(41, '39', '35.59', '465'),
+(42, '40', '36.21', '475'),
+(43, '41', '37.83', '485'),
+(44, '42', '38.45', '500'),
+(45, '43', '39.16', '525'),
+(46, '44', '39.87', '535'),
+(47, '45', '40.58', '550'),
+(48, '46', '41.29', '565'),
+(49, '47', '42', '575'),
+(50, '48', '42.71', '585'),
+(51, '49', '43.42', '600'),
+(52, '50', '44.03', '625'),
+(53, '51', '44.64', '635'),
+(54, '52', '45.25', '645'),
+(55, '53', '45.86', '650'),
+(56, '54', '46.47', '665'),
+(57, '55', '47.08', '670'),
+(58, '56', '47.69', '685'),
+(59, '57', '48.4', '692'),
+(60, '58', '49.11', '700'),
+(61, '59', '49.82', '715'),
+(62, '60', '50.53', '725');
 
 -- --------------------------------------------------------
 
@@ -2552,6 +2679,13 @@ ALTER TABLE `crm_customers`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `crm_expense`
+--
+ALTER TABLE `crm_expense`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `IDX_C171C131EE35BD72` (`setting_id`);
+
+--
 -- Indexes for table `crm_fcr`
 --
 ALTER TABLE `crm_fcr`
@@ -2827,7 +2961,7 @@ ALTER TABLE `core_user_role`
 -- AUTO_INCREMENT for table `crm_broiler_standard`
 --
 ALTER TABLE `crm_broiler_standard`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=44;
 --
 -- AUTO_INCREMENT for table `crm_chick_life_cycle`
 --
@@ -2838,6 +2972,11 @@ ALTER TABLE `crm_chick_life_cycle`
 --
 ALTER TABLE `crm_customers`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
+--
+-- AUTO_INCREMENT for table `crm_expense`
+--
+ALTER TABLE `crm_expense`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 --
 -- AUTO_INCREMENT for table `crm_fcr`
 --
@@ -2862,7 +3001,7 @@ ALTER TABLE `crm_setting`
 -- AUTO_INCREMENT for table `crm_sonali_standard`
 --
 ALTER TABLE `crm_sonali_standard`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=63;
 --
 -- AUTO_INCREMENT for table `crm_visit`
 --
@@ -3022,6 +3161,12 @@ ALTER TABLE `core_user`
 --
 ALTER TABLE `core_user_profile`
   ADD CONSTRAINT `FK_74EA0DDDA76ED395` FOREIGN KEY (`user_id`) REFERENCES `core_user` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `crm_expense`
+--
+ALTER TABLE `crm_expense`
+  ADD CONSTRAINT `FK_C171C131EE35BD72` FOREIGN KEY (`setting_id`) REFERENCES `crm_setting` (`id`);
 
 --
 -- Constraints for table `crm_visit_details`
