@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Sep 24, 2020 at 11:37 AM
+-- Generation Time: Oct 03, 2020 at 05:13 AM
 -- Server version: 5.7.31-0ubuntu0.18.04.1
 -- PHP Version: 7.2.33-1+ubuntu18.04.1+deb.sury.org+1
 
@@ -48,12 +48,12 @@ CREATE TABLE `core_agent` (
 --
 
 INSERT INTO `core_agent` (`id`, `agent_group_id`, `upozila_id`, `district_id`, `name`, `agentId`, `mobile`, `phone`, `email`, `address`, `path`, `nid`, `binNo`, `terminal`) VALUES
-(1, NULL, NULL, NULL, 'rterter', NULL, '23423423423', NULL, NULL, NULL, NULL, NULL, NULL, 1),
-(2, NULL, NULL, NULL, 'asdasd', NULL, '3423423423', NULL, NULL, NULL, NULL, NULL, NULL, 1),
-(3, NULL, NULL, NULL, 'asdasd', NULL, '3423423423', NULL, NULL, NULL, NULL, NULL, NULL, 1),
-(4, NULL, NULL, NULL, 'asdasd', NULL, '3423423423', NULL, NULL, NULL, NULL, NULL, NULL, 1),
-(5, NULL, NULL, NULL, 'asdasd', NULL, '3423423423', NULL, NULL, NULL, NULL, NULL, NULL, 1),
-(6, 10, NULL, NULL, 'xcasdfa', NULL, '54353453453', NULL, NULL, NULL, NULL, NULL, NULL, 1);
+(1, NULL, NULL, 2, 'rterter', NULL, '23423423423', NULL, NULL, 'Chattogram', NULL, NULL, NULL, 1),
+(2, NULL, NULL, 7, 'asdasd', NULL, '3423423423', NULL, NULL, 'Sylhet', NULL, NULL, NULL, 1),
+(3, NULL, NULL, 15, 'asdasd', NULL, '3423423423', NULL, NULL, NULL, NULL, NULL, NULL, 1),
+(4, NULL, NULL, 5, 'asdasd', NULL, '3423423423', NULL, NULL, NULL, NULL, NULL, NULL, 1),
+(5, NULL, NULL, 17, 'asdasd', NULL, '3423423423', NULL, NULL, NULL, NULL, NULL, NULL, 1),
+(6, 10, NULL, 4, 'xcasdfa', NULL, '54353453453', NULL, NULL, NULL, NULL, NULL, NULL, 1);
 
 -- --------------------------------------------------------
 
@@ -521,8 +521,6 @@ INSERT INTO `crm_broiler_standard` (`id`, `age`, `target_body_weight`, `target_f
 
 CREATE TABLE `crm_chick_life_cycle` (
   `id` int(11) NOT NULL,
-  `officer_name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `region` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `hatching_date` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `visitingweek` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `totalbirds` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
@@ -540,16 +538,28 @@ CREATE TABLE `crm_chick_life_cycle` (
   `batchNo` longtext COLLATE utf8mb4_unicode_ci,
   `bird_mode` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `remarks` longtext COLLATE utf8mb4_unicode_ci,
-  `reporting_date` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL
+  `reporting_date` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `customer_id` int(11) DEFAULT NULL,
+  `agent_id` int(11) DEFAULT NULL,
+  `mortality_percent` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `perBird` longtext COLLATE utf8mb4_unicode_ci,
+  `withoutMortality` longtext COLLATE utf8mb4_unicode_ci,
+  `withMortality` longtext COLLATE utf8mb4_unicode_ci
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `crm_chick_life_cycle`
 --
 
-INSERT INTO `crm_chick_life_cycle` (`id`, `officer_name`, `region`, `hatching_date`, `visitingweek`, `totalbirds`, `age_days`, `mortality_pes`, `weightStandard`, `weightAchieved`, `feedTotalkg`, `feedStandard`, `hatchery`, `breed`, `feed`, `feedType`, `proDate`, `batchNo`, `bird_mode`, `remarks`, `reporting_date`) VALUES
-(1, 'mir', 'Jessore', '2020-09-01', '1st', '12', '12', '1', '12', '11', '12', '15', '12', '12', '12', 'xyz', '2020-09-22', '12', 'SONALI', 'aa', '2020-09-23'),
-(2, 'mir', 'Khulna', '2020-09-01', '1st', '12', '12', '1', '12', '11', '12', '15', 'a', 'y', 'y', 'xyz', '2020-09-01', '11', 'BROILER', 'a', '2020-09-22');
+INSERT INTO `crm_chick_life_cycle` (`id`, `hatching_date`, `visitingweek`, `totalbirds`, `age_days`, `mortality_pes`, `weightStandard`, `weightAchieved`, `feedTotalkg`, `feedStandard`, `hatchery`, `breed`, `feed`, `feedType`, `proDate`, `batchNo`, `bird_mode`, `remarks`, `reporting_date`, `customer_id`, `agent_id`, `mortality_percent`, `perBird`, `withoutMortality`, `withMortality`) VALUES
+(1, '2020-09-01', '1st', '12', '12', '1', '12', '11', '12', '15', '12', '12', '12', 'xyz', '2020-09-22', '12', 'SONALI', 'aa', '2020-09-23', 45, NULL, NULL, NULL, NULL, NULL),
+(2, '2020-09-01', '1st', '12', '12', '1', '12', '11', '12', '15', 'a', 'y', 'y', 'xyz', '2020-09-01', '11', 'BROILER', 'a', '2020-09-22', 43, NULL, NULL, NULL, NULL, NULL),
+(3, '2020-09-01', '4th', '20', '5', '5', '12', '11', '12', '15', 'h', 's', 's', 's', '2020-09-28', '12', 'SONALI', 'asa', '2020-09-28', 43, NULL, NULL, NULL, NULL, NULL),
+(4, '2020-09-01', '3rd', '20', '20', '2', '25', '22', '12', '25', 'xy', 'abc', '12', 'xyz', '2020-09-06', '12', 'BROILER', 'as', '2020-08-01', 40, NULL, NULL, NULL, NULL, NULL),
+(5, '2020-09-02', '5th', '122', '12', '10', '222', '220', '122', '124', 's', 'sa', 'as', 'Nourish', '2020-09-18', '12', 'BROILER', 'sad', '2020-09-01', 44, NULL, NULL, NULL, NULL, NULL),
+(6, '2020-09-07', '2nd', '12', '12', '11', '11', '10', '12', '16', '1', '1', '1', 'a', '2020-09-22', '1', 'SONALI', NULL, '2020-09-29', 44, 2, NULL, NULL, NULL, NULL),
+(7, '2020-09-21', '2nd', '5400', '11', '10', '11', '10', '11', '11', NULL, NULL, NULL, NULL, NULL, NULL, 'SONALI', NULL, '2020-09-30', 44, 4, '0.18518518518518517', NULL, NULL, NULL),
+(8, '2020-10-01', '1st', '10', '7', '1', '11', '11', '5', '11', 'a', 'sa', 'as', 'asa', '2020-10-01', '12', 'SONALI', NULL, '2020-10-01', 45, 1, '10', '500', '45.45454545454545', '50.505050505050505');
 
 -- --------------------------------------------------------
 
@@ -575,19 +585,17 @@ CREATE TABLE `crm_customers` (
 --
 
 INSERT INTO `crm_customers` (`id`, `name`, `mobile`, `address`, `custom_group`, `agentId`, `subagentId`, `location`, `created`, `updated`) VALUES
-(1, 'a', '1', 'a', 'a', '1', '1', 'aa', '2020-09-14 11:08:59', NULL),
-(2, 'Fahim', '121', 'a', '1', '2', '2', 'a', '2020-09-14 11:37:19', NULL),
-(15, 'dsa', '12', 'd', '1', '2', '3', 'd', '2020-09-14 11:40:35', NULL),
 (16, 'Mir', '32', 'a', '1', '1', '2', 'dd', '2020-09-14 11:43:29', NULL),
 (17, 'd', '43', 'ff', '2', '3', '23', 'ff', '2020-09-14 11:44:39', NULL),
-(18, 'd', '43', 'ff', '2', '3', '23', 'ff', '2020-09-14 11:45:13', NULL),
 (19, 'karim', '43', 'es', '1', '1', '1', 'ds', '2020-09-14 11:45:57', NULL),
-(20, 's', '2', 'ds', '1', '3', '4', 'ssd', '2020-09-14 11:49:57', NULL),
-(21, 'vx', '2', 'a', '2', '2', '2', 'ssa', '2020-09-14 12:03:00', NULL),
-(34, 'as', '212', 'as', 'ss', 'asa', 'as', 'sa', '2020-09-15 04:58:43', NULL),
 (35, 'sa', '32', 's', '1', '1', '1', 'dsa', '2020-09-15 05:01:47', NULL),
-(37, 'ssa', '12', 'sa', '8', '2', '2', 'ds', '2020-09-15 06:40:52', NULL),
-(38, 'sa', '21', 'sa', 'Group A', '3', '3', 'ds', '2020-09-15 06:41:38', NULL);
+(39, 'Abdul', '01722265498', 'aa', 'Farmer', '', '2', 'Dhaka', '2020-09-27 09:47:06', NULL),
+(40, 'Jafor', '01758925845', 'a', 'Farmer', '', '1', 'Dhaka', '2020-09-27 09:50:44', NULL),
+(43, 'sayem', '01674539074', 'a', 'Farmer', '', '2', 'a', '2020-09-28 06:12:25', NULL),
+(44, 'sayem2', '01674539075', 'sa', 'Farmer', '', '2', 'a', '2020-09-28 06:12:52', NULL),
+(45, 'Md', '01674537494', 'Dhaka', 'Farmer', '', '1', 'Dhaka', '2020-09-28 07:30:13', NULL),
+(46, 'Shafiq', '01674539074', 'Dhaaka', 'Farmer', '', '6', '', '2020-09-29 09:13:40', NULL),
+(47, 'mir', '12333', '22', 'Farmer', '', '1', 'Dhaka', '2020-09-30 06:58:34', NULL);
 
 -- --------------------------------------------------------
 
@@ -599,7 +607,6 @@ CREATE TABLE `crm_expense` (
   `id` int(11) NOT NULL,
   `setting_id` int(11) DEFAULT NULL,
   `schedule_visit` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `visiting_area` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `conveyance` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `daily_allowance` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `hotel_rent` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
@@ -610,16 +617,20 @@ CREATE TABLE `crm_expense` (
   `maintenace` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `toll_bill` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `service_charge` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `others` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL
+  `others` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `visiting_area_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `crm_expense`
 --
 
-INSERT INTO `crm_expense` (`id`, `setting_id`, `schedule_visit`, `visiting_area`, `conveyance`, `daily_allowance`, `hotel_rent`, `photostate`, `courier`, `food`, `mobile`, `maintenace`, `toll_bill`, `service_charge`, `others`) VALUES
-(1, 11, '1', 'dhaka', '12', '21', '21', '21', '12', '12', '12', '12', '12', '12', '12'),
-(2, 17, '2', 'Barisal', '222', '21', '5000', '100', '50', '600', '50', '600', '120', '630', NULL);
+INSERT INTO `crm_expense` (`id`, `setting_id`, `schedule_visit`, `conveyance`, `daily_allowance`, `hotel_rent`, `photostate`, `courier`, `food`, `mobile`, `maintenace`, `toll_bill`, `service_charge`, `others`, `visiting_area_id`) VALUES
+(1, 11, '1', '12', '21', '21', '21', '12', '12', '12', '12', '12', '12', '12', NULL),
+(2, 17, '2', '222', '21', '5000', '100', '50', '600', '50', '600', '120', '630', NULL, NULL),
+(3, 15, '2', '222', '122', '122', '52', '33', '331', '017111199', '121', '212', '121', '112', NULL),
+(4, 17, '1', '11', '11', '11', '11', '11', '11', '11', '11', '11', '11', NULL, NULL),
+(5, 16, '2', '11', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -629,7 +640,6 @@ INSERT INTO `crm_expense` (`id`, `setting_id`, `schedule_visit`, `visiting_area`
 
 CREATE TABLE `crm_fcr` (
   `id` int(11) NOT NULL,
-  `cso` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `fcr_of_feed` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `reporting_month` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `hatching_date` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
@@ -641,20 +651,22 @@ CREATE TABLE `crm_fcr` (
   `breed` longtext COLLATE utf8mb4_unicode_ci,
   `feed` longtext COLLATE utf8mb4_unicode_ci,
   `remarks` longtext COLLATE utf8mb4_unicode_ci,
-  `pes` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL
+  `pes` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `agent_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `crm_fcr`
 --
 
-INSERT INTO `crm_fcr` (`id`, `cso`, `fcr_of_feed`, `reporting_month`, `hatching_date`, `totalbirds`, `age_day`, `weight`, `total_feed_consumption`, `hatchery`, `breed`, `feed`, `remarks`, `pes`) VALUES
-(1, 'mr', 'BEFORE', '09-2020', '2020-09-21', '12', '12', '12', '12', '12', '12', '12', 'm', '10'),
-(2, 'mr', 'BEFORE', '09-2020', '2020-09-21', '12', '12', '12', '12', '12', '12', '12', 'a', '11'),
-(3, 'mr', 'AFTER', '09-2020', '09-2020', '12', '11', '12', '12', '12', '12', '12', 'sa', '10'),
-(4, 'mr', 'AFTER', '09-2020', '09-2020', '12', '12', '12', '12', '12', '12', '12', 'a', '11'),
-(5, 'mr', 'AFTER', '09-2020', '2020-09-21', '12', '12', '12', '10', '12', '12', '12', 'assa', '2'),
-(6, 'mr', 'BEFORE', '09-2020', '2020-09-21', '12', '12', '10', '12', 'Mymensingh', '12', '12', 'sa', '5');
+INSERT INTO `crm_fcr` (`id`, `fcr_of_feed`, `reporting_month`, `hatching_date`, `totalbirds`, `age_day`, `weight`, `total_feed_consumption`, `hatchery`, `breed`, `feed`, `remarks`, `pes`, `agent_id`) VALUES
+(1, 'BEFORE', '09-2020', '2020-09-21', '12', '12', '12', '12', '12', '12', '12', 'm', '10', NULL),
+(2, 'BEFORE', '09-2020', '2020-09-21', '12', '12', '12', '12', '12', '12', '12', 'a', '11', NULL),
+(3, 'AFTER', '09-2020', '09-2020', '12', '11', '12', '12', '12', '12', '12', 'sa', '10', NULL),
+(4, 'AFTER', '09-2020', '09-2020', '12', '12', '12', '12', '12', '12', '12', 'a', '11', NULL),
+(5, 'AFTER', '09-2020', '2020-09-21', '12', '12', '12', '10', '12', '12', '12', 'assa', '2', 1),
+(6, 'BEFORE', '09-2020', '2020-09-21', '12', '12', '10', '12', 'Mymensingh', '12', '12', 'sa', '5', 2),
+(7, 'BEFORE', '10-2020', '2020-10-01', '15', '7', '12', '12', NULL, NULL, NULL, NULL, '1', 2);
 
 -- --------------------------------------------------------
 
@@ -667,8 +679,8 @@ CREATE TABLE `crm_layer_life_cycle` (
   `total_birds` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `hatchery_date` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `hatchery` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `breed` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `dead_bird` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `breed` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `dead_bird` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `avg_weight` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `target_weight` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `uniformity` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -678,24 +690,26 @@ CREATE TABLE `crm_layer_life_cycle` (
   `target_egg_production` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `egg_weight_actual` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `egg_weight_standard` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `feed_type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `production_date` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `batch_no` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `feed_mill` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `medicine` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `remarks` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `feed_type` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `production_date` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `batch_no` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `feed_mill` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `medicine` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `remarks` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created` datetime NOT NULL,
   `updated` datetime DEFAULT NULL,
   `visiting_date` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `age_week` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL
+  `age_week` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `customer_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `crm_layer_life_cycle`
 --
 
-INSERT INTO `crm_layer_life_cycle` (`id`, `total_birds`, `hatchery_date`, `hatchery`, `breed`, `dead_bird`, `avg_weight`, `target_weight`, `uniformity`, `feed_per_bird`, `target_feed_per_bird`, `total_eggs`, `target_egg_production`, `egg_weight_actual`, `egg_weight_standard`, `feed_type`, `production_date`, `batch_no`, `feed_mill`, `medicine`, `remarks`, `created`, `updated`, `visiting_date`, `age_week`) VALUES
-(1, '22', '2020-09-22', 's', 'y', '2', '22', '23', '1', '12', '13', '12', '12', '12', '12', 'v', '2020-09-22', '1', 'a', 'a', 'a', '2020-09-22 13:29:56', NULL, '2020-09-22', '1st');
+INSERT INTO `crm_layer_life_cycle` (`id`, `total_birds`, `hatchery_date`, `hatchery`, `breed`, `dead_bird`, `avg_weight`, `target_weight`, `uniformity`, `feed_per_bird`, `target_feed_per_bird`, `total_eggs`, `target_egg_production`, `egg_weight_actual`, `egg_weight_standard`, `feed_type`, `production_date`, `batch_no`, `feed_mill`, `medicine`, `remarks`, `created`, `updated`, `visiting_date`, `age_week`, `customer_id`) VALUES
+(1, '22', '2020-09-22', 's', 'y', '2', '22', '23', '1', '12', '13', '12', '12', '12', '12', 'v', '2020-09-22', '1', 'a', 'a', 'a', '2020-09-22 13:29:56', NULL, '2020-09-22', '1st', NULL),
+(3, '12', '2020-10-01', 'm', 'a', '1', '11', '12', '1', '12', '15', '12', '11', '11', '22', NULL, NULL, NULL, NULL, NULL, NULL, '2020-10-01 12:13:50', NULL, '2020-10-01', '1', 45);
 
 -- --------------------------------------------------------
 
@@ -715,29 +729,30 @@ CREATE TABLE `crm_layer_performance` (
   `egg_production_target` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `egg_weight_achieved` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `egg_weight_stand` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `feed_type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `production_date` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `batch_no` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `feed_mill` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `hatchery` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `breed` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `color` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `disease` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `remarks` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `feed_type` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `production_date` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `batch_no` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `feed_mill` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `hatchery` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `breed` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `color` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `disease` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `remarks` longtext COLLATE utf8mb4_unicode_ci,
   `created` datetime NOT NULL,
   `updated` datetime DEFAULT NULL,
-  `cso` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `month` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `region` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `designation` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL
+  `customer_id` int(11) DEFAULT NULL,
+  `agent_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `crm_layer_performance`
 --
 
-INSERT INTO `crm_layer_performance` (`id`, `total_birds`, `age_wk`, `bird_weight_achieved`, `bird_weight_target`, `feed_intake_per_bird`, `feed_Target`, `egg_production_achieved`, `egg_production_target`, `egg_weight_achieved`, `egg_weight_stand`, `feed_type`, `production_date`, `batch_no`, `feed_mill`, `hatchery`, `breed`, `color`, `disease`, `remarks`, `created`, `updated`, `cso`, `month`, `region`, `designation`) VALUES
-(1, '12', '2', '12', '15', '12', '12', '15', '20', '12', '12', 'xyz', '2020-09-22', '123', 'd', 'sa', 'sa', 'red', 'no', 'no', '2020-09-22 10:13:34', NULL, 'mir', '09-2020', 'Dhaka', 'Sale_force');
+INSERT INTO `crm_layer_performance` (`id`, `total_birds`, `age_wk`, `bird_weight_achieved`, `bird_weight_target`, `feed_intake_per_bird`, `feed_Target`, `egg_production_achieved`, `egg_production_target`, `egg_weight_achieved`, `egg_weight_stand`, `feed_type`, `production_date`, `batch_no`, `feed_mill`, `hatchery`, `breed`, `color`, `disease`, `remarks`, `created`, `updated`, `customer_id`, `agent_id`) VALUES
+(1, '12', '2', '12', '15', '12', '12', '15', '20', '12', '12', 'xyz', '2020-09-22', '123', 'd', 'sa', 'sa', 'red', 'no', 'no', '2020-09-22 10:13:34', NULL, 45, NULL),
+(2, '100', '10', '40', '45', '12', '12', '15', '20', '12', '12', 'xyz', '2020-07-01', '10', 's', 'sa', 'sa', 'red', 'no', 's', '2020-09-28 09:30:00', NULL, 43, NULL),
+(3, '10', '1', '12', '12', '12', '10', '10', '10', '10', '10', 'x', '2020-10-05', '12', '11', '11', '11', 'red', 'no', 'sas', '2020-10-01 08:41:59', NULL, 45, 1),
+(4, '12', '1', '11', '20', '11', '12', '11', '11', '11', '12', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2020-10-01 12:12:26', NULL, 45, 3);
 
 -- --------------------------------------------------------
 
@@ -759,8 +774,6 @@ CREATE TABLE `crm_setting` (
 INSERT INTO `crm_setting` (`id`, `setting_type`, `name`, `status`) VALUES
 (5, 'PURPOSE', 'Performance Report', 1),
 (8, 'CUSTOMER_GROUP', 'Farmer', 1),
-(9, 'CUSTOMER_GROUP', 'Agent', 1),
-(10, 'CUSTOMER_GROUP', 'Sub Agent', 1),
 (11, 'PURPOSE', 'Agent Service', 1),
 (12, 'PURPOSE', 'Survey', 1),
 (13, 'PURPOSE', 'Problem Farm Visit', 1),
@@ -773,8 +786,7 @@ INSERT INTO `crm_setting` (`id`, `setting_type`, `name`, `status`) VALUES
 (25, 'Visiting_Week', '2nd Week', 1),
 (26, 'Visiting_Week', '3rd Week', 1),
 (27, 'Visiting_Week', '4th Week', 1),
-(28, 'Visiting_Week', '5th Week', 1),
-(29, 'Visiting_Week', '6th', 1);
+(28, 'Visiting_Week', '5th Week', 1);
 
 -- --------------------------------------------------------
 
@@ -876,14 +888,14 @@ CREATE TABLE `crm_visit` (
 --
 
 INSERT INTO `crm_visit` (`id`, `cso_id`, `created`, `updated`, `working_duration`, `area_name`) VALUES
-(1, '1', '2020-09-12 07:30:23', NULL, '1', 'a'),
 (23, '2', '2020-09-12 08:37:39', NULL, '3', 'DHaka'),
 (24, '12', '2020-09-12 08:45:05', NULL, '12', 'khulna'),
-(25, '12', '2020-09-12 09:29:10', NULL, '1', 'DHaka'),
 (26, '13', '2020-09-16 04:35:43', NULL, '12', 'Sylhet'),
-(27, '2', '2020-09-16 04:37:44', NULL, '2', 'Chittagong'),
-(29, '2', '2020-09-16 13:02:16', NULL, '1', 'Gajipur'),
-(30, '3', '2020-09-16 13:54:47', NULL, '5', 'khulna');
+(30, '3', '2020-09-16 13:54:47', NULL, '5', 'khulna'),
+(31, NULL, '2020-09-30 07:45:25', NULL, NULL, NULL),
+(32, NULL, '2020-09-30 07:45:40', NULL, NULL, NULL),
+(33, NULL, '2020-09-30 11:50:23', NULL, NULL, NULL),
+(34, NULL, '2020-09-30 13:07:24', NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -2670,7 +2682,9 @@ ALTER TABLE `crm_broiler_standard`
 -- Indexes for table `crm_chick_life_cycle`
 --
 ALTER TABLE `crm_chick_life_cycle`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `IDX_DA905BA59395C3F3` (`customer_id`),
+  ADD KEY `IDX_DA905BA53414710B` (`agent_id`);
 
 --
 -- Indexes for table `crm_customers`
@@ -2683,25 +2697,30 @@ ALTER TABLE `crm_customers`
 --
 ALTER TABLE `crm_expense`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `IDX_C171C131EE35BD72` (`setting_id`);
+  ADD KEY `IDX_C171C131EE35BD72` (`setting_id`),
+  ADD KEY `IDX_C171C1311CF4311C` (`visiting_area_id`);
 
 --
 -- Indexes for table `crm_fcr`
 --
 ALTER TABLE `crm_fcr`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `IDX_2F9516223414710B` (`agent_id`);
 
 --
 -- Indexes for table `crm_layer_life_cycle`
 --
 ALTER TABLE `crm_layer_life_cycle`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `IDX_75EE1F2C9395C3F3` (`customer_id`);
 
 --
 -- Indexes for table `crm_layer_performance`
 --
 ALTER TABLE `crm_layer_performance`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `IDX_165AA4F79395C3F3` (`customer_id`),
+  ADD KEY `IDX_165AA4F73414710B` (`agent_id`);
 
 --
 -- Indexes for table `crm_setting`
@@ -2966,37 +2985,37 @@ ALTER TABLE `crm_broiler_standard`
 -- AUTO_INCREMENT for table `crm_chick_life_cycle`
 --
 ALTER TABLE `crm_chick_life_cycle`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 --
 -- AUTO_INCREMENT for table `crm_customers`
 --
 ALTER TABLE `crm_customers`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
 --
 -- AUTO_INCREMENT for table `crm_expense`
 --
 ALTER TABLE `crm_expense`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 --
 -- AUTO_INCREMENT for table `crm_fcr`
 --
 ALTER TABLE `crm_fcr`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 --
 -- AUTO_INCREMENT for table `crm_layer_life_cycle`
 --
 ALTER TABLE `crm_layer_life_cycle`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 --
 -- AUTO_INCREMENT for table `crm_layer_performance`
 --
 ALTER TABLE `crm_layer_performance`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 --
 -- AUTO_INCREMENT for table `crm_setting`
 --
 ALTER TABLE `crm_setting`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 --
 -- AUTO_INCREMENT for table `crm_sonali_standard`
 --
@@ -3006,7 +3025,7 @@ ALTER TABLE `crm_sonali_standard`
 -- AUTO_INCREMENT for table `crm_visit`
 --
 ALTER TABLE `crm_visit`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
 --
 -- AUTO_INCREMENT for table `crm_visit_details`
 --
@@ -3163,10 +3182,37 @@ ALTER TABLE `core_user_profile`
   ADD CONSTRAINT `FK_74EA0DDDA76ED395` FOREIGN KEY (`user_id`) REFERENCES `core_user` (`id`) ON DELETE CASCADE;
 
 --
+-- Constraints for table `crm_chick_life_cycle`
+--
+ALTER TABLE `crm_chick_life_cycle`
+  ADD CONSTRAINT `FK_DA905BA53414710B` FOREIGN KEY (`agent_id`) REFERENCES `core_agent` (`id`),
+  ADD CONSTRAINT `FK_DA905BA59395C3F3` FOREIGN KEY (`customer_id`) REFERENCES `crm_customers` (`id`);
+
+--
 -- Constraints for table `crm_expense`
 --
 ALTER TABLE `crm_expense`
+  ADD CONSTRAINT `FK_C171C1311CF4311C` FOREIGN KEY (`visiting_area_id`) REFERENCES `core_location` (`id`),
   ADD CONSTRAINT `FK_C171C131EE35BD72` FOREIGN KEY (`setting_id`) REFERENCES `crm_setting` (`id`);
+
+--
+-- Constraints for table `crm_fcr`
+--
+ALTER TABLE `crm_fcr`
+  ADD CONSTRAINT `FK_2F9516223414710B` FOREIGN KEY (`agent_id`) REFERENCES `core_agent` (`id`);
+
+--
+-- Constraints for table `crm_layer_life_cycle`
+--
+ALTER TABLE `crm_layer_life_cycle`
+  ADD CONSTRAINT `FK_75EE1F2C9395C3F3` FOREIGN KEY (`customer_id`) REFERENCES `crm_customers` (`id`);
+
+--
+-- Constraints for table `crm_layer_performance`
+--
+ALTER TABLE `crm_layer_performance`
+  ADD CONSTRAINT `FK_165AA4F73414710B` FOREIGN KEY (`agent_id`) REFERENCES `core_agent` (`id`),
+  ADD CONSTRAINT `FK_165AA4F79395C3F3` FOREIGN KEY (`customer_id`) REFERENCES `crm_customers` (`id`);
 
 --
 -- Constraints for table `crm_visit_details`
