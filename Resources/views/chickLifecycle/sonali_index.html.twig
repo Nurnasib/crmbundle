@@ -38,10 +38,7 @@
 
                             <th scope="col" rowspan="2">S/N</th>
                             <th scope="col" rowspan="2">Agent Name</th>
-                            {#<th scope="col" rowspan="2">Address</th>#}
                             <th scope="col" colspan="3">Farmer</th>
-
-                            {#<th scope="col" rowspan="2">Bird Type</th>#}
                             <th scope="col" rowspan="2">H.Date</th>
                             <th scope="col" rowspan="2">Visiting Week</th>
                             <th scope="col" rowspan="2">Total Birds</th>
@@ -64,6 +61,7 @@
                             <th scope="col">Name</th>
                             <th scope="col">Address</th>
                             <th scope="col">Mobile</th>
+
 
                             <th scope="col">Pes</th>
                             <th scope="col">%</th>
@@ -102,6 +100,7 @@
                                 <td>{{ entity.customer.name|default('') }}</td>
                                 {#farmer address#}
                                 <td>{{ entity.customer.address|default('') }}</td>
+
 
                                 <td >{{ entity.customer.mobile|default('') }}</td>
 

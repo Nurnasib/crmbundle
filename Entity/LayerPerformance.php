@@ -10,7 +10,8 @@
  */
 
 namespace Terminalbd\CrmBundle\Entity;
-
+use App\Entity\Core\Agent;
+//use App\Entity\Admin\Location;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
@@ -37,21 +38,11 @@ class LayerPerformance
      */
     private $totalBirds;
 
-
     /**
-     * @var string
-     * @ORM\Column(name="cso", type="string")
+     * @var Agent
+     * @ORM\ManyToOne(targetEntity="App\Entity\Core\Agent" , inversedBy="layerperformance")
      */
-    private $cso;
-
-
-    /**
-     * @var string
-     * @ORM\Column(name="designation", type="string")
-     */
-    private $designation;
-
-
+    private $agent;
 
     /**
      * @var string
@@ -119,21 +110,7 @@ class LayerPerformance
         $this->totalBirds = $totalBirds;
     }
 
-    /**
-     * @return string
-     */
-    public function getCso()
-    {
-        return $this->cso;
-    }
 
-    /**
-     * @param string $cso
-     */
-    public function setCso($cso)
-    {
-        $this->cso = $cso;
-    }
 
     /**
      * @return string
@@ -281,6 +258,161 @@ class LayerPerformance
         $this->eggWeightStand = $eggWeightStand;
     }
 
+
+
+    /**
+     * @return \DateTime
+     */
+    public function getCreated()
+    {
+        return $this->created;
+    }
+
+    /**
+     * @param \DateTime $created
+     */
+    public function setCreated($created)
+    {
+        $this->created = $created;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getUpdated()
+    {
+        return $this->updated;
+    }
+
+    /**
+     * @param \DateTime $updated
+     */
+    public function setUpdated($updated)
+    {
+        $this->updated = $updated;
+    }
+
+
+    /**
+     * @var string
+     * @ORM\Column(name="egg_production_achieved", type="string")
+     */
+
+    private $eggProductionAchieved;
+
+
+    /**
+     * @var string
+     * @ORM\Column(name="egg_production_target", type="string")
+     */
+
+    private $eggProductionTarget;
+
+    /**
+     * @var string
+     * @ORM\Column(name="egg_weight_achieved", type="string")
+     */
+
+    private $eggWeightAchieved;
+
+    /**
+     * @var string
+     * @ORM\Column(name="egg_weight_stand", type="string")
+     */
+
+    private $eggWeightStand;
+
+
+
+    /**
+     * @var string
+     * @ORM\Column(name="feed_type", type="string",nullable=true)
+     */
+
+    private $feedType;
+
+    /**
+     * @var CrmCustomer
+     * @ORM\ManyToOne(targetEntity="CrmCustomer" , inversedBy="layerPerformance")
+     */
+    private $customer;
+
+
+    /**
+     * @var string
+     * @ORM\Column(name="production_date", type="string",nullable=true)
+     */
+
+    private $productionDate;
+
+
+    /**
+     * @var string
+     * @ORM\Column(name="batch_no", type="string",nullable=true)
+     */
+
+    private $batch_no;
+
+    /**
+     * @var string
+     * @ORM\Column(name="feed_mill", type="string",nullable=true)
+     */
+
+    private $feedMill;
+
+    /**
+     * @var string
+     * @ORM\Column(name="hatchery", type="string",nullable=true)
+     */
+
+    private $hatchery;
+
+    /**
+     * @var string
+     * @ORM\Column(name="breed", type="string",nullable=true)
+     */
+
+    private $breed;
+
+
+    /**
+     * @var string
+     * @ORM\Column(name="color", type="string",nullable=true)
+     */
+
+    private $color;
+
+
+    /**
+     * @var string
+     * @ORM\Column(name="disease", type="string",nullable=true)
+     */
+
+    private $disease;
+
+
+    /**
+     * @var string
+     * @Orm\Column(name="remarks", type="text",nullable=true)
+     */
+
+    private $remarks;
+
+
+    /**
+     * @var \DateTime
+     * @Gedmo\Timestampable(on="create")
+     * @ORM\Column(name="created", type="datetime")
+     */
+    private $created;
+
+    /**
+     * @var \DateTime
+     * @ORM\Column(name="updated", type="datetime", nullable = true)
+     */
+
+    private $updated;
+
     /**
      * @return string
      */
@@ -425,210 +557,37 @@ class LayerPerformance
         $this->remarks = $remarks;
     }
 
+
     /**
-     * @return \DateTime
+     * @return CrmCustomer
      */
-    public function getCreated()
+    public function getCustomer()
     {
-        return $this->created;
+        return $this->customer;
     }
 
     /**
-     * @param \DateTime $created
+     * @param CrmCustomer $customer
      */
-    public function setCreated($created)
+    public function setCustomer($customer)
     {
-        $this->created = $created;
+        $this->customer = $customer;
     }
 
     /**
-     * @return \DateTime
+     * @return Agent
      */
-    public function getUpdated()
+    public function getAgent()
     {
-        return $this->updated;
+        return $this->agent;
     }
 
     /**
-     * @param \DateTime $updated
+     * @param Agent $agent
      */
-    public function setUpdated($updated)
+    public function setAgent($agent)
     {
-        $this->updated = $updated;
-    }
-
-
-    /**
-     * @var string
-     * @ORM\Column(name="egg_production_achieved", type="string")
-     */
-
-    private $eggProductionAchieved;
-
-
-    /**
-     * @var string
-     * @ORM\Column(name="egg_production_target", type="string")
-     */
-
-    private $eggProductionTarget;
-
-    /**
-     * @var string
-     * @ORM\Column(name="egg_weight_achieved", type="string")
-     */
-
-    private $eggWeightAchieved;
-
-    /**
-     * @var string
-     * @ORM\Column(name="egg_weight_stand", type="string")
-     */
-
-    private $eggWeightStand;
-
-    /**
-     * @return string
-     */
-    public function getMonth()
-    {
-        return $this->month;
-    }
-
-    /**
-     * @param string $month
-     */
-    public function setMonth($month)
-    {
-        $this->month = $month;
-    }
-
-    /**
-     * @var string
-     * @ORM\Column(name="feed_type", type="string")
-     */
-
-    private $feedType;
-
-    /**
-     * @var string
-     * @Orm\Column(name="month" ,type="string",nullable=true)
-     */
-
-    private $month;
-
-    /**
-     * @var string
-     * @Orm\Column(name="region",type="string",nullable=true)
-     */
-
-    private $region;
-
-    /**
-     * @var string
-     * @ORM\Column(name="production_date", type="string")
-     */
-
-    private $productionDate;
-
-
-    /**
-     * @var string
-     * @ORM\Column(name="batch_no", type="string")
-     */
-
-    private $batch_no;
-
-    /**
-     * @var string
-     * @ORM\Column(name="feed_mill", type="string")
-     */
-
-    private $feedMill;
-
-    /**
-     * @var string
-     * @ORM\Column(name="hatchery", type="string")
-     */
-
-    private $hatchery;
-
-    /**
-     * @var string
-     * @ORM\Column(name="breed", type="string")
-     */
-
-    private $breed;
-
-
-    /**
-     * @var string
-     * @ORM\Column(name="color", type="string")
-     */
-
-    private $color;
-
-
-    /**
-     * @var string
-     * @ORM\Column(name="disease", type="string")
-     */
-
-    private $disease;
-
-
-    /**
-     * @var string
-     * @ORM\Column(name="remarks", type="string")
-     */
-
-    private $remarks;
-
-
-    /**
-     * @var \DateTime
-     * @Gedmo\Timestampable(on="create")
-     * @ORM\Column(name="created", type="datetime")
-     */
-    private $created;
-
-    /**
-     * @var \DateTime
-     * @ORM\Column(name="updated", type="datetime", nullable = true)
-     */
-
-    private $updated;
-
-    /**
-     * @return string
-     */
-    public function getRegion()
-    {
-        return $this->region;
-    }
-
-    /**
-     * @param string $region
-     */
-    public function setRegion($region)
-    {
-        $this->region = $region;
-    }
-
-    /**
-     * @return string
-     */
-    public function getDesignation()
-    {
-        return $this->designation;
-    }
-
-    /**
-     * @param string $designation
-     */
-    public function setDesignation($designation)
-    {
-        $this->designation = $designation;
+        $this->agent = $agent;
     }
 
 

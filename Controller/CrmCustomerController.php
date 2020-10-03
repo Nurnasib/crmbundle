@@ -7,20 +7,29 @@
  */
 namespace Terminalbd\CrmBundle\Controller;
 
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 use Terminalbd\CrmBundle\Entity\CrmCustomer;
 use Terminalbd\CrmBundle\Form\CrmCustomerFormType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\JsonResponse;
+
 use Terminalbd\CrmBundle\Repository\CrmCustomerRepository;
+
+/**
+ * @Route("/crm/customer")
+ */
 
 class CrmCustomerController extends AbstractController
 {
 
     /**
-     * @Route("/crm/customer", methods={"GET"}, name="crm_customer")
+     * @Route("/", methods={"GET"}, name="crm_customer")
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN')")
      */
     public function index()
     {
@@ -31,36 +40,10 @@ class CrmCustomerController extends AbstractController
         ]);
     }
 
-//
-//    /**
-//     * @param Request $request
-//     * @Route("/crm/customer/new" ,name="new_customer", options={"expose"=true})
-//     */
-//    public function create(Request $request){
-//
-//        $entity = new CrmCustomer();
-//        $form=$this->createForm(CrmCustomerFormType::class,$entity)
-//            ->add('SaveAndCreate', SubmitType::class);
-//        $form->handleRequest($request);
-//        if($form->isSubmitted() && $form->isValid() ){
-//            $em=$this->getDoctrine()->getManager();
-//            $em->persist($entity);
-//            $em->flush();
-//            $this->addFlash('success', 'post.created_successfully');
-//            if ($form->get('SaveAndCreate')->isClicked()) {
-//                return $this->redirectToRoute('new_customer');
-//            }
-//        }
-//        return $this->render('@TerminalbdCrm/crmvisit/create.html.twig',[
-//            'form'=>$form->createView(),
-//            'entity' => $entity,
-//        ]);
-//
-//    }
 
     /**
      * @param Request $request
-     * @Route("/crm/customer/store/ajax" ,name="new_customer_ajax", methods={"POST"}, options={"expose"=true})
+     * @Route("/store/ajax" ,name="new_customer_ajax", methods={"POST"}, options={"expose"=true})
      */
     public function store(Request $request){
 
@@ -92,6 +75,23 @@ class CrmCustomerController extends AbstractController
         return new JsonResponse(array($returnData));
 
     }
+
+
+    /**
+     * Deletes a CrmCustomer entity.
+     * @Route("/{id}/delete", methods={"GET"}, name="customer_delete")
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN')")
+     */
+    public function delete($id): Response
+    {
+        $entity = $this->getDoctrine()->getRepository(CrmCustomer::class)->find($id);
+        $em = $this->getDoctrine()->getManager();
+        $em->remove($entity);
+        $em->flush();
+        $this->addFlash('success', 'post.deleted_successfully');
+        return new Response('Success');
+    }
+
 
 
 

@@ -101,7 +101,7 @@ class SonaliStandardController extends AbstractController
      */
     public function delete($id): Response
     {
-        $entity = $this->getDoctrine()->getRepository(BroilerStandard::class)->find($id);
+        $entity = $this->getDoctrine()->getRepository(SonaliStandard::class)->find($id);
         $em = $this->getDoctrine()->getManager();
         $em->remove($entity);
         $em->flush();

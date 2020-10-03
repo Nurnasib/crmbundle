@@ -11,8 +11,6 @@ use Gedmo\Mapping\Annotation as Gedmo;
 
 
 /**
- * CrmCustomer
- *
  * @ORM\Table(name="crm_chick_life_cycle")
  * @ORM\Entity(repositoryClass="Terminalbd\CrmBundle\Repository\ChickLifeCycleRepository")
  */
@@ -28,21 +26,16 @@ class ChickLifeCycle
     private $id;
 
     /**
-     * @var string
-     * @ORM\Column(name="officer_name", type="string",nullable=true)
+     * @var CrmCustomer
+     * @ORM\ManyToOne(targetEntity="CrmCustomer" , inversedBy="chicklifecycle")
      */
-
-    private $officerName;
-
+    private $customer;
 
     /**
-     * @var string
-     * @ORM\Column(name="region", type="string",nullable=true)
+     * @var Agent
+     * @ORM\ManyToOne(targetEntity="App\Entity\Core\Agent" , inversedBy="chicklifecycle")
      */
-
-    private $region;
-
-
+    private $agent;
 
     /**
      * @var string
@@ -56,7 +49,6 @@ class ChickLifeCycle
      * @Orm\Column(name="reporting_date" ,type="string",nullable=true)
      */
     private $reportingDate;
-
 
     /**
      * @var string
@@ -87,11 +79,17 @@ class ChickLifeCycle
 
     /**
      * @var string
+     * @Orm\Column(name="mortality_percent", type="string",nullable=true)
+     */
+
+    private $mortalityPercent;
+
+    /**
+     * @var string
      * @Orm\Column(name="weightStandard", type="text",nullable=true)
      */
 
     private $weightStandard;
-
 
     /**
      * @var string
@@ -100,7 +98,6 @@ class ChickLifeCycle
 
     private $weightAchieved;
 
-
     /**
      * @var string
      * @Orm\Column(name="feedTotalkg", type="text",nullable=true)
@@ -108,7 +105,12 @@ class ChickLifeCycle
 
     private $feedTotalkg;
 
+    /**
+     * @var string
+     * @Orm\Column(name="perBird", type="text",nullable=true)
+     */
 
+    private $perBird;
 
     /**
      * @var string
@@ -117,6 +119,19 @@ class ChickLifeCycle
 
     private $feedStandard;
 
+    /**
+     * @var string
+     * @Orm\Column(name="withoutMortality", type="text",nullable=true)
+     */
+
+    private $withoutMortality;
+
+    /**
+     * @var string
+     * @Orm\Column(name="withMortality", type="text",nullable=true)
+     */
+
+    private $withMortality;
 
     /**
      * @var string
@@ -124,7 +139,6 @@ class ChickLifeCycle
      */
 
     private $hatchery;
-
 
     /**
      * @var string
@@ -155,7 +169,6 @@ class ChickLifeCycle
      */
 
     private $proDate;
-
 
     /**
      * @var string
@@ -202,21 +215,6 @@ class ChickLifeCycle
         $this->id = $id;
     }
 
-    /**
-     * @return string
-     */
-    public function getOfficerName()
-    {
-        return $this->officerName;
-    }
-
-    /**
-     * @param string $officerName
-     */
-    public function setOfficerName($officerName)
-    {
-        $this->officerName = $officerName;
-    }
 
     /**
      * @return string
@@ -233,8 +231,6 @@ class ChickLifeCycle
     {
         $this->hatchingDate = $hatchingDate;
     }
-
-
 
 
     /**
@@ -386,38 +382,6 @@ class ChickLifeCycle
     /**
      * @return string
      */
-    public function getFcrWithMortality()
-    {
-        return $this->fcrWithMortality;
-    }
-
-    /**
-     * @param string $fcrWithMortality
-     */
-    public function setFcrWithMortality($fcrWithMortality)
-    {
-        $this->fcrWithMortality = $fcrWithMortality;
-    }
-
-    /**
-     * @return string
-     */
-    public function getFcrWithOutMortality()
-    {
-        return $this->fcrWithOutMortality;
-    }
-
-    /**
-     * @param string $fcrWithOutMortality
-     */
-    public function setFcrWithOutMortality($fcrWithOutMortality)
-    {
-        $this->fcrWithOutMortality = $fcrWithOutMortality;
-    }
-
-    /**
-     * @return string
-     */
     public function getHatchery()
     {
         return $this->hatchery;
@@ -495,21 +459,7 @@ class ChickLifeCycle
         $this->proDate = $proDate;
     }
 
-    /**
-     * @return string
-     */
-    public function getRegion()
-    {
-        return $this->region;
-    }
 
-    /**
-     * @param string $region
-     */
-    public function setRegion($region)
-    {
-        $this->region = $region;
-    }
 
     /**
      * @return string
@@ -550,6 +500,108 @@ class ChickLifeCycle
      */
 
     private $remarks;
+
+
+    /**
+     * @return CrmCustomer
+     */
+    public function getCustomer()
+    {
+        return $this->customer;
+    }
+
+    /**
+     * @param CrmCustomer $customer
+     */
+    public function setCustomer($customer)
+    {
+        $this->customer = $customer;
+    }
+
+    /**
+     * @return Agent
+     */
+    public function getAgent()
+    {
+        return $this->agent;
+    }
+
+    /**
+     * @param Agent $agent
+     */
+    public function setAgent($agent)
+    {
+        $this->agent = $agent;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMortalityPercent()
+    {
+        return $this->mortalityPercent;
+    }
+
+    /**
+     * @param string $mortalityPercent
+     */
+    public function setMortalityPercent($mortalityPercent)
+    {
+        $this->mortalityPercent = $mortalityPercent;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPerBird()
+    {
+        return $this->perBird;
+    }
+
+    /**
+     * @param string $perBird
+     */
+    public function setPerBird($perBird)
+    {
+        $this->perBird = $perBird;
+    }
+
+    /**
+     * @return string
+     */
+    public function getWithoutMortality()
+    {
+        return $this->withoutMortality;
+    }
+
+    /**
+     * @return string
+     */
+    public function getWithMortality()
+    {
+        return $this->withMortality;
+    }
+
+    /**
+     * @param string $withoutMortality
+     */
+    public function setWithoutMortality($withoutMortality)
+    {
+        $this->withoutMortality = $withoutMortality;
+    }
+
+    /**
+     * @param string $withMortality
+     */
+    public function setWithMortality($withMortality)
+    {
+        $this->withMortality = $withMortality;
+    }
+
+
+
+
+
 
 
 

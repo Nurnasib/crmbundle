@@ -25,12 +25,7 @@ class Fcr
 
     private $id;
 
-    /**
-     * @var string
-     * @ORM\Column(name="cso", type="string",nullable=true)
-     */
 
-    private $cso;
 
     /**
      * @var string
@@ -38,6 +33,13 @@ class Fcr
      */
 
     private $fcrOfFeed;
+
+    /**
+     * @var Agent
+     * @ORM\ManyToOne(targetEntity="App\Entity\Core\Agent" , inversedBy="fcr")
+     */
+    private $agent;
+
 
     /**
      * @var string
@@ -134,21 +136,6 @@ class Fcr
         $this->id = $id;
     }
 
-    /**
-     * @return string
-     */
-    public function getCso()
-    {
-        return $this->cso;
-    }
-
-    /**
-     * @param string $cso
-     */
-    public function setCso($cso)
-    {
-        $this->cso = $cso;
-    }
 
     /**
      * @return string
@@ -343,6 +330,22 @@ class Fcr
     public function setPes($Pes)
     {
         $this->Pes = $Pes;
+    }
+
+    /**
+     * @return Agent
+     */
+    public function getAgent()
+    {
+        return $this->agent;
+    }
+
+    /**
+     * @param Agent $agent
+     */
+    public function setAgent($agent)
+    {
+        $this->agent = $agent;
     }
 
 

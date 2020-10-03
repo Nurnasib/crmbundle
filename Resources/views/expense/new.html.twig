@@ -68,168 +68,142 @@
 
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            {{ form_label(form.visiting_area, 'Visiting Area'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
+                                            {{ form_label(form.visitingArea, 'Visiting Area'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
                                             <div class="col-md-8">
                                                 <span class="not-blank"> {{ 'Required'|trans }}</span>
-
-                                                {{ form_widget(form.visiting_area) }}
-                                                {{ form_errors(form.visiting_area) }}
+                                                {{ form_widget(form.visitingArea) }}
+                                                {{ form_errors(form.visitingArea) }}
                                             </div>
                                         </div>
                                     </div>
-
                                 </div>
+
                                 <div class="clearfix"></div>
                                 <div class="card-header grey-bg inner-header">
                                     <h5>Conveyance</h5>
                                     <div class="card-header-right">
                                     </div>
                                 </div>
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            {{ form_label(form.conveyance, 'Conveyance '|trans, {'label_attr': {'class': 'col-md-4'}}) }}
-                                            <div class="col-md-8">
-                                                <span class="not-blank"> {{ 'Required'|trans }}</span>
-
-                                                {{ form_widget(form.conveyance) }}
-                                                {{ form_errors(form.conveyance) }}
+                                <div class="card-body card-body-inner">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                {{ form_label(form.conveyance, 'Conveyance '|trans, {'label_attr': {'class': 'col-md-4'}}) }}
+                                                <div class="col-md-8">
+                                                    {#<span class="not-blank"> {{ 'Required'|trans }}</span>#}
+                                                    {{ form_widget(form.conveyance) }}
+                                                    {{ form_errors(form.conveyance) }}
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            {{ form_label(form.daily_allowance, 'Daily Allowance '|trans, {'label_attr': {'class': 'col-md-4'}}) }}
-                                            <div class="col-md-8">
-                                                <span class="not-blank"> {{ 'Required'|trans }}</span>
-
-                                                {{ form_widget(form.daily_allowance) }}
-                                                {{ form_errors(form.daily_allowance) }}
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                {{ form_label(form.daily_allowance, 'Daily Allowance '|trans, {'label_attr': {'class': 'col-md-4'}}) }}
+                                                <div class="col-md-8">
+                                                    {{ form_widget(form.daily_allowance) }}
+                                                    {{ form_errors(form.daily_allowance) }}
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
 
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            {{ form_label(form.hotel_rent, 'Hotel Rent '|trans, {'label_attr': {'class': 'col-md-4'}}) }}
-                                            <div class="col-md-8">
-                                                <span class="not-blank"> {{ 'Required'|trans }}</span>
-
-                                                {{ form_widget(form.hotel_rent) }}
-                                                {{ form_errors(form.hotel_rent) }}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            {{ form_label(form.photostate, 'photostate '|trans, {'label_attr': {'class': 'col-md-4'}}) }}
-                                            <div class="col-md-8">
-                                                <span class="not-blank"> {{ 'Required'|trans }}</span>
-
-                                                {{ form_widget(form.photostate) }}
-                                                {{ form_errors(form.photostate) }}
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            {{ form_label(form.courier, 'courier '|trans, {'label_attr': {'class': 'col-md-4'}}) }}
-                                            <div class="col-md-8">
-                                                <span class="not-blank"> {{ 'Required'|trans }}</span>
-
-                                                {{ form_widget(form.courier) }}
-                                                {{ form_errors(form.courier) }}
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                {{ form_label(form.hotel_rent, 'Hotel Rent '|trans, {'label_attr': {'class': 'col-md-4'}}) }}
+                                                <div class="col-md-8">
+                                                    {{ form_widget(form.hotel_rent) }}
+                                                    {{ form_errors(form.hotel_rent) }}
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
 
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            {{ form_label(form.food, 'Food '|trans, {'label_attr': {'class': 'col-md-4'}}) }}
-                                            <div class="col-md-8">
-                                                <span class="not-blank"> {{ 'Required'|trans }}</span>
-
-                                                {{ form_widget(form.food) }}
-                                                {{ form_errors(form.food) }}
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                {{ form_label(form.photostate, 'photostate '|trans, {'label_attr': {'class': 'col-md-4'}}) }}
+                                                <div class="col-md-8">
+                                                    {{ form_widget(form.photostate) }}
+                                                    {{ form_errors(form.photostate) }}
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                {{ form_label(form.courier, 'courier '|trans, {'label_attr': {'class': 'col-md-4'}}) }}
+                                                <div class="col-md-8">
+                                                    {#<span class="not-blank"> {{ 'Required'|trans }}</span>#}
 
-
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            {{ form_label(form.mobile, 'Mobile '|trans, {'label_attr': {'class': 'col-md-4'}}) }}
-                                            <div class="col-md-8">
-                                                <span class="not-blank"> {{ 'Required'|trans }}</span>
-
-                                                {{ form_widget(form.mobile) }}
-                                                {{ form_errors(form.mobile) }}
+                                                    {{ form_widget(form.courier) }}
+                                                    {{ form_errors(form.courier) }}
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            {{ form_label(form.maintenace, 'Maintenace '|trans, {'label_attr': {'class': 'col-md-4'}}) }}
-                                            <div class="col-md-8">
-                                                <span class="not-blank"> {{ 'Required'|trans }}</span>
 
-                                                {{ form_widget(form.maintenace) }}
-                                                {{ form_errors(form.maintenace) }}
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                {{ form_label(form.food, 'Food '|trans, {'label_attr': {'class': 'col-md-4'}}) }}
+                                                <div class="col-md-8">
+                                                    {{ form_widget(form.food) }}
+                                                    {{ form_errors(form.food) }}
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
 
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            {{ form_label(form.toll_bill, 'Toll bill '|trans, {'label_attr': {'class': 'col-md-4'}}) }}
-                                            <div class="col-md-8">
-                                                <span class="not-blank"> {{ 'Required'|trans }}</span>
-
-                                                {{ form_widget(form.toll_bill) }}
-                                                {{ form_errors(form.toll_bill) }}
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                {{ form_label(form.mobile, 'Mobile '|trans, {'label_attr': {'class': 'col-md-4'}}) }}
+                                                <div class="col-md-8">
+                                                    {{ form_widget(form.mobile) }}
+                                                    {{ form_errors(form.mobile) }}
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                </div>
-
-
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            {{ form_label(form.service_charge, 'Service charge '|trans, {'label_attr': {'class': 'col-md-4'}}) }}
-                                            <div class="col-md-8">
-                                                <span class="not-blank"> {{ 'Required'|trans }}</span>
-
-                                                {{ form_widget(form.service_charge) }}
-                                                {{ form_errors(form.service_charge) }}
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                {{ form_label(form.maintenace, 'Maintenace '|trans, {'label_attr': {'class': 'col-md-4'}}) }}
+                                                <div class="col-md-8">
+                                                    {{ form_widget(form.maintenace) }}
+                                                    {{ form_errors(form.maintenace) }}
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            {{ form_label(form.others, 'others '|trans, {'label_attr': {'class': 'col-md-4'}}) }}
-                                            <div class="col-md-8">
-                                                {#<span class="not-blank"> {{ 'Required'|trans }}</span>#}
 
-                                                {{ form_widget(form.others) }}
-                                                {{ form_errors(form.others) }}
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                {{ form_label(form.toll_bill, 'Toll bill '|trans, {'label_attr': {'class': 'col-md-4'}}) }}
+                                                <div class="col-md-8">
+                                                    {{ form_widget(form.toll_bill) }}
+                                                    {{ form_errors(form.toll_bill) }}
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
 
+
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                {{ form_label(form.service_charge, 'Service charge '|trans, {'label_attr': {'class': 'col-md-4'}}) }}
+                                                <div class="col-md-8">
+                                                    {{ form_widget(form.service_charge) }}
+                                                    {{ form_errors(form.service_charge) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                {{ form_label(form.others, 'others '|trans, {'label_attr': {'class': 'col-md-4'}}) }}
+                                                <div class="col-md-8">
+                                                    {{ form_widget(form.others) }}
+                                                    {{ form_errors(form.others) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
 
                                 </div>
-
-
-
-
-
-
 
                                 <div class="form-actions">
                                     <div class="col-md-6 ">

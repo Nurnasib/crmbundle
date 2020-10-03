@@ -12,6 +12,7 @@
 namespace Terminalbd\CrmBundle\Form;
 
 
+use App\Entity\Core\Agent;
 use App\Entity\User;
 use App\Form\Type\DateTimePickerType;
 use Doctrine\ORM\EntityRepository;
@@ -26,7 +27,9 @@ use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Terminalbd\CrmBundle\Entity\CrmCustomer;
 use Terminalbd\CrmBundle\Entity\LayerPerformance;
+
 
 
 /**
@@ -43,16 +46,7 @@ class LayerPerformanceFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('cso', TextType::class, [
-                'attr' => ['autofocus' => true],
-                'label' => 'label.cso',
-            ])
-            ->add('designation', ChoiceType::class, [
-                'choices'  => [
-                    'Doctor' => 'Doctor',
-                    'Sales Force' => 'Sale_force',
-                ]
-            ])
+
             ->add('total_birds', TextType::class, [
                 'attr' => ['autofocus' => true,'autocomplete' => 'off' ],
                 'label' => 'label.total_birds',
@@ -95,45 +89,66 @@ class LayerPerformanceFormType extends AbstractType
             ->add('feed_type', TextType::class, [
                 'attr' => ['autofocus' => true],
                 'label' => 'label.feed_type',
+                'required' => false,
             ])
             ->add('production_date', TextType::class, [
                 'attr' => ['autofocus' => true,'class'=>'date-picker col-md-11','autocomplete' => 'off'],
                 'label' => 'label.feed_type',
+                'required' => false,
             ])
-            ->add('month', TextType::class, [
-                'attr' => ['autofocus' => true,'class'=>'dateCalendar col-md-11','autocomplete' => 'off'],
-                'label' => 'label.month',
-            ])
-            ->add('region', TextType::class, [
-                'attr' => ['autofocus' => true],
-                'label' => 'label.region',
-            ])
-
             ->add('batch_no', TextType::class, [
                 'attr' => ['autofocus' => true,'autocomplete' => 'off'],
                 'label' => 'label.batch_no',
+                'required' => false,
             ])
             ->add('feed_mill', TextType::class, [
                 'attr' => ['autofocus' => true,'autocomplete' => 'off'],
                 'label' => 'label.feed_mill',
+                'required' => false,
             ])
             ->add('hatchery', TextType::class, [
                 'attr' => ['autofocus' => true],
                 'label' => 'label.hatchery',
+                'required' => false,
             ])->add('breed', TextType::class, [
                 'attr' => ['autofocus' => true],
                 'label' => 'label.breed',
+                'required' => false,
             ])->add('color', TextType::class, [
                 'attr' => ['autofocus' => true],
                 'label' => 'label.color',
+                'required' => false,
             ])
             ->add('disease', TextType::class, [
                 'attr' => ['autofocus' => true],
                 'label' => 'label.disease',
+                'required' => false,
             ])
             ->add('remarks', TextareaType::class, [
                 'attr' => ['autofocus' => true],
                 'label' => 'label.remarks',
+                'required' => false,
+            ])
+            ->add('customer', EntityType::class, [
+                'class' => CrmCustomer::class,
+                'required' => true,
+                'query_builder' => function (EntityRepository $er) {
+                    return $er->createQueryBuilder('e')
+                        ->where('e.customerGroup = :sCustomGroup')
+                        ->setParameter('sCustomGroup','Farmer')
+                        ->orderBy('e.mobile','ASC');
+                },
+                'attr'=>['class'=>'span12 select2'],
+                'choice_label' => 'NameAndPhone',
+                'placeholder' => 'Mobile',
+            ])
+
+            ->add('agent', EntityType::class, [
+                'class' => Agent::class,
+                'required' => true,
+                'attr'=>['class'=>'span12 select2'],
+                'choice_label' => 'NameAndPhone',
+                'placeholder' => 'Select Agent',
             ])
 
         ;

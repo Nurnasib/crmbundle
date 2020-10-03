@@ -26,6 +26,7 @@ use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Terminalbd\CrmBundle\Entity\CrmCustomer;
 use Terminalbd\CrmBundle\Entity\LayerLifeCycle;
 
 
@@ -60,14 +61,15 @@ class LayerLifeCycleFormType extends AbstractType
                 'label' => 'label.age_week',
             ])
 
-
             ->add('hatchery', TextType::class, [
                 'attr' => ['autofocus' => true],
                 'label' => 'label.hatchery',
+                'required' => false,
             ])
             ->add('breed', TextType::class, [
                 'attr' => ['autofocus' => true],
                 'label' => 'label.breed',
+                'required' => false,
             ])
             ->add('dead_bird', TextType::class, [
                 'attr' => ['autofocus' => true ,'autocomplete' => 'off'],
@@ -113,29 +115,47 @@ class LayerLifeCycleFormType extends AbstractType
             ->add('feed_type', TextType::class, [
                 'attr' => ['autofocus' => true],
                 'label' => 'label.feed_type',
+                'required' => false
             ])
-
             ->add('production_date', TextType::class, [
                 'attr' => ['autofocus' => true,'class'=>'date-picker col-md-11','autocomplete' => 'off'],
                 'label' => 'label.feed_type',
+                'required' => false
             ])
 
             ->add('batch_no', TextType::class, [
                 'attr' => ['autofocus' => true,'autocomplete' => 'off'],
                 'label' => 'label.batch_no',
+                'required' => false
             ])
             ->add('feed_mill', TextType::class, [
                 'attr' => ['autofocus' => true,'autocomplete' => 'off'],
                 'label' => 'label.feed_mill',
+                'required' => false
             ])
 
             ->add('medicine', TextType::class, [
                 'attr' => ['autofocus' => true],
                 'label' => 'label.medicine',
+                'required' => false
             ])
             ->add('remarks', TextareaType::class, [
                 'attr' => ['autofocus' => true],
                 'label' => 'label.remarks',
+                'required' => false
+            ])
+            ->add('customer', EntityType::class, [
+                'class' => CrmCustomer::class,
+                'required' => true,
+                'query_builder' => function (EntityRepository $er) {
+                    return $er->createQueryBuilder('e')
+                        ->where('e.customerGroup = :sCustomGroup')
+                        ->setParameter('sCustomGroup','Farmer')
+                        ->orderBy('e.mobile','ASC');
+                },
+                'attr'=>['class'=>'span12 select2'],
+                'choice_label' => 'NameAndPhone',
+                'placeholder' => 'Name ',
             ])
 
         ;

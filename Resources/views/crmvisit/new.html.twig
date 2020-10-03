@@ -1,12 +1,6 @@
 {% extends 'admin/layout.html.twig' %}
 {#{% block body_id 'kpi_domain_new' %}#}
 {% block body %}
-    {#{% for message in app.flashes('success') %}#}
-        {#<div class="alert alert-success">#}
-            {#{{ message }}#}
-        {#</div>#}
-    {#{% endfor %}#}
-
     <div class="pcoded-inner-content">
         <!-- [ breadcrumb ] start -->
         <div class="page-header">
@@ -39,7 +33,7 @@
             <div class="card">
                 <div class="portlet box green ">
                     <div class="portlet-title">
-                        <div class="caption">{{ 'Manage CRM Element'|trans }} </div>
+                        <div class="caption">{{ 'Manage CRM '|trans }} </div>
                     </div>
                     <div class="portlet-body form">
                         {{ form_start(form, {'attr': {'class': 'form-horizontal right'}}) }}
@@ -78,7 +72,7 @@
                                 </div>
                                 <div class="clearfix"></div>
                                 <div class="card-header grey-bg inner-header">
-                                    <h5>Additional Information</h5>
+                                    <h5>Farmer  Information</h5>
                                     <div class="card-header-right">
                                         <div class="btn-group btn-group-sm" role="group" aria-label="Button group with nested dropdown">
 
@@ -92,21 +86,87 @@
                                     <div class="col-md-12 clone-block" id="clone-block">
                                         <div class="clone">
                                             <div class="row">
-                                                <div class="col-md-3">
-                                                    <input type="text" name="farmCapacity[]" id="farmCapacity" class="form-control form-control-sm" placeholder="Name " value=""  >
-                                                    <input type="hidden" name="farmCapacityId[]" id="nameId" value="">
-                                                </div>
+                                                <div class="col-md-2">
 
-                                                <div class="col-md-3">
-                                                    <input type="text" name="address[]" id="address" class="form-control form-control-sm" placeholder="Address" value="">
-                                                    {#<input type="hidden" name="address[]" id="address" value="">#}
-                                                </div>
+                                                    <select name="purpose" id="" class="form-control">
+                                                        <option value="">Select Purpose</option>
+                                                        {% for purpose in purposes %}
+                                                            <option value="{{purpose.id}}"> {{purpose.name}} </option>
+                                                        {% endfor %}
+                                                    </select>
 
-                                                <div class="col-md-3">
-                                                    <input type="text" name="metaKey[]" id="metaKey" class="form-control form-control-sm" placeholder="Phone Number" value="">
+
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <select name="farmer" id="farmer" class="form-control farmer">
+                                                        <option value="">Select Purpose</option>
+                                                        {% for farmer in farmers %}
+                                                            <option value="{{farmer.id}}"> {{farmer.name}} </option>
+                                                        {% endfor %}
+                                                    </select>
+
+                                                    {#<input type="text" name="name[]" id="name" class="form-control form-control-sm" placeholder="Farmer Name" value="">#}
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <input type="text" name="address[]" id="metaKey" class="form-control form-control-sm" placeholder="Address " value="">
                                                     <input type="hidden" name="metaId[]" id="metaId" value="">
                                                 </div>
 
+                                                <div class="col-md-2">
+                                                    <input type="text" name="phone[]" id="phone" class="form-control form-control-sm" placeholder="Phone" value="">
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <input type="text" name="farmCapacity[]" id="farmCapacity" class="form-control form-control-sm" placeholder="Farm Capacity" value="">
+                                                </div>
+
+
+                                                <div class="col-md-2">
+                                                    <div class="input-group">
+                                                        <input type="text" name="metaValue[]" id="metaValue" class="form-control form-control-sm" placeholder="Enter your comments">
+                                                        <div class="input-group-append">
+                                                            <div class="btn btn-sm btn-transparent red-font row-remove hidden">
+                                                                <i class="fa fa-remove"></i>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                </div>
+                                {#end#}
+
+                                <div class="clearfix"></div>
+                                <div class="card-header grey-bg inner-header">
+                                    <h5>Agent </h5>
+                                    <div class="card-header-right">
+                                        <div class="btn-group btn-group-sm" role="group" aria-label="Button group with nested dropdown">
+                                            <button type="button" id="addrow" class="btn btn-sm  green-bg white-font addmoree"><i class="fas fa-plus"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                                {#agent-addmore#}
+                                <div class="card-body card-body-inner">
+                                    <div class="col-md-12 clone-block" id="clone-block">
+                                        <div class="clone">
+                                            <div class="row">
+                                                <div class="col-md-2">
+                                                    <input type="text" name="farmCapacity[]" id="farmCapacity" class="form-control form-control-sm" placeholder="Farm Capacity " value=""  >
+                                                    <input type="hidden" name="farmCapacityId[]" id="nameId" value="">
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <input type="text" name="address[]" id="address" class="form-control form-control-sm" placeholder="Address" value="">
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <input type="text" name="metaKey[]" id="metaKey" class="form-control form-control-sm" placeholder="Phone " value="">
+                                                    <input type="hidden" name="metaId[]" id="metaId" value="">
+                                                </div>
+
+                                                <div class="col-md-2">
+                                                    <input type="text" name="metaKey[]" id="metaKey" class="form-control form-control-sm" placeholder="Customer ID" value="">
+                                                    <input type="hidden" name="metaId[]" id="metaId" value="">
+                                                </div>
                                                 <div class="col-md-3">
                                                     <div class="input-group">
                                                         <input type="text" name="metaValue[]" id="metaValue" class="form-control form-control-sm" placeholder="Enter your comments">
@@ -120,39 +180,12 @@
                                             </div>
                                         </div>
                                     </div>
-                                    {#addmore entity#}
-                                    {% if entity.CrmVisitDetails is not empty %}
-                                        {% for keyValue in entity.CrmVisitDetails %}
-                                            <div class="col-md-12 clone-remove" id="remove-{{ keyValue.id }}" style="margin-bottom: 5px">
-                                                <div class="row">
-                                                    <div class="col-md-4">
-                                                        <input type="hidden" name="crmVisitDetailsId[]" id="crmVisitDetails" value="{{ keyValue.id }}">
-                                                        <input type="text" name="farmCapacity[]" id="farmCapacity" class="form-control form-control-sm" placeholder="Enter label name" value="{{ keyValue.farmCapacity }}">
-                                                        <input type="hidden" name="attributeId[]"
-                                                               value="{{ keyValue.id }}">
-                                                    </div>
-                                                    <div class="col-md-8">
-                                                        <div class="input-group">
-                                                            <input type="text" name="comments[]" id="comments" class="form-control form-control-sm" placeholder="Enter your comments" value="{{ keyValue.comments }}">
-                                                            <div class="input-group-append">
-                                                                <div data-action="{{ path('core_setting_meta_delete',{'id':keyValue.id}) }}" data-id="{{ keyValue.id }}" class="btn  btn-sm btn-transparent red-font meta-remove">
-                                                                    <i class="fas fa-remove"></i>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        {% endfor %}
-                                    {% endif %}
-
-
-                                    {#end Addmore entity#}
                                     <div class="clearfix"></div>
                                 </div>
 
-                                {#end#}
 
+
+                                {#end#}
                                 <div class="form-actions">
                                     <div class="col-md-6 "></div>
                                     <div class="col-md-6 text-right">
@@ -177,7 +210,7 @@
             <div class="modal-dialog">
                 <div class="modal-content" style="padding: 20px" >
                     <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">New Customer</h5>
+                        <h5 class="modal-title" id="exampleModalLabel">New Farmer</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -246,6 +279,7 @@
                 </div>
             </div>
         </div>
+
         {#EndModal#}
 
 
@@ -268,6 +302,16 @@
 
 {% block javascriptBlock %}
 
+    $(document).on('change', '.farmer', function(e) {
+
+        var id = $(this).val();
+        $.get("demo_test.asp,{'id':id}", function(data, status){
+            alert("Data: " + data + "\nStatus: " + status);
+        });
+
+    });
+
+
     $(document).on('click', '.crm-customer-btn', function(e) {
     e.preventDefault();
 
@@ -277,13 +321,11 @@
     var name =$(this).closest("form").find(".name").val();
     var mobile = $(this).closest("form").find(".mobile").val();
 
-
     if (name =="") {
     alert("Name must be filled out");
     return false;
     }
-
-    else if(mobile=="" || mobile.length>11){
+    else if(mobile=="" || mobile==null){
     alert("Your mobile number is Invalid :" +mobile);
     return false;
     }
@@ -297,7 +339,7 @@
     data: form.serializeArray(),
     dataType: "json",
     success: function (data) {
-    alert('ok');
+
 
     console.log(data);
     }
@@ -306,19 +348,19 @@
 
     {#javascript Modal form validation#}
 
-    function validateForm(element) {
+    {#function validateForm(element) {#}
 
-    var name =element.closest("form").find(".name").val();
-    if (name =="" || name ==null) {
+    {#var name =element.closest("form").find(".name").val();#}
+    {#if (name =="" || name ==null) {#}
     {#alert("Name must be filled out");#}
-    return false;
-    }
-    else if(mobile.length<12){
-    alert(" Mobile Number must be 11 Digits.");
-    return false;
-    }
+    {#return false;#}
+    {#}#}
+    {#else if(mobile =="" || mobile==null){#}
+    {#alert(" Please input your number.");#}
+    {#return false;#}
+    {#}#}
 
-    }
+    {#}#}
 
 
 

@@ -30,11 +30,16 @@ class LayerLifeCycle
     private $id;
 
     /**
+     * @var CrmCustomer
+     * @ORM\ManyToOne(targetEntity="CrmCustomer" , inversedBy="layerlifecycle")
+     */
+    private $customer;
+
+    /**
      * @var string
      * @ORM\Column(name="total_birds", type="string")
      */
     private $totalBirds;
-
 
     /**
      * @var string
@@ -48,15 +53,11 @@ class LayerLifeCycle
      */
     private $visitingDate;
 
-
-
     /**
      * @var string
      * @ORM\Column(name="age_week", type="string")
      */
     private $ageWeek;
-
-
     /**
      * @var string
      * @ORM\Column(name="hatchery", type="string")
@@ -65,15 +66,14 @@ class LayerLifeCycle
 
     /**
      * @var string
-     * @ORM\Column(name="breed", type="string")
+     * @ORM\Column(name="breed", type="string",nullable = true)
      */
 
     private $breed;
 
-
     /**
      * @var string
-     * @ORM\Column(name="dead_bird", type="string")
+     * @ORM\Column(name="dead_bird", type="string",nullable = true)
      */
     private $deadBird;
 
@@ -106,8 +106,6 @@ class LayerLifeCycle
 
     private $feedPerBird;
 
-
-
     /**
      * @var string
      * @ORM\Column(name="target_feed_per_bird", type="string")
@@ -130,15 +128,12 @@ class LayerLifeCycle
 
     private $targetEggProduction;
 
-
     /**
      * @var string
      * @ORM\Column(name="egg_weight_actual", type="string")
      */
 
     private $eggWeightActual;
-
-
 
     /**
      * @var string
@@ -149,44 +144,42 @@ class LayerLifeCycle
 
     /**
      * @var string
-     * @ORM\Column(name="feed_type", type="string")
+     * @ORM\Column(name="feed_type", type="string",nullable=true)
      */
 
     private $feedType;
 
     /**
      * @var string
-     * @ORM\Column(name="production_date", type="string")
+     * @ORM\Column(name="production_date", type="string",nullable=true)
      */
 
     private $productionDate;
 
     /**
      * @var string
-     * @ORM\Column(name="batch_no", type="string")
+     * @ORM\Column(name="batch_no", type="string",nullable=true)
      */
 
     private $batch_no;
 
     /**
      * @var string
-     * @ORM\Column(name="feed_mill", type="string")
+     * @ORM\Column(name="feed_mill", type="string",nullable=true)
      */
 
     private $feedMill;
 
-
     /**
      * @var string
-     * @ORM\Column(name="medicine", type="string")
+     * @ORM\Column(name="medicine", type="string",nullable=true)
      */
 
     private $medicine;
 
-
     /**
      * @var string
-     * @ORM\Column(name="remarks", type="string")
+     * @ORM\Column(name="remarks", type="string",nullable=true)
      */
 
     private $remarks;
@@ -200,7 +193,7 @@ class LayerLifeCycle
 
     /**
      * @var \DateTime
-     * @ORM\Column(name="updated", type="datetime", nullable = true)
+     * @ORM\Column(name="updated", type="datetime", nullable=true)
      */
 
     private $updated;
@@ -603,6 +596,22 @@ class LayerLifeCycle
     public function setAgeWeek($ageWeek)
     {
         $this->ageWeek = $ageWeek;
+    }
+
+    /**
+     * @return CrmCustomer
+     */
+    public function getCustomer()
+    {
+        return $this->customer;
+    }
+
+    /**
+     * @param CrmCustomer $customer
+     */
+    public function setCustomer($customer)
+    {
+        $this->customer = $customer;
     }
 
 
