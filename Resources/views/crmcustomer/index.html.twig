@@ -21,7 +21,7 @@
                     <h5>{{ 'Crm Customer'|trans }}</h5>
                     <div class="card-header-right">
                         <div class="btn-group btn-group-sm" role="group" aria-label="Button group with nested dropdown">
-                            <a href="{{ path('new_visit') }}" class="btn btn-sm  green-bg white-font"><i class="fas fa-plus"></i>{{ 'Add New'|trans }}</a>
+                            <a href="{{ path('crm_customer_new') }}" class="btn btn-sm  green-bg white-font"><i class="fas fa-plus"></i>{{ 'Add New'|trans }}</a>
                             {#<a href="{{ path('kpi_setup') }}" class="btn btn-sm gray-bg white-font"><i class="fa fa-th-list"></i>{{ 'KPI Setup'|trans }}</a>#}
                         </div>
                     </div>
@@ -39,8 +39,7 @@
                             <th scope="col">Mobile</th>
                             <th scope="col">Address</th>
                             <th scope="col">Custom Group</th>
-                            <th scope="col">Agent ID</th>
-                            <th scope="col">Sub AgentID</th>
+                            <th scope="col">Agent</th>
                             <th scope="col">Location</th>
 
                             <th scope="col text-center"><i class="feather icon-KPI Setup"></i></th>
@@ -53,13 +52,11 @@
                                 <td>{{ entity.name }}</td>
                                 <td>{{ entity.mobile }}</td>
                                 <td>{{ entity.address }}</td>
-                                <td>{{ entity.customerGroup }}</td>
-                                <td>{{ entity.agentId }}</td>
-                                <td>{{ entity.subAgentId }}</td>
-                                <td>{{ entity.location }}</td>
-
+                                <td>{{ entity.customerGroup.name }}</td>
+                                <td>{% if entity.agent is not empty %}{{ entity.agent.name }}{% endif %}</td>
+                                <td>{% if  entity.location is not empty %}{{ entity.location.name }}{% endif %}</td>
                                 <td>
-                                    <a class="btn btn-mini yellow-bg white-font" href="{{ path('kpi_setup_edit',{'id':entity.id}) }}"><i class="feather icon-edit"></i> Edit</a>
+                                    <a class="btn btn-mini yellow-bg white-font" href="{{ path('crm_customer_edit',{'id':entity.id}) }}"><i class="feather icon-edit"></i> Edit</a>
                                     <a class="btn  btn-transparent btn-mini red-font remove" href="javascript:" data-action="{{ path('customer_delete',{'id':entity.id}) }}"><i class="fa fa-remove"></i></a>
                                 </td>
 

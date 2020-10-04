@@ -25,6 +25,11 @@ class Fcr
 
     private $id;
 
+    /**
+     * @var User
+     * @ORM\ManyToOne(targetEntity="App\Entity\User" , inversedBy="chicklifecycle")
+     */
+    private $employee;
 
 
     /**
@@ -348,8 +353,21 @@ class Fcr
         $this->agent = $agent;
     }
 
+    /**
+     * @return User
+     */
+    public function getEmployee(): User
+    {
+        return $this->employee;
+    }
 
-
+    /**
+     * @param User $employee
+     */
+    public function setEmployee(User $employee)
+    {
+        $this->employee = $employee;
+    }
 
 
 }

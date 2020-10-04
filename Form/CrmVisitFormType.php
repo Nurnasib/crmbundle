@@ -12,6 +12,7 @@
 namespace Terminalbd\CrmBundle\Form;
 
 
+use App\Entity\Admin\Location;
 use App\Entity\User;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -40,19 +41,26 @@ class CrmVisitFormType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        $user =  $options['user']->getId();
         $builder
-            ->add('cso_id', TextType::class, [
-                'attr' => ['autofocus' => true],
-                'label' => 'label.cso_id',
-            ])
+
             ->add('working_duration', TextType::class, [
                 'attr' => ['autofocus' => true],
                 'label' => 'label.working_duration',
             ])
-            ->add('area_name', TextType::class, [
-                'attr' => ['autofocus' => true],
-                'label' => 'label.area_name',
-            ])
+            ->add('location', EntityType::class, array(
+                'required'    => false,
+                'class' => Location::class,
+                'placeholder' => 'Choose a  upozila name',
+                'choice_label' => 'name',
+                'attr'=>array('class'=>'span12 m-wrap'),
+                'query_builder' => function(EntityRepository $er)use($user){
+                    return $er->createQueryBuilder('e')
+                        ->join("e.user","u")
+                        ->andWhere("u.id ='{$user}'")
+                        ->orderBy('e.name', 'ASC');
+                },
+            ))
 
         ;
     }
@@ -64,6 +72,7 @@ class CrmVisitFormType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => CrmVisit::class,
+            'user' => User::class,
         ]);
     }
 }

@@ -11,6 +11,7 @@
 
 namespace Terminalbd\CrmBundle\Controller;
 
+use App\Entity\Core\Agent;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -33,20 +34,18 @@ class ChickLifeCycleController extends AbstractController
 {
     /**
      * @Route("/", methods={"GET"}, name="crm_chick")
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN')")
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      */
     public function index(Request $request): Response
     {
         //  broiler index page
-        $entitys = $this->getDoctrine()->getRepository(ChickLifeCycle::class)->findBy(
-          ['birdMode'=>'BROILER']
-        );
+        $entitys = $this->getDoctrine()->getRepository(ChickLifeCycle::class)->findAll();
         return $this->render('@TerminalbdCrm/chickLifecycle/index.html.twig',['entities' => $entitys]);
     }
 
     /**
      * @Route("/sonali", methods={"GET"}, name="crm_sonali")
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN')")
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      */
     public function sonali_index(Request $request): Response
     {
@@ -57,17 +56,19 @@ class ChickLifeCycleController extends AbstractController
     }
 
     /**
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN')")
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      * @Route("/new", methods={"GET", "POST"}, name="chick_new")
      */
     public function new(Request $request): Response
     {
         $entity = new ChickLifeCycle();
         $data = $request->request->all();
-        $form = $this->createForm(ChickLifeCycleFormType::class , $entity)
+        $agentRepo = $this->getDoctrine()->getRepository(Agent::class);
+        $form = $this->createForm(ChickLifeCycleFormType::class, $entity,array('user' => $this->getUser(),'agentRepo' => $agentRepo))
             ->add('SaveAndCreate', SubmitType::class);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+            $entity->setEmployee($this->getUser());
             $em = $this->getDoctrine()->getManager();
             $em->persist($entity);
             $em->flush();
@@ -86,16 +87,18 @@ class ChickLifeCycleController extends AbstractController
     /**
      * Displays a form to edit an existing ChickLifeCycle entity.
      * @Route("/{id}/edit", methods={"GET", "POST"}, name="crm_chick_edit")
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN')")
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      */
 
     public function edit(Request $request, ChickLifeCycle $entity): Response
     {
         $data = $request->request->all();
-        $form = $this->createForm(ChickLifeCycleFormType::class, $entity)
+        $agentRepo = $this->getDoctrine()->getRepository(Agent::class);
+        $form = $this->createForm(ChickLifeCycleFormType::class, $entity,array('user' => $this->getUser(),'agentRepo' => $agentRepo))
             ->add('SaveAndCreate', SubmitType::class);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+
             $this->getDoctrine()->getManager()->flush();
             $this->addFlash('success', 'post.updated_successfully');
             if ($form->get('SaveAndCreate')->isClicked()) {
@@ -112,7 +115,7 @@ class ChickLifeCycleController extends AbstractController
     /**
      * Deletes a ChickLifeCycle entity.
      * @Route("/{id}/delete", methods={"GET"}, name="crm_chick_delete")
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN')")
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      */
     public function delete($id): Response
     {

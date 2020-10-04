@@ -15,6 +15,7 @@ namespace Terminalbd\CrmBundle\Form;
 use App\Entity\Core\Agent;
 use App\Entity\User;
 use App\Form\Type\DateTimePickerType;
+use App\Repository\Core\AgentRepository;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -92,7 +93,7 @@ class LayerPerformanceFormType extends AbstractType
                 'required' => false,
             ])
             ->add('production_date', TextType::class, [
-                'attr' => ['autofocus' => true,'class'=>'date-picker col-md-11','autocomplete' => 'off'],
+                'attr' => ['autofocus' => true,'class'=>'dateCalendar col-md-11','autocomplete' => 'off'],
                 'label' => 'label.feed_type',
                 'required' => false,
             ])
@@ -134,21 +135,22 @@ class LayerPerformanceFormType extends AbstractType
                 'required' => true,
                 'query_builder' => function (EntityRepository $er) {
                     return $er->createQueryBuilder('e')
-                        ->where('e.customerGroup = :sCustomGroup')
-                        ->setParameter('sCustomGroup','Farmer')
-                        ->orderBy('e.mobile','ASC');
+                        ->join('e.customerGroup','setting')
+                        ->where('setting.slug = :farmer')
+                        ->setParameter('farmer','farmer')
+                        ->orderBy('e.name','ASC');
                 },
                 'attr'=>['class'=>'span12 select2'],
-                'choice_label' => 'NameAndPhone',
-                'placeholder' => 'Mobile',
+                'choice_label' => 'name',
+                'placeholder' => 'Enter Farmer Name',
             ])
-
             ->add('agent', EntityType::class, [
                 'class' => Agent::class,
-                'required' => true,
-                'attr'=>['class'=>'span12 select2'],
-                'choice_label' => 'NameAndPhone',
-                'placeholder' => 'Select Agent',
+                'attr'=>['class'=>'span12'],
+                'required'    => false,
+                'choice_label' => 'name',
+                'placeholder' => 'Choose a agent',
+                'choices'   => $options['agentRepo']->getLocationWiseAgentForm($options['user'])
             ])
 
         ;
@@ -161,6 +163,8 @@ class LayerPerformanceFormType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => LayerPerformance::class,
+            'user' => User::class,
+            'agentRepo' => AgentRepository::class,
         ]);
     }
 }

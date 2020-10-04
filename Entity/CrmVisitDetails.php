@@ -40,27 +40,46 @@ class CrmVisitDetails
 
     /**
      * @var string
+     * @ORM\Column(name="process" , type="string",nullable=true)
+     */
+    private $process;
+
+    /**
+     * @var Agent
+     * @ORM\ManyToOne(targetEntity="App\Entity\Core\Agent", inversedBy="crmVisits")
+     * @ORM\JoinColumn(name="agent_id", referencedColumnName="id")
+     * @ORM\JoinColumn(onDelete="CASCADE")
+     */
+    private $agent;
+
+
+    /**
+     * @var CrmVisit
      * @ORM\ManyToOne(targetEntity="CrmVisit", inversedBy="crmVisitDetails")
      * @ORM\JoinColumn(name="crm_visit_id", referencedColumnName="id")
      * @ORM\JoinColumn(onDelete="CASCADE")
      */
 
-    private $crmVisitId;
+    private $crmVisit;
+
 
     /**
-     * @var string
+     * @var CrmCustomer
      * @ORM\ManyToOne(targetEntity="CrmCustomer", inversedBy="crmVisitDetails")
      * @ORM\JoinColumn(name="customer_id", referencedColumnName="id")
      * @ORM\JoinColumn(onDelete="CASCADE")
      */
-
     private $crmCustomer;
 
-    /**
-     * @var string
-     * @ORM\Column(name="purpose", type="text",nullable=true)
+     /**
+     * @var Setting
+     * @ORM\ManyToOne(targetEntity="Setting", inversedBy="crmVisitDetails")
+     * @ORM\JoinColumn(name="purpose_id", referencedColumnName="id")
+     * @ORM\JoinColumn(onDelete="CASCADE")
      */
     private $purpose;
+
+
 
     /**
      * @var \DateTime
@@ -124,37 +143,6 @@ class CrmVisitDetails
         $this->comments = $comments;
     }
 
-    /**
-     * @return string
-     */
-    public function getCrmVisitId()
-    {
-        return $this->crmVisitId;
-    }
-
-    /**
-     * @param string $crmVisitId
-     */
-    public function setCrmVisitId($crmVisitId)
-    {
-        $this->crmVisitId = $crmVisitId;
-    }
-
-    /**
-     * @return string
-     */
-    public function getPurpose()
-    {
-        return $this->purpose;
-    }
-
-    /**
-     * @param string $purpose
-     */
-    public function setPurpose($purpose)
-    {
-        $this->purpose = $purpose;
-    }
 
     /**
      * @return \DateTime
@@ -188,9 +176,85 @@ class CrmVisitDetails
         $this->updated = $updated;
     }
 
+    /**
+     * @return CrmVisit
+     */
+    public function getCrmVisit()
+    {
+        return $this->crmVisit;
+    }
 
+    /**
+     * @param CrmVisit $crmVisit
+     */
+    public function setCrmVisit(CrmVisit $crmVisit)
+    {
+        $this->crmVisit = $crmVisit;
+    }
 
+    /**
+     * @return CrmCustomer
+     */
+    public function getCrmCustomer()
+    {
+        return $this->crmCustomer;
+    }
 
+    /**
+     * @param CrmCustomer $crmCustomer
+     */
+    public function setCrmCustomer(CrmCustomer $crmCustomer)
+    {
+        $this->crmCustomer = $crmCustomer;
+    }
+
+    /**
+     * @return string
+     */
+    public function getProcess()
+    {
+        return $this->process;
+    }
+
+    /**
+     * @param string $process
+     */
+    public function setProcess(string $process)
+    {
+        $this->process = $process;
+    }
+
+    /**
+     * @return Setting
+     */
+    public function getPurpose()
+    {
+        return $this->purpose;
+    }
+
+    /**
+     * @param Setting $purpose
+     */
+    public function setPurpose($purpose)
+    {
+        $this->purpose = $purpose;
+    }
+
+    /**
+     * @return Agent
+     */
+    public function getAgent()
+    {
+        return $this->agent;
+    }
+
+    /**
+     * @param Agent $agent
+     */
+    public function setAgent($agent)
+    {
+        $this->agent = $agent;
+    }
 
 
 }

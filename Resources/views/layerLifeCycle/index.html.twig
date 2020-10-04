@@ -79,7 +79,7 @@
                             {% set eggProduction = (entity.totalEggs*100)/presentBird %}
                             <tr>
                             <td> {{ loop.index }} </td>
-                            <td> {{ entity.visitingDate }} </td>
+                            <td> {{ entity.created|date('d-m-Y') }} </td>
                             <td> {{ entity.ageWeek }} </td>
                             <td> {{ entity.totalBirds }} </td>
                             <td> {{ entity.deadBird }} </td>

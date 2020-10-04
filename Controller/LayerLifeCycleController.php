@@ -35,7 +35,7 @@ class LayerLifeCycleController extends AbstractController
 {
     /**
      * @Route("/", methods={"GET"}, name="layer_life_cycle")
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN')")
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      */
     public function index(Request $request): Response
     {
@@ -44,7 +44,7 @@ class LayerLifeCycleController extends AbstractController
     }
 
     /**
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN')")
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      * @Route("/new", methods={"GET", "POST"}, name="layer_life_cycle_new")
      */
     public function new(Request $request): Response
@@ -58,6 +58,7 @@ class LayerLifeCycleController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $em = $this->getDoctrine()->getManager();
+            $entity->setEmployee($this->getUser());
             $em->persist($entity);
             $em->flush();
             $this->addFlash('success', 'post.created_successfully');
@@ -75,7 +76,7 @@ class LayerLifeCycleController extends AbstractController
     /**
      * Displays a form to edit an existing LayerPerformance entity.
      * @Route("/{id}/edit", methods={"GET", "POST"}, name="layer_life_cycle_edit")
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN')")
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      */
 
     public function edit(Request $request, LayerLifeCycle $entity): Response
@@ -86,6 +87,7 @@ class LayerLifeCycleController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
+
             $this->addFlash('success', 'post.updated_successfully');
             if ($form->get('SaveAndCreate')->isClicked()) {
                 return $this->redirectToRoute('layer_life_cycle_edit', ['id' => $entity->getId()]);
@@ -101,7 +103,7 @@ class LayerLifeCycleController extends AbstractController
     /**
      * Deletes a LayerPerformance entity.
      * @Route("/{id}/delete", methods={"GET"}, name="layer_life_cycle_delete")
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN')")
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      */
     public function delete($id): Response
     {

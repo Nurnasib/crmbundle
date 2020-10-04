@@ -11,6 +11,7 @@
 
 namespace Terminalbd\CrmBundle\Controller;
 
+use App\Entity\Core\Agent;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -33,20 +34,17 @@ class FcrController extends AbstractController
 {
     /**
      * @Route("/", methods={"GET"}, name="fcr")
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN')")
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      */
     public function index(Request $request): Response
     {
-        $entitys = $this->getDoctrine()->getRepository(Fcr::class)->findBy(
-            ['fcrOfFeed'=>'BEFORE']
-        );
+        $entitys = $this->getDoctrine()->getRepository(Fcr::class)->findAll();
         return $this->render('@TerminalbdCrm/fcr/index.html.twig',['entities' => $entitys]);
     }
 
-
     /**
      * @Route("/after", methods={"GET"}, name="fcr_after")
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN')")
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      */
     public function index_after(Request $request): Response
     {
@@ -60,21 +58,21 @@ class FcrController extends AbstractController
 
 
     /**
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN')")
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      * @Route("/new", methods={"GET", "POST"}, name="fcr_new")
      */
     public function new(Request $request): Response
     {
         $entity = new Fcr();
-       $data = $request->request->all();
+        $data = $request->request->all();
 
-        $form = $this->createForm(FcrFormType::class , $entity)
-            ->add('SaveAndCreate', SubmitType::class);
+        $agentRepo = $this->getDoctrine()->getRepository(Agent::class);
+        $form = $this->createForm(FcrFormType::class, $entity,array('user' => $this->getUser(),'agentRepo' => $agentRepo)) ->add('SaveAndCreate', SubmitType::class);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $em = $this->getDoctrine()->getManager();
-
+            $entity->setEmployee($this->getUser());
             $em->persist($entity);
             $em->flush();
             $this->addFlash('success', 'post.created_successfully');
@@ -92,14 +90,14 @@ class FcrController extends AbstractController
     /**
      * Displays a form to edit an existing Post entity.
      * @Route("/{id}/edit", methods={"GET", "POST"}, name="fcr_edit")
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN')")
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      */
 
     public function edit(Request $request, Fcr $entity): Response
     {
         $data = $request->request->all();
-        $form = $this->createForm(FcrFormType::class, $entity)
-            ->add('SaveAndCreate', SubmitType::class);
+        $agentRepo = $this->getDoctrine()->getRepository(Agent::class);
+        $form = $this->createForm(FcrFormType::class, $entity,array('user' => $this->getUser(),'agentRepo' => $agentRepo)) ->add('SaveAndCreate', SubmitType::class);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
@@ -118,7 +116,7 @@ class FcrController extends AbstractController
     /**
      * Deletes a Fcr entity.
      * @Route("/{id}/delete", methods={"GET"}, name="fcr_delete")
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN')")
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      */
     public function delete($id): Response
     {

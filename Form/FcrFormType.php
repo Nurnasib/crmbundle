@@ -15,6 +15,7 @@ namespace Terminalbd\CrmBundle\Form;
 use App\Entity\Core\Agent;
 use App\Entity\User;
 use App\Form\Type\DateTimePickerType;
+use App\Repository\Core\AgentRepository;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -52,11 +53,11 @@ class FcrFormType extends AbstractType
                 ]
             ])
             ->add('reporting_month', TextType::class, [
-                'attr' => ['autofocus' => true,'class'=>'dateCalendar col-md-11', 'placeholder' => 'Reporting Month','autocomplete' => 'off' ],
+                'attr' => ['autofocus' => true,'class'=>'dateCalendar col-md-10', 'placeholder' => 'Reporting Month','autocomplete' => 'off' ],
                 'label' => 'label.reporting_month',
             ])
             ->add('hatching_date', TextType::class, [
-                'attr' => ['autofocus' => true ,'class'=>'date-picker col-md-11', 'placeholder' => 'Reporting Date','autocomplete' => 'off'],
+                'attr' => ['autofocus' => true ,'class'=>'dateCalendar col-md-10', 'placeholder' => 'Reporting Date','autocomplete' => 'off'],
                 'label' => 'label.hatching_date',
             ])
             ->add('totalbirds', TextType::class, [
@@ -99,12 +100,12 @@ class FcrFormType extends AbstractType
             ])
             ->add('agent', EntityType::class, [
                 'class' => Agent::class,
-                'required' => true,
-                'attr'=>['class'=>'span12 select2'],
+                'attr'=>['class'=>'span12'],
+                'required'    => false,
                 'choice_label' => 'name',
-                'placeholder' => 'Select Agent',
+                'placeholder' => 'Choose a agent',
+                'choices'   => $options['agentRepo']->getLocationWiseAgentForm($options['user'])
             ])
-
         ;
     }
 
@@ -115,6 +116,8 @@ class FcrFormType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Fcr::class,
+            'user' => User::class,
+            'agentRepo' => AgentRepository::class,
         ]);
     }
 }

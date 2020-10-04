@@ -40,6 +40,7 @@
                         {{ form_start(form, {'attr': {'class': 'form-horizontal right'}}) }}
                         <div class="row form-body ">
                             <div class="form-inner-no-space">
+
                                 <div class="row">
                                     <div class="col-md-4">
                                         <div class="form-group">
@@ -52,8 +53,6 @@
                                             </div>
                                         </div>
                                     </div>
-
-
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             {{ form_label(form.agent, 'Agent'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
@@ -64,12 +63,9 @@
                                             </div>
                                         </div>
                                     </div>
-
-
-
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            {{ form_label(form.customer, 'Farmer Mobile'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
+                                            {{ form_label(form.customer, 'Farmer Name'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
                                             <div class="col-md-8">
                                                 <span class="not-blank"> {{ 'Required'|trans }}</span>
                                                 {{ form_widget(form.customer) }}
@@ -106,38 +102,37 @@
 
                                 </div>
                                 <div class="clearfix"></div>
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="form-group" id="totalbirds">
-                                            {{ form_label(form.totalbirds, 'Total Birds'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
-                                            <div class="col-md-8">
-                                                <span class="not-blank"> {{ 'Required'|trans }}</span>
-                                                {{ form_widget(form.totalbirds) }}
-                                                {{ form_errors(form.totalbirds) }}
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-4">
-                                        <div class="form-group">
-                                            {{ form_label(form.age_days, 'Age Days'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
-                                            <div class="col-md-8">
-                                                <span class="not-blank"> {{ 'Required'|trans }}</span>
-                                                {{ form_widget(form.age_days) }}
-                                                {{ form_errors(form.age_days) }}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="clearfix"></div>
                                 <div class="card-header grey-bg inner-header">
-                                    <h5>Mortality</h5>
+                                    <h5>Birds & Mortality</h5>
                                     <div class="card-header-right">
                                     </div>
                                 </div>
                                 <div class="card-body card-body-inner">
                                     <div class="row">
-                                        <div class="col-md-6">
+                                        <div class="col-md-4">
+                                            <div class="form-group" id="totalbirds">
+                                                {{ form_label(form.totalbirds, 'Total Birds'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
+                                                <div class="col-md-8">
+                                                    <span class="not-blank"> {{ 'Required'|trans }}</span>
+                                                    {{ form_widget(form.totalbirds) }}
+                                                    {{ form_errors(form.totalbirds) }}
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                {{ form_label(form.age_days, 'Age Days'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
+                                                <div class="col-md-8">
+                                                    <span class="not-blank"> {{ 'Required'|trans }}</span>
+                                                    {{ form_widget(form.age_days) }}
+                                                    {{ form_errors(form.age_days) }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-4">
                                             <div class="form-group" id="mortalityPes">
                                                 {{ form_label(form.mortality_pes, 'Mortality(Pes)'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
                                                 <div class="col-md-8">
@@ -147,7 +142,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="col-md-6">
+                                        <div class="col-md-4">
                                             <div class="form-group" id="mortalityPercent">
                                                 {{ form_label(form.mortality_percent, 'Mortality(%)'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
                                                 <div class="col-md-8">
@@ -180,7 +175,6 @@
                                                 </div>
                                             </div>
                                         </div>
-
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 {{ form_label(form.weightStandard, 'Weight(Standerd)'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
@@ -217,7 +211,6 @@
                                              <div class="form-group">
                                                  {{ form_label(form.feedTotalkg, 'Total(kg)'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
                                                  <div class="col-md-8">
-                                                     <span class="not-blank"> {{ 'Required'|trans }}</span>
                                                      {{ form_widget(form.feedTotalkg) }}
                                                      {{ form_errors(form.feedTotalkg) }}
                                                  </div>
@@ -227,7 +220,7 @@
                                              <div class="form-group">
                                                  {{ form_label(form.perBird, 'Per Bird(gm)'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
                                                  <div class="col-md-8">
-                                                     <p class="form-control perBird"></p>
+                                                     <span class="form-control perBird"></span>
                                                      {{ form_widget(form.perBird) }}
                                                      {{ form_errors(form.perBird) }}
                                                  </div>
@@ -237,7 +230,6 @@
                                              <div class="form-group">
                                                  {{ form_label(form.feedStandard, 'Standard'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
                                                  <div class="col-md-8">
-                                                     <span class="not-blank"> {{ 'Required'|trans }}</span>
                                                      {{ form_widget(form.feedStandard) }}
                                                      {{ form_errors(form.feedStandard) }}
                                                  </div>
@@ -255,38 +247,28 @@
 
                                 <div class="card-body card-body-inner">
                                     <div class="row">
-                                        <div class="col-md-6">
+                                        <div class="col-md-4">
                                             <div class="form-group">
                                                 {{ form_label(form.withoutMortality, 'Without M'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
                                                 <div class="col-md-8">
-                                                    <p class="form-control withoutMortality"></p>
+                                                    <span class="form-control withoutMortality"></span>
                                                     {{ form_widget(form.withoutMortality) }}
                                                     {{ form_errors(form.withoutMortality) }}
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-6">
+                                        <div class="col-md-4">
                                             <div class="form-group">
                                                 {{ form_label(form.withMortality, 'With M'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
                                                 <div class="col-md-8">
-                                                    <p class="form-control withMortality"></p>
+                                                    <span class="form-control withMortality"></span>
                                                     {{ form_widget(form.withMortality) }}
                                                     {{ form_errors(form.withMortality) }}
                                                 </div>
                                             </div>
                                         </div>
-
-
                                     </div>
-
-
                                 </div>
-
-
-
-
-
-
 
                                 <div class="clearfix"></div>
                                 <div class="card-header grey-bg inner-header">
@@ -361,11 +343,13 @@
 
                                    </div>
                                    <div class="row">
-                                       <div class="form-group">
-                                           {{ form_label(form.remarks, 'Remarks'|trans, {'label_attr': {'class': 'col-md-6'}}) }}
-                                           <div class="col-md-12">
-                                               {{ form_widget(form.remarks) }}
-                                               {{ form_errors(form.remarks) }}
+                                       <div class="col-md-12">
+                                           <div class="form-group">
+                                               {{ form_label(form.remarks, 'Remarks'|trans, {'label_attr': {'class': 'col-md-1'}}) }}
+                                               <div class="col-md-11">
+                                                   {{ form_widget(form.remarks) }}
+                                                   {{ form_errors(form.remarks) }}
+                                               </div>
                                            </div>
                                        </div>
 

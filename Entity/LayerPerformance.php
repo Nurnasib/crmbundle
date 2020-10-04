@@ -12,6 +12,7 @@
 namespace Terminalbd\CrmBundle\Entity;
 use App\Entity\Core\Agent;
 //use App\Entity\Admin\Location;
+use App\Entity\User;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
@@ -30,6 +31,12 @@ class LayerPerformance
      * @ORM\GeneratedValue
      */
     private $id;
+
+    /**
+     * @var User
+     * @ORM\ManyToOne(targetEntity="App\Entity\User" , inversedBy="chicklifecycle")
+     */
+    private $employee;
 
 
     /**
@@ -590,6 +597,21 @@ class LayerPerformance
         $this->agent = $agent;
     }
 
+    /**
+     * @return User
+     */
+    public function getEmployee(): User
+    {
+        return $this->employee;
+    }
+
+    /**
+     * @param User $employee
+     */
+    public function setEmployee(User $employee)
+    {
+        $this->employee = $employee;
+    }
 
 
 }

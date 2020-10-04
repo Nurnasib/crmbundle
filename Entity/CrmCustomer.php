@@ -50,31 +50,31 @@ class CrmCustomer
 
     private $address;
 
+
     /**
-     * @var string
-     * @Orm\Column(name="custom_group", type="string",nullable=true)
+     * @var Setting
+     * @ORM\ManyToOne(targetEntity="Setting", inversedBy="crmVisits")
+     * @ORM\JoinColumn(name="custom_group_id", referencedColumnName="id")
+     * @ORM\JoinColumn(onDelete="CASCADE")
      */
     private $customerGroup;
 
-    /**
-     * @var string
-     * @Orm\Column(name="agentId", type="string",nullable=true)
-     */
-
-    private $agentId;
 
     /**
-     * @var string
-     * @Orm\Column(name="subagentId",type="string",nullable=true)
+     * @var Agent
+     * @ORM\ManyToOne(targetEntity="App\Entity\Core\Agent", inversedBy="crmVisits")
+     * @ORM\JoinColumn(name="agent_id", referencedColumnName="id")
+     * @ORM\JoinColumn(onDelete="CASCADE")
      */
+    private $agent;
 
-    private $subAgentId;
 
     /**
-     * @var string
-     * @Orm\Column(name="location", type="text",nullable=true)
+     * @var Location
+     * @ORM\ManyToOne(targetEntity="App\Entity\Admin\Location", inversedBy="crmVisits")
+     * @ORM\JoinColumn(name="location_id", referencedColumnName="id")
+     * @ORM\JoinColumn(onDelete="CASCADE")
      */
-
     private $location;
 
     /**
@@ -146,69 +146,7 @@ class CrmCustomer
         $this->address = $address;
     }
 
-    /**
-     * @return string
-     */
-    public function getCustomerGroup()
-    {
-        return $this->customerGroup;
-    }
 
-    /**
-     * @param string $customerGroup
-     */
-    public function setCustomerGroup($customerGroup)
-    {
-        $this->customerGroup = $customerGroup;
-    }
-
-    /**
-     * @return string
-     */
-    public function getAgentId()
-    {
-        return $this->agentId;
-    }
-
-    /**
-     * @param string $agentId
-     */
-    public function setAgentId($agentId)
-    {
-        $this->agentId = $agentId;
-    }
-
-    /**
-     * @return string
-     */
-    public function getSubAgentId()
-    {
-        return $this->subAgentId;
-    }
-
-    /**
-     * @param string $subAgentId
-     */
-    public function setSubAgentId($subAgentId)
-    {
-        $this->subAgentId = $subAgentId;
-    }
-
-    /**
-     * @return string
-     */
-    public function getLocation()
-    {
-        return $this->location;
-    }
-
-    /**
-     * @param string $location
-     */
-    public function setLocation($location)
-    {
-        $this->location = $location;
-    }
 
     /**
      * @return \DateTime
@@ -276,6 +214,54 @@ class CrmCustomer
 
         return $this->getName() .'-'.$this->getMobile();
 
+    }
+
+    /**
+     * @return Setting
+     */
+    public function getCustomerGroup()
+    {
+        return $this->customerGroup;
+    }
+
+    /**
+     * @param Setting $customerGroup
+     */
+    public function setCustomerGroup(Setting $customerGroup)
+    {
+        $this->customerGroup = $customerGroup;
+    }
+
+    /**
+     * @return Agent
+     */
+    public function getAgent()
+    {
+        return $this->agent;
+    }
+
+    /**
+     * @param Agent $agent
+     */
+    public function setAgent($agent)
+    {
+        $this->agent = $agent;
+    }
+
+    /**
+     * @return Location
+     */
+    public function getLocation()
+    {
+        return $this->location;
+    }
+
+    /**
+     * @param Location $location
+     */
+    public function setLocation($location)
+    {
+        $this->location = $location;
     }
 
 

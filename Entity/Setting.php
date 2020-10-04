@@ -44,6 +44,12 @@ class Setting
     private $name;
 
     /**
+     * @Gedmo\Slug(fields={"name"})
+     * @Doctrine\ORM\Mapping\Column(length=255,unique=false, nullable=true)
+     */
+    private $slug;
+
+    /**
      * @var boolean
      *
      * @ORM\Column(type="boolean", nullable=true)
@@ -108,7 +114,21 @@ class Setting
         $this->settingType = $settingType;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getSlug()
+    {
+        return $this->slug;
+    }
 
+    /**
+     * @param mixed $slug
+     */
+    public function setSlug($slug)
+    {
+        $this->slug = $slug;
+    }
 
 
 }

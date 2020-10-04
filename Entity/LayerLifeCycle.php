@@ -11,6 +11,7 @@
 
 namespace Terminalbd\CrmBundle\Entity;
 
+use App\Entity\User;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
@@ -28,6 +29,13 @@ class LayerLifeCycle
      * @ORM\GeneratedValue
      */
     private $id;
+
+    /**
+     * @var User
+     * @ORM\ManyToOne(targetEntity="App\Entity\User" , inversedBy="chicklifecycle")
+     */
+    private $employee;
+
 
     /**
      * @var CrmCustomer
@@ -614,6 +622,21 @@ class LayerLifeCycle
         $this->customer = $customer;
     }
 
+    /**
+     * @return User
+     */
+    public function getEmployee(): User
+    {
+        return $this->employee;
+    }
+
+    /**
+     * @param User $employee
+     */
+    public function setEmployee(User $employee)
+    {
+        $this->employee = $employee;
+    }
 
 
 }

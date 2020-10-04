@@ -11,6 +11,7 @@
 
 namespace Terminalbd\CrmBundle\Controller;
 
+use App\Entity\Core\Agent;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -33,7 +34,7 @@ class LayerPerformanceController extends AbstractController
 {
     /**
      * @Route("/", methods={"GET"}, name="layer_performance")
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN')")
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      */
     public function index(Request $request): Response
     {
@@ -42,7 +43,7 @@ class LayerPerformanceController extends AbstractController
     }
 
     /**
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN')")
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      * @Route("/new", methods={"GET", "POST"}, name="layer_performance_new")
      */
     public function new(Request $request): Response
@@ -50,12 +51,13 @@ class LayerPerformanceController extends AbstractController
         $entity = new LayerPerformance();
        $data = $request->request->all();
 
-        $form = $this->createForm(LayerPerformanceFormType::class , $entity)
-            ->add('SaveAndCreate', SubmitType::class);
+        $agentRepo = $this->getDoctrine()->getRepository(Agent::class);
+        $form = $this->createForm(LayerPerformanceFormType::class, $entity,array('user' => $this->getUser(),'agentRepo' => $agentRepo)) ->add('SaveAndCreate', SubmitType::class);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $em = $this->getDoctrine()->getManager();
+            $entity->setEmployee($this->getUser());
             $em->persist($entity);
             $em->flush();
             $this->addFlash('success', 'post.created_successfully');
@@ -73,7 +75,7 @@ class LayerPerformanceController extends AbstractController
     /**
      * Displays a form to edit an existing LayerPerformance entity.
      * @Route("/{id}/edit", methods={"GET", "POST"}, name="layer_performance_edit")
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN')")
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      */
 
     public function edit(Request $request, LayerPerformance $entity): Response
@@ -99,7 +101,7 @@ class LayerPerformanceController extends AbstractController
     /**
      * Deletes a LayerPerformance entity.
      * @Route("/{id}/delete", methods={"GET"}, name="layer_performance_delete")
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN')")
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      */
     public function delete($id): Response
     {

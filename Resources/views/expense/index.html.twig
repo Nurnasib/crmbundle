@@ -56,7 +56,7 @@
                         <tr>
                             <td>{{ loop.index }}</td>
                             <td>{{ entity.scheduleVisit }}</td>
-                            <td>{{ entity.visitingArea }}</td>
+                            <td>{{ entity.visitingArea.name }}</td>
                             <td>{% if entity.setting is defined and  entity.setting is not empty %}{{ entity.setting.name }}{% endif %}</td>
                             <td>{{ entity.conveyance }}</td>
                             <td>{{ entity.dailyAllowance }}</td>

@@ -38,6 +38,12 @@ class ChickLifeCycle
     private $agent;
 
     /**
+     * @var User
+     * @ORM\ManyToOne(targetEntity="App\Entity\User" , inversedBy="chicklifecycle")
+     */
+    private $employee;
+
+    /**
      * @var string
      * @Orm\Column(name="hatching_date" ,type="string",nullable=true)
      */
@@ -598,12 +604,21 @@ class ChickLifeCycle
         $this->withMortality = $withMortality;
     }
 
+    /**
+     * @return User
+     */
+    public function getEmployee()
+    {
+        return $this->employee;
+    }
 
-
-
-
-
-
+    /**
+     * @param User $employee
+     */
+    public function setEmployee(User $employee)
+    {
+        $this->employee = $employee;
+    }
 
 
 }

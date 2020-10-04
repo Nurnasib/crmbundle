@@ -33,19 +33,30 @@ class CrmVisit
 
     private $cso_id;
 
+
+    /**
+     * @var User
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="crmVisits")
+     * @ORM\JoinColumn(name="employee_id", referencedColumnName="id")
+     * @ORM\JoinColumn(onDelete="CASCADE")
+     */
+    private $employee;
+
+
+     /**
+     * @var Location
+     * @ORM\ManyToOne(targetEntity="App\Entity\Admin\Location", inversedBy="crmVisits")
+     * @ORM\JoinColumn(name="location_id", referencedColumnName="id")
+     * @ORM\JoinColumn(onDelete="CASCADE")
+     */
+    private $location;
+
+
     /**
      * @var string
      * @ORM\Column(name="working_duration", type="string",nullable=true)
      */
-
     private $workingDuration;
-
-    /**
-     * @var string
-     * @ORM\Column(name="area_name", type="string",nullable=true)
-     */
-
-    private $area_name;
 
 
     /**
@@ -63,7 +74,8 @@ class CrmVisit
     private $updated;
 
     /**
-     * @ORM\OneToMany(targetEntity="CrmVisitDetails", mappedBy="crmVisitId")
+     * @var CrmVisitDetails
+     * @ORM\OneToMany(targetEntity="CrmVisitDetails", mappedBy="crmVisit")
      */
     private $crmVisitDetails;
 
@@ -132,7 +144,7 @@ class CrmVisit
     }
 
     /**
-     * @return mixed
+     * @return CrmVisitDetails
      */
     public function getCrmVisitDetails()
     {
@@ -171,7 +183,37 @@ class CrmVisit
         $this->area_name = $area_name;
     }
 
+    /**
+     * @return User
+     */
+    public function getEmployee()
+    {
+        return $this->employee;
+    }
 
+    /**
+     * @param User $employee
+     */
+    public function setEmployee(User $employee)
+    {
+        $this->employee = $employee;
+    }
+
+    /**
+     * @return Location
+     */
+    public function getLocation()
+    {
+        return $this->location;
+    }
+
+    /**
+     * @param Location $location
+     */
+    public function setLocation(Location $location)
+    {
+        $this->location = $location;
+    }
 
 
 }

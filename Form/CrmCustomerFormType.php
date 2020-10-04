@@ -11,7 +11,11 @@
 
 namespace Terminalbd\CrmBundle\Form;
 
+use App\Entity\Admin\Location;
 use App\Entity\Admin\Terminal;
+use App\Entity\Core\Agent;
+use App\Entity\User;
+use App\Repository\Core\AgentRepository;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -23,6 +27,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Terminalbd\CrmBundle\Entity\CrmCustomer;
+use Terminalbd\CrmBundle\Entity\Setting;
 use Terminalbd\CrmBundle\Repository\CrmCustomerRepository;
 
 class CrmCustomerFormType extends AbstractType{
@@ -32,6 +37,7 @@ class CrmCustomerFormType extends AbstractType{
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        $user =  $options['user']->getId();
         $builder
             ->add('name', TextType::class, [
                 'attr' => ['autofocus' => true],
@@ -46,17 +52,45 @@ class CrmCustomerFormType extends AbstractType{
                 'attr' => ['autofocus' => true],
                 'required' => false,
                 'row_attr' => ['class' => 'textarea', 'rows'=>2],
-            ])->add('agentId',TextType::class,[
+            ])
+
+            ->add('agent',TextType::class,[
                 'attr' => ['autofocus' => true],
                 'required' => false,
             ])
-            ->add('subagentId',TextType::class,[
-                'attr' => ['autofocus' => true],
-                'required' => false,
-            ])->add('location',TextType::class,[
-                'attr' => ['autofocus' => true],
-                'required' => false,
+            ->add('agent', EntityType::class, [
+                'class' => Agent::class,
+                'attr'=>['class'=>'span12'],
+                'required'    => false,
+                'choice_label' => 'name',
+                'placeholder' => 'Choose a agent',
+                'choices'   => $options['agentRepo']->getLocationWiseAgentForm($options['user'])
             ])
+            ->add('customerGroup', EntityType::class, array(
+                'required'    => false,
+                'class' => Setting::class,
+                'placeholder' => 'Choose a customer name',
+                'choice_label' => 'name',
+                'attr'=>array('class'=>'span12 m-wrap'),
+                'query_builder' => function(EntityRepository $er)use($user){
+                    return $er->createQueryBuilder('e')
+                        ->where("e.settingType ='CUSTOMER_GROUP'")
+                        ->orderBy('e.name', 'ASC');
+                },
+            ))
+            ->add('location', EntityType::class, array(
+                'required'    => false,
+                'class' => Location::class,
+                'placeholder' => 'Choose a  upozila name',
+                'choice_label' => 'name',
+                'attr'=>array('class'=>'span12 m-wrap'),
+                'query_builder' => function(EntityRepository $er)use($user){
+                    return $er->createQueryBuilder('e')
+                        ->join("e.user","u")
+                        ->andWhere("u.id ='{$user}'")
+                        ->orderBy('e.name', 'ASC');
+                },
+            ))
 
         ;
     }
@@ -68,7 +102,8 @@ class CrmCustomerFormType extends AbstractType{
     {
         $resolver->setDefaults([
             'data_class' => CrmCustomer::class,
-            'terminal' => Terminal::class,
+            'user' => User::class,
+            'agentRepo' => AgentRepository::class,
             //'markRepo' => MarkChartRepository::class,
         ]);
     }

@@ -9,7 +9,12 @@
  */
 
 namespace Terminalbd\CrmBundle\Repository;
+use App\Entity\Core\Agent;
 use Doctrine\ORM\EntityRepository;
+use Terminalbd\CrmBundle\Entity\CrmCustomer;
+use Terminalbd\CrmBundle\Entity\CrmVisit;
+use Terminalbd\CrmBundle\Entity\CrmVisitDetails;
+use Terminalbd\CrmBundle\Entity\Setting;
 
 /**
  * This custom Doctrine repository contains some methods which are useful when
@@ -22,5 +27,162 @@ use Doctrine\ORM\EntityRepository;
 class CrmVisitDetailsRepository extends EntityRepository
 {
 
+    public function insertDailyActivity(CrmVisit $crmVisit , $data)
+    {
+        $em = $this->_em;
+        foreach ($data['farmer'] as $key => $value):
+            if(!empty($value) and !empty($data['purpose'][$key])) {
+                $purpose = $em->getRepository(Setting::class)->find($data['purpose'][$key]);
+                $visit = $this->findOneBy(
+                    array('crmVisit' => $crmVisit, 'crmCustomer' => $value, 'purpose' => $purpose)
+                );
+                if (empty($visit)) {
+                    $entity = new CrmVisitDetails();
+                    $entity->setProcess('farmer');
+                    $customer = $em->getRepository(CrmCustomer::class)->find($value);
+                    $entity->setCrmCustomer($customer);
+                    $entity->setCrmVisit($crmVisit);
+                    $entity->setPurpose($purpose);
+                    $entity->setFarmCapacity($data['capacity'][$key]);
+                    $entity->setComments($data['comments'][$key]);
+                    $em->persist($entity);
+                    $em->flush();
+                } else {
+                    $visit->setFarmCapacity($data['capacity'][$key]);
+                    $visit->setComments($data['comments'][$key]);
+                    $em->persist($visit);
+                    $em->flush();
+                }
+            }
+       endforeach;
+
+        foreach ($data['agent'] as $key => $value):
+
+            if(!empty($value) and !empty($data['agentPurpose'][$key])) {
+                $purpose = $em->getRepository(Setting::class)->find($data['agentPurpose'][$key]);
+                $visit = $this->findOneBy(
+                    array('crmVisit' => $crmVisit, 'agent' => $value, 'purpose' => $purpose)
+                );
+                if (empty($visit)) {
+                    $entity = new CrmVisitDetails();
+                    $entity->setCrmVisit($crmVisit);
+                    $entity->setProcess('agent');
+                    $agent = $em->getRepository(Agent::class)->find($data['agent'][$key]);
+                    $entity->setAgent($agent);
+                    $entity->setPurpose($purpose);
+                    $entity->setComments($data['agentComments'][$key]);
+                    $em->persist($entity);
+                    $em->flush();
+                } else {
+                    $visit->setComments($data['agentComments'][$key]);
+                    $em->persist($visit);
+                    $em->flush();
+                }
+            }
+
+        endforeach;
+
+       foreach ($data['otherAgent'] as $key => $value):
+           if(!empty($value) and !empty($data['otherPurpose'][$key])) {
+                $purpose = $em->getRepository(Setting::class)->find($data['otherPurpose'][$key]);
+                $visit = $this->findOneBy(
+                    array('crmVisit' => $crmVisit, 'crmCustomer' => $value , 'purpose' => $purpose)
+                );
+                if(empty($visit)){
+                    $entity = new CrmVisitDetails();
+                    $entity->setCrmVisit($crmVisit);
+                    $entity->setProcess('other-agent');
+                    $customer = $em->getRepository(CrmCustomer::class)->find($value);
+                    $entity->setCrmCustomer($customer);
+                    $entity->setPurpose($purpose);
+                    $entity->setComments($data['otherComments'][$key]);
+                    $em->persist($entity);
+                    $em->flush();
+                }else{
+                    $visit->setComments($data['otherComments'][$key]);
+                    $em->persist($visit);
+                    $em->flush();
+                }
+            }
+       endforeach;
+
+        foreach ($data['subAgent'] as $key => $value):
+
+            if(!empty($value) and !empty($data['subPurpose'][$key])) {
+                $purpose = $em->getRepository(Setting::class)->find($data['subPurpose'][$key]);
+                $visit = $this->findOneBy(
+                    array('crmVisit' => $crmVisit, 'crmCustomer' => $value, 'purpose' => $purpose)
+                );
+                if (empty($visit)) {
+                    $entity = new CrmVisitDetails();
+                    $entity->setCrmVisit($crmVisit);
+                    $entity->setProcess('sub-agent');
+                    $customer = $em->getRepository(CrmCustomer::class)->find($value);
+                    $entity->setCrmCustomer($customer);
+                    $entity->setPurpose($purpose);
+                    $entity->setComments($data['subComments'][$key]);
+                    $em->persist($entity);
+                    $em->flush();
+                } else {
+                    $visit->setComments($data['subComments'][$key]);
+                    $em->persist($visit);
+                    $em->flush();
+                }
+            }
+
+        endforeach;
+    }
+
+    public function insertFarmer(CrmCustomer $customer , $id , $data)
+    {
+        $em = $this->_em;
+        $visit = $em->getRepository(CrmVisit::class)->find($id);
+        $entity = new CrmVisitDetails();
+        $entity->setCrmCustomer($customer);
+        $entity->setCrmVisit($visit);
+        $entity->setFarmCapacity($data['capacity']);
+        $entity->setComments($data['comments']);
+        $entity->setProcess('farmer');
+        if($data['purpose']){
+            $purpose = $em->getRepository(Setting::class)->find($data['purpose']);
+            $entity->setPurpose($purpose);
+        }
+        $em->persist($entity);
+        $em->flush();
+    }
+
+    public function insertOtherAgent(CrmCustomer $customer , $id , $data)
+    {
+        $em = $this->_em;
+        $visit = $em->getRepository(CrmVisit::class)->find($id);
+        $entity = new CrmVisitDetails();
+        $entity->setCrmCustomer($customer);
+        $entity->setCrmVisit($visit);
+        if($data['purpose']){
+            $purpose = $em->getRepository(Setting::class)->find($data['purpose']);
+            $entity->setPurpose($purpose);
+        }
+        $entity->setComments($data['comments']);
+        $entity->setProcess('other-agent');
+        $em->persist($entity);
+        $em->flush();
+    }
+
+    public function insertSubAgent(CrmCustomer $customer , $id , $data)
+    {
+        $em = $this->_em;
+        $visit = $em->getRepository(CrmVisit::class)->find($id);
+        $entity = new CrmVisitDetails();
+        $entity->setCrmCustomer($customer);
+        $entity->setCrmVisit($visit);
+        $entity->setProcess('sub-agent');
+        if($data['purpose']){
+            $purpose = $em->getRepository(Setting::class)->find($data['purpose']);
+            $entity->setPurpose($purpose);
+        }
+        $entity->setComments($data['comments']);
+        $em->persist($entity);
+        $em->flush();
+    }
 
 }

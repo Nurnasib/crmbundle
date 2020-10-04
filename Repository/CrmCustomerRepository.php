@@ -10,6 +10,7 @@
  */
 
 namespace Terminalbd\CrmBundle\Repository;
+use App\Entity\User;
 use Doctrine\ORM\EntityRepository;
 
 /**
@@ -23,5 +24,21 @@ use Doctrine\ORM\EntityRepository;
 class CrmCustomerRepository extends EntityRepository
 {
 
+    public function getLocationWise(User $user,$pram)
+    {
 
+        $arrs = array();
+        foreach ($user->getUpozila() as $location){
+            $arrs[] = $location->getId();
+        }
+        $qb = $this->createQueryBuilder('e');
+        $qb->join('e.location','location');
+        $qb->join('e.customerGroup','s');
+        $qb->select('e.id as id','e.name as name');
+        $qb->where('s.slug = :slug')->setParameter('slug',$pram);
+        $qb->andWhere('location.id IN (:upozils)')->setParameter('upozils',$arrs);
+        $result = $qb->getQuery()->getArrayResult();
+        return $result;
+
+    }
 }

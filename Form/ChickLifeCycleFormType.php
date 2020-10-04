@@ -46,6 +46,8 @@ class ChickLifeCycleFormType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+
+        $user =  $options['user']->getId();
         $builder
 
             ->add('reportingDate', TextType::class, [
@@ -99,10 +101,12 @@ class ChickLifeCycleFormType extends AbstractType
               ->add('totalbirds', TextType::class, [
                 'attr' => ['autofocus' => true ,'autocomplete' => 'off','class' => 'totalBirds'],
                 'label' => 'label.totalbirds',
+                'required' => false,
             ])
             ->add('age_days', TextType::class, [
                 'attr' => ['autofocus' => true,'autocomplete' => 'off'],
                 'label' => 'label.age_days',
+                'required' => false,
             ])
             ->add('mortality_pes', TextType::class, [
                 'attr' => ['autofocus' => true,'class' => 'mortality_pes'],
@@ -118,10 +122,12 @@ class ChickLifeCycleFormType extends AbstractType
             ->add('weightStandard', TextType::class, [
                 'attr' => ['autofocus' => true],
                 'label' => 'label.weightStandard',
+                'required' => false,
             ])
             ->add('weightAchieved', TextType::class, [
                 'attr' => ['autofocus' => true ,'class'=>'weightAchieved'],
                 'label' => 'label.weightAchieved',
+                'required' => false,
             ])
             ->add('feedTotalkg', TextType::class, [
                 'attr' => ['autofocus' => true ,'class'=>'feedTotalkg'],
@@ -145,6 +151,7 @@ class ChickLifeCycleFormType extends AbstractType
             ->add('feedStandard', TextType::class, [
                 'attr' => ['autofocus' => true],
                 'label' => 'label.feedStandard',
+                'required' => false,
             ])
             ->add('hatchery', TextType::class, [
                 'attr' => ['autofocus' => true,'autocomplete' => 'off'],
@@ -182,22 +189,23 @@ class ChickLifeCycleFormType extends AbstractType
                 'required' => true,
                 'query_builder' => function (EntityRepository $er) {
                     return $er->createQueryBuilder('e')
-                        ->where('e.customerGroup = :sCustomGroup')
-                        ->setParameter('sCustomGroup','Farmer')
-                        ->orderBy('e.mobile','ASC');
+                        ->join('e.customerGroup','setting')
+                        ->where('setting.slug = :farmer')
+                        ->setParameter('farmer','farmer')
+                        ->orderBy('e.name','ASC');
                 },
                 'attr'=>['class'=>'span12 select2'],
-                'choice_label' => 'mobile',
-                'placeholder' => 'Mobile',
+                'choice_label' => 'name',
+                'placeholder' => 'Enter Farmer Name',
             ])
             ->add('agent', EntityType::class, [
                 'class' => Agent::class,
-                'required' => true,
-                'attr'=>['class'=>'span12 select2'],
+                'attr'=>['class'=>'span12'],
+                'required'    => false,
                 'choice_label' => 'name',
-                'placeholder' => 'Select Agent',
+                'placeholder' => 'Choose a agent',
+                'choices'   => $options['agentRepo']->getLocationWiseAgentForm($options['user'])
             ])
-
 
         ;
     }
@@ -209,6 +217,8 @@ class ChickLifeCycleFormType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => ChickLifeCycle::class,
+            'user' => User::class,
+            'agentRepo' => AgentRepository::class,
         ]);
     }
 }

@@ -40,7 +40,7 @@
                         <div class="row form-body">
                             <div class="form-inner-no-space">
                                 <div class="row">
-                                    <div class="col-md-5">
+                                    <div class="col-md-4">
                                         <div class="form-group">
                                             {{ form_label(form.fcr_of_feed, 'FCR of Nourish Feed'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
                                             <div class="col-md-8">
@@ -71,7 +71,7 @@
                                 </div>
                                   <div class="card-body card-body-inner">
                                       <div class="row">
-                                          <div class="col-md-6">
+                                          <div class="col-md-4">
                                               <div class="form-group">
                                                   {{ form_label(form.reporting_month, 'Reporting Month'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
                                                   <div class="col-md-8">
@@ -82,7 +82,7 @@
                                               </div>
                                           </div>
 
-                                          <div class="col-md-6">
+                                          <div class="col-md-4">
                                               <div class="form-group">
                                                   {{ form_label(form.hatching_date, 'Hatching Date'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
                                                   <div class="col-md-8">
@@ -136,15 +136,8 @@
                                                  </div>
                                              </div>
                                          </div>
-
-
                                      </div>
-
                                  </div>
-
-
-
-
                                 <div class="clearfix"></div>
                                 <div class="card-header grey-bg inner-header">
                                     <h5>Feed Consumption</h5>
@@ -153,7 +146,7 @@
                                 </div>
                                   <div class="card-body card-body-inner">
                                       <div class="row">
-                                          <div class="col-md-6">
+                                          <div class="col-md-4">
                                               <div class="form-group">
                                                   {{ form_label(form.weight, 'Weight (gm)'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
                                                   <div class="col-md-8">
@@ -163,7 +156,7 @@
                                                   </div>
                                               </div>
                                           </div>
-                                          <div class="col-md-6">
+                                          <div class="col-md-4">
                                               <div class="form-group">
                                                   {{ form_label(form.total_feed_consumption, 'Total Feed Consumption'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
                                                   <div class="col-md-8">
@@ -217,14 +210,16 @@
                                     </div>
 
                                     <div class="row">
+                                         <div class="col-md-12">
                                         <div class="form-group">
-                                            {{ form_label(form.remarks, 'Remarks'|trans, {'label_attr': {'class': 'col-md-6'}}) }}
-                                            <div class="col-md-12">
+                                            {{ form_label(form.remarks, 'Remarks'|trans, {'label_attr': {'class': 'col-md-1'}}) }}
+                                            <div class="col-md-11">
                                                 {#<span class="not-blank"> {{ 'Required'|trans }}</span>#}
                                                 {{ form_widget(form.remarks) }}
                                                 {{ form_errors(form.remarks) }}
                                             </div>
                                         </div>
+                                         </div>
                                     </div>
                                 </div>
 

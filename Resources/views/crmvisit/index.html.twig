@@ -35,7 +35,8 @@
                         <thead class="thead-dark">
                         <tr>
                             <th scope="col">S/N</th>
-                            <th scope="col">Cso ID</th>
+                            <th scope="col">Employee Name</th>
+                            <th scope="col">Designation</th>
                             <th scope="col">Area Name</th>
                             <th scope="col">Working Duration</th>
                             <th scope="col text-center"><i class="feather icon-KPI Setup"></i></th>
@@ -45,8 +46,9 @@
                         {% for entity in entities %}
                             <tr>
                                 <td>{{ loop.index }}</td>
-                                <td>{{ entity.csoId }}</td>
-                                <td>{{ entity.AreaName }}</td>
+                                <td>{{ entity.employee.name }}</td>
+                                <td>{% if entity.employee.designation is not empty %}{{ entity.employee.designation.name }}{% endif %}</td>
+                                <td>{% if entity.location is not empty %}{{ entity.location.name }}{% endif %}</td>
                                 <td>{{ entity.WorkingDuration }}</td>
 
                                 <td>

@@ -49,11 +49,11 @@ class LayerLifeCycleFormType extends AbstractType
                 'label' => 'label.total_birds',
             ])
             ->add('hatchery_date', TextType::class, [
-                'attr' => ['autofocus' => true,'class'=>'date-picker col-md-11','autocomplete' => 'off'],
+                'attr' => ['autofocus' => true,'class'=>'dateCalendar col-md-9','autocomplete' => 'off'],
                 'label' => 'label.hatchery_date',
             ])
             ->add('visiting_date', TextType::class, [
-                'attr' => ['autofocus' => true,'class'=>'date-picker col-md-11','autocomplete' => 'off'],
+                'attr' => ['autofocus' => true,'class'=>'dateCalendar col-md-9','autocomplete' => 'off'],
                 'label' => 'label.visiting_date',
             ])
             ->add('age_week', TextType::class, [
@@ -149,13 +149,14 @@ class LayerLifeCycleFormType extends AbstractType
                 'required' => true,
                 'query_builder' => function (EntityRepository $er) {
                     return $er->createQueryBuilder('e')
-                        ->where('e.customerGroup = :sCustomGroup')
-                        ->setParameter('sCustomGroup','Farmer')
-                        ->orderBy('e.mobile','ASC');
+                        ->join('e.customerGroup','setting')
+                        ->where('setting.slug = :farmer')
+                        ->setParameter('farmer','farmer')
+                        ->orderBy('e.name','ASC');
                 },
-                'attr'=>['class'=>'span12 select2'],
-                'choice_label' => 'NameAndPhone',
-                'placeholder' => 'Name ',
+                'attr'=>['class'=>'span12'],
+                'choice_label' => 'name',
+                'placeholder' => 'Enter Farmer Name',
             ])
 
         ;
