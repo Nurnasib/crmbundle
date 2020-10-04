@@ -1,0 +1,383 @@
+{% extends 'admin/layout.html.twig' %}
+{#{% block body_id 'kpi_domain_new' %}#}
+{% block body %}
+    <div class="pcoded-inner-content">
+        <!-- [ breadcrumb ] start -->
+        <div class="page-header">
+            <div class="page-block">
+                <div class="row align-items-center">
+                    <ul class="breadcrumb">
+                        {#<li class="breadcrumb-item"><a href="/"><i class="feather icon-home"></i></a></li>#}
+                        {#<li class="breadcrumb-item"> <a href="{{ path('kpi_markchart') }}">  {{ 'Settings'|trans }}</a></li>#}
+                        {#<li class="breadcrumb-item"> <a href="javascript:">{{ 'Add New'|trans }}</a></li>#}
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!-- [ breadcrumb ] end -->
+        <!-- [ Main Content ] start -->
+        <div class="row">
+            <div class="card">
+                <div class="card-header">
+                    <h5>{{ 'CRM Element'|trans }}</h5>
+                    <div class="card-header-right">
+                        <div class="btn-group btn-group-sm" role="group" aria-label="Button group with nested dropdown">
+                            {#<a href="{{ path('kpi_markchart_new') }}" class="btn btn-sm  green-bg white-font"><i class="fas fa-plus"></i>{{ 'Add New'|trans }}</a>#}
+                            {#<a href="{{ path('kpi_markchart') }}" class="btn btn-sm gray-bg white-font"><i class="fa fa-th-list"></i>{{ 'KPI Mark Chart'|trans }}</a>#}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="card">
+                <div class="portlet box green ">
+                    <div class="portlet-title">
+                        <div class="caption">{{ 'Manage CRM '|trans }} </div>
+                    </div>
+                    <div class="portlet-body form">
+                        {{ form_start(form, {'attr': {'class': 'form-horizontal right'}}) }}
+                        <div class="row form-body">
+                            <div class="form-inner-no-space">
+                                <div class="row">
+                                    <div class="col-md-6 offset-1">
+                                        <div class="form-group">
+                                            {{ form_label(form.cso_id,'CSO ID'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
+                                            <div class="col-md-8">
+                                                <span class="not-blank"> {{ 'Required'|trans }}</span>
+                                                {{ form_widget(form.cso_id) }}
+                                                {{ form_errors(form.cso_id) }}
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            {{ form_label(form.area_name,'Area Name'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
+                                            <div class="col-md-8">
+                                                <span class="not-blank"> {{ 'Required'|trans }}</span>
+                                                {{ form_widget(form.area_name) }}
+                                                {{ form_errors(form.area_name) }}
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            {{ form_label(form.working_duration,'Working Duration'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
+                                            <div class="col-md-8">
+                                                <span class="not-blank"> {{ 'Required'|trans }}</span>
+                                                {{ form_widget(form.working_duration) }}
+                                                {{ form_errors(form.working_duration) }}
+                                            </div>
+                                        </div>
+                                        <hr>
+                                    </div>
+                                </div>
+                                <div class="clearfix"></div>
+                                <div class="card-header grey-bg inner-header">
+                                    <h5>Farmer  Information</h5>
+                                    <div class="card-header-right">
+                                        <div class="btn-group btn-group-sm" role="group" aria-label="Button group with nested dropdown">
+
+                                            <button type="button" class="btn btn-primary " data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo">New Customer</button>
+                                            <button type="button" id="addrow" class="btn btn-sm  green-bg white-font addmore ml-2"><i class="fas fa-plus"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                                {#addmore#}
+                                <div class="card-body card-body-inner">
+                                    <div class="col-md-12 clone-block" id="clone-block">
+                                        <div class="clone">
+                                            <div class="row">
+                                                <div class="col-md-2">
+
+                                                    <select name="purpose" id="" class="form-control">
+                                                        <option value="">Select Purpose</option>
+                                                        {% for purpose in purposes %}
+                                                            <option value="{{purpose.id}}"> {{purpose.name}} </option>
+                                                        {% endfor %}
+                                                    </select>
+
+
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <select name="farmer" id="farmer" class="form-control farmer">
+                                                        <option value="">Select Purpose</option>
+                                                        {% for farmer in farmers %}
+                                                            <option value="{{farmer.id}}"> {{farmer.name}} </option>
+                                                        {% endfor %}
+                                                    </select>
+
+                                                    {#<input type="text" name="name[]" id="name" class="form-control form-control-sm" placeholder="Farmer Name" value="">#}
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <input type="text" name="address[]" id="metaKey" class="form-control form-control-sm" placeholder="Address " value="">
+                                                    <input type="hidden" name="metaId[]" id="metaId" value="">
+                                                </div>
+
+                                                <div class="col-md-2">
+                                                    <input type="text" name="phone[]" id="phone" class="form-control form-control-sm" placeholder="Phone" value="">
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <input type="text" name="farmCapacity[]" id="farmCapacity" class="form-control form-control-sm" placeholder="Farm Capacity" value="">
+                                                </div>
+
+
+                                                <div class="col-md-2">
+                                                    <div class="input-group">
+                                                        <input type="text" name="metaValue[]" id="metaValue" class="form-control form-control-sm" placeholder="Enter your comments">
+                                                        <div class="input-group-append">
+                                                            <div class="btn btn-sm btn-transparent red-font row-remove hidden">
+                                                                <i class="fa fa-remove"></i>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                </div>
+                                {#end#}
+
+                                <div class="clearfix"></div>
+                                <div class="card-header grey-bg inner-header">
+                                    <h5>Agent </h5>
+                                    <div class="card-header-right">
+                                        <div class="btn-group btn-group-sm" role="group" aria-label="Button group with nested dropdown">
+                                            <button type="button" id="addrow" class="btn btn-sm  green-bg white-font addmoree"><i class="fas fa-plus"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                                {#agent-addmore#}
+                                <div class="card-body card-body-inner">
+                                    <div class="col-md-12 clone-block" id="clone-block">
+                                        <div class="clone">
+                                            <div class="row">
+                                                <div class="col-md-2">
+                                                    <input type="text" name="farmCapacity[]" id="farmCapacity" class="form-control form-control-sm" placeholder="Farm Capacity " value=""  >
+                                                    <input type="hidden" name="farmCapacityId[]" id="nameId" value="">
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <input type="text" name="address[]" id="address" class="form-control form-control-sm" placeholder="Address" value="">
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <input type="text" name="metaKey[]" id="metaKey" class="form-control form-control-sm" placeholder="Phone " value="">
+                                                    <input type="hidden" name="metaId[]" id="metaId" value="">
+                                                </div>
+
+                                                <div class="col-md-2">
+                                                    <input type="text" name="metaKey[]" id="metaKey" class="form-control form-control-sm" placeholder="Customer ID" value="">
+                                                    <input type="hidden" name="metaId[]" id="metaId" value="">
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="input-group">
+                                                        <input type="text" name="metaValue[]" id="metaValue" class="form-control form-control-sm" placeholder="Enter your comments">
+                                                        <div class="input-group-append">
+                                                            <div class="btn btn-sm btn-transparent red-font row-remove hidden">
+                                                                <i class="fa fa-remove"></i>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                </div>
+
+
+
+                                {#end#}
+                                <div class="form-actions">
+                                    <div class="col-md-6 "></div>
+                                    <div class="col-md-6 text-right">
+                                        <div class="btn-group" role="group" aria-label="Button group with nested dropdown"><button type="reset" class="btn btn-sm yellow-bg white-font"><i class="fa fa-refresh"></i>Restore</button>
+                                            {{ form_widget(form.SaveAndCreate, {label: 'label.save.continue',value:'label.save.continue', attr: { class: 'btn btn-info form-submit'}}) }}
+                                        </div>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                </div>
+                            </div>
+                        </div>
+                        {{ form_widget(form._token) }}
+                        {{ form_end(form) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        {#Modal#}
+        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content" style="padding: 20px" >
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">New Farmer</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <form action="{{ path('new_customer_ajax') }}" name="myform" class="form-horizontal right crm-customer-create-form" id="crm-customer-create-form" onsubmit="return validateform()"   method="post">
+
+                    <div class="modal-body">
+
+
+                        <div class="form-group">
+                            <label for="recipient-name" class="col-form-label col-md-4 ">Name:</label>
+                            <input type="text" name="name" class="form-control col-md-8 mr-4 name" id="name" autocomplete="off" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="recipient-name" class="col-form-label col-md-4">Mobile:</label>
+                            <input type="text" name="mobile" class="form-control col-md-8 mobile" id="mobile">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="recipient-name" class="col-form-label col-md-4">Custom Group:</label>
+
+                            <select name="custom_group" id="" class="form-control">
+                            <option value="">Select Customer</option>
+                                {% for group in customerGroups %}
+                                <option value="{{group.name}}"> {{group.name}} </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+
+                        <div class="form-group">
+                            <label for="recipient-name" class="col-form-label col-md-4">Agent ID:</label>
+                            <select name="agentId" id="" class="form-control">
+                                <option value="">Select Agent</option>
+                                {% for agent in agents %}
+                                <option value="{{ agent.agentId }}">{{ agent.name }}</option>
+                                {% endfor %}
+                            </select>
+                            {#<input type="text" name="agentId" class="form-control col-md-8" id="agentId" autocomplete="off">#}
+                        </div>
+
+                        <div class="form-group">
+                            <label for="recipient-name" class="col-form-label col-md-4">SubAgent ID:</label>
+                            <input type="text" name="subagentId" class="form-control col-md-8" id="subagentId">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="message-text" class="col-form-label col-md-4">Address:</label>
+                            <textarea class="form-control col-md-8" name="address" id="message-text"></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="message-text" class="col-form-label col-md-4">Location:</label>
+                            <textarea class="form-control col-md-8" name="location" id="message-text"></textarea>
+                        </div>
+
+
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary btn-sm crm-customer-btn" id="crm-customer-btn">Save</button>
+                    </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        {#EndModal#}
+
+
+        <!-- [ Main Content ] end -->
+    </div>
+
+    <style>
+
+    </style>
+{% endblock %}
+ {% block cssBlock %}
+     <link rel="stylesheet" href="{{ asset('assets/module/css/app.css') }}">
+ {% endblock  %}
+{% block javascripts %}
+{#<script>#}
+    {{ parent() }}
+    <script type="application/javascript" src="{{ asset('assets/module/js/app.js') }}"></script>
+
+{% endblock  %}
+
+{% block javascriptBlock %}
+
+    $(document).on('change', '.farmer', function(e) {
+
+        var id = $(this).val();
+        $.get("demo_test.asp,{'id':id}", function(data, status){
+            alert("Data: " + data + "\nStatus: " + status);
+        });
+
+    });
+
+
+    $(document).on('click', '.crm-customer-btn', function(e) {
+    e.preventDefault();
+
+    {#var mobile = document.getElementById("mobile").value;#}
+    {#var pattern = /^[\s()+-]*([0-9][\s()+-]*){6,20}$/;#}
+
+    var name =$(this).closest("form").find(".name").val();
+    var mobile = $(this).closest("form").find(".mobile").val();
+
+    if (name =="") {
+    alert("Name must be filled out");
+    return false;
+    }
+    else if(mobile=="" || mobile==null){
+    alert("Your mobile number is Invalid :" +mobile);
+    return false;
+    }
+
+
+
+    var form= $(".crm-customer-create-form");
+    $.ajax({
+    type: form.attr('method'),
+    url: form.attr('action'),
+    data: form.serializeArray(),
+    dataType: "json",
+    success: function (data) {
+
+
+    console.log(data);
+    }
+    });
+    });
+
+    {#javascript Modal form validation#}
+
+    {#function validateForm(element) {#}
+
+    {#var name =element.closest("form").find(".name").val();#}
+    {#if (name =="" || name ==null) {#}
+    {#alert("Name must be filled out");#}
+    {#return false;#}
+    {#}#}
+    {#else if(mobile =="" || mobile==null){#}
+    {#alert(" Please input your number.");#}
+    {#return false;#}
+    {#}#}
+
+    {#}#}
+
+
+
+    {#function validateform() {#}
+        {#alert('ok1')#}
+    {#var name=document.myform.name.value;#}
+    {#if (name =="") {#}
+    {#alert("Name must be filled out");#}
+    {#return false;#}
+    {#}#}
+    {#else if(mobile.length<12){#}
+    {#alert(" Mobile Number must be 11 Digits.");#}
+    {#return false;#}
+    {#}#}
+
+    {#}#}
+
+
+
+{% endblock  %}

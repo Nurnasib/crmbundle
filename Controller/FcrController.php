@@ -37,9 +37,27 @@ class FcrController extends AbstractController
      */
     public function index(Request $request): Response
     {
-        $entitys = $this->getDoctrine()->getRepository(Fcr::class)->findAll();
+        $entitys = $this->getDoctrine()->getRepository(Fcr::class)->findBy(
+            ['fcrOfFeed'=>'BEFORE']
+        );
         return $this->render('@TerminalbdCrm/fcr/index.html.twig',['entities' => $entitys]);
     }
+
+
+    /**
+     * @Route("/after", methods={"GET"}, name="fcr_after")
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN')")
+     */
+    public function index_after(Request $request): Response
+    {
+        $entitys = $this->getDoctrine()->getRepository(Fcr::class)->findBy(
+            ['fcrOfFeed'=>'AFTER']
+        );
+        return $this->render('@TerminalbdCrm/fcr/after_index.html.twig',['entities' => $entitys]);
+    }
+
+
+
 
     /**
      * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN')")

@@ -38,17 +38,17 @@ class SonaliStandardFormType extends AbstractType
     {
         $builder
             ->add('age', TextType::class, [
-                'attr' => ['autofocus' => true],
+                'attr' => ['autofocus' => true,'auto','autocomplete' => 'off'],
                 'label' => 'label.age',
                 'required' => true
             ])
             ->add('feed_intake_per_day', TextType::class, [
-                'attr' => ['autofocus' => true],
+                'attr' => ['autofocus' => true,'autocomplete' => 'off'],
                 'label' => 'label.feed_intake_per_day',
                 'required' => true
             ])
             ->add('target_body_weight', TextType::class, [
-                'attr' => ['autofocus' => true],
+                'attr' => ['autofocus' => true,'autocomplete' => 'off'],
                 'label' => 'label.target_body_weight',
                 'required' => true
             ])

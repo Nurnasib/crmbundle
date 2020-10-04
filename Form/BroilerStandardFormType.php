@@ -39,17 +39,17 @@ class BroilerStandardFormType extends AbstractType
     {
         $builder
             ->add('age', TextType::class, [
-                'attr' => ['autofocus' => true],
+                'attr' => ['autofocus' => true,'autocomplete' => 'off'],
                 'label' => 'label.age',
                 'required' => true
             ])
             ->add('target_body_weight', TextType::class, [
-                'attr' => ['autofocus' => true],
+                'attr' => ['autofocus' => true,'autocomplete' => 'off'],
                 'label' => 'label.target_body_weight',
                 'required' => true
             ])
             ->add('target_feed_consumption', TextType::class, [
-                'attr' => ['autofocus' => true],
+                'attr' => ['autofocus' => true,'autocomplete' => 'off'],
                 'label' => 'label.target_feed_consumption',
                 'required' => true
             ])

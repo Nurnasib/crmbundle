@@ -12,6 +12,7 @@
 namespace Terminalbd\CrmBundle\Form;
 
 
+use App\Entity\Core\Agent;
 use App\Entity\User;
 use App\Form\Type\DateTimePickerType;
 use Doctrine\ORM\EntityRepository;
@@ -43,10 +44,7 @@ class FcrFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('cso', TextType::class, [
-                'attr' => ['autofocus' => true],
-                'label' => 'label.cso',
-            ])
+
             ->add('fcr_of_feed', ChoiceType::class, [
                 'choices'  => [
                     'AFTER' => 'AFTER',
@@ -71,6 +69,7 @@ class FcrFormType extends AbstractType
             ->add('pes', TextType::class, [
                 'attr' => ['autofocus' => true],
                 'label' => 'label.pes',
+                'required' => false,
             ])
             ->add('weight', TextType::class, [
                 'attr' => ['autofocus' => true],
@@ -83,16 +82,27 @@ class FcrFormType extends AbstractType
             ->add('hatchery', TextType::class, [
                 'attr' => ['autofocus' => true],
                 'label' => 'label.hatchery',
+                'required' => false,
             ])->add('breed', TextType::class, [
                 'attr' => ['autofocus' => true],
                 'label' => 'label.breed',
+                'required' => false,
             ])->add('feed', TextType::class, [
                 'attr' => ['autofocus' => true],
                 'label' => 'label.feed',
+                'required' => false,
             ])
             ->add('remarks', TextareaType::class, [
                 'attr' => ['autofocus' => true],
                 'label' => 'label.remarks',
+                'required' => false,
+            ])
+            ->add('agent', EntityType::class, [
+                'class' => Agent::class,
+                'required' => true,
+                'attr'=>['class'=>'span12 select2'],
+                'choice_label' => 'name',
+                'placeholder' => 'Select Agent',
             ])
 
         ;

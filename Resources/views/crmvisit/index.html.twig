@@ -22,7 +22,7 @@
                     <div class="card-header-right">
                         <div class="btn-group btn-group-sm" role="group" aria-label="Button group with nested dropdown">
                             <a href="{{ path('new_visit') }}" class="btn btn-sm  green-bg white-font"><i class="fas fa-plus"></i>{{ 'Add New'|trans }}</a>
-                            {#<a href="{{ path('kpi_setup') }}" class="btn btn-sm gray-bg white-font"><i class="fa fa-th-list"></i>{{ 'KPI Setup'|trans }}</a>#}
+                            <a href="{{ path('crm_visit') }}" class="btn btn-sm gray-bg white-font"><i class="fa fa-th-list"></i>{{ 'CRM VISIT'|trans }}</a>
                         </div>
                     </div>
                 </div>
@@ -49,12 +49,9 @@
                                 <td>{{ entity.AreaName }}</td>
                                 <td>{{ entity.WorkingDuration }}</td>
 
-                                {#<td>{% if sales is defined %}{{ sales[entity.id]['amount'] }}{% endif %}</td>#}
-                                {#<td><a class="btn btn-mini green-bg white-font status" href="javascript:" data-action="{{ path('kpi_setup_status',{'id':entity.id}) }}">{% if entity.status is not empty %}Yes {% else %}No {% endif %}</a></td>#}
                                 <td>
-                                    <a class="btn btn-mini yellow-bg white-font" href="{{ path('kpi_setup_edit',{'id':entity.id}) }}"><i class="feather icon-edit"></i> Edit</a>
-                                    <a class="btn  btn-transparent btn-mini red-font remove" href="javascript:" data-action="{{ path('kpi_setup_delete',{'id':entity.id}) }}"><i class="fa fa-remove"></i></a>
-                                    {#<a class="btn  btn-transparent btn-mini purple-font" href="{{ path('kpi_employee_board_generate',{'setup':entity.id}) }}">KPI Generate</a>#}
+                                    <a class="btn btn-mini yellow-bg white-font" href="{{ path('crm_visit_edit',{'id':entity.id}) }}"><i class="feather icon-edit"></i> Edit</a>
+                                    <a class="btn  btn-transparent btn-mini red-font remove" href="javascript:" data-action="{{ path('crm_visit_delete',{'id':entity.id}) }}"><i class="fa fa-remove"></i></a>
                                 </td>
 
                             </tr>

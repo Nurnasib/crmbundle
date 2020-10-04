@@ -38,17 +38,15 @@ class Expense
 
     /**
      * @var string
-     * @ORM\Column(name="visiting_area")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Admin\Location" , inversedBy="expense")
      */
     private $visitingArea;
 
     /**
      * @var Setting
-     *
      * @ORM\ManyToOne(targetEntity="Setting" , inversedBy="expenses")
      */
     private $setting;
-
 
     /**
      * @var string
@@ -154,21 +152,6 @@ class Expense
         $this->scheduleVisit = $scheduleVisit;
     }
 
-    /**
-     * @return string
-     */
-    public function getVisitingArea()
-    {
-        return $this->visitingArea;
-    }
-
-    /**
-     * @param string $visitingArea
-     */
-    public function setVisitingArea($visitingArea)
-    {
-        $this->visitingArea = $visitingArea;
-    }
 
     /**
      * @return Setting
@@ -360,6 +343,22 @@ class Expense
     public function setOthers($others)
     {
         $this->others = $others;
+    }
+
+    /**
+     * @return string
+     */
+    public function getVisitingArea()
+    {
+        return $this->visitingArea;
+    }
+
+    /**
+     * @param string $visitingArea
+     */
+    public function setVisitingArea($visitingArea)
+    {
+        $this->visitingArea = $visitingArea;
     }
 
 

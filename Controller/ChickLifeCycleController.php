@@ -37,8 +37,23 @@ class ChickLifeCycleController extends AbstractController
      */
     public function index(Request $request): Response
     {
-        $entitys = $this->getDoctrine()->getRepository(ChickLifeCycle::class)->findAll();
+        //  broiler index page
+        $entitys = $this->getDoctrine()->getRepository(ChickLifeCycle::class)->findBy(
+          ['birdMode'=>'BROILER']
+        );
         return $this->render('@TerminalbdCrm/chickLifecycle/index.html.twig',['entities' => $entitys]);
+    }
+
+    /**
+     * @Route("/sonali", methods={"GET"}, name="crm_sonali")
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN')")
+     */
+    public function sonali_index(Request $request): Response
+    {
+        $entitys = $this->getDoctrine()->getRepository(ChickLifeCycle::class)->findBy(
+            ['birdMode'=>'SONALI']
+        );
+        return $this->render('@TerminalbdCrm/chickLifecycle/sonali_index.html.twig',['entities' => $entitys]);
     }
 
     /**

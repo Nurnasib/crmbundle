@@ -12,6 +12,7 @@
 namespace Terminalbd\CrmBundle\Form;
 
 
+use App\Entity\Admin\Location;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -44,52 +45,48 @@ class ExpenseFormType extends AbstractType
                 'label' => 'label.schedule_visit',
                 'required' => true
             ])
-            ->add('visiting_area', TextType::class, [
-                'attr' => ['autofocus' => true,'autocomplete' => 'off'],
-                'label' => 'label.visiting_area',
-                'required' => true
-            ])
+
             ->add('conveyance', TextType::class, [
                 'attr' => ['autofocus' => true],
                 'label' => 'label.conveyance',
-                'required' => true
+                'required' => false
             ])
             ->add('daily_allowance', TextType::class, [
                 'attr' => ['autofocus' => true,'autocomplete' => 'off'],
                 'label' => 'label.daily_allowance',
-                'required' => true
+                'required' => false
             ])->add('hotel_rent', TextType::class, [
                 'attr' => ['autofocus' => true,'autocomplete' => 'off'],
                 'label' => 'label.hotel_rent',
-                'required' => true
+                'required' => false
             ])->add('photostate', TextType::class, [
                 'attr' => ['autofocus' => true],
                 'label' => 'label.photostate',
-                'required' => true
+                'required' => false
             ])->add('courier', TextType::class, [
                 'attr' => ['autofocus' => true],
                 'label' => 'label.courier',
-                'required' => true
+                'required' => false
             ])->add('food', TextType::class, [
                 'attr' => ['autofocus' => true],
                 'label' => 'label.food',
-                'required' => true
+                'required' => false
             ])->add('mobile', TextType::class, [
                 'attr' => ['autofocus' => true],
                 'label' => 'label.mobile',
-                'required' => true
+                'required' => false
             ])->add('maintenace', TextType::class, [
                 'attr' => ['autofocus' => true,'autocomplete' => 'off'],
                 'label' => 'label.maintenace',
-                'required' => true
+                'required' => false
             ])->add('toll_bill', TextType::class, [
                 'attr' => ['autofocus' => true,'autocomplete' => 'off'],
                 'label' => 'label.toll_bill',
-                'required' => true
+                'required' => false
             ])->add('service_charge', TextType::class, [
                 'attr' => ['autofocus' => true,'autocomplete' => 'off'],
                 'label' => 'label.service_charge',
-                'required' => true
+                'required' => false
             ])->add('others', TextType::class, [
                 'attr' => ['autofocus' => true],
                 'label' => 'label.others',
@@ -109,6 +106,15 @@ class ExpenseFormType extends AbstractType
                 'choice_label' => 'name',
                 'placeholder' => 'Choose your Purpose',
             ])
+            ->add('visitingArea', EntityType::class, [
+                'class' => Location::class,
+                'required' => true,
+                'attr'=>['class'=>'span12'],
+                'choice_label' => 'name',
+                'placeholder' => 'Choose your Area',
+            ])
+
+
 
         ;
     }

@@ -5,8 +5,10 @@ namespace Terminalbd\CrmBundle\Entity;
 use App\Entity\Admin\Location;
 use App\Entity\Core\Agent;
 use App\Entity\User;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+
 
 
 /**
@@ -14,6 +16,8 @@ use Gedmo\Mapping\Annotation as Gedmo;
  *
  * @ORM\Table(name="crm_customers")
  * @ORM\Entity(repositoryClass="Terminalbd\CrmBundle\Repository\CrmCustomerRepository")
+ * @UniqueEntity(fields="mobile", message="This phone number already exists")
+ *
  */
 class CrmCustomer
 {
@@ -261,6 +265,18 @@ class CrmCustomer
      */
 
     private $updated;
+
+
+    /**
+     *@return string
+     *
+     */
+
+    public function getNameAndPhone(){
+
+        return $this->getName() .'-'.$this->getMobile();
+
+    }
 
 
 }

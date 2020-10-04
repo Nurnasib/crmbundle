@@ -32,7 +32,7 @@ class BroilerLifeCycleController extends AbstractController
 {
     /**
      * @Route("/", methods={"GET"}, name="crm_broiler")
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN')")
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      */
     public function index(Request $request): Response
     {
@@ -41,7 +41,7 @@ class BroilerLifeCycleController extends AbstractController
     }
 
     /**
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN')")
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      * @Route("/new", methods={"GET", "POST"}, name="crm_broiler_new")
      */
     public function new(Request $request): Response
@@ -74,7 +74,7 @@ class BroilerLifeCycleController extends AbstractController
      * Displays a form to edit an existing Post entity.
      *
      * @Route("/{id}/edit", methods={"GET", "POST"}, name="crm_setting_edit")
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN')")
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      */
 
     public function edit(Request $request, Setting $entity): Response
@@ -101,7 +101,7 @@ class BroilerLifeCycleController extends AbstractController
     /**
      * Deletes a Setting entity.
      * @Route("/{id}/delete", methods={"GET"}, name="crm_setting_delete")
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN')")
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      */
     public function delete($id): Response
     {
