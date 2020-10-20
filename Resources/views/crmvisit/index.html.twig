@@ -77,8 +77,15 @@
     {{ parent() }}
     $('#datatable').DataTable( {
     "pageLength": 25,
+    "order": [
+    [1, "asc"]
+    ],
     'columnDefs': [ {
-    'targets': [0,4],
+    'targets': 0,
+    'orderable': false
+    },
+    {
+    'targets': 5,
     'orderable': false
     }]
     });

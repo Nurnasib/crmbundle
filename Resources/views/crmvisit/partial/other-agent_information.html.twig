@@ -1,0 +1,28 @@
+{% if entity.crmVisitDetails is not empty %}
+    {% for details in entity.crmVisitDetails  %}
+        {% if details.process == "other-agent" %}
+            <tr>
+                <td>
+                    {{ details.purpose is not empty?details.purpose.name:'' }}
+                </td>
+                <td>
+                    {{ details.crmCustomer is not empty?details.crmCustomer.name:'' }}
+                </td>
+                <td>
+                    {% if details.crmCustomer is not empty  %} {{ details.crmCustomer.address }} {% endif %}
+                </td>
+                <td>
+                    {% if details.crmCustomer is not empty  %} {{ details.crmCustomer.mobile }} {% endif %}
+                </td>
+                <td>
+                    {{ details.comments }}
+                </td>
+                <td>
+                    <a data-id="{{ details.id }}" class="btn btn-sm btn-transparent red-font row-remove">
+                        <i class="fa fa-remove"></i>
+                    </a>
+                </td>
+            </tr>
+        {% endif %}
+    {% endfor %}
+{% endif %}

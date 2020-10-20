@@ -34,7 +34,7 @@ class CrmCustomerRepository extends EntityRepository
         $qb = $this->createQueryBuilder('e');
         $qb->join('e.location','location');
         $qb->join('e.customerGroup','s');
-        $qb->select('e.id as id','e.name as name');
+        $qb->select('e.id as id','e.name as name','e.address as address','e.mobile as mobile');
         $qb->where('s.slug = :slug')->setParameter('slug',$pram);
         $qb->andWhere('location.id IN (:upozils)')->setParameter('upozils',$arrs);
         $result = $qb->getQuery()->getArrayResult();

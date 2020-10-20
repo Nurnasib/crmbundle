@@ -37,6 +37,7 @@
                     </div>
                     <div class="portlet-body form">
                         {{ form_start(form, {'attr': {'class': 'form-horizontal right'}}) }}
+                        <input type="hidden" class="crm_visit_id" value="{{ entity.id }}">
                         <div class="row form-body">
                             <div class="form-inner-no-space">
                                 <div class="row">
@@ -48,7 +49,7 @@
 
                                         <div class="form-group">
                                             <label class="col-md-4 control-label">Designation</label>
-                                            <div class="col-md-8">{{ entity.employee.designation.name }}</div>
+                                            <div class="col-md-8">{{ entity.employee.designation.name|default('') }}</div>
                                         </div>
 
                                         <div class="form-group">
@@ -78,98 +79,54 @@
                                         <div class="btn-group btn-group-sm">
 
                                             <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#farmerModal" data-whatever="@mdo">New Farmer</button>
-                                            <button type="button" id="addrow" class="btn btn-sm  green-bg white-font addmore ml-2"><i class="fas fa-plus"></i> Add</button>
+
                                         </div>
                                     </div>
                                 </div>
                                 {#addmore#}
                                 <div class="card-body card-body-inner">
-                                    <div class="col-md-12 clone-block" id="clone-block">
-                                        <div class="clone">
-                                            <div class="row">
-                                                <div class="col-md-2">
-
-                                                    <select name="purpose[]" id="" class="form-control">
+                                    <div class="col-md-12 clone-block">
+                                        <table class="table table-bordered">
+                                            <thead>
+                                            <tr class="farmer_section">
+                                                <td>
+                                                    <select name="purpose" id="" class="form-control farmer_purpose">
                                                         <option value="">Select Purpose</option>
                                                         {% for purpose in purposes %}
                                                             <option value="{{purpose.id}}"> {{purpose.name}} </option>
                                                         {% endfor %}
                                                     </select>
-
-
-                                                </div>
-                                                <div class="col-md-2">
-                                                    <select name="farmer[]" id="farmer" class="form-control farmer">
+                                                </td>
+                                                <td>
+                                                    <select name="farmer" id="farmer" class="form-control farmer">
                                                         <option value="">Select Farmers</option>
                                                         {% for farmer in farmers %}
                                                             <option value="{{farmer.id}}"> {{farmer.name}} </option>
                                                         {% endfor %}
                                                     </select>
-                                                </div>
-                                                <div class="col-md-2">
-                                                    <input type="text" disabled="disabled" class="form-control form-control-sm" placeholder="Address" value="">
-                                                </div>
-                                                <div class="col-md-2">
-                                                    <input type="text" disabled="disabled"  class="form-control form-control-sm" placeholder="Phone"  value="">
-                                                </div>
-                                                <div class="col-md-2">
-                                                    <input type="text" name="capacity[]" id="capacity" class="form-control form-control-sm" placeholder="Farm Capacity" value="">
-                                                </div>
-                                                <div class="col-md-2">
-                                                    <div class="input-group">
-                                                        <input type="text" name="comments[]" id="comments" class="form-control form-control-sm" placeholder="Enter your comments">
-                                                        <div class="input-group-append">
-                                                            <div class="btn btn-sm btn-transparent red-font row-remove hidden">
-                                                                <i class="fa fa-remove"></i>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        {% if entity.crmVisitDetails is not empty %}
-                                            {% for details in entity.crmVisitDetails  %}
-                                                {% if details.process == "farmer" %}
-                                                    <div class="row">
-                                                        <div class="col-md-2">
-                                                            <select name="purpose[]" id="" class="form-control">
-                                                                <option value="">Select Purpose</option>
-                                                                {% for purpose in purposes %}
-                                                                    <option {% if details.purpose is not empty and details.purpose.id == purpose.id %} selected="selected" {% endif %} value="{{purpose.id}}"> {{purpose.name}} </option>
-                                                                {% endfor %}
-                                                            </select>
-                                                        </div>
-                                                        <div class="col-md-2">
-                                                            <select name="farmer[]" id="otherAgent" class="form-control farmer">
-                                                                <option value="">Select Farmer</option>
-                                                                {% for farmer in farmers %}
-                                                                    <option {% if details.crmCustomer is not empty and details.crmCustomer.id == farmer.id %} selected="selected" {% endif %} value="{{farmer.id}}"> {{farmer.name}} </option>
-                                                                {% endfor %}
-                                                            </select>
-                                                        </div>
-                                                        <div class="col-md-2">
-                                                            <input type="text" disabled="disabled" class="form-control form-control-sm" placeholder="Address" value="{% if details.crmCustomer is not empty  %} {{ details.crmCustomer.address }} {% endif %}">
-                                                        </div>
-                                                        <div class="col-md-2">
-                                                            <input type="text" disabled="disabled"  class="form-control form-control-sm" placeholder="Phone"  value="{% if details.crmCustomer is not empty  %} {{ details.crmCustomer.mobile }} {% endif %}">
-                                                        </div>
-                                                        <div class="col-md-2">
-                                                            <input type="text" name="capacity[]" id="capacity" class="form-control form-control-sm" placeholder="Farm Capacity" value="{{ details.farmCapacity }}">
-                                                        </div>
-                                                        <div class="col-md-2">
-                                                            <div class="input-group">
-                                                                <input type="text" name="comments[]" id="comments" class="form-control form-control-sm" placeholder="Enter your comments" value="{{ details.comments }}" >
-                                                                <div class="input-group-append">
-                                                                    <a data-action="{{ path('crm_visit_item_delete',{'id':details.id}) }}" class="btn btn-sm btn-transparent red-font row-remove">
-                                                                        <i class="fa fa-remove"></i>
-                                                                    </a>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                {% endif %}
-                                            {% endfor %}
-                                        {% endif %}
+                                                </td>
+                                                <td>
+                                                    <input type="text" disabled="disabled" class="form-control form-control-sm farmer_address" placeholder="Address" value="">
+                                                </td>
+                                                <td>
+                                                    <input type="text" disabled="disabled"  class="form-control form-control-sm farmer_phone" placeholder="Phone"  value="">
+                                                </td>
+                                                <td>
+                                                    <input type="text" name="capacity" id="capacity" class="form-control form-control-sm farmer_capacity" placeholder="Farm Capacity" value="">
+                                                </td>
+                                                <td>
+                                                    <input type="text" name="comments" id="comments" class="form-control form-control-sm farmer_comments" placeholder="Enter your comments">
+                                                </td>
+                                                <td>
+                                                    <button type="button" id="addrow" class="btn btn-sm  green-bg white-font addmore ml-2"><i class="fas fa-plus"></i> Add</button>
+                                                </td>
+                                            </tr>
+                                            </thead>
+                                            <tbody class="crm_detail_farmer_section">
+                                            {% include '@TerminalbdCrm/crmvisit/partial/farmer_information.html.twig' %}
+                                            </tbody>
+                                        </table>
+
                                     </div>
                                     <div class="clearfix"></div>
                                 </div>
@@ -178,94 +135,51 @@
                                 <div class="clearfix"></div>
                                 <div class="card-header grey-bg inner-header">
                                     <h5>Agent Information</h5>
-                                    <div class="card-header-right">
-                                        <div class="btn-group btn-group-sm">
-                                            <button type="button" id="" class="btn btn-sm  green-bg white-font addAgent"><i class="fas fa-plus"></i> Add</button>
-                                        </div>
-                                    </div>
                                 </div>
                                 {#agent-addmore#}
                                 <div class="card-body card-body-inner">
                                     <div class="col-md-12 agent-clone-block" id="agent-clone-block">
-                                        <div class="agentClone">
-                                            <div class="row">
-                                                <div class="col-md-2">
-
-                                                    <select name="agentPurpose[]" id="" class="form-control">
-                                                        <option value="">Select Purpose</option>
-                                                        {% for purpose in purposes %}
-                                                            <option value="{{purpose.id}}"> {{purpose.name}} </option>
-                                                        {% endfor %}
-                                                    </select>
-
-
-                                                </div>
-                                                <div class="col-md-2">
-                                                    <select name="agent[]" id="agent" class="form-control farmer">
-                                                        <option value="">Select Agent</option>
-                                                        {% for agent in agents %}
-                                                            <option value="{{agent.id}}"> {{agent.name}} </option>
-                                                        {% endfor %}
-                                                    </select>
-                                                </div>
-                                                <div class="col-md-2">
-                                                    <input type="text" disabled="disabled" class="form-control form-control-sm" placeholder="Address" value="">
-                                                </div>
-                                                <div class="col-md-2">
-                                                    <input type="text" disabled="disabled"  class="form-control form-control-sm" placeholder="Phone"  value="">
-                                                </div>
-                                                <div class="col-md-4">
-                                                    <div class="input-group">
-                                                        <input type="text" name="agentComments[]" id="comments" class="form-control form-control-sm" placeholder="Enter your comments">
-                                                        <div class="input-group-append">
-                                                            <div class="btn btn-sm btn-transparent red-font row-remove hidden">
-                                                                <i class="fa fa-remove"></i>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                        <div class="agentClone" style="padding-bottom: 5px">
+                                            <table class="table table-bordered">
+                                                <thead>
+                                                <tr class="agent_section">
+                                                    <td>
+                                                        <select name="agentPurpose" id="" class="form-control agentPurpose">
+                                                            <option value="">Select Purpose</option>
+                                                            {% if agentPurposes is not empty %}
+                                                            {% for purpose in agentPurposes %}
+                                                                <option value="{{purpose.id}}"> {{purpose.name}} </option>
+                                                            {% endfor %}
+                                                            {% endif %}
+                                                        </select>
+                                                    </td>
+                                                    <td>
+                                                        <select name="agent" id="agent" class="form-control agent">
+                                                            <option value="">Select Agent</option>
+                                                            {% for agent in agents %}
+                                                                <option value="{{agent.id}}"> {{agent.name}} </option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" disabled="disabled" class="form-control form-control-sm agent_address" placeholder="Address" value="">
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" disabled="disabled"  class="form-control form-control-sm agent_mobile" placeholder="Phone"  value="">
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" name="agentComments" id="comments" class="form-control form-control-sm agentComments" placeholder="Enter your comments">
+                                                    </td>
+                                                    <td>
+                                                        <button type="button" id="" class="btn btn-sm  green-bg white-font addAgent"><i class="fas fa-plus"></i> Add</button>
+                                                    </td>
+                                                </tr>
+                                                </thead>
+                                                <tbody class="crm_detail_agent_section">
+                                                {% include '@TerminalbdCrm/crmvisit/partial/agent_information.html.twig' %}
+                                                </tbody>
+                                            </table>
                                         </div>
-                                        {% if entity.crmVisitDetails is not empty %}
-                                            {% for details in entity.crmVisitDetails  %}
-                                                {% if details.process == "agent" %}
-                                                    <div class="row">
-                                                        <div class="col-md-2">
-                                                            <select name="agentPurpose[]" id="" class="form-control">
-                                                                <option value="">Select Purpose</option>
-                                                                {% for purpose in purposes %}
-                                                                    <option {% if details.purpose is not empty and details.purpose.id == purpose.id %} selected="selected" {% endif %} value="{{purpose.id}}"> {{purpose.name}} </option>
-                                                                {% endfor %}
-                                                            </select>
-                                                        </div>
-                                                        <div class="col-md-2">
-                                                            <select name="agent[]" id="agent" class="form-control farmer">
-                                                                <option value="">Select Agent</option>
-                                                                {% for agent in agents %}
-                                                                    <option {% if details.agent is not empty and details.agent.id == agent.id %} selected="selected" {% endif %} value="{{agent.id}}"> {{agent.name}} </option>
-                                                                {% endfor %}
-                                                            </select>
-                                                        </div>
-                                                        <div class="col-md-2">
-                                                            <input type="text" disabled="disabled" class="form-control form-control-sm" placeholder="Address" value="{% if details.agent is not empty  %} {{ details.agent.address }} {% endif %}">
-                                                        </div>
-                                                        <div class="col-md-2">
-                                                            <input type="text" disabled="disabled"  class="form-control form-control-sm" placeholder="Phone"  value="{% if details.agent is not empty  %} {{ details.agent.mobile }} {% endif %}">
-                                                        </div>
-                                                        <div class="col-md-4">
-                                                            <div class="input-group">
-                                                                <input type="text" name="agentComments[]" id="comments" class="form-control form-control-sm" placeholder="Enter your comments" value="{{ details.comments }}" >
-                                                                <div class="input-group-append">
-                                                                    <a data-action="{{ path('crm_visit_item_delete',{'id':details.id}) }}" class="btn btn-sm btn-transparent red-font row-remove">
-                                                                        <i class="fa fa-remove"></i>
-                                                                    </a>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                {% endif %}
-                                            {% endfor %}
-                                        {% endif %}
                                     </div>
                                     <div class="clearfix"></div>
                                 </div>
@@ -275,7 +189,7 @@
                                     <div class="card-header-right">
                                         <div class="btn-group btn-group-sm">
                                             <button type="button" class="btn btn-primary " data-toggle="modal" data-target="#otherAgentModal" data-whatever="@mdo">New Other-agent</button>
-                                            <button type="button" id="addOtherAgent" class="btn btn-sm  green-bg white-font addOtherAgent"><i class="fas fa-plus"></i> Add</button>
+                                            {##}
                                         </div>
                                     </div>
                                 </div>
@@ -283,84 +197,47 @@
                                 <div class="card-body card-body-inner">
                                     <div class="col-md-12 other-agent-clone-block" id="other-agent-clone-block">
                                         <div class="otherAgentClone">
-                                            <div class="row">
-                                                <div class="col-md-2">
-
-                                                    <select name="otherPurpose[]" id="" class="form-control">
-                                                        <option value="">Select Purpose</option>
-                                                        {% for purpose in purposes %}
-                                                            <option value="{{purpose.id}}"> {{purpose.name}} </option>
-                                                        {% endfor %}
-                                                    </select>
-
-
-                                                </div>
-                                                <div class="col-md-2">
-                                                    <select name="otherAgent[]" id="otherAgent" class="form-control farmer">
-                                                        <option value="">Select Other Agent</option>
-                                                        {% for other in otherAgents %}
-                                                            <option value="{{other.id}}"> {{other.name}} </option>
-                                                        {% endfor %}
-                                                    </select>
-                                                </div>
-                                                <div class="col-md-2">
-                                                    <input type="text" disabled="disabled" class="form-control form-control-sm" placeholder="Address" value="">
-                                                </div>
-                                                <div class="col-md-2">
-                                                    <input type="text" disabled="disabled"  class="form-control form-control-sm" placeholder="Phone"  value="">
-                                                </div>
-                                                <div class="col-md-4">
-                                                    <div class="input-group">
-                                                        <input type="text" name="otherComments[]" id="comments" class="form-control form-control-sm" placeholder="Enter your comments">
-                                                        <div class="input-group-append">
-                                                            <div class="btn btn-sm btn-transparent red-font row-remove hidden">
-                                                                <i class="fa fa-remove"></i>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        {% if entity.crmVisitDetails is not empty %}
-                                            {% for details in entity.crmVisitDetails  %}
-                                                {% if details.process == "other-agent" %}
-                                                    <div class="row">
-                                                    <div class="col-md-2">
-                                                        <select name="otherPurpose[]" id="" class="form-control">
+                                            <table class="table table-bordered">
+                                                <thead>
+                                                <tr class="other_agent_section">
+                                                    <td>
+                                                        <select name="otherPurpose" id="" class="form-control other_agent_purpose">
                                                             <option value="">Select Purpose</option>
-                                                            {% for purpose in purposes %}
-                                                                <option {% if details.purpose is not empty and details.purpose.id == purpose.id %} selected="selected" {% endif %} value="{{purpose.id}}"> {{purpose.name}} </option>
+                                                            {% if otherAgentPurposes is not empty %}
+                                                            {% for purpose in otherAgentPurposes %}
+                                                                <option value="{{purpose.id}}"> {{purpose.name}} </option>
                                                             {% endfor %}
+                                                            {% endif %}
                                                         </select>
-                                                    </div>
-                                                    <div class="col-md-2">
-                                                        <select name="otherAgent[]" id="otherAgent" class="form-control farmer">
+                                                    </td>
+                                                    <td>
+                                                        <select name="otherAgent" id="otherAgent" class="form-control other_agent">
                                                             <option value="">Select Other Agent</option>
                                                             {% for other in otherAgents %}
-                                                                <option {% if details.crmCustomer is not empty and details.crmCustomer.id == other.id %} selected="selected" {% endif %} value="{{other.id}}"> {{other.name}} </option>
+                                                                <option value="{{other.id}}"> {{other.name}} </option>
                                                             {% endfor %}
                                                         </select>
-                                                    </div>
-                                                    <div class="col-md-2">
-                                                        <input type="text" disabled="disabled" class="form-control form-control-sm" placeholder="Address" value="{% if details.crmCustomer is not empty  %} {{ details.crmCustomer.address }} {% endif %}">
-                                                    </div>
-                                                    <div class="col-md-2">
-                                                        <input type="text" disabled="disabled"  class="form-control form-control-sm" placeholder="Phone"  value="{% if details.crmCustomer is not empty  %} {{ details.crmCustomer.mobile }} {% endif %}">
-                                                    </div>
-                                                    <div class="col-md-4">
-                                                        <div class="input-group">
-                                                            <input type="text" name="otherComments[]" id="comments" class="form-control form-control-sm" placeholder="Enter your comments" value="{{ details.comments }}" >
-                                                            <div class="input-group-append">
-                                                                <a data-action="{{ path('crm_visit_item_delete',{'id':details.id}) }}" class="btn btn-sm btn-transparent red-font row-remove">
-                                                                    <i class="fa fa-remove"></i>
-                                                                </a>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                {% endif %}
-                                            {% endfor %}
-                                        {% endif %}
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" disabled="disabled" class="form-control form-control-sm other_agent_address" placeholder="Address" value="">
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" disabled="disabled"  class="form-control form-control-sm other_agent_mobile" placeholder="Phone"  value="">
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" name="otherComments" id="comments" class="form-control form-control-sm other_agent_comments" placeholder="Enter your comments">
+                                                    </td>
+                                                    <td>
+                                                        <button type="button" id="addOtherAgent" class="btn btn-sm  green-bg white-font addOtherAgent"><i class="fas fa-plus"></i> Add</button>
+                                                    </td>
+                                                </tr>
+                                                </thead>
+                                                <tbody class="crm_detail_other_agent_section">
+                                                {% include '@TerminalbdCrm/crmvisit/partial/other-agent_information.html.twig' %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+
                                     </div>
 
                                     <div class="clearfix"></div>
@@ -372,7 +249,6 @@
                                     <div class="card-header-right">
                                         <div class="btn-group btn-group-sm">
                                             <button type="button" class="btn btn-primary " data-toggle="modal" data-target="#subAgentModal" data-whatever="@mdo">New Sub-agent</button>
-                                            <button type="button" id="addSubAgent" class="btn btn-sm  green-bg white-font addSubAgent"><i class="fas fa-plus"></i> Add</button>
                                         </div>
                                     </div>
                                 </div>
@@ -380,82 +256,47 @@
                                 <div class="card-body card-body-inner">
                                     <div class="col-md-12 sub-agent-clone-block" id="sub-agent-clone-block">
                                         <div class="subAgentClone">
-                                            <div class="row">
-                                                <div class="col-md-2">
-                                                    <select name="subPurpose[]" id="" class="form-control">
-                                                        <option value="">Select Purpose</option>
-                                                        {% for purpose in purposes %}
-                                                            <option value="{{purpose.id}}"> {{purpose.name}} </option>
-                                                        {% endfor %}
-                                                    </select>
-                                                </div>
-                                                <div class="col-md-2">
-                                                    <select name="subAgent[]" id="subAgent" class="form-control farmer">
-                                                        <option value="">Select Sub-agent</option>
-                                                        {% for sub in subAgents %}
-                                                            <option value="{{sub.id}}"> {{sub.name}} </option>
-                                                        {% endfor %}
-                                                    </select>
-                                                </div>
-                                                <div class="col-md-2">
-                                                    <input type="text" disabled="disabled" class="form-control form-control-sm" placeholder="Address" value="">
-                                                </div>
-                                                <div class="col-md-2">
-                                                    <input type="text" disabled="disabled"  class="form-control form-control-sm" placeholder="Phone"  value="">
-                                                </div>
-                                                <div class="col-md-4">
-                                                    <div class="input-group">
-                                                        <input type="text" name="subComments[]" id="comments" class="form-control form-control-sm" placeholder="Enter your comments">
-                                                        <div class="input-group-append">
-                                                            <div class="btn btn-sm btn-transparent red-font row-remove hidden">
-                                                                <i class="fa fa-remove"></i>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                            <table class="table table-bordered">
+                                                <thead>
+                                                <tr class="sub_agent_section">
+                                                    <td>
+                                                        <select name="subPurpose" id="" class="form-control sub_agent_purpose">
+                                                            <option value="">Select Purpose</option>
+                                                            {% if subAgentPurposes is not empty %}
+                                                            {% for purpose in subAgentPurposes %}
+                                                                <option value="{{purpose.id}}"> {{purpose.name}} </option>
+                                                            {% endfor %}
+                                                            {% endif %}
+                                                        </select>
+                                                    </td>
+                                                    <td>
+                                                        <select name="subAgent" id="subAgent" class="form-control sub_agent">
+                                                            <option value="">Select Sub-agent</option>
+                                                            {% for sub in subAgents %}
+                                                                <option value="{{sub.id}}"> {{sub.name}} </option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" disabled="disabled" class="form-control form-control-sm sub_agent_address" placeholder="Address" value="">
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" disabled="disabled"  class="form-control form-control-sm sub_agent_mobile" placeholder="Phone"  value="">
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" name="subComments" id="comments" class="form-control form-control-sm sub_agent_comments" placeholder="Enter your comments">
+                                                    </td>
+                                                    <td>
+                                                        <button type="button" id="addSubAgent" class="btn btn-sm  green-bg white-font addSubAgent"><i class="fas fa-plus"></i> Add</button>
+                                                    </td>
+                                                </tr>
+                                                </thead>
+                                                <tbody class="crm_detail_sub_agent_section">
+                                                {% include '@TerminalbdCrm/crmvisit/partial/sub-agent_information.html.twig' %}
+                                                </tbody>
+                                            </table>
                                         </div>
-                                        {% if entity.crmVisitDetails is not empty %}
-                                            {% for details in entity.crmVisitDetails  %}
-                                                {% if details.process == "sub-agent" %}
-                                                    <div class="row">
-                                                        <div class="col-md-2">
-                                                            <select name="subPurpose[]" id="" class="form-control">
-                                                                <option value="">Select Purpose</option>
-                                                                {% for purpose in purposes %}
-                                                                    <option {% if details.purpose is not empty and details.purpose.id == purpose.id %} selected="selected" {% endif %} value="{{purpose.id}}"> {{purpose.name}} </option>
-                                                                {% endfor %}
-                                                            </select>
-                                                        </div>
-                                                        <div class="col-md-2">
-                                                            <select name="subAgent[]" id="subAgent" class="form-control farmer">
-                                                                <option value="">Select Sub-agent</option>
 
-                                                                {% for sub in subAgents %}
-                                                                    <option {% if details.crmCustomer is not empty and details.crmCustomer.id == sub.id %} selected="selected" {% endif %} value="{{sub.id}}"> {{sub.name}} </option>
-                                                                {% endfor %}
-                                                            </select>
-                                                        </div>
-                                                        <div class="col-md-2">
-                                                            <input type="text" disabled="disabled" class="form-control form-control-sm" placeholder="Address" value="{% if details.crmCustomer is not empty  %} {{ details.crmCustomer.address }} {% endif %}">
-                                                        </div>
-                                                        <div class="col-md-2">
-                                                            <input type="text" disabled="disabled"  class="form-control form-control-sm" placeholder="Phone"  value="{% if details.crmCustomer is not empty  %} {{ details.crmCustomer.mobile }} {% endif %}">
-                                                        </div>
-                                                        <div class="col-md-4">
-                                                            <div class="input-group">
-                                                                <input type="text" name="subComments[]" id="comments" class="form-control form-control-sm" placeholder="Enter your comments" value="{{ details.comments }}" >
-                                                                <div class="input-group-append">
-                                                                    <a data-action="{{ path('crm_visit_item_delete',{'id':details.id}) }}" class="btn btn-sm btn-transparent red-font row-remove">
-                                                                        <i class="fa fa-remove"></i>
-                                                                    </a>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                {% endif %}
-                                            {% endfor %}
-                                        {% endif %}
                                     </div>
                                     <div class="clearfix"></div>
                                 </div>
@@ -464,7 +305,9 @@
                                 <div class="form-actions">
                                     <div class="col-md-6 "></div>
                                     <div class="col-md-6 text-right">
-                                        <div class="btn-group" role="group" aria-label="Button group with nested dropdown"><button type="reset" class="btn btn-sm yellow-bg white-font"><i class="fa fa-refresh"></i>Restore</button>
+                                        <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                                            <button type="reset" class="btn btn-sm yellow-bg white-font"><i class="fa fa-refresh"></i>Restore</button>
+                                            {{ form_widget(form.Save, {label: 'Save',value:'Save', attr: { class: 'btn btn-primary form-submit'}}) }}
                                             {{ form_widget(form.SaveAndCreate, {label: 'label.save.continue',value:'label.save.continue', attr: { class: 'btn btn-info form-submit'}}) }}
                                         </div>
                                     </div>
@@ -526,6 +369,15 @@
                             <textarea class="form-control col-md-8" name="address" id="address"></textarea>
                         </div>
                         <div class="form-group">
+                            <label for="message-text" class="col-form-label col-md-4">Purpose</label>
+                            <select name="purpose" id="" class="form-control">
+                                <option value="">Select Purpose</option>
+                                {% for purpose in purposes %}
+                                    <option value="{{purpose.id}}"> {{purpose.name}} </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group">
                             <label for="message-text" class="col-form-label col-md-4">Capacity</label>
                             <input type="text" name="capacity" class="form-control col-md-8" id="capacity">
 
@@ -578,7 +430,17 @@
                                 <label for="message-text" class="col-form-label col-md-4">Address:</label>
                                 <textarea class="form-control col-md-8" name="address" id="message-text"></textarea>
                             </div>
-
+                            <div class="form-group">
+                                <label for="message-text" class="col-form-label col-md-4">Purpose</label>
+                                <select name="purpose" id="" class="form-control">
+                                    <option value="">Select Purpose</option>
+                                    {% if otherAgentPurposes is not empty %}
+                                    {% for purpose in otherAgentPurposes %}
+                                        <option value="{{purpose.id}}"> {{purpose.name}} </option>
+                                    {% endfor %}
+                                    {% endif %}
+                                </select>
+                            </div>
                             <div class="form-group">
                                 <label for="message-text" class="col-form-label col-md-4">Comments</label>
                                 <textarea class="form-control col-md-8" name="comments" id="comments"></textarea>
@@ -640,6 +502,17 @@
                             </div>
 
                             <div class="form-group">
+                                <label for="message-text" class="col-form-label col-md-4">Purpose</label>
+                                <select name="purpose" id="" class="form-control">
+                                    <option value="">Select Purpose</option>
+                                    {% if subAgentPurposes is not empty %}
+                                        {% for purpose in subAgentPurposes %}
+                                            <option value="{{purpose.id}}"> {{purpose.name}} </option>
+                                        {% endfor %}
+                                    {% endif %}
+                                </select>
+                            </div>
+                            <div class="form-group">
                                 <label for="message-text" class="col-form-label col-md-4">Comments</label>
                                 <textarea class="form-control col-md-8" name="comments" id="comments"></textarea>
                             </div>
@@ -672,17 +545,5 @@
 {% block javascripts %}
 {#<script>#}
     {{ parent() }}
-    <script type="application/javascript" src="{{ asset('assets/module/crmbundle/js/script.js') }}"></script>
-{% endblock  %}
-
-{% block javascriptBlock %}
-
-    $(document).on('change', '.farmer', function(e) {
-
-        var id = $(this).val();
-        $.get("demo_test.asp,{'id':id}", function(data, status){
-            alert("Data: " + data + "\nStatus: " + status);
-        });
-
-    });
+    <script type="application/javascript" src="{{ asset('bundles/terminalbdcrm/js/crm/script.js') }}"></script>
 {% endblock  %}

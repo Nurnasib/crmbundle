@@ -30,31 +30,6 @@ class CrmVisitDetailsRepository extends EntityRepository
     public function insertDailyActivity(CrmVisit $crmVisit , $data)
     {
         $em = $this->_em;
-        foreach ($data['farmer'] as $key => $value):
-            if(!empty($value) and !empty($data['purpose'][$key])) {
-                $purpose = $em->getRepository(Setting::class)->find($data['purpose'][$key]);
-                $visit = $this->findOneBy(
-                    array('crmVisit' => $crmVisit, 'crmCustomer' => $value, 'purpose' => $purpose)
-                );
-                if (empty($visit)) {
-                    $entity = new CrmVisitDetails();
-                    $entity->setProcess('farmer');
-                    $customer = $em->getRepository(CrmCustomer::class)->find($value);
-                    $entity->setCrmCustomer($customer);
-                    $entity->setCrmVisit($crmVisit);
-                    $entity->setPurpose($purpose);
-                    $entity->setFarmCapacity($data['capacity'][$key]);
-                    $entity->setComments($data['comments'][$key]);
-                    $em->persist($entity);
-                    $em->flush();
-                } else {
-                    $visit->setFarmCapacity($data['capacity'][$key]);
-                    $visit->setComments($data['comments'][$key]);
-                    $em->persist($visit);
-                    $em->flush();
-                }
-            }
-       endforeach;
 
         foreach ($data['agent'] as $key => $value):
 
