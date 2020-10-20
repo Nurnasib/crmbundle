@@ -83,6 +83,34 @@ class ChickLifeCycleController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
+    /**
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @Route("/new/modal", methods={"GET", "POST"}, name="chick_new_modal")
+     */
+    public function newModal(Request $request): Response
+    {
+        $entity = new ChickLifeCycle();
+        $data = $request->request->all();
+        $agentRepo = $this->getDoctrine()->getRepository(Agent::class);
+        $form = $this->createForm(ChickLifeCycleFormType::class, $entity,array('user' => $this->getUser(),'agentRepo' => $agentRepo))
+            ->add('SaveAndCreate', SubmitType::class);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entity->setEmployee($this->getUser());
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($entity);
+            $em->flush();
+            $this->addFlash('success', 'post.created_successfully');
+            if ($form->get('SaveAndCreate')->isClicked()) {
+                return $this->redirectToRoute('chick_new');
+            }
+            return $this->redirectToRoute('chick_new');
+        }
+        return $this->render('@TerminalbdCrm/chickLifecycle/new-modal.html.twig', [
+            'entity' => $entity,
+            'form' => $form->createView(),
+        ]);
+    }
 
     /**
      * Displays a form to edit an existing ChickLifeCycle entity.

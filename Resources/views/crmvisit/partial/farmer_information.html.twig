@@ -25,10 +25,13 @@
                     <a data-id="{{ details.id }}" class="btn btn-sm btn-transparent red-font row-remove">
                         <i class="fa fa-remove"></i>
                     </a>
-                    <div class="btn-group card-option"><button type="button" class="btn btn-notify" data-toggle="dropdown" aria-expanded="false"><i class="fas fa-ellipsis-h"></i></button>
-                        <ul class="list-unstyled card-option dropdown-info dropdown-menu dropdown-menu-right" x-placement="top-end" style="position: absolute; transform: translate3d(-115px, -91px, 0px); top: 0px; left: 0px; will-change: transform;">
-                            <li class="dropdown-item"> <a data-action="{{ path('chick_new') }}" href="?process=postView-{{ details.id }}&amp;check=new#modal" id='postView-{{ details.id }}'>Chick</a></li>
-                        </ul>
+                </td>
+                <td>
+                    <div class='dropdown'>
+                        <button type='button' class='btn btn-notify dropbtn'><i class='fas fa-ellipsis-h'></i></button>
+                        <div class='dropdown-content'>
+                            <a data-action='{{ path('chick_new_modal') }}' href='?process=postView-{{ details.id }}&check=show#modal' id='postView-{{ details.id }}' >Chick Life Cycle</a>
+                        </div>
                     </div>
                 </td>
             </tr>
