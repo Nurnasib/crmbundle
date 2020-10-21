@@ -1,0 +1,40 @@
+
+{% if entity.crmVisitDetails is not empty %}
+    {% for details in entity.crmVisitDetails  %}
+        {% if details.process == "farmer" %}
+            <tr>
+                <td>
+                    {{ details.purpose is not empty?details.purpose.name:'' }}
+                </td>
+                <td>
+                    {{ details.crmCustomer is not empty?details.crmCustomer.name:'' }}
+                </td>
+                <td>
+                    {% if details.crmCustomer is not empty  %} {{ details.crmCustomer.address }} {% endif %}
+                </td>
+                <td>
+                    {% if details.crmCustomer is not empty  %} {{ details.crmCustomer.mobile }} {% endif %}
+                </td>
+                <td>
+                    {{ details.farmCapacity }}
+                </td>
+                <td>
+                    {{ details.comments }}
+                </td>
+                <td>
+                    <a data-id="{{ details.id }}" class="btn btn-sm btn-transparent red-font row-remove">
+                        <i class="fa fa-remove"></i>
+                    </a>
+                </td>
+                <td>
+                    <div class='dropdown'>
+                        <button type='button' class='btn btn-notify dropbtn'><i class='fas fa-ellipsis-h'></i></button>
+                        <div class='dropdown-content'>
+                            <a data-action='{{ path('chick_new_modal') }}' href='?process=postView-{{ details.id }}&check=show#modal' id='postView-{{ details.id }}' >Chick Life Cycle</a>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        {% endif %}
+    {% endfor %}
+{% endif %}

@@ -11,4 +11,8 @@ services:
           calls:
             - [setContainer, ['@service_container']]
 
-      
+      crm_bundle.user_manager:
+          class: Terminalbd\CrmBundle\Service\UserManager
+          public: true
+          arguments:
+              - '@security.encoder_factory'

@@ -207,7 +207,39 @@ class CrmCustomerController extends AbstractController
     }
 
 
+    /**
+     * @param CrmCustomer $crmCustomer
+     * @Route("/{id}/ajax" ,name="get_farmer_ajax", methods={"GET"}, options={"expose"=true})
+     */
+    public function getCustomerById(CrmCustomer $crmCustomer){
 
+        $returnData= array(
+            'id'=>$crmCustomer->getId(),
+            'name'=>$crmCustomer->getName(),
+            'address'=>$crmCustomer->getAddress(),
+            'phone'=>$crmCustomer->getMobile(),
+        );
+        return new JsonResponse(array($returnData));
+
+    }
+
+    /**
+     * Deletes a Setting entity.
+     * @param Agent $agent
+     * @Route("/{id}/find/ajax", methods={"GET"}, name="get_core_agent_find_ajax", options={"expose"=true})
+     */
+    public function getAgentByIdUsingAjax(Agent $agent): Response
+    {
+        $returnData= array(
+            'id'=>$agent->getId(),
+            'name'=>$agent->getName(),
+            'address'=>$agent->getAddress(),
+            'mobile'=>$agent->getMobile(),
+            'agentId'=>$agent->getAgentId(),
+        );
+        return new JsonResponse(array($returnData));
+
+    }
 
 
 

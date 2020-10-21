@@ -53,7 +53,7 @@ class ApiController extends AbstractController
         $url = "http://www.cashbook.local/api-nourish.php?action=agent";
         $get_data = $api->callAPI($method, $url, false);
         $response = json_decode($get_data, true);
-     //   $this->getDoctrine()->getRepository(Agent::class)->apiInsert($response);
+//        $this->getDoctrine()->getRepository(Agent::class)->apiInsert($response);
         return $this->render('@TerminalbdCrm/defult/index.html.twig');
     }
 
