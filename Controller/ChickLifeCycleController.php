@@ -96,15 +96,21 @@ class ChickLifeCycleController extends AbstractController
             ->add('SaveAndCreate', SubmitType::class);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+            $currentTime = date('H:i:s',strtotime('now'));
+            $requestDate = isset($data['hatching_date'])?date('Y-m-d',strtotime($data['hatching_date'])):date('Y-m-d',strtotime('now'));
+            $orderDate = $requestDate.' '.$currentTime;
+
+            $entity->setHatchingDate(new \DateTime($orderDate));
+            $entity->setLifeCycleState(ChickLifeCycle::LIFE_CYCLE_STATE_IN_PROCESS);
             $entity->setEmployee($this->getUser());
             $em = $this->getDoctrine()->getManager();
             $em->persist($entity);
             $em->flush();
             $this->addFlash('success', 'post.created_successfully');
             if ($form->get('SaveAndCreate')->isClicked()) {
-                return $this->redirectToRoute('chick_new');
+                return $this->redirectToRoute('chick_new_modal');
             }
-            return $this->redirectToRoute('chick_new');
+            return $this->redirectToRoute('chick_new_modal');
         }
         return $this->render('@TerminalbdCrm/chickLifecycle/new-modal.html.twig', [
             'entity' => $entity,

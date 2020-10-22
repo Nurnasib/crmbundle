@@ -54,7 +54,8 @@ class SettingFormType extends AbstractType
                 'Farm Capacity' => 'FARM_CAPACITY',
                 'Customer Group' => 'CUSTOMER_GROUP',
                 'Visiting_Week'=>'Visiting_Week',
-                'Designation'=>'Designation'
+                'Designation'=>'Designation',
+                'Life Cycle Report'=>'LIFE_CYCLE_REPORT'
             ],
             ])
 

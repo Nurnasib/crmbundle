@@ -45,6 +45,17 @@ function formCommonProcess() {
     $('.select2').select2({
         theme: 'bootstrap4'
     });
+
+    $('.datePicker').datepicker({
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: "dd-mm-yy",
+        yearRange: "-90:+00",
+        showOn: "both",
+        showButtonPanel: true,
+        buttonImage: "/assets/images/icon-calendar-green.png",
+        buttonImageOnly: true
+    });
 }
 
 
@@ -84,7 +95,7 @@ function formSubmitProcess() {
                     $('form#chick_life_cycle_form')[0].reset();
                     $("#process-msg").show();
                     $(".alert-success").html(response);
-                    setTimeout( explode, 2000);
+                    // setTimeout( explode, 2000);
                 }
             });
         }
