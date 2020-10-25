@@ -135,26 +135,26 @@ function formCommonProcess() {
 
 function dataInsertUsingAjax(element) {
     var parentElement = element.closest('tr');
-   var crmChickLifeCycleDetailId=parentElement.find('.crmChickLifeCycleDetails').val();
-   var totalBirds=parentElement.find('.totalBirds').val();
-   var ageDays=parentElement.find('.ageDays').val();
-   var mortalityPes=parentElement.find('.mortalityPes').val();
-   // var mortalityPercent=parentElement.find('.mortalityPercent').val();
-   var weightStandard=parentElement.find('.weightStandard').val();
-   var weightAchieved=parentElement.find('.weightAchieved').val();
-   var feedTotalKg=parentElement.find('.feedTotalKg').val();
-   // var perBird=parentElement.find('.perBird').val();
-   var feedStandard=parentElement.find('.feedStandard').val();
-   var withoutMortality=parentElement.find('.withoutMortality').val();
-   var withMortality=parentElement.find('.withMortality').val();
-   var feedType=parentElement.find('.feedType').val();
-   var proDate=parentElement.find('.proDate').val();
-   var batchNo=parentElement.find('.batchNo').val();
-   var remarks=parentElement.find('.remarks').val();
+    var crmChickLifeCycleDetailId=parentElement.find('.crmChickLifeCycleDetails').val();
+    var totalBirds=parentElement.find('.totalBirds').val();
+    var ageDays=parentElement.find('.ageDays').val();
+    var mortalityPes=parentElement.find('.mortalityPes').val();
+    // var mortalityPercent=parentElement.find('.mortalityPercent').val();
+    var weightStandard=parentElement.find('.weightStandard').val();
+    var weightAchieved=parentElement.find('.weightAchieved').val();
+    var feedTotalKg=parentElement.find('.feedTotalKg').val();
+    // var perBird=parentElement.find('.perBird').val();
+    var feedStandard=parentElement.find('.feedStandard').val();
+    var withoutMortality=parentElement.find('.withoutMortality').val();
+    var withMortality=parentElement.find('.withMortality').val();
+    var feedType=parentElement.find('.feedType').val();
+    var proDate=parentElement.find('.proDate').val();
+    var batchNo=parentElement.find('.batchNo').val();
+    var remarks=parentElement.find('.remarks').val();
 
-   if(crmChickLifeCycleDetailId===''){
-       return false;
-   }
+    if(crmChickLifeCycleDetailId===''){
+        return false;
+    }
 
     $.ajax({
         url    : Routing.generate('crm_chick_life_cycle_edit',{'id':crmChickLifeCycleDetailId}),

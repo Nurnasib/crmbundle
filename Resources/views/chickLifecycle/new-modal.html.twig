@@ -5,16 +5,25 @@
 {#{{ dump(report) }}#}
 
     <div class="portlet-body form">
+<<<<<<< HEAD
         {{ form_start(form, {'attr': {'action': path('chick_new_modal',{'id':crmCustomer.id,'report':report.id }),'class': 'form-horizontal right','id':'chick_life_cycle_form'}}) }}
+=======
+        {{ form_start(form, {'attr': {'action': path('chick_new_modal'),'class': 'form-horizontal right','id':'chick_life_cycle_form'}}) }}
+>>>>>>> a8228c73f6de22c7921a8a38ee38d92159e633eb
         <div class="row form-body ">
             <div class="form-inner-no-space">
 
                 <div class="row">
+<<<<<<< HEAD
                     <div class="col-md-12">
                         <h4>{{report.name}}</h4>
                     </div>
 
                     <div class="col-md-6">
+=======
+
+                    <div class="col-md-4">
+>>>>>>> a8228c73f6de22c7921a8a38ee38d92159e633eb
                         <div class="form-group">
                             <label class="col-md-4 control-label" for="">{{ 'Agent'|trans }}</label>
                             <div class="col-md-6">
@@ -32,6 +41,7 @@
                             </div>
                         </div>
                     </div>
+<<<<<<< HEAD
                     <div class="col-md-6">
                         <div class="form-group">
                             <label class="col-md-4 control-label" for="">{{ 'Reporting Date'|trans }}</label>
@@ -50,6 +60,15 @@
                                 <span class="not-blank"> {{ 'Required'|trans }}</span>
                                 <div class="date_section">
                                     <input autocomplete="off" type="text" name="hatching_date" class="form-control datePicker" value="{{ entity.hatchingDate?entity.hatchingDate|date("d-m-Y"):'' }}">
+=======
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            {{ form_label(form.customer, 'Hatching Date'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
+                            <div class="col-md-8">
+                                <span class="not-blank"> {{ 'Required'|trans }}</span>
+                                <div class="date_section">
+                                    <input type="text" name="hatching_date" class="form-control datePicker" value="">
+>>>>>>> a8228c73f6de22c7921a8a38ee38d92159e633eb
                                 </div>
                             </div>
                         </div>

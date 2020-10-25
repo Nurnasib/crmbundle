@@ -154,11 +154,11 @@ class ChickLifeCycleController extends AbstractController
         $crmChickLifeCycleDetails = $this->getDoctrine()->getRepository(ChickLifeCycleDetails::class)->findOneBy(array('crmChickLifeCycle'=>$chickLifeCycle->getId()));
         if (!$crmChickLifeCycleDetails){
             for($i=1; $i<=$lifeCycleSetting->getNumberOfWeek(); $i++){
-               $chickLifeCycleDetails = new ChickLifeCycleDetails();
+                $chickLifeCycleDetails = new ChickLifeCycleDetails();
 
-               $chickLifeCycleDetails->setVisitingWeek($i);
-               $chickLifeCycleDetails->setCrmChickLifeCycle($chickLifeCycle);
-               $chickLifeCycleDetails->setCreatedAt(new \DateTime('now'));
+                $chickLifeCycleDetails->setVisitingWeek($i);
+                $chickLifeCycleDetails->setCrmChickLifeCycle($chickLifeCycle);
+                $chickLifeCycleDetails->setCreatedAt(new \DateTime('now'));
                 $em = $this->getDoctrine()->getManager();
                 $em->persist($chickLifeCycleDetails);
 

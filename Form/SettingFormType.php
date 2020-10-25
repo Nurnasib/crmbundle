@@ -45,18 +45,18 @@ class SettingFormType extends AbstractType
                 'required' => true
             ])
             ->add('settingType', ChoiceType::class, [
-            'choices'  => [
-                'Farmer Purpose' => 'PURPOSE',
-                'Agent Purpose' => 'AGENT_PURPOSE',
-                'Other Agent Purpose' => 'OTHER_AGENT_PURPOSE',
-                'Sub Agent Purpose' => 'SUB_AGENT_PURPOSE',
-                'Farm Type' => 'FARM_TYPE',
-                'Farm Capacity' => 'FARM_CAPACITY',
-                'Customer Group' => 'CUSTOMER_GROUP',
-                'Visiting_Week'=>'Visiting_Week',
-                'Designation'=>'Designation',
-                'Farmer Report'=>'FARMER_REPORT'
-            ],
+                'choices'  => [
+                    'Farmer Purpose' => 'PURPOSE',
+                    'Agent Purpose' => 'AGENT_PURPOSE',
+                    'Other Agent Purpose' => 'OTHER_AGENT_PURPOSE',
+                    'Sub Agent Purpose' => 'SUB_AGENT_PURPOSE',
+                    'Farm Type' => 'FARM_TYPE',
+                    'Farm Capacity' => 'FARM_CAPACITY',
+                    'Customer Group' => 'CUSTOMER_GROUP',
+                    'Visiting_Week'=>'Visiting_Week',
+                    'Designation'=>'Designation',
+                    'Farmer Report'=>'FARMER_REPORT'
+                ],
             ])
 
             ->add('status',CheckboxType::class,[

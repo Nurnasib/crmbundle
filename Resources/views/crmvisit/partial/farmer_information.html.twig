@@ -32,7 +32,11 @@
                         <div class='dropdown-content'>
                             {% if lifeCycleReport is not empty %}
                                 {% for lifeCycle in lifeCycleReport %}
+<<<<<<< HEAD
                                     <a data-action='{{ path('chick_new_modal',{'id': details.crmCustomer is not empty?details.crmCustomer.id:'', 'report':lifeCycle.id}) }}' href='?process=postView_{{ details.id }}_{{ lifeCycle.id }}&report={{ lifeCycle.slug }}&check=show#modal' id='postView_{{ details.id }}_{{ lifeCycle.id }}' >{{ lifeCycle.name }}</a>
+=======
+                                    <a data-action='{{ path('chick_new_modal') }}' href='?process=postView-{{ details.id }}&purpose={{ lifeCycle.slug }}&check=show#modal' id='postView-{{ details.id }}' >{{ lifeCycle.name }}</a>
+>>>>>>> a8228c73f6de22c7921a8a38ee38d92159e633eb
                                 {% endfor %}
                                 {% endif %}
                         </div>
