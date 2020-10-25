@@ -16,6 +16,7 @@ use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -24,13 +25,14 @@ use Terminalbd\CrmBundle\Entity\Setting;
 //use Terminalbd\CrmBundle\Entity\SettingType;
 
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Terminalbd\CrmBundle\Entity\SettingLifeCycle;
 
 /**
  * Defines the form used to create and manipulate blog posts.
  *
  * @author Md Shafiqul Islam <shafiqabs@gmail.com>
  */
-class SettingFormType extends AbstractType
+class SettingLifeCycleFormType extends AbstractType
 {
 
     /**
@@ -39,26 +41,24 @@ class SettingFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('name', TextType::class, [
+            ->add('numberOfWeek', NumberType::class, [
                 'attr' => ['autofocus' => true],
                 'label' => 'label.name',
                 'required' => true
             ])
-            ->add('settingType', ChoiceType::class, [
-            'choices'  => [
-                'Farmer Purpose' => 'PURPOSE',
-                'Agent Purpose' => 'AGENT_PURPOSE',
-                'Other Agent Purpose' => 'OTHER_AGENT_PURPOSE',
-                'Sub Agent Purpose' => 'SUB_AGENT_PURPOSE',
-                'Farm Type' => 'FARM_TYPE',
-                'Farm Capacity' => 'FARM_CAPACITY',
-                'Customer Group' => 'CUSTOMER_GROUP',
-                'Visiting_Week'=>'Visiting_Week',
-                'Designation'=>'Designation',
-                'Farmer Report'=>'FARMER_REPORT'
-            ],
-            ])
 
+            ->add('report', EntityType::class, array(
+                'required'    => true,
+                'class' => Setting::class,
+                'placeholder' => 'Choose a  Service Mode',
+                'choice_label' => 'name',
+                'attr'=>array('class'=>'span12 m-wrap'),
+                'query_builder' => function(EntityRepository $er){
+                    return $er->createQueryBuilder('e')
+                        ->where("e.settingType ='FARMER_REPORT'")
+                        ->orderBy('e.name', 'ASC');
+                },
+            ))
             ->add('status',CheckboxType::class,[
                 'required' => false,
                 'attr' => [
@@ -80,7 +80,7 @@ class SettingFormType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Setting::class,
+            'data_class' => SettingLifeCycle::class,
         ]);
     }
 }

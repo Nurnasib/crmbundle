@@ -21,7 +21,9 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Terminalbd\CrmBundle\Entity\Setting;
+use Terminalbd\CrmBundle\Entity\SettingLifeCycle;
 use Terminalbd\CrmBundle\Form\SettingFormType;
+use Terminalbd\CrmBundle\Form\SettingLifeCycleFormType;
 
 /**
  * @Route("/crm/setting")
@@ -34,8 +36,8 @@ class SettingController extends AbstractController
      */
     public function index(Request $request): Response
     {
-        $entitys = $this->getDoctrine()->getRepository(Setting::class)->findAll();
-        return $this->render('@TerminalbdCrm/setting/index.html.twig',['entities' => $entitys]);
+        $entities = $this->getDoctrine()->getRepository(Setting::class)->findAll();
+        return $this->render('@TerminalbdCrm/setting/index.html.twig',['entities' => $entities]);
     }
 
     /**
@@ -111,7 +113,72 @@ class SettingController extends AbstractController
         return new Response('Success');
     }
 
-    
+
+    /**
+     * @Route("/life-cycle", methods={"GET"}, name="crm_setting_life_cycle")
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN')")
+     */
+    public function indexLifeCycle(Request $request): Response
+    {
+        $entities = $this->getDoctrine()->getRepository(SettingLifeCycle::class)->findAll();
+        return $this->render('@TerminalbdCrm/setting/life-cycle/index.html.twig',['entities' => $entities]);
+    }
+
+    /**
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN')")
+     * @Route("/life-cycle/new", methods={"GET", "POST"}, name="crm_setting_life_cycle_new")
+     */
+    public function newLifeCycle(Request $request): Response
+    {
+
+        $entity = new SettingLifeCycle();
+        $form = $this->createForm(SettingLifeCycleFormType::class , $entity)
+            ->add('SaveAndCreate', SubmitType::class);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($entity);
+            $em->flush();
+            $this->addFlash('success', 'post.created_successfully');
+            if ($form->get('SaveAndCreate')->isClicked()) {
+                return $this->redirectToRoute('crm_setting_life_cycle_new');
+            }
+            return $this->redirectToRoute('crm_setting_life_cycle');
+        }
+        return $this->render('@TerminalbdCrm/setting/life-cycle/new.html.twig', [
+            'entity' => $entity,
+            'form' => $form->createView(),
+        ]);
+    }
+
+    /**
+     * Displays a form to edit an existing Post entity.
+     *
+     * @Route("/life-cycle/{id}/edit", methods={"GET", "POST"}, name="crm_setting_life_cycle_edit")
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN')")
+     */
+
+    public function editLifeCycle(Request $request, SettingLifeCycle $entity): Response
+    {
+        $data = $request->request->all();
+        $form = $this->createForm(SettingLifeCycleFormType::class, $entity)
+            ->add('SaveAndCreate', SubmitType::class);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->getDoctrine()->getManager()->flush();
+            $this->addFlash('success', 'post.updated_successfully');
+            //$this->getDoctrine()->getRepository(ItemKeyValue::class)->insertSettingKeyValue($entity,$data);
+            if ($form->get('SaveAndCreate')->isClicked()) {
+                return $this->redirectToRoute('crm_setting_life_cycle_edit', ['id' => $entity->getId()]);
+            }
+            return $this->redirectToRoute('crm_setting_life_cycle');
+        }
+        return $this->render('@TerminalbdCrm/setting/life-cycle/new.html.twig', [
+            'entity' => $entity,
+            'form' => $form->createView(),
+        ]);
+    }
 
 
 

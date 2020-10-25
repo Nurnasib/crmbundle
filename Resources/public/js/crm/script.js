@@ -31,7 +31,7 @@ $('[data-remodal-id=modal]').remodal({
 function formCommonProcess() {
 
     $('.form-body').slimScroll({
-        height: '400px'
+        height: '85%'
     });
     $('[data-toggle="tooltip"]').tooltip();
 
@@ -45,8 +45,149 @@ function formCommonProcess() {
     $('.select2').select2({
         theme: 'bootstrap4'
     });
+
+    $('.datePicker').datepicker({
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: "dd-mm-yy",
+        yearRange: "-90:+00",
+        showOn: "both",
+        showButtonPanel: true,
+        buttonImage: "/assets/images/icon-calendar-green.png",
+        buttonImageOnly: true
+    });
+
+    $('#datatable').on('keypress', 'input,select,textarea', function (e) {
+
+        if (e.which == 13) {
+            e.preventDefault();
+            switch ($(this).attr('class')) {
+                case 'form-control totalBirds':
+                    dataInsertUsingAjax($(this));
+                    $(this).closest('tr').find('.ageDays').focus().select();
+                    break;
+
+                case 'form-control ageDays':
+                    dataInsertUsingAjax($(this));
+                    $(this).closest('tr').find('.mortalityPes').focus().select();
+                    break;
+
+                case 'form-control mortalityPes':
+                    dataInsertUsingAjax($(this));
+                    $(this).closest('tr').find('.weightStandard').focus().select();
+                    break;
+
+                case 'form-control weightStandard':
+                    dataInsertUsingAjax($(this));
+                    $(this).closest('tr').find('.weightAchieved').focus().select();
+                    break;
+
+                case 'form-control weightAchieved':
+                    dataInsertUsingAjax($(this));
+                    $(this).closest('tr').find('.feedTotalKg').focus().select();
+                    break;
+
+
+                case 'form-control feedTotalKg':
+                    dataInsertUsingAjax($(this));
+                    $(this).closest('tr').find('.feedStandard').focus().select();
+                    break;
+
+                case 'form-control feedStandard':
+                    dataInsertUsingAjax($(this));
+                    $(this).closest('tr').find('.withoutMortality').focus().select();
+                    break;
+
+                case 'form-control withoutMortality':
+                    dataInsertUsingAjax($(this));
+                    $(this).closest('tr').find('.withMortality').focus().select();
+                    break;
+
+                case 'form-control withMortality':
+                    dataInsertUsingAjax($(this));
+                    $(this).closest('tr').find('.feedType').focus().select();
+                    break;
+
+                case 'form-control feedType':
+                    dataInsertUsingAjax($(this));
+                    $(this).closest('tr').find('.proDate').focus();
+                    break;
+
+                case 'form-control proDate datePicker hasDatepicker':
+                    dataInsertUsingAjax($(this));
+                    $(this).closest('tr').find('.batchNo').focus().select();
+                    break;
+
+                case 'form-control batchNo':
+                    dataInsertUsingAjax($(this));
+                    $(this).closest('tr').find('.remarks').focus().select();
+                    break;
+
+                case 'form-control remarks':
+                    dataInsertUsingAjax($(this));
+                    $(this).closest('tr').next('tr').find('.totalBirds').focus().select();
+                    break;
+            }
+        }
+    });
+
 }
 
+function dataInsertUsingAjax(element) {
+    var parentElement = element.closest('tr');
+   var crmChickLifeCycleDetailId=parentElement.find('.crmChickLifeCycleDetails').val();
+   var totalBirds=parentElement.find('.totalBirds').val();
+   var ageDays=parentElement.find('.ageDays').val();
+   var mortalityPes=parentElement.find('.mortalityPes').val();
+   // var mortalityPercent=parentElement.find('.mortalityPercent').val();
+   var weightStandard=parentElement.find('.weightStandard').val();
+   var weightAchieved=parentElement.find('.weightAchieved').val();
+   var feedTotalKg=parentElement.find('.feedTotalKg').val();
+   // var perBird=parentElement.find('.perBird').val();
+   var feedStandard=parentElement.find('.feedStandard').val();
+   var withoutMortality=parentElement.find('.withoutMortality').val();
+   var withMortality=parentElement.find('.withMortality').val();
+   var feedType=parentElement.find('.feedType').val();
+   var proDate=parentElement.find('.proDate').val();
+   var batchNo=parentElement.find('.batchNo').val();
+   var remarks=parentElement.find('.remarks').val();
+
+   if(crmChickLifeCycleDetailId===''){
+       return false;
+   }
+
+    $.ajax({
+        url    : Routing.generate('crm_chick_life_cycle_edit',{'id':crmChickLifeCycleDetailId}),
+        type   : 'post',
+        data   : {
+            'totalBirds':totalBirds,
+            'ageDays':ageDays,
+            'mortalityPes':mortalityPes,
+            // 'mortalityPercent':mortalityPercent,
+            'weightStandard':weightStandard,
+            'weightAchieved':weightAchieved,
+            'feedTotalKg':feedTotalKg,
+            // 'perBird':perBird,
+            'feedStandard':feedStandard,
+            'withoutMortality':withoutMortality,
+            'withMortality':withMortality,
+            'feedType':feedType,
+            'proDate':proDate,
+            'batchNo':batchNo,
+            'remarks':remarks
+        },
+        dataType : 'json',
+        success: function(response){
+            parentElement.find('.mortalityPercent').text(response.mortalityPercent);
+            parentElement.find('.perBird').text(response.perBird);
+            console.log(response.mortalityPercent);
+        }
+    });
+}
+
+function initIntegerMask(el){
+    $(el).inputmask("integer", {removeMaskOnSubmit: false});
+}
 
 function formSubmitProcess() {
 
@@ -81,10 +222,11 @@ function formSubmitProcess() {
                     $('.form-submit').html("Loading...").attr('disabled', 'disabled');
                 },
                 success: function(response){
-                    $('form#chick_life_cycle_form')[0].reset();
                     $("#process-msg").show();
                     $(".alert-success").html(response);
-                    setTimeout( explode, 2000);
+                    $(".form-submit").html("SaveAndCreate").prop("disabled", false);
+                    $('form#chick_life_cycle_form')[0].reset();
+                    // setTimeout( explode, 2000);
                 }
             });
         }

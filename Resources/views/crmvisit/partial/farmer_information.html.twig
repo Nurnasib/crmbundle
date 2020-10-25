@@ -30,7 +30,11 @@
                     <div class='dropdown'>
                         <button type='button' class='btn btn-notify dropbtn'><i class='fas fa-ellipsis-h'></i></button>
                         <div class='dropdown-content'>
-                            <a data-action='{{ path('chick_new_modal') }}' href='?process=postView-{{ details.id }}&check=show#modal' id='postView-{{ details.id }}' >Chick Life Cycle</a>
+                            {% if lifeCycleReport is not empty %}
+                                {% for lifeCycle in lifeCycleReport %}
+                                    <a data-action='{{ path('chick_new_modal',{'id': details.crmCustomer is not empty?details.crmCustomer.id:'', 'report':lifeCycle.id}) }}' href='?process=postView_{{ details.id }}_{{ lifeCycle.id }}&report={{ lifeCycle.slug }}&check=show#modal' id='postView_{{ details.id }}_{{ lifeCycle.id }}' >{{ lifeCycle.name }}</a>
+                                {% endfor %}
+                                {% endif %}
                         </div>
                     </div>
                 </td>

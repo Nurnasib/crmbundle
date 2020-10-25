@@ -70,6 +70,7 @@ class CrmVisitController extends AbstractController
     public function edit(Request $request, CrmVisit $entity): Response
     {
         $data = $request->request->all();
+
         $form = $this->createForm(CrmVisitFormType::class, $entity,array('user' => $this->getUser()))
             ->add('SaveAndCreate', SubmitType::class)
             ->add('Save', SubmitType::class);
@@ -88,6 +89,7 @@ class CrmVisitController extends AbstractController
         $agentPurpose =$this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType'=>'AGENT_PURPOSE'));
         $otherAgentPurpose =$this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType'=>'OTHER_AGENT_PURPOSE'));
         $subAgentPurpose =$this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType'=>'SUB_AGENT_PURPOSE'));
+        $lifeCycleReport =$this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType'=>'FARMER_REPORT'));
         $farmers =$this->getDoctrine()->getRepository(CrmCustomer::class)->getLocationWise($entity->getEmployee(),'farmer');
         $subAgents =$this->getDoctrine()->getRepository(CrmCustomer::class)->getLocationWise($entity->getEmployee(),'sub-agent');
         $otherAgents =$this->getDoctrine()->getRepository(CrmCustomer::class)->getLocationWise($entity->getEmployee(),'other-agent');
@@ -99,6 +101,7 @@ class CrmVisitController extends AbstractController
             'agentPurposes'=>$agentPurpose,
             'otherAgentPurposes'=>$otherAgentPurpose,
             'subAgentPurposes'=>$subAgentPurpose,
+            'lifeCycleReport'=>$lifeCycleReport,
             'agents'=>$agent,
             'farmers'=>$farmers,
             'subAgents'=>$subAgents,
@@ -170,9 +173,11 @@ class CrmVisitController extends AbstractController
     public function CRMDetailsRefresh($id, $process='farmer'): Response
     {
         $entity = $this->getDoctrine()->getRepository(CrmVisit::class)->find($id);
+        $lifeCycleReport =$this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType'=>'FARMER_REPORT'));
 
         return $this->render('@TerminalbdCrm/crmvisit/partial/'.$process.'_information.html.twig', [
             'entity' => $entity,
+            'lifeCycleReport' => $lifeCycleReport,
         ]);
     }
 

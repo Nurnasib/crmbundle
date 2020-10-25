@@ -16,6 +16,9 @@ use Gedmo\Mapping\Annotation as Gedmo;
  */
 class ChickLifeCycle
 {
+    const LIFE_CYCLE_STATE_COMPLETE = 'COMPLETE';
+    const LIFE_CYCLE_STATE_CANCEL = 'CANCEL';
+    const LIFE_CYCLE_STATE_IN_PROGRESS = 'IN_PROGRESS';
     /**
      * @var integer
      * @ORM\Column(name="id", type="integer")
@@ -32,10 +35,24 @@ class ChickLifeCycle
     private $customer;
 
     /**
+     * @var Setting
+     * @ORM\ManyToOne(targetEntity="Setting", inversedBy="crmChickLifeCycle")
+     * @ORM\JoinColumn(name="report_id", referencedColumnName="id")
+     * @ORM\JoinColumn(onDelete="CASCADE")
+     */
+    private $report;
+
+    /**
      * @var Agent
      * @ORM\ManyToOne(targetEntity="App\Entity\Core\Agent" , inversedBy="chicklifecycle")
      */
     private $agent;
+
+    /**
+     * @var ChickLifeCycleDetails
+     * @ORM\OneToMany(targetEntity="ChickLifeCycleDetails", mappedBy="crmChickLifeCycle")
+     */
+    private $crmChickLifeCycleDetails;
 
     /**
      * @var User
@@ -44,111 +61,27 @@ class ChickLifeCycle
     private $employee;
 
     /**
-     * @var string
-     * @Orm\Column(name="hatching_date" ,type="string",nullable=true)
-     */
-    private $hatchingDate;
-
-
-    /**
-     * @var string
-     * @Orm\Column(name="reporting_date" ,type="string",nullable=true)
+     * @var \DateTime
+     * @ORM\Column(name="reporting_date", type="date", nullable=true)
      */
     private $reportingDate;
 
     /**
-     * @var string
-     * @ORM\Column(name="visitingweek", type="string",nullable=true)
+     * @var \DateTime
+     * @ORM\Column(name="hatching_date", type="datetime", nullable=true)
      */
-
-    private $visitingweek;
+    private $hatchingDate;
 
     /**
      * @var string
-     * @Orm\Column(name="totalbirds" ,type="string",nullable=true)
-     */
-
-    private $totalbirds;
-
-    /**
-     * @var string
-     * @Orm\Column(name="age_days", type="string",nullable=true)
-     */
-    private $agedays;
-
-    /**
-     * @var string
-     * @Orm\Column(name="mortality_pes", type="string",nullable=true)
-     */
-
-    private $mortalityPes;
-
-    /**
-     * @var string
-     * @Orm\Column(name="mortality_percent", type="string",nullable=true)
-     */
-
-    private $mortalityPercent;
-
-    /**
-     * @var string
-     * @Orm\Column(name="weightStandard", type="text",nullable=true)
-     */
-
-    private $weightStandard;
-
-    /**
-     * @var string
-     * @Orm\Column(name="weightAchieved", type="text",nullable=true)
-     */
-
-    private $weightAchieved;
-
-    /**
-     * @var string
-     * @Orm\Column(name="feedTotalkg", type="text",nullable=true)
-     */
-
-    private $feedTotalkg;
-
-    /**
-     * @var string
-     * @Orm\Column(name="perBird", type="text",nullable=true)
-     */
-
-    private $perBird;
-
-    /**
-     * @var string
-     * @Orm\Column(name="feedStandard", type="text",nullable=true)
-     */
-
-    private $feedStandard;
-
-    /**
-     * @var string
-     * @Orm\Column(name="withoutMortality", type="text",nullable=true)
-     */
-
-    private $withoutMortality;
-
-    /**
-     * @var string
-     * @Orm\Column(name="withMortality", type="text",nullable=true)
-     */
-
-    private $withMortality;
-
-    /**
-     * @var string
-     * @Orm\Column(name="hatchery", type="text",nullable=true)
+     * @Orm\Column(name="hatchery", type="string", length=50, nullable=true)
      */
 
     private $hatchery;
 
     /**
      * @var string
-     * @Orm\Column(name="breed", type="text",nullable=true)
+     * @Orm\Column(name="breed", type="string", length=50, nullable=true)
      */
 
     private $breed;
@@ -156,54 +89,31 @@ class ChickLifeCycle
 
     /**
      * @var string
-     * @Orm\Column(name="feed", type="text",nullable=true)
+     * @Orm\Column(name="feed", type="string", length=50, nullable=true)
      */
 
     private $feed;
 
     /**
      * @var string
-     * @Orm\Column(name="feedType", type="text",nullable=true)
+     *
+     * @ORM\Column(name="life_cycle_state", type="string", length=20, nullable=true)
      */
-
-    private $feedType;
-
+    private $lifeCycleState;
 
     /**
      * @var string
-     * @Orm\Column(name="proDate", type="text",nullable=true)
+     * @Orm\Column(name="remarks", type="text", nullable=true)
      */
 
-    private $proDate;
+    private $remarks;
 
     /**
-     * @var string
-     * @Orm\Column(name="batchNo", type="text",nullable=true)
+     * @var \DateTime
+     * @Gedmo\Timestampable(on="create")
+     * @ORM\Column(name="created_at", type="datetime")
      */
-
-    private $batchNo;
-
-    /**
-     * @return SettingType
-     */
-    public function getBirdMode()
-    {
-        return $this->birdMode;
-    }
-
-    /**
-     * @param SettingType $birdMode
-     */
-    public function setBirdMode($birdMode)
-    {
-        $this->birdMode = $birdMode;
-    }
-
-    /**
-     * @var SettingType
-     * @ORM\Column(type="string" )
-     */
-    private $birdMode;
+    private $createdAt;
 
     /**
      * @return int
@@ -221,293 +131,6 @@ class ChickLifeCycle
         $this->id = $id;
     }
 
-
-    /**
-     * @return string
-     */
-    public function getHatchingDate()
-    {
-        return $this->hatchingDate;
-    }
-
-    /**
-     * @param string $hatchingDate
-     */
-    public function setHatchingDate($hatchingDate)
-    {
-        $this->hatchingDate = $hatchingDate;
-    }
-
-
-    /**
-     * @return string
-     */
-    public function getVisitingweek()
-    {
-        return $this->visitingweek;
-    }
-
-    /**
-     * @param string $visitingweek
-     */
-    public function setVisitingweek($visitingweek)
-    {
-        $this->visitingweek = $visitingweek;
-    }
-
-    /**
-     * @return string
-     */
-    public function getTotalbirds()
-    {
-        return $this->totalbirds;
-    }
-
-    /**
-     * @param string $totalbirds
-     */
-    public function setTotalbirds($totalbirds)
-    {
-        $this->totalbirds = $totalbirds;
-    }
-
-    /**
-     * @return string
-     */
-    public function getAgedays()
-    {
-        return $this->agedays;
-    }
-
-    /**
-     * @param string $agedays
-     */
-    public function setAgedays($agedays)
-    {
-        $this->agedays = $agedays;
-    }
-
-    /**
-     * @return string
-     */
-    public function getMortalityPes()
-    {
-        return $this->mortalityPes;
-    }
-
-    /**
-     * @param string $mortalityPes
-     */
-    public function setMortalityPes($mortalityPes)
-    {
-        $this->mortalityPes = $mortalityPes;
-    }
-
-    /**
-     * @return string
-     */
-    public function getWeightStandard()
-    {
-        return $this->weightStandard;
-    }
-
-    /**
-     * @param string $weightStandard
-     */
-    public function setWeightStandard($weightStandard)
-    {
-        $this->weightStandard = $weightStandard;
-    }
-
-    /**
-     * @return string
-     */
-    public function getWeightAchieved()
-    {
-        return $this->weightAchieved;
-    }
-
-    /**
-     * @param string $weightAchieved
-     */
-    public function setWeightAchieved($weightAchieved)
-    {
-        $this->weightAchieved = $weightAchieved;
-    }
-
-    /**
-     * @return string
-     */
-    public function getFeedTotalkg()
-    {
-        return $this->feedTotalkg;
-    }
-
-    /**
-     * @param string $feedTotalkg
-     */
-    public function setFeedTotalkg($feedTotalkg)
-    {
-        $this->feedTotalkg = $feedTotalkg;
-    }
-
-    /**
-     * @return string
-     */
-    public function getReportingDate()
-    {
-        return $this->reportingDate;
-    }
-
-    /**
-     * @param string $reportingDate
-     */
-    public function setReportingDate($reportingDate)
-    {
-        $this->reportingDate = $reportingDate;
-    }
-
-
-
-    /**
-     * @return string
-     */
-    public function getFeedStandard()
-    {
-        return $this->feedStandard;
-    }
-
-    /**
-     * @param string $feedStandard
-     */
-    public function setFeedStandard($feedStandard)
-    {
-        $this->feedStandard = $feedStandard;
-    }
-
-    /**
-     * @return string
-     */
-    public function getHatchery()
-    {
-        return $this->hatchery;
-    }
-
-    /**
-     * @param string $hatchery
-     */
-    public function setHatchery($hatchery)
-    {
-        $this->hatchery = $hatchery;
-    }
-
-    /**
-     * @return string
-     */
-    public function getBreed()
-    {
-        return $this->breed;
-    }
-
-    /**
-     * @param string $breed
-     */
-    public function setBreed($breed)
-    {
-        $this->breed = $breed;
-    }
-
-    /**
-     * @return string
-     */
-    public function getFeed()
-    {
-        return $this->feed;
-    }
-
-    /**
-     * @param string $feed
-     */
-    public function setFeed($feed)
-    {
-        $this->feed = $feed;
-    }
-
-    /**
-     * @return string
-     */
-    public function getFeedType()
-    {
-        return $this->feedType;
-    }
-
-    /**
-     * @param string $feedType
-     */
-    public function setFeedType($feedType)
-    {
-        $this->feedType = $feedType;
-    }
-
-    /**
-     * @return string
-     */
-    public function getProDate()
-    {
-        return $this->proDate;
-    }
-
-    /**
-     * @param string $proDate
-     */
-    public function setProDate($proDate)
-    {
-        $this->proDate = $proDate;
-    }
-
-
-
-    /**
-     * @return string
-     */
-    public function getBatchNo()
-    {
-        return $this->batchNo;
-    }
-
-    /**
-     * @param string $batchNo
-     */
-    public function setBatchNo($batchNo)
-    {
-        $this->batchNo = $batchNo;
-    }
-
-    /**
-     * @return string
-     */
-    public function getRemarks()
-    {
-        return $this->remarks;
-    }
-
-    /**
-     * @param string $remarks
-     */
-    public function setRemarks($remarks)
-    {
-        $this->remarks = $remarks;
-    }
-
-
-    /**
-     * @var string
-     * @Orm\Column(name="remarks", type="text",nullable=true)
-     */
-
-    private $remarks;
-
-
     /**
      * @return CrmCustomer
      */
@@ -519,9 +142,25 @@ class ChickLifeCycle
     /**
      * @param CrmCustomer $customer
      */
-    public function setCustomer($customer)
+    public function setCustomer(CrmCustomer $customer)
     {
         $this->customer = $customer;
+    }
+
+    /**
+     * @return Setting
+     */
+    public function getReport(): Setting
+    {
+        return $this->report;
+    }
+
+    /**
+     * @param Setting $report
+     */
+    public function setReport(Setting $report): void
+    {
+        $this->report = $report;
     }
 
     /**
@@ -535,79 +174,31 @@ class ChickLifeCycle
     /**
      * @param Agent $agent
      */
-    public function setAgent($agent)
+    public function setAgent(Agent $agent): void
     {
         $this->agent = $agent;
     }
 
     /**
-     * @return string
+     * @return ChickLifeCycleDetails
      */
-    public function getMortalityPercent()
+    public function getCrmChickLifeCycleDetails()
     {
-        return $this->mortalityPercent;
+        return $this->crmChickLifeCycleDetails;
     }
 
     /**
-     * @param string $mortalityPercent
+     * @param ChickLifeCycleDetails $crmChickLifeCycleDetails
      */
-    public function setMortalityPercent($mortalityPercent)
+    public function setCrmChickLifeCycleDetails(ChickLifeCycleDetails $crmChickLifeCycleDetails): void
     {
-        $this->mortalityPercent = $mortalityPercent;
-    }
-
-    /**
-     * @return string
-     */
-    public function getPerBird()
-    {
-        return $this->perBird;
-    }
-
-    /**
-     * @param string $perBird
-     */
-    public function setPerBird($perBird)
-    {
-        $this->perBird = $perBird;
-    }
-
-    /**
-     * @return string
-     */
-    public function getWithoutMortality()
-    {
-        return $this->withoutMortality;
-    }
-
-    /**
-     * @return string
-     */
-    public function getWithMortality()
-    {
-        return $this->withMortality;
-    }
-
-    /**
-     * @param string $withoutMortality
-     */
-    public function setWithoutMortality($withoutMortality)
-    {
-        $this->withoutMortality = $withoutMortality;
-    }
-
-    /**
-     * @param string $withMortality
-     */
-    public function setWithMortality($withMortality)
-    {
-        $this->withMortality = $withMortality;
+        $this->crmChickLifeCycleDetails = $crmChickLifeCycleDetails;
     }
 
     /**
      * @return User
      */
-    public function getEmployee()
+    public function getEmployee(): User
     {
         return $this->employee;
     }
@@ -615,9 +206,138 @@ class ChickLifeCycle
     /**
      * @param User $employee
      */
-    public function setEmployee(User $employee)
+    public function setEmployee(User $employee): void
     {
         $this->employee = $employee;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getHatchingDate()
+    {
+        return $this->hatchingDate;
+    }
+
+    /**
+     * @param \DateTime $hatchingDate
+     */
+    public function setHatchingDate($hatchingDate)
+    {
+        $this->hatchingDate = $hatchingDate;
+    }
+
+
+    /**
+     * @return string
+     */
+    public function getHatchery(): string
+    {
+        return $this->hatchery;
+    }
+
+    /**
+     * @param string $hatchery
+     */
+    public function setHatchery(string $hatchery): void
+    {
+        $this->hatchery = $hatchery;
+    }
+
+    /**
+     * @return string
+     */
+    public function getBreed(): string
+    {
+        return $this->breed;
+    }
+
+    /**
+     * @param string $breed
+     */
+    public function setBreed(string $breed): void
+    {
+        $this->breed = $breed;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFeed(): string
+    {
+        return $this->feed;
+    }
+
+    /**
+     * @param string $feed
+     */
+    public function setFeed(string $feed): void
+    {
+        $this->feed = $feed;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLifeCycleState(): string
+    {
+        return $this->lifeCycleState;
+    }
+
+    /**
+     * @param string $lifeCycleState
+     */
+    public function setLifeCycleState(string $lifeCycleState): void
+    {
+        $this->lifeCycleState = $lifeCycleState;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRemarks(): string
+    {
+        return $this->remarks;
+    }
+
+    /**
+     * @param string $remarks
+     */
+    public function setRemarks(string $remarks): void
+    {
+        $this->remarks = $remarks;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getCreatedAt(): \DateTime
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * @param \DateTime $createdAt
+     */
+    public function setCreatedAt(\DateTime $createdAt): void
+    {
+        $this->createdAt = $createdAt;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getReportingDate(): \DateTime
+    {
+        return $this->reportingDate;
+    }
+
+    /**
+     * @param \DateTime $reportingDate
+     */
+    public function setReportingDate(\DateTime $reportingDate): void
+    {
+        $this->reportingDate = $reportingDate;
     }
 
 
