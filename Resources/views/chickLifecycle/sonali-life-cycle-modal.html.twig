@@ -14,11 +14,14 @@
                         <h4>{{chickLifeCycle.report.name}}</h4>
                     </div>
 
-                    <div class="col-md-6">
-                        <p style="color: #000000">{{ 'Agent'|trans }}: {{ chickLifeCycle.agent.name }}</p>
-                    </div>
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <p style="color: #000000">{{ 'Farmer Name'|trans }}: {{ chickLifeCycle.customer.name }}</p>
+                    </div>
+                    <div class="col-md-4">
+                        <p style="color: #000000">{{ 'Address'|trans }}: {{ chickLifeCycle.customer.address }}</p>
+                    </div>
+                    <div class="col-md-4">
+                        <p style="color: #000000">{{ 'Agent'|trans }}: {{ chickLifeCycle.agent.name }}</p>
                     </div>
                     <div class="col-md-6">
                         <p style="color: #000000">{{ 'Reporting Date'|trans }}: {{ chickLifeCycle.reportingDate?chickLifeCycle.reportingDate|date("d-m-Y"):'' }}</p>
@@ -80,13 +83,13 @@
                                         <td><input type="number" class="form-control ageDays" value="{{ detail.ageDays }}"> </td>
                                         <td><input type="number" class="form-control mortalityPes" value="{{ detail.mortalityPes }}"> </td>
                                         <td class="mortalityPercent">{{ detail.mortalityPercent }} </td>
-                                        <td><input type="number" class="form-control weightStandard" value="{{ detail.weightStandard }}"> </td>
+                                        <td><input type="number" style="pointer-events: none" class="form-control weightStandard" value="{{ detail.weightStandard }}"> </td>
                                         <td><input type="number" class="form-control weightAchieved" value="{{ detail.weightAchieved }}"> </td>
                                         <td><input type="number" class="form-control feedTotalKg" value="{{ detail.feedTotalKg }}"> </td>
                                         <td class="perBird">{{ detail.perBird }}</td>
                                         <td><input type="number" class="form-control feedStandard" value="{{ detail.feedStandard }}"> </td>
-                                        <td><input type="number" class="form-control withoutMortality" value="{{ detail.withoutMortality }}"> </td>
-                                        <td><input type="number" class="form-control withMortality" value="{{ detail.withMortality }}"> </td>
+                                        <td class="withoutMortality">{{ detail.withoutMortality }}</td>
+                                        <td class="withMortality">{{ detail.withMortality }}</td>
                                         <td><input type="text" class="form-control feedType" value="{{ detail.feedType?detail.feedType:'' }}"> </td>
                                         <td>
                                             <div class="date_section">
@@ -103,6 +106,18 @@
 
                             </tbody>
                         </table>
+                        <div class="col-md-12">
+                            <div class="row">
+                                <div class="col-md-6">
+                                </div>
+                                <div class="col-md-6 text-right">
+                                    <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                                        <button type="button" data-chick-life-cycle-id="{{ chickLifeCycle.id }}" class="btn btn-info form-submit report_complete"><i class="fa fa-save"></i> Complete</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="clearfix"></div>
+                        </div>
                     </div>
                 </div>
             </div>

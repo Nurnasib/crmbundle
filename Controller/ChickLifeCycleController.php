@@ -105,8 +105,7 @@ class ChickLifeCycleController extends AbstractController
             return $this->redirectToRoute('chick_life_cycle_details_modal', ['id'=>$existReport->getId()]);
         }
         $data = $request->request->all();
-        $getRequestData = $_REQUEST;
-        $agentRepo = $this->getDoctrine()->getRepository(Agent::class);
+
         $form = $this->createForm(ChickLifeCycleFormType::class, $entity,array('user' => $this->getUser()))
             ->add('SaveAndCreate', SubmitType::class);
         $form->handleRequest($request);
@@ -218,8 +217,8 @@ class ChickLifeCycleController extends AbstractController
         $entity->setFeedTotalKg(isset($data['feedTotalKg'])?$data['feedTotalKg']:0);
         $entity->setPerBird($entity->calculatePerBird());
         $entity->setFeedStandard(isset($data['feedStandard'])?$data['feedStandard']:0);
-        $entity->setWithoutMortality(isset($data['withoutMortality'])?$data['withoutMortality']:0);
-        $entity->setWithMortality(isset($data['withMortality'])?$data['withMortality']:0);
+        $entity->setWithoutMortality($entity->calculateWithoutMortality());
+        $entity->setWithMortality($entity->calculateWithMortality());
         $entity->setFeedType(isset($data['feedType'])?$data['feedType']:null);
 
         $currentTime = date('H:i:s',strtotime('now'));
@@ -238,6 +237,8 @@ class ChickLifeCycleController extends AbstractController
                 'success'=>'Success',
                 'mortalityPercent'=>$entity->getMortalityPercent(),
                 'perBird'=>$entity->getPerBird(),
+                'withoutMortality'=>$entity->getWithoutMortality(),
+                'withMortality'=>$entity->getWithMortality(),
                 'data'=>$data,
                 'status'=>200,
             )
@@ -260,6 +261,22 @@ class ChickLifeCycleController extends AbstractController
         return new Response('Success');
     }
 
+    /**
+     * @param ChickLifeCycle $chickLifeCycle
+     * @Route("/life-cycle/{id}/complete", methods={"POST"}, name="crm_chick_life_cycle_complete", options={"expose"=true})
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     */
+    public function chickLifeCycleReportComplete(ChickLifeCycle $chickLifeCycle): Response
+    {
+        $chickLifeCycle->setLifeCycleState(ChickLifeCycle::LIFE_CYCLE_STATE_COMPLETE);
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($chickLifeCycle);
+        $em->flush();
+        return new JsonResponse(array(
+            'message'=>"Success",
+            'status'=>200
+        ));
+    }
     
 
 

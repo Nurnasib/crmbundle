@@ -15,10 +15,10 @@
                     </div>
 
                     <div class="col-md-6">
-                        <p style="color: #000000">{{ 'Agent'|trans }}: {{ chickLifeCycle.agent.name }}</p>
+                        <p style="color: #000000">{{ 'Farmer Name'|trans }}: {{ chickLifeCycle.customer.name }}</p>
                     </div>
                     <div class="col-md-6">
-                        <p style="color: #000000">{{ 'Farmer Name'|trans }}: {{ chickLifeCycle.customer.name }}</p>
+                        <p style="color: #000000">{{ 'Agent'|trans }}: {{ chickLifeCycle.agent.name }}</p>
                     </div>
                     <div class="col-md-6">
                         <p style="color: #000000">{{ 'Reporting Date'|trans }}: {{ chickLifeCycle.reportingDate?chickLifeCycle.reportingDate|date("d-m-Y"):'' }}</p>
@@ -100,6 +100,18 @@
 
                             </tbody>
                         </table>
+                        <div class="col-md-12">
+                            <div class="row">
+                                <div class="col-md-6">
+                                </div>
+                                <div class="col-md-6 text-right">
+                                    <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                                        <button type="button" data-chick-life-cycle-id="{{ chickLifeCycle.id }}" class="btn btn-info form-submit report_complete"><i class="fa fa-save"></i> Complete</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="clearfix"></div>
+                        </div>
                     </div>
                 </div>
             </div>

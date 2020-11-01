@@ -28,6 +28,22 @@ $('[data-remodal-id=modal]').remodal({
     closeOnOutsideClick: true
 });
 
+$(document).on('click','.report_complete', function () {
+    var crmChickLifeCycleId = $(this).attr('data-chick-life-cycle-id');
+
+    if(crmChickLifeCycleId===''){
+        return false;
+    }
+    $.ajax({
+        url    : Routing.generate('crm_chick_life_cycle_complete',{'id':crmChickLifeCycleId}),
+        type   : 'post',
+        dataType : 'json',
+        success: function(response){
+            console.log(response.message);
+        }
+    });
+});
+
 function formCommonProcess() {
 
     $('.form-body').slimScroll({
@@ -69,15 +85,11 @@ function formCommonProcess() {
 
                 case 'form-control ageDays':
                     dataInsertUsingAjax($(this));
+                    getSonaliWeightStandardUsingAjax($(this));
                     $(this).closest('tr').find('.mortalityPes').focus().select();
                     break;
 
                 case 'form-control mortalityPes':
-                    dataInsertUsingAjax($(this));
-                    $(this).closest('tr').find('.weightStandard').focus().select();
-                    break;
-
-                case 'form-control weightStandard':
                     dataInsertUsingAjax($(this));
                     $(this).closest('tr').find('.weightAchieved').focus().select();
                     break;
@@ -94,16 +106,6 @@ function formCommonProcess() {
                     break;
 
                 case 'form-control feedStandard':
-                    dataInsertUsingAjax($(this));
-                    $(this).closest('tr').find('.withoutMortality').focus().select();
-                    break;
-
-                case 'form-control withoutMortality':
-                    dataInsertUsingAjax($(this));
-                    $(this).closest('tr').find('.withMortality').focus().select();
-                    break;
-
-                case 'form-control withMortality':
                     dataInsertUsingAjax($(this));
                     $(this).closest('tr').find('.feedType').focus().select();
                     break;
@@ -145,8 +147,6 @@ function dataInsertUsingAjax(element) {
     var feedTotalKg=parentElement.find('.feedTotalKg').val();
     // var perBird=parentElement.find('.perBird').val();
     var feedStandard=parentElement.find('.feedStandard').val();
-    var withoutMortality=parentElement.find('.withoutMortality').val();
-    var withMortality=parentElement.find('.withMortality').val();
     var feedType=parentElement.find('.feedType').val();
     var proDate=parentElement.find('.proDate').val();
     var batchNo=parentElement.find('.batchNo').val();
@@ -169,8 +169,8 @@ function dataInsertUsingAjax(element) {
             'feedTotalKg':feedTotalKg,
             // 'perBird':perBird,
             'feedStandard':feedStandard,
-            'withoutMortality':withoutMortality,
-            'withMortality':withMortality,
+            // 'withoutMortality':withoutMortality,
+            // 'withMortality':withMortality,
             'feedType':feedType,
             'proDate':proDate,
             'batchNo':batchNo,
@@ -180,7 +180,30 @@ function dataInsertUsingAjax(element) {
         success: function(response){
             parentElement.find('.mortalityPercent').text(response.mortalityPercent);
             parentElement.find('.perBird').text(response.perBird);
-            console.log(response.mortalityPercent);
+            parentElement.find('.withoutMortality').text(response.withoutMortality);
+            parentElement.find('.withMortality').text(response.withMortality);
+        }
+    });
+}
+
+function getSonaliWeightStandardUsingAjax(element) {
+    var parentElement = element.closest('tr');
+
+    var ageDays = element.val();
+
+    if(ageDays===''){
+        return false;
+    }
+
+    $.ajax({
+        url    : Routing.generate('crm_sonali_weight_standard_by_age'),
+        type   : 'post',
+        data   : {
+            'ageDays':ageDays
+        },
+        dataType : 'json',
+        success: function(response){
+            parentElement.find('.weightStandard').val(response.weightStandard);
         }
     });
 }
@@ -698,4 +721,5 @@ $(document).on('change', '.agent', function(e) {
     });
 
 });
+
 

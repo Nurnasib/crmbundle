@@ -157,6 +157,13 @@ class ChickLifeCycleDetails
     private $createdAt;
 
     /**
+     * @var \DateTime
+     * @Gedmo\Timestampable(on="update")
+     * @ORM\Column(name="updated_at", type="datetime", nullable=true)
+     */
+    private $updatedAt;
+
+    /**
      * @return int
      */
     public function getId()
@@ -375,6 +382,16 @@ class ChickLifeCycleDetails
         $this->withoutMortality = $withoutMortality;
     }
 
+    public function calculateWithoutMortality(){
+        $result = 0;
+        if($this->getTotalBirds()>0 && $this->getWeightAchieved()>0) {
+
+            $result = (($this->getFeedTotalKg() / $this->getTotalBirds()) / $this->getWeightAchieved()) * 1000;
+        }
+        return number_format($result,2,'.','');
+
+    }
+
     /**
      * @return float
      */
@@ -389,6 +406,17 @@ class ChickLifeCycleDetails
     public function setWithMortality(float $withMortality): void
     {
         $this->withMortality = $withMortality;
+    }
+
+    public function calculateWithMortality(){
+        $result = 0;
+        if($this->getTotalBirds()>0 && $this->getWeightAchieved()>0){
+
+            $result = (($this->getFeedTotalKg()/($this->getTotalBirds()-$this->getMortalityPes()))/$this->getWeightAchieved())*1000;
+        }
+
+        return number_format($result,2,'.','');
+
     }
 
     /**
@@ -470,5 +498,22 @@ class ChickLifeCycleDetails
     {
         $this->createdAt = $createdAt;
     }
+
+    /**
+     * @return \DateTime
+     */
+    public function getUpdatedAt(): \DateTime
+    {
+        return $this->updatedAt;
+    }
+
+    /**
+     * @param \DateTime $updatedAt
+     */
+    public function setUpdatedAt(\DateTime $updatedAt): void
+    {
+        $this->updatedAt = $updatedAt;
+    }
+
 
 }

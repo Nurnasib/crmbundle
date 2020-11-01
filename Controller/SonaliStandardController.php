@@ -109,6 +109,25 @@ class SonaliStandardController extends AbstractController
         return new Response('Success');
     }
 
+    /**
+     * @Route("/weight/by/age", methods={"POST"}, name="crm_sonali_weight_standard_by_age", options={"expose"=true})
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     */
+
+    public function getSonaliWeightStandardByAge(Request $request): Response
+    {
+        $data = $request->request->all();
+        /**@var SonaliStandard $entity*/
+        $entity = $this->getDoctrine()->getRepository(SonaliStandard::class)->findOneBy(array('age'=>$data['ageDays']));
+        return new JsonResponse(
+            array(
+                'success'=>'Success',
+                'weightStandard'=>$entity->getTargetBodyWeight(),
+                'status'=>200,
+            )
+        );
+
+    }
     
 
 
