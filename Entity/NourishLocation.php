@@ -15,7 +15,7 @@ use Terminalbd\KpiBundle\Entity\LocationSalesTarget;
  *
  * @Gedmo\Tree(type="materializedPath")
  * @ORM\Table(name="nourish_location")
- * @ORM\Entity(repositoryClass="App\Repository\Admin\NourishLocationRepository")
+ * @ORM\Entity(repositoryClass="Terminalbd\CrmBundle\Repository\NourishLocationRepository")
  */
 class NourishLocation
 {
@@ -38,7 +38,7 @@ class NourishLocation
 
     /**
      * @var Terminal
-     * @ORM\OneToMany(targetEntity="Terminal", mappedBy="location")
+     * @ORM\OneToMany(targetEntity="App\Entity\Admin\Terminal", mappedBy="location")
      **/
     protected $terminals;
 
@@ -51,7 +51,7 @@ class NourishLocation
 
     /**
      * @Gedmo\TreeParent
-     * @ORM\ManyToOne(targetEntity="Location", inversedBy="children")
+     * @ORM\ManyToOne(targetEntity="Terminalbd\CrmBundle\Entity\NourishLocation", inversedBy="children")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="SET NULL", nullable=true)
      * })
@@ -71,7 +71,7 @@ class NourishLocation
     private $oldId;
 
     /**
-     * @ORM\OneToMany(targetEntity="Location" , mappedBy="parent")
+     * @ORM\OneToMany(targetEntity="Terminalbd\CrmBundle\Entity\NourishLocation" , mappedBy="parent")
      * @ORM\OrderBy({"name" = "ASC"})
      **/
     private $children;
@@ -112,7 +112,7 @@ class NourishLocation
      * Set name
      *
      * @param string $name
-     * @return Location
+     * @return NourishLocation
      */
     public function setName($name)
     {
@@ -132,7 +132,7 @@ class NourishLocation
     }
 
     /**
-     * @return Location
+     * @return NourishLocation
      */
     public function getParent()
     {
