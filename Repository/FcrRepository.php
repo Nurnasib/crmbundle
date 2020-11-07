@@ -12,6 +12,7 @@
 namespace Terminalbd\CrmBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
+use Terminalbd\CrmBundle\Entity\Fcr;
 
 /**
  * This custom Doctrine repository contains some methods which are useful when
@@ -23,6 +24,22 @@ use Doctrine\ORM\EntityRepository;
  */
 class FcrRepository extends EntityRepository
 {
+
+    public function getFcrReportByReportingDateAndFeedType($data)
+    {
+        if(isset($data['reporting_month']) && isset($data['fcr_of_feed'])){
+            $startDate = date('Y-m-01', strtotime($data['reporting_month']));
+            $endDate = date('Y-m-t', strtotime($data['reporting_month']));
+            $query = $this->createQueryBuilder('f')
+                ->where('f.reportingMonth >= :startDate')
+                ->andWhere('f.reportingMonth <= :endDate')
+                ->andWhere('f.fcrOfFeed = :type')
+                ->setParameters(array('startDate'=>$startDate, 'endDate'=>$endDate, 'type'=>$data['fcr_of_feed']));
+
+            return $query->getQuery()->getResult();
+        }
+        return array();
+    }
 
 
 }

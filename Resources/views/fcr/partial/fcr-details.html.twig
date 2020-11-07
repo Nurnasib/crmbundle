@@ -1,0 +1,26 @@
+{% for fcrDetail in entity.fcrDetails %}
+<tr class="added_item">
+    <td>{{ fcrDetail.agent.name }}</td>
+    <td>{{ fcrDetail.hatchingDate|date('d-m-Y') }}</td>
+    <td>{{ fcrDetail.totalBirds }}</td>
+    <td>{{ fcrDetail.ageDay }}</td>
+    <td>{{ fcrDetail.mortalityPes }}</td>
+    <td>{{ fcrDetail.mortalityPercent }}</td>
+    <td>{{ fcrDetail.weight }}</td>
+    <td>{{ fcrDetail.feedConsumptionTotalKg }}</td>
+    <td>{{ fcrDetail.feedConsumptionPerBird }}</td>
+    <td>{{ fcrDetail.fcrWithoutMortality }}</td>
+    <td>{{ fcrDetail.fcrWithMortality }}</td>
+    <td>{{ fcrDetail.hatchery|default('') }}</td>
+    <td>{{ fcrDetail.breed }}</td>
+    <td>{{ fcrDetail.feed }}</td>
+    {% if entity.fcrOfFeed == "BEFORE" %}
+    <td>{{ fcrDetail.feedMill }}</td>
+    <td>{{ fcrDetail.feedType }}</td>
+    <td>{{ fcrDetail.proDate|date('d-m-Y') }}</td>
+    <td>{{ fcrDetail.batchNo }}</td>
+    {% endif %}
+    <td>{{ fcrDetail.remarks }}</td>
+    <td>X</td>
+</tr>
+{% endfor %}

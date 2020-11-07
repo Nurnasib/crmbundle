@@ -1,0 +1,122 @@
+<div class="portlet box ">
+    <div class="portlet-title">
+        <div class="caption">{{ ' FCR'|trans }} </div>
+    </div>
+    {#{{ dump(report) }}#}
+
+    <div style="padding: 0" class="portlet-body form">
+        <div class="row form-body ">
+            <div class="form-inner-no-space">
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <h4>NOURISH POULTRY & HATCHERY LTD</h4>
+                        <h5>Uttara, Dhaka.</h5>
+                    </div>
+                    <input type="hidden" class="fcr_id" value="{{ entity.id }}">
+                    <div class="col-md-4">
+                        <p style="color: #000000">{{ 'Name of CSO/Sr.CSO:'|trans }}: {{ entity.employee.name }}</p>
+                    </div>
+                    <div class="col-md-4">
+                        <p style="color: #000000">{{ 'FCR OF NOURISH FEED'|trans }} ({{ entity.fcrOfFeed }} Sale)</p>
+                    </div>
+                    <div class="col-md-4">
+                        <p style="color: #000000">{{ 'Reporting Month'|trans }}: {{ entity.reportingMonth|date("F, Y") }}</p>
+                    </div>
+                </div>
+                <div style="padding-top: 0" class="card-body card-body-inner">
+                    <div class="row">
+                        <table class="table table-striped table-bordered table-hover" id="fcrReportDetails">
+                            <thead class="thead-dark">
+                            <tr>
+
+                                <th scope="col" rowspan="2">Agent</th>
+                                <th style="width: 105px" scope="col" rowspan="2">Hatching date</th>
+                                <th scope="col" rowspan="2">Total Birds</th>
+                                <th scope="col" rowspan="2">Age (Day)</th>
+                                <th scope="col" colspan="2">Mortality</th>
+                                <th scope="col" rowspan="2" colspan="1">Weight (gm)</th>
+                                <th scope="col" colspan="2">Feed Consumption</th>
+                                <th scope="col" colspan="2">FCR</th>
+                                <th scope="col" rowspan="2">Hatchery</th>
+                                <th scope="col" rowspan="2">Breed</th>
+                                <th scope="col" rowspan="2">Feed</th>
+                                {% if entity.fcrOfFeed == "BEFORE" %}
+                                <th scope="col" rowspan="2">Feed Mill</th>
+                                <th scope="col" rowspan="2">Feed Type</th>
+                                <th style="width: 105px" scope="col" rowspan="2">Pro. Date</th>
+                                <th scope="col" rowspan="2">Batch No.</th>
+                                {% endif %}
+                                <th scope="col" rowspan="2">Remarks</th>
+                                <th scope="col" rowspan="2"></th>
+
+                            </tr>
+                            <tr>
+
+                                <th scope="col">Pes</th>
+                                <th scope="col">%</th>
+
+                                <th scope="col">Total (kg)</th>
+                                <th scope="col">Per bird (gm)</th>
+
+                                <th scope="col">Without  M</th>
+                                <th scope="col">With M</th>
+
+                            </tr>
+                            <tr>
+                                <td>
+                                    <select name="agent" id="agent" class="form-control agent">
+                                        <option value="">Select Agent</option>
+                                        {% for agent in agents %}
+                                            <option value="{{agent.id}}"> {{agent.name}}  ({{ agent.groupName }}) </option>
+                                        {% endfor %}
+                                    </select>
+                                </td>
+                                <td>
+                                    <div class="date_section">
+                                        <input type="text" data-meta-key="HatchingDate" class="form-control hatchingDate datePicker" value="">
+                                    </div>
+                                </td>
+                                <td><input type="number" min="0" class="form-control totalBirds" name="totalBirds" value=""> </td>
+                                <td><input type="number" min="0" class="form-control ageDays" value=""> </td>
+                                <td><input type="number" min="0" class="form-control mortalityPes" value=""> </td>
+                                <td class="mortalityPercent"> </td>
+                                <td><input type="number" min="0" class="form-control weightAchieved" value=""> </td>
+                                <td><input type="number" min="0" class="form-control feedTotalKg" value=""> </td>
+                                <td class="perBird"></td>
+                                <td class="withoutMortality"></td>
+                                <td class="withMortality"></td>
+                                <td><input type="text" class="form-control hatchery" value=""> </td>
+                                <td><input type="text" class="form-control breed" value=""> </td>
+                                <td><input type="text" class="form-control {{ entity.fcrOfFeed }} feed" value=""> </td>
+
+                                {% if entity.fcrOfFeed =='BEFORE' %}
+                                <td><input type="text" class="form-control feedMill" value=""> </td>
+                                <td><input type="text" class="form-control feedType" value=""> </td>
+                                <td>
+                                    <div class="date_section">
+                                        <input type="text" class="form-control proDate datePicker" value="">
+                                    </div>
+                                </td>
+                                <td><input type="text" class="form-control batchNo" value=""> </td>
+                               {% endif %}
+
+                                <td><input type="text" class="form-control remarks" value=""> </td>
+                                <td><button type="button" id="fcr_details_add_button" class="btn btn-primary btn-sm fcr_details_add_button">Add</button> </td>
+                            </tr>
+                            </thead>
+                            <tbody>
+
+
+                                {% if entity.fcrDetails is not empty %}
+                                {% include '@TerminalbdCrm/fcr/partial/fcr-details.html.twig' %}
+
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

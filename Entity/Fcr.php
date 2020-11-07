@@ -16,6 +16,8 @@ use Gedmo\Mapping\Annotation as Gedmo;
  */
 class Fcr
 {
+    const FCR_FEED_BEFORE = 'BEFORE';
+    const FCR_FEED_AFTER = 'AFTER';
     /**
      * @var integer
      * @ORM\Column(name="id", type="integer")
@@ -26,8 +28,14 @@ class Fcr
     private $id;
 
     /**
+     * @var FcrDetails
+     * @ORM\OneToMany(targetEntity="FcrDetails", mappedBy="fcr")
+     */
+    private $fcrDetails;
+
+    /**
      * @var User
-     * @ORM\ManyToOne(targetEntity="App\Entity\User" , inversedBy="chicklifecycle")
+     * @ORM\ManyToOne(targetEntity="App\Entity\User" , inversedBy="fcr")
      */
     private $employee;
 
@@ -40,90 +48,17 @@ class Fcr
     private $fcrOfFeed;
 
     /**
-     * @var Agent
-     * @ORM\ManyToOne(targetEntity="App\Entity\Core\Agent" , inversedBy="fcr")
+     * @var \DateTime
+     * @ORM\Column(name="reporting_month", type="date", nullable=true)
      */
-    private $agent;
-
-
-    /**
-     * @var string
-     * @Orm\Column(name="reporting_month" ,type="string",nullable=true)
-     */
-
     private $reportingMonth;
 
     /**
-     * @var string
-     * @Orm\Column(name="hatching_date" ,type="string",nullable=true)
+     * @var \DateTime
+     * @Gedmo\Timestampable(on="create")
+     * @ORM\Column(name="created_at", type="datetime")
      */
-    private $hatchingDate;
-
-    /**
-     * @var string
-     * @Orm\Column(name="totalbirds" ,type="string",nullable=true)
-     */
-
-    private $totalbirds;
-
-    /**
-     * @var string
-     * @Orm\Column(name="age_day", type="string",nullable=true)
-     */
-    private $ageday;
-
-
-    /**
-     * @var string
-     * @Orm\Column(name="pes", type="string",nullable=true)
-     */
-
-    private $Pes;
-
-    /**
-     * @var string
-     * @Orm\Column(name="weight", type="string",nullable=true)
-     */
-
-    private $weight;
-
-
-    /**
-     * @var string
-     * @Orm\Column(name="total_feed_consumption", type="string",nullable=true)
-     */
-
-    private $totalFeedConsumption;
-
-
-    /**
-     * @var string
-     * @Orm\Column(name="hatchery", type="text",nullable=true)
-     */
-
-    private $hatchery;
-
-    /**
-     * @var string
-     * @Orm\Column(name="breed", type="text",nullable=true)
-     */
-
-    private $breed;
-
-    /**
-     * @var string
-     * @Orm\Column(name="feed", type="text",nullable=true)
-     */
-
-    private $feed;
-
-
-    /**
-     * @var string
-     * @Orm\Column(name="remarks", type="text",nullable=true)
-     */
-
-    private $remarks;
+    private $createdAt;
 
     /**
      * @return int
@@ -159,7 +94,7 @@ class Fcr
     }
 
     /**
-     * @return string
+     * @return \DateTime
      */
     public function getReportingMonth()
     {
@@ -167,190 +102,12 @@ class Fcr
     }
 
     /**
-     * @param string $reportingMonth
+     * @param \DateTime $reportingMonth
+     * @ORM\PrePersist
      */
-    public function setReportingMonth($reportingMonth)
+    public function setReportingMonth(\DateTime $reportingMonth): void
     {
         $this->reportingMonth = $reportingMonth;
-    }
-
-    /**
-     * @return string
-     */
-    public function getHatchingDate()
-    {
-        return $this->hatchingDate;
-    }
-
-    /**
-     * @param string $hatchingDate
-     */
-    public function setHatchingDate($hatchingDate)
-    {
-        $this->hatchingDate = $hatchingDate;
-    }
-
-    /**
-     * @return string
-     */
-    public function getTotalbirds()
-    {
-        return $this->totalbirds;
-    }
-
-    /**
-     * @param string $totalbirds
-     */
-    public function setTotalbirds($totalbirds)
-    {
-        $this->totalbirds = $totalbirds;
-    }
-
-    /**
-     * @return string
-     */
-    public function getAgeday()
-    {
-        return $this->ageday;
-    }
-
-    /**
-     * @param string $ageday
-     */
-    public function setAgeday($ageday)
-    {
-        $this->ageday = $ageday;
-    }
-
-
-    /**
-     * @return string
-     */
-    public function getWeight()
-    {
-        return $this->weight;
-    }
-
-    /**
-     * @param string $weight
-     */
-    public function setWeight($weight)
-    {
-        $this->weight = $weight;
-    }
-
-    /**
-     * @return string
-     */
-    public function getTotalFeedConsumption()
-    {
-        return $this->totalFeedConsumption;
-    }
-
-    /**
-     * @param string $totalFeedConsumption
-     */
-    public function setTotalFeedConsumption($totalFeedConsumption)
-    {
-        $this->totalFeedConsumption = $totalFeedConsumption;
-    }
-
-
-
-    /**
-     * @return string
-     */
-    public function getHatchery()
-    {
-        return $this->hatchery;
-    }
-
-    /**
-     * @param string $hatchery
-     */
-    public function setHatchery($hatchery)
-    {
-        $this->hatchery = $hatchery;
-    }
-
-    /**
-     * @return string
-     */
-    public function getBreed()
-    {
-        return $this->breed;
-    }
-
-    /**
-     * @param string $breed
-     */
-    public function setBreed($breed)
-    {
-        $this->breed = $breed;
-    }
-
-    /**
-     * @return string
-     */
-    public function getFeed()
-    {
-        return $this->feed;
-    }
-
-    /**
-     * @param string $feed
-     */
-    public function setFeed($feed)
-    {
-        $this->feed = $feed;
-    }
-
-    /**
-     * @return string
-     */
-    public function getRemarks()
-    {
-        return $this->remarks;
-    }
-
-    /**
-     * @param string $remarks
-     */
-    public function setRemarks($remarks)
-    {
-        $this->remarks = $remarks;
-    }
-
-    /**
-     * @return string
-     */
-    public function getPes()
-    {
-        return $this->Pes;
-    }
-
-    /**
-     * @param string $Pes
-     */
-    public function setPes($Pes)
-    {
-        $this->Pes = $Pes;
-    }
-
-    /**
-     * @return Agent
-     */
-    public function getAgent()
-    {
-        return $this->agent;
-    }
-
-    /**
-     * @param Agent $agent
-     */
-    public function setAgent($agent)
-    {
-        $this->agent = $agent;
     }
 
     /**
@@ -367,6 +124,38 @@ class Fcr
     public function setEmployee(User $employee)
     {
         $this->employee = $employee;
+    }
+
+    /**
+     * @return FcrDetails
+     */
+    public function getFcrDetails()
+    {
+        return $this->fcrDetails;
+    }
+
+    /**
+     * @param FcrDetails $fcrDetails
+     */
+    public function setFcrDetails(FcrDetails $fcrDetails): void
+    {
+        $this->fcrDetails = $fcrDetails;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getCreatedAt(): \DateTime
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * @param \DateTime $createdAt
+     */
+    public function setCreatedAt(\DateTime $createdAt): void
+    {
+        $this->createdAt = $createdAt;
     }
 
 

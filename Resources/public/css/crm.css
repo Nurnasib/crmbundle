@@ -1,0 +1,44 @@
+#fcrReportDetails .form-control{
+    padding: 0px!important;
+}
+#fcrReportDetails thead td{
+    padding-left: 1px!important;
+    padding-right: 1px!important;
+}
+
+/* Chrome, Safari, Edge, Opera */
+#fcrReportDetails input::-webkit-outer-spin-button,
+
+#fcrReportDetails input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+
+}
+
+/* Firefox */
+#fcrReportDetails input[type=number] {
+    -moz-appearance: textfield;
+
+}
+
+#datatable .form-control{
+    padding: 0px!important;
+}
+#datatable thead td{
+    padding-left: 1px!important;
+    padding-right: 1px!important;
+}
+
+/* Chrome, Safari, Edge, Opera */
+#datatable input::-webkit-outer-spin-button,
+
+#datatable input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Firefox */
+#datatable input[type=number] {
+    -moz-appearance: textfield;
+
+}

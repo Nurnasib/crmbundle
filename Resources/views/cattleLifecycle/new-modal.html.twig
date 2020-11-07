@@ -1,0 +1,84 @@
+<div class="portlet box green ">
+    <div class="portlet-title">
+        <div class="caption">{{ ' Life Cycle'|trans }} </div>
+    </div>
+    {#{{ dump(report) }}#}
+
+    <div class="portlet-body form">
+        {{ form_start(form, {'attr': {'action': path('cattle_new_modal',{'id':crmCustomer.id,'report':report.id }),'class': 'form-horizontal right','id':'chick_life_cycle_form'}}) }}
+        <div class="row form-body ">
+            <div class="form-inner-no-space">
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <h4>{{report.name}}</h4>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-md-4 control-label" for="">{{ 'Agent'|trans }}</label>
+                            <div class="col-md-6">
+                                <span class="not-blank"> {{ 'Required'|trans }}</span>
+                                <p style="text-align: left" class="form-control">{{ crmCustomer.agent.name }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-md-4 control-label" for="">{{ 'Farmer Name'|trans }}</label>
+                            <div class="col-md-6">
+                                <span class="not-blank"> {{ 'Required'|trans }}</span>
+                                <p style="text-align: left" class="form-control">{{ crmCustomer.name }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-md-4 control-label" for="">{{ 'Reporting Date'|trans }}</label>
+                            <div class="col-md-6">
+                                <span class="not-blank"> {{ 'Required'|trans }}</span>
+                                <div class="date_section">
+                                    {{ form_widget(form.reporting_date) }}
+                                    {#<input autocomplete="off" type="text" name="reporting_date" class="form-control datePicker" value="{{ entity.reportingDate?entity.reportingDate|date("d-m-Y"):'' }}">#}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-md-4 control-label" for="">{{ 'Breed Type'|trans }}</label>
+                            <div class="col-md-6">
+                                <span class="not-blank"> {{ 'Required'|trans }}</span>
+                                {{ form_widget(form.breed_type) }}
+                                {{ form_errors(form.breed_type) }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            {{ form_label(form.remarks, 'Remarks'|trans, {'label_attr': {'class': 'col-md-1'}}) }}
+                            <div class="col-md-11">
+                                {{ form_widget(form.remarks) }}
+                                {{ form_errors(form.remarks) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <div class="col-md-6 ">
+                    </div>
+                    <div class="col-md-6 text-right">
+                        <div class="btn-group" role="group" aria-label="Button group with nested dropdown"><button type="reset" class="btn btn-sm yellow-bg white-font"><i class="fa fa-refresh"></i>Restore</button>
+                            {{ form_widget(form.SaveAndCreate, {label: 'label.save.continue',value:'label.save.continue', attr: { class: 'btn btn-info form-submit'}}) }}
+                        </div>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+        </div>
+        {{ form_widget(form._token) }}
+        {{ form_end(form) }}
+    </div>
+</div>

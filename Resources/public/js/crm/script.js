@@ -44,6 +44,23 @@ $(document).on('click','.report_complete', function () {
     });
 });
 
+$(document).on('click','.cattle_report_complete', function () {
+    var crmCattleLifeCycleId = $(this).attr('data-cattle-life-cycle-id');
+
+    if(crmCattleLifeCycleId===''){
+        return false;
+    }
+    $.ajax({
+        url    : Routing.generate('crm_cattle_life_cycle_complete',{'id':crmCattleLifeCycleId}),
+        type   : 'post',
+        dataType : 'json',
+        success: function(response){
+            console.log(response.message);
+            location.reload();
+        }
+    });
+});
+
 function formCommonProcess() {
 
     $('.form-body').slimScroll({
@@ -249,6 +266,7 @@ function formSubmitProcess() {
                     $(".alert-success").html(response);
                     $(".form-submit").html("SaveAndCreate").prop("disabled", false);
                     $('form#chick_life_cycle_form')[0].reset();
+                    location.reload();
                     // setTimeout( explode, 2000);
                 }
             });
@@ -291,6 +309,7 @@ function formEditSubmitProcess() {
                     $("#process-msg").show();
                     $(".alert-success").html(response);
                     setTimeout( explode, 2000);
+                    location.reload();
                 }
             });
         }
@@ -314,7 +333,7 @@ $('.feedTotalkg, .totalBirds').on('keypress keyup blur',function () {
     var totalbirds= $('.totalBirds').val();
     var feedTotalkg=$('.feedTotalkg').val();
     if(feedTotalkg != '' && totalbirds!=''){
-        var calculation=(parseFloat(feedTotalkg)/(totalbirds))*(1000)
+        var calculation=(parseFloat(feedTotalkg)/(totalbirds))*(1000);
         $('.perBird').val(calculation);
         $('.perBird').text(calculation);
     }

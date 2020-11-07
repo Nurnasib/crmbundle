@@ -12,24 +12,14 @@
 namespace Terminalbd\CrmBundle\Form;
 
 
-use App\Entity\Core\Agent;
 use App\Entity\User;
-use App\Form\Type\DateTimePickerType;
-use App\Repository\Core\AgentRepository;
-use Doctrine\ORM\EntityRepository;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\DataTransformer\DateTimeToStringTransformer;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints\NotBlank;
-use Terminalbd\CrmBundle\Entity\Fcr;
+use Terminalbd\CrmBundle\Entity\CattleLifeCycle;
 
 
 /**
@@ -37,7 +27,7 @@ use Terminalbd\CrmBundle\Entity\Fcr;
  *
  * @author Md Shafiqul Islam <shafiqabs@gmail.com>
  */
-class FcrFormType extends AbstractType
+class CattleLifeCycleFormType extends AbstractType
 {
 
     /**
@@ -45,16 +35,17 @@ class FcrFormType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $builder
 
-            ->add('fcr_of_feed', ChoiceType::class, [
-                'choices'  => [
-                    'AFTER' => 'AFTER',
-                    'BEFORE' => 'BEFORE',
-                ]
+        $user =  $options['user']->getId();
+        $builder
+            ->add('breed_type', TextType::class, [
+                'attr' => ['autofocus' => true],
+                'label' => 'label.breed',
+                'required'=>false
+
             ])
-            ->add($builder->create('reporting_month', TextType::class, array(
-                'label' => 'Order Date',
+            ->add($builder->create('reporting_date', TextType::class, array(
+                'label' => 'Reporting Date',
                 'attr' => array(
                     'class' => 'datePicker',
                     'autocomplete' => 'off',
@@ -62,6 +53,12 @@ class FcrFormType extends AbstractType
                 ),
                 'empty_data' => new \DateTime(),
             ))->addViewTransformer(new DateTimeToStringTransformer(null, null, 'd-m-Y')))
+
+            ->add('remarks', TextareaType::class, [
+                'attr' => ['autofocus' => true],
+                'label' => 'label.remarks',
+                'required' => false,
+            ])
         ;
     }
 
@@ -71,9 +68,8 @@ class FcrFormType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Fcr::class,
+            'data_class' => CattleLifeCycle::class,
             'user' => User::class,
-            'agentRepo' => AgentRepository::class,
         ]);
     }
 }

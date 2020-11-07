@@ -14,6 +14,7 @@ namespace Terminalbd\CrmBundle\Entity;
 use App\Entity\User;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Symfony\Component\HttpKernel\KernelInterface;
 
 /**
  * @ORM\Entity(repositoryClass="Terminalbd\CrmBundle\Repository\SettingRepository")
@@ -22,6 +23,16 @@ use Gedmo\Mapping\Annotation as Gedmo;
  */
 class Employee
 {
+    private $rootDir;
+
+    public function __construct(KernelInterface $kernel)
+    {
+        $this->rootDir = $kernel->getProjectDir();
+    }
+
+    public function getRootDir(){
+        return $this->rootDir;
+    }
 
     /**
      * @var integer

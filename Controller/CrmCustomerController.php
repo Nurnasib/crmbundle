@@ -38,7 +38,8 @@ class CrmCustomerController extends AbstractController
     public function index()
     {
         $entities=$this->getDoctrine()->getRepository(CrmCustomer::class)->findAll();
-
+        $webPath = $this->get('kernel')->getProjectDir();
+//        var_dump($webPath);die;
         return $this->render('@TerminalbdCrm/crmcustomer/index.html.twig', [
             'entities' =>$entities
         ]);
