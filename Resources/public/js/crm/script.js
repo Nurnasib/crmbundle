@@ -150,6 +150,13 @@ function formCommonProcess() {
         }
     });
 
+    $('.cattle_life_cycle .form-control').keypress(function (e) {
+        if (e.which === 13) {
+            var index = $('.cattle_life_cycle .form-control').index(this) + 1;
+            $('.cattle_life_cycle .form-control').eq(index).focus().select();
+        }
+    });
+
 }
 
 function dataInsertUsingAjax(element) {
@@ -230,6 +237,7 @@ function initIntegerMask(el){
 }
 
 function formSubmitProcess() {
+    var cattleLifeCycle_id = $('.cattleLifeCycle_id').val();
 
     $("#chick_life_cycle_form").validate({
 
@@ -266,8 +274,11 @@ function formSubmitProcess() {
                     $(".alert-success").html(response);
                     $(".form-submit").html("SaveAndCreate").prop("disabled", false);
                     $('form#chick_life_cycle_form')[0].reset();
-                    location.reload();
+                    // location.reload();
                     // setTimeout( explode, 2000);
+                    console.log(cattleLifeCycle_id);
+                    var refreshUrl = Routing.generate('crm_cattle_life_cycle_refresh',{'id':cattleLifeCycle_id});
+                    $("tbody.dairyLifeCycleDetailsSection").load(refreshUrl);
                 }
             });
         }

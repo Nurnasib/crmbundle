@@ -30,6 +30,7 @@ use Terminalbd\CrmBundle\Form\CattleLifeCycleDetailsFormType;
 use Terminalbd\CrmBundle\Form\CattleLifeCycleFormType;
 use Terminalbd\CrmBundle\Entity\Setting;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Terminalbd\CrmBundle\Form\DairyLifeCycleDetailsFormType;
 
 
 /**
@@ -124,6 +125,42 @@ class CattleLifeCycleController extends AbstractController
     {
         $data = $request->request->all();
         $entity = new CattleLifeCycleDetails();
+
+        if($cattleLifeCycle->getReport()->getSlug()=='dairy-life-cycle'){
+            $form = $this->createForm(DairyLifeCycleDetailsFormType::class, $entity,array('user' => $this->getUser()))
+                ->add('SaveAndCreate', SubmitType::class, array('attr' => array('class' => 'btn btn-primary btn-sm')));
+            $form->handleRequest($request);
+            if ($form->isSubmitted() && $form->isValid()) {
+
+                $visitingDate = isset($data['dairy_life_cycle_details_form']['visiting_date'])?date('Y-m-d',strtotime($data['dairy_life_cycle_details_form']['visiting_date'])):date('Y-m-d',strtotime('now'));
+
+                $entity->setVisitingDate(new \DateTime($visitingDate));
+
+                $entity->setAverageWeightPerKgConsumptionFeed($entity->calculateAverageWeightPerKgConsumptionFeed());
+                $entity->setAverageWeightPerKgDm($entity->calculateAverageWeightPerKgDm());
+                $entity->setConsumptionFeedIntakeTotal($entity->calculationConsumptionFeedIntakeTotal());
+                $entity->setDmOfFodderGreenGrassKg($entity->calculateDmOfFodderGreenGrassKg());
+                $entity->setDmOfFodderStrawKg($entity->calculateDmOfFodderStrawKg());
+                $entity->setTotalDmKg($entity->calculateTotalDmKg());
+                $entity->setDmRequirementByBwtKg($entity->calculateDmRequirementByBwtKgForDairy());
+
+
+                $entity->setCrmCattleLifeCycle($cattleLifeCycle);
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($entity);
+                $em->flush();
+                $this->addFlash('success', 'post.created_successfully');
+                if ($form->get('SaveAndCreate')->isClicked()) {
+                    return new Response('success');
+//                      return $this->redirectToRoute('cattle_life_cycle_details_modal', ['id'=>$cattleLifeCycle->getId()]);
+                }
+            }
+            return $this->render('@TerminalbdCrm/cattleLifecycle/dairy-life-cycle-details-report-modal.html.twig', [
+                'cattleLifeCycle' => $cattleLifeCycle,
+                'form' => $form->createView(),
+            ]);
+        }
+
         $form = $this->createForm(CattleLifeCycleDetailsFormType::class, $entity,array('user' => $this->getUser()))
             ->add('SaveAndCreate', SubmitType::class, array('attr' => array('class' => 'btn btn-primary btn-sm')));
         $form->handleRequest($request);
@@ -154,9 +191,26 @@ class CattleLifeCycleController extends AbstractController
                 //  return $this->redirectToRoute('cattle_new_modal', ['id'=>$crmCustomer->getId(),'report'=>$report->getId()]);
             }
         }
-        return $this->render('@TerminalbdCrm/cattleLifecycle/cattle-life-cycle-details-report-modal.html.twig', [
+        return $this->render('@TerminalbdCrm/cattleLifecycle/fattening-life-cycle-details-report-modal.html.twig', [
             'cattleLifeCycle' => $cattleLifeCycle,
             'form' => $form->createView(),
+        ]);
+    }
+
+    /**
+     * @param CattleLifeCycle $cattleLifeCycle
+     * @Route("/life-cycle/{id}/refresh", methods={"GET"}, name="crm_cattle_life_cycle_refresh", options={"expose"=true})
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     */
+    public function cattleLifeCycleReportRefresh(CattleLifeCycle $cattleLifeCycle): Response
+    {
+        if($cattleLifeCycle->getReport()->getSlug()=='dairy-life-cycle') {
+            return $this->render('@TerminalbdCrm/cattleLifecycle/partial/dairy-life-cycle.html.twig', [
+                'cattleLifeCycle' => $cattleLifeCycle,
+            ]);
+        }
+        return $this->render('@TerminalbdCrm/cattleLifecycle/partial/fattening-life-cycle.html.twig', [
+            'cattleLifeCycle' => $cattleLifeCycle,
         ]);
     }
 

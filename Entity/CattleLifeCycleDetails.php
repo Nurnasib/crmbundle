@@ -378,7 +378,8 @@ class CattleLifeCycleDetails
      */
     public function getAverageWeightPerDay()
     {
-        return $this->averageWeightPerDay;
+        $result= $this->averageWeightPerDay;
+        return number_format($result,2,'.','');
     }
 
     /**
@@ -394,7 +395,7 @@ class CattleLifeCycleDetails
         if($this->getDurationOfBwtDifference()>0){
             $result= $this->getBodyWeightDifference()/$this->getDurationOfBwtDifference();
         }
-        return number_format($result,2,'.','');
+        return $result;
     }
 
     /**
@@ -402,7 +403,8 @@ class CattleLifeCycleDetails
      */
     public function getAverageWeightPerKgConsumptionFeed()
     {
-        return $this->averageWeightPerKgConsumptionFeed;
+        $result=$this->averageWeightPerKgConsumptionFeed;
+        return number_format($result,2,'.','');
     }
 
     /**
@@ -415,10 +417,11 @@ class CattleLifeCycleDetails
 
     public function calculateAverageWeightPerKgConsumptionFeed(){
         $result = 0;
-        if($this->calculationConsumptionFeedIntakeTotal()>0){
-            $result = $this->calculateAverageWeightPerDay()/$this->calculationConsumptionFeedIntakeTotal();
+        $totalFeedIntakeTotal = $this->getConsumptionFeedIntakeReadyFeed()+$this->getConsumptionFeedIntakeConventional();
+        if($totalFeedIntakeTotal>0){
+            $result = $this->getAverageWeightPerDay()/$totalFeedIntakeTotal;
         }
-        return number_format($result,2,'.','');
+        return $result;
     }
 
     /**
@@ -426,7 +429,8 @@ class CattleLifeCycleDetails
      */
     public function getAverageWeightPerKgDm()
     {
-        return $this->averageWeightPerKgDm;
+        $result=$this->averageWeightPerKgDm;
+        return number_format($result,2,'.','');
     }
 
     /**
@@ -439,11 +443,12 @@ class CattleLifeCycleDetails
 
     public function calculateAverageWeightPerKgDm(){
         $result = 0;
-
-        if($this->calculateTotalDmKg()>0){
-            $result = $this->calculateAverageWeightPerDay()/$this->calculateTotalDmKg();
+        $feedIntakeTotal= $this->getConsumptionFeedIntakeReadyFeed()+$this->getConsumptionFeedIntakeConventional();
+        $totalDmKg = $feedIntakeTotal+$this->getDmOfFodderGreenGrassKg()+$this->getDmOfFodderStrawKg();
+        if($totalDmKg>0){
+            $result = $this->getAverageWeightPerDay()/$totalDmKg;
         }
-        return number_format($result,2,'.','');
+        return $result;
     }
 
     /**
@@ -499,7 +504,8 @@ class CattleLifeCycleDetails
      */
     public function getConsumptionFeedIntakeTotal()
     {
-        return $this->consumptionFeedIntakeTotal;
+        $result=$this->consumptionFeedIntakeTotal;
+        return number_format($result,2,'.','');
     }
 
     /**
@@ -512,7 +518,7 @@ class CattleLifeCycleDetails
 
     public function calculationConsumptionFeedIntakeTotal(){
         $result= $this->getConsumptionFeedIntakeReadyFeed()+$this->getConsumptionFeedIntakeConventional();
-        return number_format($result,2,'.','');
+        return $result;
     }
 
     /**
@@ -552,7 +558,8 @@ class CattleLifeCycleDetails
      */
     public function getDmOfFodderGreenGrassKg()
     {
-        return $this->dmOfFodderGreenGrassKg;
+        $result=$this->dmOfFodderGreenGrassKg;
+        return number_format($result,2,'.','');
     }
 
     /**
@@ -566,7 +573,7 @@ class CattleLifeCycleDetails
     public function calculateDmOfFodderGreenGrassKg()
     {
         $result = ($this->getFodderGreenGrassKg()*15)/100;
-        return number_format($result,2,'.','');
+        return $result;
     }
 
     /**
@@ -574,7 +581,8 @@ class CattleLifeCycleDetails
      */
     public function getDmOfFodderStrawKg()
     {
-        return $this->dmOfFodderStrawKg;
+        $result = $this->dmOfFodderStrawKg;
+        return number_format($result,2,'.','');
     }
 
     /**
@@ -588,7 +596,7 @@ class CattleLifeCycleDetails
     public function calculateDmOfFodderStrawKg()
     {
         $result = ($this->getFodderStrawKg()*85)/100;
-        return number_format($result,2,'.','');
+        return $result;
     }
 
     /**
@@ -596,7 +604,8 @@ class CattleLifeCycleDetails
      */
     public function getTotalDmKg()
     {
-        return $this->totalDmKg;
+        $result = $this->totalDmKg;
+        return number_format($result,2,'.','');
     }
 
     /**
@@ -608,15 +617,17 @@ class CattleLifeCycleDetails
     }
 
     public function calculateTotalDmKg(){
-        $result = $this->getConsumptionFeedIntakeTotal()+$this->getDmOfFodderGreenGrassKg()+$this->getDmOfFodderStrawKg();
-        return number_format($result,2,'.','');
+        $feedIntakeTotal = $this->getConsumptionFeedIntakeReadyFeed()+$this->getConsumptionFeedIntakeConventional();
+        $result = $feedIntakeTotal+$this->getDmOfFodderGreenGrassKg()+$this->getDmOfFodderStrawKg();
+        return $result;
     }
     /**
      * @return float
      */
     public function getDmRequirementByBwtKg()
     {
-        return $this->dmRequirementByBwtKg;
+        $result = $this->dmRequirementByBwtKg;
+        return number_format($result,2,'.','');
     }
 
     /**
@@ -630,7 +641,12 @@ class CattleLifeCycleDetails
     public function calculateDmRequirementByBwtKg()
     {
         $result = ($this->getPreviousBodyWeight()*3)/100;
-        return number_format($result,2,'.','');
+        return $result;
+    }
+    public function calculateDmRequirementByBwtKgForDairy()
+    {
+        $result = (($this->getPresentBodyWeight()*2)/100)+(($this->getAverageWeightPerDay()*33)/100);
+        return $result;
     }
     /**
      * @return string
