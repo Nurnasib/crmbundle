@@ -391,10 +391,12 @@ $('.addmore').click(function(){
     var crm_visit_id = $('.crm_visit_id').val();
     var farmer_section = el.closest('tr.farmer_section');
     var farmer_purpose = farmer_section.find('.farmer_purpose').val();
+    var farmer_firm_type = farmer_section.find('.farmer_firm_type').val();
     var farmer = farmer_section.find('.farmer').val();
     var farmer_capacity = farmer_section.find('.farmer_capacity').val();
     var farmer_comments = farmer_section.find('.farmer_comments').val();
-    if(farmer_purpose==='' || farmer===''){
+
+    if(farmer_purpose==='' || farmer==='' || farmer_firm_type===''){
         return false;
     }
     $.ajax({
@@ -404,6 +406,7 @@ $('.addmore').click(function(){
         data:{
             'crm_visit_id':crm_visit_id,
             'purpose':farmer_purpose,
+            'farmer_firm_type':farmer_firm_type,
             'farmer':farmer,
             'farmer_capacity':farmer_capacity,
             'comments':farmer_comments,

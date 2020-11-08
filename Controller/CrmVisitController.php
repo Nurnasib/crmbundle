@@ -91,6 +91,7 @@ class CrmVisitController extends AbstractController
         $otherAgentPurpose =$this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType'=>'OTHER_AGENT_PURPOSE'));
         $subAgentPurpose =$this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType'=>'SUB_AGENT_PURPOSE'));
         $lifeCycleReport =$this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType'=>'FARMER_REPORT'));
+        $firmTypes =$this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType'=>'FARM_TYPE'));
         $farmers =$this->getDoctrine()->getRepository(CrmCustomer::class)->getLocationWise($entity->getEmployee(),'farmer');
         $subAgents =$this->getDoctrine()->getRepository(CrmCustomer::class)->getLocationWise($entity->getEmployee(),'sub-agent');
         $otherAgents =$this->getDoctrine()->getRepository(CrmCustomer::class)->getLocationWise($entity->getEmployee(),'other-agent');
@@ -103,6 +104,7 @@ class CrmVisitController extends AbstractController
             'otherAgentPurposes'=>$otherAgentPurpose,
             'subAgentPurposes'=>$subAgentPurpose,
             'lifeCycleReport'=>$lifeCycleReport,
+            'firmTypes'=>$firmTypes,
             'agents'=>$agent,
             'farmers'=>$farmers,
             'subAgents'=>$subAgents,
@@ -152,11 +154,14 @@ class CrmVisitController extends AbstractController
 
         $purpose = $this->getDoctrine()->getRepository(Setting::class)->find($request->request->get('purpose'));
 
+        $farmer_firm_type = $this->getDoctrine()->getRepository(Setting::class)->find($request->request->get('farmer_firm_type'));
+
         $entity->setCrmVisit($crmVisit?$crmVisit:null);
         $entity->setPurpose($purpose?$purpose:null);
         $entity->setFarmCapacity($request->request->get('farmer_capacity')?$request->request->get('farmer_capacity'):null);
         $entity->setComments($request->request->get('comments'));
         $entity->setProcess($request->request->get('process'));
+        $entity->setFirmType($farmer_firm_type?$farmer_firm_type:null);
         $em->persist($entity);
         $em->flush();
         $this->addFlash('success', 'post.added_successfully');

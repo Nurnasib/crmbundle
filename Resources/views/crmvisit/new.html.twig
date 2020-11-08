@@ -113,6 +113,15 @@
                                                     <input type="text" disabled="disabled"  class="form-control form-control-sm farmer_phone" placeholder="Phone"  value="">
                                                 </td>
                                                 <td>
+                                                    <select name="farmer_firm_type" id="" class="form-control farmer_firm_type">
+                                                        <option value="">Select Firm Type</option>
+                                                        {% for firmType in firmTypes %}
+                                                            <option value="{{firmType.id}}"> {{firmType.name}} </option>
+                                                        {% endfor %}
+                                                    </select>
+
+                                                </td>
+                                                <td>
                                                     <input type="text" name="capacity" id="capacity" class="form-control form-control-sm farmer_capacity" placeholder="Farm Capacity" value="">
                                                 </td>
                                                 <td>

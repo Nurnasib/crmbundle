@@ -79,6 +79,14 @@ class CrmVisitDetails
      */
     private $purpose;
 
+     /**
+     * @var Setting
+     * @ORM\ManyToOne(targetEntity="Setting", inversedBy="crmVisitDetails")
+     * @ORM\JoinColumn(name="firm_type_id", referencedColumnName="id")
+     * @ORM\JoinColumn(onDelete="CASCADE")
+     */
+    private $firmType;
+
 
 
     /**
@@ -238,6 +246,22 @@ class CrmVisitDetails
     public function setPurpose($purpose)
     {
         $this->purpose = $purpose;
+    }
+
+    /**
+     * @return Setting
+     */
+    public function getFirmType()
+    {
+        return $this->firmType;
+    }
+
+    /**
+     * @param Setting $firmType
+     */
+    public function setFirmType(Setting $firmType): void
+    {
+        $this->firmType = $firmType;
     }
 
     /**
