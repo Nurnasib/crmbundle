@@ -12,32 +12,27 @@
 namespace Terminalbd\CrmBundle\Form;
 
 
-use App\Entity\User;
-use App\Form\Type\DateTimePickerType;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\DataTransformer\DateTimeToStringTransformer;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\NotBlank;
-use Terminalbd\CrmBundle\Entity\CrmCustomer;
-use Terminalbd\CrmBundle\Entity\LayerLifeCycle;
+use Terminalbd\CrmBundle\Entity\BroilerStandard;
+//use Terminalbd\CrmBundle\Entity\SettingType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Terminalbd\CrmBundle\Entity\LayerStandard;
 use Terminalbd\CrmBundle\Entity\Setting;
-
 
 /**
  * Defines the form used to create and manipulate blog posts.
  *
  * @author Md Shafiqul Islam <shafiqabs@gmail.com>
  */
-class LayerLifeCycleFormType extends AbstractType
+class LayerStandardFormType extends AbstractType
 {
 
     /**
@@ -46,26 +41,6 @@ class LayerLifeCycleFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('total_birds', TextType::class, [
-                'attr' => ['autofocus' => true],
-                'label' => 'label.total_birds',
-            ])
-
-            ->add($builder->create('hatchery_date', TextType::class, array(
-                'label' => 'Hatchery Date',
-                'attr' => array(
-                    'class' => 'datePicker',
-                    'autocomplete' => 'off',
-                    'placeholder' => 'date-month-Year'
-                ),
-                'empty_data' => new \DateTime(),
-            ))->addViewTransformer(new DateTimeToStringTransformer(null, null, 'd-m-Y')))
-
-            ->add('hatchery', TextType::class, [
-                'attr' => ['autofocus' => true],
-                'label' => 'label.hatchery',
-                'required' => false,
-            ])
             ->add('breed', EntityType::class, array(
                 'required'    => true,
                 'class' => Setting::class,
@@ -78,7 +53,26 @@ class LayerLifeCycleFormType extends AbstractType
                         ->orderBy('e.name', 'ASC');
                 },
             ))
-
+            ->add('target_body_weight', NumberType::class, [
+                'attr' => ['autofocus' => true,'autocomplete' => 'off'],
+                'label' => 'label.target_body_weight',
+                'required' => true
+            ])
+            ->add('target_feed_consumption', NumberType::class, [
+                'attr' => ['autofocus' => true,'autocomplete' => 'off'],
+                'label' => 'label.target_feed_consumption',
+                'required' => true
+            ])
+            ->add('target_egg_production', NumberType::class, [
+                'attr' => ['autofocus' => true,'autocomplete' => 'off'],
+                'label' => 'label.target_egg_production',
+                'required' => false
+            ])
+            ->add('target_egg_weight', NumberType::class, [
+                'attr' => ['autofocus' => true,'autocomplete' => 'off'],
+                'label' => 'label.target_egg_weight',
+                'required' => false
+            ])
         ;
     }
 
@@ -88,7 +82,7 @@ class LayerLifeCycleFormType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => LayerLifeCycle::class,
+            'data_class' => LayerStandard::class,
         ]);
     }
 }

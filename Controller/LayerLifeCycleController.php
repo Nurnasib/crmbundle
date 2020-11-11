@@ -20,9 +20,13 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Terminalbd\CrmBundle\Entity\CrmCustomer;
 use Terminalbd\CrmBundle\Entity\Fcr;
 use Terminalbd\CrmBundle\Entity\LayerLifeCycle;
+use Terminalbd\CrmBundle\Entity\LayerLifeCycleDetails;
 use Terminalbd\CrmBundle\Entity\LayerPerformance;
+use Terminalbd\CrmBundle\Entity\Setting;
+use Terminalbd\CrmBundle\Entity\SettingLifeCycle;
 use Terminalbd\CrmBundle\Form\FcrFormType;
 use Terminalbd\CrmBundle\Form\LayerLifeCycleFormType;
 use Terminalbd\CrmBundle\Form\LayerPerformanceFormType;
@@ -71,6 +75,126 @@ class LayerLifeCycleController extends AbstractController
             'entity' => $entity,
             'form' => $form->createView(),
         ]);
+    }
+
+    /**
+     * @param CrmCustomer $crmCustomer
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @Route("/customer/{id}/report/{report}/new/modal", methods={"GET", "POST"}, name="layer_new_modal")
+     */
+    public function newModal(Request $request, CrmCustomer $crmCustomer, Setting $report): Response
+    {
+
+
+        $entity = new LayerLifeCycle();
+        $existReport = $this->getDoctrine()->getRepository(LayerLifeCycle::class)->findOneBy(array('customer'=>$crmCustomer, 'report'=>$report, 'lifeCycleState'=>LayerLifeCycle::LIFE_CYCLE_STATE_IN_PROGRESS));
+        if ($existReport){
+            $entity= $existReport;
+        }
+
+        if($existReport){
+            return $this->redirectToRoute('layer_life_cycle_details_modal', ['id'=>$existReport->getId()]);
+        }
+        $data = $request->request->all();
+
+        $form = $this->createForm(LayerLifeCycleFormType::class, $entity)
+            ->add('SaveAndCreate', SubmitType::class);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $hatingDate = isset($data['hatching_date'])?date('Y-m-d',strtotime($data['hatching_date'])):date('Y-m-d',strtotime('now'));
+
+            $entity->setHatcheryDate(new \DateTime($hatingDate));
+            $entity->setCustomer($crmCustomer);
+            $entity->setReport($report);
+            $entity->setAgent($crmCustomer->getAgent());
+            $entity->setLifeCycleState(LayerLifeCycle::LIFE_CYCLE_STATE_IN_PROGRESS);
+            $entity->setEmployee($this->getUser());
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($entity);
+            $em->flush();
+            $this->addFlash('success', 'post.created_successfully');
+            if ($form->get('SaveAndCreate')->isClicked()) {
+                return new Response('success');
+//                return $this->redirectToRoute('chick_new_modal', ['id'=>$crmCustomer->getId(),'report'=>$report->getId()]);
+            }
+            return new Response('success');
+        }
+        return $this->render('@TerminalbdCrm/layerLifeCycle/new-modal.html.twig', [
+            'report' => $report,
+            'crmCustomer' => $crmCustomer,
+            'entity' => $entity,
+            'form' => $form->createView(),
+        ]);
+    }
+
+
+    /**
+     * @param LayerLifeCycle $layerLifeCycle
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @Route("/report/{id}/modal", methods={"GET", "POST"}, name="layer_life_cycle_details_modal")
+     */
+    public function lifeCycleDetailsModal(LayerLifeCycle $layerLifeCycle): Response
+    {
+        $lifeCycleSetting = $this->getDoctrine()->getRepository(SettingLifeCycle::class)->findOneBy(array('report'=>$layerLifeCycle->getReport()));
+        $crmLayerLifeCycleDetails = $this->getDoctrine()->getRepository(LayerLifeCycleDetails::class)->findOneBy(array('crmLayerLifeCycle'=>$layerLifeCycle->getId()));
+        if (!$crmLayerLifeCycleDetails){
+            for($i=1; $i<=$lifeCycleSetting->getNumberOfWeek(); $i++){
+                $layerLifeCycleDetails = new LayerLifeCycleDetails();
+                $layerLifeCycleDetails->setAgeWeek($i);
+                $layerLifeCycleDetails->setCrmLayerLifeCycle($layerLifeCycle);
+                $layerLifeCycleDetails->setCreated(new \DateTime('now'));
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($layerLifeCycleDetails);
+
+                $em->flush();
+            }
+        }
+
+        return $this->render('@TerminalbdCrm/layerLifeCycle/layer-details-modal.html.twig', [
+            'layerLifeCycle' => $layerLifeCycle,
+        ]);
+    }
+
+    /**
+     * @Route("/details/{id}/edit", methods={"POST"}, name="crm_layer_life_cycle_details_edit", options={"expose"=true})
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     */
+
+    public function editLifeCycleDetails(Request $request, LayerLifeCycleDetails $entity): Response
+    {
+        $data = $request->request->all();
+        $metaKey = $data['dataMetaKey'];
+        $metaValue = $data['dataMetaValue'];
+        $inputType = $data['dataInputType'];
+
+        if($metaKey!=''&&$metaValue!=''){
+
+            if($inputType=='datetime'){
+                $metaValue= isset($metaValue)&&$metaValue!=""?date('Y-m-d',strtotime($metaValue)):date('Y-m-d',strtotime('now'));
+                $metaValue = new \DateTime($metaValue);
+            }
+
+            $set = 'set'.$metaKey;
+
+            $entity->$set($metaValue);
+
+            $entity->setEggProduction($entity->calculateEggProduction());
+        }
+
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($entity);
+        $em->flush();
+
+        return new JsonResponse(
+            array(
+                'success'=>'Success',
+                'presentBird'=>$entity->calculatePresentBird(),
+                'eggProduction'=>$entity->getEggProduction(),
+                'data'=>$data,
+                'status'=>200,
+            )
+        );
+
     }
 
     /**

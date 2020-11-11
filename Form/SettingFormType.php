@@ -55,7 +55,8 @@ class SettingFormType extends AbstractType
                     'Customer Group' => 'CUSTOMER_GROUP',
                     'Visiting_Week'=>'Visiting_Week',
                     'Designation'=>'Designation',
-                    'Farmer Report'=>'FARMER_REPORT'
+                    'Farmer Report'=>'FARMER_REPORT',
+                    'Breed Type'=>'BREED_TYPE',
                 ],
             ])
 

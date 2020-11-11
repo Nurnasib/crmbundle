@@ -36,6 +36,7 @@
                         <tr>
                             <th scope="col">S/N</th>
                             <th scope="col">Name</th>
+                            <th scope="col">Slug</th>
                             <th scope="col">Setting Type</th>
                             <th scope="col">Status</th>
                             <th scope="col text-center"><i class="feather icon-settings"></i></th>
@@ -46,6 +47,7 @@
                         <tr>
                             <td>{{ loop.index }}</td>
                             <td>{{ entity.name }}</td>
+                            <td>{{ entity.slug|default('') }}</td>
                             <td>{{ entity.settingType }}</td>
                             {#<td>{% if entity.settingType is defined and  entity.settingType is not empty %}{{ entity.settingType.name }}{% endif %}</td>#}
                             <td>{% if entity.status is not empty %}Yes {% else %}No {% endif %}</td>
@@ -76,7 +78,7 @@
     $('#datatable').DataTable( {
     "pageLength": 25,
     'columnDefs': [ {
-    'targets': [0,4],
+    'targets': [0,4,5],
     'orderable': false
     }]
     });

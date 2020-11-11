@@ -72,7 +72,10 @@
                                 {% for index, detail in chickLifeCycle.crmChickLifeCycleDetails %}
                                     <tr>
                                         <td>{{ index+1 }} </td>
-                                        <td>{{ detail.visitingWeek }} </td>
+                                        <td>
+                                            {{ detail.visitingWeek }}
+                                            <input type="hidden" class="crmChickLifeCycleDetails" value="{{ detail.id }}">
+                                        </td>
                                         <td><input type="number" class="form-control totalBirds" name="totalBirds" value="{{ detail.totalBirds }}"> </td>
                                         <td><input type="number" class="form-control ageDays" value="{{ detail.ageDays }}"> </td>
                                         <td><input type="number" class="form-control mortalityPes" value="{{ detail.mortalityPes }}"> </td>

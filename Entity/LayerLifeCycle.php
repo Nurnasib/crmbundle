@@ -11,6 +11,7 @@
 
 namespace Terminalbd\CrmBundle\Entity;
 
+use App\Entity\Core\Agent;
 use App\Entity\User;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -22,6 +23,10 @@ use Gedmo\Mapping\Annotation as Gedmo;
  */
 class LayerLifeCycle
 {
+    const LIFE_CYCLE_STATE_COMPLETE = 'COMPLETE';
+    const LIFE_CYCLE_STATE_CANCEL = 'CANCEL';
+    const LIFE_CYCLE_STATE_IN_PROGRESS = 'IN_PROGRESS';
+
     /**
      * @var integer
      * @ORM\Column(name="id", type="integer")
@@ -29,6 +34,12 @@ class LayerLifeCycle
      * @ORM\GeneratedValue
      */
     private $id;
+
+    /**
+     * @var LayerLifeCycleDetails
+     * @ORM\OneToMany(targetEntity="LayerLifeCycleDetails", mappedBy="crmLayerLifeCycle")
+     */
+    private $crmLayerLifeCycleDetails;
 
     /**
      * @var User
@@ -44,153 +55,46 @@ class LayerLifeCycle
     private $customer;
 
     /**
-     * @var string
-     * @ORM\Column(name="total_birds", type="string")
+     * @var Setting
+     * @ORM\ManyToOne(targetEntity="Setting", inversedBy="crmLayerLifeCycle")
+     * @ORM\JoinColumn(name="report_id", referencedColumnName="id")
+     * @ORM\JoinColumn(onDelete="CASCADE")
      */
-    private $totalBirds;
+
+    private $report;
 
     /**
-     * @var string
-     * @ORM\Column(name="hatchery_date", type="string")
-     */
-    private $hatcheryDate;
-
-    /**
-     * @var string
-     * @ORM\Column(name="visiting_date", type="string")
-     */
-    private $visitingDate;
-
-    /**
-     * @var string
-     * @ORM\Column(name="age_week", type="string")
-     */
-    private $ageWeek;
-    /**
-     * @var string
-     * @ORM\Column(name="hatchery", type="string")
-     */
-    private $hatchery;
-
-    /**
-     * @var string
-     * @ORM\Column(name="breed", type="string",nullable = true)
+     * @var Setting
+     * @ORM\ManyToOne(targetEntity="Setting", inversedBy="crmLayerStandard")
+     * @ORM\JoinColumn(name="breed_id", referencedColumnName="id")
+     * @ORM\JoinColumn(onDelete="CASCADE")
      */
 
     private $breed;
 
     /**
-     * @var string
-     * @ORM\Column(name="dead_bird", type="string",nullable = true)
+     * @var Agent
+     * @ORM\ManyToOne(targetEntity="App\Entity\Core\Agent" , inversedBy="layerlifecycle")
      */
-    private $deadBird;
+    private $agent;
 
+    /**
+     * @var float
+     * @ORM\Column(name="total_birds", type="float")
+     */
+    private $totalBirds=0;
+
+    /**
+     * @var \DateTime
+     * @ORM\Column(name="hatchery_date", type="date", nullable=true)
+     */
+    private $hatcheryDate;
 
     /**
      * @var string
-     * @ORM\Column(name="avg_weight", type="string")
+     * @ORM\Column(name="hatchery", type="string", nullable=true)
      */
-
-    private $avgWeight;
-
-    /**
-     * @var string
-     * @ORM\Column(name="target_weight", type="string")
-     */
-
-    private $targetWeight;
-
-    /**
-     * @var string
-     * @ORM\Column(name="uniformity", type="string")
-     */
-
-    private $uniformity;
-
-    /**
-     * @var string
-     * @ORM\Column(name="feed_per_bird", type="string")
-     */
-
-    private $feedPerBird;
-
-    /**
-     * @var string
-     * @ORM\Column(name="target_feed_per_bird", type="string")
-     */
-
-    private $targetFeedPerBird;
-
-    /**
-     * @var string
-     * @ORM\Column(name="total_eggs", type="string")
-     */
-
-    private $totalEggs;
-
-
-    /**
-     * @var string
-     * @ORM\Column(name="target_egg_production", type="string")
-     */
-
-    private $targetEggProduction;
-
-    /**
-     * @var string
-     * @ORM\Column(name="egg_weight_actual", type="string")
-     */
-
-    private $eggWeightActual;
-
-    /**
-     * @var string
-     * @ORM\Column(name="egg_weight_standard", type="string")
-     */
-
-    private $eggWeightStandard;
-
-    /**
-     * @var string
-     * @ORM\Column(name="feed_type", type="string",nullable=true)
-     */
-
-    private $feedType;
-
-    /**
-     * @var string
-     * @ORM\Column(name="production_date", type="string",nullable=true)
-     */
-
-    private $productionDate;
-
-    /**
-     * @var string
-     * @ORM\Column(name="batch_no", type="string",nullable=true)
-     */
-
-    private $batch_no;
-
-    /**
-     * @var string
-     * @ORM\Column(name="feed_mill", type="string",nullable=true)
-     */
-
-    private $feedMill;
-
-    /**
-     * @var string
-     * @ORM\Column(name="medicine", type="string",nullable=true)
-     */
-
-    private $medicine;
-
-    /**
-     * @var string
-     * @ORM\Column(name="remarks", type="string",nullable=true)
-     */
-
-    private $remarks;
+    private $hatchery;
 
     /**
      * @var \DateTime
@@ -205,6 +109,13 @@ class LayerLifeCycle
      */
 
     private $updated;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="life_cycle_state", type="string", length=20, nullable=true)
+     */
+    private $lifeCycleState;
 
     /**
      * @return int
@@ -223,7 +134,87 @@ class LayerLifeCycle
     }
 
     /**
-     * @return string
+     * @return LayerLifeCycleDetails
+     */
+    public function getCrmLayerLifeCycleDetails()
+    {
+        return $this->crmLayerLifeCycleDetails;
+    }
+
+    /**
+     * @param LayerLifeCycleDetails $crmLayerLifeCycleDetails
+     */
+    public function setCrmLayerLifeCycleDetails(LayerLifeCycleDetails $crmLayerLifeCycleDetails): void
+    {
+        $this->crmLayerLifeCycleDetails = $crmLayerLifeCycleDetails;
+    }
+
+    /**
+     * @return User
+     */
+    public function getEmployee()
+    {
+        return $this->employee;
+    }
+
+    /**
+     * @param User $employee
+     */
+    public function setEmployee(User $employee): void
+    {
+        $this->employee = $employee;
+    }
+
+    /**
+     * @return CrmCustomer
+     */
+    public function getCustomer()
+    {
+        return $this->customer;
+    }
+
+    /**
+     * @param CrmCustomer $customer
+     */
+    public function setCustomer(CrmCustomer $customer): void
+    {
+        $this->customer = $customer;
+    }
+
+    /**
+     * @return Setting
+     */
+    public function getReport()
+    {
+        return $this->report;
+    }
+
+    /**
+     * @param Setting $report
+     */
+    public function setReport(Setting $report): void
+    {
+        $this->report = $report;
+    }
+
+    /**
+     * @return Setting
+     */
+    public function getBreed()
+    {
+        return $this->breed;
+    }
+
+    /**
+     * @param Setting $breed
+     */
+    public function setBreed(Setting $breed): void
+    {
+        $this->breed = $breed;
+    }
+
+    /**
+     * @return float
      */
     public function getTotalBirds()
     {
@@ -231,15 +222,15 @@ class LayerLifeCycle
     }
 
     /**
-     * @param string $totalBirds
+     * @param float $totalBirds
      */
-    public function setTotalBirds($totalBirds)
+    public function setTotalBirds(float $totalBirds): void
     {
         $this->totalBirds = $totalBirds;
     }
 
     /**
-     * @return string
+     * @return \DateTime
      */
     public function getHatcheryDate()
     {
@@ -247,9 +238,9 @@ class LayerLifeCycle
     }
 
     /**
-     * @param string $hatcheryDate
+     * @param \DateTime $hatcheryDate
      */
-    public function setHatcheryDate($hatcheryDate)
+    public function setHatcheryDate(\DateTime $hatcheryDate): void
     {
         $this->hatcheryDate = $hatcheryDate;
     }
@@ -265,281 +256,9 @@ class LayerLifeCycle
     /**
      * @param string $hatchery
      */
-    public function setHatchery($hatchery)
+    public function setHatchery(string $hatchery): void
     {
         $this->hatchery = $hatchery;
-    }
-
-    /**
-     * @return string
-     */
-    public function getBreed()
-    {
-        return $this->breed;
-    }
-
-    /**
-     * @param string $breed
-     */
-    public function setBreed($breed)
-    {
-        $this->breed = $breed;
-    }
-
-    /**
-     * @return string
-     */
-    public function getDeadBird()
-    {
-        return $this->deadBird;
-    }
-
-    /**
-     * @param string $deadBird
-     */
-    public function setDeadBird($deadBird)
-    {
-        $this->deadBird = $deadBird;
-    }
-
-    /**
-     * @return string
-     */
-    public function getAvgWeight()
-    {
-        return $this->avgWeight;
-    }
-
-    /**
-     * @param string $avgWeight
-     */
-    public function setAvgWeight($avgWeight)
-    {
-        $this->avgWeight = $avgWeight;
-    }
-
-    /**
-     * @return string
-     */
-    public function getTargetWeight()
-    {
-        return $this->targetWeight;
-    }
-
-    /**
-     * @param string $targetWeight
-     */
-    public function setTargetWeight($targetWeight)
-    {
-        $this->targetWeight = $targetWeight;
-    }
-
-    /**
-     * @return string
-     */
-    public function getUniformity()
-    {
-        return $this->uniformity;
-    }
-
-    /**
-     * @param string $uniformity
-     */
-    public function setUniformity($uniformity)
-    {
-        $this->uniformity = $uniformity;
-    }
-
-    /**
-     * @return string
-     */
-    public function getFeedPerBird()
-    {
-        return $this->feedPerBird;
-    }
-
-    /**
-     * @param string $feedPerBird
-     */
-    public function setFeedPerBird($feedPerBird)
-    {
-        $this->feedPerBird = $feedPerBird;
-    }
-
-    /**
-     * @return string
-     */
-    public function getTargetFeedPerBird()
-    {
-        return $this->targetFeedPerBird;
-    }
-
-    /**
-     * @param string $targetFeedPerBird
-     */
-    public function setTargetFeedPerBird($targetFeedPerBird)
-    {
-        $this->targetFeedPerBird = $targetFeedPerBird;
-    }
-
-    /**
-     * @return string
-     */
-    public function getTotalEggs()
-    {
-        return $this->totalEggs;
-    }
-
-    /**
-     * @param string $totalEggs
-     */
-    public function setTotalEggs($totalEggs)
-    {
-        $this->totalEggs = $totalEggs;
-    }
-
-    /**
-     * @return string
-     */
-    public function getTargetEggProduction()
-    {
-        return $this->targetEggProduction;
-    }
-
-    /**
-     * @param string $targetEggProduction
-     */
-    public function setTargetEggProduction($targetEggProduction)
-    {
-        $this->targetEggProduction = $targetEggProduction;
-    }
-
-    /**
-     * @return string
-     */
-    public function getEggWeightActual()
-    {
-        return $this->eggWeightActual;
-    }
-
-    /**
-     * @param string $eggWeightActual
-     */
-    public function setEggWeightActual($eggWeightActual)
-    {
-        $this->eggWeightActual = $eggWeightActual;
-    }
-
-    /**
-     * @return string
-     */
-    public function getEggWeightStandard()
-    {
-        return $this->eggWeightStandard;
-    }
-
-    /**
-     * @param string $eggWeightStandard
-     */
-    public function setEggWeightStandard($eggWeightStandard)
-    {
-        $this->eggWeightStandard = $eggWeightStandard;
-    }
-
-    /**
-     * @return string
-     */
-    public function getFeedType()
-    {
-        return $this->feedType;
-    }
-
-    /**
-     * @param string $feedType
-     */
-    public function setFeedType($feedType)
-    {
-        $this->feedType = $feedType;
-    }
-
-    /**
-     * @return string
-     */
-    public function getProductionDate()
-    {
-        return $this->productionDate;
-    }
-
-    /**
-     * @param string $productionDate
-     */
-    public function setProductionDate($productionDate)
-    {
-        $this->productionDate = $productionDate;
-    }
-
-    /**
-     * @return string
-     */
-    public function getBatchNo()
-    {
-        return $this->batch_no;
-    }
-
-    /**
-     * @param string $batch_no
-     */
-    public function setBatchNo($batch_no)
-    {
-        $this->batch_no = $batch_no;
-    }
-
-    /**
-     * @return string
-     */
-    public function getFeedMill()
-    {
-        return $this->feedMill;
-    }
-
-    /**
-     * @param string $feedMill
-     */
-    public function setFeedMill($feedMill)
-    {
-        $this->feedMill = $feedMill;
-    }
-
-    /**
-     * @return string
-     */
-    public function getMedicine()
-    {
-        return $this->medicine;
-    }
-
-    /**
-     * @param string $medicine
-     */
-    public function setMedicine($medicine)
-    {
-        $this->medicine = $medicine;
-    }
-
-    /**
-     * @return string
-     */
-    public function getRemarks()
-    {
-        return $this->remarks;
-    }
-
-    /**
-     * @param string $remarks
-     */
-    public function setRemarks($remarks)
-    {
-        $this->remarks = $remarks;
     }
 
     /**
@@ -553,7 +272,7 @@ class LayerLifeCycle
     /**
      * @param \DateTime $created
      */
-    public function setCreated($created)
+    public function setCreated(\DateTime $created): void
     {
         $this->created = $created;
     }
@@ -569,7 +288,7 @@ class LayerLifeCycle
     /**
      * @param \DateTime $updated
      */
-    public function setUpdated($updated)
+    public function setUpdated(\DateTime $updated): void
     {
         $this->updated = $updated;
     }
@@ -577,65 +296,33 @@ class LayerLifeCycle
     /**
      * @return string
      */
-    public function getVisitingDate()
+    public function getLifeCycleState()
     {
-        return $this->visitingDate;
+        return $this->lifeCycleState;
     }
 
     /**
-     * @param string $visitingDate
+     * @param string $lifeCycleState
      */
-    public function setVisitingDate($visitingDate)
+    public function setLifeCycleState(string $lifeCycleState): void
     {
-        $this->visitingDate = $visitingDate;
+        $this->lifeCycleState = $lifeCycleState;
     }
 
     /**
-     * @return string
+     * @return Agent
      */
-    public function getAgeWeek()
+    public function getAgent()
     {
-        return $this->ageWeek;
+        return $this->agent;
     }
 
     /**
-     * @param string $ageWeek
+     * @param Agent $agent
      */
-    public function setAgeWeek($ageWeek)
+    public function setAgent(Agent $agent): void
     {
-        $this->ageWeek = $ageWeek;
-    }
-
-    /**
-     * @return CrmCustomer
-     */
-    public function getCustomer()
-    {
-        return $this->customer;
-    }
-
-    /**
-     * @param CrmCustomer $customer
-     */
-    public function setCustomer($customer)
-    {
-        $this->customer = $customer;
-    }
-
-    /**
-     * @return User
-     */
-    public function getEmployee(): User
-    {
-        return $this->employee;
-    }
-
-    /**
-     * @param User $employee
-     */
-    public function setEmployee(User $employee)
-    {
-        $this->employee = $employee;
+        $this->agent = $agent;
     }
 
 

@@ -42,3 +42,8 @@
     -moz-appearance: textfield;
 
 }
+
+.layerLifeCycleDetails thead th, .layerLifeCycleDetails tbody td{
+    padding: 1px!important;
+
+}

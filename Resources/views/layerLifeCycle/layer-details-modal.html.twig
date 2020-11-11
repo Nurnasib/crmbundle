@@ -1,0 +1,179 @@
+<div class="portlet box ">
+    <div class="portlet-title">
+        <div class="caption">{{ layerLifeCycle.report.name }} </div>
+    </div>
+    {#{{ dump(report) }}#}
+
+    <div class="portlet-body form">
+        {#{{ form_start(form, {'attr': {'action': path('layer_new_modal',{'id':crmCustomer.id,'report':report.id }),'class': 'form-horizontal right','id':'layer_life_cycle_form'}}) }}#}
+        <div class="row form-body ">
+            <div class="form-inner-no-space">
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <h4>{{ layerLifeCycle.report.name }}</h4>
+                    </div>
+
+                    <div class="col-md-4">
+                        <p style="color: #000000">{{ 'Farmer Name'|trans }}: {{ layerLifeCycle.customer.name }}</p>
+                    </div>
+                    <div class="col-md-4">
+                        <p style="color: #000000">{{ 'Address'|trans }}: {{ layerLifeCycle.customer.address }}</p>
+                    </div>
+                    <div class="col-md-4">
+                        <p style="color: #000000">{{ 'Agent'|trans }}: {{ layerLifeCycle.agent.name }}</p>
+                    </div>
+                    <div class="col-md-4">
+                        <p style="color: #000000">{{ 'Hatchery Date'|trans }}
+                            : {{ layerLifeCycle.hatcheryDate?layerLifeCycle.hatcheryDate|date("d-m-Y"):'' }}</p>
+                    </div>
+                    <div class="col-md-4"></div>
+                    <div class="col-md-4">
+                        <p style="color: #000000">{{ 'Breed'|trans }}
+                            : {{ layerLifeCycle.breed?layerLifeCycle.breed.name:'' }}</p>
+                    </div>
+                </div>
+                <div class="card-body card-body-inner" style="overflow-x: scroll">
+                    <div class="row">
+                        <table class="table table-striped table-bordered table-hover layerLifeCycleDetails"
+                               id="datatable">
+                            <thead class="thead-dark">
+                            <tr>
+                                <th scope="col" rowspan="2">S/N</th>
+                                <th scope="col" rowspan="2" style="width: 55px">Age Week</th>
+                                <th scope="col" rowspan="2" width="105px">Visiting Date</th>
+                                <th scope="col" colspan="3">Birds</th>
+                                <th scope="col" colspan="2">Weight</th>
+                                <th scope="col" rowspan="2">Uniformity</th>
+                                <th scope="col" colspan="2">Feed</th>
+                                <th scope="col" colspan="3">Egg Production</th>
+                                <th scope="col" colspan="2">Egg Weight</th>
+                                <th scope="col" colspan="4">Feed Information</th>
+                                <th scope="col" rowspan="2">Vaccine</th>
+                                <th scope="col" rowspan="2">Remarks</th>
+                            </tr>
+                            <tr>
+                                <th scope="col">Total Birds</th>
+                                <th scope="col">Dead Birds</th>
+                                <th scope="col">Present Bird</th>
+                                <th scope="col">Avg.wt (gm)</th>
+                                <th scope="col">Target.Wt (gm)</th>
+                                <th scope="col">Feed/bird (gm)</th>
+                                <th scope="col">Target Feed/bird (gm)</th>
+                                <th scope="col">Total Eggs</th>
+                                <th scope="col">Egg Prod(%)</th>
+                                <th scope="col">Target Egg Prod (%)</th>
+                                <th scope="col"> Actual</th>
+                                <th scope="col">Standard</th>
+                                <th scope="col">Feed Type</th>
+                                <th width="105px" scope="col">P.Date</th>
+                                <th scope="col">Batch No</th>
+                                <th scope="col">Feed Mill</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+
+                            {% if layerLifeCycle.crmLayerLifeCycleDetails is not empty %}
+                                {% set presentBird =0 %}
+                                {% set eggProduction =0 %}
+                                {% for index, entity in layerLifeCycle.crmLayerLifeCycleDetails %}
+                                    {% set presentBird = ( entity.totalBirds - entity.deadBird) %}
+                                    {% set eggProduction = presentBird>0?(entity.totalEggs*100)/presentBird:0 %}
+                                    <tr>
+                                        <td> {{ loop.index }} </td>
+                                        <td class="ageWeek"> {{ entity.ageWeek }} </td>
+                                        <td>
+                                            <div class="date_section">
+                                                <input type="text" data-input-type="datetime" data-entity-id="{{ entity.id }}"
+                                                       data-meta-key="VisitingDate" class="form-control datePicker"
+                                                       value="{{ entity.visitingDate?entity.visitingDate|date('d-m-Y'):'' }}">
+                                            </div>
+                                        </td>
+                                        <td class="totalBirds"><input type="number" data-input-type="number" data-entity-id="{{ entity.id }}"
+                                                                      data-meta-key="TotalBirds" class="form-control"
+                                                                      value="{{ entity.totalBirds }}"></td>
+                                        <td class="deadBird"><input type="number" data-input-type="number" data-entity-id="{{ entity.id }}"
+                                                                    data-meta-key="DeadBird" class="form-control"
+                                                                    value="{{ entity.deadBird }}"></td>
+                                        <td class="presentBird">{{ entity.calculatePresentBird }} </td>
+                                        <td class="avgWeight"><input type="number" data-input-type="number" data-entity-id="{{ entity.id }}"
+                                                                     data-meta-key="AvgWeight" class="form-control"
+                                                                     value="{{ entity.avgWeight }}"></td>
+                                        <td class="targetWeight"><input type="number" data-input-type="number" data-entity-id="{{ entity.id }}"
+                                                   data-meta-key="TargetWeight" class="form-control"
+                                                   value="{{ entity.targetWeight }}"></td>
+                                        <td class="uniformity"><input type="number" data-input-type="number" data-entity-id="{{ entity.id }}"
+                                                   data-meta-key="Uniformity" class="form-control"
+                                                   value="{{ entity.uniformity }}"></td>
+                                        <td class="feedPerBird"><input type="number" data-input-type="number" data-entity-id="{{ entity.id }}"
+                                                   data-meta-key="FeedPerBird" class="form-control"
+                                                   value="{{ entity.feedPerBird }}"></td>
+                                        <td class="targetFeedPerBird"><input type="number" data-input-type="number" data-entity-id="{{ entity.id }}"
+                                                   data-meta-key="TargetFeedPerBird" class="form-control"
+                                                   value="{{ entity.targetFeedPerBird }}"></td>
+                                        <td class="totalEggs"><input type="number" data-input-type="number" data-entity-id="{{ entity.id }}"
+                                                   data-meta-key="TotalEggs" class="form-control"
+                                                   value="{{ entity.totalEggs }}"></td>
+                                        <td class="eggProduction"> {{ entity.eggProduction }} </td>
+                                        <td class="targetEggProduction"><input type="number" data-input-type="number" data-entity-id="{{ entity.id }}"
+                                                   data-meta-key="TargetEggProduction" class="form-control"
+                                                   value="{{ entity.targetEggProduction }}"></td>
+                                        <td class="eggWeightActual"><input type="number" data-input-type="number" data-entity-id="{{ entity.id }}"
+                                                   data-meta-key="EggWeightActual" class="form-control"
+                                                   value="{{ entity.eggWeightActual }}"></td>
+                                        <td class="eggWeightStandard"><input type="number" data-input-type="number" data-entity-id="{{ entity.id }}"
+                                                   data-meta-key="EggWeightStandard" class="form-control"
+                                                   value="{{ entity.eggWeightStandard }}"></td>
+                                        <td class="feedType"><input type="text" data-input-type="text" data-entity-id="{{ entity.id }}"
+                                                   data-meta-key="FeedType" class="form-control"
+                                                   value="{{ entity.feedType }}"></td>
+
+                                        <td class="productionDate">
+                                            <div class="date_section">
+                                                <input type="text" data-input-type="datetime" data-entity-id="{{ entity.id }}"
+                                                       data-meta-key="ProductionDate" class="form-control datePicker"
+                                                       value="{{ entity.productionDate?entity.productionDate|date('d-m-Y'):'' }}">
+                                            </div>
+                                        </td>
+                                        <td class="batchNo"><input type="text" data-input-type="text" data-entity-id="{{ entity.id }}"
+                                                   data-meta-key="BatchNo" class="form-control"
+                                                   value="{{ entity.batchNo }}"> </td>
+                                        <td class="feedMill"><input type="text" data-input-type="text" data-entity-id="{{ entity.id }}"
+                                                   data-meta-key="FeedMill" class="form-control"
+                                                   value="{{ entity.feedMill }}"></td>
+                                        <td class="medicine"><input type="text" data-input-type="text" data-entity-id="{{ entity.id }}"
+                                                   data-meta-key="Medicine" class="form-control"
+                                                   value="{{ entity.medicine }}"></td>
+                                        <td class="remarks"><input type="text" data-input-type="text" data-entity-id="{{ entity.id }}"
+                                                   data-meta-key="Remarks" class="form-control"
+                                                   value="{{ entity.remarks }}"></td>
+                                    </tr>
+
+                                {% endfor %}
+
+                            {% endif %}
+
+                            </tbody>
+                        </table>
+                        <div class="col-md-12">
+                            <div class="row">
+                                <div class="col-md-6">
+                                </div>
+                                <div class="col-md-6 text-right">
+                                    <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                                        <button type="button" data-layer-life-cycle-id="{{ layerLifeCycle.id }}"
+                                                class="btn btn-info form-submit report_complete_layer"><i
+                                                    class="fa fa-save"></i> Complete
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="clearfix"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

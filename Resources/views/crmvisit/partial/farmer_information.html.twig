@@ -37,6 +37,8 @@
                                 {% for lifeCycle in lifeCycleReport %}
                                     {% if lifeCycle.slug in ['fattening-life-cycle','dairy-life-cycle'] %}
                                         <a data-action='{{ path('cattle_new_modal',{'id': details.crmCustomer is not empty?details.crmCustomer.id:'', 'report':lifeCycle.id}) }}' href='?process=postView_{{ details.id }}_{{ lifeCycle.id }}&report={{ lifeCycle.slug }}&check=show#modal' id='postView_{{ details.id }}_{{ lifeCycle.id }}' >{{ lifeCycle.name }}</a>
+                                    {% elseif lifeCycle.slug =='layer-life-cycle' %}
+                                        <a data-action='{{ path('layer_new_modal',{'id': details.crmCustomer is not empty?details.crmCustomer.id:'', 'report':lifeCycle.id}) }}' href='?process=postView_{{ details.id }}_{{ lifeCycle.id }}&report={{ lifeCycle.slug }}&check=show#modal' id='postView_{{ details.id }}_{{ lifeCycle.id }}' >{{ lifeCycle.name }}</a>
                                     {% else %}
                                         <a data-action='{{ path('chick_new_modal',{'id': details.crmCustomer is not empty?details.crmCustomer.id:'', 'report':lifeCycle.id}) }}' href='?process=postView_{{ details.id }}_{{ lifeCycle.id }}&report={{ lifeCycle.slug }}&check=show#modal' id='postView_{{ details.id }}_{{ lifeCycle.id }}' >{{ lifeCycle.name }}</a>
                                     {% endif %}

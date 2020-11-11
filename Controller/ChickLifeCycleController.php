@@ -130,9 +130,10 @@ class ChickLifeCycleController extends AbstractController
             $em->flush();
             $this->addFlash('success', 'post.created_successfully');
             if ($form->get('SaveAndCreate')->isClicked()) {
-                return $this->redirectToRoute('chick_new_modal', ['id'=>$crmCustomer->getId(),'report'=>$report->getId()]);
+                return new Response('success');
+//                return $this->redirectToRoute('chick_new_modal', ['id'=>$crmCustomer->getId(),'report'=>$report->getId()]);
             }
-            return $this->redirectToRoute('chick_new_modal');
+            return new Response('success');
         }
         return $this->render('@TerminalbdCrm/chickLifecycle/new-modal.html.twig', [
             'report' => $report,

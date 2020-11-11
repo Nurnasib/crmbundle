@@ -39,7 +39,7 @@ $(document).on('click','.report_complete', function () {
         type   : 'post',
         dataType : 'json',
         success: function(response){
-            console.log(response.message);
+            location.reload();
         }
     });
 });
@@ -157,6 +157,14 @@ function formCommonProcess() {
         }
     });
 
+    $('.layerLifeCycleDetails .form-control').keypress(function (e) {
+        if (e.which === 13) {
+            layerLifeCycleDetailDataInsertUsingAjax($(this));
+            var index = $('.layerLifeCycleDetails .form-control').index(this) + 1;
+            $('.layerLifeCycleDetails .form-control').eq(index).focus().select();
+        }
+    });
+
 }
 
 function dataInsertUsingAjax(element) {
@@ -206,6 +214,37 @@ function dataInsertUsingAjax(element) {
             parentElement.find('.perBird').text(response.perBird);
             parentElement.find('.withoutMortality').text(response.withoutMortality);
             parentElement.find('.withMortality').text(response.withMortality);
+        }
+    });
+}
+
+function layerLifeCycleDetailDataInsertUsingAjax(element) {
+    var parentElement = element.closest('tr');
+    var crmLayerLifeCycleDetailId=element.attr('data-entity-id');
+    var dataMetaKey=element.attr('data-meta-key');
+    var dataInputType=element.attr('data-input-type');
+    var dataMetaValue=element.val();
+
+    if(crmLayerLifeCycleDetailId===''){
+        return false;
+    }
+
+    $.ajax({
+        url    : Routing.generate('crm_layer_life_cycle_details_edit',{'id':crmLayerLifeCycleDetailId}),
+        type   : 'post',
+        data   : {
+            'dataMetaKey':dataMetaKey,
+            'dataMetaValue':dataMetaValue,
+            'dataInputType':dataInputType
+        },
+        dataType : 'json',
+        success: function(response){
+            console.log(response);
+            parentElement.find('.presentBird').text(response.presentBird);
+            parentElement.find('.eggProduction').text(response.eggProduction);
+            /*parentElement.find('.perBird').text(response.perBird);
+            parentElement.find('.withoutMortality').text(response.withoutMortality);
+            parentElement.find('.withMortality').text(response.withMortality);*/
         }
     });
 }
@@ -277,8 +316,12 @@ function formSubmitProcess() {
                     // location.reload();
                     // setTimeout( explode, 2000);
                     console.log(cattleLifeCycle_id);
-                    var refreshUrl = Routing.generate('crm_cattle_life_cycle_refresh',{'id':cattleLifeCycle_id});
-                    $("tbody.dairyLifeCycleDetailsSection").load(refreshUrl);
+                    if(cattleLifeCycle_id>0){
+                        var refreshUrl = Routing.generate('crm_cattle_life_cycle_refresh',{'id':cattleLifeCycle_id});
+                        $("tbody.dairyLifeCycleDetailsSection").load(refreshUrl);
+                    }else {
+                        location.reload();
+                    }
                 }
             });
         }
