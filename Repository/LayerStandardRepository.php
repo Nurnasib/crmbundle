@@ -23,6 +23,34 @@ use Doctrine\ORM\EntityRepository;
  */
 class LayerStandardRepository extends EntityRepository
 {
+    public function getLayerStandardByWeek($breed){
+        $arrayResult = array();
+        $query = $this->createQueryBuilder('ls')
+            ->andWhere('ls.breed = :breed')
+            ->setParameter('breed',$breed)
+            ->orderBy('ls.age','asc');
 
+        $results = $query->getQuery()->getArrayResult();
+        if($results){
+            foreach ($results as $result){
+                $arrayResult[$result['age']] = $result;
+            }
+        }
+
+        return $arrayResult;
+    }
+
+    public function getLayerStandardByBreedAndWeek($breed,$age){
+
+        $query = $this->createQueryBuilder('ls')
+            ->andWhere('ls.breed = :breed')
+            ->setParameter('breed',$breed)
+            ->andWhere('ls.age = :age')
+            ->setParameter('age',$age);
+
+        $results = $query->getQuery()->getArrayResult();
+
+        return $results;
+    }
 
 }

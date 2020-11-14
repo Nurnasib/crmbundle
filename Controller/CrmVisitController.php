@@ -91,7 +91,8 @@ class CrmVisitController extends AbstractController
         $otherAgentPurpose =$this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType'=>'OTHER_AGENT_PURPOSE'));
         $subAgentPurpose =$this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType'=>'SUB_AGENT_PURPOSE'));
         $lifeCycleReport =$this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType'=>'FARMER_REPORT'));
-        $firmTypes =$this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType'=>'FARM_TYPE'));
+        $firmTypes =$this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType'=>'FARM_TYPE','status'=>1));
+        $breedTypes =$this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType'=>'BREED_TYPE','status'=>1));
         $farmers =$this->getDoctrine()->getRepository(CrmCustomer::class)->getLocationWise($entity->getEmployee(),'farmer');
         $subAgents =$this->getDoctrine()->getRepository(CrmCustomer::class)->getLocationWise($entity->getEmployee(),'sub-agent');
         $otherAgents =$this->getDoctrine()->getRepository(CrmCustomer::class)->getLocationWise($entity->getEmployee(),'other-agent');
@@ -105,6 +106,7 @@ class CrmVisitController extends AbstractController
             'subAgentPurposes'=>$subAgentPurpose,
             'lifeCycleReport'=>$lifeCycleReport,
             'firmTypes'=>$firmTypes,
+            'breedTypes'=>$breedTypes,
             'agents'=>$agent,
             'farmers'=>$farmers,
             'subAgents'=>$subAgents,

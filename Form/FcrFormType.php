@@ -54,7 +54,7 @@ class FcrFormType extends AbstractType
                 ]
             ])
             ->add($builder->create('reporting_month', TextType::class, array(
-                'label' => 'Order Date',
+                'label' => 'Reporting Date',
                 'attr' => array(
                     'class' => 'datePicker',
                     'autocomplete' => 'off',

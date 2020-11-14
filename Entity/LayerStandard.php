@@ -177,7 +177,7 @@ class LayerStandard
     /**
      * @param float $targetEggWeight
      */
-    public function setTargetEggWeight(float $targetEggWeight): void
+    public function setTargetEggWeight($targetEggWeight)
     {
         $this->targetEggWeight = $targetEggWeight;
     }

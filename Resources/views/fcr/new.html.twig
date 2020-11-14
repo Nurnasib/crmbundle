@@ -55,7 +55,9 @@
                                             {{ form_label(form.reporting_month, 'Reporting Month'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
                                             <div class="col-md-8">
                                                 <span class="not-blank"> {{ 'Required'|trans }}</span>
-                                                <div class="date_section">{{ form_widget(form.reporting_month) }}</div>
+                                                <div class="date_section">
+                                                    {{ form_widget(form.reporting_month) }}
+                                                </div>
                                                 {{ form_errors(form.reporting_month) }}
                                             </div>
                                         </div>

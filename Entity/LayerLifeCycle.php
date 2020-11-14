@@ -224,7 +224,7 @@ class LayerLifeCycle
     /**
      * @param float $totalBirds
      */
-    public function setTotalBirds(float $totalBirds): void
+    public function setTotalBirds($totalBirds)
     {
         $this->totalBirds = $totalBirds;
     }

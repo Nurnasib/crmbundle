@@ -278,6 +278,14 @@ class LayerLifeCycleDetails
     /**
      * @return float
      */
+    public function getAgeWeekOnlyNumber()
+    {
+        return $this->ageWeek;
+    }
+
+    /**
+     * @return float
+     */
     public function getDeadBird()
     {
         return $this->deadBird;

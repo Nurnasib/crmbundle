@@ -54,22 +54,22 @@ class LayerStandardFormType extends AbstractType
                 },
             ))
             ->add('target_body_weight', NumberType::class, [
-                'attr' => ['autofocus' => true,'autocomplete' => 'off'],
+                'attr' => ['autofocus' => true,'autocomplete' => 'off', 'step'=>"0.01", 'min' => 0],
                 'label' => 'label.target_body_weight',
                 'required' => true
             ])
             ->add('target_feed_consumption', NumberType::class, [
-                'attr' => ['autofocus' => true,'autocomplete' => 'off'],
+                'attr' => ['autofocus' => true,'autocomplete' => 'off', 'step'=>"0.01",'min' => 0],
                 'label' => 'label.target_feed_consumption',
                 'required' => true
             ])
             ->add('target_egg_production', NumberType::class, [
-                'attr' => ['autofocus' => true,'autocomplete' => 'off'],
+                'attr' => ['autofocus' => true,'autocomplete' => 'off', 'step'=>"0.01",'min' => 0],
                 'label' => 'label.target_egg_production',
                 'required' => false
             ])
             ->add('target_egg_weight', NumberType::class, [
-                'attr' => ['autofocus' => true,'autocomplete' => 'off'],
+                'attr' => ['autofocus' => true,'autocomplete' => 'off', 'step'=>"0.01",'min' => 0],
                 'label' => 'label.target_egg_weight',
                 'required' => false
             ])

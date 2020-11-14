@@ -25,6 +25,7 @@ use Terminalbd\CrmBundle\Entity\Fcr;
 use Terminalbd\CrmBundle\Entity\LayerLifeCycle;
 use Terminalbd\CrmBundle\Entity\LayerLifeCycleDetails;
 use Terminalbd\CrmBundle\Entity\LayerPerformance;
+use Terminalbd\CrmBundle\Entity\LayerStandard;
 use Terminalbd\CrmBundle\Entity\Setting;
 use Terminalbd\CrmBundle\Entity\SettingLifeCycle;
 use Terminalbd\CrmBundle\Form\FcrFormType;
@@ -80,14 +81,14 @@ class LayerLifeCycleController extends AbstractController
     /**
      * @param CrmCustomer $crmCustomer
      * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
-     * @Route("/customer/{id}/report/{report}/new/modal", methods={"GET", "POST"}, name="layer_new_modal")
+     * @Route("/customer/{id}/report/{report}/breed/{breed}/new/modal", methods={"GET", "POST"}, name="layer_new_modal")
      */
-    public function newModal(Request $request, CrmCustomer $crmCustomer, Setting $report): Response
+    public function newModal(Request $request, CrmCustomer $crmCustomer, Setting $report, Setting $breed): Response
     {
 
-
+        $data = $request->request->all();
         $entity = new LayerLifeCycle();
-        $existReport = $this->getDoctrine()->getRepository(LayerLifeCycle::class)->findOneBy(array('customer'=>$crmCustomer, 'report'=>$report, 'lifeCycleState'=>LayerLifeCycle::LIFE_CYCLE_STATE_IN_PROGRESS));
+        $existReport = $this->getDoctrine()->getRepository(LayerLifeCycle::class)->findOneBy(array('customer'=>$crmCustomer, 'report'=>$report, 'breed'=>$breed, 'lifeCycleState'=>LayerLifeCycle::LIFE_CYCLE_STATE_IN_PROGRESS));
         if ($existReport){
             $entity= $existReport;
         }
@@ -95,7 +96,6 @@ class LayerLifeCycleController extends AbstractController
         if($existReport){
             return $this->redirectToRoute('layer_life_cycle_details_modal', ['id'=>$existReport->getId()]);
         }
-        $data = $request->request->all();
 
         $form = $this->createForm(LayerLifeCycleFormType::class, $entity)
             ->add('SaveAndCreate', SubmitType::class);
@@ -106,6 +106,7 @@ class LayerLifeCycleController extends AbstractController
             $entity->setHatcheryDate(new \DateTime($hatingDate));
             $entity->setCustomer($crmCustomer);
             $entity->setReport($report);
+            $entity->setBreed($breed);
             $entity->setAgent($crmCustomer->getAgent());
             $entity->setLifeCycleState(LayerLifeCycle::LIFE_CYCLE_STATE_IN_PROGRESS);
             $entity->setEmployee($this->getUser());
@@ -115,15 +116,17 @@ class LayerLifeCycleController extends AbstractController
             $this->addFlash('success', 'post.created_successfully');
             if ($form->get('SaveAndCreate')->isClicked()) {
                 return new Response('success');
-//                return $this->redirectToRoute('chick_new_modal', ['id'=>$crmCustomer->getId(),'report'=>$report->getId()]);
             }
             return new Response('success');
         }
+
         return $this->render('@TerminalbdCrm/layerLifeCycle/new-modal.html.twig', [
             'report' => $report,
+            'breed' => $breed,
             'crmCustomer' => $crmCustomer,
             'entity' => $entity,
             'form' => $form->createView(),
+            'data' => $data,
         ]);
     }
 
@@ -149,9 +152,11 @@ class LayerLifeCycleController extends AbstractController
                 $em->flush();
             }
         }
+//        $layerStandard = $this->getDoctrine()->getRepository(LayerStandard::class)->getLayerStandardByWeek($layerLifeCycle->getBreed());
 
         return $this->render('@TerminalbdCrm/layerLifeCycle/layer-details-modal.html.twig', [
             'layerLifeCycle' => $layerLifeCycle,
+//            'layerStandard' => $layerStandard,
         ]);
     }
 
@@ -167,6 +172,8 @@ class LayerLifeCycleController extends AbstractController
         $metaValue = $data['dataMetaValue'];
         $inputType = $data['dataInputType'];
 
+        $layerStandard = $this->getDoctrine()->getRepository(LayerStandard::class)->findOneBy(array('breed'=>$entity->getCrmLayerLifeCycle()->getBreed(), 'age'=>$entity->getAgeWeek()));
+
         if($metaKey!=''&&$metaValue!=''){
 
             if($inputType=='datetime'){
@@ -174,22 +181,36 @@ class LayerLifeCycleController extends AbstractController
                 $metaValue = new \DateTime($metaValue);
             }
 
+            if($inputType=='number'){
+                $metaValue = $metaValue>0?$metaValue:0;
+            }
+
             $set = 'set'.$metaKey;
 
             $entity->$set($metaValue);
 
             $entity->setEggProduction($entity->calculateEggProduction());
+
+            $entity->setTargetWeight($layerStandard?$layerStandard->getTargetBodyWeight():0);
+            $entity->setTargetFeedPerBird($layerStandard?$layerStandard->getTargetFeedConsumption():0);
+            $entity->setTargetEggProduction($layerStandard?$layerStandard->getTargetEggProduction():0);
+            $entity->setEggWeightStandard($layerStandard?$layerStandard->getTargetEggWeight():0);
         }
 
         $em = $this->getDoctrine()->getManager();
         $em->persist($entity);
         $em->flush();
 
+
         return new JsonResponse(
             array(
                 'success'=>'Success',
                 'presentBird'=>$entity->calculatePresentBird(),
                 'eggProduction'=>$entity->getEggProduction(),
+                'targetWeight'=>$entity->getTargetWeight(),
+                'targetFeedPerBird'=>$entity->getTargetFeedPerBird(),
+                'targetEggProduction'=>$entity->getTargetEggProduction(),
+                'eggWeightStandard'=>$entity->getEggWeightStandard(),
                 'data'=>$data,
                 'status'=>200,
             )

@@ -91,39 +91,41 @@
                                         </td>
                                         <td class="totalBirds"><input type="number" data-input-type="number" data-entity-id="{{ entity.id }}"
                                                                       data-meta-key="TotalBirds" class="form-control"
-                                                                      value="{{ entity.totalBirds }}"></td>
+                                                                      value="{{ entity.totalBirds }}" min="0"></td>
                                         <td class="deadBird"><input type="number" data-input-type="number" data-entity-id="{{ entity.id }}"
                                                                     data-meta-key="DeadBird" class="form-control"
-                                                                    value="{{ entity.deadBird }}"></td>
+                                                                    value="{{ entity.deadBird }}" min="0"></td>
+
                                         <td class="presentBird">{{ entity.calculatePresentBird }} </td>
+
                                         <td class="avgWeight"><input type="number" data-input-type="number" data-entity-id="{{ entity.id }}"
                                                                      data-meta-key="AvgWeight" class="form-control"
-                                                                     value="{{ entity.avgWeight }}"></td>
-                                        <td class="targetWeight"><input type="number" data-input-type="number" data-entity-id="{{ entity.id }}"
-                                                   data-meta-key="TargetWeight" class="form-control"
-                                                   value="{{ entity.targetWeight }}"></td>
+                                                                     value="{{ entity.avgWeight }}" min="0"></td>
+                                        <td class="targetWeight">
+                                            {{ entity.targetWeight }}
+                                            </td>
                                         <td class="uniformity"><input type="number" data-input-type="number" data-entity-id="{{ entity.id }}"
                                                    data-meta-key="Uniformity" class="form-control"
-                                                   value="{{ entity.uniformity }}"></td>
+                                                   value="{{ entity.uniformity }}" min="0"></td>
                                         <td class="feedPerBird"><input type="number" data-input-type="number" data-entity-id="{{ entity.id }}"
                                                    data-meta-key="FeedPerBird" class="form-control"
-                                                   value="{{ entity.feedPerBird }}"></td>
-                                        <td class="targetFeedPerBird"><input type="number" data-input-type="number" data-entity-id="{{ entity.id }}"
-                                                   data-meta-key="TargetFeedPerBird" class="form-control"
-                                                   value="{{ entity.targetFeedPerBird }}"></td>
+                                                   value="{{ entity.feedPerBird }}" min="0"></td>
+
+                                        <td class="targetFeedPerBird">{{ entity.targetFeedPerBird }}</td>
+
                                         <td class="totalEggs"><input type="number" data-input-type="number" data-entity-id="{{ entity.id }}"
                                                    data-meta-key="TotalEggs" class="form-control"
-                                                   value="{{ entity.totalEggs }}"></td>
+                                                   value="{{ entity.totalEggs }}" min="0"></td>
+
                                         <td class="eggProduction"> {{ entity.eggProduction }} </td>
-                                        <td class="targetEggProduction"><input type="number" data-input-type="number" data-entity-id="{{ entity.id }}"
-                                                   data-meta-key="TargetEggProduction" class="form-control"
-                                                   value="{{ entity.targetEggProduction }}"></td>
+                                        <td class="targetEggProduction">{{ entity.targetEggProduction }}</td>
+
                                         <td class="eggWeightActual"><input type="number" data-input-type="number" data-entity-id="{{ entity.id }}"
                                                    data-meta-key="EggWeightActual" class="form-control"
-                                                   value="{{ entity.eggWeightActual }}"></td>
-                                        <td class="eggWeightStandard"><input type="number" data-input-type="number" data-entity-id="{{ entity.id }}"
-                                                   data-meta-key="EggWeightStandard" class="form-control"
-                                                   value="{{ entity.eggWeightStandard }}"></td>
+                                                   value="{{ entity.eggWeightActual }}" min="0"></td>
+
+                                        <td class="eggWeightStandard">{{ entity.eggWeightStandard }}</td>
+
                                         <td class="feedType"><input type="text" data-input-type="text" data-entity-id="{{ entity.id }}"
                                                    data-meta-key="FeedType" class="form-control"
                                                    value="{{ entity.feedType }}"></td>

@@ -239,9 +239,12 @@ function layerLifeCycleDetailDataInsertUsingAjax(element) {
         },
         dataType : 'json',
         success: function(response){
-            console.log(response);
             parentElement.find('.presentBird').text(response.presentBird);
             parentElement.find('.eggProduction').text(response.eggProduction);
+            parentElement.find('.targetWeight').text(response.targetWeight);
+            parentElement.find('.targetFeedPerBird').text(response.targetFeedPerBird);
+            parentElement.find('.targetEggProduction').text(response.targetEggProduction);
+            parentElement.find('.eggWeightStandard').text(response.eggWeightStandard);
             /*parentElement.find('.perBird').text(response.perBird);
             parentElement.find('.withoutMortality').text(response.withoutMortality);
             parentElement.find('.withMortality').text(response.withMortality);*/
