@@ -88,7 +88,7 @@ class LayerLifeCycleController extends AbstractController
 
         $data = $request->request->all();
         $entity = new LayerLifeCycle();
-        $existReport = $this->getDoctrine()->getRepository(LayerLifeCycle::class)->findOneBy(array('customer'=>$crmCustomer, 'report'=>$report, 'breed'=>$breed, 'lifeCycleState'=>LayerLifeCycle::LIFE_CYCLE_STATE_IN_PROGRESS));
+        $existReport = $this->getDoctrine()->getRepository(LayerLifeCycle::class)->findOneBy(array('employee'=>$this->getUser(),'customer'=>$crmCustomer, 'report'=>$report, 'breed'=>$breed, 'lifeCycleState'=>LayerLifeCycle::LIFE_CYCLE_STATE_IN_PROGRESS));
         if ($existReport){
             $entity= $existReport;
         }
@@ -260,7 +260,23 @@ class LayerLifeCycleController extends AbstractController
         return new Response('Success');
     }
 
-    
+
+    /**
+     * @param LayerLifeCycle $layerLifeCycle
+     * @Route("/{id}/complete", methods={"POST"}, name="crm_layer_life_cycle_complete", options={"expose"=true})
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     */
+    public function layerLifeCycleReportComplete(LayerLifeCycle $layerLifeCycle): Response
+    {
+        $layerLifeCycle->setLifeCycleState(LayerLifeCycle::LIFE_CYCLE_STATE_COMPLETE);
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($layerLifeCycle);
+        $em->flush();
+        return new JsonResponse(array(
+            'message'=>"Success",
+            'status'=>200
+        ));
+    }
 
 
 

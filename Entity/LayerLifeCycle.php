@@ -65,7 +65,7 @@ class LayerLifeCycle
 
     /**
      * @var Setting
-     * @ORM\ManyToOne(targetEntity="Setting", inversedBy="crmLayerStandard")
+     * @ORM\ManyToOne(targetEntity="Setting", inversedBy="crmLayerLifeCycle")
      * @ORM\JoinColumn(name="breed_id", referencedColumnName="id")
      * @ORM\JoinColumn(onDelete="CASCADE")
      */
@@ -74,7 +74,7 @@ class LayerLifeCycle
 
     /**
      * @var Agent
-     * @ORM\ManyToOne(targetEntity="App\Entity\Core\Agent" , inversedBy="layerlifecycle")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Core\Agent" , inversedBy="layerlifeCycle")
      */
     private $agent;
 

@@ -25,7 +25,7 @@ use Terminalbd\CrmBundle\Entity\Fcr;
 class FcrRepository extends EntityRepository
 {
 
-    public function getFcrReportByReportingDateAndFeedType($data)
+    public function getFcrReportByReportingDateAndFeedType($data, $employee)
     {
         if(isset($data['reporting_month']) && isset($data['fcr_of_feed'])){
             $startDate = date('Y-m-01', strtotime($data['reporting_month']));
@@ -34,7 +34,8 @@ class FcrRepository extends EntityRepository
                 ->where('f.reportingMonth >= :startDate')
                 ->andWhere('f.reportingMonth <= :endDate')
                 ->andWhere('f.fcrOfFeed = :type')
-                ->setParameters(array('startDate'=>$startDate, 'endDate'=>$endDate, 'type'=>$data['fcr_of_feed']));
+                ->andWhere('f.employee = :employee')
+                ->setParameters(array('startDate'=>$startDate, 'endDate'=>$endDate, 'type'=>$data['fcr_of_feed'], 'employee'=>$employee));
 
             return $query->getQuery()->getResult();
         }

@@ -1,0 +1,40 @@
+{% if layerPerformance.crmLayerPerformanceDetails is not empty %}
+    {% for entity in layerPerformance.crmLayerPerformanceDetails|sort|reverse %}
+
+        <tr>
+            <td> {{ loop.index }} </td>
+            <td> {{ entity.agent.name |default('') }} </td>
+            <td> {{ entity.customer.name |default('') }} </td>
+            <td> {{ entity.totalBirds }} </td>
+            <td> {{ entity.ageWeek }} </td>
+            <td> {{ entity.birdWeightAchieved }} </td>
+            <td> {{ entity.birdWeightTarget }} </td>
+            <td> {{ entity.feedIntakePerBird }} </td>
+            <td> {{ entity.feedTarget }} </td>
+
+            <td> {{ entity.eggProductionAchieved }} </td>
+            <td> {{ entity.eggProductionTarget }} </td>
+
+            <td> {{ entity.eggWeightAchieved }} </td>
+            <td> {{ entity.eggWeightStand }} </td>
+
+            <td> {{ entity.feedType }} </td>
+            <td> {{ entity.productionDate|date('d-m-Y') }} </td>
+            <td> {{ entity.BatchNo }} </td>
+            <td> {{ entity.feedMill }} </td>
+
+            <td> {{ entity.hatchery }} </td>
+            <td> {{ entity.breed.name|default('') }} </td>
+            <td> {{ entity.color }} </td>
+
+            <td> {{ entity.disease }} </td>
+            <td> {{ entity.remarks }} </td>
+
+            <td>
+                <a class="btn btn-mini yellow-bg white-font" href="{{ path('layer_life_cycle_edit',{'id':entity.id}) }}"><i class="feather icon-edit"></i> Edit</a>
+                <a class="btn  btn-transparent btn-mini red-font remove" href="javascript:" data-action="{{ path('layer_life_cycle_delete',{'id':entity.id}) }}"><i class="fa fa-remove"></i></a>
+            </td>
+
+        </tr>
+    {% endfor %}
+{% endif %}

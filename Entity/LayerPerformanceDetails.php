@@ -1,0 +1,604 @@
+<?php
+
+/*
+ * This file is part of the Symfony package.
+ *
+ * (c) Fabien Potencier <fabien@symfony.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Terminalbd\CrmBundle\Entity;
+use App\Entity\Core\Agent;
+//use App\Entity\Admin\Location;
+use App\Entity\User;
+use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
+
+/**
+ * @ORM\Entity(repositoryClass="Terminalbd\CrmBundle\Repository\LayerPerformanceRepository")
+ * @ORM\Table(name="crm_layer_performance_details")
+ * @author Md Shafiqul Islam <shafiqabs@gmail.com>
+ */
+class LayerPerformanceDetails
+{
+
+    /**
+     * @var integer
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     */
+    private $id;
+
+    /**
+     * @var LayerPerformance
+     * @ORM\ManyToOne(targetEntity="Terminalbd\CrmBundle\Entity\LayerPerformance", inversedBy="crmLayerPerformanceDetails")
+     * @ORM\JoinColumn(name="layer_performance_id", referencedColumnName="id")
+     * @ORM\JoinColumn(onDelete="CASCADE")
+     */
+
+    private $crmLayerPerformanceReport;
+
+    /**
+     * @var Agent
+     * @ORM\ManyToOne(targetEntity="App\Entity\Core\Agent" , inversedBy="layerperformanceDetails")
+     */
+    private $agent;
+
+    /**
+     * @var CrmCustomer
+     * @ORM\ManyToOne(targetEntity="CrmCustomer" , inversedBy="layerperformanceDetails")
+     */
+    private $customer;
+
+    /**
+     * @var Setting
+     * @ORM\ManyToOne(targetEntity="Setting", inversedBy="layerperformanceDetails")
+     * @ORM\JoinColumn(name="breed_id", referencedColumnName="id")
+     */
+
+    private $breed;
+    /**
+     * @var float
+     * @ORM\Column(name="total_birds", type="float")
+     */
+    private $totalBirds=0;
+
+    /**
+     * @var float
+     * @ORM\Column(name="age_week", type="float")
+     */
+    private $ageWeek=0;
+
+    /**
+     * @var float
+     * @ORM\Column(name="bird_weight_achieved", type="float")
+     */
+
+    private $birdWeightAchieved=0;
+
+    /**
+     * @var float
+     * @ORM\Column(name="bird_weight_target", type="float")
+     */
+
+    private $birdWeightTarget=0;
+
+    /**
+     * @var float
+     * @ORM\Column(name="feed_intake_per_bird", type="float")
+     */
+
+    private $feedIntakePerBird=0;
+
+    /**
+     * @var float
+     * @ORM\Column(name="feed_Target", type="float")
+     */
+
+    private $feedTarget=0;
+
+    /**
+     * @var float
+     * @ORM\Column(name="egg_production_achieved", type="float")
+     */
+
+    private $eggProductionAchieved=0;
+
+
+    /**
+     * @var float
+     * @ORM\Column(name="egg_production_target", type="float")
+     */
+
+    private $eggProductionTarget=0;
+
+    /**
+     * @var float
+     * @ORM\Column(name="egg_weight_achieved", type="float")
+     */
+
+    private $eggWeightAchieved=0;
+
+    /**
+     * @var float
+     * @ORM\Column(name="egg_weight_stand", type="float")
+     */
+
+    private $eggWeightStand=0;
+
+    /**
+     * @var string
+     * @ORM\Column(name="feed_type", type="string", nullable=true)
+     */
+
+    private $feedType;
+
+    /**
+     * @var \DateTime
+     * @ORM\Column(name="production_date", type="date", nullable=true)
+     */
+
+    private $productionDate;
+
+
+    /**
+     * @var string
+     * @ORM\Column(name="batch_no", type="string",nullable=true)
+     */
+
+    private $batch_no;
+
+    /**
+     * @var string
+     * @ORM\Column(name="feed_mill", type="string", nullable=true)
+     */
+
+    private $feedMill;
+
+    /**
+     * @var string
+     * @ORM\Column(name="hatchery", type="string", nullable=true)
+     */
+
+    private $hatchery;
+
+    /**
+     * @var string
+     * @ORM\Column(name="color", type="string", nullable=true)
+     */
+
+    private $color;
+
+    /**
+     * @var string
+     * @ORM\Column(name="disease", type="string", nullable=true)
+     */
+    private $disease;
+
+    /**
+     * @var string
+     * @Orm\Column(name="remarks", type="text", nullable=true)
+     */
+
+    private $remarks;
+
+
+    /**
+     * @var \DateTime
+     * @Gedmo\Timestampable(on="create")
+     * @ORM\Column(name="created", type="datetime")
+     */
+    private $created;
+
+    /**
+     * @var \DateTime
+     * @ORM\Column(name="updated", type="datetime", nullable = true)
+     */
+
+    private $updated;
+
+
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param int $id
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
+
+    /**
+     * @return LayerPerformance
+     */
+    public function getCrmLayerPerformanceReport()
+    {
+        return $this->crmLayerPerformanceReport;
+    }
+
+    /**
+     * @param LayerPerformance $crmLayerPerformanceReport
+     */
+    public function setCrmLayerPerformanceReport(LayerPerformance $crmLayerPerformanceReport): void
+    {
+        $this->crmLayerPerformanceReport = $crmLayerPerformanceReport;
+    }
+
+    /**
+     * @return Agent
+     */
+    public function getAgent()
+    {
+        return $this->agent;
+    }
+
+    /**
+     * @param Agent $agent
+     */
+    public function setAgent(Agent $agent): void
+    {
+        $this->agent = $agent;
+    }
+
+    /**
+     * @return CrmCustomer
+     */
+    public function getCustomer()
+    {
+        return $this->customer;
+    }
+
+    /**
+     * @param CrmCustomer $customer
+     */
+    public function setCustomer(CrmCustomer $customer): void
+    {
+        $this->customer = $customer;
+    }
+
+    /**
+     * @return float
+     */
+    public function getTotalBirds()
+    {
+        return $this->totalBirds;
+    }
+
+    /**
+     * @param float $totalBirds
+     */
+    public function setTotalBirds(float $totalBirds): void
+    {
+        $this->totalBirds = $totalBirds;
+    }
+
+    /**
+     * @return float
+     */
+    public function getAgeWeek()
+    {
+        return $this->ageWeek;
+    }
+
+    /**
+     * @param float $ageWeek
+     */
+    public function setAgeWeek(float $ageWeek): void
+    {
+        $this->ageWeek = $ageWeek;
+    }
+
+    /**
+     * @return float
+     */
+    public function getBirdWeightAchieved()
+    {
+        return $this->birdWeightAchieved;
+    }
+
+    /**
+     * @param float $birdWeightAchieved
+     */
+    public function setBirdWeightAchieved(float $birdWeightAchieved): void
+    {
+        $this->birdWeightAchieved = $birdWeightAchieved;
+    }
+
+    /**
+     * @return float
+     */
+    public function getBirdWeightTarget()
+    {
+        return $this->birdWeightTarget;
+    }
+
+    /**
+     * @param float $birdWeightTarget
+     */
+    public function setBirdWeightTarget(float $birdWeightTarget): void
+    {
+        $this->birdWeightTarget = $birdWeightTarget;
+    }
+
+    /**
+     * @return float
+     */
+    public function getFeedIntakePerBird()
+    {
+        return $this->feedIntakePerBird;
+    }
+
+    /**
+     * @param float $feedIntakePerBird
+     */
+    public function setFeedIntakePerBird(float $feedIntakePerBird): void
+    {
+        $this->feedIntakePerBird = $feedIntakePerBird;
+    }
+
+    /**
+     * @return float
+     */
+    public function getFeedTarget()
+    {
+        return $this->feedTarget;
+    }
+
+    /**
+     * @param float $feedTarget
+     */
+    public function setFeedTarget(float $feedTarget): void
+    {
+        $this->feedTarget = $feedTarget;
+    }
+
+    /**
+     * @return float
+     */
+    public function getEggProductionAchieved()
+    {
+        return $this->eggProductionAchieved;
+    }
+
+    /**
+     * @param float $eggProductionAchieved
+     */
+    public function setEggProductionAchieved(float $eggProductionAchieved): void
+    {
+        $this->eggProductionAchieved = $eggProductionAchieved;
+    }
+
+    /**
+     * @return float
+     */
+    public function getEggProductionTarget()
+    {
+        return $this->eggProductionTarget;
+    }
+
+    /**
+     * @param float $eggProductionTarget
+     */
+    public function setEggProductionTarget(float $eggProductionTarget): void
+    {
+        $this->eggProductionTarget = $eggProductionTarget;
+    }
+
+    /**
+     * @return float
+     */
+    public function getEggWeightAchieved()
+    {
+        return $this->eggWeightAchieved;
+    }
+
+    /**
+     * @param float $eggWeightAchieved
+     */
+    public function setEggWeightAchieved(float $eggWeightAchieved): void
+    {
+        $this->eggWeightAchieved = $eggWeightAchieved;
+    }
+
+    /**
+     * @return float
+     */
+    public function getEggWeightStand()
+    {
+        return $this->eggWeightStand;
+    }
+
+    /**
+     * @param float $eggWeightStand
+     */
+    public function setEggWeightStand(float $eggWeightStand): void
+    {
+        $this->eggWeightStand = $eggWeightStand;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFeedType()
+    {
+        return $this->feedType;
+    }
+
+    /**
+     * @param string $feedType
+     */
+    public function setFeedType(string $feedType): void
+    {
+        $this->feedType = $feedType;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getProductionDate()
+    {
+        return $this->productionDate;
+    }
+
+    /**
+     * @param \DateTime $productionDate
+     */
+    public function setProductionDate(\DateTime $productionDate): void
+    {
+        $this->productionDate = $productionDate;
+    }
+
+    /**
+     * @return string
+     */
+    public function getBatchNo()
+    {
+        return $this->batch_no;
+    }
+
+    /**
+     * @param string $batch_no
+     */
+    public function setBatchNo(string $batch_no): void
+    {
+        $this->batch_no = $batch_no;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFeedMill()
+    {
+        return $this->feedMill;
+    }
+
+    /**
+     * @param string $feedMill
+     */
+    public function setFeedMill(string $feedMill): void
+    {
+        $this->feedMill = $feedMill;
+    }
+
+    /**
+     * @return string
+     */
+    public function getHatchery()
+    {
+        return $this->hatchery;
+    }
+
+    /**
+     * @param string $hatchery
+     */
+    public function setHatchery(string $hatchery): void
+    {
+        $this->hatchery = $hatchery;
+    }
+
+    /**
+     * @return Setting
+     */
+    public function getBreed()
+    {
+        return $this->breed;
+    }
+
+    /**
+     * @param Setting $breed
+     */
+    public function setBreed(Setting $breed): void
+    {
+        $this->breed = $breed;
+    }
+
+    /**
+     * @return string
+     */
+    public function getColor()
+    {
+        return $this->color;
+    }
+
+    /**
+     * @param string $color
+     */
+    public function setColor(string $color): void
+    {
+        $this->color = $color;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDisease()
+    {
+        return $this->disease;
+    }
+
+    /**
+     * @param string $disease
+     */
+    public function setDisease(string $disease): void
+    {
+        $this->disease = $disease;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRemarks()
+    {
+        return $this->remarks;
+    }
+
+    /**
+     * @param string $remarks
+     */
+    public function setRemarks(string $remarks): void
+    {
+        $this->remarks = $remarks;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getCreated()
+    {
+        return $this->created;
+    }
+
+    /**
+     * @param \DateTime $created
+     */
+    public function setCreated(\DateTime $created): void
+    {
+        $this->created = $created;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getUpdated()
+    {
+        return $this->updated;
+    }
+
+    /**
+     * @param \DateTime $updated
+     */
+    public function setUpdated(\DateTime $updated): void
+    {
+        $this->updated = $updated;
+    }
+
+}

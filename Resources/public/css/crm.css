@@ -20,11 +20,34 @@
     -moz-appearance: textfield;
 
 }
+/*layer_performance_details*/
+.layer_performance_details .form-control{
+    padding: 0 0 0 2px!important;
+}
+.layer_performance_details thead th, .layer_performance_details thead td{
+    padding-left: 1px!important;
+    padding-right: 1px!important;
+}
+
+/* Chrome, Safari, Edge, Opera */
+.layer_performance_details input::-webkit-outer-spin-button,
+
+.layer_performance_details input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+
+}
+
+/* Firefox */
+.layer_performance_details input[type=number] {
+    -moz-appearance: textfield;
+
+}
 
 #datatable .form-control{
-    padding: 0px!important;
+    padding: 0 0 0 2px!important;
 }
-#datatable thead td{
+#datatable thead td, #datatable thead th{
     padding-left: 1px!important;
     padding-right: 1px!important;
 }

@@ -1,4 +1,4 @@
-<div class="portlet box green ">
+<div class="portlet box ">
     <div class="portlet-title">
         <div class="caption">{{report.name}}</div>
     </div>
@@ -13,26 +13,26 @@
                         <h4>{{report.name}}</h4>
                     </div>
 
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <div class="form-group">
                             <label class="col-md-4 control-label" for="">{{ 'Agent'|trans }}</label>
                             <div class="col-md-6">
-                                <span class="not-blank"> {{ 'Required'|trans }}</span>
-                                <p style="text-align: left" class="form-control">{{ crmCustomer.agent.name }}</p>
+                                <span class="not-blank"></span>
+                                <p style="text-align: left; border: none!important; margin: 0" class="form-control">{{ crmCustomer.agent.name }}</p>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <div class="form-group">
                             <label class="col-md-4 control-label" for="">{{ 'Farmer Name'|trans }}</label>
                             <div class="col-md-6">
-                                <span class="not-blank"> {{ 'Required'|trans }}</span>
-                                <p style="text-align: left" class="form-control">{{ crmCustomer.name }}</p>
+                                <span class="not-blank"></span>
+                                <p style="text-align: left; border: none!important; margin: 0" class="form-control">{{ crmCustomer.name }}</p>
                             </div>
                         </div>
                     </div>
 
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <div class="form-group">
                             <label class="col-md-4 control-label" for="">{{ 'Hatchery Date'|trans }}</label>
                             <div class="col-md-6">
@@ -47,50 +47,40 @@
                     </div>
 
                 </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            {{ form_label(form.hatchery, 'Total Birds'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
+                            <div class="col-md-8">
+                                {#<span class="not-blank"> {{ 'Required'|trans }}</span>#}
+                                {{ form_widget(form.total_birds) }}
+                                {{ form_errors(form.total_birds) }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            {{ form_label(form.hatchery, 'Hatchery'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
+                            <div class="col-md-8">
+                                {#<span class="not-blank"> {{ 'Required'|trans }}</span>#}
+                                {{ form_widget(form.hatchery) }}
+                                {{ form_errors(form.hatchery) }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="col-md-4 control-label" for="">{{ 'Breed'|trans }}</label>
+                            <div class="col-md-6">
+                                <span class="not-blank"> {{ ''|trans }}</span>
+                                <p style="text-align: left; margin: 0" class="form-control">{{ breed.name }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
 
                 <div class="clearfix"></div>
-                <div class="card-header grey-bg inner-header">
-                    <h5>Feed Information</h5>
-                    <div class="card-header-right">
-                    </div>
-                </div>
-
-                <div class="card-body card-body-inner">
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                {{ form_label(form.hatchery, 'Total Birds'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
-                                <div class="col-md-8">
-                                    {#<span class="not-blank"> {{ 'Required'|trans }}</span>#}
-                                    {{ form_widget(form.total_birds) }}
-                                    {{ form_errors(form.total_birds) }}
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                {{ form_label(form.hatchery, 'Hatchery'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
-                                <div class="col-md-8">
-                                    {#<span class="not-blank"> {{ 'Required'|trans }}</span>#}
-                                    {{ form_widget(form.hatchery) }}
-                                    {{ form_errors(form.hatchery) }}
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="col-md-4 control-label" for="">{{ 'Agent'|trans }}</label>
-                                <div class="col-md-6">
-                                    <span class="not-blank"> {{ ''|trans }}</span>
-                                    <p style="text-align: left" class="form-control">{{ breed.name }}</p>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-
-                </div>
-
 
                 <div class="form-actions">
                     <div class="col-md-6 ">

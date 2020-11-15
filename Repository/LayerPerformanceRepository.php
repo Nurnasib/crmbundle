@@ -24,5 +24,20 @@ use Doctrine\ORM\EntityRepository;
 class LayerPerformanceRepository extends EntityRepository
 {
 
+    public function getLayerPerformanceReportByReportingDateAndFeedType($data, $employee)
+    {
+        if(isset($data['reporting_month'])){
+            $startDate = date('Y-m-01', strtotime($data['reporting_month']));
+            $endDate = date('Y-m-t', strtotime($data['reporting_month']));
+            $query = $this->createQueryBuilder('lpr')
+                ->where('lpr.reportingMonth >= :startDate')
+                ->andWhere('lpr.reportingMonth <= :endDate')
+                ->andWhere('lpr.employee = :employee')
+                ->andWhere('lpr.breed = :breed')
+                ->setParameters(array('startDate'=>$startDate, 'endDate'=>$endDate, 'employee'=>$employee, 'breed'=>$data['breed']));
 
+            return $query->getQuery()->getArrayResult();
+        }
+        return array();
+    }
 }

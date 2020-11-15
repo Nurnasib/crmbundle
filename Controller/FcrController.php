@@ -69,7 +69,7 @@ class FcrController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $existingReport = $this->getDoctrine()->getRepository(Fcr::class)->getFcrReportByReportingDateAndFeedType($data['fcr_form']);
+            $existingReport = $this->getDoctrine()->getRepository(Fcr::class)->getFcrReportByReportingDateAndFeedType($data['fcr_form'], $this->getUser());
             if($existingReport){
                 $this->addFlash('danger', 'This month report already exist');
                 return $this->redirectToRoute('fcr');
@@ -101,7 +101,7 @@ class FcrController extends AbstractController
         $data = $request->request->get('fcr_form');
 
         if(date('Y-m-d', strtotime($data['reporting_month']))!=$entity->getReportingMonth()->format('Y-m-d')){
-            $existingReport = $this->getDoctrine()->getRepository(Fcr::class)->getFcrReportByReportingDateAndFeedType($data);
+            $existingReport = $this->getDoctrine()->getRepository(Fcr::class)->getFcrReportByReportingDateAndFeedType($data, $this->getUser());
             if($existingReport){
                 $this->addFlash('danger', 'This month report already exist');
                 return $this->redirectToRoute('fcr_edit',['id'=>$entity->getId()]);

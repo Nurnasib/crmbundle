@@ -198,7 +198,7 @@ class ChickLifeCycleDetails
     /**
      * @return string
      */
-    public function getVisitingWeek(): string
+    public function getVisitingWeek()
     {
         $locale = 'en_US';
         $nf = new NumberFormatter($locale, NumberFormatter::ORDINAL);
@@ -216,7 +216,7 @@ class ChickLifeCycleDetails
     /**
      * @return float
      */
-    public function getTotalBirds(): float
+    public function getTotalBirds()
     {
         return $this->totalBirds;
     }
@@ -232,7 +232,7 @@ class ChickLifeCycleDetails
     /**
      * @return float
      */
-    public function getAgeDays(): float
+    public function getAgeDays()
     {
         return $this->ageDays;
     }
@@ -248,7 +248,7 @@ class ChickLifeCycleDetails
     /**
      * @return float
      */
-    public function getMortalityPes(): float
+    public function getMortalityPes()
     {
         return $this->mortalityPes;
     }
@@ -264,9 +264,9 @@ class ChickLifeCycleDetails
     /**
      * @return float
      */
-    public function getMortalityPercent(): float
+    public function getMortalityPercent()
     {
-        return $this->mortalityPercent;
+        return number_format($this->mortalityPercent,2,'.','');
     }
 
     /**
@@ -278,13 +278,17 @@ class ChickLifeCycleDetails
     }
 
     public function calculateMortalityPercent(){
-        return number_format(($this->getMortalityPes()*100)/$this->getTotalBirds(),2,'.','');
+        $result = 0;
+        if($this->getTotalBirds()>0){
+            $result = ($this->getMortalityPes()*100)/$this->getTotalBirds();
+        }
+        return  $result;
     }
 
     /**
      * @return float
      */
-    public function getWeightStandard(): float
+    public function getWeightStandard()
     {
         return $this->weightStandard;
     }
@@ -300,7 +304,7 @@ class ChickLifeCycleDetails
     /**
      * @return float
      */
-    public function getWeightAchieved(): float
+    public function getWeightAchieved()
     {
         return $this->weightAchieved;
     }
@@ -316,7 +320,7 @@ class ChickLifeCycleDetails
     /**
      * @return float
      */
-    public function getFeedTotalKg(): float
+    public function getFeedTotalKg()
     {
         return $this->feedTotalKg;
     }
@@ -332,9 +336,9 @@ class ChickLifeCycleDetails
     /**
      * @return float
      */
-    public function getPerBird(): float
+    public function getPerBird()
     {
-        return $this->perBird;
+        return  number_format($this->perBird,2,'.','');
     }
 
     /**
@@ -347,13 +351,18 @@ class ChickLifeCycleDetails
 
     public function calculatePerBird(){
 
-        return number_format((($this->getFeedTotalKg()/$this->getTotalBirds())*1000),2,'.','');
+        $result =0;
+        if($this->getTotalBirds()>0){
+            $result = (($this->getFeedTotalKg()/$this->getTotalBirds())*1000);
+        }
+
+        return $result;
     }
 
     /**
      * @return float
      */
-    public function getFeedStandard(): float
+    public function getFeedStandard()
     {
         return $this->feedStandard;
     }
@@ -369,9 +378,9 @@ class ChickLifeCycleDetails
     /**
      * @return float
      */
-    public function getWithoutMortality(): float
+    public function getWithoutMortality()
     {
-        return $this->withoutMortality;
+        return number_format($this->withoutMortality,2,'.','');
     }
 
     /**
@@ -388,16 +397,16 @@ class ChickLifeCycleDetails
 
             $result = (($this->getFeedTotalKg() / $this->getTotalBirds()) / $this->getWeightAchieved()) * 1000;
         }
-        return number_format($result,2,'.','');
+        return $result;
 
     }
 
     /**
      * @return float
      */
-    public function getWithMortality(): float
+    public function getWithMortality()
     {
-        return $this->withMortality;
+        return number_format($this->withMortality,2,'.','');
     }
 
     /**
@@ -415,7 +424,7 @@ class ChickLifeCycleDetails
             $result = (($this->getFeedTotalKg()/($this->getTotalBirds()-$this->getMortalityPes()))/$this->getWeightAchieved())*1000;
         }
 
-        return number_format($result,2,'.','');
+        return $result;
 
     }
 

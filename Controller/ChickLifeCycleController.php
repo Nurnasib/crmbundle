@@ -26,6 +26,7 @@ use Terminalbd\CrmBundle\Entity\ChickLifeCycle;
 use Terminalbd\CrmBundle\Entity\ChickLifeCycleDetails;
 use Terminalbd\CrmBundle\Entity\CrmCustomer;
 use Terminalbd\CrmBundle\Entity\SettingLifeCycle;
+use Terminalbd\CrmBundle\Entity\SonaliStandard;
 use Terminalbd\CrmBundle\Form\ChickLifeCycleFormType;
 use Terminalbd\CrmBundle\Entity\Setting;
 
@@ -93,10 +94,8 @@ class ChickLifeCycleController extends AbstractController
      */
     public function newModal(Request $request, CrmCustomer $crmCustomer, Setting $report): Response
     {
-
-
         $entity = new ChickLifeCycle();
-        $existReport = $this->getDoctrine()->getRepository(ChickLifeCycle::class)->findOneBy(array('customer'=>$crmCustomer, 'report'=>$report, 'lifeCycleState'=>ChickLifeCycle::LIFE_CYCLE_STATE_IN_PROGRESS));
+        $existReport = $this->getDoctrine()->getRepository(ChickLifeCycle::class)->findOneBy(array('employee'=>$this->getUser(), 'customer'=>$crmCustomer, 'report'=>$report, 'lifeCycleState'=>ChickLifeCycle::LIFE_CYCLE_STATE_IN_PROGRESS));
         if ($existReport){
             $entity= $existReport;
         }
@@ -166,7 +165,7 @@ class ChickLifeCycleController extends AbstractController
             }
         }
 
-        return $this->render('@TerminalbdCrm/chickLifecycle/'.$chickLifeCycle->getReport()->getSlug().'-modal.html.twig', [
+        return $this->render('@TerminalbdCrm/chickLifecycle/sonali-life-cycle-modal.html.twig', [
             'chickLifeCycle' => $chickLifeCycle,
         ]);
     }
@@ -213,11 +212,9 @@ class ChickLifeCycleController extends AbstractController
         $entity->setAgeDays(isset($data['ageDays'])?$data['ageDays']:0);
         $entity->setMortalityPes(isset($data['mortalityPes'])?$data['mortalityPes']:0);
         $entity->setMortalityPercent($entity->calculateMortalityPercent());
-        $entity->setWeightStandard(isset($data['weightStandard'])?$data['weightStandard']:0);
         $entity->setWeightAchieved(isset($data['weightAchieved'])?$data['weightAchieved']:0);
         $entity->setFeedTotalKg(isset($data['feedTotalKg'])?$data['feedTotalKg']:0);
         $entity->setPerBird($entity->calculatePerBird());
-        $entity->setFeedStandard(isset($data['feedStandard'])?$data['feedStandard']:0);
         $entity->setWithoutMortality($entity->calculateWithoutMortality());
         $entity->setWithMortality($entity->calculateWithMortality());
         $entity->setFeedType(isset($data['feedType'])?$data['feedType']:null);
@@ -229,6 +226,25 @@ class ChickLifeCycleController extends AbstractController
         $entity->setBatchNo(isset($data['batchNo'])?$data['batchNo']:null);
         $entity->setRemarks(isset($data['remarks'])?$data['remarks']:null);
 
+        if($entity->getCrmChickLifeCycle()->getReport()->getSlug()=='sonali-life-cycle'){
+
+            /* @var SonaliStandard $sonaliStandard*/
+            $sonaliStandard= $this->getDoctrine()->getRepository(SonaliStandard::class)->findOneBy(array('age'=>$entity->getAgeDays()));
+            if($sonaliStandard){
+                $entity->setWeightStandard($sonaliStandard->getTargetBodyWeight());
+                $entity->setFeedStandard($sonaliStandard->getFeedIntakePerDay());
+            }
+        }
+        if($entity->getCrmChickLifeCycle()->getReport()->getSlug()=='boiler-life-cycle'){
+
+            /* @var BroilerStandard $broilerStandard*/
+            $broilerStandard= $this->getDoctrine()->getRepository(BroilerStandard::class)->findOneBy(array('age'=>$entity->getAgeDays()));
+            if($broilerStandard){
+                $entity->setWeightStandard($broilerStandard->getTargetBodyWeight());
+                $entity->setFeedStandard($broilerStandard->getTargetFeedConsumption());
+            }
+        }
+
         $em = $this->getDoctrine()->getManager();
         $em->persist($entity);
         $em->flush();
@@ -237,6 +253,8 @@ class ChickLifeCycleController extends AbstractController
             array(
                 'success'=>'Success',
                 'mortalityPercent'=>$entity->getMortalityPercent(),
+                'weightStandard'=>$entity->getWeightStandard(),
+                'feedStandard'=>$entity->getFeedStandard(),
                 'perBird'=>$entity->getPerBird(),
                 'withoutMortality'=>$entity->getWithoutMortality(),
                 'withMortality'=>$entity->getWithMortality(),

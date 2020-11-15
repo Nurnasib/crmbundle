@@ -182,10 +182,12 @@ class CrmVisitController extends AbstractController
     {
         $entity = $this->getDoctrine()->getRepository(CrmVisit::class)->find($id);
         $lifeCycleReport =$this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType'=>'FARMER_REPORT'));
+        $breedTypes =$this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType'=>'BREED_TYPE','status'=>1));
 
         return $this->render('@TerminalbdCrm/crmvisit/partial/'.$process.'_information.html.twig', [
             'entity' => $entity,
             'lifeCycleReport' => $lifeCycleReport,
+            'breedTypes' => $breedTypes,
         ]);
     }
 

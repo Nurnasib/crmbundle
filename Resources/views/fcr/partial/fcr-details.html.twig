@@ -1,4 +1,4 @@
-{% for fcrDetail in entity.fcrDetails %}
+{% for fcrDetail in entity.fcrDetails|sort|reverse %}
 <tr class="added_item">
     <td>{{ fcrDetail.agent.name }}</td>
     <td>{{ fcrDetail.hatchingDate|date('d-m-Y') }}</td>

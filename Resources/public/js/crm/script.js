@@ -61,6 +61,23 @@ $(document).on('click','.cattle_report_complete', function () {
     });
 });
 
+$(document).on('click','.report_complete_layer', function () {
+    var crmLayerLifeCycleId = $(this).attr('data-layer-life-cycle-id');
+
+    if(crmLayerLifeCycleId===''){
+        return false;
+    }
+    $.ajax({
+        url    : Routing.generate('crm_layer_life_cycle_complete',{'id':crmLayerLifeCycleId}),
+        type   : 'post',
+        dataType : 'json',
+        success: function(response){
+            console.log(response.message);
+            location.reload();
+        }
+    });
+});
+
 function formCommonProcess() {
 
     $('.form-body').slimScroll({
@@ -90,63 +107,12 @@ function formCommonProcess() {
         buttonImageOnly: true
     });
 
-    $('#datatable').on('keypress', 'input,select,textarea', function (e) {
 
-        if (e.which == 13) {
-            e.preventDefault();
-            switch ($(this).attr('class')) {
-                case 'form-control totalBirds':
-                    dataInsertUsingAjax($(this));
-                    $(this).closest('tr').find('.ageDays').focus().select();
-                    break;
-
-                case 'form-control ageDays':
-                    dataInsertUsingAjax($(this));
-                    getSonaliWeightStandardUsingAjax($(this));
-                    $(this).closest('tr').find('.mortalityPes').focus().select();
-                    break;
-
-                case 'form-control mortalityPes':
-                    dataInsertUsingAjax($(this));
-                    $(this).closest('tr').find('.weightAchieved').focus().select();
-                    break;
-
-                case 'form-control weightAchieved':
-                    dataInsertUsingAjax($(this));
-                    $(this).closest('tr').find('.feedTotalKg').focus().select();
-                    break;
-
-
-                case 'form-control feedTotalKg':
-                    dataInsertUsingAjax($(this));
-                    $(this).closest('tr').find('.feedStandard').focus().select();
-                    break;
-
-                case 'form-control feedStandard':
-                    dataInsertUsingAjax($(this));
-                    $(this).closest('tr').find('.feedType').focus().select();
-                    break;
-
-                case 'form-control feedType':
-                    dataInsertUsingAjax($(this));
-                    $(this).closest('tr').find('.proDate').focus();
-                    break;
-
-                case 'form-control proDate datePicker hasDatepicker':
-                    dataInsertUsingAjax($(this));
-                    $(this).closest('tr').find('.batchNo').focus().select();
-                    break;
-
-                case 'form-control batchNo':
-                    dataInsertUsingAjax($(this));
-                    $(this).closest('tr').find('.remarks').focus().select();
-                    break;
-
-                case 'form-control remarks':
-                    dataInsertUsingAjax($(this));
-                    $(this).closest('tr').next('tr').find('.totalBirds').focus().select();
-                    break;
-            }
+    $('.chickLifeCycleDetails tbody .form-control').keypress(function (e) {
+        if (e.which === 13) {
+            dataInsertUsingAjax($(this));
+            var index = $('.chickLifeCycleDetails tbody .form-control').index(this) + 1;
+            $('.chickLifeCycleDetails tbody .form-control').eq(index).focus().select();
         }
     });
 
@@ -173,12 +139,8 @@ function dataInsertUsingAjax(element) {
     var totalBirds=parentElement.find('.totalBirds').val();
     var ageDays=parentElement.find('.ageDays').val();
     var mortalityPes=parentElement.find('.mortalityPes').val();
-    // var mortalityPercent=parentElement.find('.mortalityPercent').val();
-    var weightStandard=parentElement.find('.weightStandard').val();
     var weightAchieved=parentElement.find('.weightAchieved').val();
     var feedTotalKg=parentElement.find('.feedTotalKg').val();
-    // var perBird=parentElement.find('.perBird').val();
-    var feedStandard=parentElement.find('.feedStandard').val();
     var feedType=parentElement.find('.feedType').val();
     var proDate=parentElement.find('.proDate').val();
     var batchNo=parentElement.find('.batchNo').val();
@@ -195,14 +157,8 @@ function dataInsertUsingAjax(element) {
             'totalBirds':totalBirds,
             'ageDays':ageDays,
             'mortalityPes':mortalityPes,
-            // 'mortalityPercent':mortalityPercent,
-            'weightStandard':weightStandard,
             'weightAchieved':weightAchieved,
             'feedTotalKg':feedTotalKg,
-            // 'perBird':perBird,
-            'feedStandard':feedStandard,
-            // 'withoutMortality':withoutMortality,
-            // 'withMortality':withMortality,
             'feedType':feedType,
             'proDate':proDate,
             'batchNo':batchNo,
@@ -211,6 +167,8 @@ function dataInsertUsingAjax(element) {
         dataType : 'json',
         success: function(response){
             parentElement.find('.mortalityPercent').text(response.mortalityPercent);
+            parentElement.find('.weightStandard').text(response.weightStandard);
+            parentElement.find('.feedStandard').text(response.feedStandard);
             parentElement.find('.perBird').text(response.perBird);
             parentElement.find('.withoutMortality').text(response.withoutMortality);
             parentElement.find('.withMortality').text(response.withMortality);
@@ -252,27 +210,6 @@ function layerLifeCycleDetailDataInsertUsingAjax(element) {
     });
 }
 
-function getSonaliWeightStandardUsingAjax(element) {
-    var parentElement = element.closest('tr');
-
-    var ageDays = element.val();
-
-    if(ageDays===''){
-        return false;
-    }
-
-    $.ajax({
-        url    : Routing.generate('crm_sonali_weight_standard_by_age'),
-        type   : 'post',
-        data   : {
-            'ageDays':ageDays
-        },
-        dataType : 'json',
-        success: function(response){
-            parentElement.find('.weightStandard').val(response.weightStandard);
-        }
-    });
-}
 
 function initIntegerMask(el){
     $(el).inputmask("integer", {removeMaskOnSubmit: false});

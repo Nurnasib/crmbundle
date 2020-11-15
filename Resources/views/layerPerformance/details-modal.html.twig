@@ -1,0 +1,123 @@
+<div class="portlet box ">
+    <div class="portlet-title">
+        <div class="caption">{{ ' Layer Performance'|trans }} </div>
+    </div>
+    {#{{ dump(report) }}#}
+
+    <div style="padding: 0" class="portlet-body form">
+        <div class="row form-body ">
+            <div class="form-inner-no-space">
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <h4>NOURISH POULTRY & HATCHERY LTD</h4>
+                        <h5>Uttara, Dhaka.</h5>
+                        <h5>{{ ' Layer Performance Report'|trans }}</h5>
+                    </div>
+                    <input type="hidden" class="layer_performance_id" value="{{ layerPerformance.id }}">
+                    <div class="col-md-4">
+                        <p style="color: #000000">{{ 'Name of CSO/Sr.CSO'|trans }}: {{ layerPerformance.employee.name }}</p>
+                    </div>
+                    <div class="col-md-4">{{ 'Breed'|trans }}: {{ layerPerformance.breed.name|default('') }}</div>
+                    <div class="col-md-4">
+                        <p style="color: #000000">{{ 'Reporting Month'|trans }}: {{ layerPerformance.reportingMonth|date("F, Y") }}</p>
+                    </div>
+                </div>
+                <div style="padding-top: 0" class="card-body card-body-inner">
+                    <div class="row">
+                        <table class="table table-striped table-bordered table-hover layer_performance_details" id="datatable">
+                            <thead class="thead-dark">
+                            <tr>
+                                <th scope="col" rowspan="2">S/N</th>
+                                <th scope="col" rowspan="2">Agent's Name</th>
+                                <th scope="col" rowspan="2">Farmer's Name</th>
+                                <th scope="col" rowspan="2">Total Birds</th>
+                                <th scope="col" rowspan="2" width="75px">Age(wk)</th>
+                                <th scope="col" colspan="2">B.Weight(gm)</th>
+                                <th scope="col" colspan="2">Feed Intake(gm)</th>
+                                <th scope="col" colspan="2">Egg Production%</th>
+                                <th scope="col" colspan="2">Egg Weight(gm)</th>
+                                <th scope="col" colspan="4">Feed Information</th>
+                                <th scope="col" colspan="3">Others Information</th>
+                                <th scope="col" rowspan="2">Disease</th>
+                                <th scope="col" rowspan="2">Remarks</th>
+                                <th scope="col text-center" rowspan="2"><i class="feather icon-settings"></i></th>
+                            </tr>
+                            <tr>
+                                <th scope="col">Achieved</th>
+                                <th scope="col">Target</th>
+                                <th scope="col">Feed/bird</th>
+                                <th scope="col">Target</th>
+                                <th scope="col">Achieved</th>
+                                <th scope="col">Target</th>
+                                <th scope="col">Achieved</th>
+                                <th scope="col">Stand</th>
+                                <th scope="col">F.Type</th>
+                                <th scope="col">P.Date</th>
+                                <th scope="col">Batch No</th>
+                                <th scope="col">Feed Mill</th>
+                                <th scope="col">Hatchery</th>
+                                <th scope="col">Breed</th>
+                                <th scope="col">Color</th>
+
+                            </tr>
+                            <tr>
+                                <td scope="col" colspan="3">
+                                    <select name="farmer" id="farmer" class="form-control farmer">
+                                        <option value="">Select Farmers</option>
+                                        {% for farmer in farmers %}
+                                            <option value="{{farmer.id}}"> {{farmer.name}} </option>
+                                        {% endfor %}
+                                    </select>
+                                </td>
+
+                                <td scope="col"><input type="number" class="form-control totalBirds" min="0" name="totalBirds"></td>
+                                <td scope="col">
+                                    <select name="ageWeek" id="" class="form-control ageWeek">
+                                        {% for index, item in noOfWeeks %}
+                                            <option value="{{ index }}">{{ item }}</option>
+                                        {% endfor %}
+                                    </select>
+
+                                </td>
+                                <td scope="col"><input type="number" value="" class="form-control bodyWeightAchieved" min="0" name="achieved"></td>
+                                <td scope="col" class="bodyWeightTarget"></td>
+                                <td scope="col"><input type="number" value="" class="form-control feedIntakePerBird" min="0" name="feedIntakePerBird"></td>
+                                <td scope="col" class="feedTarget"></td>
+                                <td scope="col"><input type="number" class="form-control eggProductionAchieved" min="0" name="eggProductionAchieved"></td>
+                                <td scope="col" class="eggProductionTarget"></td>
+                                <td scope="col"><input type="number" class="form-control eggWeightAchieved" min="0" name="eggWeightAchieved"></td>
+                                <td scope="col" class="eggWeightStand"></td>
+                                <td scope="col"><input type="text" class="form-control feedType" name="feedType"></td>
+                                <td scope="col" width="105px">
+                                    <div class="date_section">
+                                        <input type="text" class="form-control datePicker production_date" name="production_date">
+                                    </div>
+                                </td>
+                                <td scope="col">
+                                    <input type="text" class="form-control batch_no" name="batch_no">
+                                </td>
+                                <td scope="col"><input type="text" class="form-control feed_mill" name="feed_mill"></td>
+                                <td scope="col"><input type="text" class="form-control hatchery" name="hatchery"></td>
+                                <td scope="col">
+
+                                </td>
+                                <td scope="col"><input type="text" class="form-control color" name="color"></td>
+                                <td scope="col"><input type="text" class="form-control disease" name="disease"></td>
+                                <td scope="col"><input type="text" class="form-control remarks" name="remarks"></td>
+                                <td scope="col"><button type="button" class="btn btn-primary btn-sm details_add_button">{{ 'Add'|trans }}</button> </td>
+
+                            </tr>
+                            </thead>
+                            <tbody>
+
+                                {% include '@TerminalbdCrm/layerPerformance/partial/layer-performance-details.html.twig' %}
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

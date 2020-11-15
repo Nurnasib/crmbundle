@@ -32,7 +32,7 @@
                 </div>
                 <div class="card-body card-body-inner">
                     <div class="row">
-                        <table class="table table-striped table-bordered table-hover" id="datatable">
+                        <table class="table table-striped table-bordered table-hover chickLifeCycleDetails" id="datatable">
                             <thead class="thead-dark">
                             <tr>
 
@@ -83,11 +83,11 @@
                                         <td><input type="number" class="form-control ageDays" value="{{ detail.ageDays }}"> </td>
                                         <td><input type="number" class="form-control mortalityPes" value="{{ detail.mortalityPes }}"> </td>
                                         <td class="mortalityPercent">{{ detail.mortalityPercent }} </td>
-                                        <td><input type="number" style="pointer-events: none" class="form-control weightStandard" value="{{ detail.weightStandard }}"> </td>
+                                        <td class="weightStandard">{{ detail.weightStandard }}</td>
                                         <td><input type="number" class="form-control weightAchieved" value="{{ detail.weightAchieved }}"> </td>
                                         <td><input type="number" class="form-control feedTotalKg" value="{{ detail.feedTotalKg }}"> </td>
                                         <td class="perBird">{{ detail.perBird }}</td>
-                                        <td><input type="number" class="form-control feedStandard" value="{{ detail.feedStandard }}"> </td>
+                                        <td class="feedStandard">{{ detail.feedStandard }}</td>
                                         <td class="withoutMortality">{{ detail.withoutMortality }}</td>
                                         <td class="withMortality">{{ detail.withMortality }}</td>
                                         <td><input type="text" class="form-control feedType" value="{{ detail.feedType?detail.feedType:'' }}"> </td>
