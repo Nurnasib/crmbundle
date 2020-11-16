@@ -150,7 +150,7 @@ class ChickLifeCycle
     /**
      * @return Setting
      */
-    public function getReport(): Setting
+    public function getReport()
     {
         return $this->report;
     }
@@ -198,7 +198,7 @@ class ChickLifeCycle
     /**
      * @return User
      */
-    public function getEmployee(): User
+    public function getEmployee()
     {
         return $this->employee;
     }
@@ -231,7 +231,7 @@ class ChickLifeCycle
     /**
      * @return string
      */
-    public function getHatchery(): string
+    public function getHatchery()
     {
         return $this->hatchery;
     }
@@ -247,7 +247,7 @@ class ChickLifeCycle
     /**
      * @return string
      */
-    public function getBreed(): string
+    public function getBreed()
     {
         return $this->breed;
     }
@@ -263,7 +263,7 @@ class ChickLifeCycle
     /**
      * @return string
      */
-    public function getFeed(): string
+    public function getFeed()
     {
         return $this->feed;
     }
@@ -279,7 +279,7 @@ class ChickLifeCycle
     /**
      * @return string
      */
-    public function getLifeCycleState(): string
+    public function getLifeCycleState()
     {
         return $this->lifeCycleState;
     }
