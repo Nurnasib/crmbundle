@@ -24,5 +24,15 @@ use Doctrine\ORM\EntityRepository;
 class ChickLifeCycleRepository extends EntityRepository
 {
 
+    public function getChickLifeCycleByReportType($reportType){
+
+        $query = $this->createQueryBuilder('chickLifeCycle')
+            ->join('chickLifeCycle.report','r')
+            ->andWhere('r.slug = :reportType')
+            ->setParameter('reportType',$reportType);
+        $results = $query->getQuery()->getResult();
+
+        return $results;
+    }
 
 }

@@ -8,7 +8,6 @@
                 <div class="row align-items-center">
                     <ul class="breadcrumb">
                         <li class="breadcrumb-item"><a href="/"><i class="feather icon-home"></i></a></li>
-                        <li class="breadcrumb-item"> <a href="{{ path('layer_life_cycle') }}">  {{ 'Layer life Cycle'|trans }}</a></li>
                     </ul>
                 </div>
             </div>
@@ -18,13 +17,7 @@
         <div class="row">
             <div class="card">
                 <div class="card-header">
-                    <h5>{{ 'Layer Performance'|trans }}</h5>
-                    <div class="card-header-right">
-                        <div class="btn-group btn-group-sm" role="group" aria-label="Button group with nested dropdown">
-                            <a href="{{ path('layer_performance_new') }}" class="btn btn-sm  green-bg white-font"><i class="fas fa-plus"></i>{{ 'Add New'|trans }}</a>
-                            <a href="{{ path('layer_performance') }}" class="btn btn-sm gray-bg white-font"><i class="fa fa-th-list"></i>{{ 'Layer Performance'|trans }}</a>
-                        </div>
-                    </div>
+                    <h5>{{ 'Layer Performance Report'|trans }}</h5>
                 </div>
             </div>
         </div>
@@ -39,7 +32,6 @@
                             <th scope="col">Reporting Month</th>
                             <th scope="col text-center"><i class="feather icon-settings"></i></th>
                         </tr>
-
                         </thead>
                         <tbody>
 
@@ -50,9 +42,6 @@
                             <td> {{ entity.employee.name |default('') }} </td>
                             <td> {{ entity.reportingMonth|date('d-m-Y') }} </td>
                             <td>
-                                <a class="btn btn-mini yellow-bg white-font" href="{{ path('layer_performance_edit',{'id':entity.id}) }}"><i class="feather icon-edit"></i> Edit</a>
-                                <a data-action='{{ path('layer_performance_details_modal',{'id': entity is not empty?entity.id:''}) }}' href='?process=postView_{{ entity.id }}&check=show#modal' id='postView_{{ entity.id }}' >{{ 'Generate Report'|trans }}</a>
-                                <a class="btn  btn-transparent btn-mini red-font remove" href="javascript:" data-action="{{ path('layer_performance_delete',{'id':entity.id}) }}"><i class="fa fa-remove"></i></a>
                             </td>
 
                         </tr>

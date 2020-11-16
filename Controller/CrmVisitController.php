@@ -39,7 +39,7 @@ class CrmVisitController extends AbstractController
      */
     public function index()
     {
-        $entities= $this->getDoctrine()->getRepository(CrmVisit::class)->findAll();
+        $entities= $this->getDoctrine()->getRepository(CrmVisit::class)->findBy(array('employee'=>$this->getUser()));
         return $this->render('@TerminalbdCrm/crmvisit/index.html.twig',[
             'entities' => $entities
         ]);
@@ -73,16 +73,12 @@ class CrmVisitController extends AbstractController
         $data = $request->request->all();
 
         $form = $this->createForm(CrmVisitFormType::class, $entity,array('user' => $this->getUser()))
-            ->add('SaveAndCreate', SubmitType::class)
             ->add('Save', SubmitType::class);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
             $this->addFlash('success', 'post.updated_successfully');
-//            $this->getDoctrine()->getRepository(CrmVisitDetails::class)->insertDailyActivity($entity,$data);
-            if ($form->get('SaveAndCreate')->isClicked()) {
-                return $this->redirectToRoute('new_visit');
-            }
+
             return $this->redirectToRoute('crm_visit');
         }
         $agent=$this->getDoctrine()->getRepository(Agent::class)->getLocationWise($entity->getEmployee());

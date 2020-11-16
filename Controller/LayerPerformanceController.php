@@ -43,6 +43,16 @@ class LayerPerformanceController extends AbstractController
      */
     public function index(Request $request): Response
     {
+        $entities = $this->getDoctrine()->getRepository(LayerPerformance::class)->findBy(array('employee'=>$this->getUser()));
+        return $this->render('@TerminalbdCrm/layerPerformance/index.html.twig',['entities' => $entities]);
+    }
+
+    /**
+     * @Route("/report", methods={"GET"}, name="layer_performance_report")
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_AGM')")
+     */
+    public function indexReport(Request $request): Response
+    {
         $entities = $this->getDoctrine()->getRepository(LayerPerformance::class)->findAll();
         return $this->render('@TerminalbdCrm/layerPerformance/index.html.twig',['entities' => $entities]);
     }

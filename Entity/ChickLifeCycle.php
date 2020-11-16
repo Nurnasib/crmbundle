@@ -295,7 +295,7 @@ class ChickLifeCycle
     /**
      * @return string
      */
-    public function getRemarks(): string
+    public function getRemarks()
     {
         return $this->remarks;
     }

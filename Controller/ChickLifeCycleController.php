@@ -37,26 +37,15 @@ use Terminalbd\CrmBundle\Entity\Setting;
 class ChickLifeCycleController extends AbstractController
 {
     /**
+     * @param $report
      * @Route("/", methods={"GET"}, name="crm_chick")
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_AGM')")
      */
-    public function index(Request $request): Response
+    public function index( ): Response
     {
-        //  broiler index page
-        $entitys = $this->getDoctrine()->getRepository(ChickLifeCycle::class)->findAll();
-        return $this->render('@TerminalbdCrm/chickLifecycle/index.html.twig',['entities' => $entitys]);
-    }
 
-    /**
-     * @Route("/sonali", methods={"GET"}, name="crm_sonali")
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
-     */
-    public function sonali_index(Request $request): Response
-    {
-        $entitys = $this->getDoctrine()->getRepository(ChickLifeCycle::class)->findBy(
-            ['birdMode'=>'SONALI']
-        );
-        return $this->render('@TerminalbdCrm/chickLifecycle/sonali_index.html.twig',['entities' => $entitys]);
+        $entities = $this->getDoctrine()->getRepository(ChickLifeCycle::class)->findBy(array('employee'=>$this->getUser()));
+        return $this->render('@TerminalbdCrm/chickLifecycle/index.html.twig',['entities' => $entities]);
     }
 
     /**
@@ -188,7 +177,7 @@ class ChickLifeCycleController extends AbstractController
             $this->getDoctrine()->getManager()->flush();
             $this->addFlash('success', 'post.updated_successfully');
             if ($form->get('SaveAndCreate')->isClicked()) {
-                return $this->redirectToRoute('crm_chick', ['id' => $entity->getId()]);
+                return $this->redirectToRoute('crm_chick');
             }
             return $this->redirectToRoute('chick_new');
         }
@@ -296,8 +285,30 @@ class ChickLifeCycleController extends AbstractController
             'status'=>200
         ));
     }
-    
 
+
+    /**
+     * @param $report
+     * @Route("/{report}", methods={"GET"}, name="crm_chick_report")
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_AGM')")
+     */
+    public function indexReport( string $report): Response
+    {
+
+        $entities = $this->getDoctrine()->getRepository(ChickLifeCycle::class)->getChickLifeCycleByReportType($report);
+        return $this->render('@TerminalbdCrm/chickLifecycle/report/report.html.twig',['entities' => $entities]);
+    }
+
+    /**
+     * @param ChickLifeCycle $chickLifeCycle
+     * @Route("/{id}/report", methods={"GET"}, name="crm_chick_report_detail")
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_AGM')")
+     */
+    public function reportDetails( ChickLifeCycle $chickLifeCycle): Response
+    {
+
+        return $this->render('@TerminalbdCrm/chickLifecycle/report/report-details.html.twig',['chickLifeCycle' => $chickLifeCycle]);
+    }
 
 
 }
