@@ -70,10 +70,10 @@
                                 {#<td>{{ entity.birdMode }}</td>#}
                                 <td>{{ entity.hatchingDate|date('d-m-Y') }}</td>
                                 <td>{{ entity.reportingDate|date('d-m-Y') }}</td>
-                                <td>{{ entity.hatchery }}</td>
-                                <td>{{ entity.breed }}</td>
-                                <td>{{ entity.feed }}</td>
-                                <td>{{ entity.remarks }}</td>
+                                <td>{{ entity.hatchery|default('') }}</td>
+                                <td>{{ entity.breed|default('') }}</td>
+                                <td>{{ entity.feed|default('') }}</td>
+                                <td>{{ entity.remarks|default('') }}</td>
                                 <td>
                                     <a href="{{ path('crm_chick_report_detail',{'id':entity.id}) }}" class="btn btn-primary btn-sm">Report</a>
                                 </td>
