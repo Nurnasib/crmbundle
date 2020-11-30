@@ -31,6 +31,21 @@ class Setting
     private $id;
 
     /**
+     * @ORM\ManyToOne(targetEntity="Terminalbd\CrmBundle\Entity\Setting", inversedBy="children")
+     * @ORM\JoinColumns({
+     * @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="SET NULL", nullable=true)
+     * })
+     */
+    private $parent;
+
+
+    /**
+     * @ORM\OneToMany(targetEntity="Terminalbd\CrmBundle\Entity\Setting" , mappedBy="parent")
+     * @ORM\OrderBy({"name" = "ASC"})
+     **/
+    private $children;
+
+    /**
      * @var string
      *
      * @ORM\Column(type="string" )
@@ -44,8 +59,8 @@ class Setting
     private $name;
 
     /**
-     * @Gedmo\Slug(fields={"name"})
-     * @Doctrine\ORM\Mapping\Column(length=255,unique=false, nullable=true)
+     * @Gedmo\Slug(fields={"name"}, updatable=false)
+     * @Doctrine\ORM\Mapping\Column(length=255, unique=false, nullable=true)
      */
     private $slug;
 
@@ -63,6 +78,38 @@ class Setting
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getParent()
+    {
+        return $this->parent;
+    }
+
+    /**
+     * @param mixed $parent
+     */
+    public function setParent($parent): void
+    {
+        $this->parent = $parent;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getChildren()
+    {
+        return $this->children;
+    }
+
+    /**
+     * @param mixed $children
+     */
+    public function setChildren($children): void
+    {
+        $this->children = $children;
     }
 
     /**

@@ -6,7 +6,7 @@
 
     <div class="portlet-body form">
         {#{{ form_start(form, {'attr': {'action': path('layer_new_modal',{'id':crmCustomer.id,'report':report.id }),'class': 'form-horizontal right','id':'layer_life_cycle_form'}}) }}#}
-        <div class="row form-body ">
+        <div class="">
             <div class="form-inner-no-space">
 
                 <div class="row">
@@ -28,13 +28,10 @@
                             : {{ layerLifeCycle.hatcheryDate?layerLifeCycle.hatcheryDate|date("d-m-Y"):'' }}</p>
                     </div>
                     <div class="col-md-4"></div>
-                    <div class="col-md-4">
-                        <p style="color: #000000">{{ 'Breed'|trans }}
-                            : {{ layerLifeCycle.breed?layerLifeCycle.breed.name:'' }}</p>
-                    </div>
+
                 </div>
-                <div class="card-body card-body-inner" style="overflow-x: scroll">
-                    <div class="row">
+                <div class="card-body-inner" style="overflow-x: scroll">
+                    <div class="">
                         <table class="table table-striped table-bordered table-hover layerLifeCycleDetails"
                                id="datatable">
                             <thead class="thead-dark">
@@ -65,10 +62,10 @@
                                 <th scope="col">Target Egg Prod (%)</th>
                                 <th scope="col"> Actual</th>
                                 <th scope="col">Standard</th>
-                                <th scope="col">Feed Type</th>
+                                <th scope="col">FeedType</th>
                                 <th width="105px" scope="col">P.Date</th>
                                 <th scope="col">Batch No</th>
-                                <th scope="col">Feed Mill</th>
+                                <th scope="col">FeedMill</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -126,9 +123,19 @@
 
                                         <td class="eggWeightStandard">{{ entity.eggWeightStandard }}</td>
 
-                                        <td class="feedType"><input type="text" data-input-type="text" data-entity-id="{{ entity.id }}"
+                                        <td class="feedType">
+                                            <select  data-input-type="select" data-meta-key="FeedType"  data-entity-id="{{ entity.id }}" name="feed_type" class="form-control ">
+                                                <option value="">Choose Feed Type</option>
+                                                {% if feedTypes is not empty %}
+                                                    {% for feedType in feedTypes %}
+                                                        <option value="{{ feedType.id }}" {{entity.feedType is not empty and entity.feedType.id==feedType.id?'selected="selected"':'' }}>{{ feedType.name }}</option>
+                                                    {% endfor %}
+                                                {% endif %}
+                                            </select>
+                                            {#<input type="text" data-input-type="text" data-entity-id="{{ entity.id }}"
                                                    data-meta-key="FeedType" class="form-control"
-                                                   value="{{ entity.feedType }}"></td>
+                                                   value="{{ entity.feedType }}">#}
+                                        </td>
 
                                         <td class="productionDate">
                                             <div class="date_section">
@@ -140,9 +147,19 @@
                                         <td class="batchNo"><input type="text" data-input-type="text" data-entity-id="{{ entity.id }}"
                                                    data-meta-key="BatchNo" class="form-control"
                                                    value="{{ entity.batchNo }}"> </td>
-                                        <td class="feedMill"><input type="text" data-input-type="text" data-entity-id="{{ entity.id }}"
+                                        <td class="feedMill">
+                                            <select  data-input-type="select" data-meta-key="FeedMill"  data-entity-id="{{ entity.id }}" name="feed_mill" class="form-control ">
+                                                <option value="">Choose Feed Mill</option>
+                                                {% if feedMills is not empty %}
+                                                {% for feedMill in feedMills %}
+                                                    <option value="{{ feedMill.id }}" {{entity.feedMill is not empty and entity.feedMill.id==feedMill.id?'selected="selected"':'' }}>{{ feedMill.name }}</option>
+                                                {% endfor %}
+                                                {% endif %}
+                                            </select>
+                                            {#<input type="text" data-input-type="text" data-entity-id="{{ entity.id }}"
                                                    data-meta-key="FeedMill" class="form-control"
-                                                   value="{{ entity.feedMill }}"></td>
+                                                   value="{{ entity.feedMill }}">#}
+                                        </td>
                                         <td class="medicine"><input type="text" data-input-type="text" data-entity-id="{{ entity.id }}"
                                                    data-meta-key="Medicine" class="form-control"
                                                    value="{{ entity.medicine }}"></td>

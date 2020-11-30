@@ -1,0 +1,149 @@
+<div class="portlet box ">
+    <div class="portlet-title">
+        <div class="caption">{{cattlePerformance.report.name}} </div>
+    </div>
+{#{{ dump(report) }}#}
+
+    <div class="portlet-body form">
+        <div class="row form-body ">
+            <div class="form-inner-no-space">
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <h4>NOURISH POULTRY & HATCHERY LTD</h4>
+                        <h5>Uttara, Dhaka.</h5>
+                        <h4>{{cattlePerformance.report.name}}</h4>
+                        <input type="hidden" class="cattlePerformance_id" value="{{ cattlePerformance.id }}">
+                    </div>
+
+                    <div class="col-md-4">
+                        <p style="color: #000000">{{ 'Farmer Name'|trans }}: {{ cattlePerformance.customer.name }}</p>
+                    </div>
+                    <div class="col-md-4">
+                        <p style="color: #000000">{{ 'Address'|trans }}: {{ cattlePerformance.customer.address }}</p>
+                    </div>
+                    <div class="col-md-4">
+                        <p style="color: #000000">{{ 'Agent'|trans }}: {{ cattlePerformance.customer.agent.name }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p style="color: #000000">{{ 'Reporting Date'|trans }}: {{ cattlePerformance.reportingMonth?cattlePerformance.reportingMonth|date("d-m-Y"):'' }}</p>
+                    </div>
+                </div>
+                <div class="card-body-inner" style="padding: 0 2px; overflow-x: scroll">
+                    <div class="">
+
+                        <table class="table table-striped table-bordered table-hover cattle_performance_report" id="datatable">
+                            <thead class="thead-dark">
+                            <tr>
+
+                                <th scope="col" rowspan="2">S/N</th>
+                                <th scope="col" rowspan="2">Breed Type</th>
+                                <th style="width: 120px" scope="col" rowspan="2">Visiting Date</th>
+                                <th scope="col" rowspan="2">Age of Cow (Month)</th>
+                                <th scope="col" rowspan="2">Present Body  Weight (Kg)</th>
+                                <th scope="col" rowspan="2">Lactation No</th>
+                                <th scope="col" rowspan="2">Age of Lactation</th>
+                                <th scope="col" rowspan="2">Av. Milk Yield Per Day (L)</th>
+                                <th scope="col" rowspan="2">Av. Milk Yield Per Kg Con. Feed (L)</th>
+                                <th scope="col" rowspan="2">Av. Milk Yield Per Kg DM (L)</th>
+                                <th scope="col" rowspan="2">Milk Fat %</th>
+
+                                <th scope="col" colspan="3">Con. Feed Intake (Kg)</th>
+                                <th scope="col" colspan="2">Fodder (Kg)</th>
+                                <th scope="col" colspan="2">DM of Fodder (Kg)</th>
+
+                                <th scope="col" rowspan="2">Total DM (Kg)</th>
+
+                                <th style="width: 120px" scope="col" rowspan="2">DM Requirement (Kg)</th>
+                                <th scope="col" rowspan="2">Name of Ready Feed</th>
+                                <th scope="col" rowspan="2">Remarks</th>
+                                <th scope="col" rowspan="2"></th>
+
+                            </tr>
+                            <tr>
+                                <th scope="col">Ready Feed</th>
+                                <th scope="col">Conventional </th>
+                                <th scope="col">Total</th>
+
+                                <th scope="col">Gr. Grass</th>
+                                <th scope="col">Straw</th>
+
+                                <th scope="col">Gr. Grass</th>
+                                <th scope="col">Straw</th>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <select name="breed_type" class="form-control breed_type">
+                                        <option value="">Choose Breed Type</option>
+                                        {% if breedTypes is not empty %}
+                                            {% for breedType in breedTypes %}
+                                                <option value="{{ breedType.id }}">{{ breedType.name }}</option>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </select>
+                                </td>
+                                <td>
+                                    <div class="date_section">
+                                        <input autocomplete="off" type="text" name="visiting_date" class="form-control datePicker visiting_date" value="">
+                                    </div>
+                                </td>
+                                <td>
+                                    <input type="number" value="" class="form-control age_of_cattle_month">
+                                </td>
+                                <td>
+                                    <input type="number" value="" class="form-control present_body_weight">
+                                </td>
+                                <td>
+                                    <input type="number" value="" class="form-control lactation_no">
+                                </td>
+                                <td>
+                                    <input type="number" value="" class="form-control age_of_lactation">
+                                </td>
+                                <td>
+                                    <input type="number" value="" class="form-control average_weight_per_day">
+                                </td>
+                                <td></td>
+                                <td></td>
+                                <td>
+                                    <input type="number" value="" class="form-control milk_fat_percentage">
+                                </td>
+                                <td>
+                                    <input type="number" value="" class="form-control consumption_feed_intake_ready_feed">
+                                </td>
+                                <td>
+                                    <input type="number" value="" class="form-control consumption_feed_intake_conventional">
+                                </td>
+                                <td></td>
+                                <td>
+                                    <input type="number" value="" class="form-control fodder_green_grass_kg">
+                                </td>
+                                <td>
+                                    <input type="number" value="" class="form-control fodder_straw_kg">
+                                </td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td>
+                                    <input type="text" value="" class="form-control name_of_ready_feed">
+                                </td>
+                                <td>
+                                    <input type="text" value="" class="form-control remarks">
+                                </td>
+                                <td>
+                                    <button type="button" title="{{ 'Save'|trans }}" class="btn btn-primary btn-sm crmDairyPerformanceDetailAdd"><i class="fa fa-save"></i></button>
+                                </td>
+                            </tr>
+                            </thead>
+                            <tbody class="cattlePerformanceDetailsSection">
+                                {% include '@TerminalbdCrm/cattlePerformance/partial/dairy-performance.html.twig' %}
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

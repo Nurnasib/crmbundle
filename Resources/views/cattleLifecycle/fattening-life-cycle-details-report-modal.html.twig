@@ -1,12 +1,12 @@
 <div class="portlet box ">
     <div class="portlet-title">
-        <div class="caption">{{ 'Fattening Life Cycle'|trans }} </div>
+        <div class="caption">{{cattleLifeCycle.report.name}} </div>
     </div>
 {#{{ dump(report) }}#}
 
     <div class="portlet-body form">
         {#{{ form_start(form, {'attr': {'action': path('chick_new_modal',{'id':crmCustomer.id,'report':report.id }),'class': 'form-horizontal right','id':'chick_life_cycle_form'}}) }}#}
-        <div class="row form-body ">
+        <div class="">
             <div class="form-inner-no-space">
 
                 <div class="row">
@@ -26,13 +26,18 @@
                     <div class="col-md-4">
                         <p style="color: #000000">{{ 'Agent'|trans }}: {{ cattleLifeCycle.agent.name }}</p>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <p style="color: #000000">{{ 'Reporting Date'|trans }}: {{ cattleLifeCycle.reportingDate?cattleLifeCycle.reportingDate|date("d-m-Y"):'' }}</p>
                     </div>
+                    <div class="col-md-4">
+                    </div>
+                    <div class="col-md-4">
+                        <p style="color: #000000">{{ 'Breed Type'|trans }}: {{ cattleLifeCycle.breedType.name|default('')}}</p>
+                    </div>
                 </div>
-                <div class="card-body card-body-inner" style="padding: 0 10px; overflow-x: scroll">
-                    <div class="row">
-                        {{ form_start(form, {'attr': {'method':'post','action': path('cattle_life_cycle_details_modal',{'id':cattleLifeCycle.id }),'class': 'form-horizontal right','id':'chick_life_cycle_form'}}) }}
+                <div class="card-body card-body-inner" style="padding: 0 5px; overflow-x: scroll">
+                    <div class="cattleLifeCycleSection">
+                        {{ form_start(form, {'attr': {'method':'post','action': path('cattle_life_cycle_details_modal',{'id':cattleLifeCycle.id }),'class': 'form-horizontal right','id':'cattle_life_cycle_form'}}) }}
                         {#<form id="chick_life_cycle_form" method="post" action="{{ path('cattle_life_cycle_details_modal',{id:cattleLifeCycle.id}) }}">#}
                         <table class="table table-striped table-bordered table-hover cattle_life_cycle" id="datatable">
                             <thead class="thead-dark">
@@ -119,7 +124,7 @@
                                     {{ form_widget(form.remarks,{'type':'text'}) }}
                                 </td>
                                 <td>
-                                    {{ form_widget(form.SaveAndCreate,{'label':'Add','class':'btn btn-primary'}) }}
+                                    <button title="Save" type="button" class="btn btn-primary btn-sm cattle_life_cycle_details_button"><i class="fa fa-save"></i></button>
                                 </td>
                             </tr>
                             </thead>

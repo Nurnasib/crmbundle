@@ -41,6 +41,34 @@ class LayerLifeCycleDetails
     private $crmLayerLifeCycle;
 
     /**
+     * @var Setting
+     * @ORM\ManyToOne(targetEntity="Setting", inversedBy="crmLayerLifeCycleDetails")
+     * @ORM\JoinColumn(name="hatchery_id", referencedColumnName="id", onDelete="SET NULL", nullable=true)
+     */
+    private $hatchery;
+
+    /**
+     * @var Setting
+     * @ORM\ManyToOne(targetEntity="Setting", inversedBy="crmLayerLifeCycleDetails")
+     * @ORM\JoinColumn(name="breed_id", referencedColumnName="id", onDelete="SET NULL", nullable=true)
+     */
+    private $breed;
+
+    /**
+     * @var Setting
+     * @ORM\ManyToOne(targetEntity="Setting", inversedBy="crmLayerLifeCycleDetails")
+     * @ORM\JoinColumn(name="feed_mill_id", referencedColumnName="id", onDelete="SET NULL", nullable=true)
+     */
+    private $feedMill;
+
+    /**
+     * @var Setting
+     * @ORM\ManyToOne(targetEntity="Setting", inversedBy="crmLayerLifeCycleDetails")
+     * @ORM\JoinColumn(name="feed_type_id", referencedColumnName="id", onDelete="SET NULL", nullable=true)
+     */
+    private $feedType;
+
+    /**
      * @var float
      * @ORM\Column(name="total_birds", type="float")
      */
@@ -137,13 +165,6 @@ class LayerLifeCycleDetails
     private $eggWeightStandard=0;
 
     /**
-     * @var string
-     * @ORM\Column(name="feed_type", type="string", nullable=true)
-     */
-
-    private $feedType;
-
-    /**
      * @var \DateTime
      * @ORM\Column(name="production_date", type="date", nullable=true)
      */
@@ -156,13 +177,6 @@ class LayerLifeCycleDetails
      */
 
     private $batch_no;
-
-    /**
-     * @var string
-     * @ORM\Column(name="feed_mill", type="string", nullable=true)
-     */
-
-    private $feedMill;
 
     /**
      * @var string
@@ -264,7 +278,6 @@ class LayerLifeCycleDetails
         $locale = 'en_US';
         $nf = new NumberFormatter($locale, NumberFormatter::ORDINAL);
         return $nf->format($this->ageWeek).' wk';
-//        return $this->ageWeek;
     }
 
     /**
@@ -476,22 +489,6 @@ class LayerLifeCycleDetails
     }
 
     /**
-     * @return string
-     */
-    public function getFeedType()
-    {
-        return $this->feedType;
-    }
-
-    /**
-     * @param string $feedType
-     */
-    public function setFeedType(string $feedType): void
-    {
-        $this->feedType = $feedType;
-    }
-
-    /**
      * @return \DateTime
      */
     public function getProductionDate()
@@ -524,7 +521,39 @@ class LayerLifeCycleDetails
     }
 
     /**
-     * @return string
+     * @return Setting
+     */
+    public function getHatchery()
+    {
+        return $this->hatchery;
+    }
+
+    /**
+     * @param Setting $hatchery
+     */
+    public function setHatchery($hatchery)
+    {
+        $this->hatchery = $hatchery;
+    }
+
+    /**
+     * @return Setting
+     */
+    public function getBreed()
+    {
+        return $this->breed;
+    }
+
+    /**
+     * @param Setting $breed
+     */
+    public function setBreed($breed)
+    {
+        $this->breed = $breed;
+    }
+
+    /**
+     * @return Setting
      */
     public function getFeedMill()
     {
@@ -532,11 +561,27 @@ class LayerLifeCycleDetails
     }
 
     /**
-     * @param string $feedMill
+     * @param Setting $feedMill
      */
-    public function setFeedMill(string $feedMill): void
+    public function setFeedMill($feedMill)
     {
         $this->feedMill = $feedMill;
+    }
+
+    /**
+     * @return Setting
+     */
+    public function getFeedType()
+    {
+        return $this->feedType;
+    }
+
+    /**
+     * @param Setting $feedType
+     */
+    public function setFeedType($feedType)
+    {
+        $this->feedType = $feedType;
     }
 
     /**

@@ -74,20 +74,23 @@ class CrmVisitDetails
      /**
      * @var Setting
      * @ORM\ManyToOne(targetEntity="Setting", inversedBy="crmVisitDetails")
-     * @ORM\JoinColumn(name="purpose_id", referencedColumnName="id")
-     * @ORM\JoinColumn(onDelete="CASCADE")
+     * @ORM\JoinColumn(name="purpose_id", referencedColumnName="id", onDelete="SET NULL", nullable=true)
      */
     private $purpose;
 
      /**
      * @var Setting
      * @ORM\ManyToOne(targetEntity="Setting", inversedBy="crmVisitDetails")
-     * @ORM\JoinColumn(name="firm_type_id", referencedColumnName="id")
-     * @ORM\JoinColumn(onDelete="CASCADE")
+     * @ORM\JoinColumn(name="firm_type_id", referencedColumnName="id", onDelete="SET NULL", nullable=true)
      */
     private $firmType;
 
-
+    /**
+     * @var Setting
+     * @ORM\ManyToOne(targetEntity="Setting", inversedBy="crmVisitDetails")
+     * @ORM\JoinColumn(name="report_id", referencedColumnName="id", onDelete="SET NULL", nullable=true)
+     */
+    private $report;
 
     /**
      * @var \DateTime
@@ -262,6 +265,22 @@ class CrmVisitDetails
     public function setFirmType(Setting $firmType): void
     {
         $this->firmType = $firmType;
+    }
+
+    /**
+     * @return Setting
+     */
+    public function getReport()
+    {
+        return $this->report;
+    }
+
+    /**
+     * @param Setting $report
+     */
+    public function setReport(Setting $report): void
+    {
+        $this->report = $report;
     }
 
     /**

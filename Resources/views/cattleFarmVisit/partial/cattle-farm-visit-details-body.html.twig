@@ -1,0 +1,24 @@
+{% if cattleFarmVisit.crmCattleFarmVisitDetails is not empty %}
+
+    {% for index, detail in cattleFarmVisit.crmCattleFarmVisitDetails|sort|reverse %}
+        <tr>
+            <td class="detail_id_{{ detail.id }}">{{ index+1 }}</td>
+            <td>{{ detail.visitingDate|date("d-m-Y") }}</td>
+            <td>{{ detail.cattlePopulationOx }}</td>
+            <td>{{ detail.cattlePopulationCow }}</td>
+            <td>{{ detail.cattlePopulationCalf }}</td>
+            <td>{{ detail.avgMilkYieldPerDay }}</td>
+            <td>{{ detail.conceptionRate }}</td>
+            <td>{{ detail.fodderGreenGrassKg }}</td>
+            <td>{{ detail.fodderStrawKg }}</td>
+            <td>{{ detail.typeOfConcentrateFeed }}</td>
+            <td>{{ detail.marketPriceMilkPerLiter }}</td>
+            <td>{{ detail.marketPriceMeatPerKg }}</td>
+            <td class="remarks">{{ detail.remarks }}</td>
+            <td>
+                <a data-action="{{ path('cattle_farm_visit_detail_delete',{id:detail.id}) }}" class="btn btn-danger btn-sm remove">x</a>
+            </td>
+        </tr>
+    {% endfor %}
+
+{% endif %}

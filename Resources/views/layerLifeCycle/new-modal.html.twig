@@ -4,7 +4,7 @@
     </div>
 
     <div class="portlet-body form">
-        {{ form_start(form, {'attr': {'action': path('layer_new_modal',{'id':crmCustomer.id,'report':report.id,'breed':breed.id }),'class': 'form-horizontal right','id':'chick_life_cycle_form'}}) }}
+        {{ form_start(form, {'attr': {'action': path('layer_new_modal',{'id':crmCustomer.id,'report':report.id }),'class': 'form-horizontal right','id':'chick_life_cycle_form'}}) }}
         <div class="row form-body ">
             <div class="form-inner-no-space">
 
@@ -39,48 +39,13 @@
                                 <span class="not-blank"> {{ 'Required'|trans }}</span>
                                 <div class="date_section">
                                     {{ form_widget(form.hatchery_date) }}
-                                    {{ form_errors(form.hatchery_date) }}
-                                    {#<input autocomplete="off" type="text" name="hatching_date" class="form-control datePicker" value="{{ entity.hatchingDate?entity.hatchingDate|date("d-m-Y"):'' }}">#}
                                 </div>
+                                {{ form_errors(form.hatchery_date) }}
                             </div>
                         </div>
                     </div>
 
                 </div>
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            {{ form_label(form.hatchery, 'Total Birds'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
-                            <div class="col-md-8">
-                                {#<span class="not-blank"> {{ 'Required'|trans }}</span>#}
-                                {{ form_widget(form.total_birds) }}
-                                {{ form_errors(form.total_birds) }}
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            {{ form_label(form.hatchery, 'Hatchery'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
-                            <div class="col-md-8">
-                                {#<span class="not-blank"> {{ 'Required'|trans }}</span>#}
-                                {{ form_widget(form.hatchery) }}
-                                {{ form_errors(form.hatchery) }}
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label class="col-md-4 control-label" for="">{{ 'Breed'|trans }}</label>
-                            <div class="col-md-6">
-                                <span class="not-blank"> {{ ''|trans }}</span>
-                                <p style="text-align: left; margin: 0" class="form-control">{{ breed.name }}</p>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-
-                <div class="clearfix"></div>
 
                 <div class="form-actions">
                     <div class="col-md-6 ">

@@ -22,7 +22,9 @@
             <td class="dmRequirementByBwtKg">{{ detail.dmRequirementByBwtKg }}</td>
             <td class="nameOfReadyFeed">{{ detail.nameOfReadyFeed }}</td>
             <td class="remarks">{{ detail.remarks }}</td>
-            <td class="remove">{{ 'X'|trans }}</td>
+            <td>
+                <a data-action="{{ path('cattle_life_cycle_detail_delete',{id:detail.id}) }}" class="btn btn-danger btn-sm remove">x</a>
+            </td>
         </tr>
     {% endfor %}
 {% endif %}

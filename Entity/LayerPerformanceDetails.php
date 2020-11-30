@@ -15,6 +15,7 @@ use App\Entity\Core\Agent;
 use App\Entity\User;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use NumberFormatter;
 
 /**
  * @ORM\Entity(repositoryClass="Terminalbd\CrmBundle\Repository\LayerPerformanceRepository")
@@ -43,23 +44,58 @@ class LayerPerformanceDetails
 
     /**
      * @var Agent
-     * @ORM\ManyToOne(targetEntity="App\Entity\Core\Agent" , inversedBy="layerperformanceDetails")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Core\Agent" , inversedBy="crmLayerPerformanceDetails")
      */
     private $agent;
 
     /**
      * @var CrmCustomer
-     * @ORM\ManyToOne(targetEntity="CrmCustomer" , inversedBy="layerperformanceDetails")
+     * @ORM\ManyToOne(targetEntity="CrmCustomer" , inversedBy="crmLayerPerformanceDetails")
      */
     private $customer;
 
     /**
      * @var Setting
-     * @ORM\ManyToOne(targetEntity="Setting", inversedBy="layerperformanceDetails")
-     * @ORM\JoinColumn(name="breed_id", referencedColumnName="id")
+     * @ORM\ManyToOne(targetEntity="Setting", inversedBy="crmLayerPerformanceDetails")
+     * @ORM\JoinColumn(name="hatchery_id", referencedColumnName="id", onDelete="SET NULL", nullable=true)
      */
+    private $hatchery;
 
+    /**
+     * @var Setting
+     * @ORM\ManyToOne(targetEntity="Setting", inversedBy="crmLayerPerformanceDetails")
+     * @ORM\JoinColumn(name="breed_id", referencedColumnName="id", onDelete="SET NULL", nullable=true)
+     */
     private $breed;
+
+    /**
+     * @var Setting
+     * @ORM\ManyToOne(targetEntity="Setting", inversedBy="crmLayerPerformanceDetails")
+     * @ORM\JoinColumn(name="feed_id", referencedColumnName="id", onDelete="SET NULL", nullable=true)
+     */
+    private $feed;
+
+    /**
+     * @var Setting
+     * @ORM\ManyToOne(targetEntity="Setting", inversedBy="crmLayerPerformanceDetails")
+     * @ORM\JoinColumn(name="feed_mill_id", referencedColumnName="id", onDelete="SET NULL", nullable=true)
+     */
+    private $feedMill;
+
+    /**
+     * @var Setting
+     * @ORM\ManyToOne(targetEntity="Setting", inversedBy="crmLayerPerformanceDetails")
+     * @ORM\JoinColumn(name="feed_type_id", referencedColumnName="id", onDelete="SET NULL", nullable=true)
+     */
+    private $feedType;
+
+    /**
+     * @var Setting
+     * @ORM\ManyToOne(targetEntity="Setting", inversedBy="crmLayerPerformanceDetails")
+     * @ORM\JoinColumn(name="color_id", referencedColumnName="id", onDelete="SET NULL", nullable=true)
+     */
+    private $color;
+
     /**
      * @var float
      * @ORM\Column(name="total_birds", type="float")
@@ -130,19 +166,11 @@ class LayerPerformanceDetails
     private $eggWeightStand=0;
 
     /**
-     * @var string
-     * @ORM\Column(name="feed_type", type="string", nullable=true)
-     */
-
-    private $feedType;
-
-    /**
      * @var \DateTime
      * @ORM\Column(name="production_date", type="date", nullable=true)
      */
 
     private $productionDate;
-
 
     /**
      * @var string
@@ -150,27 +178,6 @@ class LayerPerformanceDetails
      */
 
     private $batch_no;
-
-    /**
-     * @var string
-     * @ORM\Column(name="feed_mill", type="string", nullable=true)
-     */
-
-    private $feedMill;
-
-    /**
-     * @var string
-     * @ORM\Column(name="hatchery", type="string", nullable=true)
-     */
-
-    private $hatchery;
-
-    /**
-     * @var string
-     * @ORM\Column(name="color", type="string", nullable=true)
-     */
-
-    private $color;
 
     /**
      * @var string
@@ -260,7 +267,7 @@ class LayerPerformanceDetails
     /**
      * @param CrmCustomer $customer
      */
-    public function setCustomer(CrmCustomer $customer): void
+    public function setCustomer($customer)
     {
         $this->customer = $customer;
     }
@@ -295,6 +302,12 @@ class LayerPerformanceDetails
     public function setAgeWeek(float $ageWeek): void
     {
         $this->ageWeek = $ageWeek;
+    }
+    public function getFormattingAgeWeek()
+    {
+        $locale = 'en_US';
+        $nf = new NumberFormatter($locale, NumberFormatter::ORDINAL);
+        return $nf->format($this->ageWeek).' week';
     }
 
     /**
@@ -426,22 +439,6 @@ class LayerPerformanceDetails
     }
 
     /**
-     * @return string
-     */
-    public function getFeedType()
-    {
-        return $this->feedType;
-    }
-
-    /**
-     * @param string $feedType
-     */
-    public function setFeedType(string $feedType): void
-    {
-        $this->feedType = $feedType;
-    }
-
-    /**
      * @return \DateTime
      */
     public function getProductionDate()
@@ -474,23 +471,7 @@ class LayerPerformanceDetails
     }
 
     /**
-     * @return string
-     */
-    public function getFeedMill()
-    {
-        return $this->feedMill;
-    }
-
-    /**
-     * @param string $feedMill
-     */
-    public function setFeedMill(string $feedMill): void
-    {
-        $this->feedMill = $feedMill;
-    }
-
-    /**
-     * @return string
+     * @return Setting
      */
     public function getHatchery()
     {
@@ -498,9 +479,9 @@ class LayerPerformanceDetails
     }
 
     /**
-     * @param string $hatchery
+     * @param Setting $hatchery
      */
-    public function setHatchery(string $hatchery): void
+    public function setHatchery($hatchery)
     {
         $this->hatchery = $hatchery;
     }
@@ -516,13 +497,61 @@ class LayerPerformanceDetails
     /**
      * @param Setting $breed
      */
-    public function setBreed(Setting $breed): void
+    public function setBreed($breed)
     {
         $this->breed = $breed;
     }
 
     /**
-     * @return string
+     * @return Setting
+     */
+    public function getFeed()
+    {
+        return $this->feed;
+    }
+
+    /**
+     * @param Setting $feed
+     */
+    public function setFeed($feed)
+    {
+        $this->feed = $feed;
+    }
+
+    /**
+     * @return Setting
+     */
+    public function getFeedMill()
+    {
+        return $this->feedMill;
+    }
+
+    /**
+     * @param Setting $feedMill
+     */
+    public function setFeedMill($feedMill)
+    {
+        $this->feedMill = $feedMill;
+    }
+
+    /**
+     * @return Setting
+     */
+    public function getFeedType()
+    {
+        return $this->feedType;
+    }
+
+    /**
+     * @param Setting $feedType
+     */
+    public function setFeedType($feedType)
+    {
+        $this->feedType = $feedType;
+    }
+
+    /**
+     * @return Setting
      */
     public function getColor()
     {
@@ -530,9 +559,9 @@ class LayerPerformanceDetails
     }
 
     /**
-     * @param string $color
+     * @param Setting $color
      */
-    public function setColor(string $color): void
+    public function setColor($color)
     {
         $this->color = $color;
     }

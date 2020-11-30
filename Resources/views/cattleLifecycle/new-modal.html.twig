@@ -1,4 +1,4 @@
-<div class="portlet box green ">
+<div class="portlet box">
     <div class="portlet-title">
         <div class="caption">{{report.name}}</div>
     </div>
@@ -17,7 +17,7 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label class="col-md-4 control-label" for="">{{ 'Agent'|trans }}</label>
-                            <div class="col-md-6">
+                            <div class="col-md-8">
                                 <span class="not-blank"> {{ 'Required'|trans }}</span>
                                 <p style="text-align: left" class="form-control">{{ crmCustomer.agent.name }}</p>
                             </div>
@@ -26,7 +26,7 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label class="col-md-4 control-label" for="">{{ 'Farmer Name'|trans }}</label>
-                            <div class="col-md-6">
+                            <div class="col-md-8">
                                 <span class="not-blank"> {{ 'Required'|trans }}</span>
                                 <p style="text-align: left" class="form-control">{{ crmCustomer.name }}</p>
                             </div>
@@ -35,7 +35,7 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label class="col-md-4 control-label" for="">{{ 'Reporting Date'|trans }}</label>
-                            <div class="col-md-6">
+                            <div class="col-md-8">
                                 <span class="not-blank"> {{ 'Required'|trans }}</span>
                                 <div class="date_section">
                                     {{ form_widget(form.reporting_date) }}
@@ -47,7 +47,7 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label class="col-md-4 control-label" for="">{{ 'Breed Type'|trans }}</label>
-                            <div class="col-md-6">
+                            <div class="col-md-8">
                                 <span class="not-blank"> {{ 'Required'|trans }}</span>
                                 {{ form_widget(form.breed_type) }}
                                 {{ form_errors(form.breed_type) }}
@@ -57,8 +57,8 @@
 
                     <div class="col-md-12">
                         <div class="form-group">
-                            {{ form_label(form.remarks, 'Remarks'|trans, {'label_attr': {'class': 'col-md-1'}}) }}
-                            <div class="col-md-11">
+                            {{ form_label(form.remarks, 'Remarks'|trans, {'label_attr': {'class': 'col-md-2'}}) }}
+                            <div class="col-md-10">
                                 {{ form_widget(form.remarks) }}
                                 {{ form_errors(form.remarks) }}
                             </div>

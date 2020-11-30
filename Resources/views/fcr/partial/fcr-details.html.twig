@@ -1,6 +1,6 @@
 {% for fcrDetail in entity.fcrDetails|sort|reverse %}
 <tr class="added_item">
-    <td>{{ fcrDetail.agent.name }}</td>
+    <td>{{ fcrDetail.agent.name|default('') }}</td>
     <td>{{ fcrDetail.hatchingDate|date('d-m-Y') }}</td>
     <td>{{ fcrDetail.totalBirds }}</td>
     <td>{{ fcrDetail.ageDay }}</td>
@@ -11,16 +11,18 @@
     <td>{{ fcrDetail.feedConsumptionPerBird }}</td>
     <td>{{ fcrDetail.fcrWithoutMortality }}</td>
     <td>{{ fcrDetail.fcrWithMortality }}</td>
-    <td>{{ fcrDetail.hatchery|default('') }}</td>
-    <td>{{ fcrDetail.breed }}</td>
-    <td>{{ fcrDetail.feed }}</td>
+    <td>{{ fcrDetail.hatchery.name|default('') }}</td>
+    <td>{{ fcrDetail.breed.name|default('') }}</td>
+    <td>{{ fcrDetail.feed.name|default('') }}</td>
     {% if entity.fcrOfFeed == "BEFORE" %}
-    <td>{{ fcrDetail.feedMill }}</td>
-    <td>{{ fcrDetail.feedType }}</td>
+    <td>{{ fcrDetail.feedMill.name|default('') }}</td>
+    <td>{{ fcrDetail.feedType.name|default('') }}</td>
     <td>{{ fcrDetail.proDate|date('d-m-Y') }}</td>
     <td>{{ fcrDetail.batchNo }}</td>
     {% endif %}
     <td>{{ fcrDetail.remarks }}</td>
-    <td>X</td>
+    <td>
+        <a data-action="{{ path('fcr_detail_delete',{id:fcrDetail.id}) }}" class="btn btn-danger btn-sm remove">x</a>
+    </td>
 </tr>
 {% endfor %}

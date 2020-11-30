@@ -37,8 +37,7 @@ class ChickLifeCycle
     /**
      * @var Setting
      * @ORM\ManyToOne(targetEntity="Setting", inversedBy="crmChickLifeCycle")
-     * @ORM\JoinColumn(name="report_id", referencedColumnName="id")
-     * @ORM\JoinColumn(onDelete="CASCADE")
+     * @ORM\JoinColumn(name="report_id", referencedColumnName="id", onDelete="SET NULL", nullable=true)
      */
     private $report;
 

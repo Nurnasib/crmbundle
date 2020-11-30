@@ -41,19 +41,14 @@
                         <div class="row form-body">
                             <div class="form-inner-no-space">
                                 <div class="row">
-                                    <div class="col-md-6 offset-1">
+                                    <div class="col-md-5 offset-1">
                                         <div class="form-group">
                                             <label class="col-md-4 control-label">Employee Name</label>
-                                            <div class="col-md-8">{{ entity.employee.name }}</div>
+                                            <div class="col-md-8">{{ employee.name }}</div>
                                         </div>
 
                                         <div class="form-group">
-                                            <label class="col-md-4 control-label">Designation</label>
-                                            <div class="col-md-8">{{ entity.employee.designation.name|default('') }}</div>
-                                        </div>
-
-                                        <div class="form-group">
-                                            {{ form_label(form.location,'Area Name'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
+                                            {{ form_label(form.location,'Visiting Area'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
                                             <div class="col-md-8">
                                                 <span class="not-blank"> {{ 'Required'|trans }}</span>
                                                 {{ form_widget(form.location) }}
@@ -61,263 +56,39 @@
                                             </div>
                                         </div>
 
+                                    </div>
+                                    <div class="col-md-5 offset-1">
+
+                                        <div class="form-group">
+                                            <label class="col-md-4 control-label">Designation</label>
+                                            <div class="col-md-8">{{ employee.designation.name|default('') }}</div>
+                                        </div>
+
                                         <div class="form-group">
                                             {{ form_label(form.working_duration,'Working Duration'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
-                                            <div class="col-md-8">
-                                                <span class="not-blank"> {{ 'Required'|trans }}</span>
+                                            <div class="col-md-4">
+                                                <span style="text-align: left" class="not-blank"> {{ 'From'|trans }}</span>
                                                 {{ form_widget(form.working_duration) }}
                                                 {{ form_errors(form.working_duration) }}
                                             </div>
+                                            <div class="col-md-4">
+                                                <span style="text-align: left;" class="not-blank"> {{ 'To'|trans }}</span>
+                                                {{ form_widget(form.working_duration_to) }}
+                                                {{ form_errors(form.working_duration_to) }}
+                                            </div>
                                         </div>
-                                        <hr>
                                     </div>
                                 </div>
                                 <div class="clearfix"></div>
 
-                                <div class="card-header grey-bg inner-header">
-                                    <h5>Farmer  Information</h5>
-                                    <div class="card-header-right">
-                                        <div class="btn-group btn-group-sm">
-
-                                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#farmerModal" data-whatever="@mdo">New Farmer</button>
-
-                                        </div>
-                                    </div>
-                                </div>
-                                {#addmore#}
-                                <div class="card-body card-body-inner">
-                                    <div class="clone-block">
-                                        <table class="table table-bordered">
-                                            <thead>
-                                            <tr class="farmer_section">
-                                                <td>
-                                                    <select name="purpose" id="" class="form-control farmer_purpose">
-                                                        <option value="">Select Purpose</option>
-                                                        {% for purpose in purposes %}
-                                                            <option value="{{purpose.id}}"> {{purpose.name}} </option>
-                                                        {% endfor %}
-                                                    </select>
-                                                </td>
-                                                <td>
-                                                    <select name="farmer" id="farmer" class="form-control farmer">
-                                                        <option value="">Select Farmers</option>
-                                                        {% for farmer in farmers %}
-                                                            <option value="{{farmer.id}}"> {{farmer.name}} </option>
-                                                        {% endfor %}
-                                                    </select>
-                                                </td>
-                                                <td>
-                                                    <input type="text" disabled="disabled" class="form-control form-control-sm farmer_address" placeholder="Address" value="">
-                                                </td>
-                                                <td>
-                                                    <input type="text" disabled="disabled"  class="form-control form-control-sm farmer_phone" placeholder="Phone"  value="">
-                                                </td>
-                                                <td>
-                                                    <select name="farmer_firm_type" id="" class="form-control farmer_firm_type">
-                                                        <option value="">Select Firm Type</option>
-                                                        {% for firmType in firmTypes %}
-                                                            <option value="{{firmType.id}}"> {{firmType.name}} </option>
-                                                        {% endfor %}
-                                                    </select>
-
-                                                </td>
-                                                <td>
-                                                    <input type="text" name="capacity" id="capacity" class="form-control form-control-sm farmer_capacity" placeholder="Farm Capacity" value="">
-                                                </td>
-                                                <td>
-                                                    <input type="text" name="comments" id="comments" class="form-control form-control-sm farmer_comments" placeholder="Enter your comments">
-                                                </td>
-                                                <td colspan="2">
-                                                    <button type="button" id="addrow" class="btn btn-sm  green-bg white-font addmore ml-2"><i class="fas fa-plus"></i> Add</button>
-                                                </td>
-                                            </tr>
-                                            </thead>
-                                            <tbody class="crm_detail_farmer_section">
-                                            {% include '@TerminalbdCrm/crmvisit/partial/farmer_information.html.twig' %}
-                                            </tbody>
-                                        </table>
-
-                                    </div>
-                                    <div class="clearfix"></div>
-                                </div>
-                                {#end#}
-
-                                <div class="clearfix"></div>
-                                <div class="card-header grey-bg inner-header">
-                                    <h5>Agent Information</h5>
-                                </div>
-                                {#agent-addmore#}
-                                <div class="card-body card-body-inner">
-                                    <div class="agent-clone-block" id="agent-clone-block">
-                                        <div class="agentClone" style="padding-bottom: 5px">
-                                            <table class="table table-bordered">
-                                                <thead>
-                                                <tr class="agent_section">
-                                                    <td>
-                                                        <select name="agentPurpose" id="" class="form-control agentPurpose">
-                                                            <option value="">Select Purpose</option>
-                                                            {% if agentPurposes is not empty %}
-                                                            {% for purpose in agentPurposes %}
-                                                                <option value="{{purpose.id}}"> {{purpose.name}} </option>
-                                                            {% endfor %}
-                                                            {% endif %}
-                                                        </select>
-                                                    </td>
-                                                    <td>
-                                                        <select name="agent" id="agent" class="form-control agent">
-                                                            <option value="">Select Agent</option>
-                                                            {% for agent in agents %}
-                                                                <option value="{{agent.id}}"> {{agent.name}} </option>
-                                                            {% endfor %}
-                                                        </select>
-                                                    </td>
-                                                    <td>
-                                                        <input type="text" disabled="disabled" class="form-control form-control-sm agent_address" placeholder="Address" value="">
-                                                    </td>
-                                                    <td>
-                                                        <input type="text" disabled="disabled"  class="form-control form-control-sm agent_mobile" placeholder="Phone"  value="">
-                                                    </td>
-                                                    <td>
-                                                        <input type="text" name="agentComments" id="comments" class="form-control form-control-sm agentComments" placeholder="Enter your comments">
-                                                    </td>
-                                                    <td>
-                                                        <button type="button" id="" class="btn btn-sm  green-bg white-font addAgent"><i class="fas fa-plus"></i> Add</button>
-                                                    </td>
-                                                </tr>
-                                                </thead>
-                                                <tbody class="crm_detail_agent_section">
-                                                {% include '@TerminalbdCrm/crmvisit/partial/agent_information.html.twig' %}
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                    <div class="clearfix"></div>
-                                </div>
-                                <div class="clearfix"></div>
-                                <div class="card-header grey-bg inner-header">
-                                    <h5>Other Agent Information</h5>
-                                    <div class="card-header-right">
-                                        <div class="btn-group btn-group-sm">
-                                            <button type="button" class="btn btn-primary " data-toggle="modal" data-target="#otherAgentModal" data-whatever="@mdo">New Other-agent</button>
-                                            {##}
-                                        </div>
-                                    </div>
-                                </div>
-                                {#agent-addmore#}
-                                <div class="card-body card-body-inner">
-                                    <div class="other-agent-clone-block" id="other-agent-clone-block">
-                                        <div class="otherAgentClone">
-                                            <table class="table table-bordered">
-                                                <thead>
-                                                <tr class="other_agent_section">
-                                                    <td>
-                                                        <select name="otherPurpose" id="" class="form-control other_agent_purpose">
-                                                            <option value="">Select Purpose</option>
-                                                            {% if otherAgentPurposes is not empty %}
-                                                            {% for purpose in otherAgentPurposes %}
-                                                                <option value="{{purpose.id}}"> {{purpose.name}} </option>
-                                                            {% endfor %}
-                                                            {% endif %}
-                                                        </select>
-                                                    </td>
-                                                    <td>
-                                                        <select name="otherAgent" id="otherAgent" class="form-control other_agent">
-                                                            <option value="">Select Other Agent</option>
-                                                            {% for other in otherAgents %}
-                                                                <option value="{{other.id}}"> {{other.name}} </option>
-                                                            {% endfor %}
-                                                        </select>
-                                                    </td>
-                                                    <td>
-                                                        <input type="text" disabled="disabled" class="form-control form-control-sm other_agent_address" placeholder="Address" value="">
-                                                    </td>
-                                                    <td>
-                                                        <input type="text" disabled="disabled"  class="form-control form-control-sm other_agent_mobile" placeholder="Phone"  value="">
-                                                    </td>
-                                                    <td>
-                                                        <input type="text" name="otherComments" id="comments" class="form-control form-control-sm other_agent_comments" placeholder="Enter your comments">
-                                                    </td>
-                                                    <td>
-                                                        <button type="button" id="addOtherAgent" class="btn btn-sm  green-bg white-font addOtherAgent"><i class="fas fa-plus"></i> Add</button>
-                                                    </td>
-                                                </tr>
-                                                </thead>
-                                                <tbody class="crm_detail_other_agent_section">
-                                                {% include '@TerminalbdCrm/crmvisit/partial/other-agent_information.html.twig' %}
-                                                </tbody>
-                                            </table>
-                                        </div>
-
-                                    </div>
-
-                                    <div class="clearfix"></div>
-                                </div>
-
-                                <div class="clearfix"></div>
-                                <div class="card-header grey-bg inner-header">
-                                    <h5>Sub-agent Information</h5>
-                                    <div class="card-header-right">
-                                        <div class="btn-group btn-group-sm">
-                                            <button type="button" class="btn btn-primary " data-toggle="modal" data-target="#subAgentModal" data-whatever="@mdo">New Sub-agent</button>
-                                        </div>
-                                    </div>
-                                </div>
-                                {#agent-addmore#}
-                                <div class="card-body card-body-inner">
-                                    <div class="sub-agent-clone-block" id="sub-agent-clone-block">
-                                        <div class="subAgentClone">
-                                            <table class="table table-bordered">
-                                                <thead>
-                                                <tr class="sub_agent_section">
-                                                    <td>
-                                                        <select name="subPurpose" id="" class="form-control sub_agent_purpose">
-                                                            <option value="">Select Purpose</option>
-                                                            {% if subAgentPurposes is not empty %}
-                                                            {% for purpose in subAgentPurposes %}
-                                                                <option value="{{purpose.id}}"> {{purpose.name}} </option>
-                                                            {% endfor %}
-                                                            {% endif %}
-                                                        </select>
-                                                    </td>
-                                                    <td>
-                                                        <select name="subAgent" id="subAgent" class="form-control sub_agent">
-                                                            <option value="">Select Sub-agent</option>
-                                                            {% for sub in subAgents %}
-                                                                <option value="{{sub.id}}"> {{sub.name}} </option>
-                                                            {% endfor %}
-                                                        </select>
-                                                    </td>
-                                                    <td>
-                                                        <input type="text" disabled="disabled" class="form-control form-control-sm sub_agent_address" placeholder="Address" value="">
-                                                    </td>
-                                                    <td>
-                                                        <input type="text" disabled="disabled"  class="form-control form-control-sm sub_agent_mobile" placeholder="Phone"  value="">
-                                                    </td>
-                                                    <td>
-                                                        <input type="text" name="subComments" id="comments" class="form-control form-control-sm sub_agent_comments" placeholder="Enter your comments">
-                                                    </td>
-                                                    <td>
-                                                        <button type="button" id="addSubAgent" class="btn btn-sm  green-bg white-font addSubAgent"><i class="fas fa-plus"></i> Add</button>
-                                                    </td>
-                                                </tr>
-                                                </thead>
-                                                <tbody class="crm_detail_sub_agent_section">
-                                                {% include '@TerminalbdCrm/crmvisit/partial/sub-agent_information.html.twig' %}
-                                                </tbody>
-                                            </table>
-                                        </div>
-
-                                    </div>
-                                    <div class="clearfix"></div>
-                                </div>
-
-                                {#end#}
                                 <div class="form-actions">
-                                    <div class="col-md-6 "></div>
-                                    <div class="col-md-6 text-right">
-                                        <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
-                                            <button type="reset" class="btn btn-sm yellow-bg white-font"><i class="fa fa-refresh"></i>Restore</button>
-                                            {{ form_widget(form.Save, {label: 'Save',value:'Save', attr: { class: 'btn btn-primary form-submit'}}) }}
+                                    <div class="row">
+                                        <div class="col-md-6 "></div>
+                                        <div class="col-md-6 text-right">
+                                            <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                                                <button type="reset" class="btn btn-sm yellow-bg white-font"><i class="fa fa-refresh"></i>Restore</button>
+                                                {{ form_widget(form.Save, {label: 'Save',value:'Save', attr: { class: 'btn btn-primary form-submit'}}) }}
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="clearfix"></div>
@@ -331,216 +102,6 @@
             </div>
         </div>
 
-
-        {#Modal#}
-        <div class="modal fade" id="farmerModal" tabindex="-1" aria-labelledby="farmerModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content" style="padding: 20px" >
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">New Farmer</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <form action="{{ path('new_farmer_ajax',{'id':entity.id}) }}" name="farmerForm" class="form-horizontal right crm-customer-create-form" id="farmerForm" onsubmit="return validateform()"   method="post">
-
-                    <div class="modal-body">
-
-
-                        <div class="form-group">
-                            <label for="recipient-name" class="col-form-label col-md-4 ">Name:</label>
-                            <input type="text" name="name" class="form-control col-md-8 mr-4 name" id="name" autocomplete="off" required>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="recipient-name" class="col-form-label col-md-4">Mobile:</label>
-                            <input type="text" name="mobile" class="form-control col-md-8 mobile" id="mobile">
-                        </div>
-                        <div class="form-group">
-                            <label for="recipient-name" class="col-form-label col-md-4">Agent Name:</label>
-                            <select name="agent" id="agent" class="form-control">
-                                <option value="">Select Agent</option>
-                                {% for agent in agents %}
-                                <option value="{{ agent.id }}">{{ agent.name }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="message-text" class="col-form-label col-md-4">Location:</label>
-                            <select name="location" id="location" class="form-control">
-                            {% for location in entity.employee.upozila %}
-                                <option value="{{ location.id }}">{{ location.name }}</option>
-                            {% endfor %}
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="message-text" class="col-form-label col-md-4">Address:</label>
-                            <textarea class="form-control col-md-8" name="address" id="address"></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="message-text" class="col-form-label col-md-4">Purpose</label>
-                            <select name="purpose" id="" class="form-control">
-                                <option value="">Select Purpose</option>
-                                {% for purpose in purposes %}
-                                    <option value="{{purpose.id}}"> {{purpose.name}} </option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="message-text" class="col-form-label col-md-4">Capacity</label>
-                            <input type="text" name="capacity" class="form-control col-md-8" id="capacity">
-
-                        </div>
-                        <div class="form-group">
-                            <label for="message-text" class="col-form-label col-md-4">Comments</label>
-                            <textarea class="form-control col-md-8" name="comments" id="comments"></textarea>
-                        </div>
-                    </div>
-
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary btn-sm crm-customer-btn" id="crm-farmer-btn">Save</button>
-                    </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-
-        <div class="modal fade" id="otherAgentModal" tabindex="-1" aria-labelledby="subAgentModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content" style="padding: 20px" >
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">New Sub-agent</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <form action="{{ path('new_other_agent_ajax',{'id':entity.id}) }}" name="otherAgentForm" class="form-horizontal right crm-customer-create-form" id="otherAgentForm" onsubmit="return validateform()"   method="post">
-
-                        <div class="modal-body">
-                            <div class="form-group">
-                                <label for="recipient-name" class="col-form-label col-md-4 ">Name:</label>
-                                <input type="text" name="name" class="form-control col-md-8 mr-4 name" id="name" autocomplete="off" required>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="recipient-name" class="col-form-label col-md-4">Mobile:</label>
-                                <input type="text" name="mobile" class="form-control col-md-8 mobile" id="mobile">
-                            </div>
-                            <div class="form-group">
-                                <label for="message-text" class="col-form-label col-md-4">Location:</label>
-                                <select name="location" id="location" class="form-control">
-                                    {% for location in entity.employee.upozila %}
-                                        <option value="{{ location.id }}">{{ location.name }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="message-text" class="col-form-label col-md-4">Address:</label>
-                                <textarea class="form-control col-md-8" name="address" id="message-text"></textarea>
-                            </div>
-                            <div class="form-group">
-                                <label for="message-text" class="col-form-label col-md-4">Purpose</label>
-                                <select name="purpose" id="" class="form-control">
-                                    <option value="">Select Purpose</option>
-                                    {% if otherAgentPurposes is not empty %}
-                                    {% for purpose in otherAgentPurposes %}
-                                        <option value="{{purpose.id}}"> {{purpose.name}} </option>
-                                    {% endfor %}
-                                    {% endif %}
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="message-text" class="col-form-label col-md-4">Comments</label>
-                                <textarea class="form-control col-md-8" name="comments" id="comments"></textarea>
-                            </div>
-                        </div>
-
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary btn-sm crm-customer-btn" id="crm-other-agent-btn">Save</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-
-        <div class="modal fade" id="subAgentModal" tabindex="-1" aria-labelledby="subAgentModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content" style="padding: 20px" >
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">New Sub-agent</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <form action="{{ path('new_sub_agent_ajax',{'id':entity.id}) }}" id="subAgentForm" name="subAgentForm" class="form-horizontal right crm-customer-create-form"  onsubmit="return validateform()"   method="post">
-
-                        <div class="modal-body">
-
-
-                            <div class="form-group">
-                                <label for="recipient-name" class="col-form-label col-md-4 ">Name:</label>
-                                <input type="text" name="name" class="form-control col-md-8 mr-4 name" id="name" autocomplete="off" required>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="recipient-name" class="col-form-label col-md-4">Mobile:</label>
-                                <input type="text" name="mobile" class="form-control col-md-8 mobile" id="mobile">
-                            </div>
-                            <div class="form-group">
-                                <label for="recipient-name" class="col-form-label col-md-4">Agent Name:</label>
-                                <select name="agent" id="agent" class="form-control">
-                                    <option value="">Select Agent</option>
-                                    {% for agent in agents %}
-                                        <option value="{{ agent.id }}">{{ agent.name }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="message-text" class="col-form-label col-md-4">Location:</label>
-                                <select name="location" id="location" class="form-control">
-                                    {% for location in entity.employee.upozila %}
-                                        <option value="{{ location.id }}">{{ location.name }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="message-text" class="col-form-label col-md-4">Address:</label>
-                                <textarea class="form-control col-md-8" name="address" id="message-text"></textarea>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="message-text" class="col-form-label col-md-4">Purpose</label>
-                                <select name="purpose" id="" class="form-control">
-                                    <option value="">Select Purpose</option>
-                                    {% if subAgentPurposes is not empty %}
-                                        {% for purpose in subAgentPurposes %}
-                                            <option value="{{purpose.id}}"> {{purpose.name}} </option>
-                                        {% endfor %}
-                                    {% endif %}
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="message-text" class="col-form-label col-md-4">Comments</label>
-                                <textarea class="form-control col-md-8" name="comments" id="comments"></textarea>
-                            </div>
-                        </div>
-
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary btn-sm crm-customer-btn" id="crm-sub-agent-btn">Save</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-
-
-
-        {#EndModal#}
-
-
         <!-- [ Main Content ] end -->
     </div>
 
@@ -550,10 +111,11 @@
 {% endblock %}
  {% block cssBlock %}
      <link rel="stylesheet" href="{{ asset('assets/module/css/app.css') }}">
-     <link rel="stylesheet" href="{{ asset('bundles/terminalbdcrm//css/crm.css') }}">
  {% endblock  %}
-{% block javascripts %}
-{#<script>#}
-    {{ parent() }}
-    <script type="application/javascript" src="{{ asset('bundles/terminalbdcrm/js/crm/script.js') }}"></script>
-{% endblock  %}
+ {% block javascriptBlock %}
+     {{ parent() }}
+     $(".timePicker").timepicker({
+     timeFormat: 'hh:mm TT'
+     }
+     );
+ {% endblock %}

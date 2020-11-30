@@ -43,14 +43,21 @@ class LayerPerformance
      */
     private $employee;
 
+
+    /**
+     * @var CrmCustomer
+     * @ORM\ManyToOne(targetEntity="CrmCustomer" , inversedBy="layerPerformance")
+     */
+    private $customer;
+
     /**
      * @var Setting
      * @ORM\ManyToOne(targetEntity="Setting", inversedBy="layerPerformance")
-     * @ORM\JoinColumn(name="breed_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="report_id", referencedColumnName="id")
+     * @ORM\JoinColumn(onDelete="CASCADE")
      */
 
-    private $breed;
-
+    private $report;
     /**
      * @var \DateTime
      * @ORM\Column(name="repoting_month", type="date", nullable=true)
@@ -107,25 +114,41 @@ class LayerPerformance
     /**
      * @param User $employee
      */
-    public function setEmployee(User $employee): void
+    public function setEmployee($employee)
     {
         $this->employee = $employee;
     }
 
     /**
-     * @return Setting
+     * @return CrmCustomer
      */
-    public function getBreed()
+    public function getCustomer()
     {
-        return $this->breed;
+        return $this->customer;
     }
 
     /**
-     * @param Setting $breed
+     * @param CrmCustomer $customer
      */
-    public function setBreed($breed)
+    public function setCustomer($customer)
     {
-        $this->breed = $breed;
+        $this->customer = $customer;
+    }
+
+    /**
+     * @return Setting
+     */
+    public function getReport()
+    {
+        return $this->report;
+    }
+
+    /**
+     * @param Setting $report
+     */
+    public function setReport($report)
+    {
+        $this->report = $report;
     }
 
     /**

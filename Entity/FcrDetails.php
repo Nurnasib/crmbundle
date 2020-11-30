@@ -36,9 +36,15 @@ class FcrDetails
 
     /**
      * @var Agent
-     * @ORM\ManyToOne(targetEntity="App\Entity\Core\Agent" , inversedBy="fcr")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Core\Agent" , inversedBy="fcrDetails")
      */
     private $agent;
+
+    /**
+     * @var CrmCustomer
+     * @ORM\ManyToOne(targetEntity="CrmCustomer" , inversedBy="fcrDetails")
+     */
+    private $customer;
 
     /**
      * @var \DateTime
@@ -108,32 +114,37 @@ class FcrDetails
     private $fcrWithMortality=0;
 
     /**
-     * @var string
-     * @Orm\Column(name="hatchery", type="string", nullable=true)
+     * @var Setting
+     * @ORM\ManyToOne(targetEntity="Setting", inversedBy="fcrDetails")
+     * @ORM\JoinColumn(name="hatchery_id", referencedColumnName="id", onDelete="SET NULL", nullable=true)
      */
     private $hatchery;
 
     /**
-     * @var string
-     * @Orm\Column(name="breed", type="string", nullable=true)
+     * @var Setting
+     * @ORM\ManyToOne(targetEntity="Setting", inversedBy="fcrDetails")
+     * @ORM\JoinColumn(name="breed_id", referencedColumnName="id", onDelete="SET NULL", nullable=true)
      */
     private $breed;
 
     /**
-     * @var string
-     * @Orm\Column(name="feed", type="string", nullable=true)
+     * @var Setting
+     * @ORM\ManyToOne(targetEntity="Setting", inversedBy="fcrDetails")
+     * @ORM\JoinColumn(name="feed_id", referencedColumnName="id", onDelete="SET NULL", nullable=true)
      */
     private $feed;
 
     /**
-     * @var string
-     * @Orm\Column(name="feed_mill", type="string", nullable=true)
+     * @var Setting
+     * @ORM\ManyToOne(targetEntity="Setting", inversedBy="fcrDetails")
+     * @ORM\JoinColumn(name="feed_mill_id", referencedColumnName="id", onDelete="SET NULL", nullable=true)
      */
     private $feedMill;
 
     /**
-     * @var string
-     * @Orm\Column(name="feed_type", type="string", nullable=true)
+     * @var Setting
+     * @ORM\ManyToOne(targetEntity="Setting", inversedBy="fcrDetails")
+     * @ORM\JoinColumn(name="feed_type_id", referencedColumnName="id", onDelete="SET NULL", nullable=true)
      */
     private $feedType;
 
@@ -351,8 +362,9 @@ class FcrDetails
         return number_format($result,2,'.','');
 
     }
+
     /**
-     * @return string
+     * @return Setting
      */
     public function getFeedMill()
     {
@@ -360,15 +372,15 @@ class FcrDetails
     }
 
     /**
-     * @param string $feedMill
+     * @param Setting $feedMill
      */
-    public function setFeedMill(string $feedMill): void
+    public function setFeedMill($feedMill)
     {
         $this->feedMill = $feedMill;
     }
 
     /**
-     * @return string
+     * @return Setting
      */
     public function getFeedType()
     {
@@ -376,12 +388,13 @@ class FcrDetails
     }
 
     /**
-     * @param string $feedType
+     * @param Setting $feedType
      */
-    public function setFeedType(string $feedType): void
+    public function setFeedType($feedType)
     {
         $this->feedType = $feedType;
     }
+
 
     /**
      * @return \DateTime
@@ -402,7 +415,7 @@ class FcrDetails
     /**
      * @return string
      */
-    public function getBatchNo(): string
+    public function getBatchNo()
     {
         return $this->batchNo;
     }
@@ -416,7 +429,7 @@ class FcrDetails
     }
 
     /**
-     * @return string
+     * @return Setting
      */
     public function getHatchery()
     {
@@ -424,15 +437,15 @@ class FcrDetails
     }
 
     /**
-     * @param string $hatchery
+     * @param Setting $hatchery
      */
-    public function setHatchery(string $hatchery): void
+    public function setHatchery($hatchery)
     {
         $this->hatchery = $hatchery;
     }
 
     /**
-     * @return string
+     * @return Setting
      */
     public function getBreed()
     {
@@ -440,7 +453,7 @@ class FcrDetails
     }
 
     /**
-     * @param string $breed
+     * @param Setting $breed
      */
     public function setBreed($breed)
     {
@@ -448,7 +461,7 @@ class FcrDetails
     }
 
     /**
-     * @return string
+     * @return Setting
      */
     public function getFeed()
     {
@@ -456,7 +469,7 @@ class FcrDetails
     }
 
     /**
-     * @param string $feed
+     * @param Setting $feed
      */
     public function setFeed($feed)
     {
@@ -532,15 +545,31 @@ class FcrDetails
     /**
      * @param Agent $agent
      */
-    public function setAgent(Agent $agent)
+    public function setAgent($agent)
     {
         $this->agent = $agent;
     }
 
     /**
+     * @return CrmCustomer
+     */
+    public function getCustomer()
+    {
+        return $this->customer;
+    }
+
+    /**
+     * @param CrmCustomer $customer
+     */
+    public function setCustomer($customer)
+    {
+        $this->customer = $customer;
+    }
+
+    /**
      * @return \DateTime
      */
-    public function getCreatedAt(): \DateTime
+    public function getCreatedAt()
     {
         return $this->createdAt;
     }

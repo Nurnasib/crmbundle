@@ -24,19 +24,20 @@ use Doctrine\ORM\EntityRepository;
 class LayerPerformanceRepository extends EntityRepository
 {
 
-    public function getLayerPerformanceReportByReportingDateAndFeedType($data, $employee)
+    public function getLayerPerformanceReportByReportingDateAndFeedType($report, $customer, $employee)
     {
-        if(isset($data['reporting_month'])){
-            $startDate = date('Y-m-01', strtotime($data['reporting_month']));
-            $endDate = date('Y-m-t', strtotime($data['reporting_month']));
+        if($report&&$customer&&$employee){
+            $startDate = date('Y-m-01', strtotime('now'));
+            $endDate = date('Y-m-t', strtotime('now'));
             $query = $this->createQueryBuilder('lpr')
                 ->where('lpr.reportingMonth >= :startDate')
                 ->andWhere('lpr.reportingMonth <= :endDate')
+                ->andWhere('lpr.report = :report')
+                ->andWhere('lpr.customer = :customer')
                 ->andWhere('lpr.employee = :employee')
-                ->andWhere('lpr.breed = :breed')
-                ->setParameters(array('startDate'=>$startDate, 'endDate'=>$endDate, 'employee'=>$employee, 'breed'=>$data['breed']));
+                ->setParameters(array('startDate'=>$startDate, 'endDate'=>$endDate, 'report'=>$report, 'customer'=>$customer, 'employee'=>$employee));
 
-            return $query->getQuery()->getArrayResult();
+            return $query->getQuery()->getOneOrNullResult();
         }
         return array();
     }

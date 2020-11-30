@@ -23,6 +23,15 @@ use Doctrine\ORM\EntityRepository;
  */
 class CattleLifeCycleRepository extends EntityRepository
 {
+    public function getCattleLifeCycleByReportType($reportType){
 
+        $query = $this->createQueryBuilder('chickLifeCycle')
+            ->join('chickLifeCycle.report','r')
+            ->andWhere('r.slug = :reportType')
+            ->setParameter('reportType',$reportType);
+        $results = $query->getQuery()->getResult();
+
+        return $results;
+    }
 
 }

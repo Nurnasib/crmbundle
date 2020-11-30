@@ -75,7 +75,7 @@
                                 <td>{{ entity.feed|default('') }}</td>
                                 <td>{{ entity.remarks|default('') }}</td>
                                 <td>
-                                    <a href="{{ path('crm_chick_report_detail',{'id':entity.id}) }}" class="btn btn-primary btn-sm">Report</a>
+                                    <a target="_blank" href="{{ path('crm_chick_report_detail_pdf',{'id':entity.id}) }}" class="btn btn-primary btn-sm">Report</a>
                                 </td>
 
                             </tr>

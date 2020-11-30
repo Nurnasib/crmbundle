@@ -44,6 +44,18 @@ class SettingFormType extends AbstractType
                 'label' => 'label.name',
                 'required' => true
             ])
+            ->add('parent', EntityType::class, array(
+                'required'    => false,
+                'class' => Setting::class,
+                'placeholder' => 'Choose Parent',
+                'choice_label' => 'name',
+                'attr'=>array('class'=>'span12 m-wrap'),
+                'query_builder' => function(EntityRepository $er){
+                    return $er->createQueryBuilder('e')
+                        ->where("e.parent IS NULL")
+                        ->orderBy('e.name', 'ASC');
+                },
+            ))
             ->add('settingType', ChoiceType::class, [
                 'choices'  => [
                     'Farmer Purpose' => 'PURPOSE',
@@ -56,7 +68,13 @@ class SettingFormType extends AbstractType
                     'Visiting_Week'=>'Visiting_Week',
                     'Designation'=>'Designation',
                     'Farmer Report'=>'FARMER_REPORT',
+                    'Hatchery'=>'HATCHERY',
                     'Breed Type'=>'BREED_TYPE',
+                    'Feed Type'=>'FEED_TYPE',
+                    'Feed Name'=>'FEED_NAME',
+                    'Feed Mill'=>'FEED_MILL',
+                    'Fish Name'=>'FISH_NAME',
+                    'Color'=>'COLOR',
                 ],
             ])
 

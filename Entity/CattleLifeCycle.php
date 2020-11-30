@@ -67,10 +67,10 @@ class CattleLifeCycle
     private $reportingDate;
 
     /**
-     * @var string
-     * @Orm\Column(name="breed_type", type="string", length=50, nullable=true)
+     * @var Setting
+     * @ORM\ManyToOne(targetEntity="Setting", inversedBy="crmCattleLifeCycle")
+     * @ORM\JoinColumn(name="breed_type", referencedColumnName="id", onDelete="SET NULL", nullable=true)
      */
-
     private $breedType;
 
     /**
@@ -177,7 +177,7 @@ class CattleLifeCycle
     /**
      * @return User
      */
-    public function getEmployee(): User
+    public function getEmployee()
     {
         return $this->employee;
     }
@@ -185,7 +185,7 @@ class CattleLifeCycle
     /**
      * @param User $employee
      */
-    public function setEmployee(User $employee): void
+    public function setEmployee($employee)
     {
         $this->employee = $employee;
     }
@@ -193,7 +193,7 @@ class CattleLifeCycle
     /**
      * @return string
      */
-    public function getLifeCycleState(): string
+    public function getLifeCycleState()
     {
         return $this->lifeCycleState;
     }
@@ -209,7 +209,7 @@ class CattleLifeCycle
     /**
      * @return string
      */
-    public function getRemarks(): string
+    public function getRemarks()
     {
         return $this->remarks;
     }
@@ -225,7 +225,7 @@ class CattleLifeCycle
     /**
      * @return \DateTime
      */
-    public function getCreatedAt(): \DateTime
+    public function getCreatedAt()
     {
         return $this->createdAt;
     }
@@ -255,20 +255,19 @@ class CattleLifeCycle
     }
 
     /**
-     * @return string
+     * @return Setting
      */
-    public function getBreedType(): string
+    public function getBreedType()
     {
         return $this->breedType;
     }
 
     /**
-     * @param string $breedType
+     * @param Setting $breedType
      */
-    public function setBreedType(string $breedType): void
+    public function setBreedType($breedType)
     {
         $this->breedType = $breedType;
     }
-
 
 }

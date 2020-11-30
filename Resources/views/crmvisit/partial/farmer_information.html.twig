@@ -10,13 +10,13 @@
                     {{ details.crmCustomer is not empty?details.crmCustomer.name:'' }}
                 </td>
                 <td>
-                    {% if details.crmCustomer is not empty  %} {{ details.crmCustomer.address }} {% endif %}
-                </td>
-                <td>
                     {% if details.crmCustomer is not empty  %} {{ details.crmCustomer.mobile }} {% endif %}
                 </td>
                 <td>
                     {{ details.firmType is not empty?details.firmType.name:'' }}
+                </td>
+                <td>
+                    {{ details.report.name|default('') }}
                 </td>
                 <td>
                     {{ details.farmCapacity }}
@@ -30,7 +30,34 @@
                     </a>
                 </td>
                 <td>
-                    <div class='dropdown'>
+                {% if details.report is not empty and details.report.slug in ['boiler-life-cycle','sonali-life-cycle'] %}
+                    <a class="btn btn-primary btn-sm" data-action='{{ path('chick_new_modal',{'id': details.crmCustomer is not empty?details.crmCustomer.id:'', 'report':details.report is not empty? details.report.id:''}) }}' href='?process=postView_{{ details.id }}_{{ details.report is not empty? details.report.id:'' }}&report={{ details.report is not empty? details.report.slug:'' }}&check=show#modal' id='postView_{{ details.id }}_{{ details.report is not empty? details.report.id:'' }}' >{{ 'Report'|trans }}</a>
+                {% endif %}
+                {% if details.report is not empty and details.report.slug in ['fcr-before-sale-boiler','fcr-before-sale-sonali'] %}
+                    <a class="btn btn-primary btn-sm" data-action='{{ path('fcr_new',{'customer': details.crmCustomer is not empty?details.crmCustomer.id:'','report':details.report is not empty? details.report.id:'','afterBefore':'before'}) }}' href='?process=postView_{{ details.id }}_{{ details.report is not empty? details.report.id:'' }}&report={{ details.report is not empty? details.report.slug:'' }}&check=show#modal' id='postView_{{ details.id }}_{{ details.report is not empty? details.report.id:'' }}' >{{ 'Report'|trans }}</a>
+
+                    {#<a data-action='{{ path('chick_new_modal',{'id': details.crmCustomer is not empty?details.crmCustomer.id:'', 'report':details.report is not empty? details.report.id:''}) }}' href='?process=postView_{{ details.id }}_{{ details.report is not empty? details.report.id:'' }}&report={{ details.report is not empty? details.report.slug:'' }}&check=show#modal' id='postView_{{ details.id }}_{{ details.report is not empty? details.report.id:'' }}' >{{ details.report is not empty? details.report.name:'...' }}</a>#}
+                {% endif %}
+
+                {% if details.report is not empty and details.report.slug in ['fattening-life-cycle','dairy-life-cycle'] %}
+                     <a class="btn btn-primary btn-sm" data-action='{{ path('cattle_new_modal',{'id': details.crmCustomer is not empty?details.crmCustomer.id:'', 'report':details.report.id}) }}' href='?process=postView_{{ details.id }}_{{ details.report.id }}&report={{ details.report.slug }}&check=show#modal' id='postView_{{ details.id }}_{{ details.report.id }}' >{{ 'Report'|trans }}</a>
+                {% endif %}
+                {% if details.report is not empty and details.report.slug in ['fattening-performance-report','dairy-performance-report'] %}
+                     <a class="btn btn-primary btn-sm" data-action='{{ path('cattle_performance_new_modal',{'id': details.crmCustomer is not empty?details.crmCustomer.id:'', 'report':details.report.id}) }}' href='?process=postView_{{ details.id }}_{{ details.report.id }}&report={{ details.report.slug }}&check=show#modal' id='postView_{{ details.id }}_{{ details.report.id }}' >{{ 'Report'|trans }}</a>
+                {% endif %}
+                {% if details.report is not empty and details.report.slug in ['layer-life-cycle-brown','layer-life-cycle-white'] %}
+                     <a class="btn btn-primary btn-sm" data-action='{{ path('layer_new_modal',{'id': details.crmCustomer is not empty?details.crmCustomer.id:'', 'report':details.report.id}) }}' href='?process=postView_{{ details.id }}_{{ details.report.id }}&report={{ details.report.slug }}&check=show#modal' id='postView_{{ details.id }}_{{ details.report.id }}' >{{ 'Report'|trans }}</a>
+                {% endif %}
+                {% if details.report is not empty and details.report.slug in ['layer-performance-brown','layer-performance-white'] %}
+                     <a class="btn btn-primary btn-sm" data-action='{{ path('layer_performance_new',{'id': details.crmCustomer is not empty?details.crmCustomer.id:'', 'report':details.report.id}) }}' href='?process=postView_{{ details.id }}_{{ details.report.id }}&report={{ details.report.slug }}&check=show#modal' id='postView_{{ details.id }}_{{ details.report.id }}' >{{ 'Report'|trans }}</a>
+                {% endif %}
+                {% if details.report is not empty and details.report.slug in ['fish-life-cycle-report'] %}
+                     <a class="btn btn-primary btn-sm" data-action='{{ path('fish_new_modal',{'id': details.crmCustomer is not empty?details.crmCustomer.id:'', 'report':details.report.id}) }}' href='?process=postView_{{ details.id }}_{{ details.report.id }}&report={{ details.report.slug }}&check=show#modal' id='postView_{{ details.id }}_{{ details.report.id }}' >{{ 'Report'|trans }}</a>
+                {% endif %}
+                {% if details.report is not empty and details.report.slug in ['cattle-farm-visit-report'] %}
+                     <a class="btn btn-primary btn-sm" data-action='{{ path('cattle_farm_visit_new_modal',{'id': details.crmCustomer is not empty?details.crmCustomer.id:'', 'report':details.report.id}) }}' href='?process=postView_{{ details.id }}_{{ details.report.id }}&report={{ details.report.slug }}&check=show#modal' id='postView_{{ details.id }}_{{ details.report.id }}' >{{ 'Report'|trans }}</a>
+                {% endif %}
+                    {#<div class='dropdown'>
                         <button type='button' class='btn btn-notify dropbtn'><i class='fas fa-ellipsis-h'></i></button>
                         <div class='dropdown-content'>
                             {% if lifeCycleReport is not empty %}
@@ -43,13 +70,13 @@
                                                 <a data-action='{{ path('layer_new_modal',{'id': details.crmCustomer is not empty?details.crmCustomer.id:'', 'report':lifeCycle.id, 'breed':breedType.id}) }}' href='?process=postView_{{ details.id }}_{{ lifeCycle.id }}_{{ breedType.id }}&report={{ lifeCycle.slug }}&check=show#modal' id='postView_{{ details.id }}_{{ lifeCycle.id }}_{{ breedType.id }}' >{{ lifeCycle.name }} {{ breedType.name }}</a>
                                             {% endfor %}
                                         {% endif %}
-                                        {% else %}
+                                    {% else %}
                                         <a data-action='{{ path('chick_new_modal',{'id': details.crmCustomer is not empty?details.crmCustomer.id:'', 'report':lifeCycle.id}) }}' href='?process=postView_{{ details.id }}_{{ lifeCycle.id }}&report={{ lifeCycle.slug }}&check=show#modal' id='postView_{{ details.id }}_{{ lifeCycle.id }}' >{{ lifeCycle.name }}</a>
                                     {% endif %}
                                 {% endfor %}
                             {% endif %}
                         </div>
-                    </div>
+                    </div>#}
                 </td>
             </tr>
         {% endif %}

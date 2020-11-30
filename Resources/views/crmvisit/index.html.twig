@@ -21,6 +21,12 @@
                     <h5>{{ 'Crm Visit'|trans }}</h5>
                     <div class="card-header-right">
                         <div class="btn-group btn-group-sm" role="group" aria-label="Button group with nested dropdown">
+                            {#<a class="btn btn-primary btn-sm" data-action='{{ path('fcr_after_new',{'report':report.id,'afterBefore':'after'}) }}' href='?process=postView_{{ details.id }}_{{ details.report is not empty? details.report.id:'' }}&report={{ details.report is not empty? details.report.slug:'' }}&check=show#modal' id='postView_{{ details.id }}_{{ details.report is not empty? details.report.id:'' }}' >{{ 'Report'|trans }}</a>#}
+                            {% for report in reports %}
+                            <a style="margin-right: 5px" class="btn btn-primary btn-sm" data-action='{{ path('fcr_after_new',{'report':report is not empty? report.id:'','afterBefore':'after'}) }}' href='?process=postView_fcr_after_{{ report.id }}&report={{ report is not empty? report.slug:'' }}&check=show#modal' id='postView_fcr_after_{{ report is not empty? report.id:'' }}' >{{ report.name }}</a>
+                            {% endfor %}
+                        </div>
+                        <div class="btn-group btn-group-sm" role="group" aria-label="Button group with nested dropdown">
                             <a href="{{ path('new_visit') }}" class="btn btn-sm  green-bg white-font"><i class="fas fa-plus"></i>{{ 'Add New'|trans }}</a>
                             <a href="{{ path('crm_visit') }}" class="btn btn-sm gray-bg white-font"><i class="fa fa-th-list"></i>{{ 'CRM VISIT'|trans }}</a>
                         </div>
@@ -68,11 +74,16 @@
 {% endblock %}
 {% block cssBlock %}
     <link rel="stylesheet" href="{{ asset('assets/module/css/app.css') }}">
+    <link rel="stylesheet" href="{{ asset('bundles/terminalbdcrm//css/crm.css') }}">
 {% endblock  %}
 {% block javascripts %}
     {{ parent() }}
     <script type="application/javascript" src="{{ asset('assets/module/js/app.js') }}"></script>
+    <script type="application/javascript" src="{{ asset('bundles/terminalbdcrm/js/crm/script.js') }}"></script>
+    <script type="application/javascript" src="{{ asset('bundles/terminalbdcrm/js/crm/fcr.js') }}"></script>
+
 {% endblock  %}
+
 {% block documentready %}
     {{ parent() }}
     $('#datatable').DataTable( {

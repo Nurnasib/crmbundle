@@ -12,6 +12,8 @@
 namespace Terminalbd\CrmBundle\Controller;
 
 use App\Entity\Core\Agent;
+use Dompdf\Dompdf;
+use Dompdf\Options;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -83,6 +85,7 @@ class ChickLifeCycleController extends AbstractController
      */
     public function newModal(Request $request, CrmCustomer $crmCustomer, Setting $report): Response
     {
+//        var_dump(date('Y-m-d',strtotime('now')));die;
         $entity = new ChickLifeCycle();
         $existReport = $this->getDoctrine()->getRepository(ChickLifeCycle::class)->findOneBy(array('employee'=>$this->getUser(), 'customer'=>$crmCustomer, 'report'=>$report, 'lifeCycleState'=>ChickLifeCycle::LIFE_CYCLE_STATE_IN_PROGRESS));
         if ($existReport){
@@ -100,14 +103,14 @@ class ChickLifeCycleController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $currentTime = date('H:i:s',strtotime('now'));
 
-            $reportingDate = isset($data['reporting_date'])?date('Y-m-d',strtotime($data['reporting_date'])):date('Y-m-d',strtotime('now'));
-//            $reportingDate = $reporting_date.' '.$currentTime;
+            $reportingDate = isset($data['reporting_date'])&&$data['reporting_date']!=""?date('Y-m-d',strtotime($data['reporting_date'])):date('Y-m-d',strtotime('now'));
 
-            $requestDate = isset($data['hatching_date'])?date('Y-m-d',strtotime($data['hatching_date'])):date('Y-m-d',strtotime('now'));
+            $requestDate = isset($data['hatching_date'])&&$data['hatching_date']!=""?date('Y-m-d',strtotime($data['hatching_date'])):date('Y-m-d',strtotime('now'));
             $hatingDate = $requestDate.' '.$currentTime;
 
             $entity->setReportingDate(new \DateTime($reportingDate));
             $entity->setHatchingDate(new \DateTime($hatingDate));
+
             $entity->setCustomer($crmCustomer);
             $entity->setReport($report);
             $entity->setAgent($crmCustomer->getAgent());
@@ -153,9 +156,17 @@ class ChickLifeCycleController extends AbstractController
                 $em->flush();
             }
         }
+        $breeds = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType'=>'BREED_TYPE','parent'=>$chickLifeCycle->getReport()->getParent()),['name' => 'ASC']);
+        $hatcheries = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType'=>'HATCHERY'),['name' => 'ASC']);
+        $feeds = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType'=>'FEED_NAME'),['name' => 'ASC']);
+        $feedTypes = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType'=>'FEED_TYPE','parent'=>$chickLifeCycle->getReport()->getParent()),['name' => 'ASC']);
 
-        return $this->render('@TerminalbdCrm/chickLifecycle/sonali-life-cycle-modal.html.twig', [
+        return $this->render('@TerminalbdCrm/chickLifecycle/chick-life-cycle-modal.html.twig', [
             'chickLifeCycle' => $chickLifeCycle,
+            'breeds' => $breeds,
+            'hatcheries' => $hatcheries,
+            'feeds' => $feeds,
+            'feedTypes' => $feedTypes,
         ]);
     }
 
@@ -196,6 +207,25 @@ class ChickLifeCycleController extends AbstractController
     public function editLifeCycleDetails(Request $request, ChickLifeCycleDetails $entity): Response
     {
         $data = $request->request->all();
+        $hatchery = null;
+        $breed = null;
+        $feed= null;
+        $feedType= null;
+
+        if(isset($data['hatchery'])&&$data['hatchery']!=''){
+            $hatchery = $this->getDoctrine()->getRepository(Setting::class)->find($data['hatchery']);
+        }
+        if(isset($data['breed'])&&$data['breed']!=''){
+            $breed = $this->getDoctrine()->getRepository(Setting::class)->find($data['breed']);
+        }
+
+        if(isset($data['feed'])&&$data['feed']!=''){
+            $feed = $this->getDoctrine()->getRepository(Setting::class)->find($data['feed']);
+        }
+
+        if(isset($data['feedType'])&&$data['feedType']!=''){
+            $feedType = $this->getDoctrine()->getRepository(Setting::class)->find($data['feedType']);
+        }
 
         $entity->setTotalBirds(isset($data['totalBirds'])?$data['totalBirds']:0);
         $entity->setAgeDays(isset($data['ageDays'])?$data['ageDays']:0);
@@ -206,7 +236,14 @@ class ChickLifeCycleController extends AbstractController
         $entity->setPerBird($entity->calculatePerBird());
         $entity->setWithoutMortality($entity->calculateWithoutMortality());
         $entity->setWithMortality($entity->calculateWithMortality());
-        $entity->setFeedType(isset($data['feedType'])?$data['feedType']:null);
+
+        $entity->setHatchery($hatchery);
+        $entity->setBreed($breed);
+        $entity->setFeed($feed);
+        $entity->setFeedType($feedType);
+
+        $reportingDate = isset($data['reportingDate'])&&$data['reportingDate']!=""?date('Y-m-d',strtotime($data['reportingDate'])):date('Y-m-d',strtotime('now'));
+        $entity->setReportingDate(new \DateTime($reportingDate));
 
         $currentTime = date('H:i:s',strtotime('now'));
         $proDate = isset($data['proDate'])&&$data['proDate']!=""?date('Y-m-d',strtotime($data['proDate'])):date('Y-m-d',strtotime('now'));
@@ -308,6 +345,39 @@ class ChickLifeCycleController extends AbstractController
     {
 
         return $this->render('@TerminalbdCrm/chickLifecycle/report/report-details.html.twig',['chickLifeCycle' => $chickLifeCycle]);
+    }
+
+    /**
+     * @param ChickLifeCycle $chickLifeCycle
+     * @Route("/{id}/report/pdf", methods={"GET"}, name="crm_chick_report_detail_pdf")
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_AGM')")
+     */
+    public function reportPdf( ChickLifeCycle $chickLifeCycle): Response
+    {
+
+        // Configure Dompdf according to your needs
+        $pdfOptions = new Options();
+        $pdfOptions->set('defaultFont', 'Arial');
+
+        // Instantiate Dompdf with our options
+        $dompdf = new Dompdf($pdfOptions);
+
+        // Retrieve the HTML generated in our twig file
+        $html = $this->renderView('@TerminalbdCrm/chickLifecycle/report/report-pdf.html.twig',['chickLifeCycle' => $chickLifeCycle]);
+
+        // Load HTML to Dompdf
+        $dompdf->loadHtml($html);
+
+        // (Optional) Setup the paper size and orientation 'portrait' or 'landscape'
+        $dompdf->setPaper('A4', 'landscape');
+
+        // Render the HTML as PDF
+        $dompdf->render();
+
+        // Output the generated PDF to Browser (force download)
+        $dompdf->stream($chickLifeCycle->getReport()->getSlug().".pdf", [
+            "Attachment" => false
+        ]);
     }
 
 

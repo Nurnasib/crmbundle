@@ -48,18 +48,6 @@ class LayerPerformanceFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('breed', EntityType::class, array(
-                'required'    => true,
-                'class' => Setting::class,
-                'placeholder' => 'Choose Breed',
-                'choice_label' => 'name',
-                'attr'=>array('class'=>'span12 m-wrap'),
-                'query_builder' => function(EntityRepository $er){
-                    return $er->createQueryBuilder('e')
-                        ->where("e.settingType ='BREED_TYPE'")
-                        ->orderBy('e.name', 'ASC');
-                },
-            ))
             ->add($builder->create('reporting_month', TextType::class, array(
                 'label' => 'Reporting Date',
                 'attr' => array(

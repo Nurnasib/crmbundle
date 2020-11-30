@@ -46,10 +46,6 @@ class LayerLifeCycleFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('total_birds', TextType::class, [
-                'attr' => ['autofocus' => true],
-                'label' => 'label.total_birds',
-            ])
 
             ->add($builder->create('hatchery_date', TextType::class, array(
                 'label' => 'Hatchery Date',
@@ -61,11 +57,6 @@ class LayerLifeCycleFormType extends AbstractType
                 'empty_data' => new \DateTime(),
             ))->addViewTransformer(new DateTimeToStringTransformer(null, null, 'd-m-Y')))
 
-            ->add('hatchery', TextType::class, [
-                'attr' => ['autofocus' => true],
-                'label' => 'label.hatchery',
-                'required' => false,
-            ])
         ;
     }
 

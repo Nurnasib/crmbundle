@@ -1,0 +1,32 @@
+{% if fishLifeCycle.fishLifeCycleDetails is not empty %}
+
+    {% for index, detail in fishLifeCycle.fishLifeCycleDetails|sort|reverse %}
+        <tr>
+            <td class="detail_id_{{ detail.id }}">{{ index+1 }}</td>
+            <td>{{ detail.reportingDate|date("d-m-Y") }}</td>
+            <td>{{ detail.feed.name|default('') }}</td>
+            <td>{{ detail.feedType.name|default('') }}</td>
+            <td>{{ detail.feedItemName|default('') }}</td>
+            <td>{{ detail.customer.name|default('') }}</td>
+            <td>{{ detail.mainCultureSpecies.name|default('') }}</td>
+            <td>{{ detail.otherCultureSpecies|default('') }}</td>
+            <td>{{ detail.cultureAreaDecimal|default('') }}</td>
+            <td>{{ detail.hatchery.name|default('') }}</td>
+            <td>{{ detail.stockingDate|date("d-m-Y") }}</td>
+            <td>{{ detail.noOfInitialFish|default('') }}</td>
+            <td>{{ detail.stockingDensity|default('') }}</td>
+            <td>{{ detail.averageInitialWeight|default('') }}</td>
+            <td>{{ detail.totalInitialWeight|default('') }}</td>
+            <td>{{ detail.previousSamplingDate|date("d-m-Y") }}</td>
+            <td>{{ detail.presentSamplingDate|date("d-m-Y") }}</td>
+            <td class="currentCultureDays">{{ detail.currentCultureDays }}</td>
+            <td class="averagePresentWeight">{{ detail.averagePresentWeight }}</td>
+            <td class="farmerRemarks">{{ detail.farmerRemarks }}</td>
+            <td class="employeeRemarks">{{ detail.employeeRemarks }}</td>
+            <td>
+                <a data-action="{{ path('fish_life_cycle_detail_delete',{id:detail.id}) }}" class="btn btn-danger btn-sm remove">x</a>
+            </td>
+        </tr>
+    {% endfor %}
+
+{% endif %}

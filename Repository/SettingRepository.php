@@ -24,5 +24,17 @@ use Doctrine\ORM\EntityRepository;
 class SettingRepository extends EntityRepository
 {
 
+    public function getReportByParentSlug($slug){
+        $return = array();
+        $qb = $this->createQueryBuilder('e');
+        $qb->join('e.parent','parent');
+        $qb->where('parent.slug = :slug')->setParameter('slug',$slug);
+        $qb->andWhere('e.settingType = :type')->setParameter('type','FARMER_REPORT');
+        $result = $qb->getQuery()->getResult();
+        /*for($i=1; $i<=$result[0]['numberOfWeek'];$i++){
+            $return[$i]= $i.' week';
+        }*/
+        return $result;
+    }
 
 }

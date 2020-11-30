@@ -47,7 +47,7 @@
 #datatable .form-control{
     padding: 0 0 0 2px!important;
 }
-#datatable thead td, #datatable thead th{
+#datatable thead td, #datatable thead th, #datatable tbody td{
     padding-left: 1px!important;
     padding-right: 1px!important;
 }

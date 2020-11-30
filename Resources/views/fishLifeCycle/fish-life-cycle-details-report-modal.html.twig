@@ -1,0 +1,154 @@
+<div class="portlet box ">
+    <div class="portlet-title">
+        <div class="caption">{{fishLifeCycle.report.name}} </div>
+    </div>
+{#{{ dump(report) }}#}
+
+    <div class="portlet-body form">
+        {#{{ form_start(form, {'attr': {'action': path('chick_new_modal',{'id':crmCustomer.id,'report':report.id }),'class': 'form-horizontal right','id':'chick_life_cycle_form'}}) }}#}
+        <div class="">
+            <div class="form-inner-no-space">
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <h4>NOURISH POULTRY & HATCHERY LTD</h4>
+                        <h5>Uttara, Dhaka.</h5>
+                        <h4>{{fishLifeCycle.report.name}}</h4>
+                        <input type="hidden" class="fishLifeCycle_id" value="{{ fishLifeCycle.id }}">
+                    </div>
+
+                    <div class="col-md-4">
+                        <p style="color: #000000">{{ 'Farmer Name'|trans }}: {{ fishLifeCycle.customer.name }}</p>
+                    </div>
+                    <div class="col-md-4">
+                        <p style="color: #000000">{{ 'Address'|trans }}: {{ fishLifeCycle.customer.address }}</p>
+                    </div>
+                    <div class="col-md-4">
+                        <p style="color: #000000">{{ 'Agent'|trans }}: {{ fishLifeCycle.customer.agent.name }}</p>
+                    </div>
+                    <div class="col-md-4">
+                        <p style="color: #000000">{{ 'Reporting Date'|trans }}: {{ fishLifeCycle.reportingMonth?fishLifeCycle.reportingMonth|date("d-m-Y"):'' }}</p>
+                    </div>
+                    <div class="col-md-4">
+                    </div>
+                </div>
+                <div class="card-body card-body-inner" style="padding: 0 5px;">
+                    <div class="fishLifeCycleSection" style=" overflow-x: scroll">
+                        {{ form_start(form, {'attr': {'method':'post','action': path('fish_life_cycle_details_modal',{'id':fishLifeCycle.id }),'class': 'form-horizontal right','id':'fish_life_cycle_form'}}) }}
+                        {#<form id="chick_life_cycle_form" method="post" action="{{ path('cattle_life_cycle_details_modal',{id:fishLifeCycle.id}) }}">#}
+                        <table class="table table-striped table-bordered table-hover fish_life_cycle" id="datatable">
+                            <thead class="thead-dark">
+                            <tr>
+                                <th scope="col">S/N</th>
+                                {#<th scope="col">Bird Type</th>#}
+                                <th style="width: 120px" scope="col">ReportingDate</th>
+                                <th style="width: 120px" scope="col">Feed</th>
+                                <th scope="col">FeedType</th>
+                                <th scope="col">FeedItemName</th>
+                                <th scope="col">FarmarName</th>
+                                <th scope="col">MainCulture Species</th>
+                                <th scope="col">Other Culture Species</th>
+                                <th scope="col">culture Area Decimal</th>
+                                <th scope="col">Hatchery</th>
+                                <th scope="col">StockingDate</th>
+                                <th scope="col">No.of initial fish (pcs.)</th>
+
+                                <th scope="col">Stocking density (pcs/decimal)</th>
+                                <th scope="col">Average initial weight of Fish (g)</th>
+                                <th scope="col">Total initial weight of Fish (kg)</th>
+
+                                <th style="width: 100px" scope="col">Previous SamplingDate</th>
+                                <th style="width: 100px" scope="col">Present SamplingDate</th>
+                                <th scope="col">Average Present weight of Fish (g)</th>
+
+                                <th scope="col">Current feed consumption (kg)</th>
+                                <th scope="col">Farmer's Comments</th>
+                                <th scope="col">Employee's Comments</th>
+                                <th scope="col"></th>
+
+                            </tr>
+
+                            <tr>
+                                <td colspan="2">
+                                    <div class="date_section">
+                                        {{ form_widget(form.reporting_date) }}
+                                    </div>
+                                </td>
+                                <td>
+                                    {{ form_widget(form.feed) }}
+                                </td>
+                                <td>
+                                    {{ form_widget(form.feed_type) }}
+                                </td>
+                                <td>
+                                    {{ form_widget(form.feed_item_name) }}
+                                </td>
+                                <td></td>
+                                <td>
+                                    {{ form_widget(form.mainCultureSpecies) }}
+                                </td>
+                                <td>
+                                    {{ form_widget(form.other_culture_species,{'type':'number'}) }}
+                                </td>
+                                <td>
+                                    {{ form_widget(form.culture_area_decimal,{'type':'number'}) }}
+                                </td>
+                                <td>
+                                    {{ form_widget(form.hatchery) }}
+                                </td>
+                                <td>
+                                    <div class="date_section">
+                                        {{ form_widget(form.stocking_date) }}
+                                    </div>
+                                </td>
+                                <td>
+                                    {{ form_widget(form.no_of_initial_fish,{'type':'number'}) }}
+                                </td>
+                                <td></td>
+                                <td>
+                                    {{ form_widget(form.average_initial_weight,{'type':'number'}) }}
+                                </td>
+                                <td>
+                                    {{ form_widget(form.total_initial_weight,{'type':'number'}) }}
+                                </td>
+                                <td>
+                                    <div class="date_section">
+                                        {{ form_widget(form.previous_sampling_date) }}
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="date_section">
+                                        {{ form_widget(form.present_sampling_date) }}
+                                    </div>
+                                </td>
+                                <td>
+                                    {{ form_widget(form.average_present_weight,{'type':'number'}) }}
+                                </td>
+                                <td>
+                                    {{ form_widget(form.current_feed_consumption_kg,{'type':'number'}) }}
+                                </td>
+                                <td>
+                                    {{ form_widget(form.farmer_remarks) }}
+                                </td>
+                                <td>
+                                    {{ form_widget(form.employee_remarks) }}
+                                </td>
+
+                                <td>
+                                    <button title="Save" type="button" class="btn btn-primary btn-sm fish_life_cycle_details_button"><i class="fa fa-save"></i></button>
+                                </td>
+                            </tr>
+                            </thead>
+                            <tbody class="fishLifeCycleDetailsSection">
+                            {% include '@TerminalbdCrm/fishLifeCycle/partial/fish-life-cycle-details-body.html.twig' %}
+                            </tbody>
+                        </table>
+                        {{ form_widget(form._token) }}
+                        {{ form_end(form) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

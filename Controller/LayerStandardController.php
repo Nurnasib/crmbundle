@@ -41,8 +41,8 @@ class LayerStandardController extends AbstractController
     {
 
         $entity = new LayerStandard();
-        $noOfWeek = $this->getDoctrine()->getRepository(SettingLifeCycle::class)->getLifeCycleWeekByLifeCycle('layer-life-cycle');
-        $breed = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType'=>'BREED_TYPE'));
+        $noOfWeek = $this->getDoctrine()->getRepository(SettingLifeCycle::class)->getLifeCycleWeekByLifeCycle('layer');
+        $reports = $this->getDoctrine()->getRepository(Setting::class)->getReportByParentSlug('layer');
 
         $form = $this->createForm(LayerStandardFormType::class , $entity)
             ->add('age', ChoiceType::class, [
@@ -63,12 +63,12 @@ class LayerStandardController extends AbstractController
         $layerStandard = array();
         $entities = $this->getDoctrine()->getRepository(LayerStandard::class)->findAll();
         foreach ($entities as $value){
-            $layerStandard[$value->getBreed()->getId()][]=$value;
+            $layerStandard[$value->getReport()->getId()][]=$value;
         }
         return $this->render('@TerminalbdCrm/layerStandard/index.html.twig',[
             'entities' => $layerStandard,
             'form' => $form->createView(),
-            'breeds' => $breed,
+            'breeds' => $reports,
         ]);
     }
 
@@ -82,8 +82,8 @@ class LayerStandardController extends AbstractController
     public function edit(Request $request, LayerStandard $entity): Response
     {
         $data = $request->request->all();
-        $noOfWeek = $this->getDoctrine()->getRepository(SettingLifeCycle::class)->getLifeCycleWeekByLifeCycle('layer-life-cycle');
-        $breed = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType'=>'BREED_TYPE'));
+        $noOfWeek = $this->getDoctrine()->getRepository(SettingLifeCycle::class)->getLifeCycleWeekByLifeCycle('layer');
+        $reports = $this->getDoctrine()->getRepository(Setting::class)->getReportByParentSlug('layer');
 
         $form = $this->createForm(LayerStandardFormType::class , $entity)
             ->add('age', ChoiceType::class, [
@@ -101,17 +101,16 @@ class LayerStandardController extends AbstractController
             }
             return $this->redirectToRoute('layer_standard');
         }
-        $entities = $this->getDoctrine()->getRepository(LayerStandard::class)->findAll();
         $layerStandard = array();
         $entities = $this->getDoctrine()->getRepository(LayerStandard::class)->findAll();
         foreach ($entities as $value){
-            $layerStandard[$value->getBreed()->getId()][]=$value;
+            $layerStandard[$value->getReport()->getId()][]=$value;
         }
         return $this->render('@TerminalbdCrm/layerStandard/index.html.twig', [
             'entity' => $entity,
             'entities' => $layerStandard,
             'form' => $form->createView(),
-            'breeds' => $breed,
+            'breeds' => $reports,
         ]);
     }
 

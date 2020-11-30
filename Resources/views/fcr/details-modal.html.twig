@@ -1,11 +1,11 @@
 <div class="portlet box ">
     <div class="portlet-title">
-        <div class="caption">{{ ' FCR'|trans }} </div>
+        <div class="caption">{{ entity.report.name|default('') }}</div>
     </div>
     {#{{ dump(report) }}#}
 
     <div style="padding: 0" class="portlet-body form">
-        <div class="row form-body ">
+        <div class="">
             <div class="form-inner-no-space">
 
                 <div class="row">
@@ -18,15 +18,16 @@
                         <p style="color: #000000">{{ 'Name of CSO/Sr.CSO:'|trans }}: {{ entity.employee.name }}</p>
                     </div>
                     <div class="col-md-4">
-                        <p style="color: #000000">{{ 'FCR OF NOURISH FEED'|trans }} ({{ entity.fcrOfFeed }} Sale)</p>
+                        <p style="color: #000000">{{ entity.report.name|default('') }}</p>
                     </div>
                     <div class="col-md-4">
                         <p style="color: #000000">{{ 'Reporting Month'|trans }}: {{ entity.reportingMonth|date("F, Y") }}</p>
                     </div>
                 </div>
-                <div style="padding-top: 0" class="card-body card-body-inner">
-                    <div class="row">
-                        <table class="table table-striped table-bordered table-hover" id="fcrReportDetails">
+                <div class="card-body-inner">
+                    <div class="">
+                        {#{{ form_start(form, {'attr': {'method':'post','action': path('fcr_details_modal',{'id':entity.id }),'class': 'form-horizontal right','id':'fcr_details_form'}}) }}#}
+                        <table class="table table-striped table-bordered table-hover fcrReportDetails" id="fcrReportDetails">
                             <thead class="thead-dark">
                             <tr>
 
@@ -42,8 +43,8 @@
                                 <th scope="col" rowspan="2">Breed</th>
                                 <th scope="col" rowspan="2">Feed</th>
                                 {% if entity.fcrOfFeed == "BEFORE" %}
-                                <th scope="col" rowspan="2">Feed Mill</th>
-                                <th scope="col" rowspan="2">Feed Type</th>
+                                <th scope="col" rowspan="2">FeedMill</th>
+                                <th scope="col" rowspan="2">FeedType</th>
                                 <th style="width: 105px" scope="col" rowspan="2">Pro. Date</th>
                                 <th scope="col" rowspan="2">Batch No.</th>
                                 {% endif %}
@@ -64,45 +65,87 @@
 
                             </tr>
                             <tr>
-                                <td>
-                                    <select name="agent" id="agent" class="form-control agent">
-                                        <option value="">Select Agent</option>
-                                        {% for agent in agents %}
-                                            <option value="{{agent.id}}"> {{agent.name}}  ({{ agent.groupName }}) </option>
-                                        {% endfor %}
-                                    </select>
-                                </td>
-                                <td>
+                                <td colspan="2">
                                     <div class="date_section">
-                                        <input type="text" data-meta-key="HatchingDate" class="form-control hatchingDate datePicker" value="">
+                                        {{ form_widget(form.hatching_date) }}
                                     </div>
                                 </td>
-                                <td><input type="number" min="0" class="form-control totalBirds" name="totalBirds" value=""> </td>
-                                <td><input type="number" min="0" class="form-control ageDays" value=""> </td>
-                                <td><input type="number" min="0" class="form-control mortalityPes" value=""> </td>
+                                <td>
+                                    {{ form_widget(form.total_birds,{'type':'number'}) }}
+                                    {{ form_errors(form.total_birds) }}
+                                    {#<input type="number" min="0" class="form-control totalBirds" name="totalBirds" value="">#}
+                                </td>
+                                <td>
+                                    {{ form_widget(form.age_day,{'type':'number'}) }}
+                                    {{ form_errors(form.age_day) }}
+                                    {#<input type="number" min="0" class="form-control ageDays" value="">#}
+                                </td>
+                                <td>
+                                    {{ form_widget(form.mortality_pes,{'type':'number'}) }}
+                                    {{ form_errors(form.mortality_pes) }}
+                                    {#<input type="number" min="0" class="form-control mortalityPes" value=""> </td>#}
                                 <td class="mortalityPercent"> </td>
-                                <td><input type="number" min="0" class="form-control weightAchieved" value=""> </td>
-                                <td><input type="number" min="0" class="form-control feedTotalKg" value=""> </td>
+                                <td>
+                                    {{ form_widget(form.weight,{'type':'number'}) }}
+                                    {{ form_errors(form.weight) }}
+                                    {#<input type="number" min="0" class="form-control weightAchieved" value=""> </td>#}
+                                <td>
+                                    {{ form_widget(form.feed_consumption_total_kg,{'type':'number'}) }}
+                                    {{ form_errors(form.feed_consumption_total_kg) }}
+                                    {#<input type="number" min="0" class="form-control feedTotalKg" value="">#}
+                                </td>
                                 <td class="perBird"></td>
                                 <td class="withoutMortality"></td>
                                 <td class="withMortality"></td>
-                                <td><input type="text" class="form-control hatchery" value=""> </td>
-                                <td><input type="text" class="form-control breed" value=""> </td>
-                                <td><input type="text" class="form-control {{ entity.fcrOfFeed }} feed" value=""> </td>
+                                <td>
+                                    {{ form_widget(form.hatchery) }}
+                                    {{ form_errors(form.hatchery) }}
+                                    {#<input type="text" class="form-control hatchery" value=""> #}
+                                </td>
+                                <td>
+                                    {{ form_widget(form.breed) }}
+                                    {{ form_errors(form.breed) }}
+                                    {#<input type="text" class="form-control breed" value="">#}
+                                </td>
+                                <td>
+                                    {{ form_widget(form.feed) }}
+                                    {{ form_errors(form.feed) }}
+                                    {#<input type="text" class="form-control {{ entity.fcrOfFeed }} feed" value="">#}
+                                </td>
 
                                 {% if entity.fcrOfFeed =='BEFORE' %}
-                                <td><input type="text" class="form-control feedMill" value=""> </td>
-                                <td><input type="text" class="form-control feedType" value=""> </td>
+                                <td>
+                                    {{ form_widget(form.feed_mill) }}
+                                    {{ form_errors(form.feed_mill) }}
+                                    {#<input type="text" class="form-control feedMill" value=""> #}
+                                </td>
+                                <td>
+                                    {{ form_widget(form.feed_type) }}
+                                    {{ form_errors(form.feed_type) }}
+                                    {#<input type="text" class="form-control feedType" value="">#}
+                                </td>
                                 <td>
                                     <div class="date_section">
-                                        <input type="text" class="form-control proDate datePicker" value="">
+                                        {{ form_widget(form.pro_date) }}
+                                        {#<input type="text" class="form-control proDate datePicker" value="">#}
                                     </div>
                                 </td>
-                                <td><input type="text" class="form-control batchNo" value=""> </td>
+                                <td>
+                                    {{ form_widget(form.batch_no) }}
+                                    {{ form_errors(form.batch_no) }}
+                                    {#<input type="text" class="form-control batchNo" value=""> #}
+                                </td>
                                {% endif %}
 
-                                <td><input type="text" class="form-control remarks" value=""> </td>
-                                <td><button type="button" id="fcr_details_add_button" class="btn btn-primary btn-sm fcr_details_add_button">Add</button> </td>
+                                <td>
+                                    {{ form_widget(form.remarks) }}
+                                    {{ form_errors(form.remarks) }}
+                                    {#<input type="text" class="form-control remarks" value="">#}
+                                </td>
+                                <td>
+                                    {#{{ form_widget(form.SaveAndCreate,{'label':'Add','class':'btn btn-primary btn-sm adf fcr_details_add_button'}) }}#}
+                                    <button type="button" id="fcr_details_add_button" class="btn btn-primary btn-sm fcr_details_add_button">Add</button>
+                                </td>
                             </tr>
                             </thead>
                             <tbody>
@@ -114,6 +157,8 @@
                                 {% endif %}
                             </tbody>
                         </table>
+                        {#{{ form_widget(form._token) }}#}
+                        {#{{ form_end(form) }}#}
                     </div>
                 </div>
             </div>

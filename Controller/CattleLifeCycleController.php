@@ -49,7 +49,7 @@ class CattleLifeCycleController extends AbstractController
     {
 
         $entity = new CattleLifeCycle();
-        $existReport = $this->getDoctrine()->getRepository(CattleLifeCycle::class)->findOneBy(array('customer'=>$crmCustomer, 'report'=>$report, 'lifeCycleState'=>CattleLifeCycle::LIFE_CYCLE_STATE_IN_PROGRESS));
+        $existReport = $this->getDoctrine()->getRepository(CattleLifeCycle::class)->findOneBy(array('employee'=>$this->getUser(), 'customer'=>$crmCustomer, 'report'=>$report, 'lifeCycleState'=>CattleLifeCycle::LIFE_CYCLE_STATE_IN_PROGRESS));
         if ($existReport){
             $entity= $existReport;
         }
@@ -59,7 +59,7 @@ class CattleLifeCycleController extends AbstractController
         }
         $data = $request->request->all();
 
-        $form = $this->createForm(CattleLifeCycleFormType::class, $entity,array('user' => $this->getUser()))
+        $form = $this->createForm(CattleLifeCycleFormType::class, $entity,array('user' => $this->getUser(), 'report' => $report))
             ->add('SaveAndCreate', SubmitType::class);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -127,8 +127,7 @@ class CattleLifeCycleController extends AbstractController
         $entity = new CattleLifeCycleDetails();
 
         if($cattleLifeCycle->getReport()->getSlug()=='dairy-life-cycle'){
-            $form = $this->createForm(DairyLifeCycleDetailsFormType::class, $entity,array('user' => $this->getUser()))
-                ->add('SaveAndCreate', SubmitType::class, array('attr' => array('class' => 'btn btn-primary btn-sm')));
+            $form = $this->createForm(DairyLifeCycleDetailsFormType::class, $entity,array('user' => $this->getUser()));
             $form->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()) {
 
@@ -150,10 +149,7 @@ class CattleLifeCycleController extends AbstractController
                 $em->persist($entity);
                 $em->flush();
                 $this->addFlash('success', 'post.created_successfully');
-                if ($form->get('SaveAndCreate')->isClicked()) {
-                    return new Response('success');
-//                      return $this->redirectToRoute('cattle_life_cycle_details_modal', ['id'=>$cattleLifeCycle->getId()]);
-                }
+                return new Response('success');
             }
             return $this->render('@TerminalbdCrm/cattleLifecycle/dairy-life-cycle-details-report-modal.html.twig', [
                 'cattleLifeCycle' => $cattleLifeCycle,
@@ -161,8 +157,8 @@ class CattleLifeCycleController extends AbstractController
             ]);
         }
 
-        $form = $this->createForm(CattleLifeCycleDetailsFormType::class, $entity,array('user' => $this->getUser()))
-            ->add('SaveAndCreate', SubmitType::class, array('attr' => array('class' => 'btn btn-primary btn-sm')));
+        $form = $this->createForm(CattleLifeCycleDetailsFormType::class, $entity,array('user' => $this->getUser()));
+
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
 
@@ -180,16 +176,12 @@ class CattleLifeCycleController extends AbstractController
             $entity->setTotalDmKg($entity->calculateTotalDmKg());
             $entity->setDmRequirementByBwtKg($entity->calculateDmRequirementByBwtKg());
 
-
             $entity->setCrmCattleLifeCycle($cattleLifeCycle);
             $em = $this->getDoctrine()->getManager();
             $em->persist($entity);
             $em->flush();
             $this->addFlash('success', 'post.created_successfully');
-            if ($form->get('SaveAndCreate')->isClicked()) {
-                return new Response('success');
-                //  return $this->redirectToRoute('cattle_new_modal', ['id'=>$crmCustomer->getId(),'report'=>$report->getId()]);
-            }
+            return new Response('success');
         }
         return $this->render('@TerminalbdCrm/cattleLifecycle/fattening-life-cycle-details-report-modal.html.twig', [
             'cattleLifeCycle' => $cattleLifeCycle,
@@ -215,6 +207,21 @@ class CattleLifeCycleController extends AbstractController
     }
 
     /**
+     * Deletes a Fcr entity.
+     * @Route("/life-cycle/details/{id}/delete", methods={"POST"}, name="cattle_life_cycle_detail_delete", options={"expose"=true})
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     */
+    public function deleteDetails($id): Response
+    {
+        $entity = $this->getDoctrine()->getRepository(CattleLifeCycleDetails::class)->find($id);
+        $em = $this->getDoctrine()->getManager();
+        $em->remove($entity);
+        $em->flush();
+        $this->addFlash('success', 'post.deleted_successfully');
+        return new Response('Success');
+    }
+
+    /**
      * @param CattleLifeCycle $cattleLifeCycle
      * @Route("/life-cycle/{id}/complete", methods={"POST"}, name="crm_cattle_life_cycle_complete", options={"expose"=true})
      * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
@@ -230,8 +237,29 @@ class CattleLifeCycleController extends AbstractController
             'status'=>200
         ));
     }
-    
 
+    /**
+     * @param $report
+     * @Route("/life/cycle/{report}", methods={"GET"}, name="crm_cattle_report")
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_AGM')")
+     */
+    public function indexReport( string $report): Response
+    {
+
+        $entities = $this->getDoctrine()->getRepository(CattleLifeCycle::class)->getCattleLifeCycleByReportType($report);
+        return $this->render('@TerminalbdCrm/cattleLifecycle/report/report.html.twig',['entities' => $entities]);
+    }
+
+    /**
+     * @param CattleLifeCycle $cattleLifeCycle
+     * @Route("/life/cycle/{id}/report", methods={"GET"}, name="crm_cattle_report_detail")
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_AGM')")
+     */
+    public function reportDetails( CattleLifeCycle $cattleLifeCycle): Response
+    {
+
+        return $this->render('@TerminalbdCrm/cattleLifecycle/report/report-details.html.twig',['cattleLifeCycle' => $cattleLifeCycle]);
+    }
 
 
 }

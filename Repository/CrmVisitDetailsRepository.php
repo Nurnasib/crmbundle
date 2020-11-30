@@ -108,12 +108,13 @@ class CrmVisitDetailsRepository extends EntityRepository
         endforeach;
     }
 
-    public function insertFarmer(CrmCustomer $customer , $id , $data)
+    public function insertCrmVisitDetailForFarmer(CrmCustomer $customer , $id , $data)
     {
         $em = $this->_em;
         $visit = $em->getRepository(CrmVisit::class)->find($id);
         $entity = new CrmVisitDetails();
         $entity->setCrmCustomer($customer);
+        $entity->setAgent($customer->getAgent());
         $entity->setCrmVisit($visit);
         $entity->setFarmCapacity($data['capacity']);
         $entity->setComments($data['comments']);
@@ -121,6 +122,14 @@ class CrmVisitDetailsRepository extends EntityRepository
         if($data['purpose']){
             $purpose = $em->getRepository(Setting::class)->find($data['purpose']);
             $entity->setPurpose($purpose);
+        }
+        if($data['farmer_firm_type']){
+            $farmType = $em->getRepository(Setting::class)->find($data['farmer_firm_type']);
+            $entity->setFirmType($farmType);
+        }
+        if($data['farmer_report']){
+            $farmerReport = $em->getRepository(Setting::class)->find($data['farmer_report']);
+            $entity->setReport($farmerReport);
         }
         $em->persist($entity);
         $em->flush();

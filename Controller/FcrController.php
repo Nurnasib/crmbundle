@@ -23,8 +23,12 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 //use Terminalbd\CrmBundle\Entity\BroilerStandard;
 //use Terminalbd\CrmBundle\Entity\ChickLifeCycle;
+use Terminalbd\CrmBundle\Entity\CrmCustomer;
 use Terminalbd\CrmBundle\Entity\Fcr;
 use Terminalbd\CrmBundle\Entity\FcrDetails;
+use Terminalbd\CrmBundle\Entity\Setting;
+use Terminalbd\CrmBundle\Form\FcrDetailsForAfterFormType;
+use Terminalbd\CrmBundle\Form\FcrDetailsFormType;
 use Terminalbd\CrmBundle\Form\FcrFormType;
 use Terminalbd\CrmBundle\Repository\FcrRepository;
 
@@ -50,8 +54,11 @@ class FcrController extends AbstractController
      */
     public function indexReport(Request $request): Response
     {
+
         $entities = $this->getDoctrine()->getRepository(Fcr::class)->findAll();
-        return $this->render('@TerminalbdCrm/fcr/report.html.twig',['entities' => $entities]);
+        return $this->render('@TerminalbdCrm/fcr/report.html.twig',[
+            'entities' => $entities,
+        ]);
     }
 
     /**
@@ -68,71 +75,53 @@ class FcrController extends AbstractController
 
     /**
      * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
-     * @Route("/new", methods={"GET", "POST"}, name="fcr_new")
+     * @Route("/{customer}/{report}/{afterBefore}/new", methods={"GET", "POST"}, name="fcr_new")
      */
-    public function new(Request $request): Response
+    public function new(Request $request, CrmCustomer $customer, Setting $report, $afterBefore): Response
     {
-        $data = $request->request->all();
-        $entity = new Fcr();
-        $agentRepo = $this->getDoctrine()->getRepository(Agent::class);
-        $form = $this->createForm(FcrFormType::class, $entity,array('user' => $this->getUser(),'agentRepo' => $agentRepo)) ->add('SaveAndCreate', SubmitType::class);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $existingReport = $this->getDoctrine()->getRepository(Fcr::class)->getFcrReportByReportingDateAndFeedType($data['fcr_form'], $this->getUser());
-            if($existingReport){
-                $this->addFlash('danger', 'This month report already exist');
-                return $this->redirectToRoute('fcr');
-            }
-            $entity->setEmployee($this->getUser());
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($entity);
-            $em->flush();
-            $this->addFlash('success', 'post.created_successfully');
-            if ($form->get('SaveAndCreate')->isClicked()) {
-                return $this->redirectToRoute('fcr_new');
-            }
-            return $this->redirectToRoute('fcr');
+        $existingReport = $this->getDoctrine()->getRepository(Fcr::class)->getFcrReportByReportingDateAndFeedType($afterBefore, $report, $customer, $this->getUser());
+//        var_dump($existingReport);die;
+        if($existingReport){
+            return $this->redirectToRoute('fcr_details_modal', ['id'=>$existingReport->getId()]);
         }
-        return $this->render('@TerminalbdCrm/fcr/new.html.twig', [
-            'entity' => $entity,
-            'form' => $form->createView(),
-        ]);
+        $entity = new Fcr();
+        $reportingDate = date('Y-m-d',strtotime('now'));
+        $entity->setReportingMonth(new \DateTime($reportingDate));
+        $entity->setFcrOfFeed(strtoupper($afterBefore));
+        $entity->setReport($report);
+        $entity->setEmployee($this->getUser());
+        $entity->setCustomer($customer);
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($entity);
+        $em->flush();
+        return $this->redirectToRoute('fcr_details_modal', ['id'=>$entity->getId()]);
+//        return new Response('success');
     }
 
+
     /**
-     * Displays a form to edit an existing Post entity.
-     * @Route("/{id}/edit", methods={"GET", "POST"}, name="fcr_edit")
      * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @Route("/{report}/{afterBefore}/new", methods={"GET", "POST"}, name="fcr_after_new")
      */
-
-    public function edit(Request $request, Fcr $entity): Response
+    public function newAfter(Request $request, Setting $report, $afterBefore): Response
     {
-        $data = $request->request->get('fcr_form');
-
-        if(date('Y-m-d', strtotime($data['reporting_month']))!=$entity->getReportingMonth()->format('Y-m-d')){
-            $existingReport = $this->getDoctrine()->getRepository(Fcr::class)->getFcrReportByReportingDateAndFeedType($data, $this->getUser());
-            if($existingReport){
-                $this->addFlash('danger', 'This month report already exist');
-                return $this->redirectToRoute('fcr_edit',['id'=>$entity->getId()]);
-            }
+//        return new Response('success');
+        $existingReport = $this->getDoctrine()->getRepository(Fcr::class)->getFcrReportByReportingDateReportAndEmployeeForAfter($afterBefore, $report, $this->getUser());
+//        var_dump($existingReport);die;
+        if($existingReport){
+            return $this->redirectToRoute('fcr_details_modal', ['id'=>$existingReport->getId()]);
         }
-        $agentRepo = $this->getDoctrine()->getRepository(Agent::class);
-        $form = $this->createForm(FcrFormType::class, $entity,array('user' => $this->getUser(),'agentRepo' => $agentRepo)) ->add('SaveAndCreate', SubmitType::class);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-
-            $this->getDoctrine()->getManager()->flush();
-            $this->addFlash('success', 'post.updated_successfully');
-            if ($form->get('SaveAndCreate')->isClicked()) {
-                return $this->redirectToRoute('fcr');
-            }
-            return $this->redirectToRoute('fcr');
-        }
-        return $this->render('@TerminalbdCrm/fcr/new.html.twig', [
-            'entity' => $entity,
-            'form' => $form->createView(),
-        ]);
+        $entity = new Fcr();
+        $reportingDate = date('Y-m-d',strtotime('now'));
+        $entity->setReportingMonth(new \DateTime($reportingDate));
+        $entity->setFcrOfFeed(strtoupper($afterBefore));
+        $entity->setReport($report);
+        $entity->setEmployee($this->getUser());
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($entity);
+        $em->flush();
+        return $this->redirectToRoute('fcr_details_modal', ['id'=>$entity->getId()]);
+//        return new Response('success');
     }
 
     /**
@@ -151,19 +140,53 @@ class FcrController extends AbstractController
     }
 
     /**
+     * Deletes a Fcr entity.
+     * @Route("/details/{id}/delete", methods={"POST"}, name="fcr_detail_delete")
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     */
+    public function deleteDetails($id): Response
+    {
+        $entity = $this->getDoctrine()->getRepository(FcrDetails::class)->find($id);
+        $em = $this->getDoctrine()->getManager();
+        $em->remove($entity);
+        $em->flush();
+        $this->addFlash('success', 'post.deleted_successfully');
+        return new Response('Success');
+    }
+
+    /**
      * @param Fcr $fcr
      * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      * @Route("/{id}/details/modal", methods={"GET", "POST"}, name="fcr_details_modal")
      */
     public function newModal(Request $request, Fcr $fcr): Response
     {
-        $data = $request->request->all();
-        $agents=$this->getDoctrine()->getRepository(Agent::class)->getLocationWise($fcr->getEmployee());
+//        $data = $request->request->get('fcr_details_form');
+//        $agents=$this->getDoctrine()->getRepository(Agent::class)->getLocationWise($fcr->getEmployee());
+        $entity = new FcrDetails();
 
+        if ($fcr->getFcrOfFeed()==='AFTER'){
+            $agentRepo = $this->getDoctrine()->getRepository(Agent::class);
+            $form = $this->createForm(FcrDetailsForAfterFormType::class, $entity,array('user' => $this->getUser(),'agentRepo' => $agentRepo, 'report' => $fcr->getReport()))
+                ->add('SaveAndCreate', SubmitType::class, array('attr' => array('class' => 'btn btn-primary btn-sm')));
+            $form->handleRequest($request);
+
+            return $this->render('@TerminalbdCrm/fcr/details-modal-after.html.twig', [
+                'entity' => $fcr,
+//            'agents' => $agents,
+                'form' => $form->createView(),
+            ]);
+        }
+
+
+        $form = $this->createForm(FcrDetailsFormType::class, $entity,array('user' => $this->getUser(), 'report' => $fcr->getReport()))
+            ->add('SaveAndCreate', SubmitType::class, array('attr' => array('class' => 'btn btn-primary btn-sm')));
+        $form->handleRequest($request);
 
         return $this->render('@TerminalbdCrm/fcr/details-modal.html.twig', [
             'entity' => $fcr,
-            'agents' => $agents,
+//            'agents' => $agents,
+            'form' => $form->createView(),
         ]);
     }
 
@@ -189,7 +212,30 @@ class FcrController extends AbstractController
     public function addFcrDetailsReport(Request $request, Fcr $fcr): Response
     {
         $data = $request->request->all();
-        $agent = $this->getDoctrine()->getRepository(Agent::class)->find($data['agent']);
+        $agent = null;
+        $hatchery = null;
+        $breed = null;
+        $feed =null;
+        $feedType= null;
+        $feedMill = null;
+        if(isset($data['hatchery'])&&$data['hatchery']!=''){
+            $hatchery = $this->getDoctrine()->getRepository(Setting::class)->find($data['hatchery']);
+        }
+        if(isset($data['agent'])&&$data['agent']!=''){
+            $agent = $this->getDoctrine()->getRepository(Agent::class)->find($data['agent']);
+        }
+        if(isset($data['breed'])&&$data['breed']!=''){
+            $breed = $this->getDoctrine()->getRepository(Setting::class)->find($data['breed']);
+        }
+        if(isset($data['feed'])&&$data['feed']!=''){
+            $feed = $this->getDoctrine()->getRepository(Setting::class)->find($data['feed']);
+        }
+        if(isset($data['feedMill'])&&$data['feedMill']!=''){
+            $feedMill = $this->getDoctrine()->getRepository(Setting::class)->find($data['feedMill']);
+        }
+        if(isset($data['feedType'])&&$data['feedType']!=''){
+            $feedType = $this->getDoctrine()->getRepository(Setting::class)->find($data['feedType']);
+        }
 
         $entity = new FcrDetails();
         $entity->setTotalBirds(isset($data['totalBirds'])&&$data['totalBirds']!=""?(float)$data['totalBirds']:0);
@@ -201,19 +247,27 @@ class FcrController extends AbstractController
         $entity->setFeedConsumptionPerBird($entity->calculatePerBird());
         $entity->setFcrWithoutMortality($entity->calculateWithoutMortality());
         $entity->setFcrWithMortality($entity->calculateWithMortality());
-        $entity->setFeedType(isset($data['feedType'])?$data['feedType']:'');
 
         $hatchingDate = isset($data['hatchingDate'])&&$data['hatchingDate']!=""?date('Y-m-d',strtotime($data['hatchingDate'])):date('Y-m-d',strtotime('now'));
         $entity->setHatchingDate(new \DateTime($hatchingDate));
         $proDate = isset($data['proDate'])&&$data['proDate']!=""?date('Y-m-d',strtotime($data['proDate'])):date('Y-m-d',strtotime('now'));
         $entity->setProDate(new \DateTime($proDate));
-        $entity->setHatchery(isset($data['hatchery'])?$data['hatchery']:'');
-        $entity->setBreed(isset($data['breed'])?$data['breed']:'');
-        $entity->setFeed(isset($data['feed'])?$data['feed']:'');
-        $entity->setFeedMill(isset($data['feedMill'])?$data['feedMill']:'');
+
+        $entity->setHatchery($hatchery);
+        $entity->setBreed($breed);
+        $entity->setFeed($feed);
+        $entity->setFeedMill($feedMill);
+        $entity->setFeedType($feedType);
+
         $entity->setBatchNo(isset($data['batchNo'])?$data['batchNo']:'');
         $entity->setRemarks(isset($data['remarks'])?$data['remarks']:'');
-        $entity->setAgent($agent?$agent:null);
+        if($fcr->getFcrOfFeed()=='AFTER'){
+            $entity->setAgent($agent);
+        }else{
+            $entity->setCustomer($fcr->getCustomer());
+            $entity->setAgent($fcr->getCustomer()->getAgent());
+        }
+
         $entity->setFcr($fcr);
 
         $em = $this->getDoctrine()->getManager();

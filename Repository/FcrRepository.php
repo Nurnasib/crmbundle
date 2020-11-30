@@ -25,19 +25,40 @@ use Terminalbd\CrmBundle\Entity\Fcr;
 class FcrRepository extends EntityRepository
 {
 
-    public function getFcrReportByReportingDateAndFeedType($data, $employee)
+    public function getFcrReportByReportingDateAndFeedType($data, $report, $customer, $employee)
     {
-        if(isset($data['reporting_month']) && isset($data['fcr_of_feed'])){
-            $startDate = date('Y-m-01', strtotime($data['reporting_month']));
-            $endDate = date('Y-m-t', strtotime($data['reporting_month']));
+        if(isset($data) && $report && $customer && $employee){
+            $startDate = date('Y-m-01', strtotime("now"));
+            $endDate = date('Y-m-t', strtotime("now"));
             $query = $this->createQueryBuilder('f')
                 ->where('f.reportingMonth >= :startDate')
                 ->andWhere('f.reportingMonth <= :endDate')
                 ->andWhere('f.fcrOfFeed = :type')
+                ->andWhere('f.report = :report')
                 ->andWhere('f.employee = :employee')
-                ->setParameters(array('startDate'=>$startDate, 'endDate'=>$endDate, 'type'=>$data['fcr_of_feed'], 'employee'=>$employee));
+                ->andWhere('f.customer = :customer')
+                ->setParameters(array('startDate'=>$startDate, 'endDate'=>$endDate, 'type'=>$data, 'report'=>$report, 'customer'=>$customer, 'employee'=>$employee));
 
-            return $query->getQuery()->getResult();
+            return $query->getQuery()->getOneOrNullResult();
+        }
+        return array();
+    }
+
+
+    public function getFcrReportByReportingDateReportAndEmployeeForAfter($data, $report, $employee)
+    {
+        if(isset($data) && $report && $employee){
+            $startDate = date('Y-m-01', strtotime("now"));
+            $endDate = date('Y-m-t', strtotime("now"));
+            $query = $this->createQueryBuilder('f')
+                ->where('f.reportingMonth >= :startDate')
+                ->andWhere('f.reportingMonth <= :endDate')
+                ->andWhere('f.fcrOfFeed = :type')
+                ->andWhere('f.report = :report')
+                ->andWhere('f.employee = :employee')
+                ->setParameters(array('startDate'=>$startDate, 'endDate'=>$endDate, 'type'=>$data, 'report'=>$report, 'employee'=>$employee));
+
+            return $query->getQuery()->getOneOrNullResult();
         }
         return array();
     }

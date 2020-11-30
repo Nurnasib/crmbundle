@@ -1,6 +1,6 @@
 <div class="portlet box ">
     <div class="portlet-title">
-        <div class="caption">{{ ' Layer Performance'|trans }} </div>
+        <div class="caption">{{ layerPerformance.report.name }} </div>
     </div>
     {#{{ dump(report) }}#}
 
@@ -12,13 +12,13 @@
                     <div class="col-md-12">
                         <h4>NOURISH POULTRY & HATCHERY LTD</h4>
                         <h5>Uttara, Dhaka.</h5>
-                        <h5>{{ ' Layer Performance Report'|trans }}</h5>
+                        <h5>{{ layerPerformance.report.name }}</h5>
                     </div>
                     <input type="hidden" class="layer_performance_id" value="{{ layerPerformance.id }}">
                     <div class="col-md-4">
                         <p style="color: #000000">{{ 'Name of CSO/Sr.CSO'|trans }}: {{ layerPerformance.employee.name }}</p>
                     </div>
-                    <div class="col-md-4">{{ 'Breed'|trans }}: {{ layerPerformance.breed.name|default('') }}</div>
+                    <div class="col-md-4"></div>
                     <div class="col-md-4">
                         <p style="color: #000000">{{ 'Reporting Month'|trans }}: {{ layerPerformance.reportingMonth|date("F, Y") }}</p>
                     </div>
@@ -63,12 +63,7 @@
                             </tr>
                             <tr>
                                 <td scope="col" colspan="3">
-                                    <select name="farmer" id="farmer" class="form-control farmer">
-                                        <option value="">Select Farmers</option>
-                                        {% for farmer in farmers %}
-                                            <option value="{{farmer.id}}"> {{farmer.name}} </option>
-                                        {% endfor %}
-                                    </select>
+
                                 </td>
 
                                 <td scope="col"><input type="number" class="form-control totalBirds" min="0" name="totalBirds"></td>
@@ -88,7 +83,17 @@
                                 <td scope="col" class="eggProductionTarget"></td>
                                 <td scope="col"><input type="number" class="form-control eggWeightAchieved" min="0" name="eggWeightAchieved"></td>
                                 <td scope="col" class="eggWeightStand"></td>
-                                <td scope="col"><input type="text" class="form-control feedType" name="feedType"></td>
+                                <td scope="col">
+                                    <select name="feedType" class="form-control feedType">
+                                        <option value="">Choose Feed Type</option>
+                                        {% if feedTypes is not empty %}
+                                            {% for feedType in feedTypes %}
+                                                <option value="{{ feedType.id }}">{{ feedType.name }}</option>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </select>
+                                    {#<input type="text" class="form-control feedType" name="feedType">#}
+                                </td>
                                 <td scope="col" width="105px">
                                     <div class="date_section">
                                         <input type="text" class="form-control datePicker production_date" name="production_date">
@@ -97,12 +102,49 @@
                                 <td scope="col">
                                     <input type="text" class="form-control batch_no" name="batch_no">
                                 </td>
-                                <td scope="col"><input type="text" class="form-control feed_mill" name="feed_mill"></td>
-                                <td scope="col"><input type="text" class="form-control hatchery" name="hatchery"></td>
                                 <td scope="col">
-
+                                    <select name="feed_mill" class="form-control feed_mill">
+                                        <option value="">Choose Feed Mill</option>
+                                        {% if feedMills is not empty %}
+                                            {% for feedMill in feedMills %}
+                                                <option value="{{ feedMill.id }}">{{ feedMill.name }}</option>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </select>
+                                    {#<input type="text" class="form-control feed_mill" name="feed_mill">#}
                                 </td>
-                                <td scope="col"><input type="text" class="form-control color" name="color"></td>
+                                <td scope="col">
+                                    <select name="hatchery" class="form-control hatchery">
+                                        <option value="">Choose Hatchery</option>
+                                        {% if hatcheries is not empty %}
+                                            {% for hatchery in hatcheries %}
+                                                <option value="{{ hatchery.id }}">{{ hatchery.name }}</option>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </select>
+                                    {#<input type="text" class="form-control hatchery" name="hatchery">#}
+                                </td>
+                                <td scope="col">
+                                    <select name="breed" class="form-control breed">
+                                        <option value="">Choose Breed</option>
+                                        {% if breeds is not empty %}
+                                            {% for breed in breeds %}
+                                                <option value="{{ breed.id }}">{{ breed.name }}</option>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </select>
+                                </td>
+                                <td scope="col">
+                                    <select name="color" class="form-control color">
+                                        <option value="">Choose Color</option>
+                                        {% if colors is not empty %}
+                                            {% for color in colors %}
+                                                <option value="{{ color.id }}">{{ color.name }}</option>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </select>
+                                    {#<input type="text" class="form-control color" name="color">#}
+                                </td>
                                 <td scope="col"><input type="text" class="form-control disease" name="disease"></td>
                                 <td scope="col"><input type="text" class="form-control remarks" name="remarks"></td>
                                 <td scope="col"><button type="button" class="btn btn-primary btn-sm details_add_button">{{ 'Add'|trans }}</button> </td>

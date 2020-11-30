@@ -33,11 +33,10 @@ class LayerStandard
     /**
      * @var Setting
      * @ORM\ManyToOne(targetEntity="Setting", inversedBy="crmLayerStandard")
-     * @ORM\JoinColumn(name="breed_id", referencedColumnName="id")
-     * @ORM\JoinColumn(onDelete="CASCADE")
+     * @ORM\JoinColumn(name="report_id", referencedColumnName="id", onDelete="SET NULL", nullable=true)
      */
 
-    private $breed;
+    private $report;
 
     /**
      * @var float
@@ -89,17 +88,17 @@ class LayerStandard
     /**
      * @return Setting
      */
-    public function getBreed()
+    public function getReport()
     {
-        return $this->breed;
+        return $this->report;
     }
 
     /**
-     * @param Setting $breed
+     * @param Setting $report
      */
-    public function setBreed(Setting $breed): void
+    public function setReport($report)
     {
-        $this->breed = $breed;
+        $this->report = $report;
     }
 
     /**

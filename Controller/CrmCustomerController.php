@@ -129,7 +129,7 @@ class CrmCustomerController extends AbstractController
           'id'=>$entity->getId(),
           'name'=>$entity->getName(),
         );
-        $this->getDoctrine()->getRepository(CrmVisitDetails::class)->insertFarmer($entity,$id,$allRequestData);
+        $this->getDoctrine()->getRepository(CrmVisitDetails::class)->insertCrmVisitDetailForFarmer($entity,$id,$allRequestData);
         return new JsonResponse(array($returnData));
 
     }

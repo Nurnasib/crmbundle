@@ -34,11 +34,24 @@ class Fcr
     private $fcrDetails;
 
     /**
+     * @var Setting
+     * @ORM\ManyToOne(targetEntity="Setting", inversedBy="fcr")
+     * @ORM\JoinColumn(name="report_id", referencedColumnName="id", onDelete="SET NULL", nullable=true)
+     */
+    private $report;
+
+
+    /**
      * @var User
      * @ORM\ManyToOne(targetEntity="App\Entity\User" , inversedBy="fcr")
      */
     private $employee;
 
+    /**
+     * @var CrmCustomer
+     * @ORM\ManyToOne(targetEntity="CrmCustomer" , inversedBy="fcr")
+     */
+    private $customer;
 
     /**
      * @var string
@@ -157,6 +170,40 @@ class Fcr
     {
         $this->createdAt = $createdAt;
     }
+
+    /**
+     * @return Setting
+     */
+    public function getReport()
+    {
+        return $this->report;
+    }
+
+    /**
+     * @param Setting $report
+     */
+    public function setReport(Setting $report): void
+    {
+        $this->report = $report;
+    }
+
+    /**
+     * @return CrmCustomer
+     */
+    public function getCustomer()
+    {
+        return $this->customer;
+    }
+
+    /**
+     * @param CrmCustomer $customer
+     */
+    public function setCustomer(CrmCustomer $customer): void
+    {
+        $this->customer = $customer;
+    }
+
+
 
 
 }

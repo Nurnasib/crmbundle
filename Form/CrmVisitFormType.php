@@ -45,11 +45,15 @@ class CrmVisitFormType extends AbstractType
         $builder
 
             ->add('working_duration', TextType::class, [
-                'attr' => ['autofocus' => true],
+                'attr' => ['autocomplete' => 'off', 'class'=>'working_duration_from timePicker'],
+                'label' => 'label.working_duration',
+            ])
+            ->add('working_duration_to', TextType::class, [
+                'attr' => ['autocomplete' => 'off', 'class'=>'working_duration_to timePicker'],
                 'label' => 'label.working_duration',
             ])
             ->add('location', EntityType::class, array(
-                'required'    => false,
+                'required'    => true,
                 'class' => Location::class,
                 'placeholder' => 'Choose a  upozila name',
                 'choice_label' => 'name',

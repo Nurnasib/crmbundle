@@ -36,6 +36,40 @@ class ChickLifeCycleDetails
     private $crmChickLifeCycle;
 
     /**
+     * @var Setting
+     * @ORM\ManyToOne(targetEntity="Setting", inversedBy="crmChickLifeCycleDetails")
+     * @ORM\JoinColumn(name="hatchery_id", referencedColumnName="id", onDelete="SET NULL", nullable=true)
+     */
+    private $hatchery;
+
+    /**
+     * @var Setting
+     * @ORM\ManyToOne(targetEntity="Setting", inversedBy="crmChickLifeCycleDetails")
+     * @ORM\JoinColumn(name="breed_id", referencedColumnName="id", onDelete="SET NULL", nullable=true)
+     */
+    private $breed;
+
+    /**
+     * @var Setting
+     * @ORM\ManyToOne(targetEntity="Setting", inversedBy="crmChickLifeCycleDetails")
+     * @ORM\JoinColumn(name="feed_id", referencedColumnName="id", onDelete="SET NULL", nullable=true)
+     */
+    private $feed;
+
+    /**
+     * @var Setting
+     * @ORM\ManyToOne(targetEntity="Setting", inversedBy="crmChickLifeCycleDetails")
+     * @ORM\JoinColumn(name="feed_type_id", referencedColumnName="id", onDelete="SET NULL", nullable=true)
+     */
+    private $feedType;
+
+    /**
+     * @var \DateTime
+     * @ORM\Column(name="reporting_date", type="date", nullable=true)
+     */
+    private $reportingDate;
+
+    /**
      * @var string
      * @ORM\Column(name="visiting_week", type="string", length=50, nullable=true)
      */
@@ -119,15 +153,6 @@ class ChickLifeCycleDetails
 
     private $withMortality=0;
 
-
-    /**
-     * @var string
-     * @Orm\Column(name="feedType", type="string", nullable=true)
-     */
-
-    private $feedType;
-
-
     /**
      * @var \DateTime
      * @ORM\Column(name="pro_date", type="datetime", nullable=true)
@@ -182,7 +207,7 @@ class ChickLifeCycleDetails
     /**
      * @return ChickLifeCycle
      */
-    public function getCrmChickLifeCycle(): ChickLifeCycle
+    public function getCrmChickLifeCycle()
     {
         return $this->crmChickLifeCycle;
     }
@@ -190,9 +215,89 @@ class ChickLifeCycleDetails
     /**
      * @param ChickLifeCycle $crmChickLifeCycle
      */
-    public function setCrmChickLifeCycle(ChickLifeCycle $crmChickLifeCycle): void
+    public function setCrmChickLifeCycle($crmChickLifeCycle)
     {
         $this->crmChickLifeCycle = $crmChickLifeCycle;
+    }
+
+    /**
+     * @return Setting
+     */
+    public function getHatchery()
+    {
+        return $this->hatchery;
+    }
+
+    /**
+     * @param Setting $hatchery
+     */
+    public function setHatchery($hatchery)
+    {
+        $this->hatchery = $hatchery;
+    }
+
+    /**
+     * @return Setting
+     */
+    public function getBreed()
+    {
+        return $this->breed;
+    }
+
+    /**
+     * @param Setting $breed
+     */
+    public function setBreed($breed)
+    {
+        $this->breed = $breed;
+    }
+
+    /**
+     * @return Setting
+     */
+    public function getFeed()
+    {
+        return $this->feed;
+    }
+
+    /**
+     * @param Setting $feed
+     */
+    public function setFeed($feed)
+    {
+        $this->feed = $feed;
+    }
+
+    /**
+     * @return Setting
+     */
+    public function getFeedType()
+    {
+        return $this->feedType;
+    }
+
+    /**
+     * @param Setting $feedType
+     */
+    public function setFeedType($feedType)
+    {
+        $this->feedType = $feedType;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getReportingDate()
+    {
+        return $this->reportingDate;
+    }
+
+    /**
+     * @param \DateTime $reportingDate
+     */
+    public function setReportingDate(\DateTime $reportingDate): void
+    {
+        $this->reportingDate = $reportingDate;
     }
 
     /**
@@ -426,22 +531,6 @@ class ChickLifeCycleDetails
 
         return $result;
 
-    }
-
-    /**
-     * @return string
-     */
-    public function getFeedType()
-    {
-        return $this->feedType;
-    }
-
-    /**
-     * @param string $feedType
-     */
-    public function setFeedType(string $feedType): void
-    {
-        $this->feedType = $feedType;
     }
 
     /**

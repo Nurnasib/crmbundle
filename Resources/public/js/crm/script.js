@@ -15,6 +15,7 @@ $(document).on('opened', '.remodal', function () {
     var url = document.getElementById(id).getAttribute("data-action");
     $('#modal-container').load(url, function(){
         formCommonProcess();
+        formCommonProcessForFcr();
         if(check === 'edit'){
             formEditSubmitProcess();
         }else{
@@ -27,6 +28,11 @@ $('[data-remodal-id=modal]').remodal({
     modifier: 'with-red-theme',
     closeOnOutsideClick: true
 });
+
+$(".timePicker").timepicker({
+        timeFormat: 'hh:mm TT'
+    }
+);
 
 $(document).on('click','.report_complete', function () {
     var crmChickLifeCycleId = $(this).attr('data-chick-life-cycle-id');
@@ -80,6 +86,11 @@ $(document).on('click','.report_complete_layer', function () {
 
 function formCommonProcess() {
 
+    $(".timePicker").timepicker({
+            timeFormat: 'hh:mm TT'
+        }
+    );
+
     $('.form-body').slimScroll({
         height: '85%'
     });
@@ -110,18 +121,33 @@ function formCommonProcess() {
 
     $('.chickLifeCycleDetails tbody .form-control').keypress(function (e) {
         if (e.which === 13) {
-            dataInsertUsingAjax($(this));
+            dataInsertChickUsingAjax($(this));
             var index = $('.chickLifeCycleDetails tbody .form-control').index(this) + 1;
             $('.chickLifeCycleDetails tbody .form-control').eq(index).focus().select();
         }
     });
 
-    $('.cattle_life_cycle .form-control').keypress(function (e) {
+    $('#cattle_life_cycle_form').on('keypress','.cattle_life_cycle input[type=text], .cattle_life_cycle input[type=number], .cattle_life_cycle select',function (e) {
         if (e.which === 13) {
-            var index = $('.cattle_life_cycle .form-control').index(this) + 1;
-            $('.cattle_life_cycle .form-control').eq(index).focus().select();
+            e.preventDefault();
+            var $canfocus = $('.cattle_life_cycle :focusable');
+            var index = $canfocus.index(this) + 1;
+            if (index >= $canfocus.length-1){
+                index = 0;
+            }
+            $canfocus.eq(index).focus().select();
+
+            $('#cattle_life_cycle_form').submit(function() {
+                return false;
+            });
         }
     });
+
+    $('.cattleLifeCycleSection').on('click', '.cattle_life_cycle_details_button', function () {
+
+        formSubmitProcessForCattleLifeCycle();
+    });
+
 
     $('.layerLifeCycleDetails .form-control').keypress(function (e) {
         if (e.which === 13) {
@@ -131,17 +157,71 @@ function formCommonProcess() {
         }
     });
 
+
+// for fish life cycle
+
+    $('#fish_life_cycle_form').on('keypress','.fish_life_cycle input[type=text], .fish_life_cycle input[type=number], .fish_life_cycle select',function (e) {
+        if (e.which === 13) {
+            e.preventDefault();
+            var $canfocus = $('.fish_life_cycle :focusable');
+            var index = $canfocus.index(this) + 1;
+            if (index >= $canfocus.length-1){
+                index = 0;
+            }
+            $canfocus.eq(index).focus().select();
+
+            $('#fish_life_cycle_form').submit(function() {
+                return false;
+            });
+        }
+    });
+
+// for cattle farm visit
+
+    $('#cattle_farm_visit_form').on('keypress','.cattle_farm_visit_report input[type=text], .cattle_farm_visit_report input[type=number], .cattle_farm_visit_report select',function (e) {
+        if (e.which === 13) {
+            e.preventDefault();
+            var $canfocus = $('.cattle_farm_visit_report :focusable');
+            var index = $canfocus.index(this) + 1;
+            if (index >= $canfocus.length-1){
+                index = 0;
+            }
+            $canfocus.eq(index).focus().select();
+
+            $('#cattle_farm_visit_form').submit(function() {
+                return false;
+            });
+        }
+    });
+
+    $('.fishLifeCycleSection').on('click', '.fish_life_cycle_details_button', function () {
+
+        formSubmitProcessForFishLifeCycle();
+    });
+
+    $('.cattleFarmVisitSection').on('click', '.cattle_farm_visit_details_button', function () {
+
+        formSubmitProcessForCattleFarmVisit();
+    });
+
+
 }
 
-function dataInsertUsingAjax(element) {
+function dataInsertChickUsingAjax(element) {
     var parentElement = element.closest('tr');
     var crmChickLifeCycleDetailId=parentElement.find('.crmChickLifeCycleDetails').val();
+    var reportingDate=parentElement.find('.reportingDate').val();
     var totalBirds=parentElement.find('.totalBirds').val();
     var ageDays=parentElement.find('.ageDays').val();
     var mortalityPes=parentElement.find('.mortalityPes').val();
     var weightAchieved=parentElement.find('.weightAchieved').val();
     var feedTotalKg=parentElement.find('.feedTotalKg').val();
+
+    var hatchery=parentElement.find('.hatchery').val();
+    var breed=parentElement.find('.breed').val();
+    var feed=parentElement.find('.feed').val();
     var feedType=parentElement.find('.feedType').val();
+
     var proDate=parentElement.find('.proDate').val();
     var batchNo=parentElement.find('.batchNo').val();
     var remarks=parentElement.find('.remarks').val();
@@ -154,11 +234,15 @@ function dataInsertUsingAjax(element) {
         url    : Routing.generate('crm_chick_life_cycle_edit',{'id':crmChickLifeCycleDetailId}),
         type   : 'post',
         data   : {
+            'reportingDate':reportingDate,
             'totalBirds':totalBirds,
             'ageDays':ageDays,
             'mortalityPes':mortalityPes,
             'weightAchieved':weightAchieved,
             'feedTotalKg':feedTotalKg,
+            'hatchery':hatchery,
+            'breed':breed,
+            'feed':feed,
             'feedType':feedType,
             'proDate':proDate,
             'batchNo':batchNo,
@@ -214,6 +298,91 @@ function layerLifeCycleDetailDataInsertUsingAjax(element) {
 function initIntegerMask(el){
     $(el).inputmask("integer", {removeMaskOnSubmit: false});
 }
+
+function formSubmitProcessForCattleLifeCycle() {
+    var cattleLifeCycle_id = $('.cattleLifeCycle_id').val();
+    if(cattleLifeCycle_id===""){
+        return false;
+    }
+        $.ajax({
+            url         : $('form#cattle_life_cycle_form').attr( 'action' ),
+            type        : $('form#cattle_life_cycle_form').attr( 'method' ),
+            data        : new FormData($('form#cattle_life_cycle_form')[0]),
+            processData : false,
+            contentType : false,
+            beforeSend: function() {
+                $('.form-submit').html("Loading...").attr('disabled', 'disabled');
+            },
+            success: function(response){
+                $("#process-msg").show();
+                $(".alert-success").html(response);
+                $(".form-submit").html("SaveAndCreate").prop("disabled", false);
+                $('form#cattle_life_cycle_form')[0].reset();
+                // location.reload();
+                // setTimeout( explode, 2000);
+                if(cattleLifeCycle_id>0){
+                    var refreshUrl = Routing.generate('crm_cattle_life_cycle_refresh',{'id':cattleLifeCycle_id});
+                    $("tbody.dairyLifeCycleDetailsSection").load(refreshUrl);
+                }
+            }
+        });
+    }
+
+function formSubmitProcessForFishLifeCycle() {
+    var fishLifeCycle_id = $('.fishLifeCycle_id').val();
+    if(fishLifeCycle_id===""){
+        return false;
+    }
+        $.ajax({
+            url         : $('form#fish_life_cycle_form').attr( 'action' ),
+            type        : $('form#fish_life_cycle_form').attr( 'method' ),
+            data        : new FormData($('form#fish_life_cycle_form')[0]),
+            processData : false,
+            contentType : false,
+            beforeSend: function() {
+                $('.form-submit').html("Loading...").attr('disabled', 'disabled');
+            },
+            success: function(response){
+                $("#process-msg").show();
+                $(".alert-success").html(response);
+                $(".form-submit").html("SaveAndCreate").prop("disabled", false);
+                $('form#fish_life_cycle_form')[0].reset();
+                // location.reload();
+                // setTimeout( explode, 2000);
+                if(fishLifeCycle_id!=''){
+                    var refreshUrl = Routing.generate('crm_fish_life_cycle_refresh',{'id':fishLifeCycle_id});
+                    $("tbody.fishLifeCycleDetailsSection").load(refreshUrl);
+                }
+            }
+        });
+    }
+
+// cattle_farm_visit_form
+function formSubmitProcessForCattleFarmVisit() {
+    var cattleFarmVisit_id = $('.cattleFarmVisit_id').val();
+    if(cattleFarmVisit_id===""){
+        return false;
+    }
+        $.ajax({
+            url         : $('form#cattle_farm_visit_form').attr( 'action' ),
+            type        : $('form#cattle_farm_visit_form').attr( 'method' ),
+            data        : new FormData($('form#cattle_farm_visit_form')[0]),
+            processData : false,
+            contentType : false,
+            beforeSend: function() {
+                $('.form-submit').html("Loading...").attr('disabled', 'disabled');
+            },
+            success: function(response){
+                $('form#cattle_farm_visit_form')[0].reset();
+                // location.reload();
+                // setTimeout( explode, 2000);
+                if(cattleFarmVisit_id!==''){
+                    var refreshUrl = Routing.generate('crm_cattle_farm_visit_detail_refresh',{'id':cattleFarmVisit_id});
+                    $("tbody.cattleFarmVisitDetailsSection").load(refreshUrl);
+                }
+            }
+        });
+    }
 
 function formSubmitProcess() {
     var cattleLifeCycle_id = $('.cattleLifeCycle_id').val();
@@ -311,13 +480,14 @@ function formEditSubmitProcess() {
 }
 
 
-$('.mortality_pes, .totalBirds').on('keypress keyup blur',function () {
-    var mortalityPes = $('.mortality_pes').val();
-    var totalbirds= $('.totalBirds').val();
+$('.chickLifeCycleDetails .mortalityPes, .chickLifeCycleDetails .totalBirds').on('keypress keyup blur',function () {
+    var parentElement = $(this).closest('tr');
+    var mortalityPes = parentElement.find('.mortalityPes').val();
+    var totalbirds= parentElement.find('.totalBirds').val();
     if(mortalityPes!='' && totalbirds!=''){
         var calculateValue = (parseFloat(mortalityPes)*100)/parseFloat(totalbirds);
-        $('.mortality_percent').val(calculateValue);
-        $('.mortality_percent').text(calculateValue);
+        parentElement.find('.mortality_percent').val(calculateValue);
+        parentElement.find('.mortality_percent').text(calculateValue);
     }
 
 });
@@ -375,11 +545,13 @@ $('.addmore').click(function(){
     var farmer_section = el.closest('tr.farmer_section');
     var farmer_purpose = farmer_section.find('.farmer_purpose').val();
     var farmer_firm_type = farmer_section.find('.farmer_firm_type').val();
+    var farmer_report = farmer_section.find('.farmer_report').val();
     var farmer = farmer_section.find('.farmer').val();
     var farmer_capacity = farmer_section.find('.farmer_capacity').val();
     var farmer_comments = farmer_section.find('.farmer_comments').val();
 
-    if(farmer_purpose==='' || farmer==='' || farmer_firm_type===''){
+    if(farmer_purpose==='' || farmer==='' || farmer_firm_type==='' || farmer_report===''){
+        alert('Please enter required field.');
         return false;
     }
     $.ajax({
@@ -390,6 +562,7 @@ $('.addmore').click(function(){
             'crm_visit_id':crm_visit_id,
             'purpose':farmer_purpose,
             'farmer_firm_type':farmer_firm_type,
+            'farmer_report':farmer_report,
             'farmer':farmer,
             'farmer_capacity':farmer_capacity,
             'comments':farmer_comments,
@@ -594,9 +767,12 @@ $(document).on('click', '.meta-remove', function(){
 
 $(document).on('click', '#crm-farmer-btn', function(e) {
 
+    var crm_visit_id = $('body').find('.crm_visit_id').val();
     e.preventDefault();
     var name =$(this).closest("form").find(".name").val();
     var mobile = $(this).closest("form").find(".mobile").val();
+    var agent = $(this).closest("form").find(".agent").val();
+    var location = $(this).closest("form").find(".location").val();
 
     if (name === "") {
         alert("Name must be filled out");
@@ -604,6 +780,14 @@ $(document).on('click', '#crm-farmer-btn', function(e) {
     }
     else if(mobile==="" || mobile ===null){
         alert("Your mobile number is Invalid :" +mobile);
+        return false;
+    }
+    else if(agent==="" || agent ===null){
+        alert("Agent is required");
+        return false;
+    }
+    else if(location==="" || location ===null){
+        alert("Location is required");
         return false;
     }
 
@@ -615,6 +799,8 @@ $(document).on('click', '#crm-farmer-btn', function(e) {
         contentType : false,
         success: function (data) {
             $('form#farmerForm')[0].reset();
+            var refreshUrl = Routing.generate('crm_visit_item_refresh',{'id':crm_visit_id,'process':'farmer'});
+            $(".crm_detail_farmer_section").load(refreshUrl);
         }
     });
 
@@ -691,6 +877,42 @@ $(document).on('change', '.farmer', function(e) {
     });
 
 });
+
+$(document).on('change','.farmer_firm_type',function(){
+    var element = $(this);
+    var farmTypeId = $(this).val();
+
+    if(farmTypeId===''){
+        element.closest('tr').find('.farmer_report').find('option').remove();
+        element.closest('tr').find('.farmer_report').append($('<option>', {value:'', text:'Select Report'}));
+        // for modal
+        if($('.modal.show').length){
+            element.closest('div.modal-body').find('.farmer_report').find('option').remove();
+            element.closest('div.modal-body').find('.farmer_report').append($('<option>', {value:'', text:'Select Report'}));
+        }
+         return false;
+    }
+    $.ajax({
+        url: Routing.generate('crm_report_farm_type_ajax',{'id':farmTypeId})
+    }).done(function(data) {
+
+        element.closest('tr').find('.farmer_report').find('option').remove();
+        element.closest('tr').find('.farmer_report').append($('<option>', {value:'', text:'Select Report'}));
+// for modal
+        if($('.modal.show').length){
+            element.closest('div.modal-body').find('.farmer_report').find('option').remove();
+            element.closest('div.modal-body').find('.farmer_report').append($('<option>', {value:'', text:'Select Report'}));
+        }
+        $.each(data, function(i, item) {
+            element.closest('tr').find('.farmer_report').append($('<option>', {value:item.id, text:item.name}));
+            if($('.modal.show').length){
+                element.closest('div.modal-body').find('.farmer_report').append($('<option>', {value:item.id, text:item.name}));
+            }
+        });
+
+    });
+});
+
 $(document).on('change', '.other_agent', function(e) {
     var element = $(this);
     var id = $(this).val();
@@ -736,6 +958,12 @@ $(document).on('change', '.agent', function(e) {
         element.closest('tr').find('.agent_mobile').val(data[0]['mobile']);
     });
 
+});
+
+$(".modal").on("hidden.bs.modal", function(){
+    // $(".modal-body").html("");
+    $(this).find('form')[0].reset();
+    // $('form#farmerForm')[0].reset();
 });
 
 

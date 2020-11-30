@@ -1,0 +1,59 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block body %}
+    <div class="pcoded-inner-content">
+
+        <!-- [ Main Content ] start -->
+        <div class="portlet box ">
+
+            <div class="portlet-body form">
+                {#{{ form_start(form, {'attr': {'action': path('chick_new_modal',{'id':crmCustomer.id,'report':report.id }),'class': 'form-horizontal right','id':'chick_life_cycle_form'}}) }}#}
+                <div class="row form-body ">
+                    <div class="form-inner-no-space">
+                        <div class="row">
+                            <div class="col-md-12" style="text-align: center">
+                                <h4>NOURISH POULTRY & HATCHERY LTD</h4>
+                                <h5>Uttara, Dhaka.</h5>
+                                <h4>{{cattleLifeCycle.report.name}}</h4>
+                                <input type="hidden" class="cattleLifeCycle_id" value="{{ cattleLifeCycle.id }}">
+                            </div>
+
+                            <div class="col-md-4">
+                                <p style="color: #000000">{{ 'Farmer Name'|trans }}: {{ cattleLifeCycle.customer.name }}</p>
+                            </div>
+                            <div class="col-md-4">
+                                <p style="color: #000000">{{ 'Address'|trans }}: {{ cattleLifeCycle.customer.address }}</p>
+                            </div>
+                            <div class="col-md-4">
+                                <p style="color: #000000">{{ 'Agent'|trans }}: {{ cattleLifeCycle.agent.name }}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <p style="color: #000000">{{ 'Reporting Date'|trans }}: {{ cattleLifeCycle.reportingDate?cattleLifeCycle.reportingDate|date("d-m-Y"):'' }}</p>
+                            </div>
+                        </div>
+                        {% if cattleLifeCycle.report.slug =='dairy-life-cycle' %}
+                            {% include '@TerminalbdCrm/cattleLifecycle/report/_dairy-details-body.html.twig' %}
+                        {% endif %}
+                        {% if cattleLifeCycle.report.slug =='fattening-life-cycle' %}
+                            {% include '@TerminalbdCrm/cattleLifecycle/report/_fattening-details-body.html.twig' %}
+                        {% endif %}
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- [ Main Content ] end -->
+    </div>
+{% endblock %}
+{% block cssBlock %}
+    <link rel="stylesheet" href="{{ asset('assets/module/css/app.css') }}">
+{% endblock  %}
+{% block javascripts %}
+    {{ parent() }}
+    <script type="application/javascript" src="{{ asset('assets/module/js/app.js') }}"></script>
+{% endblock  %}
+{% block documentready %}
+    {{ parent() }}
+
+{% endblock %}

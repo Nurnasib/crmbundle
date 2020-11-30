@@ -58,6 +58,12 @@ class CrmVisit
      */
     private $workingDuration;
 
+    /**
+     * @var string
+     * @ORM\Column(name="working_duration_to", type="string", nullable=true)
+     */
+    private $workingDurationTo;
+
 
     /**
      * @var \DateTime
@@ -170,17 +176,17 @@ class CrmVisit
     /**
      * @return string
      */
-    public function getAreaName()
+    public function getWorkingDurationTo(): string
     {
-        return $this->area_name;
+        return $this->workingDurationTo;
     }
 
     /**
-     * @param string $area_name
+     * @param string $workingDurationTo
      */
-    public function setAreaName($area_name)
+    public function setWorkingDurationTo(string $workingDurationTo): void
     {
-        $this->area_name = $area_name;
+        $this->workingDurationTo = $workingDurationTo;
     }
 
     /**

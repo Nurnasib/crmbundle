@@ -36,7 +36,7 @@ class SettingController extends AbstractController
      */
     public function index(Request $request): Response
     {
-        $entities = $this->getDoctrine()->getRepository(Setting::class)->findAll();
+        $entities = $this->getDoctrine()->getRepository(Setting::class)->findBy(array(),array('settingType'=>'asc'));
         return $this->render('@TerminalbdCrm/setting/index.html.twig',['entities' => $entities]);
     }
 

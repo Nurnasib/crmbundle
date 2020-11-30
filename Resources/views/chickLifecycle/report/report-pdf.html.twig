@@ -1,0 +1,125 @@
+{% extends 'base-pdf.html.twig' %}
+
+{% block body %}
+    <div class="pcoded-inner-content">
+        <div class="row form-body ">
+            <div class="form-inner-no-space">
+                <div class="card-body-inner">
+                    <div class="row">
+                        <div class="col-md-12" style="text-align: center">
+                            <p class="title-h4">{{ 'NOURISH POULTRY AND HATCHERY LTD'|trans }}</p>
+                            <p class="title-h5">{{ 'UTTARA, DHAKA.'|trans }}</p>
+                            <p class="title-h4">{{chickLifeCycle.report.name}} {{ 'Report'|trans }}</p>
+                        </div>
+
+                        <table class="header-title" width="1" cellspacing="0" cellpadding="0">
+                            <tbody>
+                            <tr>
+                                <td>
+                                    {{ 'Farmer Name'|trans }}: {{ chickLifeCycle.customer.name }}
+                                </td>
+                                <td>
+                                    {{ 'Address'|trans }}: {{ chickLifeCycle.customer.address }}
+                                </td>
+                                <td>
+                                    {{ 'Agent'|trans }}: {{ chickLifeCycle.agent.name }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    {{ 'Reporting Date'|trans }}: {{ chickLifeCycle.reportingDate?chickLifeCycle.reportingDate|date("d-m-Y"):'' }}
+                                </td>
+                                <td></td>
+                                <td>
+                                    {{ 'Hatching Date'|trans }}: {{ chickLifeCycle.hatchingDate?chickLifeCycle.hatchingDate|date("d-m-Y"):'' }}
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+
+                        <div class="col-md-4">
+                            <p style="color: #000000"></p>
+                        </div>
+                        <div class="col-md-4"></div>
+                        <div class="col-md-4">
+                            <p style="color: #000000"></p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <table border="1" cellpadding="0" cellspacing="0">
+                            <thead class="thead-dark">
+                            <tr>
+
+                                <th scope="col" rowspan="2">S/N</th>
+                                {#<th scope="col" rowspan="2">Bird Type</th>#}
+                                <th style="width: 70px" scope="col" rowspan="2">Visiting Week</th>
+                                <th scope="col" rowspan="2">Total Birds</th>
+                                <th scope="col" rowspan="2">Age(Day)</th>
+                                <th scope="col" colspan="2">Mortality</th>
+                                <th scope="col" colspan="2">Weight</th>
+                                <th scope="col" colspan="3">Feed Consumption</th>
+                                <th scope="col" colspan="2">FCR</th>
+                                <th scope="col" rowspan="2">Feed Type</th>
+                                <th style="width: 80px" scope="col" rowspan="2">Pro. Date</th>
+                                <th scope="col" rowspan="2">Batch No.</th>
+                                <th scope="col" rowspan="2">Remarks</th>
+
+                            </tr>
+                            <tr>
+
+                                <th scope="col">Pes</th>
+                                <th scope="col">%</th>
+
+                                <th scope="col">Standard</th>
+                                <th scope="col">Achieved</th>
+
+                                <th scope="col">Total (kg)</th>
+                                <th scope="col">Per bird (gm)</th>
+                                <th scope="col">Standard</th>
+
+                                <th scope="col">Without  M</th>
+                                <th scope="col">With M</th>
+
+                            </tr>
+                            </thead>
+                            <tbody>
+
+                            {% if chickLifeCycle.crmChickLifeCycleDetails is not empty %}
+
+                                {% for index, detail in chickLifeCycle.crmChickLifeCycleDetails %}
+                                    <tr>
+                                        <td>{{ index+1 }} </td>
+                                        <td>
+                                            {{ detail.visitingWeek }}
+                                        </td>
+                                        <td>{{ detail.totalBirds }}</td>
+                                        <td>{{ detail.ageDays }}</td>
+                                        <td>{{ detail.mortalityPes }}</td>
+                                        <td class="mortalityPercent">{{ detail.mortalityPercent }} </td>
+                                        <td class="weightStandard">{{ detail.weightStandard }}</td>
+                                        <td>{{ detail.weightAchieved }}</td>
+                                        <td>{{ detail.feedTotalKg }}</td>
+                                        <td class="perBird">{{ detail.perBird }}</td>
+                                        <td class="feedStandard">{{ detail.feedStandard }}</td>
+                                        <td class="withoutMortality">{{ detail.withoutMortality }}</td>
+                                        <td class="withMortality">{{ detail.withMortality }}</td>
+                                        <td>{{ detail.feedType|default('') }}</td>
+                                        <td>{{ detail.proDate?detail.proDate|date("d-m-Y"):'' }}</td>
+                                        <td>{{ detail.batchNo|default('') }}</td>
+                                        <td>{{ detail.remarks|default('') }}</td>
+                                    </tr>
+
+                                {% endfor %}
+
+                            {% endif %}
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- [ Main Content ] end -->
+    </div>
+{% endblock %}

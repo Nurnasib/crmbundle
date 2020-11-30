@@ -41,15 +41,17 @@ class LayerStandardFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('breed', EntityType::class, array(
+            ->add('report', EntityType::class, array(
                 'required'    => true,
                 'class' => Setting::class,
-                'placeholder' => 'Choose Breed',
+                'placeholder' => 'Choose Report',
                 'choice_label' => 'name',
                 'attr'=>array('class'=>'span12 m-wrap'),
                 'query_builder' => function(EntityRepository $er){
                     return $er->createQueryBuilder('e')
-                        ->where("e.settingType ='BREED_TYPE'")
+                        ->join('e.parent','parent')
+                        ->where('parent.slug = :slug')->setParameter('slug','layer')
+                        ->andWhere('e.settingType = :type')->setParameter('type','FARMER_REPORT')
                         ->orderBy('e.name', 'ASC');
                 },
             ))

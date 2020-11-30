@@ -43,14 +43,14 @@ class LayerLifeCycle
 
     /**
      * @var User
-     * @ORM\ManyToOne(targetEntity="App\Entity\User" , inversedBy="chicklifecycle")
+     * @ORM\ManyToOne(targetEntity="App\Entity\User" , inversedBy="crmLayerLifeCycle")
      */
     private $employee;
 
 
     /**
      * @var CrmCustomer
-     * @ORM\ManyToOne(targetEntity="CrmCustomer" , inversedBy="layerlifecycle")
+     * @ORM\ManyToOne(targetEntity="CrmCustomer" , inversedBy="crmLayerLifeCycle")
      */
     private $customer;
 
@@ -64,17 +64,8 @@ class LayerLifeCycle
     private $report;
 
     /**
-     * @var Setting
-     * @ORM\ManyToOne(targetEntity="Setting", inversedBy="crmLayerLifeCycle")
-     * @ORM\JoinColumn(name="breed_id", referencedColumnName="id")
-     * @ORM\JoinColumn(onDelete="CASCADE")
-     */
-
-    private $breed;
-
-    /**
      * @var Agent
-     * @ORM\ManyToOne(targetEntity="App\Entity\Core\Agent" , inversedBy="layerlifeCycle")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Core\Agent" , inversedBy="crmLayerLifeCycle")
      */
     private $agent;
 
@@ -89,12 +80,6 @@ class LayerLifeCycle
      * @ORM\Column(name="hatchery_date", type="date", nullable=true)
      */
     private $hatcheryDate;
-
-    /**
-     * @var string
-     * @ORM\Column(name="hatchery", type="string", nullable=true)
-     */
-    private $hatchery;
 
     /**
      * @var \DateTime
@@ -195,22 +180,6 @@ class LayerLifeCycle
     public function setReport(Setting $report): void
     {
         $this->report = $report;
-    }
-
-    /**
-     * @return Setting
-     */
-    public function getBreed()
-    {
-        return $this->breed;
-    }
-
-    /**
-     * @param Setting $breed
-     */
-    public function setBreed(Setting $breed): void
-    {
-        $this->breed = $breed;
     }
 
     /**

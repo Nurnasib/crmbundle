@@ -1,30 +1,38 @@
 //mortality percent
-$.urlParam = function (name) {
-    var results = new RegExp('[\?&]' + name + '=([^&#]*)')
-        .exec(window.location.search);
-    return (results !== null) ? results[1] || 0 : false;
-};
-var pathname = window.location.pathname; // Returns path only (/path/example.html)
-var url      = window.location.href;     // Returns full URL (https://example.com/path/example.html)
-var origin   = window.location.origin;   // Returns base URL (https://example.com)
 
+function formCommonProcessForFcr() {
 
-$(document).on('opened', '.remodal', function () {
-    var id = $.urlParam('process');
-    var check = $.urlParam('check');
+    $('.fcrReportDetails').on('keypress','input[type=text],input[type=number],select, button[type=button]',function (e) {
+        if (e.which === 13) {
+            /*var index = $('.fcrReportDetails .form-control').index(this) + 1;
+            $('.fcrReportDetails .form-control').eq(index).focus().select();*/
+            e.preventDefault();
+            // Get all focusable elements on the page
+            var $canfocus = $('.fcrReportDetails :focusable');
+            var index = $canfocus.index(this) + 1;
+            // if (index >= $canfocus.length) index = 0;
+            if (index >= $canfocus.length){
+                index = 0;
+            }
 
-    var url = document.getElementById(id).getAttribute("data-action");
-    $('#modal-container').load(url, function(){
-        formCommonProcess();
+            $canfocus.eq(index).focus().select();
+        }
     });
-});
 
-$('[data-remodal-id=modal]').remodal({
-    modifier: 'with-red-theme',
-    closeOnOutsideClick: true
-});
+    $(document).on('click', '.fcr_details_add_button', function () {
+        dataInsertFcrUsingAjax($(this));
+    });
+    $(document).on('click', '.remove', function(){
+        var element = $(this);
+        var url = $(this).attr('data-action');
+        if (confirm('Are you sure want to delete this record?')) {
+            $.post(url, function( data ) {
+                element.closest('tr').remove();
+            });
 
-function formCommonProcess() {
+        }
+    });
+
 
     $('.form-body').slimScroll({
         height: '85%'
@@ -53,113 +61,13 @@ function formCommonProcess() {
         buttonImageOnly: true
     });
 
-    $('#fcrReportDetails').on('keypress', 'input,select,textarea', function (e) {
-
-        if (e.which == 13) {
-            e.preventDefault();
-            switch ($(this).attr('class')) {
-
-                case 'form-control agent':
-                    // dataInsertUsingAjax($(this));
-                    $(this).closest('tr').find('.hatchingDate').focus().select();
-                    break;
-
-                case 'form-control hatchingDate datePicker hasDatepicker':
-                    // dataInsertUsingAjax($(this));
-                    $(this).closest('tr').find('.totalBirds').focus().select();
-                    break;
-
-                case 'form-control totalBirds':
-                    // dataInsertUsingAjax($(this));
-                    $(this).closest('tr').find('.ageDays').focus().select();
-                    break;
-
-                case 'form-control ageDays':
-                    // dataInsertUsingAjax($(this));
-                    // getSonaliWeightStandardUsingAjax($(this));
-                    $(this).closest('tr').find('.mortalityPes').focus().select();
-                    break;
-
-                case 'form-control mortalityPes':
-                    // dataInsertUsingAjax($(this));
-                    $(this).closest('tr').find('.weightAchieved').focus().select();
-                    break;
-
-                case 'form-control weightAchieved':
-                    // dataInsertUsingAjax($(this));
-                    $(this).closest('tr').find('.feedTotalKg').focus().select();
-                    break;
-
-
-                case 'form-control feedTotalKg':
-                    // dataInsertUsingAjax($(this));
-                    $(this).closest('tr').find('.hatchery').focus().select();
-                    break;
-
-
-                case 'form-control hatchery':
-                    // dataInsertUsingAjax($(this));
-                    $(this).closest('tr').find('.breed').focus().select();
-                    break;
-
-
-                case 'form-control breed':
-                    // dataInsertUsingAjax($(this));
-                    $(this).closest('tr').find('.feed').focus().select();
-                    break;
-
-
-                case 'form-control BEFORE feed':
-                    // dataInsertUsingAjax($(this));
-                    $(this).closest('tr').find('.feedMill').focus().select();
-                    break;
-
-                case 'form-control AFTER feed':
-                    // dataInsertUsingAjax($(this));
-                    $(this).closest('tr').find('.remarks').focus().select();
-                    break;
-
-                case 'form-control feedMill':
-                    // dataInsertUsingAjax($(this));
-                    $(this).closest('tr').find('.feedType').focus().select();
-                    break;
-
-                case 'form-control feedType':
-                    // dataInsertUsingAjax($(this));
-                    $(this).closest('tr').find('.proDate').focus().select();
-                    break;
-
-                case 'form-control proDate datePicker hasDatepicker':
-                    // dataInsertUsingAjax($(this));
-                    $(this).closest('tr').find('.batchNo').focus().select();
-                    break;
-
-                case 'form-control batchNo':
-                    // dataInsertUsingAjax($(this));
-                    $(this).closest('tr').find('.remarks').focus().select();
-                    break;
-
-                case 'form-control remarks':
-                    // dataInsertUsingAjax($(this));
-                    $(this).closest('tr').find('.agent').focus().select();
-                    break;
-
-            }
-        }
-    });
-
-    $(document).on('click', '.fcr_details_add_button', function () {
-        dataInsertUsingAjax($(this));
-    });
-
-
-
-    $('.mortalityPes, .totalBirds').on('keypress keyup blur',function () {
-        var mortalityPes = $('.mortalityPes').val();
-        var total_birds= $('.totalBirds').val();
+    $('.fcrReportDetails .mortalityPes, .fcrReportDetails .totalBirds').on('keypress keyup blur',function () {
+        var parentElement = $(this).closest('tr');
+        var mortalityPes = parentElement.find('.mortalityPes').val();
+        var total_birds= parentElement.find('.totalBirds').val();
         if(mortalityPes!=='' && total_birds!=='' && total_birds>0){
             var calculateValue = (parseFloat(mortalityPes)*100)/parseFloat(total_birds);
-            $('.mortalityPercent').text(parseFloat(calculateValue).toFixed(2));
+            parentElement.find('.mortalityPercent').text(parseFloat(calculateValue).toFixed(2));
         }
 
     });
@@ -209,12 +117,11 @@ function formCommonProcess() {
 
 }
 
-
-function dataInsertUsingAjax(element) {
+function dataInsertFcrUsingAjax(element) {
     var fcrId = $('.fcr_id').val();
     var parentElement = element.closest('tr');
     var agent=parentElement.find('.agent').val();
-    var hatchingDate=parentElement.find('.hatchingDate').val();
+    var hatchingDate=parentElement.find('.hatching_date').val();
     var totalBirds=parentElement.find('.totalBirds').val();
     var ageDays=parentElement.find('.ageDays').val();
     var mortalityPes=parentElement.find('.mortalityPes').val();
@@ -229,7 +136,7 @@ function dataInsertUsingAjax(element) {
     var batchNo=parentElement.find('.batchNo').val();
     var remarks=parentElement.find('.remarks').val();
 
-    if(agent===''){
+    if(fcrId==='' || hatchingDate ==='' || typeof hatchingDate === "undefined"){
         return false;
     }
 
@@ -256,13 +163,17 @@ function dataInsertUsingAjax(element) {
         dataType : 'json',
         success: function(response){
             if(response.status===200){
+                parentElement.find(':input').val('');
+                parentElement.find('.mortalityPercent').text('');
+                parentElement.find('.perBird').text('');
+                parentElement.find('.withoutMortality').text('');
+                parentElement.find('.withMortality').text('');
                 var refreshUrl = Routing.generate('fcr_details_refresh',{'id':fcrId});
                 $("#fcrReportDetails tbody").load(refreshUrl);
             }
         }
     });
 }
-
 
 $('.datePicker').datepicker({
     changeMonth: true,
