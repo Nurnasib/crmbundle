@@ -21,10 +21,11 @@
                 <div class="card-header">
                     <h5>{{ 'Manage Daily Activies'|trans }}</h5>
                     <div class="card-header-right">
-                        <div class="btn-group btn-group-sm" role="group" aria-label="Button group with nested dropdown">
-                            {#<a href="{{ path('kpi_markchart_new') }}" class="btn btn-sm  green-bg white-font"><i class="fas fa-plus"></i>{{ 'Add New'|trans }}</a>#}
-                            {#<a href="{{ path('kpi_markchart') }}" class="btn btn-sm gray-bg white-font"><i class="fa fa-th-list"></i>{{ 'KPI Mark Chart'|trans }}</a>#}
-                        </div>
+                        {% if app.user.serviceMode is not empty and app.user.serviceMode.slug =='sales-marketing' %}
+                            <div class="btn-group btn-group-sm" role="group" aria-label="Button group with nested dropdown">
+                                <a style="margin-right: 5px" class="btn btn-primary btn-sm" data-action='{{ path('daily_chick_price',{'location':entity.location.id}) }}' href='?process=postView_daily_chick_price_report&report={{ '' }}&check=show#modal' id='postView_daily_chick_price_report' >{{ 'Daily Chick Price Report' }}</a>
+                            </div>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -74,7 +75,7 @@
                                     </div>
                                 </div>
                                 <div class="clearfix"></div>
-
+                                {% if app.user.serviceMode is not empty and app.user.serviceMode.slug !='sales-marketing' %}
                                 <div class="card-header grey-bg inner-header">
                                     <h5>Farmer  Information</h5>
                                     <div class="card-header-right">
@@ -144,8 +145,10 @@
                                     <div class="clearfix"></div>
                                 </div>
                                 {#end#}
-
                                 <div class="clearfix"></div>
+
+                                {% endif %}
+
                                 <div class="card-header grey-bg inner-header">
                                     <h5>Agent Information</h5>
                                 </div>
@@ -583,4 +586,5 @@
     <script type="application/javascript" src="{{ asset('bundles/terminalbdcrm/js/crm/fcr.js') }}"></script>
     <script type="application/javascript" src="{{ asset('bundles/terminalbdcrm/js/crm/cattle-performance.js') }}"></script>
     <script type="application/javascript" src="{{ asset('bundles/terminalbdcrm/js/crm/layer-performance.js') }}"></script>
+    <script type="application/javascript" src="{{ asset('bundles/terminalbdcrm/js/crm/daily-chick-price.js') }}"></script>
 {% endblock  %}

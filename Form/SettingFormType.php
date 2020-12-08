@@ -75,6 +75,7 @@ class SettingFormType extends AbstractType
                     'Feed Mill'=>'FEED_MILL',
                     'Fish Name'=>'FISH_NAME',
                     'Color'=>'COLOR',
+                    'Chick Type'=>'CHICK_TYPE',
                 ],
             ])
 

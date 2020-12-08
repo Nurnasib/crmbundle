@@ -380,5 +380,23 @@ class ChickLifeCycleController extends AbstractController
         ]);
     }
 
+    /**
+     * @param ChickLifeCycle $chickLifeCycle
+     * @Route("/{id}/report/excel", methods={"GET"}, name="crm_chick_report_detail_excel")
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_AGM')")
+     */
+    public function reportExcel( ChickLifeCycle $chickLifeCycle): Response
+    {
+        $html = $this->renderView('@TerminalbdCrm/chickLifecycle/report/report-excel.html.twig',['chickLifeCycle' => $chickLifeCycle]);
+
+        $file=$chickLifeCycle->getReport()->getSlug().'_'.time().".xls";
+        $test="$html";
+        header("Content-Type:   application/vnd.ms-excel; charset=utf-8");
+//        header("Content-type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        header("Content-Disposition: attachment; filename=$file");
+        echo $test;die;
+
+    }
+
 
 }

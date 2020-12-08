@@ -2,7 +2,18 @@
 
 {% block body %}
     <div class="pcoded-inner-content">
-
+            <div class="card">
+                <div class="card-header">
+                    <h5>{{chickLifeCycle.report.name}}</h5>
+                    <div class="card-header-right">
+                        <div class="btn-group btn-group-sm" role="group" aria-label="Button group with nested dropdown">
+                            <a target="_blank" href="{{ path('crm_chick_report_detail_pdf',{'id':chickLifeCycle.id}) }}" class="btn btn-primary btn-sm"><i class="fa fa-file-pdf"></i> PDF</a>
+                            <a target="_blank" href="{{ path('crm_chick_report_detail_excel',{'id':chickLifeCycle.id}) }}" class="btn btn-primary btn-sm"><i class="fa fa-file-excel"></i> Excel</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="clearfix"></div>
+            </div>
         <!-- [ Main Content ] start -->
         <div class="portlet box ">
 

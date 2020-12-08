@@ -18,7 +18,7 @@
         <div class="row">
             <div class="card">
                 <div class="card-header">
-                    <h5>{{ 'Chick Life Cycle'|trans }}</h5>
+                    <h5>{{ 'Daily Chick Price'|trans }}</h5>
                 </div>
             </div>
         </div>
@@ -30,26 +30,12 @@
                         <thead class="thead-dark">
                         <tr>
 
-                            <th scope="col" rowspan="2">S/N</th>
-                            <th scope="col" rowspan="2">Employee Name</th>
-                            <th scope="col" rowspan="2">Agent Name</th>
-                            {#<th scope="col" rowspan="2">Address</th>#}
-                            <th scope="col" colspan="3">Farmer</th>
+                            <th scope="col">S/N</th>
+                            <th scope="col">Employee Name</th>
+                            <th scope="col">Reporting Date</th>
+                            <th scope="col">Location</th>
+                            <th class=" text-center" scope="col"><i class="feather icon-settings"></i></th>
 
-                            {#<th scope="col" rowspan="2">Bird Type</th>#}
-                            <th scope="col" rowspan="2">H.Date</th>
-                            <th scope="col" rowspan="2">Visiting Week</th>
-                            <th scope="col" rowspan="2">Hatchery</th>
-                            <th scope="col" rowspan="2">Breed</th>
-                            <th scope="col" rowspan="2">Feed</th>
-                            <th scope="col" rowspan="2">Remarks</th>
-                            <th class=" text-center" scope="col" rowspan="2"><i class="feather icon-settings"></i></th>
-
-                        </tr>
-                        <tr>
-                            <th scope="col">Name</th>
-                            <th scope="col">Address</th>
-                            <th scope="col">Mobile</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -58,24 +44,9 @@
                             <tr>
                                 <td>{{ loop.index }}</td>
                                 <td>{{ entity.employee.name|default('') }}</td>
-                                <td>{{ entity.agent.name|default('') }}</td>
-                                {#<td>{{ entity.agent.address|default('') }}</td>#}
-
-                                <td>{{ entity.customer.name|default('') }}</td>
-                                {#farmer address#}
-                                <td>{{ entity.customer.address|default('') }}</td>
-
-                                <td >{{ entity.customer.mobile|default('') }}</td>
-
-                                {#<td>{{ entity.birdMode }}</td>#}
-                                <td>{{ entity.hatchingDate|date('d-m-Y') }}</td>
                                 <td>{{ entity.reportingDate|date('d-m-Y') }}</td>
-                                <td>{{ entity.hatchery|default('') }}</td>
-                                <td>{{ entity.breed|default('') }}</td>
-                                <td>{{ entity.feed|default('') }}</td>
-                                <td>{{ entity.remarks|default('') }}</td>
+                                <td>{{ entity.location.name|default('') }}</td>
                                 <td>
-                                    <a target="_blank" href="{{ path('crm_chick_report_detail',{'id':entity.id}) }}" class="btn btn-primary btn-sm">Report</a>
                                 </td>
 
                             </tr>

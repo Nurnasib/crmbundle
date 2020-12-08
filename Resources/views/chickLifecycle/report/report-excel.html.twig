@@ -1,0 +1,104 @@
+<table class="header-title" width="1" cellspacing="0" cellpadding="0">
+    <thead>
+    <tr>
+        <td colspan="17" align="center">{{ 'NOURISH POULTRY AND HATCHERY LTD'|trans }}</td>
+    </tr>
+    <tr>
+        <td colspan="17" align="center">{{ 'UTTARA, DHAKA.'|trans }}</td>
+    </tr>
+    <tr>
+        <td colspan="17" align="center">{{chickLifeCycle.report.name}} {{ 'Report'|trans }}</td>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td colspan="6">
+            {{ 'Farmer Name'|trans }}: {{ chickLifeCycle.customer.name }}
+        </td>
+        <td colspan="5">
+            {{ 'Address'|trans }}: {{ chickLifeCycle.customer.address }}
+        </td>
+        <td colspan="6">
+            {{ 'Agent'|trans }}: {{ chickLifeCycle.agent.name }}
+        </td>
+    </tr>
+    <tr>
+        <td colspan="6">
+            {{ 'Reporting Date'|trans }}: {{ chickLifeCycle.reportingDate?chickLifeCycle.reportingDate|date("d-m-Y"):'' }}
+        </td>
+        <td colspan="5"></td>
+        <td colspan="6">
+            {{ 'Hatching Date'|trans }}: {{ chickLifeCycle.hatchingDate?chickLifeCycle.hatchingDate|date("d-m-Y"):'' }}
+        </td>
+    </tr>
+    </tbody>
+</table>
+<table>
+    <thead class="thead-dark">
+    <tr>
+
+        <th scope="col" rowspan="2">S/N</th>
+        {#<th scope="col" rowspan="2">Bird Type</th>#}
+        <th style="width: 70px" scope="col" rowspan="2">Visiting Week</th>
+        <th scope="col" rowspan="2">Total Birds</th>
+        <th scope="col" rowspan="2">Age(Day)</th>
+        <th scope="col" colspan="2">Mortality</th>
+        <th scope="col" colspan="2">Weight</th>
+        <th scope="col" colspan="3">Feed Consumption</th>
+        <th scope="col" colspan="2">FCR</th>
+        <th scope="col" rowspan="2">Feed Type</th>
+        <th style="width: 80px" scope="col" rowspan="2">Pro. Date</th>
+        <th scope="col" rowspan="2">Batch No.</th>
+        <th scope="col" rowspan="2">Remarks</th>
+
+    </tr>
+    <tr>
+
+        <th scope="col">Pes</th>
+        <th scope="col">%</th>
+
+        <th scope="col">Standard</th>
+        <th scope="col">Achieved</th>
+
+        <th scope="col">Total (kg)</th>
+        <th scope="col">Per bird (gm)</th>
+        <th scope="col">Standard</th>
+
+        <th scope="col">Without  M</th>
+        <th scope="col">With M</th>
+
+    </tr>
+    </thead>
+    <tbody>
+
+    {% if chickLifeCycle.crmChickLifeCycleDetails is not empty %}
+
+        {% for index, detail in chickLifeCycle.crmChickLifeCycleDetails %}
+            <tr>
+                <td>{{ index+1 }} </td>
+                <td>
+                    {{ detail.visitingWeek }}
+                </td>
+                <td>{{ detail.totalBirds }}</td>
+                <td>{{ detail.ageDays }}</td>
+                <td>{{ detail.mortalityPes }}</td>
+                <td class="mortalityPercent">{{ detail.mortalityPercent }} </td>
+                <td class="weightStandard">{{ detail.weightStandard }}</td>
+                <td>{{ detail.weightAchieved }}</td>
+                <td>{{ detail.feedTotalKg }}</td>
+                <td class="perBird">{{ detail.perBird }}</td>
+                <td class="feedStandard">{{ detail.feedStandard }}</td>
+                <td class="withoutMortality">{{ detail.withoutMortality }}</td>
+                <td class="withMortality">{{ detail.withMortality }}</td>
+                <td>{{ detail.feedType|default('') }}</td>
+                <td>{{ detail.proDate?detail.proDate|date("d-m-Y"):'' }}</td>
+                <td>{{ detail.batchNo|default('') }}</td>
+                <td>{{ detail.remarks|default('') }}</td>
+            </tr>
+
+        {% endfor %}
+
+    {% endif %}
+
+    </tbody>
+</table>
