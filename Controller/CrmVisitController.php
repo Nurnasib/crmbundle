@@ -163,18 +163,29 @@ class CrmVisitController extends AbstractController
             $entity->setAgent($entity->getCrmCustomer()->getAgent());
         }
 
+        if($request->request->get('process')=='agent' && $request->request->get('agent')!=''){
+            $agent = $this->getDoctrine()->getRepository(Agent::class)->find($request->request->get('agent'));
+            $entity->setAgent($agent?$agent:null);
+        }
+
         $purpose = $this->getDoctrine()->getRepository(Setting::class)->find($request->request->get('purpose'));
 
-        $farmer_firm_type = $this->getDoctrine()->getRepository(Setting::class)->find($request->request->get('farmer_firm_type'));
-        $farmer_report = $this->getDoctrine()->getRepository(Setting::class)->find($request->request->get('farmer_report'));
+        if($request->request->get('farmer_firm_type')!=''){
+            $farmer_firm_type = $this->getDoctrine()->getRepository(Setting::class)->find($request->request->get('farmer_firm_type'));
+            $entity->setFirmType($farmer_firm_type?$farmer_firm_type:null);
+        }
+
+        if($request->request->get('farmer_report')!=''){
+            $farmer_report = $this->getDoctrine()->getRepository(Setting::class)->find($request->request->get('farmer_report'));
+            $entity->setReport($farmer_report?$farmer_report:null);
+        }
 
         $entity->setCrmVisit($crmVisit?$crmVisit:null);
         $entity->setPurpose($purpose?$purpose:null);
-        $entity->setFarmCapacity($request->request->get('farmer_capacity')?$request->request->get('farmer_capacity'):null);
+        $entity->setFarmCapacity($request->request->get('farmer_capacity')!=''?$request->request->get('farmer_capacity'):null);
+
         $entity->setComments($request->request->get('comments'));
         $entity->setProcess($request->request->get('process'));
-        $entity->setFirmType($farmer_firm_type?$farmer_firm_type:null);
-        $entity->setReport($farmer_report?$farmer_report:null);
         $em->persist($entity);
         $em->flush();
         $this->addFlash('success', 'post.added_successfully');

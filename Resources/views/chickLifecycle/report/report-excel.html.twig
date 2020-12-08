@@ -90,7 +90,7 @@
                 <td class="feedStandard">{{ detail.feedStandard }}</td>
                 <td class="withoutMortality">{{ detail.withoutMortality }}</td>
                 <td class="withMortality">{{ detail.withMortality }}</td>
-                <td>{{ detail.feedType|default('') }}</td>
+                <td>{{ detail.feedType.name|default('') }}</td>
                 <td>{{ detail.proDate?detail.proDate|date("d-m-Y"):'' }}</td>
                 <td>{{ detail.batchNo|default('') }}</td>
                 <td>{{ detail.remarks|default('') }}</td>

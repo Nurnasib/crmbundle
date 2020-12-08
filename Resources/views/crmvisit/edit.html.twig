@@ -456,11 +456,21 @@
                             </div>
                             <div class="form-group">
                                 <label for="message-text" class="col-form-label col-md-4">Location:</label>
-                                <select name="location" id="location" class="form-control">
+                                {% if entity.location is not empty%}
+                                    <p class="form-control">{{ entity.location.name }}</p>
+                                    <input type="hidden" name="location" class="location" value="{{ entity.location.id }}">
+                                {% else %}
+                                    <select name="location" class="form-control location" {{ entity.location is not empty and entity.location.id>0?'disabled':'' }}>
+                                        {% for location in entity.employee.upozila %}
+                                            <option value="{{ location.id }}" {{ entity.location is not empty and location.id==entity.location.id?'selected="selected"':'' }}>{{ location.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                {% endif %}
+                                {#<select name="location" id="location" class="form-control">
                                     {% for location in entity.employee.upozila %}
                                         <option value="{{ location.id }}">{{ location.name }}</option>
                                     {% endfor %}
-                                </select>
+                                </select>#}
                             </div>
                             <div class="form-group">
                                 <label for="message-text" class="col-form-label col-md-4">Address:</label>
@@ -468,7 +478,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="message-text" class="col-form-label col-md-4">Purpose</label>
-                                <select name="purpose" id="" class="form-control">
+                                <select name="purpose" class="form-control">
                                     <option value="">Select Purpose</option>
                                     {% if otherAgentPurposes is not empty %}
                                     {% for purpose in otherAgentPurposes %}
@@ -526,11 +536,17 @@
                             </div>
                             <div class="form-group">
                                 <label for="message-text" class="col-form-label col-md-4">Location:</label>
-                                <select name="location" id="location" class="form-control">
-                                    {% for location in entity.employee.upozila %}
-                                        <option value="{{ location.id }}">{{ location.name }}</option>
-                                    {% endfor %}
-                                </select>
+                                {% if entity.location is not empty%}
+                                    <p class="form-control">{{ entity.location.name }}</p>
+                                    <input type="hidden" name="location" class="location" value="{{ entity.location.id }}">
+                                {% else %}
+                                    <select name="location" class="form-control location" {{ entity.location is not empty and entity.location.id>0?'disabled':'' }}>
+                                        {% for location in entity.employee.upozila %}
+                                            <option value="{{ location.id }}" {{ entity.location is not empty and location.id==entity.location.id?'selected="selected"':'' }}>{{ location.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                {% endif %}
+
                             </div>
                             <div class="form-group">
                                 <label for="message-text" class="col-form-label col-md-4">Address:</label>
