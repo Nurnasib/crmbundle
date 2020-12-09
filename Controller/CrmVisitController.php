@@ -87,6 +87,7 @@ class CrmVisitController extends AbstractController
     public function edit(Request $request, CrmVisit $entity): Response
     {
         $data = $request->request->all();
+        $reports = $this->getDoctrine()->getRepository(Setting::class)->findBy(['settingType'=>'FARMER_REPORT','slug'=>['fcr-after-sale-boiler','fcr-after-sale-sonali']]);
 
         $form = $this->createForm(CrmVisitFormType::class, $entity,array('user' => $this->getUser()))
             ->add('Save', SubmitType::class);
@@ -125,6 +126,7 @@ class CrmVisitController extends AbstractController
             'subAgents'=>$subAgents,
             'otherAgents'=>$otherAgents,
             'form' => $form->createView(),
+            'reports' => $reports,
         ]);
     }
 
