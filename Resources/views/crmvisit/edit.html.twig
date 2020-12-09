@@ -34,6 +34,9 @@
                                 <a style="margin-right: 5px" class="btn btn-primary btn-sm" data-action='{{ path('daily_chick_price',{'location':entity.location.id}) }}' href='?process=postView_daily_chick_price_report&report={{ '' }}&check=show#modal' id='postView_daily_chick_price_report' >{{ 'Daily Chick Price Report' }}</a>
                             </div>
                         {% endif %}
+                        <div class="btn-group btn-group-sm" role="group" aria-label="Button group with nested dropdown">
+                            <a style="margin-right: 5px" class="btn btn-primary btn-sm" data-action='{{ path('crm_expense_new',{'crmVisit':entity.id, 'location':entity.location.id}) }}' href='?process=postView_crm_expense_new&report={{ '' }}&check=show#modal' id='postView_crm_expense_new' >{{ 'Expense' }}</a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -611,4 +614,5 @@
     <script type="application/javascript" src="{{ asset('bundles/terminalbdcrm/js/crm/cattle-performance.js') }}"></script>
     <script type="application/javascript" src="{{ asset('bundles/terminalbdcrm/js/crm/layer-performance.js') }}"></script>
     <script type="application/javascript" src="{{ asset('bundles/terminalbdcrm/js/crm/daily-chick-price.js') }}"></script>
+    <script type="application/javascript" src="{{ asset('bundles/terminalbdcrm/js/crm/expense.js') }}"></script>
 {% endblock  %}

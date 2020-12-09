@@ -106,16 +106,6 @@ class ExpenseFormType extends AbstractType
                 'choice_label' => 'name',
                 'placeholder' => 'Choose your Purpose',
             ])
-            ->add('visitingArea', EntityType::class, [
-                'class' => Location::class,
-                'required' => true,
-                'attr'=>['class'=>'span12'],
-                'choice_label' => 'name',
-                'placeholder' => 'Choose your Area',
-            ])
-
-
-
         ;
     }
 
