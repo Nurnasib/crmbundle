@@ -1,6 +1,6 @@
 
 $(document).on('click', '.details_add_button', function () {
-    layerLifeCycleDetailDataInsertUsingAjax($(this));
+    layerPerformanceDetailDataInsertUsingAjax($(this));
 });
 
 $(document).on('keypress','.layer_performance_details input[type=text], .layer_performance_details input[type=number], .layer_performance_details select',function (e) {
@@ -27,7 +27,7 @@ $(document).on('click',".remove", function (event) {
 });
 */
 
-function layerLifeCycleDetailDataInsertUsingAjax(element) {
+function layerPerformanceDetailDataInsertUsingAjax(element) {
     var layer_performance_id = $('.layer_performance_id').val();
     var parentElement = element.closest('tr');
     var totalBirds=parentElement.find('.totalBirds').val();
