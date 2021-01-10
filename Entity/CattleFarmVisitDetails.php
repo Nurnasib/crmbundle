@@ -87,18 +87,18 @@ class CattleFarmVisitDetails
     private $conceptionRate=0;
 
     /**
-     * @var float
-     * @Orm\Column(name="fodder_green_grass_kg", type="float")
+     * @var string
+     * @Orm\Column(name="fodder_green_grass_kg", type="string", nullable=true)
      */
 
-    private $fodderGreenGrassKg=0;
+    private $fodderGreenGrassKg;
 
     /**
-     * @var float
-     * @Orm\Column(name="fodder_straw_kg", type="float")
+     * @var string
+     * @Orm\Column(name="fodder_straw_kg", type="string", nullable=true)
      */
 
-    private $fodderStrawKg=0;
+    private $fodderStrawKg;
 
     /**
      * @var string
@@ -303,7 +303,7 @@ class CattleFarmVisitDetails
     }
 
     /**
-     * @return float
+     * @return string
      */
     public function getFodderGreenGrassKg()
     {
@@ -311,15 +311,15 @@ class CattleFarmVisitDetails
     }
 
     /**
-     * @param float $fodderGreenGrassKg
+     * @param string $fodderGreenGrassKg
      */
-    public function setFodderGreenGrassKg($fodderGreenGrassKg)
+    public function setFodderGreenGrassKg(string $fodderGreenGrassKg): void
     {
         $this->fodderGreenGrassKg = $fodderGreenGrassKg;
     }
 
     /**
-     * @return float
+     * @return string
      */
     public function getFodderStrawKg()
     {
@@ -327,9 +327,9 @@ class CattleFarmVisitDetails
     }
 
     /**
-     * @param float $fodderStrawKg
+     * @param string $fodderStrawKg
      */
-    public function setFodderStrawKg($fodderStrawKg)
+    public function setFodderStrawKg(string $fodderStrawKg): void
     {
         $this->fodderStrawKg = $fodderStrawKg;
     }

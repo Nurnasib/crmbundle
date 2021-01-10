@@ -88,20 +88,24 @@ class CattleFarmVisitDetailsFormType extends AbstractType
                 'label' => 'label.conceptionRate',
                 'required' => false,
             ])
-            ->add('fodderGreenGrassKg', NumberType::class, [
-                'attr' => ['autofocus' => true, 'class'=>'fodderGreenGrassKg','min'=>0],
-                'label' => 'label.fodderGreenGrassKg',
-                'required' => false,
+            ->add('fodderGreenGrassKg', ChoiceType::class, [
+                'choices'  => [
+                    'Yes' => 'Yes',
+                    'No' => 'No',
+                ],
             ])
-            ->add('fodderStrawKg', NumberType::class, [
-                'attr' => ['autofocus' => true, 'class'=>'fodderStrawKg','min'=>0],
-                'label' => 'label.fodderStrawKg',
-                'required' => false,
+            ->add('fodderStrawKg',ChoiceType::class, [
+                'choices'  => [
+                    'Yes' => 'Yes',
+                    'No' => 'No',
+                ],
             ])
-            ->add('typeOfConcentrateFeed', TextType::class, [
-                'attr' => ['autofocus' => true, 'class'=>'batchNo'],
-                'label' => 'label.remarks',
-                'required' => false,
+            ->add('typeOfConcentrateFeed', ChoiceType::class, [
+                'choices'  => [
+                    'Ready Feed' => 'Ready Feed',
+                    'Conventional Feed' => 'Conventional Feed',
+                    'Ready & conventional Mixed' => 'Ready & conventional Mixed',
+                ],
             ])
             ->add('marketPriceMilkPerLiter', NumberType::class, [
                 'attr' => ['autofocus' => true, 'class'=>'marketPriceMilkPerLiter','min'=>0],

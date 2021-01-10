@@ -22,7 +22,9 @@
                     </div>
                     <div class="col-md-4">
                         <p style="color: #000000">{{ 'Reporting Month'|trans }}: {{ entity.reportingMonth|date("F, Y") }}</p>
+
                     </div>
+
                 </div>
                 <div class="card-body-inner">
                     <div class="">
@@ -66,6 +68,7 @@
                             </tr>
                             <tr>
                                 <td colspan="2">
+                                    <input type="hidden" class="customerId" value="{{ customer }}">
                                     <div class="date_section">
                                         {{ form_widget(form.hatching_date) }}
                                     </div>

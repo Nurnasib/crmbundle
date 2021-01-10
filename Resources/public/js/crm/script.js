@@ -119,11 +119,17 @@ function formCommonProcess() {
     });
 
 
-    $('.chickLifeCycleDetails tbody .form-control').keypress(function (e) {
+    $('.chickLifeCycleDetails_section').on('keypress','.chickLifeCycleDetails input[type=text], .chickLifeCycleDetails input[type=number], .chickLifeCycleDetails select', function (e) {
         if (e.which === 13) {
+            e.preventDefault();
+            var $canfocus = $('.chickLifeCycleDetails :focusable');
+            var index = $canfocus.index(this) + 1;
+            if (index >= $canfocus.length){
+                index = 0;
+            }
+            $canfocus.eq(index).focus().select();
+
             dataInsertChickUsingAjax($(this));
-            var index = $('.chickLifeCycleDetails tbody .form-control').index(this) + 1;
-            $('.chickLifeCycleDetails tbody .form-control').eq(index).focus().select();
         }
     });
 
@@ -149,11 +155,17 @@ function formCommonProcess() {
     });
 
 
-    $('.layerLifeCycleDetails .form-control').keypress(function (e) {
+    $('.layerLifeCycleDetails_section').on('keypress' , '.layerLifeCycleDetails input[type=text], .layerLifeCycleDetails input[type=number], .layerLifeCycleDetails select', function (e) {
         if (e.which === 13) {
+            e.preventDefault();
+            var $canfocus = $('.layerLifeCycleDetails :focusable');
+            var index = $canfocus.index(this) + 1;
+            if (index >= $canfocus.length){
+                index = 0;
+            }
+            $canfocus.eq(index).focus().select();
+
             layerLifeCycleDetailDataInsertUsingAjax($(this));
-            var index = $('.layerLifeCycleDetails .form-control').index(this) + 1;
-            $('.layerLifeCycleDetails .form-control').eq(index).focus().select();
         }
     });
 
@@ -211,15 +223,11 @@ function dataInsertChickUsingAjax(element) {
     var parentElement = element.closest('tr');
     var crmChickLifeCycleDetailId=parentElement.find('.crmChickLifeCycleDetails').val();
     var reportingDate=parentElement.find('.reportingDate').val();
-    var totalBirds=parentElement.find('.totalBirds').val();
+    // var totalBirds=parentElement.find('.totalBirds').val();
     var ageDays=parentElement.find('.ageDays').val();
     var mortalityPes=parentElement.find('.mortalityPes').val();
     var weightAchieved=parentElement.find('.weightAchieved').val();
     var feedTotalKg=parentElement.find('.feedTotalKg').val();
-
-    var hatchery=parentElement.find('.hatchery').val();
-    var breed=parentElement.find('.breed').val();
-    var feed=parentElement.find('.feed').val();
     var feedType=parentElement.find('.feedType').val();
 
     var proDate=parentElement.find('.proDate').val();
@@ -235,14 +243,11 @@ function dataInsertChickUsingAjax(element) {
         type   : 'post',
         data   : {
             'reportingDate':reportingDate,
-            'totalBirds':totalBirds,
+            // 'totalBirds':totalBirds,
             'ageDays':ageDays,
             'mortalityPes':mortalityPes,
             'weightAchieved':weightAchieved,
             'feedTotalKg':feedTotalKg,
-            'hatchery':hatchery,
-            'breed':breed,
-            'feed':feed,
             'feedType':feedType,
             'proDate':proDate,
             'batchNo':batchNo,
@@ -316,7 +321,7 @@ function formSubmitProcessForCattleLifeCycle() {
             success: function(response){
                 $("#process-msg").show();
                 $(".alert-success").html(response);
-                $(".form-submit").html("SaveAndCreate").prop("disabled", false);
+                $(".form-submit").html("Complete").prop("disabled", false);
                 $('form#cattle_life_cycle_form')[0].reset();
                 // location.reload();
                 // setTimeout( explode, 2000);
@@ -345,7 +350,7 @@ function formSubmitProcessForFishLifeCycle() {
             success: function(response){
                 $("#process-msg").show();
                 $(".alert-success").html(response);
-                $(".form-submit").html("SaveAndCreate").prop("disabled", false);
+                $(".form-submit").html("Complete").prop("disabled", false);
                 $('form#fish_life_cycle_form')[0].reset();
                 // location.reload();
                 // setTimeout( explode, 2000);
@@ -420,7 +425,7 @@ function formSubmitProcess() {
                 success: function(response){
                     $("#process-msg").show();
                     $(".alert-success").html(response);
-                    $(".form-submit").html("SaveAndCreate").prop("disabled", false);
+                    $(".form-submit").html("Complete").prop("disabled", false);
                     $('form#chick_life_cycle_form')[0].reset();
                     // location.reload();
                     // setTimeout( explode, 2000);
@@ -480,7 +485,7 @@ function formEditSubmitProcess() {
 }
 
 
-$('.chickLifeCycleDetails .mortalityPes, .chickLifeCycleDetails .totalBirds').on('keypress keyup blur',function () {
+/*$('.chickLifeCycleDetails .mortalityPes, .chickLifeCycleDetails .totalBirds').on('keypress keyup blur',function () {
     var parentElement = $(this).closest('tr');
     var mortalityPes = parentElement.find('.mortalityPes').val();
     var totalbirds= parentElement.find('.totalBirds').val();
@@ -490,10 +495,10 @@ $('.chickLifeCycleDetails .mortalityPes, .chickLifeCycleDetails .totalBirds').on
         parentElement.find('.mortality_percent').text(calculateValue);
     }
 
-});
+});*/
 //feed per bird
 
-$('.feedTotalkg, .totalBirds').on('keypress keyup blur',function () {
+/*$('.feedTotalkg, .totalBirds').on('keypress keyup blur',function () {
     var totalbirds= $('.totalBirds').val();
     var feedTotalkg=$('.feedTotalkg').val();
     if(feedTotalkg != '' && totalbirds!=''){
@@ -501,10 +506,10 @@ $('.feedTotalkg, .totalBirds').on('keypress keyup blur',function () {
         $('.perBird').val(calculation);
         $('.perBird').text(calculation);
     }
-});
+});*/
 //fcr without mortality
 
-$('.feedTotalkg, .totalBirds, .weightAchieved').on('keypress keyup blur',function () {
+/*$('.feedTotalkg, .totalBirds, .weightAchieved').on('keypress keyup blur',function () {
     var totalbirds= $('.totalBirds').val();
     var feedTotalkg=$('.feedTotalkg').val();
     var weightAchieved=$('.weightAchieved').val();
@@ -515,11 +520,11 @@ $('.feedTotalkg, .totalBirds, .weightAchieved').on('keypress keyup blur',functio
         $('.withoutMortality').val(calculation);
         $('.withoutMortality').text(calculation);
     }
-});
+});*/
 
 //fcr with mortality
 
-$('.feedTotalkg, .totalBirds,.mortality_pes,.weightAchieved').on('keypress keyup blur',function () {
+/*$('.feedTotalkg, .totalBirds,.mortality_pes,.weightAchieved').on('keypress keyup blur',function () {
     var totalbirds= $('.totalBirds').val();
     var feedTotalkg=$('.feedTotalkg').val();
     var weightAchieved=$('.weightAchieved').val();
@@ -533,7 +538,7 @@ $('.feedTotalkg, .totalBirds,.mortality_pes,.weightAchieved').on('keypress keyup
         $('.withMortality').val(calculation);
         $('.withMortality').text(calculation);
     }
-});
+});*/
 
 
 var count = 0;

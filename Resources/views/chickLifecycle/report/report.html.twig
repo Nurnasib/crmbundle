@@ -89,6 +89,7 @@
     </div>
 {% endblock %}
 {% block cssBlock %}
+    {{ parent() }}
     <link rel="stylesheet" href="{{ asset('assets/module/css/app.css') }}">
 {% endblock  %}
 {% block javascripts %}
@@ -99,8 +100,9 @@
     {{ parent() }}
     $('#datatable').DataTable( {
     "pageLength": 25,
+    "order": [[ 2, "desc" ]],
     'columnDefs': [ {
-    'targets': [0,4,5,6,23],
+    'targets': [0,4,5,6,12],
     'orderable': false
     }]
     });

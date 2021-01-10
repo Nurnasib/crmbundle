@@ -31,7 +31,31 @@
                             </div>
                         </div>
                     </div>
-
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="col-md-4 control-label" for="">{{ 'Farmer Mobile'|trans }}</label>
+                            <div class="col-md-6">
+                                <span class="not-blank"></span>
+                                <p style="text-align: left; border: none!important; margin: 0" class="form-control">{{ crmCustomer.mobile }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="col-md-4 control-label" for="">{{ 'Total Birds'|trans }}</label>
+                            <div class="col-md-8">
+                                <span class="not-blank"> {{ 'Required'|trans }}</span>
+                                <div class="date_section">
+                                    {{ form_widget(form.total_birds,{'type':'number'}) }}
+                                    {{ form_errors(form.total_birds) }}
+                                    {#<input autocomplete="off" type="text" name="hatching_date" class="form-control datePicker" value="{{ entity.hatchingDate?entity.hatchingDate|date("d-m-Y"):'' }}">#}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4"></div>
                     <div class="col-md-4">
                         <div class="form-group">
                             <label class="col-md-4 control-label" for="">{{ 'Hatchery Date'|trans }}</label>
@@ -41,6 +65,37 @@
                                     {{ form_widget(form.hatchery_date) }}
                                 </div>
                                 {{ form_errors(form.hatchery_date) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            {{ form_label(form.hatchery, 'Hatchery'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
+                            <div class="col-md-8">
+                                {#<span class="not-blank"> {{ 'Required'|trans }}</span>#}
+                                {{ form_widget(form.hatchery) }}
+                                {{ form_errors(form.hatchery) }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            {{ form_label(form.breed, 'Breed'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
+                            <div class="col-md-8">
+                                {#<span class="not-blank"> {{ 'Required'|trans }}</span>#}
+                                {{ form_widget(form.breed) }}
+                                {{ form_errors(form.breed) }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            {{ form_label(form.feed, 'Feed'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
+                            <div class="col-md-8">
+                                {{ form_widget(form.feed) }}
+                                {{ form_errors(form.feed) }}
                             </div>
                         </div>
                     </div>

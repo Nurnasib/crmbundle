@@ -27,7 +27,9 @@ $(document).on('keypress','.cattle_performance_report input[type=text], .cattle_
 function fatteningDataInsertUsingAjax(element) {
     var cattlePerformance_id = $('.cattlePerformance_id').val();
     var parentElement = element.closest('tr');
+    var customerId=parentElement.find('.customerId').val();
     var breed_type=parentElement.find('.breed_type').val();
+    var feed_type=parentElement.find('.feed_type').val();
     var visiting_date=parentElement.find('.visiting_date').val();
     var age_of_cattle_month=parentElement.find('.age_of_cattle_month').val();
     var previous_body_weight=parentElement.find('.previous_body_weight').val();
@@ -49,7 +51,9 @@ function fatteningDataInsertUsingAjax(element) {
         url    : Routing.generate('crm_fattening_performance_detail_report_add',{'id':cattlePerformance_id}),
         type   : 'post',
         data   : {
+            'customerId':customerId,
             'breed_type':breed_type,
+            'feed_type':feed_type,
             'visiting_date':visiting_date,
             'age_of_cattle_month':age_of_cattle_month,
             'previous_body_weight':previous_body_weight,
@@ -68,8 +72,9 @@ function fatteningDataInsertUsingAjax(element) {
             if(response.status===200){
                 var refreshUrl = Routing.generate('crm_cattle_performance_detail_refresh',{'id':cattlePerformance_id});
                 $('body').find("tbody.cattlePerformanceDetailsSection").load(refreshUrl);
-                parentElement.find(':input').val('');
+                parentElement.find(':input').not('.customerId').val('');
                 parentElement.find('select').val('');
+                parentElement.find('.customerId').val(customerId);
             }
         }
     });
@@ -78,7 +83,9 @@ function fatteningDataInsertUsingAjax(element) {
 function dairyDataInsertUsingAjax(element) {
     var cattlePerformance_id = $('.cattlePerformance_id').val();
     var parentElement = element.closest('tr');
+    var customerId=parentElement.find('.customerId').val();
     var breed_type=parentElement.find('.breed_type').val();
+    var feed_type=parentElement.find('.feed_type').val();
     var visiting_date=parentElement.find('.visiting_date').val();
     var age_of_cattle_month=parentElement.find('.age_of_cattle_month').val();
     var present_body_weight=parentElement.find('.present_body_weight').val();
@@ -103,7 +110,9 @@ function dairyDataInsertUsingAjax(element) {
         url    : Routing.generate('crm_dairy_performance_detail_report_add',{'id':cattlePerformance_id}),
         type   : 'post',
         data   : {
+            'customerId':customerId,
             'breed_type':breed_type,
+            'feed_type':feed_type,
             'visiting_date':visiting_date,
             'age_of_cattle_month':age_of_cattle_month,
             'present_body_weight':present_body_weight,
@@ -123,8 +132,9 @@ function dairyDataInsertUsingAjax(element) {
             if(response.status===200){
                 var refreshUrl = Routing.generate('crm_cattle_performance_detail_refresh',{'id':cattlePerformance_id});
                 $('body').find("tbody.cattlePerformanceDetailsSection").load(refreshUrl);
-                parentElement.find(':input').val('');
+                parentElement.find(':input').not('.customerId').val('');
                 parentElement.find('select').val('');
+                // parentElement.find('.customerId').val(customerId);
             }
         }
     });

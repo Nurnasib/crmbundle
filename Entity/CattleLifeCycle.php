@@ -74,6 +74,13 @@ class CattleLifeCycle
     private $breedType;
 
     /**
+     * @var Setting
+     * @ORM\ManyToOne(targetEntity="Setting", inversedBy="crmCattleLifeCycle")
+     * @ORM\JoinColumn(name="feed_type", referencedColumnName="id", onDelete="SET NULL", nullable=true)
+     */
+    private $feedType;
+
+    /**
      * @var string
      *
      * @ORM\Column(name="life_cycle_state", type="string", length=20, nullable=true)
@@ -268,6 +275,22 @@ class CattleLifeCycle
     public function setBreedType($breedType)
     {
         $this->breedType = $breedType;
+    }
+
+    /**
+     * @return Setting
+     */
+    public function getFeedType()
+    {
+        return $this->feedType;
+    }
+
+    /**
+     * @param Setting $feedType
+     */
+    public function setFeedType(Setting $feedType): void
+    {
+        $this->feedType = $feedType;
     }
 
 }

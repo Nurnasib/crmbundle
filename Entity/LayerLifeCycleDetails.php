@@ -43,20 +43,6 @@ class LayerLifeCycleDetails
     /**
      * @var Setting
      * @ORM\ManyToOne(targetEntity="Setting", inversedBy="crmLayerLifeCycleDetails")
-     * @ORM\JoinColumn(name="hatchery_id", referencedColumnName="id", onDelete="SET NULL", nullable=true)
-     */
-    private $hatchery;
-
-    /**
-     * @var Setting
-     * @ORM\ManyToOne(targetEntity="Setting", inversedBy="crmLayerLifeCycleDetails")
-     * @ORM\JoinColumn(name="breed_id", referencedColumnName="id", onDelete="SET NULL", nullable=true)
-     */
-    private $breed;
-
-    /**
-     * @var Setting
-     * @ORM\ManyToOne(targetEntity="Setting", inversedBy="crmLayerLifeCycleDetails")
      * @ORM\JoinColumn(name="feed_mill_id", referencedColumnName="id", onDelete="SET NULL", nullable=true)
      */
     private $feedMill;
@@ -67,12 +53,6 @@ class LayerLifeCycleDetails
      * @ORM\JoinColumn(name="feed_type_id", referencedColumnName="id", onDelete="SET NULL", nullable=true)
      */
     private $feedType;
-
-    /**
-     * @var float
-     * @ORM\Column(name="total_birds", type="float")
-     */
-    private $totalBirds=0;
 
     /**
      * @var \DateTime
@@ -243,15 +223,7 @@ class LayerLifeCycleDetails
      */
     public function getTotalBirds()
     {
-        return $this->totalBirds;
-    }
-
-    /**
-     * @param float $totalBirds
-     */
-    public function setTotalBirds(float $totalBirds): void
-    {
-        $this->totalBirds = $totalBirds;
+        return $this->getCrmLayerLifeCycle()->getTotalBirds();
     }
 
     /**

@@ -89,11 +89,6 @@ class CattleLifeCycleDetailsFormType extends AbstractType
                 'label' => 'label.dm_of_fodder_straw_kg',
                 'required'=>false
             ])
-            ->add('name_of_ready_feed', TextType::class, [
-                'attr' => ['autofocus' => true],
-                'label' => 'label.remarks',
-                'required' => false,
-            ])
             ->add('remarks', TextType::class, [
                 'attr' => ['autofocus' => true],
                 'label' => 'label.remarks',

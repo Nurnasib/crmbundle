@@ -25,9 +25,9 @@ use Terminalbd\CrmBundle\Entity\Fcr;
 class FcrRepository extends EntityRepository
 {
 
-    public function getFcrReportByReportingDateAndFeedType($data, $report, $customer, $employee)
+    public function getFcrReportByReportingDateAndFeedType($data, $report, $employee)
     {
-        if(isset($data) && $report && $customer && $employee){
+        if(isset($data) && $report && $employee){
             $startDate = date('Y-m-01', strtotime("now"));
             $endDate = date('Y-m-t', strtotime("now"));
             $query = $this->createQueryBuilder('f')
@@ -36,8 +36,8 @@ class FcrRepository extends EntityRepository
                 ->andWhere('f.fcrOfFeed = :type')
                 ->andWhere('f.report = :report')
                 ->andWhere('f.employee = :employee')
-                ->andWhere('f.customer = :customer')
-                ->setParameters(array('startDate'=>$startDate, 'endDate'=>$endDate, 'type'=>$data, 'report'=>$report, 'customer'=>$customer, 'employee'=>$employee));
+//                ->andWhere('f.customer = :customer')
+                ->setParameters(array('startDate'=>$startDate, 'endDate'=>$endDate, 'type'=>$data, 'report'=>$report, 'employee'=>$employee));
 
             return $query->getQuery()->getOneOrNullResult();
         }

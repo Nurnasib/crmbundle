@@ -42,7 +42,6 @@ class CattleLifeCycleFormType extends AbstractType
         $report =  $options['report']->getParent();
         $builder
             ->add('breed_type', EntityType::class, array(
-                'required'    => false,
                 'class' => Setting::class,
                 'placeholder' => 'Choose Breed Type',
                 'choice_label' => 'name',
@@ -50,6 +49,20 @@ class CattleLifeCycleFormType extends AbstractType
                 'query_builder' => function(EntityRepository $er)use($report){
                     return $er->createQueryBuilder('e')
                         ->where("e.settingType ='BREED_TYPE'")
+                        ->andWhere("e.parent = :parent")
+                        ->setParameter('parent',$report)
+                        ->orderBy('e.name', 'ASC');
+                },
+            ))
+            ->add('feed_type', EntityType::class, array(
+                'class' => Setting::class,
+                'placeholder' => 'Choose Feed Type',
+                'choice_label' => 'name',
+                'attr'=>array('class'=>'span12 m-wrap breed'),
+                'query_builder' => function(EntityRepository $er)use($report){
+                    return $er->createQueryBuilder('e')
+                        ->where("e.settingType ='FEED_TYPE'")
+                        ->andWhere("e.status=1")
                         ->andWhere("e.parent = :parent")
                         ->setParameter('parent',$report)
                         ->orderBy('e.name', 'ASC');

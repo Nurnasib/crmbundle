@@ -50,35 +50,6 @@ class LayerLifeCycleController extends AbstractController
     }
 
     /**
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
-     * @Route("/new", methods={"GET", "POST"}, name="layer_life_cycle_new")
-     */
-    public function new(Request $request): Response
-    {
-        $entity = new LayerLifeCycle();
-
-        $form = $this->createForm(LayerLifeCycleFormType::class , $entity)
-            ->add('SaveAndCreate', SubmitType::class);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $entity->setEmployee($this->getUser());
-            $em->persist($entity);
-            $em->flush();
-            $this->addFlash('success', 'post.created_successfully');
-            if ($form->get('SaveAndCreate')->isClicked()) {
-                return $this->redirectToRoute('layer_life_cycle_new');
-            }
-            return $this->redirectToRoute('layer_life_cycle_new');
-        }
-        return $this->render('@TerminalbdCrm/layerLifeCycle/new.html.twig', [
-            'entity' => $entity,
-            'form' => $form->createView(),
-        ]);
-    }
-
-    /**
      * @param CrmCustomer $crmCustomer
      * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      * @Route("/customer/{id}/report/{report}/new/modal", methods={"GET", "POST"}, name="layer_new_modal")
@@ -97,7 +68,7 @@ class LayerLifeCycleController extends AbstractController
             return $this->redirectToRoute('layer_life_cycle_details_modal', ['id'=>$existReport->getId()]);
         }
 
-        $form = $this->createForm(LayerLifeCycleFormType::class, $entity)
+        $form = $this->createForm(LayerLifeCycleFormType::class, $entity, array('report' => $report))
             ->add('SaveAndCreate', SubmitType::class);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -223,33 +194,6 @@ class LayerLifeCycleController extends AbstractController
             )
         );
 
-    }
-
-    /**
-     * Displays a form to edit an existing LayerPerformance entity.
-     * @Route("/{id}/edit", methods={"GET", "POST"}, name="layer_life_cycle_edit")
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
-     */
-
-    public function edit(Request $request, LayerLifeCycle $entity): Response
-    {
-        $data = $request->request->all();
-        $form = $this->createForm(LayerLifeCycleFormType::class, $entity)
-            ->add('SaveAndCreate', SubmitType::class);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
-
-            $this->addFlash('success', 'post.updated_successfully');
-            if ($form->get('SaveAndCreate')->isClicked()) {
-                return $this->redirectToRoute('layer_life_cycle_edit', ['id' => $entity->getId()]);
-            }
-            return $this->redirectToRoute('layer_life_cycle');
-        }
-        return $this->render('@TerminalbdCrm/layerLifeCycle/new.html.twig', [
-            'entity' => $entity,
-            'form' => $form->createView(),
-        ]);
     }
 
     /**

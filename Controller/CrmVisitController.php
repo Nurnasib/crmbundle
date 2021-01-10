@@ -242,7 +242,10 @@ class CrmVisitController extends AbstractController
         $arrayData = array();
         /**@var Setting $entity*/
         foreach ($entities as $entity){
-            $arrayData[]=array('id'=>$entity->getId(),'name'=>$entity->getName());
+            if(!in_array($entity->getSlug(),['fcr-after-sale-boiler','fcr-after-sale-sonali'])){
+                $arrayData[]=array('id'=>$entity->getId(),'name'=>$entity->getName());
+            }
+
         }
 
         return new JsonResponse($arrayData);

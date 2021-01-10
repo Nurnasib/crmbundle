@@ -21,7 +21,7 @@
             <td class="dmOfFodderStrawKg">{{ detail.dmOfFodderStrawKg }}</td>
             <td class="totalDmKg">{{ detail.totalDmKg }}</td>
             <td class="dmRequirementByBwtKg">{{ detail.dmRequirementByBwtKg }}</td>
-            <td class="nameOfReadyFeed">{{ detail.nameOfReadyFeed }}</td>
+            <td class="nameOfReadyFeed">{{ detail.feedType.name|default('') }}</td>
             <td class="remarks">{{ detail.remarks }}</td>
             <td class="remove">
                 <a data-action="{{ path('cattle_performance_detail_delete',{id:detail.id}) }}" class="btn btn-danger btn-sm remove">x</a>

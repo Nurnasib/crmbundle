@@ -55,6 +55,13 @@ class CattlePerformanceDetails
     private $breedType;
 
     /**
+     * @var Setting
+     * @ORM\ManyToOne(targetEntity="Setting", inversedBy="crmCattlePerformanceDetails")
+     * @ORM\JoinColumn(name="feed_type", referencedColumnName="id", onDelete="SET NULL", nullable=true)
+     */
+    private $feedType;
+
+    /**
      * @var \DateTime
      * @ORM\Column(name="visiting_date", type="date", nullable=true)
      */
@@ -202,13 +209,6 @@ class CattlePerformanceDetails
 
     /**
      * @var string
-     * @Orm\Column(name="name_of_ready_feed", type="string", nullable=true)
-     */
-
-    private $nameOfReadyFeed;
-
-    /**
-     * @var string
      * @Orm\Column(name="remarks", type="text", nullable=true)
      */
 
@@ -306,6 +306,22 @@ class CattlePerformanceDetails
     public function setBreedType($breedType)
     {
         $this->breedType = $breedType;
+    }
+
+    /**
+     * @return Setting
+     */
+    public function getFeedType()
+    {
+        return $this->feedType;
+    }
+
+    /**
+     * @param Setting $feedType
+     */
+    public function setFeedType($feedType)
+    {
+        $this->feedType = $feedType;
     }
 
     /**
@@ -511,7 +527,9 @@ class CattlePerformanceDetails
     public function calculateAverageWeightPerKgDm(){
         $result = 0;
         $feedIntakeTotal= $this->getConsumptionFeedIntakeReadyFeed()+$this->getConsumptionFeedIntakeConventional();
-        $totalDmKg = $feedIntakeTotal+$this->getDmOfFodderGreenGrassKg()+$this->getDmOfFodderStrawKg();
+        $dmOfFoodGreenGrassKg = ($this->getFodderGreenGrassKg()*15)/100;
+        $dmOfFoodStrawKg=($this->getFodderStrawKg()*85)/100;
+        $totalDmKg = $feedIntakeTotal+$dmOfFoodGreenGrassKg+$dmOfFoodStrawKg;
         if($totalDmKg>0){
             $result = $this->getAverageWeightPerDay()/$totalDmKg;
         }
@@ -714,21 +732,6 @@ class CattlePerformanceDetails
     {
         $result = (($this->getPresentBodyWeight()*2)/100)+(($this->getAverageWeightPerDay()*33)/100);
         return $result;
-    }
-    /**
-     * @return string
-     */
-    public function getNameOfReadyFeed()
-    {
-        return $this->nameOfReadyFeed;
-    }
-
-    /**
-     * @param string $nameOfReadyFeed
-     */
-    public function setNameOfReadyFeed(string $nameOfReadyFeed): void
-    {
-        $this->nameOfReadyFeed = $nameOfReadyFeed;
     }
 
     /**

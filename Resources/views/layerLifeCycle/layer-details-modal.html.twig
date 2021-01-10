@@ -15,23 +15,35 @@
                     </div>
 
                     <div class="col-md-4">
-                        <p style="color: #000000">{{ 'Farmer Name'|trans }}: {{ layerLifeCycle.customer.name }}</p>
+                        <p style="color: #000000; margin-bottom: 5px">{{ 'Farmer Name'|trans }}: {{ layerLifeCycle.customer.name }}</p>
                     </div>
                     <div class="col-md-4">
-                        <p style="color: #000000">{{ 'Address'|trans }}: {{ layerLifeCycle.customer.address }}</p>
+                        <p style="color: #000000; margin-bottom: 5px">{{ 'Address'|trans }}: {{ layerLifeCycle.customer.address }}</p>
                     </div>
                     <div class="col-md-4">
-                        <p style="color: #000000">{{ 'Agent'|trans }}: {{ layerLifeCycle.agent.name }}</p>
+                        <p style="color: #000000; margin-bottom: 5px">{{ 'Mobile'|trans }}: {{ layerLifeCycle.customer.mobile }}</p>
                     </div>
                     <div class="col-md-4">
-                        <p style="color: #000000">{{ 'Hatchery Date'|trans }}
-                            : {{ layerLifeCycle.hatcheryDate?layerLifeCycle.hatcheryDate|date("d-m-Y"):'' }}</p>
+                        <p style="color: #000000; margin-bottom: 5px">{{ 'Total Birds'|trans }}: {{ layerLifeCycle.totalBirds }}</p>
                     </div>
                     <div class="col-md-4"></div>
+                    <div class="col-md-4">
+                        <p style="color: #000000; margin-bottom: 5px">{{ 'Hatchery Date'|trans }}
+                            : {{ layerLifeCycle.hatcheryDate?layerLifeCycle.hatcheryDate|date("d-m-Y"):'' }}</p>
+                    </div>
+                    <div class="col-md-4">
+                        <p style="color: #000000; margin-bottom: 5px">{{ 'Hatchery'|trans }}: {{ layerLifeCycle.hatchery.name }}</p>
+                    </div>
+                    <div class="col-md-4">
+                        <p style="color: #000000; margin-bottom: 5px">{{ 'Breed'|trans }}: {{ layerLifeCycle.breed.name }}</p>
+                    </div>
+                    <div class="col-md-4">
+                        <p style="color: #000000; margin-bottom: 5px">{{ 'Feed'|trans }}: {{ layerLifeCycle.feed.name }}</p>
+                    </div>
 
                 </div>
                 <div class="card-body-inner" style="overflow-x: scroll">
-                    <div class="">
+                    <div class="layerLifeCycleDetails_section">
                         <table class="table table-striped table-bordered table-hover layerLifeCycleDetails"
                                id="datatable">
                             <thead class="thead-dark">
@@ -86,9 +98,7 @@
                                                        value="{{ entity.visitingDate?entity.visitingDate|date('d-m-Y'):'' }}">
                                             </div>
                                         </td>
-                                        <td class="totalBirds"><input type="number" data-input-type="number" data-entity-id="{{ entity.id }}"
-                                                                      data-meta-key="TotalBirds" class="form-control"
-                                                                      value="{{ entity.totalBirds }}" min="0"></td>
+                                        <td class="totalBirds">{{ entity.totalBirds }}</td>
                                         <td class="deadBird"><input type="number" data-input-type="number" data-entity-id="{{ entity.id }}"
                                                                     data-meta-key="DeadBird" class="form-control"
                                                                     value="{{ entity.deadBird }}" min="0"></td>

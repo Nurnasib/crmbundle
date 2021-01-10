@@ -65,24 +65,24 @@ class LayerPerformanceController extends AbstractController
     {
         $entity = new LayerPerformance();
 
+        $existingReport = $this->getDoctrine()->getRepository(LayerPerformance::class)->getLayerPerformanceReportByReportingDateAndFeedType($report, $this->getUser());
 
-        $existingReport = $this->getDoctrine()->getRepository(LayerPerformance::class)->getLayerPerformanceReportByReportingDateAndFeedType($report, $crmCustomer, $this->getUser());
         if($existingReport){
-            return $this->redirectToRoute('layer_performance_details_modal', ['id'=>$existingReport->getId()]);
-
+            return $this->redirectToRoute('layer_performance_details_modal', ['id'=>$existingReport->getId(), 'customer'=>$crmCustomer->getId()]);
         }
+
         $reportingDate = date('Y-m-d',strtotime('now'));
 
         $entity->setReportingMonth(new \DateTime($reportingDate));
         $entity->setReport($report);
-        $entity->setCustomer($crmCustomer);
+//        $entity->setCustomer($crmCustomer);
         $entity->setEmployee($this->getUser());
         $em = $this->getDoctrine()->getManager();
         $em->persist($entity);
         $em->flush();
         $this->addFlash('success', 'post.created_successfully');
 
-        return $this->redirectToRoute('layer_performance_details_modal', ['id'=>$entity->getId()]);
+        return $this->redirectToRoute('layer_performance_details_modal', ['id'=>$entity->getId(), 'customer'=>$crmCustomer->getId()]);
 
     }
 
@@ -109,6 +109,7 @@ class LayerPerformanceController extends AbstractController
             'feedTypes' => $feedTypes,
             'feedMills' => $feedMills,
             'colors' => $colors,
+            'customer' => $request->query->get('customer'),
         ]);
     }
 
@@ -153,6 +154,7 @@ class LayerPerformanceController extends AbstractController
         $data = $request->request->all();
 
         $hatchery = null;
+        $customer = null;
         $breed = null;
         $color =null;
         $feedType= null;
@@ -161,6 +163,11 @@ class LayerPerformanceController extends AbstractController
         if(isset($data['hatchery'])&&$data['hatchery']!=''){
             $hatchery = $this->getDoctrine()->getRepository(Setting::class)->find($data['hatchery']);
         }
+
+        if(isset($data['customerId'])&&$data['customerId']!=''){
+            $customer = $this->getDoctrine()->getRepository(CrmCustomer::class)->find($data['customerId']);
+        }
+
         if(isset($data['breed'])&&$data['breed']!=''){
             $breed = $this->getDoctrine()->getRepository(Setting::class)->find($data['breed']);
         }
@@ -191,8 +198,8 @@ class LayerPerformanceController extends AbstractController
         $entity->setDisease(isset($data['disease'])?$data['disease']:'');
         $entity->setBatchNo(isset($data['batchNo'])?$data['batchNo']:'');
         $entity->setRemarks(isset($data['remarks'])?$data['remarks']:'');
-        $entity->setCustomer($layerPerformance->getCustomer());
-        $entity->setAgent($layerPerformance->getCustomer()?$layerPerformance->getCustomer()->getAgent():null);
+        $entity->setCustomer($customer);
+        $entity->setAgent($customer?$customer->getAgent():null);
         $entity->setCrmLayerPerformanceReport($layerPerformance);
         /* @var LayerStandard $layerPerformanceStandard*/
         $layerPerformanceStandard= $this->getDoctrine()->getRepository(LayerStandard::class)->findOneBy(array('age'=>$entity->getAgeWeek(),'report'=>$layerPerformance->getReport()));

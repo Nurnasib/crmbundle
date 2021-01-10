@@ -51,12 +51,6 @@ class CattlePerformance
     private $report;
 
     /**
-     * @var CrmCustomer
-     * @ORM\ManyToOne(targetEntity="CrmCustomer" , inversedBy="crmCattlePerformance")
-     */
-    private $customer;
-
-    /**
      * @var \DateTime
      * @ORM\Column(name="repoting_month", type="date", nullable=true)
      */
@@ -131,22 +125,6 @@ class CattlePerformance
     public function setReport($report)
     {
         $this->report = $report;
-    }
-
-    /**
-     * @return CrmCustomer
-     */
-    public function getCustomer()
-    {
-        return $this->customer;
-    }
-
-    /**
-     * @param CrmCustomer $customer
-     */
-    public function setCustomer($customer)
-    {
-        $this->customer = $customer;
     }
 
     /**

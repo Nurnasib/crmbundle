@@ -35,26 +35,6 @@ class ChickLifeCycleDetails
 
     private $crmChickLifeCycle;
 
-    /**
-     * @var Setting
-     * @ORM\ManyToOne(targetEntity="Setting", inversedBy="crmChickLifeCycleDetails")
-     * @ORM\JoinColumn(name="hatchery_id", referencedColumnName="id", onDelete="SET NULL", nullable=true)
-     */
-    private $hatchery;
-
-    /**
-     * @var Setting
-     * @ORM\ManyToOne(targetEntity="Setting", inversedBy="crmChickLifeCycleDetails")
-     * @ORM\JoinColumn(name="breed_id", referencedColumnName="id", onDelete="SET NULL", nullable=true)
-     */
-    private $breed;
-
-    /**
-     * @var Setting
-     * @ORM\ManyToOne(targetEntity="Setting", inversedBy="crmChickLifeCycleDetails")
-     * @ORM\JoinColumn(name="feed_id", referencedColumnName="id", onDelete="SET NULL", nullable=true)
-     */
-    private $feed;
 
     /**
      * @var Setting
@@ -75,14 +55,6 @@ class ChickLifeCycleDetails
      */
 
     private $visitingWeek;
-
-    /**
-     * @var float
-     *
-     * @ORM\Column(name="total_birds", type="float")
-     */
-
-    private $totalBirds=0;
 
     /**
      * @var float
@@ -223,54 +195,6 @@ class ChickLifeCycleDetails
     /**
      * @return Setting
      */
-    public function getHatchery()
-    {
-        return $this->hatchery;
-    }
-
-    /**
-     * @param Setting $hatchery
-     */
-    public function setHatchery($hatchery)
-    {
-        $this->hatchery = $hatchery;
-    }
-
-    /**
-     * @return Setting
-     */
-    public function getBreed()
-    {
-        return $this->breed;
-    }
-
-    /**
-     * @param Setting $breed
-     */
-    public function setBreed($breed)
-    {
-        $this->breed = $breed;
-    }
-
-    /**
-     * @return Setting
-     */
-    public function getFeed()
-    {
-        return $this->feed;
-    }
-
-    /**
-     * @param Setting $feed
-     */
-    public function setFeed($feed)
-    {
-        $this->feed = $feed;
-    }
-
-    /**
-     * @return Setting
-     */
     public function getFeedType()
     {
         return $this->feedType;
@@ -323,15 +247,7 @@ class ChickLifeCycleDetails
      */
     public function getTotalBirds()
     {
-        return $this->totalBirds;
-    }
-
-    /**
-     * @param float $totalBirds
-     */
-    public function setTotalBirds(float $totalBirds): void
-    {
-        $this->totalBirds = $totalBirds;
+        return $this->getCrmChickLifeCycle()->getTotalBirds();
     }
 
     /**

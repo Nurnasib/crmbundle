@@ -82,6 +82,27 @@ class LayerLifeCycle
     private $hatcheryDate;
 
     /**
+     * @var Setting
+     * @ORM\ManyToOne(targetEntity="Setting", inversedBy="crmLayerLifeCycle")
+     * @ORM\JoinColumn(name="hatchery_id", referencedColumnName="id", onDelete="SET NULL", nullable=true)
+     */
+    private $hatchery;
+
+    /**
+     * @var Setting
+     * @ORM\ManyToOne(targetEntity="Setting", inversedBy="crmLayerLifeCycle")
+     * @ORM\JoinColumn(name="breed_id", referencedColumnName="id", onDelete="SET NULL", nullable=true)
+     */
+    private $breed;
+
+    /**
+     * @var Setting
+     * @ORM\ManyToOne(targetEntity="Setting", inversedBy="crmLayerLifeCycle")
+     * @ORM\JoinColumn(name="feed_id", referencedColumnName="id", onDelete="SET NULL", nullable=true)
+     */
+    private $feed;
+
+    /**
      * @var \DateTime
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(name="created", type="datetime")
@@ -215,7 +236,7 @@ class LayerLifeCycle
     }
 
     /**
-     * @return string
+     * @return Setting
      */
     public function getHatchery()
     {
@@ -223,11 +244,43 @@ class LayerLifeCycle
     }
 
     /**
-     * @param string $hatchery
+     * @param Setting $hatchery
      */
-    public function setHatchery(string $hatchery): void
+    public function setHatchery(Setting $hatchery): void
     {
         $this->hatchery = $hatchery;
+    }
+
+    /**
+     * @return Setting
+     */
+    public function getBreed()
+    {
+        return $this->breed;
+    }
+
+    /**
+     * @param Setting $breed
+     */
+    public function setBreed(Setting $breed): void
+    {
+        $this->breed = $breed;
+    }
+
+    /**
+     * @return Setting
+     */
+    public function getFeed()
+    {
+        return $this->feed;
+    }
+
+    /**
+     * @param Setting $feed
+     */
+    public function setFeed(Setting $feed): void
+    {
+        $this->feed = $feed;
     }
 
     /**

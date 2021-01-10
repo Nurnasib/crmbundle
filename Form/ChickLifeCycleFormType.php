@@ -19,8 +19,10 @@ use Doctrine\ORM\EntityRepository;
 use PhpOffice\PhpSpreadsheet\Calculation\DateTime;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\DataTransformer\DateTimeToStringTransformer;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -50,23 +52,60 @@ class ChickLifeCycleFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
 
-        $user =  $options['user']->getId();
+        $report =  $options['report']->getParent();
         $builder
-
-            ->add('hatchery', TextType::class, [
-                'attr' => ['autofocus' => true,'autocomplete' => 'off'],
-                'label' => 'label.hatchery',
-                'required'=>false,
-
-            ])->add('breed', TextType::class, [
-                'attr' => ['autofocus' => true],
-                'label' => 'label.breed',
-                'required'=>false
-
-            ])->add('feed', TextType::class, [
-                'attr' => ['autofocus' => true],
-                'label' => 'label.feed',
-                'required'=>false
+            ->add($builder->create('hatching_date', TextType::class, array(
+                'label' => 'Hatching Date',
+                'attr' => array(
+                    'class' => 'datePicker',
+                    'autocomplete' => 'off',
+                    'placeholder' => 'dd-mm-YYYY'
+                ),
+                'empty_data' => new \DateTime(),
+            ))->addViewTransformer(new DateTimeToStringTransformer(null, null, 'd-m-Y')))
+            ->add('hatchery', EntityType::class, array(
+                'required'    => false,
+                'class' => Setting::class,
+                'placeholder' => 'Choose Hatchery',
+                'choice_label' => 'name',
+                'attr'=>array('class'=>'span12 m-wrap hatchery'),
+                'query_builder' => function(EntityRepository $er){
+                    return $er->createQueryBuilder('e')
+                        ->where("e.settingType ='HATCHERY'")
+                        ->orderBy('e.name', 'ASC');
+                },
+            ))
+            ->add('breed', EntityType::class, array(
+                'required'    => false,
+                'class' => Setting::class,
+                'placeholder' => 'Choose Breed',
+                'choice_label' => 'name',
+                'attr'=>array('class'=>'span12 m-wrap breed'),
+                'query_builder' => function(EntityRepository $er)use($report){
+                    return $er->createQueryBuilder('e')
+                        ->where("e.status =1")
+                        ->andWhere("e.settingType ='BREED_TYPE'")
+                        ->andWhere("e.parent = :parent")
+                        ->setParameter('parent',$report)
+                        ->orderBy('e.name', 'ASC');
+                },
+            ))
+            ->add('feed', EntityType::class, array(
+                'required'    => false,
+                'class' => Setting::class,
+                'placeholder' => 'Choose Feed',
+                'choice_label' => 'name',
+                'attr'=>array('class'=>'span12 m-wrap feed'),
+                'query_builder' => function(EntityRepository $er){
+                    return $er->createQueryBuilder('e')
+                        ->where("e.settingType ='FEED_NAME'")
+                        ->orderBy('e.name', 'ASC');
+                },
+            ))
+            ->add('total_birds', NumberType::class, [
+                'attr' => ['autofocus' => true,'class' => 'totalBirds','min'=>0],
+                'label' => 'label.totalbirds',
+                'required' => false,
             ])
             ->add('remarks', TextareaType::class, [
                 'attr' => ['autofocus' => true],
@@ -84,6 +123,7 @@ class ChickLifeCycleFormType extends AbstractType
         $resolver->setDefaults([
             'data_class' => ChickLifeCycle::class,
             'user' => User::class,
+            'report' => Setting::class,
         ]);
     }
 }

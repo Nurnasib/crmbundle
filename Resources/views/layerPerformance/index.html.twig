@@ -50,9 +50,9 @@
                             <td> {{ entity.employee.name |default('') }} </td>
                             <td> {{ entity.reportingMonth|date('d-m-Y') }} </td>
                             <td>
-                                <a class="btn btn-mini yellow-bg white-font" href="{{ path('layer_performance_edit',{'id':entity.id}) }}"><i class="feather icon-edit"></i> Edit</a>
-                                <a data-action='{{ path('layer_performance_details_modal',{'id': entity is not empty?entity.id:''}) }}' href='?process=postView_{{ entity.id }}&check=show#modal' id='postView_{{ entity.id }}' >{{ 'Generate Report'|trans }}</a>
-                                <a class="btn  btn-transparent btn-mini red-font remove" href="javascript:" data-action="{{ path('layer_performance_delete',{'id':entity.id}) }}"><i class="fa fa-remove"></i></a>
+                                <a class="btn btn-primary btn-sm" href=""><i class="feather icon-edit"></i> {{ 'Report'|trans }}</a>
+                                {#<a data-action='{{ path('layer_performance_details_modal',{'id': entity is not empty?entity.id:''}) }}' href='?process=postView_{{ entity.id }}&check=show#modal' id='postView_{{ entity.id }}' >{{ 'Generate Report'|trans }}</a>#}
+                                {#<a class="btn  btn-transparent btn-mini red-font remove" href="javascript:" data-action="{{ path('layer_performance_delete',{'id':entity.id}) }}"><i class="fa fa-remove"></i></a>#}
                             </td>
 
                         </tr>

@@ -48,12 +48,6 @@ class Fcr
     private $employee;
 
     /**
-     * @var CrmCustomer
-     * @ORM\ManyToOne(targetEntity="CrmCustomer" , inversedBy="fcr")
-     */
-    private $customer;
-
-    /**
      * @var string
      * @ORM\Column(name="fcr_of_feed", type="string",nullable=true)
      */
@@ -186,24 +180,5 @@ class Fcr
     {
         $this->report = $report;
     }
-
-    /**
-     * @return CrmCustomer
-     */
-    public function getCustomer()
-    {
-        return $this->customer;
-    }
-
-    /**
-     * @param CrmCustomer $customer
-     */
-    public function setCustomer(CrmCustomer $customer): void
-    {
-        $this->customer = $customer;
-    }
-
-
-
 
 }

@@ -43,13 +43,6 @@ class LayerPerformance
      */
     private $employee;
 
-
-    /**
-     * @var CrmCustomer
-     * @ORM\ManyToOne(targetEntity="CrmCustomer" , inversedBy="layerPerformance")
-     */
-    private $customer;
-
     /**
      * @var Setting
      * @ORM\ManyToOne(targetEntity="Setting", inversedBy="layerPerformance")
@@ -117,22 +110,6 @@ class LayerPerformance
     public function setEmployee($employee)
     {
         $this->employee = $employee;
-    }
-
-    /**
-     * @return CrmCustomer
-     */
-    public function getCustomer()
-    {
-        return $this->customer;
-    }
-
-    /**
-     * @param CrmCustomer $customer
-     */
-    public function setCustomer($customer)
-    {
-        $this->customer = $customer;
     }
 
     /**

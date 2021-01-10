@@ -37,4 +37,17 @@ class SettingRepository extends EntityRepository
         return $result;
     }
 
+    public function getReportByParentWithoutAfterFcr($parentId){
+        $return = array();
+        $qb = $this->createQueryBuilder('s');
+        $qb->where('s.parent = :parentId')->setParameter('parentId',$parentId);
+        $qb->andWhere('e.settingType = :type')->setParameter('type','FARMER_REPORT');
+        $qb->andWhere('e.settingType = :type')->setParameter('type','FARMER_REPORT');
+        $result = $qb->getQuery()->getResult();
+        /*for($i=1; $i<=$result[0]['numberOfWeek'];$i++){
+            $return[$i]= $i.' week';
+        }*/
+        return $result;
+    }
+
 }

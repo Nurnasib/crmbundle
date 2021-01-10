@@ -51,16 +51,16 @@ class CattlePerformanceController extends AbstractController
     {
 
         $entity = new CattlePerformance();
-        $existReport = $this->getDoctrine()->getRepository(CattlePerformance::class)->getCattlePerformanceReportByReportingDateAndFeedType($report, $crmCustomer, $this->getUser());
+        $existReport = $this->getDoctrine()->getRepository(CattlePerformance::class)->getCattlePerformanceReportByReportingDateAndFeedType($report, $this->getUser());
         if ($existReport){
 
-            return $this->redirectToRoute('cattle_performance_details_modal', ['id'=>$existReport->getId()]);
+            return $this->redirectToRoute('cattle_performance_details_modal', ['id'=>$existReport->getId(), 'customer'=>$crmCustomer->getId()]);
         }
 
             $reportingDate = date('Y-m-d',strtotime('now'));
 
             $entity->setReportingMonth(new \DateTime($reportingDate));
-            $entity->setCustomer($crmCustomer);
+//            $entity->setCustomer($crmCustomer);
             $entity->setReport($report);
             $entity->setEmployee($this->getUser());
             $em = $this->getDoctrine()->getManager();
@@ -68,7 +68,7 @@ class CattlePerformanceController extends AbstractController
             $em->flush();
             $this->addFlash('success', 'post.created_successfully');
 
-        return $this->redirectToRoute('cattle_performance_details_modal', ['id'=>$entity->getId()]);
+        return $this->redirectToRoute('cattle_performance_details_modal', ['id'=>$entity->getId(), 'customer'=>$crmCustomer->getId()]);
 
     }
 
@@ -79,19 +79,24 @@ class CattlePerformanceController extends AbstractController
     public function cattlePerformanceDetailsModal( Request $request, CattlePerformance $cattlePerformance): Response
     {
 
-        $breedTypes = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType'=>'BREED_TYPE','parent'=>$cattlePerformance->getReport()->getParent()));
+        $breedTypes = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('status'=>1,'settingType'=>'BREED_TYPE','parent'=>$cattlePerformance->getReport()->getParent()));
+        $feedTypes = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('status'=>1,'settingType'=>'FEED_TYPE','parent'=>$cattlePerformance->getReport()->getParent()));
 
         if($cattlePerformance->getReport()->getSlug()=='dairy-performance-report'){
 
             return $this->render('@TerminalbdCrm/cattlePerformance/dairy-performance-details-report-modal.html.twig', [
                 'cattlePerformance' => $cattlePerformance,
+                'customer' => $request->query->get('customer'),
                 'breedTypes' => $breedTypes,
+                'feedTypes' => $feedTypes,
             ]);
         }
 
         return $this->render('@TerminalbdCrm/cattlePerformance/fattening-performance-details-report-modal.html.twig', [
             'cattlePerformance' => $cattlePerformance,
+            'customer' => $request->query->get('customer'),
             'breedTypes' => $breedTypes,
+            'feedTypes' => $feedTypes,
         ]);
     }
 
@@ -107,21 +112,30 @@ class CattlePerformanceController extends AbstractController
         $data = $request->request->all();
 
         $breed_type= null;
+        $feed_type= null;
+        $customer= null;
         if(isset($data['breed_type'])&&$data['breed_type']!=''){
             $breed_type = $this->getDoctrine()->getRepository(Setting::class)->find($data['breed_type']);
         }
+        if(isset($data['feed_type'])&&$data['feed_type']!=''){
+            $feed_type = $this->getDoctrine()->getRepository(Setting::class)->find($data['feed_type']);
+        }
+        if(isset($data['customerId'])&&$data['customerId']!=''){
+            $customer = $this->getDoctrine()->getRepository(CrmCustomer::class)->find($data['customerId']);
+        }
 
         $entity = new CattlePerformanceDetails();
-        $entity->setCrmCattlePerformance($cattlePerformance);
-        $entity->setCustomer($cattlePerformance->getCustomer());
-        $entity->setAgent($cattlePerformance->getCustomer()->getAgent());
 
+        $entity->setCrmCattlePerformance($cattlePerformance);
+        $entity->setCustomer($customer);
+        $entity->setAgent($customer?$customer->getAgent():null);
 
         $visitingDate = isset($data['visiting_date'])&&$data['visiting_date']!=""?date('Y-m-d',strtotime($data['visiting_date'])):date('Y-m-d',strtotime('now'));
 
         $entity->setVisitingDate(new \DateTime($visitingDate));
 
         $entity->setBreedType(is_object($breed_type)?$breed_type:null);
+        $entity->setFeedType(is_object($feed_type)?$feed_type:null);
         $entity->setAgeOfCattleMonth(isset($data['age_of_cattle_month'])&&$data['age_of_cattle_month']!=""?(float)$data['age_of_cattle_month']:0);
         $entity->setPreviousBodyWeight(isset($data['previous_body_weight'])&&$data['previous_body_weight']!=""?(float)$data['previous_body_weight']:0);
         $entity->setPresentBodyWeight(isset($data['present_body_weight'])&&$data['present_body_weight']!=""?(float)$data['present_body_weight']:0);
@@ -130,8 +144,7 @@ class CattlePerformanceController extends AbstractController
         $entity->setConsumptionFeedIntakeConventional(isset($data['consumption_feed_intake_conventional'])&&$data['consumption_feed_intake_conventional']!=""?(float)$data['consumption_feed_intake_conventional']:0);
         $entity->setFodderGreenGrassKg(isset($data['fodder_green_grass_kg'])&&$data['fodder_green_grass_kg']!=""?(float)$data['fodder_green_grass_kg']:0);
         $entity->setFodderStrawKg(isset($data['fodder_straw_kg'])&&$data['fodder_straw_kg']!=""?(float)$data['fodder_straw_kg']:0);
-        $entity->setNameOfReadyFeed(isset($data['name_of_ready_feed'])&&$data['name_of_ready_feed']!=""?(float)$data['name_of_ready_feed']:0);
-        $entity->setRemarks(isset($data['remarks'])&&$data['remarks']!=""?(float)$data['remarks']:0);
+        $entity->setRemarks(isset($data['remarks'])&&$data['remarks']!=""?$data['remarks']:'');
 
         $entity->setBodyWeightDifference($entity->calculateBodyWeightDifference());
         $entity->setAverageWeightPerDay($entity->calculateAverageWeightPerDay());
@@ -169,20 +182,29 @@ class CattlePerformanceController extends AbstractController
         $data = $request->request->all();
 
         $breed_type= null;
+        $feed_type= null;
+        $customer= null;
         if(isset($data['breed_type'])&&$data['breed_type']!=''){
             $breed_type = $this->getDoctrine()->getRepository(Setting::class)->find($data['breed_type']);
+        }
+        if(isset($data['feed_type'])&&$data['feed_type']!=''){
+            $feed_type = $this->getDoctrine()->getRepository(Setting::class)->find($data['feed_type']);
+        }
+        if(isset($data['customerId'])&&$data['customerId']!=''){
+            $customer = $this->getDoctrine()->getRepository(CrmCustomer::class)->find($data['customerId']);
         }
 
         $entity = new CattlePerformanceDetails();
         $entity->setCrmCattlePerformance($cattlePerformance);
-        $entity->setCustomer($cattlePerformance->getCustomer());
-        $entity->setAgent($cattlePerformance->getCustomer()->getAgent());
+        $entity->setCustomer($customer);
+        $entity->setAgent($customer?$customer->getAgent():null);
 
 
         $visitingDate = isset($data['visiting_date'])&&$data['visiting_date']!=""?date('Y-m-d',strtotime($data['visiting_date'])):date('Y-m-d',strtotime('now'));
 
         $entity->setVisitingDate(new \DateTime($visitingDate));
         $entity->setBreedType(is_object($breed_type)?$breed_type:null);
+        $entity->setFeedType(is_object($feed_type)?$feed_type:null);
         $entity->setAgeOfCattleMonth(isset($data['age_of_cattle_month'])&&$data['age_of_cattle_month']!=""?(float)$data['age_of_cattle_month']:0);
 //        $entity->setPreviousBodyWeight(isset($data['previous_body_weight'])&&$data['previous_body_weight']!=""?(float)$data['previous_body_weight']:0);
         $entity->setPresentBodyWeight(isset($data['present_body_weight'])&&$data['present_body_weight']!=""?(float)$data['present_body_weight']:0);
@@ -197,8 +219,7 @@ class CattlePerformanceController extends AbstractController
         $entity->setConsumptionFeedIntakeConventional(isset($data['consumption_feed_intake_conventional'])&&$data['consumption_feed_intake_conventional']!=""?(float)$data['consumption_feed_intake_conventional']:0);
         $entity->setFodderGreenGrassKg(isset($data['fodder_green_grass_kg'])&&$data['fodder_green_grass_kg']!=""?(float)$data['fodder_green_grass_kg']:0);
         $entity->setFodderStrawKg(isset($data['fodder_straw_kg'])&&$data['fodder_straw_kg']!=""?(float)$data['fodder_straw_kg']:0);
-        $entity->setNameOfReadyFeed(isset($data['name_of_ready_feed'])&&$data['name_of_ready_feed']!=""?(float)$data['name_of_ready_feed']:0);
-        $entity->setRemarks(isset($data['remarks'])&&$data['remarks']!=""?(float)$data['remarks']:0);
+        $entity->setRemarks(isset($data['remarks'])&&$data['remarks']!=""? $data['remarks']:'');
 
         $entity->setAverageWeightPerKgConsumptionFeed($entity->calculateAverageWeightPerKgConsumptionFeed());
         $entity->setAverageWeightPerKgDm($entity->calculateAverageWeightPerKgDm());
@@ -252,29 +273,5 @@ class CattlePerformanceController extends AbstractController
         $this->addFlash('success', 'post.deleted_successfully');
         return new Response('Success');
     }
-
-    /**
-     * @param $report
-     * @Route("/life/cycle/{report}", methods={"GET"}, name="crm_cattle_report")
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_AGM')")
-     */
-    public function indexReport( string $report): Response
-    {
-
-        $entities = $this->getDoctrine()->getRepository(CattleLifeCycle::class)->getCattleLifeCycleByReportType($report);
-        return $this->render('@TerminalbdCrm/cattleLifecycle/report/report.html.twig',['entities' => $entities]);
-    }
-
-    /**
-     * @param CattleLifeCycle $cattleLifeCycle
-     * @Route("/life/cycle/{id}/report", methods={"GET"}, name="crm_cattle_report_detail")
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_AGM')")
-     */
-    public function reportDetails( CattleLifeCycle $cattleLifeCycle): Response
-    {
-
-        return $this->render('@TerminalbdCrm/cattleLifecycle/report/report-details.html.twig',['cattleLifeCycle' => $cattleLifeCycle]);
-    }
-
 
 }

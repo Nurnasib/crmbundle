@@ -53,16 +53,15 @@ class CattleFarmVisitController extends AbstractController
     public function newModal(Request $request, CrmCustomer $crmCustomer, Setting $report): Response
     {
         $entity = new CattleFarmVisit();
-        $existReport = $this->getDoctrine()->getRepository(CattleFarmVisit::class)->getCattleFarmVisitReportByReportingDateCustomerAndEmployee($report, $crmCustomer, $this->getUser());
+        $existReport = $this->getDoctrine()->getRepository(CattleFarmVisit::class)->getCattleFarmVisitReportByReportingDateCustomerAndEmployee($report, $this->getUser());
         if ($existReport){
 
-            return $this->redirectToRoute('cattle_farm_visit_details_modal', ['id'=>$existReport->getId()]);
+            return $this->redirectToRoute('cattle_farm_visit_details_modal', ['id'=>$existReport->getId(), 'customerId'=>$crmCustomer->getId()]);
         }
 
             $reportingDate = date('Y-m-d',strtotime('now'));
 
             $entity->setReportingMonth(new \DateTime($reportingDate));
-            $entity->setCustomer($crmCustomer);
             $entity->setReport($report);
             $entity->setEmployee($this->getUser());
             $em = $this->getDoctrine()->getManager();
@@ -70,7 +69,7 @@ class CattleFarmVisitController extends AbstractController
             $em->flush();
             $this->addFlash('success', 'post.created_successfully');
 
-        return $this->redirectToRoute('cattle_farm_visit_details_modal', ['id'=>$entity->getId()]);
+        return $this->redirectToRoute('cattle_farm_visit_details_modal', ['id'=>$entity->getId(), 'customerId'=>$crmCustomer->getId()]);
 
     }
 
@@ -81,15 +80,22 @@ class CattleFarmVisitController extends AbstractController
      */
     public function cattleFarmVisitDetailsModal( Request $request, CattleFarmVisit $cattleFarmVisit ): Response
     {
+        $customer = null;
         $entity = new CattleFarmVisitDetails();
 
         $form = $this->createForm(CattleFarmVisitDetailsFormType::class, $entity,array('user' => $this->getUser(),'report' => $cattleFarmVisit->getReport()));
 
+//
+
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+            $getcustomer = $request->query->get('customer');
+            if($getcustomer){
 
-            $entity->setCustomer($cattleFarmVisit->getCustomer());
-            $entity->setAgent($cattleFarmVisit->getCustomer()->getAgent());
+                $customer = $this->getDoctrine()->getRepository(CrmCustomer::class)->find($getcustomer);
+            }
+            $entity->setCustomer($customer);
+            $entity->setAgent($customer->getAgent());
             $entity->setCrmCattleFarmVisit($cattleFarmVisit);
 
             $em = $this->getDoctrine()->getManager();
@@ -101,6 +107,7 @@ class CattleFarmVisitController extends AbstractController
         return $this->render('@TerminalbdCrm/cattleFarmVisit/cattle-farm-visit-details-modal.html.twig', [
             'cattleFarmVisit' => $cattleFarmVisit,
             'form' => $form->createView(),
+            'customer'=>$request->query->get('customerId')
         ]);
     }
 

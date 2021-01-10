@@ -24,18 +24,18 @@ use Doctrine\ORM\EntityRepository;
 class CattlePerformanceRepository extends EntityRepository
 {
 
-    public function getCattlePerformanceReportByReportingDateAndFeedType($report, $customer, $employee)
+    public function getCattlePerformanceReportByReportingDateAndFeedType($report, $employee)
     {
-        if($report&&$customer&&$employee){
+        if($report&&$employee){
             $startDate = date('Y-m-01', strtotime("now"));
             $endDate = date('Y-m-t', strtotime("now"));
             $query = $this->createQueryBuilder('cp')
                 ->where('cp.reportingMonth >= :startDate')
                 ->andWhere('cp.reportingMonth <= :endDate')
                 ->andWhere('cp.report = :report')
-                ->andWhere('cp.customer = :customer')
+//                ->andWhere('cp.customer = :customer')
                 ->andWhere('cp.employee = :employee')
-                ->setParameters(array('startDate'=>$startDate, 'endDate'=>$endDate, 'report'=>$report, 'customer'=>$customer, 'employee'=>$employee));
+                ->setParameters(array('startDate'=>$startDate, 'endDate'=>$endDate, 'report'=>$report, 'employee'=>$employee));
 
             return $query->getQuery()->getOneOrNullResult();
         }

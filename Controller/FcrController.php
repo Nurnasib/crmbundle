@@ -79,10 +79,10 @@ class FcrController extends AbstractController
      */
     public function new(Request $request, CrmCustomer $customer, Setting $report, $afterBefore): Response
     {
-        $existingReport = $this->getDoctrine()->getRepository(Fcr::class)->getFcrReportByReportingDateAndFeedType($afterBefore, $report, $customer, $this->getUser());
+        $existingReport = $this->getDoctrine()->getRepository(Fcr::class)->getFcrReportByReportingDateAndFeedType($afterBefore, $report, $this->getUser());
 //        var_dump($existingReport);die;
         if($existingReport){
-            return $this->redirectToRoute('fcr_details_modal', ['id'=>$existingReport->getId()]);
+            return $this->redirectToRoute('fcr_details_modal', ['id'=>$existingReport->getId(), 'customer'=>$customer->getId()]);
         }
         $entity = new Fcr();
         $reportingDate = date('Y-m-d',strtotime('now'));
@@ -90,11 +90,11 @@ class FcrController extends AbstractController
         $entity->setFcrOfFeed(strtoupper($afterBefore));
         $entity->setReport($report);
         $entity->setEmployee($this->getUser());
-        $entity->setCustomer($customer);
+//        $entity->setCustomer($customer);
         $em = $this->getDoctrine()->getManager();
         $em->persist($entity);
         $em->flush();
-        return $this->redirectToRoute('fcr_details_modal', ['id'=>$entity->getId()]);
+        return $this->redirectToRoute('fcr_details_modal', ['id'=>$entity->getId(), 'customer'=>$customer->getId()]);
 //        return new Response('success');
     }
 
@@ -105,9 +105,8 @@ class FcrController extends AbstractController
      */
     public function newAfter(Request $request, Setting $report, $afterBefore): Response
     {
-//        return new Response('success');
         $existingReport = $this->getDoctrine()->getRepository(Fcr::class)->getFcrReportByReportingDateReportAndEmployeeForAfter($afterBefore, $report, $this->getUser());
-//        var_dump($existingReport);die;
+
         if($existingReport){
             return $this->redirectToRoute('fcr_details_modal', ['id'=>$existingReport->getId()]);
         }
@@ -186,6 +185,7 @@ class FcrController extends AbstractController
         return $this->render('@TerminalbdCrm/fcr/details-modal.html.twig', [
             'entity' => $fcr,
 //            'agents' => $agents,
+            'customer' => $request->query->get('customer'),
             'form' => $form->createView(),
         ]);
     }
@@ -212,6 +212,7 @@ class FcrController extends AbstractController
     public function addFcrDetailsReport(Request $request, Fcr $fcr): Response
     {
         $data = $request->request->all();
+        $customer = null;
         $agent = null;
         $hatchery = null;
         $breed = null;
@@ -220,6 +221,9 @@ class FcrController extends AbstractController
         $feedMill = null;
         if(isset($data['hatchery'])&&$data['hatchery']!=''){
             $hatchery = $this->getDoctrine()->getRepository(Setting::class)->find($data['hatchery']);
+        }
+        if(isset($data['customerId'])&&$data['customerId']!=''){
+            $customer = $this->getDoctrine()->getRepository(CrmCustomer::class)->find($data['customerId']);
         }
         if(isset($data['agent'])&&$data['agent']!=''){
             $agent = $this->getDoctrine()->getRepository(Agent::class)->find($data['agent']);
@@ -264,8 +268,8 @@ class FcrController extends AbstractController
         if($fcr->getFcrOfFeed()=='AFTER'){
             $entity->setAgent($agent);
         }else{
-            $entity->setCustomer($fcr->getCustomer());
-            $entity->setAgent($fcr->getCustomer()->getAgent());
+            $entity->setCustomer($customer);
+            $entity->setAgent($customer?$customer->getAgent():null);
         }
 
         $entity->setFcr($fcr);

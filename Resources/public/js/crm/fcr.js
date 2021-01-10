@@ -120,6 +120,7 @@ function formCommonProcessForFcr() {
 function dataInsertFcrUsingAjax(element) {
     var fcrId = $('.fcr_id').val();
     var parentElement = element.closest('tr');
+    var customerId=parentElement.find('.customerId').val();
     var agent=parentElement.find('.agent').val();
     var hatchingDate=parentElement.find('.hatching_date').val();
     var totalBirds=parentElement.find('.totalBirds').val();
@@ -144,6 +145,7 @@ function dataInsertFcrUsingAjax(element) {
         url    : Routing.generate('crm_fcr_detail_report_add',{'id':fcrId}),
         type   : 'post',
         data   : {
+            'customerId':customerId,
             'agent':agent,
             'hatchingDate':hatchingDate,
             'totalBirds':totalBirds,

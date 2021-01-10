@@ -1,6 +1,6 @@
 {% if cattleLifeCycle.crmCattleLifeCycleDetails is not empty %}
 
-    {% for index, detail in cattleLifeCycle.crmCattleLifeCycleDetails|sort|reverse %}
+    {% for index, detail in cattleLifeCycle.crmCattleLifeCycleDetails|sort %}
         <tr>
             <td class="detail_id_{{ detail.id }}">{{ index+1 }}</td>
             <td>{{ detail.visitingDate|date("d-m-Y") }}</td>

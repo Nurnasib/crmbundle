@@ -24,7 +24,7 @@
                         <p style="color: #000000">{{ 'Agent'|trans }}: {{ chickLifeCycle.agent.name }}</p>
                     </div>
                     <div class="col-md-4">
-                        <p style="color: #000000">{{ 'Reporting Date'|trans }}: {{ chickLifeCycle.reportingDate?chickLifeCycle.reportingDate|date("d-m-Y"):'' }}</p>
+                        <p style="color: #000000">{{ 'Total Birds'|trans }}: {{ chickLifeCycle.totalBirds|default('') }}</p>
                     </div>
                     <div class="col-md-4"></div>
                     <div class="col-md-4">
@@ -32,7 +32,7 @@
                     </div>
                 </div>
                 <div class="card-body-inner">
-                    <div class="" style="overflow-x: scroll">
+                    <div class="chickLifeCycleDetails_section" style="overflow-x: scroll">
                         <table class="table table-striped table-bordered table-hover chickLifeCycleDetails" id="datatable">
                             <thead class="thead-dark">
                             <tr>
@@ -40,7 +40,7 @@
                                 <th scope="col" rowspan="2">S/N</th>
                                 {#<th scope="col" rowspan="2">Bird Type</th>#}
                                 <th style="width: 90px" scope="col" rowspan="2">Visiting Week</th>
-                                <th style="width: 100px" scope="col" rowspan="2">Reporting Date</th>
+                                <th style="width: 100px" scope="col" rowspan="2">Visiting Date</th>
                                 <th scope="col" rowspan="2">Total Birds</th>
                                 <th scope="col" rowspan="2">Age(Day)</th>
                                 <th scope="col" colspan="2">Mortality</th>
@@ -89,7 +89,7 @@
                                                 <input type="text" class="form-control reportingDate datePicker" value="{{ detail.reportingDate?detail.reportingDate|date("d-m-Y"):'' }}">
                                             </div>
                                         </td>
-                                        <td><input type="number" class="form-control totalBirds" name="totalBirds" value="{{ detail.totalBirds }}"> </td>
+                                        <td>{{ detail.totalBirds }}</td>
                                         <td><input type="number" class="form-control ageDays" value="{{ detail.ageDays }}"> </td>
                                         <td><input type="number" class="form-control mortalityPes" value="{{ detail.mortalityPes }}"> </td>
                                         <td class="mortalityPercent">{{ detail.mortalityPercent }} </td>
@@ -101,37 +101,13 @@
                                         <td class="withoutMortality">{{ detail.withoutMortality }}</td>
                                         <td class="withMortality">{{ detail.withMortality }}</td>
                                         <td>
-                                            <select name="hatchery" class="form-control hatchery">
-                                                <option value="">Choose Hatchery</option>
-                                                {% if hatcheries is not empty %}
-                                                    {% for hatchery in hatcheries %}
-                                                        <option value="{{ hatchery.id }}" {{detail.hatchery is not empty and detail.hatchery.id==hatchery.id?'selected="selected"':'' }}>{{ hatchery.name }}</option>
-                                                    {% endfor %}
-                                                {% endif %}
-                                            </select>
-                                            {#<input type="text" class="form-control feedType" value="{{ detail.feedType?detail.feedType:'' }}">#}
+                                            {{ detail.crmChickLifeCycle.hatchery.name|default('') }}
                                         </td>
                                         <td>
-                                            <select name="breed" class="form-control breed">
-                                                <option value="">Choose Breed</option>
-                                                {% if breeds is not empty %}
-                                                    {% for breed in breeds %}
-                                                        <option value="{{ breed.id }}" {{detail.breed is not empty and detail.breed.id==breed.id?'selected="selected"':'' }}>{{ breed.name }}</option>
-                                                    {% endfor %}
-                                                {% endif %}
-                                            </select>
-                                            {#<input type="text" class="form-control feedType" value="{{ detail.feedType?detail.feedType:'' }}">#}
+                                            {{ detail.crmChickLifeCycle.breed.name|default('') }}
                                         </td>
                                         <td>
-                                            <select name="feed" class="form-control feed">
-                                                <option value="">Choose Feed</option>
-                                                {% if feeds is not empty %}
-                                                    {% for feed in feeds %}
-                                                        <option value="{{ feed.id }}" {{detail.feed is not empty and detail.feed.id==feed.id?'selected="selected"':'' }}>{{ feed.name }}</option>
-                                                    {% endfor %}
-                                                {% endif %}
-                                            </select>
-                                            {#<input type="text" class="form-control feedType" value="{{ detail.feedType?detail.feedType:'' }}">#}
+                                            {{ detail.crmChickLifeCycle.feed.name|default('') }}
                                         </td>
                                         <td>
                                             <select name="feedType" class="form-control feedType">

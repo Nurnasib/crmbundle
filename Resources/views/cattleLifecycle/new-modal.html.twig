@@ -14,25 +14,32 @@
                         <h4>{{report.name}}</h4>
                     </div>
 
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <div class="form-group">
-                            <label class="col-md-4 control-label" for="">{{ 'Agent'|trans }}</label>
+                            <label style="text-align: right" class="col-md-4" for="">{{ 'Agent'|trans }}</label>
                             <div class="col-md-8">
-                                <span class="not-blank"> {{ 'Required'|trans }}</span>
                                 <p style="text-align: left" class="form-control">{{ crmCustomer.agent.name }}</p>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-6">
+
+                    <div class="col-md-4">
                         <div class="form-group">
-                            <label class="col-md-4 control-label" for="">{{ 'Farmer Name'|trans }}</label>
+                            <label style="text-align: right" class="col-md-4" for="">{{ 'Farmer Name'|trans }}</label>
                             <div class="col-md-8">
-                                <span class="not-blank"> {{ 'Required'|trans }}</span>
                                 <p style="text-align: left" class="form-control">{{ crmCustomer.name }}</p>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label style="text-align: right" class="col-md-4" for="">{{ 'Farmer Mobile'|trans }}</label>
+                            <div class="col-md-8">
+                                <p style="text-align: left" class="form-control">{{ crmCustomer.mobile }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
                         <div class="form-group">
                             <label class="col-md-4 control-label" for="">{{ 'Reporting Date'|trans }}</label>
                             <div class="col-md-8">
@@ -44,7 +51,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <div class="form-group">
                             <label class="col-md-4 control-label" for="">{{ 'Breed Type'|trans }}</label>
                             <div class="col-md-8">
@@ -54,11 +61,21 @@
                             </div>
                         </div>
                     </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label class="col-md-4 control-label" for="">{{ 'Feed Type'|trans }}</label>
+                            <div class="col-md-8">
+                                <span class="not-blank"> {{ 'Required'|trans }}</span>
+                                {{ form_widget(form.feed_type) }}
+                                {{ form_errors(form.feed_type) }}
+                            </div>
+                        </div>
+                    </div>
 
                     <div class="col-md-12">
                         <div class="form-group">
-                            {{ form_label(form.remarks, 'Remarks'|trans, {'label_attr': {'class': 'col-md-2'}}) }}
-                            <div class="col-md-10">
+                            {{ form_label(form.remarks, 'Remarks'|trans, {'label_attr': {'class': 'col-md-1'}}) }}
+                            <div class="col-md-11">
                                 {{ form_widget(form.remarks) }}
                                 {{ form_errors(form.remarks) }}
                             </div>

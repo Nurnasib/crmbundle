@@ -30,6 +30,7 @@ $(document).on('click',".remove", function (event) {
 function layerPerformanceDetailDataInsertUsingAjax(element) {
     var layer_performance_id = $('.layer_performance_id').val();
     var parentElement = element.closest('tr');
+    var customerId=parentElement.find('.customerId').val();
     var totalBirds=parentElement.find('.totalBirds').val();
     var ageWeek=parentElement.find('.ageWeek').val();
     var bodyWeightAchieved=parentElement.find('.bodyWeightAchieved').val();
@@ -54,6 +55,7 @@ function layerPerformanceDetailDataInsertUsingAjax(element) {
         url    : Routing.generate('crm_layer_performance_detail_report_add',{'id':layer_performance_id}),
         type   : 'post',
         data   : {
+            'customerId':customerId,
             'totalBirds':totalBirds,
             'ageWeek':ageWeek,
             'bodyWeightAchieved':bodyWeightAchieved,
@@ -72,9 +74,9 @@ function layerPerformanceDetailDataInsertUsingAjax(element) {
         },
         dataType : 'json',
         success: function(response){
-            // console.log(response.data);
+
             if(response.status===200){
-                // console.log(response.success);
+
                 var refreshUrl = Routing.generate('layer_performance_details_refresh',{'id':layer_performance_id});
                 $(".layer_performance_details tbody").load(refreshUrl);
             }

@@ -27,7 +27,7 @@
                         <p style="color: #000000">{{ 'Agent'|trans }}: {{ cattleLifeCycle.agent.name }}</p>
                     </div>
                     <div class="col-md-4">
-                        <p style="color: #000000">{{ 'Reporting Date'|trans }}: {{ cattleLifeCycle.reportingDate?cattleLifeCycle.reportingDate|date("d-m-Y"):'' }}</p>
+                        <p style="color: #000000">{{ 'Breed Type'|trans }}: {{ cattleLifeCycle.breedType.name|default('') }}</p>
                     </div>
                 </div>
                 <div class="card-body card-body-inner" style="padding: 0 5px; overflow-x: scroll">
@@ -117,7 +117,7 @@
                                 <td></td>
                                 <td></td>
                                 <td>
-                                    {{ form_widget(form.name_of_ready_feed,{'type':'text'}) }}
+                                    {{ cattleLifeCycle.feedType.name|default('') }}
                                 </td>
                                 <td>
                                     {{ form_widget(form.remarks,{'type':'text'}) }}

@@ -183,13 +183,6 @@ class CattleLifeCycleDetails
 
     /**
      * @var string
-     * @Orm\Column(name="name_of_ready_feed", type="string", nullable=true)
-     */
-
-    private $nameOfReadyFeed;
-
-    /**
-     * @var string
      * @Orm\Column(name="remarks", type="text", nullable=true)
      */
 
@@ -653,15 +646,7 @@ class CattleLifeCycleDetails
      */
     public function getNameOfReadyFeed()
     {
-        return $this->nameOfReadyFeed;
-    }
-
-    /**
-     * @param string $nameOfReadyFeed
-     */
-    public function setNameOfReadyFeed(string $nameOfReadyFeed): void
-    {
-        $this->nameOfReadyFeed = $nameOfReadyFeed;
+        return $this->getCrmCattleLifeCycle()->getFeedType()?$this->getCrmCattleLifeCycle()->getFeedType()->getName():'';
     }
 
     /**
