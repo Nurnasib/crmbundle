@@ -816,6 +816,7 @@ $(document).on('click', '#crm-other-agent-btn', function(e) {
     e.preventDefault();
     var name =$(this).closest("form").find(".name").val();
     var mobile = $(this).closest("form").find(".mobile").val();
+    var crm_visit_id = $('body').find('.crm_visit_id').val();
 
     if (name === "") {
         alert("Name must be filled out");
@@ -833,9 +834,15 @@ $(document).on('click', '#crm-other-agent-btn', function(e) {
         processData : false,
         contentType : false,
         success: function (data) {
+            console.log(data);
             $('form#otherAgentForm')[0].reset();
+            if(data[0].status===200){
+                var refreshUrl = Routing.generate('crm_visit_item_refresh',{'id':crm_visit_id,'process':'other-agent'});
+                $(".crm_detail_other_agent_section").load(refreshUrl);
+            }
         }
     });
+    $('#otherAgentModal').modal('hide');
 
 });
 
@@ -844,7 +851,7 @@ $(document).on('click', '#crm-sub-agent-btn', function(e) {
     e.preventDefault();
     var name =$(this).closest("form").find(".name").val();
     var mobile = $(this).closest("form").find(".mobile").val();
-
+    var crm_visit_id = $('body').find('.crm_visit_id').val();
     if (name === "") {
         alert("Name must be filled out");
         return false;
@@ -861,9 +868,15 @@ $(document).on('click', '#crm-sub-agent-btn', function(e) {
         processData : false,
         contentType : false,
         success: function (data) {
+            // console.log(data[0].status);
             $('form#subAgentForm')[0].reset();
+            if(data[0].status===200){
+                var refreshUrl = Routing.generate('crm_visit_item_refresh',{'id':crm_visit_id,'process':'sub-agent'});
+                $(".crm_detail_sub_agent_section").load(refreshUrl);
+            }
         }
     });
+    $('#subAgentModal').modal('hide');
 
 });
 

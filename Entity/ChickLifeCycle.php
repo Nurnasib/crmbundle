@@ -30,7 +30,7 @@ class ChickLifeCycle
 
     /**
      * @var CrmCustomer
-     * @ORM\ManyToOne(targetEntity="CrmCustomer" , inversedBy="chicklifecycle")
+     * @ORM\ManyToOne(targetEntity="CrmCustomer", inversedBy="crmChickLifeCycle")
      */
     private $customer;
 
@@ -43,7 +43,7 @@ class ChickLifeCycle
 
     /**
      * @var Agent
-     * @ORM\ManyToOne(targetEntity="App\Entity\Core\Agent" , inversedBy="chicklifecycle")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Core\Agent" , inversedBy="crmChickLifeCycle")
      */
     private $agent;
 

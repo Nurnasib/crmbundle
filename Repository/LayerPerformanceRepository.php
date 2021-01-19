@@ -11,7 +11,8 @@
 
 namespace Terminalbd\CrmBundle\Repository;
 
-use Doctrine\ORM\EntityRepository;
+//use Doctrine\ORM\EntityRepository;
+use Terminalbd\CrmBundle\Repository\BaseRepository;
 
 /**
  * This custom Doctrine repository contains some methods which are useful when
@@ -21,7 +22,7 @@ use Doctrine\ORM\EntityRepository;
  *
  * @author Md Shafiqul islam <shafiqabs@gmail.com>
  */
-class LayerPerformanceRepository extends EntityRepository
+class LayerPerformanceRepository extends BaseRepository
 {
 
     public function getLayerPerformanceReportByReportingDateAndFeedType($report, $employee)
@@ -40,5 +41,19 @@ class LayerPerformanceRepository extends EntityRepository
             return $query->getQuery()->getOneOrNullResult();
         }
         return array();
+    }
+    public function getLayerPerformanceReport($filterBy)
+    {
+        $qb = $this->createQueryBuilder('e');
+        $this->handleSearchFilterBetween($qb, $filterBy);
+
+        $results = $qb->getQuery()->getResult();
+
+       // $results['month'] = $results[0]->getCreated()->format('F-Y');
+//        dd($results);
+
+        return $results;
+
+
     }
 }

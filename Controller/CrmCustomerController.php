@@ -153,6 +153,7 @@ class CrmCustomerController extends AbstractController
         $em->persist($entity);
         $em->flush();
         $returnData= array(
+            'status'=>200,
           'id'=>$entity->getId(),
           'name'=>$entity->getName(),
         );
@@ -184,6 +185,7 @@ class CrmCustomerController extends AbstractController
         $em->persist($entity);
         $em->flush();
         $returnData= array(
+            'status'=>200,
           'id'=>$entity->getId(),
           'name'=>$entity->getName(),
         );

@@ -12,6 +12,7 @@
 namespace Terminalbd\CrmBundle\Repository;
 use App\Entity\User;
 use Doctrine\ORM\EntityRepository;
+use Terminalbd\CrmBundle\Entity\ChickLifeCycle;
 
 /**
  * This custom Doctrine repository contains some methods which are useful when
@@ -41,4 +42,17 @@ class CrmCustomerRepository extends EntityRepository
         return $result;
 
     }
+
+//    public function broilerLifeCycleReport()
+//    {
+//        $qb = $this->_em->createQueryBuilder();
+//
+//        $qb->from(ChickLifeCycle::class, 'chick_life_cycle')
+//            ->select('chick_life_cycle')
+//        ;
+//
+//        $result = $qb->getQuery()->getArrayResult();
+//
+//        return $result;
+//    }
 }

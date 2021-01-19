@@ -18,6 +18,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -31,6 +32,7 @@ use Terminalbd\CrmBundle\Entity\SettingLifeCycle;
 use Terminalbd\CrmBundle\Entity\SonaliStandard;
 use Terminalbd\CrmBundle\Form\ChickLifeCycleFormType;
 use Terminalbd\CrmBundle\Entity\Setting;
+use Terminalbd\CrmBundle\Form\SearchFilterFormType;
 
 
 /**
@@ -244,14 +246,25 @@ class ChickLifeCycleController extends AbstractController
 
     /**
      * @param $report
-     * @Route("/{report}", methods={"GET"}, name="crm_chick_report")
+     * @Route("/{report}", methods={"GET","POST"}, name="crm_chick_report")
      * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_AGM')")
      */
-    public function indexReport( string $report): Response
+    public function indexReport( string $report, Request $request): Response
     {
+        $entities=[];
+        $searchForm = $this->createForm(SearchFilterFormType::class)->remove('employee')->remove('startDateCreated')->remove('endDateCreated');
+        $searchForm->handleRequest($request);
 
-        $entities = $this->getDoctrine()->getRepository(ChickLifeCycle::class)->getChickLifeCycleByReportType($report);
-        return $this->render('@TerminalbdCrm/chickLifecycle/report/report.html.twig',['entities' => $entities]);
+        if ($searchForm->isSubmitted()){
+            $filterBy = $searchForm->getData();
+            $filterBy['slug'] = $report;
+//            dd($filterBy);
+
+            $entities = $this->getDoctrine()->getRepository(ChickLifeCycle::class)->getChickLifeCycleByReportType($filterBy);
+//            dd($entities);
+
+        }
+        return $this->render('@TerminalbdCrm/chickLifecycle/report/report.html.twig',['searchForm' => $searchForm->createView(), 'entities' => $entities]);
     }
 
     /**

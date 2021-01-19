@@ -21,12 +21,12 @@
             <div class="card">
                 <div class="card-header">
                     <h5>{{ 'Layer Performance'|trans }}</h5>
-                    <div class="card-header-right">
-                        <div class="btn-group btn-group-sm" role="group" aria-label="Button group with nested dropdown">
-                            {#<a href="{{ path('layer_performance_new') }}" class="btn btn-sm  green-bg white-font"><i class="fas fa-plus"></i>{{ 'Add New'|trans }}</a>#}
-                            {#<a href="{{ path('layer_performance') }}" class="btn btn-sm gray-bg white-font"><i class="fa fa-th-list"></i>{{ 'Layer Performance'|trans }}</a>#}
+                    {% if entities is not empty %}
+                        <div class="btn-group btn-group-sm float-right" role="group" aria-label="Button group with nested dropdown">
+                            <a target="_blank" href="/en/crm/chick/27/report/pdf" class="btn blue-bg white-font btn-sm"><i class="fa fa-file-pdf"></i> PDF</a>
+                            <a target="_blank" href="/en/crm/chick/27/report/excel" class="btn btn-sm bg-primary white-font"><i class="fa fa-file-excel"></i> Excel</a>
                         </div>
-                    </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -35,8 +35,8 @@
                 {{ form_start(searchForm) }}
                 <table class="table table-borderd">
                     <thead class="thead-dark">
-                        <th>{{ form_widget(searchForm.startDate,{'id': 'start-date'}) }}</th>
-                        <th>{{ form_widget(searchForm.endDate,{'id': 'end-date'}) }}</th>
+                        <th>{{ form_widget(searchForm.startDateCreated,{'id': 'start-date'}) }}</th>
+                        <th>{{ form_widget(searchForm.endDateCreated,{'id': 'end-date'}) }}</th>
                         <th>{{ form_widget(searchForm.employee) }}</th>
                         <th>{{ form_widget(searchForm.filter) }}</th>
                     </thead>
@@ -47,7 +47,21 @@
         {% if entities is not empty %}
         <div class="row">
             <div class="card">
-                <div class="card-block">
+                <div class="card-block pt-5">
+                    <h3 class="text-center">NOURISH POULTRY AND HATCHERY LTD</h3>
+                    <h5 class="text-center">UTTARA, DHAKA.</h5>
+                    <h6 class="text-center">LAYER PERFORMANCE REPORT</h6>
+                    <table class="table table-borderd">
+                        <thead class="thead-dark">
+                        <tr>
+                            <th>Name of CSO: {{ entities[0].employee.name}}</th>
+                            <th>Designation: {{ entities[0].employee.designation.name}}</th>
+                            <th>Region: {{ entities[0].employee.regional.parent.name}}</th>
+                            <th>Month: {{ entities[0].created|date('F-Y') }}</th>
+                        </tr>
+                        </thead>
+                    </table>
+
                     <table class="table table-striped table-bordered table-hover" id="datatable">
                         <thead class="thead-dark">
                         <tr>
@@ -87,21 +101,35 @@
 
                         </thead>
                         <tbody>
-
-{#                                {% for entity in entities %}#}
-
-{#                                    <tr>#}
-{#                                        <td> {{ loop.index }} </td>#}
-{#                                        <td> {{ entity.employee.name |default('') }} </td>#}
-{#                                        <td> {{ entity.reportingMonth|date('d-m-Y') }} </td>#}
-{#                                        <td>#}
-{#                                            <a class="btn btn-primary btn-sm" href=""><i class="feather icon-edit"></i> {{ 'Report'|trans }}</a>#}
-{#                                            #}{#<a data-action='{{ path('layer_performance_details_modal',{'id': entity is not empty?entity.id:''}) }}' href='?process=postView_{{ entity.id }}&check=show#modal' id='postView_{{ entity.id }}' >{{ 'Generate Report'|trans }}</a>#}
-{#                                            #}{#<a class="btn  btn-transparent btn-mini red-font remove" href="javascript:" data-action="{{ path('layer_performance_delete',{'id':entity.id}) }}"><i class="fa fa-remove"></i></a>#}
-{#                                        </td>#}
-
-{#                                    </tr>#}
-{#                                {% endfor %}#}
+                        {% for entity in entities %}
+                            {% for detail in entity.crmLayerPerformanceDetails %}
+                                <tr>
+                                    <td>{{ detail.agent.name|default('N/A') }}</td>
+                                    <td>{{ detail.agent.address|default('N/A') }}</td>
+                                    <td>{{ detail.customer.name|default('N/A') }}</td>
+                                    <td>{{ detail.customer.mobile|default('N/A') }}</td>
+                                    <td>{{ detail.totalBirds|default(0) }}</td>
+                                    <td>{{ detail.ageWeek|default(0) }}</td>
+                                    <td>{{ detail.birdWeightAchieved|default(0) }}</td>
+                                    <td>{{ detail.birdWeightTarget|default(0) }}</td>
+                                    <td>{{ detail.feedIntakePerBird|default(0) }}</td>
+                                    <td>{{ detail.feedTarget|default(0) }}</td>
+                                    <td>{{ detail.eggProductionAchieved|default(0) }}</td>
+                                    <td>{{ detail.eggProductionTarget|default(0) }}</td>
+                                    <td>{{ detail.eggWeightAchieved|default(0) }}</td>
+                                    <td>{{ detail.eggWeightStand|default(0) }}</td>
+                                    <td>{{ detail.feedType.name|default('N/A') }}</td>
+                                    <td>{{ detail.productionDate|date('d-m-Y') }}</td>
+                                    <td>{{ detail.batchNo|default(0) }}</td>
+                                    <td>{{ detail.feedMill.name|default('N/A') }}</td>
+                                    <td>{{ detail.hatchery.name|default('N/A') }}</td>
+                                    <td>{{ detail.breed.name|default('N/A') }}</td>
+                                    <td>{{ detail.color.name|default('N/A') }}</td>
+                                    <td>{{ detail.disease|default('N/A') }}</td>
+                                    <td>{{ detail.remarks|default('N/A') }}</td>
+                                </tr>
+                            {% endfor %}
+                        {% endfor %}
                         </tbody>
                     </table>
                 </div>

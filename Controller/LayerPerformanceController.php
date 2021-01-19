@@ -30,6 +30,7 @@ use Terminalbd\CrmBundle\Entity\Setting;
 use Terminalbd\CrmBundle\Entity\SettingLifeCycle;
 use Terminalbd\CrmBundle\Form\FcrFormType;
 use Terminalbd\CrmBundle\Form\LayerPerformanceFormType;
+use Terminalbd\CrmBundle\Form\SearchFilterFormType;
 
 
 /**
@@ -48,13 +49,22 @@ class LayerPerformanceController extends AbstractController
     }
 
     /**
-     * @Route("/report", methods={"GET"}, name="layer_performance_report")
+     * @Route("/report", methods={"GET","POST"}, name="layer_performance_report")
      * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_AGM')")
      */
     public function indexReport(Request $request): Response
     {
-        $entities = $this->getDoctrine()->getRepository(LayerPerformance::class)->findAll();
-        return $this->render('@TerminalbdCrm/layerPerformance/index.html.twig',['entities' => $entities]);
+        $entities = [];
+        $searchForm = $this->createForm(SearchFilterFormType::class)->remove('farmer')->remove('startDate')->remove('endDate');
+
+        $searchForm->handleRequest($request);
+        if ($searchForm->isSubmitted()){
+            $filterBy = $searchForm->getData();
+//            dd($filterBy);
+            $entities = $this->getDoctrine()->getRepository(LayerPerformance::class)->getLayerPerformanceReport($filterBy);
+        }
+
+        return $this->render('@TerminalbdCrm/layerPerformance/report/report.html.twig',['searchForm' => $searchForm->createView(), 'entities' => $entities]);
     }
 
     /**
