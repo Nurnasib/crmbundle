@@ -47,26 +47,7 @@ class LayerPerformanceController extends AbstractController
         $entities = $this->getDoctrine()->getRepository(LayerPerformance::class)->findBy(array('employee'=>$this->getUser()));
         return $this->render('@TerminalbdCrm/layerPerformance/index.html.twig',['entities' => $entities]);
     }
-
-    /**
-     * @Route("/report", methods={"GET","POST"}, name="layer_performance_report")
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_AGM')")
-     */
-    public function indexReport(Request $request): Response
-    {
-        $entities = [];
-        $searchForm = $this->createForm(SearchFilterFormType::class)->remove('farmer')->remove('startDate')->remove('endDate');
-
-        $searchForm->handleRequest($request);
-        if ($searchForm->isSubmitted()){
-            $filterBy = $searchForm->getData();
-//            dd($filterBy);
-            $entities = $this->getDoctrine()->getRepository(LayerPerformance::class)->getLayerPerformanceReport($filterBy);
-        }
-
-        return $this->render('@TerminalbdCrm/layerPerformance/report/report.html.twig',['searchForm' => $searchForm->createView(), 'entities' => $entities]);
-    }
-
+    
     /**
      * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      * @Route("/customer/{id}/report/{report}/new", methods={"GET", "POST"}, name="layer_performance_new")

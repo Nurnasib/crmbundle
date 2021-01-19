@@ -13,23 +13,22 @@ use Terminalbd\CrmBundle\Entity\CrmVisit;
 /**
  * Class CrmDailyActivitiesReportController
  * @package Terminalbd\CrmBundle\Controller\Report
- * @Route("/crm/report")
+ * @Route("/crm")
  */
 class CrmDailyActivitiesReportController extends AbstractController
 {
     /**
      * @Route("/daily-activities", name="daily_activities")
      */
-    public function dailyReport(Request $request){
+    public function dailyReport(Request $request)
+    {
+        $activities = [];
         $form = $this->createFormBuilder()
             ->add('date', TextType::class,[
                 'attr' =>[
                     'autocomplete' => 'off'
                 ]
             ])
-//            ->add('Region', EntityType::class,[
-//                'class' => Location::class
-//            ])
             ->add('FindReport', SubmitType::class,[
                 'attr'=>[
                     'class' =>'btn btn-primary btn-sm'
@@ -48,10 +47,10 @@ class CrmDailyActivitiesReportController extends AbstractController
                 $this->addFlash('message', "No Activities are found for " . $date['date'] );
                 return $this->redirectToRoute('daily_activities');
             }else{
-                return $this->render("@TerminalbdCrm/report/crmDailyActivities/daily-activities-report.html.twig", ['data'=>$activities]);
+                return $this->render("@TerminalbdCrm/report/customerDailyActivities/report-daily-activities.html.twig", ['form'=>$form->createView(),'data'=>$activities]);
             }
         }
-        return $this->render("@TerminalbdCrm/report/crmDailyActivities/index.html.twig", ['form'=>$form->createView()]);
+        return $this->render("@TerminalbdCrm/report/customerDailyActivities/report-daily-activities.html.twig", ['form'=>$form->createView()]);
     }
 
     public function crmDailyReport($date)
@@ -64,13 +63,6 @@ class CrmDailyActivitiesReportController extends AbstractController
 
 
         $data = $this->getDoctrine()->getRepository(CrmVisit::class)->findDailyReport($filterBy);
-
-//        if (empty($data)){
-//            $data = 'No Data Found!';
-//            $this->addFlash('message', "No Activities are found for $date");
-//            $this->redirectToRoute('daily_activities');
-//        }
-//        dd($data);
         return $data;
     }
 }

@@ -242,30 +242,7 @@ class ChickLifeCycleController extends AbstractController
             'status'=>200
         ));
     }
-
-
-    /**
-     * @param $report
-     * @Route("/{report}", methods={"GET","POST"}, name="crm_chick_report")
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_AGM')")
-     */
-    public function indexReport( string $report, Request $request): Response
-    {
-        $entities=[];
-        $searchForm = $this->createForm(SearchFilterFormType::class)->remove('employee')->remove('startDateCreated')->remove('endDateCreated');
-        $searchForm->handleRequest($request);
-
-        if ($searchForm->isSubmitted()){
-            $filterBy = $searchForm->getData();
-            $filterBy['slug'] = $report;
-//            dd($filterBy);
-
-            $entities = $this->getDoctrine()->getRepository(ChickLifeCycle::class)->getChickLifeCycleByReportType($filterBy);
-//            dd($entities);
-
-        }
-        return $this->render('@TerminalbdCrm/chickLifecycle/report/report.html.twig',['searchForm' => $searchForm->createView(), 'entities' => $entities]);
-    }
+    
 
     /**
      * @param ChickLifeCycle $chickLifeCycle
