@@ -16,11 +16,13 @@ use App\Entity\User;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Terminalbd\CrmBundle\Entity\CrmCustomer;
+use Terminalbd\CrmBundle\Entity\Fcr;
 
 
 /**
@@ -83,6 +85,22 @@ class SearchFilterFormType extends AbstractType
                 },
                 'choice_label' => 'name',
                 'placeholder' => 'Select Employee'
+            ])
+//            ->add('feedType', EntityType::class,[
+//                'class' => Fcr::class,
+//                'query_builder' =>function(EntityRepository $repository){
+//                return $repository->createQueryBuilder('e')
+//                    ->orderBy('e.fcrOfFeed');
+//                },
+//                'choice_label' => 'fcrOfFeed',
+//                'placeholder' => 'Feed Type'
+//            ])
+            ->add('feedType', ChoiceType::class,[
+                'choices'=>[
+                    'Feed Type' => Null,
+                    'Before' => 'BEFORE',
+                    'After' => 'AFTER'
+                ]
             ])
             ->add('filter', SubmitType::class,[
                 'attr'=>[

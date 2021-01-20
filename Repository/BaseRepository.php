@@ -11,8 +11,8 @@ class BaseRepository extends EntityRepository
     protected function handleSearchFilterBetween($qb,$filterBy)
     {
         if (isset($filterBy)){
-            $startDate = isset($filterBy['startDate'])? $filterBy['startDate']: '';
-            $endDate = isset($filterBy['endDate'])? $filterBy['endDate']: '';
+            $startDate = isset($filterBy['startDate'])? $filterBy['startDate']: '' . '00:00:00';
+            $endDate = isset($filterBy['endDate'])? $filterBy['endDate']: '' . '23.59.59';
 
             $startDateCreated = isset($filterBy['startDateCreated'])? $filterBy['startDateCreated']: '';
             $endDateCreated = isset($filterBy['endDateCreated'])? $filterBy['endDateCreated']: '';
@@ -20,6 +20,7 @@ class BaseRepository extends EntityRepository
             $slug = isset($filterBy['slug'])? $filterBy['slug']: '';
             $farmer = isset($filterBy['farmer'])? $filterBy['farmer']: '';
             $employee = isset($filterBy['employee'])? $filterBy['employee']: '';
+            $feedType = isset($filterBy['feedType'])? $filterBy['feedType']: '';
 
 
 
@@ -58,6 +59,9 @@ class BaseRepository extends EntityRepository
             if (!empty($employee)){
                 $qb->leftJoin('e.employee','employee');
                 $qb->andWhere('employee.id = :employee')->setParameter('employee', $employee->getId());
+            }
+            if (!empty($feedType)){
+                $qb->andWhere('e.fcrOfFeed = :feedType')->setParameter('feedType', $feedType);
             }
 
         }
