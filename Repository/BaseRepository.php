@@ -11,11 +11,11 @@ class BaseRepository extends EntityRepository
     protected function handleSearchFilterBetween($qb,$filterBy)
     {
         if (isset($filterBy)){
-            $startDate = isset($filterBy['startDate'])? $filterBy['startDate']: '' . '00:00:00';
-            $endDate = isset($filterBy['endDate'])? $filterBy['endDate']: '' . '23.59.59';
+            $startDate = isset($filterBy['startDate'])? $filterBy['startDate']. ' 00:00:00': '';
+            $endDate = isset($filterBy['endDate'])? $filterBy['endDate']. ' 23.59.59': '';
 
-            $startDateCreated = isset($filterBy['startDateCreated'])? $filterBy['startDateCreated']: '';
-            $endDateCreated = isset($filterBy['endDateCreated'])? $filterBy['endDateCreated']: '';
+            $startDateCreated = isset($filterBy['startDateCreated'])? $filterBy['startDateCreated']. ' 00:00:00': '' ;
+            $endDateCreated = isset($filterBy['endDateCreated'])? $filterBy['endDateCreated'] . ' 23.59.59': '';
 
             $slug = isset($filterBy['slug'])? $filterBy['slug']: '';
             $farmer = isset($filterBy['farmer'])? $filterBy['farmer']: '';
@@ -31,14 +31,12 @@ class BaseRepository extends EntityRepository
 //                ))->setParameter('startDate', $startDate);
 //            }
 
-
             if (!empty($startDate)){
                 $qb->andWhere('e.createdAt >= :startDate')->setParameter('startDate', $startDate);
             }
             if (!empty($endDate)){
                 $qb->andWhere('e.createdAt <= :endDate')->setParameter('endDate', $endDate);
             }
-
 
             if (!empty($startDateCreated)){
                 $qb->andWhere('e.created >= :startDate')->setParameter('startDate', $startDateCreated);

@@ -21,7 +21,7 @@ class FcrReportController extends AbstractController
      * @return \Symfony\Component\HttpFoundation\Response
      * @Route("/report/fcr", name="report_fcr")
      */
-    public function beforeSaleReport(Request $request): Response
+    public function saleReport(Request $request): Response
     {
         $entities = [];
         $searchForm = $this->createForm(SearchFilterFormType::class);
