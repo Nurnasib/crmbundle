@@ -1,22 +1,15 @@
 {% extends 'admin/layout.html.twig' %}
 
 {% block body %}
-{#    {{ dump(entities) }}#}
-
-{#    {% for e in entities %}#}
-{#        {% for a in e.crmLayerLifeCycleDetails %}#}
-{#            {{ a.ageWeek }}#}
-{#            {% endfor %}#}
-{#    {% endfor %}#}
     <div class="row">
         <div class="col">
             <div class="card">
                 <div class="card-header p-3">
                     <h5>{{ 'Layer Life Cycle Report'|trans }}</h5>
-                    {% if entities is not empty %}
+                    {% if filterBy is not empty %}
                         <div class="btn-group btn-group-sm float-right" role="group" aria-label="Button group with nested dropdown">
                             <a target="_blank" href="/en/crm/chick/27/report/pdf" class="btn blue-bg white-font btn-sm"><i class="fa fa-file-pdf"></i> PDF</a>
-                            <a target="_blank" href="/en/crm/chick/27/report/excel" class="btn btn-sm bg-primary white-font"><i class="fa fa-file-excel"></i> Excel</a>
+                            <a target="_blank" href="{{ path('layer_life_cycle_excel', {'filterBy': filterBy}) }}" class="btn btn-sm bg-primary white-font"><i class="fa fa-file-excel"></i> Excel</a>
                         </div>
                     {% endif %}
                 </div>
@@ -43,10 +36,7 @@
                                 {{ form_label(searchForm.farmer, 'Select Farmer:') }}
                                 {{ form_widget(searchForm.farmer) }}
                             </th>
-                            <th>
-                                {{ form_label(searchForm.filter) }}
-                                {{ form_widget(searchForm.filter) }}
-                            </th>
+                            <th>{{ form_widget(searchForm.filter,{'attr':{'style':'margin-top: 26px'}}) }}</th>
                         </tr>
                         </thead>
                     </table>

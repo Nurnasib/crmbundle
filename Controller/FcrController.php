@@ -48,18 +48,18 @@ class FcrController extends AbstractController
         return $this->render('@TerminalbdCrm/fcr/index.html.twig',['entities' => $entities]);
     }
 
-    /**
-     * @Route("/report", methods={"GET"}, name="fcr_report")
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_AGM')")
-     */
-    public function indexReport(Request $request): Response
+//    /**
+//     * @Route("/report", methods={"GET"}, name="fcr_report")
+//     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_AGM')")
+//     */
+/*    public function indexReport(Request $request): Response
     {
 
         $entities = $this->getDoctrine()->getRepository(Fcr::class)->findAll();
         return $this->render('@TerminalbdCrm/fcr/report.html.twig',[
             'entities' => $entities,
         ]);
-    }
+    }*/
 
     /**
      * @Route("/after", methods={"GET"}, name="fcr_after")

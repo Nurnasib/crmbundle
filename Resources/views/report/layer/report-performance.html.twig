@@ -21,10 +21,10 @@
             <div class="card">
                 <div class="card-header">
                     <h5>{{ 'Layer Performance'|trans }}</h5>
-                    {% if entities is not empty %}
+                    {% if filterBy is not empty %}
                         <div class="btn-group btn-group-sm float-right" role="group" aria-label="Button group with nested dropdown">
                             <a target="_blank" href="/en/crm/chick/27/report/pdf" class="btn blue-bg white-font btn-sm"><i class="fa fa-file-pdf"></i> PDF</a>
-                            <a target="_blank" href="/en/crm/chick/27/report/excel" class="btn btn-sm bg-primary white-font"><i class="fa fa-file-excel"></i> Excel</a>
+                            <a target="_blank" href="{{ path('layer_performance_report_excel',{'filterBy': filterBy}) }}" class="btn btn-sm bg-primary white-font"><i class="fa fa-file-excel"></i> Excel</a>
                         </div>
                     {% endif %}
                 </div>
@@ -35,10 +35,19 @@
                 {{ form_start(searchForm) }}
                 <table class="table table-borderd">
                     <thead class="thead-dark">
-                        <th>{{ form_widget(searchForm.startDateCreated,{'id': 'start-date'}) }}</th>
-                        <th>{{ form_widget(searchForm.endDateCreated,{'id': 'end-date'}) }}</th>
-                        <th>{{ form_widget(searchForm.employee) }}</th>
-                        <th>{{ form_widget(searchForm.filter) }}</th>
+                        <th>
+                            {{ form_label(searchForm.startDateCreated,'Starting Date:') }}
+                            {{ form_widget(searchForm.startDateCreated,{'id': 'start-date'}) }}
+                        </th>
+                        <th>
+                            {{ form_label(searchForm.endDateCreated,'Ending Date:') }}
+                            {{ form_widget(searchForm.endDateCreated,{'id': 'end-date'}) }}
+                        </th>
+                        <th>
+                            {{ form_label(searchForm.employee,'Employee Name:') }}
+                            {{ form_widget(searchForm.employee) }}
+                        </th>
+                        <th>{{ form_widget(searchForm.filter,{'attr':{'style': 'margin-top: 18px'}}) }}</th>
                     </thead>
                 </table>
 {#                {{ form_end(searchForm) }}#}
