@@ -31,7 +31,6 @@ class ChickLifeCycleRepository extends BaseRepository
 
         $results = $qb->getQuery()->getResult();
 
-//        dd($results);
         $data=[];
         foreach ($results as $result){
             $month = $result->getCreatedAt()->format('F-Y') ;

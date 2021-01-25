@@ -285,7 +285,14 @@ class LayerLifeCycleDetails
     }
 
     public function calculatePresentBird(){
-        return number_format($this->getTotalBirds()-$this->getDeadBird(),2,'.','');
+
+        static $deadBird=0;
+
+        if($this->getDeadBird()>0){
+            $deadBird+=$this->deadBird;
+        }
+
+        return number_format($this->getTotalBirds()-$deadBird,2,'.','');
     }
 
     /**

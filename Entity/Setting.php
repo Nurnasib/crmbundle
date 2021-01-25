@@ -178,4 +178,15 @@ class Setting
     }
 
 
+    public static function settingNameType($name, $type)
+    {
+        return $name . ' (' .$type.')';
+    }
+
+    public function getNameType()
+    {
+        return Setting::settingNameType($this->getName(), $this->getSettingType());
+    }
+
+
 }

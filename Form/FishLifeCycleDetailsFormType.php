@@ -41,6 +41,7 @@ class FishLifeCycleDetailsFormType extends AbstractType
     {
 
         $report =  $options['report']->getParent();
+        $reportParentParent =  $report->getParent();
         $builder
             ->add($builder->create('reporting_date', TextType::class, array(
                 'label' => 'Reporting Date',
@@ -112,9 +113,12 @@ class FishLifeCycleDetailsFormType extends AbstractType
                 'placeholder' => 'Choose Feed',
                 'choice_label' => 'name',
                 'attr'=>array('class'=>'span12 m-wrap feed'),
-                'query_builder' => function(EntityRepository $er){
+                'query_builder' => function(EntityRepository $er)use($reportParentParent){
                     return $er->createQueryBuilder('e')
-                        ->where("e.settingType ='FISH_NAME'")
+//                        ->join('e.parent','p')
+                        ->where("e.settingType ='SPECIES_TYPE'")
+                        ->andWhere("e.parent = :parent")
+                        ->setParameter('parent',$reportParentParent)
                         ->orderBy('e.name', 'ASC');
                 },
             ))

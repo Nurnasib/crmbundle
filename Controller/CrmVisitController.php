@@ -107,6 +107,7 @@ class CrmVisitController extends AbstractController
         $lifeCycleReport =$this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType'=>'FARMER_REPORT'));
         $firmTypes =$this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType'=>'FARM_TYPE','status'=>1));
         $breedTypes =$this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType'=>'BREED_TYPE','status'=>1));
+        $breedNames =$this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType'=>'BREED_NAME','status'=>1));
         $farmers =$this->getDoctrine()->getRepository(CrmCustomer::class)->getLocationWise($entity->getEmployee(),'farmer');
         $subAgents =$this->getDoctrine()->getRepository(CrmCustomer::class)->getLocationWise($entity->getEmployee(),'sub-agent');
         $otherAgents =$this->getDoctrine()->getRepository(CrmCustomer::class)->getLocationWise($entity->getEmployee(),'other-agent');
@@ -121,6 +122,7 @@ class CrmVisitController extends AbstractController
             'lifeCycleReport'=>$lifeCycleReport,
             'firmTypes'=>$firmTypes,
             'breedTypes'=>$breedTypes,
+            'breedNames'=>$breedNames,
             'agents'=>$agent,
             'farmers'=>$farmers,
             'subAgents'=>$subAgents,

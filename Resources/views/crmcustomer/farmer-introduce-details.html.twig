@@ -1,0 +1,24 @@
+
+{% if speciesTypes is not empty %}
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th style="text-align: center" colspan="{{ speciesTypes|length }}">{{ 'Capacity'|trans }}</th>
+        </tr>
+        <tr>
+            {% for speciesType in speciesTypes %}
+            <th style="text-align: center">{{ speciesType.name }}</th>
+            {% endfor %}
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            {% for speciesType in speciesTypes %}
+                <td><input class="form-control" type="number" min="0" name="species_type[{{ speciesType.id }}]"></td>
+            {% endfor %}
+        </tr>
+        </tbody>
+    </table>
+    {% else %}
+    <p></p>
+{% endif %}

@@ -171,7 +171,8 @@ class ChickLifeCycleController extends AbstractController
         $entity->setProDate(new \DateTime($proDate));
         $entity->setBatchNo(isset($data['batchNo'])?$data['batchNo']:null);
         $entity->setRemarks(isset($data['remarks'])?$data['remarks']:null);
-
+        $entity->setWeightStandard(0);
+        $entity->setFeedStandard(0);
         if($entity->getCrmChickLifeCycle()->getReport()->getSlug()=='sonali-life-cycle'){
 
             /* @var SonaliStandard $sonaliStandard*/

@@ -216,6 +216,28 @@ function formCommonProcess() {
         formSubmitProcessForCattleFarmVisit();
     });
 
+    $('#fish_farmer_touch_report_form').on('keypress','.fish_farmer_touch input[type=text], .fish_farmer_touch input[type=number], .fish_farmer_touch select',function (e) {
+        if (e.which === 13) {
+            e.preventDefault();
+            var $canfocus = $('.fish_farmer_touch :focusable');
+            var index = $canfocus.index(this) + 1;
+            if (index >= $canfocus.length-1){
+                index = 0;
+            }
+            $canfocus.eq(index).focus().select();
+
+            $('#fish_farmer_touch_report_form').submit(function() {
+                return false;
+            });
+        }
+    });
+
+    $('.fishFarmerTouchSection').on('click', '.fish_farmer_touch_report_button', function () {
+
+        formSubmitProcessForFishFarmerTouchReport();
+    });
+
+
 
 }
 
@@ -769,6 +791,9 @@ $(document).on('click', '.meta-remove', function(){
     });
 });
 
+$('#farmerModal').on('hidden.bs.modal', function(event) {
+    $('#farmerModal').find('.cultureSpeciesArea').html('');
+});
 
 $(document).on('click', '#crm-farmer-btn', function(e) {
 
@@ -777,6 +802,7 @@ $(document).on('click', '#crm-farmer-btn', function(e) {
     var name =$(this).closest("form").find(".name").val();
     var mobile = $(this).closest("form").find(".mobile").val();
     var agent = $(this).closest("form").find(".agent").val();
+    var farmerType = $(this).closest("form").find(".farmer_type").val();
     var location = $(this).closest("form").find(".location").val();
 
     if (name === "") {
@@ -795,6 +821,10 @@ $(document).on('click', '#crm-farmer-btn', function(e) {
         alert("Location is required");
         return false;
     }
+    else if(farmerType==="" || farmerType ===null){
+        alert("Farmer Type is required");
+        return false;
+    }
 
     $.ajax({
         url         : $('form#farmerForm').attr( 'action' ),
@@ -803,9 +833,15 @@ $(document).on('click', '#crm-farmer-btn', function(e) {
         processData : false,
         contentType : false,
         success: function (data) {
+            console.log(data);
             $('form#farmerForm')[0].reset();
             var refreshUrl = Routing.generate('crm_visit_item_refresh',{'id':crm_visit_id,'process':'farmer'});
             $(".crm_detail_farmer_section").load(refreshUrl);
+            // if(data.id){
+            $('#farmerModal').find('.cultureSpeciesArea').html('');
+            $('#farmerModal').modal('hide');
+
+            // }
         }
     });
 
@@ -895,6 +931,22 @@ $(document).on('change', '.farmer', function(e) {
     });
 
 });
+
+$(document).on('change','.farmer_type',function(){
+    var element = $(this);
+    var farmerTypeId = $(this).val();
+
+    if(farmerTypeId===''){
+        alert('ok')
+        element.closest('div.modal-body').find('.cultureSpeciesArea').html('');
+         return false;
+    }
+    $.ajax({
+        url: Routing.generate('species_name_by_parent_id_ajax',{'id':farmerTypeId})
+    }).done(function(data) {
+        element.closest('div.modal-body').find('.cultureSpeciesArea').html(data);
+    });
+}).change();
 
 $(document).on('change','.farmer_firm_type',function(){
     var element = $(this);
