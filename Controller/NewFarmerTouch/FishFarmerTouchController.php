@@ -49,7 +49,8 @@ class FishFarmerTouchController extends AbstractController
     public function newModal(Request $request, CrmCustomer $crmCustomer, Setting $report): Response
     {
         $data = $request->request->all();
-        $fishSpecies = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('status'=>1,'settingType'=>'SPECIES_TYPE'));
+        $reportParentParent= $report->getParent()->getParent();
+        $fishSpecies = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('status'=>1,'settingType'=>'SPECIES_TYPE','parent'=>$reportParentParent));
 
         $entity = new FishFarmerTouchReport();
 
@@ -75,8 +76,7 @@ class FishFarmerTouchController extends AbstractController
             $this->addFlash('success', 'post.created_successfully');
             return new Response('success');
         }
-        $fishFarmerTouchReport = $this->getDoctrine()->getRepository(FishFarmerTouchReport::class)->findBy(array('employee'=>$this->getUser()));
-
+        $fishFarmerTouchReport = $this->getDoctrine()->getRepository(FishFarmerTouchReport::class)->getFishFarmerTouchReportByDateAndEmployeeAndReport($report,$this->getUser());
         return $this->render('@TerminalbdCrm/farmerTouchReport/fish/new-modal.html.twig', [
             'report' => $report,
             'employee' => $this->getUser(),
@@ -88,14 +88,15 @@ class FishFarmerTouchController extends AbstractController
     }
 
     /**
-     * @Route("/refresh", methods={"GET"}, name="crm_fish_farmer_touch_refresh", options={"expose"=true})
+     * @Route("/{id}/refresh", methods={"GET"}, name="crm_fish_farmer_touch_refresh", options={"expose"=true})
      * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      */
-    public function fishFarmerTouchReportRefresh(): Response
+    public function fishFarmerTouchReportRefresh(Setting $report): Response
     {
-        $fishSpecies = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('status'=>1,'settingType'=>'SPECIES_TYPE'));
+        $reportParentParent= $report->getParent()->getParent();
+        $fishSpecies = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('status'=>1,'settingType'=>'SPECIES_TYPE','parent'=>$reportParentParent));
 
-        $fishFarmerTouchReport = $this->getDoctrine()->getRepository(FishFarmerTouchReport::class)->findBy(array('employee'=>$this->getUser()));
+        $fishFarmerTouchReport = $this->getDoctrine()->getRepository(FishFarmerTouchReport::class)->getFishFarmerTouchReportByDateAndEmployeeAndReport($report,$this->getUser());
 
         return $this->render('@TerminalbdCrm/farmerTouchReport/fish/fish-farmer-touch-report-body.html.twig', [
             'fishFarmerTouchReports' => $fishFarmerTouchReport,

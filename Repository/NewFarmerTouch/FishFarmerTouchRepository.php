@@ -25,5 +25,21 @@ use Terminalbd\CrmBundle\Entity\Fcr;
 class FishFarmerTouchRepository extends EntityRepository
 {
 
+    public function getFishFarmerTouchReportByDateAndEmployeeAndReport($report, $employee)
+    {
+        if($report&&$employee){
+            $startDate = date('Y-m-01', strtotime("now"));
+            $endDate = date('Y-m-t', strtotime("now"));
+            $query = $this->createQueryBuilder('fft')
+                ->where('fft.createdAt >= :startDate')
+                ->andWhere('fft.createdAt <= :endDate')
+                ->andWhere('fft.report = :report')
+                ->andWhere('fft.employee = :employee')
+                ->setParameters(array('startDate'=>$startDate, 'endDate'=>$endDate, 'report'=>$report, 'employee'=>$employee));
+
+            return $query->getQuery()->getResult();
+        }
+        return array();
+    }
 
 }
