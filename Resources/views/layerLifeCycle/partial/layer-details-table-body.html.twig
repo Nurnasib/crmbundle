@@ -1,0 +1,100 @@
+
+{% if layerLifeCycle.crmLayerLifeCycleDetails is not empty %}
+    {% set presentBird =0 %}
+    {% set eggProduction =0 %}
+    {% for index, entity in layerLifeCycle.crmLayerLifeCycleDetails %}
+        {% set presentBird = ( entity.totalBirds - entity.deadBird) %}
+        {% set eggProduction = presentBird>0?(entity.totalEggs*100)/presentBird:0 %}
+        <tr>
+            <td> {{ loop.index }} </td>
+            <td class="ageWeek"> {{ entity.ageWeek }} </td>
+            <td>
+                <div class="date_section">
+                    <input type="text" data-input-type="datetime" data-entity-id="{{ entity.id }}"
+                           data-meta-key="VisitingDate" class="form-control datePicker"
+                           value="{{ entity.visitingDate?entity.visitingDate|date('d-m-Y'):'' }}">
+                </div>
+            </td>
+            <td class="totalBirds">{{ entity.totalBirds }}</td>
+            <td class="deadBird"><input type="number" data-input-type="number" data-entity-id="{{ entity.id }}"
+                                        data-meta-key="DeadBird" class="form-control"
+                                        value="{{ entity.deadBird }}" min="0"></td>
+
+            <td class="presentBird">{{ entity.calculatePresentBird }} </td>
+
+            <td class="avgWeight"><input type="number" data-input-type="number" data-entity-id="{{ entity.id }}"
+                                         data-meta-key="AvgWeight" class="form-control"
+                                         value="{{ entity.avgWeight }}" min="0"></td>
+            <td class="targetWeight">
+                {{ entity.targetWeight }}
+            </td>
+            <td class="uniformity"><input type="number" data-input-type="number" data-entity-id="{{ entity.id }}"
+                                          data-meta-key="Uniformity" class="form-control"
+                                          value="{{ entity.uniformity }}" min="0"></td>
+            <td class="feedPerBird"><input type="number" data-input-type="number" data-entity-id="{{ entity.id }}"
+                                           data-meta-key="FeedPerBird" class="form-control"
+                                           value="{{ entity.feedPerBird }}" min="0"></td>
+
+            <td class="targetFeedPerBird">{{ entity.targetFeedPerBird }}</td>
+
+            <td class="totalEggs"><input type="number" data-input-type="number" data-entity-id="{{ entity.id }}"
+                                         data-meta-key="TotalEggs" class="form-control"
+                                         value="{{ entity.totalEggs }}" min="0"></td>
+
+            <td class="eggProduction"> {{ entity.eggProduction }} </td>
+            <td class="targetEggProduction">{{ entity.targetEggProduction }}</td>
+
+            <td class="eggWeightActual"><input type="number" data-input-type="number" data-entity-id="{{ entity.id }}"
+                                               data-meta-key="EggWeightActual" class="form-control"
+                                               value="{{ entity.eggWeightActual }}" min="0"></td>
+
+            <td class="eggWeightStandard">{{ entity.eggWeightStandard }}</td>
+
+            <td class="feedType">
+                <select  data-input-type="select" data-meta-key="FeedType"  data-entity-id="{{ entity.id }}" name="feed_type" class="form-control ">
+                    <option value="">Choose Feed Type</option>
+                    {% if feedTypes is not empty %}
+                        {% for feedType in feedTypes %}
+                            <option value="{{ feedType.id }}" {{entity.feedType is not empty and entity.feedType.id==feedType.id?'selected="selected"':'' }}>{{ feedType.name }}</option>
+                        {% endfor %}
+                    {% endif %}
+                </select>
+                {#<input type="text" data-input-type="text" data-entity-id="{{ entity.id }}"
+                       data-meta-key="FeedType" class="form-control"
+                       value="{{ entity.feedType }}">#}
+            </td>
+
+            <td class="productionDate">
+                <div class="date_section">
+                    <input type="text" data-input-type="datetime" data-entity-id="{{ entity.id }}"
+                           data-meta-key="ProductionDate" class="form-control datePicker"
+                           value="{{ entity.productionDate?entity.productionDate|date('d-m-Y'):'' }}">
+                </div>
+            </td>
+            <td class="batchNo"><input type="text" data-input-type="text" data-entity-id="{{ entity.id }}"
+                                       data-meta-key="BatchNo" class="form-control"
+                                       value="{{ entity.batchNo }}"> </td>
+            <td class="feedMill">
+                <select  data-input-type="select" data-meta-key="FeedMill"  data-entity-id="{{ entity.id }}" name="feed_mill" class="form-control ">
+                    <option value="">Choose Feed Mill</option>
+                    {% if feedMills is not empty %}
+                        {% for feedMill in feedMills %}
+                            <option value="{{ feedMill.id }}" {{entity.feedMill is not empty and entity.feedMill.id==feedMill.id?'selected="selected"':'' }}>{{ feedMill.name }}</option>
+                        {% endfor %}
+                    {% endif %}
+                </select>
+                {#<input type="text" data-input-type="text" data-entity-id="{{ entity.id }}"
+                       data-meta-key="FeedMill" class="form-control"
+                       value="{{ entity.feedMill }}">#}
+            </td>
+            <td class="medicine"><input type="text" data-input-type="text" data-entity-id="{{ entity.id }}"
+                                        data-meta-key="Medicine" class="form-control"
+                                        value="{{ entity.medicine }}"></td>
+            <td class="remarks"><input type="text" data-input-type="text" data-entity-id="{{ entity.id }}"
+                                       data-meta-key="Remarks" class="form-control"
+                                       value="{{ entity.remarks }}"></td>
+        </tr>
+
+    {% endfor %}
+
+{% endif %}
