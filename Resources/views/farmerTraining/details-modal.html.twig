@@ -1,0 +1,19 @@
+{#{% extends 'admin/layout.html.twig' %}#}
+{#{% block body_id 'kpi_domain_new' %}#}
+{#{% block body %}#}
+<div class="portlet box">
+    <div class="portlet-title">
+        <div class="caption">{{farmerTrainingReport.agentPurpose.name}}</div>
+    </div>
+    {#{{ dump(report) }}#}
+
+    <div class="portlet-body form">
+
+    </div>
+</div>
+{#{% endblock  %}#}
+{% block javascripts %}
+    {#{{ parent() }}#}
+    {#<script>#}
+    <script type="application/javascript" src="{{ asset('bundles/terminalbdcrm/js/crm/farmer-training.js') }}"></script>
+{% endblock  %}

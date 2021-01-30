@@ -288,7 +288,7 @@ class LayerLifeCycleDetails
 
         static $deadBird=0;
 
-        if($this->getDeadBird()>0){
+        if($this->deadBird>0){
             $deadBird+=$this->deadBird;
         }
 

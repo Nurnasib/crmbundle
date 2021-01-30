@@ -77,6 +77,7 @@ class SettingFormType extends AbstractType
                     'Species Type'=>'SPECIES_TYPE',
                     'Color'=>'COLOR',
                     'Chick Type'=>'CHICK_TYPE',
+                    'Training Material'=>'TRAINING_MATERIAL',
                 ],
             ])
 

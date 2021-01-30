@@ -57,7 +57,7 @@ class CattleLifeCycleController extends AbstractController
         if($existReport){
             return $this->redirectToRoute('cattle_life_cycle_details_modal', ['id'=>$existReport->getId()]);
         }
-        $data = $request->request->all();
+        $data = $request->request->get('cattle_life_cycle_form');
 
         $form = $this->createForm(CattleLifeCycleFormType::class, $entity,array('user' => $this->getUser(), 'report' => $report))
             ->add('SaveAndCreate', SubmitType::class);

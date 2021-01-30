@@ -11,7 +11,6 @@ var origin   = window.location.origin;   // Returns base URL (https://example.co
 $(document).on('opened', '.remodal', function () {
     var id = $.urlParam('process');
     var check = $.urlParam('check');
-
     var url = document.getElementById(id).getAttribute("data-action");
     $('#modal-container').load(url, function(){
         formCommonProcess();
@@ -101,6 +100,7 @@ function formCommonProcess() {
     $('.checkboxToggle').bootstrapToggle();
 
     $('.multi-select2').multiSelect({ selectableOptgroup: true });
+    $('.multi-select2-farmer').multiSelect({ selectableOptgroup: false });
 
     $('#optgroup').multiSelect({ selectableOptgroup: true });
     $('.select2').select2({
@@ -308,15 +308,15 @@ function layerLifeCycleDetailDataInsertUsingAjax(element) {
         },
         dataType : 'json',
         success: function(response){
-            parentElement.find('.presentBird').text(response.presentBird);
+            $( ".presentBird" ).each(function( index ) {
+                $( this ).text(response.presentBird[index]) ;
+            });
             parentElement.find('.eggProduction').text(response.eggProduction);
             parentElement.find('.targetWeight').text(response.targetWeight);
             parentElement.find('.targetFeedPerBird').text(response.targetFeedPerBird);
             parentElement.find('.targetEggProduction').text(response.targetEggProduction);
             parentElement.find('.eggWeightStandard').text(response.eggWeightStandard);
-            /*parentElement.find('.perBird').text(response.perBird);
-            parentElement.find('.withoutMortality').text(response.withoutMortality);
-            parentElement.find('.withMortality').text(response.withMortality);*/
+
         }
     });
 }
@@ -449,9 +449,6 @@ function formSubmitProcess() {
                     $(".alert-success").html(response);
                     $(".form-submit").html("Complete").prop("disabled", false);
                     $('form#chick_life_cycle_form')[0].reset();
-                    // location.reload();
-                    // setTimeout( explode, 2000);
-                    console.log(cattleLifeCycle_id);
                     if(cattleLifeCycle_id>0){
                         var refreshUrl = Routing.generate('crm_cattle_life_cycle_refresh',{'id':cattleLifeCycle_id});
                         $("tbody.dairyLifeCycleDetailsSection").load(refreshUrl);
@@ -599,6 +596,14 @@ $('.addmore').click(function(){
             if(response.status===200){
                 var refreshUrl = Routing.generate('crm_visit_item_refresh',{'id':crm_visit_id,'process':'farmer'});
                 $(".crm_detail_farmer_section").load(refreshUrl);
+
+                farmer_section.find('.farmer_purpose').val('');
+                farmer_section.find('.farmer_firm_type').val('');
+                farmer_section.find('.farmer_report').val('');
+                farmer_section.find('.farmer').val('');
+                farmer_section.find('.farmer_phone').val('');
+                farmer_section.find('.farmer_capacity').val('');
+                farmer_section.find('.farmer_comments').val('');
             }
         }
 
@@ -650,6 +655,11 @@ $('.addAgent').click(function(){
             if(response.status===200){
                 var refreshUrl = Routing.generate('crm_visit_item_refresh',{'id':crm_visit_id,'process':'agent'});
                 $(".crm_detail_agent_section").load(refreshUrl);
+
+                agent_section.find('.agentPurpose').val('');
+                agent_section.find('.agent').val('');
+                agent_section.find('.agentComments').val('');
+                agent_section.find('input[type=text]').val('');
             }
         }
 

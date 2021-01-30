@@ -97,7 +97,7 @@ class CrmVisitController extends AbstractController
             $this->getDoctrine()->getManager()->flush();
             $this->addFlash('success', 'post.updated_successfully');
 
-            return $this->redirectToRoute('crm_visit');
+            return $this->redirectToRoute('crm_firmTypesvisit');
         }
         $agent=$this->getDoctrine()->getRepository(Agent::class)->getLocationWise($entity->getEmployee());
         $purpose =$this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType'=>'PURPOSE'));
@@ -112,6 +112,12 @@ class CrmVisitController extends AbstractController
         $subAgents =$this->getDoctrine()->getRepository(CrmCustomer::class)->getLocationWise($entity->getEmployee(),'sub-agent');
         $otherAgents =$this->getDoctrine()->getRepository(CrmCustomer::class)->getLocationWise($entity->getEmployee(),'other-agent');
 
+        $firmTypesArray=array();
+
+        foreach ($firmTypes as $firmType){
+            $firmTypesArray[$firmType->getParent()->getName()][]=$firmType;
+        }
+
 
         return $this->render('@TerminalbdCrm/crmvisit/edit.html.twig', [
             'entity' => $entity,
@@ -120,7 +126,7 @@ class CrmVisitController extends AbstractController
             'otherAgentPurposes'=>$otherAgentPurpose,
             'subAgentPurposes'=>$subAgentPurpose,
             'lifeCycleReport'=>$lifeCycleReport,
-            'firmTypes'=>$firmTypes,
+            'firmTypes'=>$firmTypesArray,
             'breedTypes'=>$breedTypes,
             'breedNames'=>$breedNames,
             'agents'=>$agent,

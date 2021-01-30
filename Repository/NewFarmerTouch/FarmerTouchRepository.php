@@ -22,7 +22,7 @@ use Terminalbd\CrmBundle\Entity\Fcr;
  *
  * @author Md Shafiqul islam <shafiqabs@gmail.com>
  */
-class FishFarmerTouchRepository extends EntityRepository
+class FarmerTouchRepository extends EntityRepository
 {
 
     public function getFishFarmerTouchReportByDateAndEmployeeAndReport($report, $employee)
@@ -33,7 +33,7 @@ class FishFarmerTouchRepository extends EntityRepository
             $query = $this->createQueryBuilder('fft')
                 ->where('fft.createdAt >= :startDate')
                 ->andWhere('fft.createdAt <= :endDate')
-                ->andWhere('fft.report = :report')
+                ->andWhere('fft.reportParentParent = :report')
                 ->andWhere('fft.employee = :employee')
                 ->setParameters(array('startDate'=>$startDate, 'endDate'=>$endDate, 'report'=>$report, 'employee'=>$employee));
 

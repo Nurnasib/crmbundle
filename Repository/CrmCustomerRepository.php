@@ -10,6 +10,7 @@
  */
 
 namespace Terminalbd\CrmBundle\Repository;
+use App\Entity\Core\Agent;
 use App\Entity\User;
 use Doctrine\ORM\EntityRepository;
 use Terminalbd\CrmBundle\Entity\ChickLifeCycle;
@@ -40,6 +41,29 @@ class CrmCustomerRepository extends EntityRepository
         $qb->andWhere('location.id IN (:upozils)')->setParameter('upozils',$arrs);
         $result = $qb->getQuery()->getArrayResult();
         return $result;
+
+    }
+
+    public function getAgentWise(Agent $agent,$pram='farmer')
+    {
+
+        $qb = $this->createQueryBuilder('e');
+        $qb->join('e.customerGroup','s');
+        $qb->join('e.agent','a');
+        $qb->join('e.location','l');
+        $qb->select('e.id as id','e.name as name','e.address as address','e.mobile as mobile');
+        $qb->addSelect('l.name as locationName');
+        $qb->where('s.slug = :slug')->setParameter('slug',$pram);
+        $qb->andWhere('a.id = :agent')->setParameter('agent',$agent);
+        $results = $qb->getQuery()->getArrayResult();
+
+        $returnArray = [];
+
+        foreach ($results as $result){
+            $returnArray[$result['locationName']][]= $result;
+        }
+
+        return $returnArray;
 
     }
 

@@ -12,10 +12,10 @@ use Terminalbd\CrmBundle\Entity\Setting;
 
 /**
  *
- * @ORM\Table(name="crm_fish_farmer_touch_report")
- * @ORM\Entity(repositoryClass="Terminalbd\CrmBundle\Repository\NewFarmerTouch\FishFarmerTouchRepository")
+ * @ORM\Table(name="crm_farmer_touch_report")
+ * @ORM\Entity(repositoryClass="Terminalbd\CrmBundle\Repository\NewFarmerTouch\FarmerTouchRepository")
  */
-class FishFarmerTouchReport
+class FarmerTouchReport
 {
     /**
      * @var integer
@@ -33,6 +33,14 @@ class FishFarmerTouchReport
      * @ORM\JoinColumn(onDelete="CASCADE")
      */
     private $report;
+
+    /**
+     * @var Setting
+     * @ORM\ManyToOne(targetEntity="Terminalbd\CrmBundle\Entity\Setting", inversedBy="fishFarmerTouch")
+     * @ORM\JoinColumn(name="report_parent_parent_id", referencedColumnName="id")
+     * @ORM\JoinColumn(onDelete="CASCADE")
+     */
+    private $reportParentParent;
 
     /**
      * @var Agent
@@ -133,6 +141,22 @@ class FishFarmerTouchReport
     public function setReport(Setting $report): void
     {
         $this->report = $report;
+    }
+
+    /**
+     * @return Setting
+     */
+    public function getReportParentParent()
+    {
+        return $this->reportParentParent;
+    }
+
+    /**
+     * @param Setting $reportParentParent
+     */
+    public function setReportParentParent(Setting $reportParentParent): void
+    {
+        $this->reportParentParent = $reportParentParent;
     }
 
     /**

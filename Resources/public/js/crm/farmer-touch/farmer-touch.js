@@ -20,7 +20,7 @@ function formSubmitProcessForFishFarmerTouchReport() {
             $('form#fish_farmer_touch_report_form')[0].reset();
             // location.reload();
             // setTimeout( explode, 2000);
-                var refreshUrl = Routing.generate('crm_fish_farmer_touch_refresh',{'id':farmer_touch_report_id});
+                var refreshUrl = Routing.generate('crm_farmer_touch_refresh',{'id':farmer_touch_report_id});
                 $("tbody.fishFarmerTouchReportBody").load(refreshUrl);
 
         }

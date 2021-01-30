@@ -11,7 +11,6 @@
 
 namespace Terminalbd\CrmBundle\Controller\NewFarmerTouch;
 
-use App\Entity\Core\Agent;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -21,30 +20,24 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
-use Terminalbd\CrmBundle\Entity\BroilerStandard;
-use Terminalbd\CrmBundle\Entity\FishLifeCycle;
-use Terminalbd\CrmBundle\Entity\FishLifeCycleDetails;
 use Terminalbd\CrmBundle\Entity\CrmCustomer;
-use Terminalbd\CrmBundle\Entity\NewFarmerTouch\FishFarmerTouchReport;
-use Terminalbd\CrmBundle\Entity\SettingLifeCycle;
-use Terminalbd\CrmBundle\Form\FishLifeCycleDetailsFormType;
+use Terminalbd\CrmBundle\Entity\NewFarmerTouch\FarmerTouchReport;
 use Terminalbd\CrmBundle\Entity\Setting;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
-use Terminalbd\CrmBundle\Form\DairyLifeCycleDetailsFormType;
-use Terminalbd\CrmBundle\Form\NewFarmerTouch\FishFarmerTouchFormType;
+use Terminalbd\CrmBundle\Form\NewFarmerTouch\FarmerTouchFormType;
 
 
 /**
- * @Route("/crm/fish/farmer/touch")
+ * @Route("/crm/farmer/touch")
  */
-class FishFarmerTouchController extends AbstractController
+class FarmerTouchController extends AbstractController
 {
 
     /**
      * @param CrmCustomer $crmCustomer
      * @ParamConverter("crmCustomer", class="Terminalbd\CrmBundle\Entity\CrmCustomer")
      * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
-     * @Route("/customer/{id}/report/{report}/new/modal", methods={"GET", "POST"}, name="fish_farmer_touch_new_modal", options={"expose"=true})
+     * @Route("/customer/{id}/report/{report}/new/modal", methods={"GET", "POST"}, name="farmer_touch_new_modal", options={"expose"=true})
      */
     public function newModal(Request $request, CrmCustomer $crmCustomer, Setting $report): Response
     {
@@ -52,9 +45,9 @@ class FishFarmerTouchController extends AbstractController
         $reportParentParent= $report->getParent()->getParent();
         $fishSpecies = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('status'=>1,'settingType'=>'SPECIES_TYPE','parent'=>$reportParentParent));
 
-        $entity = new FishFarmerTouchReport();
+        $entity = new FarmerTouchReport();
 
-        $form = $this->createForm(FishFarmerTouchFormType::class, $entity,array('user' => $this->getUser(),'report' =>$report));
+        $form = $this->createForm(FarmerTouchFormType::class, $entity,array('user' => $this->getUser(),'report' =>$report));
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -62,6 +55,8 @@ class FishFarmerTouchController extends AbstractController
             $reporting_date = date('Y-m-d',strtotime('now'));
 
             $entity->setVisitingDate(new \DateTime($reporting_date));
+
+            $entity->setReportParentParent($reportParentParent);
 
             $entity->setCultureSpeciesItemAndQty(json_encode($data['fish_specie']));
             $entity->setCustomer($crmCustomer);
@@ -76,30 +71,30 @@ class FishFarmerTouchController extends AbstractController
             $this->addFlash('success', 'post.created_successfully');
             return new Response('success');
         }
-        $fishFarmerTouchReport = $this->getDoctrine()->getRepository(FishFarmerTouchReport::class)->getFishFarmerTouchReportByDateAndEmployeeAndReport($report,$this->getUser());
-        return $this->render('@TerminalbdCrm/farmerTouchReport/fish/new-modal.html.twig', [
+        $farmerTouchReports = $this->getDoctrine()->getRepository(FarmerTouchReport::class)->getFishFarmerTouchReportByDateAndEmployeeAndReport($reportParentParent,$this->getUser());
+        return $this->render('@TerminalbdCrm/farmerTouchReport/new-modal.html.twig', [
             'report' => $report,
             'employee' => $this->getUser(),
             'crmCustomer' => $crmCustomer,
             'fishSpecies' => $fishSpecies,
             'form' => $form->createView(),
-            'fishFarmerTouchReports' => $fishFarmerTouchReport,
+            'farmerTouchReports' => $farmerTouchReports,
         ]);
     }
 
     /**
-     * @Route("/{id}/refresh", methods={"GET"}, name="crm_fish_farmer_touch_refresh", options={"expose"=true})
+     * @Route("/{id}/refresh", methods={"GET"}, name="crm_farmer_touch_refresh", options={"expose"=true})
      * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      */
-    public function fishFarmerTouchReportRefresh(Setting $report): Response
+    public function farmerTouchReportRefresh(Setting $report): Response
     {
         $reportParentParent= $report->getParent()->getParent();
         $fishSpecies = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('status'=>1,'settingType'=>'SPECIES_TYPE','parent'=>$reportParentParent));
 
-        $fishFarmerTouchReport = $this->getDoctrine()->getRepository(FishFarmerTouchReport::class)->getFishFarmerTouchReportByDateAndEmployeeAndReport($report,$this->getUser());
+        $farmerTouchReport = $this->getDoctrine()->getRepository(FarmerTouchReport::class)->getFishFarmerTouchReportByDateAndEmployeeAndReport($reportParentParent,$this->getUser());
 
-        return $this->render('@TerminalbdCrm/farmerTouchReport/fish/fish-farmer-touch-report-body.html.twig', [
-            'fishFarmerTouchReports' => $fishFarmerTouchReport,
+        return $this->render('@TerminalbdCrm/farmerTouchReport/fish-farmer-touch-report-body.html.twig', [
+            'farmerTouchReports' => $farmerTouchReport,
             'fishSpecies' => $fishSpecies,
         ]);
     }
@@ -111,7 +106,7 @@ class FishFarmerTouchController extends AbstractController
      */
     public function deleteDetails($id): Response
     {
-        $entity = $this->getDoctrine()->getRepository(FishFarmerTouchReport::class)->find($id);
+        $entity = $this->getDoctrine()->getRepository(FarmerTouchReport::class)->find($id);
         $em = $this->getDoctrine()->getManager();
         $em->remove($entity);
         $em->flush();

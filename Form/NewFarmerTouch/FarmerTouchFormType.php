@@ -22,7 +22,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Terminalbd\CrmBundle\Entity\NewFarmerTouch\FishFarmerTouchReport;
+use Terminalbd\CrmBundle\Entity\NewFarmerTouch\FarmerTouchReport;
 use Terminalbd\CrmBundle\Entity\Setting;
 
 
@@ -31,7 +31,7 @@ use Terminalbd\CrmBundle\Entity\Setting;
  *
  * @author Md Shafiqul Islam <shafiqabs@gmail.com>
  */
-class FishFarmerTouchFormType extends AbstractType
+class FarmerTouchFormType extends AbstractType
 {
 
     /**
@@ -85,7 +85,7 @@ class FishFarmerTouchFormType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => FishFarmerTouchReport::class,
+            'data_class' => FarmerTouchReport::class,
             'user' => User::class,
             'report' => Setting::class,
         ]);

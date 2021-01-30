@@ -57,7 +57,7 @@ class LayerLifeCycleController extends AbstractController
     public function newModal(Request $request, CrmCustomer $crmCustomer, Setting $report): Response
     {
 
-        $data = $request->request->all();
+        $data = $request->request->get('layer_life_cycle_form');
         $entity = new LayerLifeCycle();
         $existReport = $this->getDoctrine()->getRepository(LayerLifeCycle::class)->findOneBy(array('employee'=>$this->getUser(),'customer'=>$crmCustomer, 'report'=>$report, 'lifeCycleState'=>LayerLifeCycle::LIFE_CYCLE_STATE_IN_PROGRESS));
         if ($existReport){
@@ -72,7 +72,7 @@ class LayerLifeCycleController extends AbstractController
             ->add('SaveAndCreate', SubmitType::class);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $hatingDate = isset($data['hatching_date'])?date('Y-m-d',strtotime($data['hatching_date'])):date('Y-m-d',strtotime('now'));
+            $hatingDate = isset($data['hatchery_date'])?date('Y-m-d',strtotime($data['hatchery_date'])):date('Y-m-d',strtotime('now'));
 
             $entity->setHatcheryDate(new \DateTime($hatingDate));
             $entity->setCustomer($crmCustomer);
@@ -179,11 +179,19 @@ class LayerLifeCycleController extends AbstractController
         $em->persist($entity);
         $em->flush();
 
+        $lifeCycleDetails = $entity->getCrmLayerLifeCycle()->getCrmLayerLifeCycleDetails();
+
+        $returnArray = array();
+        /* @var LayerLifeCycleDetails $lifeCycleDetail */
+        foreach ($lifeCycleDetails as $lifeCycleDetail){
+            $returnArray[]= $lifeCycleDetail->calculatePresentBird();
+        }
+
 
         return new JsonResponse(
             array(
                 'success'=>'Success',
-                'presentBird'=>$entity->calculatePresentBird(),
+                'presentBird'=>$returnArray,
                 'eggProduction'=>$entity->getEggProduction(),
                 'targetWeight'=>$entity->getTargetWeight(),
                 'targetFeedPerBird'=>$entity->getTargetFeedPerBird(),

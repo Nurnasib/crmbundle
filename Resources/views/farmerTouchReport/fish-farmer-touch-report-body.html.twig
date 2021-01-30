@@ -1,6 +1,6 @@
-{% if fishFarmerTouchReports is not empty %}
+{% if farmerTouchReports is not empty %}
 
-    {% for index, detail in fishFarmerTouchReports|sort %}
+    {% for index, detail in farmerTouchReports|sort %}
         <tr>
             <td class="detail_id_{{ detail.id }}">{{ index+1 }}</td>
             <td>{{ detail.customer.name }}</td>
