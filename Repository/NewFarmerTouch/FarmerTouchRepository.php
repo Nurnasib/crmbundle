@@ -35,7 +35,7 @@ class FarmerTouchRepository extends EntityRepository
                 ->andWhere('fft.createdAt <= :endDate')
                 ->andWhere('fft.reportParentParent = :report')
                 ->andWhere('fft.employee = :employee')
-                ->setParameters(array('startDate'=>$startDate, 'endDate'=>$endDate, 'report'=>$report, 'employee'=>$employee));
+                ->setParameters(array('startDate'=>$startDate.' 00:00:00', 'endDate'=>$endDate.' 23:59:59', 'report'=>$report, 'employee'=>$employee));
 
             return $query->getQuery()->getResult();
         }
