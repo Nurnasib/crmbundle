@@ -1,4 +1,4 @@
-<div class="portlet box ">
+<div class="portlet box" style="height: 95vh; overflow-x: scroll;">
     <div class="portlet-title">
         <div class="caption">{{ layerLifeCycle.report.name }} </div>
     </div>
@@ -14,47 +14,54 @@
                         <h4>{{ layerLifeCycle.report.name }}</h4>
                         <input type="hidden" class="layerLifeCycle_id" value="{{ layerLifeCycle.id }}">
                     </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        <p class="text-left" style="color: #000000; margin-bottom: 5px"><strong>{{ 'Agent Name'|trans }}:</strong> {{ layerLifeCycle.customer.agent.name }}</p>
+                    </div>
+                    <div class="col-md-3">
+                        <p class="text-left" style="color: #000000; margin-bottom: 5px">{{ 'Farmer Name'|trans }}: {{ layerLifeCycle.customer.name }}</p>
+                    </div>
+                    <div class="col-md-3">
+                        <p class="text-left" style="color: #000000; margin-bottom: 5px">{{ 'Address'|trans }}: {{ layerLifeCycle.customer.address }}</p>
+                    </div>
+                    <div class="col-md-3">
+                        <p class="text-left" style="color: #000000; margin-bottom: 5px">{{ 'Mobile'|trans }}: {{ layerLifeCycle.customer.mobile }}</p>
+                    </div>
+                </div>
 
-                    <div class="col-md-4">
-                        <p style="color: #000000; margin-bottom: 5px">{{ 'Farmer Name'|trans }}: {{ layerLifeCycle.customer.name }}</p>
+                <div class="row">
+                    <div class="col-md-3">
+                        <p class="text-left" style="color: #000000; margin-bottom: 5px">{{ 'Hatchery'|trans }}: {{ layerLifeCycle.hatchery.name }}</p>
                     </div>
-                    <div class="col-md-4">
-                        <p style="color: #000000; margin-bottom: 5px">{{ 'Address'|trans }}: {{ layerLifeCycle.customer.address }}</p>
+                    <div class="col-md-3">
+                        <p class="text-left" style="color: #000000; margin-bottom: 5px">{{ 'Breed'|trans }}: {{ layerLifeCycle.breed.name }}</p>
                     </div>
-                    <div class="col-md-4">
-                        <p style="color: #000000; margin-bottom: 5px">{{ 'Mobile'|trans }}: {{ layerLifeCycle.customer.mobile }}</p>
+                    <div class="col-md-3">
+                        <p class="text-left" style="color: #000000; margin-bottom: 5px">{{ 'Feed'|trans }}: {{ layerLifeCycle.feed.name }}</p>
                     </div>
-                    <div class="col-md-4">
-                        <p style="color: #000000; margin-bottom: 5px">{{ 'Total Birds'|trans }}: {{ layerLifeCycle.totalBirds }}</p>
-                    </div>
-                    <div class="col-md-4"></div>
-                    <div class="col-md-4">
-                        <p style="color: #000000; margin-bottom: 5px">{{ 'Hatchery Date'|trans }}
+                    <div class="col-md-3">
+                        <p class="text-left" style="color: #000000; margin-bottom: 5px">{{ 'Hatchery Date'|trans }}
                             : {{ layerLifeCycle.hatcheryDate?layerLifeCycle.hatcheryDate|date("d-m-Y"):'' }}</p>
                     </div>
-                    <div class="col-md-4">
-                        <p style="color: #000000; margin-bottom: 5px">{{ 'Hatchery'|trans }}: {{ layerLifeCycle.hatchery.name }}</p>
-                    </div>
-                    <div class="col-md-4">
-                        <p style="color: #000000; margin-bottom: 5px">{{ 'Breed'|trans }}: {{ layerLifeCycle.breed.name }}</p>
-                    </div>
-                    <div class="col-md-4">
-                        <p style="color: #000000; margin-bottom: 5px">{{ 'Feed'|trans }}: {{ layerLifeCycle.feed.name }}</p>
-                    </div>
-
                 </div>
-                <div class="card-body-inner" style="overflow-x: scroll">
+                <div class="row">
+                    <div class="col-md-3">
+                        <p class="text-left" style="color: #000000; margin-bottom: 5px">{{ 'Total Birds'|trans }}: {{ layerLifeCycle.totalBirds }}</p>
+                    </div>
+                </div>
+                <div class="card-body-inner" style="position: relative">
                     <div class="layerLifeCycleDetails_section">
-                        <table class="table table-striped table-bordered table-hover layerLifeCycleDetails"
+                        <table class="table table-striped table-bordered table-hover table-fixed layerLifeCycleDetails"
                                id="datatable">
-                            <thead class="thead-dark">
+                            <thead class="thead-dark layerLifeCycleDetailsHeader">
                             <tr>
                                 <th scope="col" rowspan="2">S/N</th>
                                 <th scope="col" rowspan="2" style="width: 55px">Age Week</th>
                                 <th scope="col" rowspan="2" width="105px">Visiting Date</th>
                                 <th scope="col" colspan="3">Birds</th>
                                 <th scope="col" colspan="2">Weight</th>
-                                <th scope="col" rowspan="2">Uniformity</th>
+                                <th scope="col" rowspan="2">Uniformity (%)</th>
                                 <th scope="col" colspan="2">Feed</th>
                                 <th scope="col" colspan="3">Egg Production</th>
                                 <th scope="col" colspan="2">Egg Weight</th>
@@ -99,6 +106,29 @@
                                 </div>
                             </div>
                             <div class="clearfix"></div>
+                            <style>
+                                .table-fixed {
+                                    width: 100%;
+                                    position: relative;
+                                }
+                                .table-fixed thead.sticky th {
+                                    position: -webkit-sticky;
+                                    position: sticky;
+                                    top: 0;
+                                    z-index: 999;
+                                    background-color: rgba(0,0,0,.7);
+                                    color: #fff;
+                                }
+
+                                .table-fixed thead.sticky th[scope=row] {
+                                    position: -webkit-sticky;
+                                    position: sticky;
+                                    left: 0;
+                                    z-index: 999;
+                                }
+
+
+                            </style>
                         </div>
                     </div>
                 </div>

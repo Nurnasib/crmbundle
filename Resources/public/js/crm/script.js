@@ -84,6 +84,18 @@ $(document).on('click','.report_complete_layer', function () {
 });
 
 function formCommonProcess() {
+    $( ".portlet" ).scroll(function() {
+        var scroll = $(this).scrollTop();
+        if (scroll >= 180) {
+            //clearHeader, not clearheader - caps H
+            $(".layerLifeCycleDetailsHeader").addClass("sticky");
+        }
+        if (scroll < 180) {
+            //clearHeader, not clearheader - caps H
+            $(".layerLifeCycleDetailsHeader").removeClass("sticky");
+        }
+        console.log(scroll);
+    });
 
     $(".timePicker").timepicker({
             timeFormat: 'hh:mm TT'

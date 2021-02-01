@@ -305,9 +305,11 @@ class LayerPerformanceDetails
     }
     public function getFormattingAgeWeek()
     {
-        $locale = 'en_US';
+        /*$locale = 'en_US';
         $nf = new NumberFormatter($locale, NumberFormatter::ORDINAL);
-        return $nf->format($this->ageWeek).' week';
+        return $nf->format($this->ageWeek).' week';*/
+
+        return $this->ageWeek;
     }
 
     /**

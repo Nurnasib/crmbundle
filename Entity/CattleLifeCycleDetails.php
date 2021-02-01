@@ -436,10 +436,10 @@ class CattleLifeCycleDetails
 
     public function calculateAverageWeightPerKgDm(){
         $result = 0;
-        $feedIntakeTotal= $this->getConsumptionFeedIntakeReadyFeed()+$this->getConsumptionFeedIntakeConventional();
-        $totalDmKg = $feedIntakeTotal+$this->getDmOfFodderGreenGrassKg()+$this->getDmOfFodderStrawKg();
+        $feedIntakeTotal= $this->consumptionFeedIntakeReadyFeed+$this->consumptionFeedIntakeConventional;
+        $totalDmKg = $feedIntakeTotal+(($this->fodderGreenGrassKg*15)/100)+(($this->fodderStrawKg*85)/100);
         if($totalDmKg>0){
-            $result = $this->getAverageWeightPerDay()/$totalDmKg;
+            $result = $this->averageWeightPerDay/$totalDmKg;
         }
         return $result;
     }

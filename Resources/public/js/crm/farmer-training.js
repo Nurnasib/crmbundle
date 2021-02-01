@@ -17,10 +17,11 @@ function getFarmerTrainingMaterialsByBreedName(breedName) {
         success: function(response){
             var htmlOption='';
             $.each( response, function( key, value ) {
-                htmlOption += '<div class="form-check form-check-inline">\n' +
-                    '  <input name="training_material['+value['id']+']" class="form-check-input" type="checkbox" id="'+value['id']+'" value="'+value['text']+'">\n' +
-                    '  <label class="form-check-label" for="'+value['id']+'">'+value['text']+'</label>\n' +
-                    '</div>'
+                htmlOption += '<tr>' +
+                    ' <td> <input name="training_material['+value['id']+']" class="form-check-input" type="checkbox" id="'+value['id']+'" value="'+value['text']+'"></td>' +
+                    ' <td>'+value['text']+'</td>' +
+                    ' <td> <input name="training_material_qty['+value['id']+']" class="form-control" type="number" min="0" value=""></td>' +
+                    '</tr>'
             });
 
             $('#training_materials').html(htmlOption);

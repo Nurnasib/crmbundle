@@ -169,12 +169,13 @@ class CattleLifeCycleController extends AbstractController
             $entity->setBodyWeightDifference($entity->calculateBodyWeightDifference());
             $entity->setAverageWeightPerDay($entity->calculateAverageWeightPerDay());
             $entity->setAverageWeightPerKgConsumptionFeed($entity->calculateAverageWeightPerKgConsumptionFeed());
-            $entity->setAverageWeightPerKgDm($entity->calculateAverageWeightPerKgDm());
             $entity->setConsumptionFeedIntakeTotal($entity->calculationConsumptionFeedIntakeTotal());
             $entity->setDmOfFodderGreenGrassKg($entity->calculateDmOfFodderGreenGrassKg());
             $entity->setDmOfFodderStrawKg($entity->calculateDmOfFodderStrawKg());
             $entity->setTotalDmKg($entity->calculateTotalDmKg());
             $entity->setDmRequirementByBwtKg($entity->calculateDmRequirementByBwtKg());
+
+            $entity->setAverageWeightPerKgDm($entity->calculateAverageWeightPerKgDm());
 
             $entity->setCrmCattleLifeCycle($cattleLifeCycle);
             $em = $this->getDoctrine()->getManager();
