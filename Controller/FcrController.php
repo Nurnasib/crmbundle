@@ -23,10 +23,12 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 //use Terminalbd\CrmBundle\Entity\BroilerStandard;
 //use Terminalbd\CrmBundle\Entity\ChickLifeCycle;
+use Terminalbd\CrmBundle\Entity\BroilerStandard;
 use Terminalbd\CrmBundle\Entity\CrmCustomer;
 use Terminalbd\CrmBundle\Entity\Fcr;
 use Terminalbd\CrmBundle\Entity\FcrDetails;
 use Terminalbd\CrmBundle\Entity\Setting;
+use Terminalbd\CrmBundle\Entity\SonaliStandard;
 use Terminalbd\CrmBundle\Form\FcrDetailsForAfterFormType;
 use Terminalbd\CrmBundle\Form\FcrDetailsFormType;
 use Terminalbd\CrmBundle\Form\FcrFormType;
@@ -274,6 +276,26 @@ class FcrController extends AbstractController
 
         $entity->setFcr($fcr);
 
+
+        if(in_array($entity->getFcr()->getReport()->getSlug(),['fcr-before-sale-sonali','fcr-after-sale-sonali'])){
+
+            /* @var SonaliStandard $sonaliStandard*/
+            $sonaliStandard= $this->getDoctrine()->getRepository(SonaliStandard::class)->findOneBy(array('age'=>$entity->getAgeDay()));
+            if($sonaliStandard){
+                $entity->setWeightStandard($sonaliStandard->getTargetBodyWeight());
+                $entity->setFeedConsumptionStandard($sonaliStandard->getFeedIntakePerDay());
+            }
+        }
+        if(in_array($entity->getFcr()->getReport()->getSlug(),['fcr-before-sale-boiler','fcr-after-sale-boiler'])){
+
+            /* @var BroilerStandard $broilerStandard*/
+            $broilerStandard= $this->getDoctrine()->getRepository(BroilerStandard::class)->findOneBy(array('age'=>$entity->getAgeDay()));
+            if($broilerStandard){
+                $entity->setWeightStandard($broilerStandard->getTargetBodyWeight());
+                $entity->setFeedConsumptionStandard($broilerStandard->getTargetFeedConsumption());
+            }
+        }
+
         $em = $this->getDoctrine()->getManager();
         $em->persist($entity);
         $em->flush();
@@ -286,6 +308,49 @@ class FcrController extends AbstractController
                 'status'=>200,
             )
         );
+
+    }
+
+    /**
+     * Displays a form to edit an existing ChickLifeCycle entity.
+     * @Route("/{id}/sonali-broiler/standard", methods={"POST"}, name="crm_sonali_and_broiler_standard_by_age", options={"expose"=true})
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     */
+
+    public function getSonaliBroilerStandardUsingAjax(Request $request, Fcr $fcr): Response
+    {
+        $ageDay = $request->request->get('ageDay');
+
+        $returnData = array();
+
+        if(in_array($fcr->getReport()->getSlug(),['fcr-before-sale-sonali','fcr-after-sale-sonali'])){
+
+            /* @var SonaliStandard $sonaliStandard*/
+            $sonaliStandard= $this->getDoctrine()->getRepository(SonaliStandard::class)->findOneBy(array('age'=>$ageDay));
+            if($sonaliStandard){
+                $returnData = array(
+                    'status'=>200,
+                    'weightStandard'=> $sonaliStandard->getTargetBodyWeight(),
+                    'feedConsumptionStandard'=> $sonaliStandard->getFeedIntakePerDay(),
+
+                );
+            }
+        }
+        if(in_array($fcr->getReport()->getSlug(),['fcr-before-sale-boiler','fcr-after-sale-boiler'])){
+
+            /* @var BroilerStandard $broilerStandard*/
+            $broilerStandard= $this->getDoctrine()->getRepository(BroilerStandard::class)->findOneBy(array('age'=>$ageDay));
+            if($broilerStandard){
+                $returnData = array(
+                    'status'=>200,
+                    'weightStandard'=> $broilerStandard->getTargetBodyWeight(),
+                    'feedConsumptionStandard'=> $broilerStandard->getTargetFeedConsumption(),
+
+                );
+            }
+        }
+
+        return new JsonResponse($returnData);
 
     }
 

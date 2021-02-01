@@ -80,6 +80,12 @@ class FcrDetails
 
     private $mortalityPercent=0;
 
+    /**
+     * @var float
+     * @Orm\Column(name="weight_standard", type="float")
+     */
+
+    private $weightStandard=0;
 
     /**
      * @var float
@@ -98,6 +104,13 @@ class FcrDetails
      * @Orm\Column(name="feed_consumption_per_bird", type="float")
      */
     private $feedConsumptionPerBird=0;
+
+    /**
+     * @var float
+     * @Orm\Column(type="float")
+     */
+
+    private $feedConsumptionStandard=0;
 
     /**
      * @var float
@@ -580,6 +593,38 @@ class FcrDetails
     public function setCreatedAt(\DateTime $createdAt): void
     {
         $this->createdAt = $createdAt;
+    }
+
+    /**
+     * @return float
+     */
+    public function getWeightStandard()
+    {
+        return $this->weightStandard;
+    }
+
+    /**
+     * @param float $weightStandard
+     */
+    public function setWeightStandard(float $weightStandard): void
+    {
+        $this->weightStandard = $weightStandard;
+    }
+
+    /**
+     * @return float
+     */
+    public function getFeedConsumptionStandard()
+    {
+        return $this->feedConsumptionStandard;
+    }
+
+    /**
+     * @param float $feedConsumptionStandard
+     */
+    public function setFeedConsumptionStandard(float $feedConsumptionStandard): void
+    {
+        $this->feedConsumptionStandard = $feedConsumptionStandard;
     }
 
 }

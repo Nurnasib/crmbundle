@@ -84,15 +84,15 @@ $(document).on('click','.report_complete_layer', function () {
 });
 
 function formCommonProcess() {
-    $( ".portlet" ).scroll(function() {
+    $( ".sticky_section" ).scroll(function() {
         var scroll = $(this).scrollTop();
-        if (scroll >= 180) {
+        if (scroll >= 50) {
             //clearHeader, not clearheader - caps H
-            $(".layerLifeCycleDetailsHeader").addClass("sticky");
+            $(".sticky_header").addClass("sticky");
         }
-        if (scroll < 180) {
+        if (scroll < 50) {
             //clearHeader, not clearheader - caps H
-            $(".layerLifeCycleDetailsHeader").removeClass("sticky");
+            $(".sticky_header").removeClass("sticky");
         }
         console.log(scroll);
     });
@@ -131,7 +131,7 @@ function formCommonProcess() {
     });
 
 
-    $('.chickLifeCycleDetails_section').on('keypress','.chickLifeCycleDetails input[type=text], .chickLifeCycleDetails input[type=number], .chickLifeCycleDetails select', function (e) {
+    $('.chickLifeCycleDetails_section').on('keypress blur','.chickLifeCycleDetails input[type=text], .chickLifeCycleDetails input[type=number], .chickLifeCycleDetails select', function (e) {
         if (e.which === 13) {
             e.preventDefault();
             var $canfocus = $('.chickLifeCycleDetails :focusable');
@@ -141,8 +141,8 @@ function formCommonProcess() {
             }
             $canfocus.eq(index).focus().select();
 
-            dataInsertChickUsingAjax($(this));
         }
+        dataInsertChickUsingAjax($(this));
     });
 
     $('#cattle_life_cycle_form').on('keypress','.cattle_life_cycle input[type=text], .cattle_life_cycle input[type=number], .cattle_life_cycle select',function (e) {
@@ -289,6 +289,7 @@ function dataInsertChickUsingAjax(element) {
         },
         dataType : 'json',
         success: function(response){
+            console.log('ok');
             parentElement.find('.mortalityPercent').text(response.mortalityPercent);
             parentElement.find('.weightStandard').text(response.weightStandard);
             parentElement.find('.feedStandard').text(response.feedStandard);
@@ -516,17 +517,6 @@ function formEditSubmitProcess() {
 }
 
 
-/*$('.chickLifeCycleDetails .mortalityPes, .chickLifeCycleDetails .totalBirds').on('keypress keyup blur',function () {
-    var parentElement = $(this).closest('tr');
-    var mortalityPes = parentElement.find('.mortalityPes').val();
-    var totalbirds= parentElement.find('.totalBirds').val();
-    if(mortalityPes!='' && totalbirds!=''){
-        var calculateValue = (parseFloat(mortalityPes)*100)/parseFloat(totalbirds);
-        parentElement.find('.mortality_percent').val(calculateValue);
-        parentElement.find('.mortality_percent').text(calculateValue);
-    }
-
-});*/
 //feed per bird
 
 /*$('.feedTotalkg, .totalBirds').on('keypress keyup blur',function () {

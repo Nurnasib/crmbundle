@@ -26,31 +26,31 @@
                     </div>
 
                 </div>
-                <div class="card-body-inner">
+                <div class="card-body-inner" style="overflow-x: scroll">
                     <div class="">
                         {#{{ form_start(form, {'attr': {'method':'post','action': path('fcr_details_modal',{'id':entity.id }),'class': 'form-horizontal right','id':'fcr_details_form'}}) }}#}
                         <table class="table table-striped table-bordered table-hover fcrReportDetails" id="fcrReportDetails">
                             <thead class="thead-dark">
                             <tr>
 
-                                <th scope="col" rowspan="2">Agent</th>
+                                <th style="width: 150px;" scope="col" rowspan="2">Agent</th>
                                 <th style="width: 105px" scope="col" rowspan="2">Hatching date</th>
-                                <th scope="col" rowspan="2">Total Birds</th>
+                                <th scope="col" rowspan="2"><pre style="font-size: 100%; margin: 0px">Total Birds</pre></th>
                                 <th scope="col" rowspan="2">Age (Day)</th>
                                 <th scope="col" colspan="2">Mortality</th>
-                                <th scope="col" rowspan="2" colspan="1">Weight (gm)</th>
-                                <th scope="col" colspan="2">Feed Consumption</th>
+                                <th scope="col" colspan="2">Weight (gm)</th>
+                                <th scope="col" colspan="3">Feed Consumption</th>
                                 <th scope="col" colspan="2">FCR</th>
-                                <th scope="col" rowspan="2">Hatchery</th>
-                                <th scope="col" rowspan="2">Breed</th>
-                                <th scope="col" rowspan="2">Feed</th>
+                                <th style="width: 150px;" scope="col" rowspan="2">Hatchery</th>
+                                <th style="width: 150px;" scope="col" rowspan="2">Breed</th>
+                                <th style="width: 150px;" scope="col" rowspan="2">Feed</th>
                                 {% if entity.fcrOfFeed == "BEFORE" %}
-                                <th scope="col" rowspan="2">FeedMill</th>
-                                <th scope="col" rowspan="2">FeedType</th>
-                                <th style="width: 105px" scope="col" rowspan="2">Pro. Date</th>
-                                <th scope="col" rowspan="2">Batch No.</th>
+                                <th style="width: 150px;" scope="col" rowspan="2">FeedMill</th>
+                                <th style="width: 150px;" scope="col" rowspan="2">FeedType</th>
+                                <th style="width: 150px;" style="width: 105px" scope="col" rowspan="2">Pro. Date</th>
+                                <th style="width: 200px;" scope="col" rowspan="2">Batch No.</th>
                                 {% endif %}
-                                <th scope="col" rowspan="2">Remarks</th>
+                                <th style="width: 300px;" scope="col" rowspan="2">Remarks</th>
                                 <th scope="col" rowspan="2"></th>
 
                             </tr>
@@ -59,8 +59,12 @@
                                 <th scope="col">Pes</th>
                                 <th scope="col">%</th>
 
-                                <th scope="col">Total (kg)</th>
+                                <th scope="col">Standard</th>
+                                <th scope="col">Achieved</th>
+
+                                <th scope="col"><pre style="font-size: 100%; margin: 0px">Total (kg)</pre></th>
                                 <th scope="col">Per bird (gm)</th>
+                                <th scope="col">Standard</th>
 
                                 <th scope="col">Without  M</th>
                                 <th scope="col">With M</th>
@@ -88,9 +92,13 @@
                                     {{ form_errors(form.mortality_pes) }}
                                     {#<input type="number" min="0" class="form-control mortalityPes" value=""> </td>#}
                                 <td class="mortalityPercent"> </td>
+
+                                <td class="weightStandard"></td>
                                 <td>
                                     {{ form_widget(form.weight,{'type':'number'}) }}
                                     {{ form_errors(form.weight) }}
+
+                                </td>
                                     {#<input type="number" min="0" class="form-control weightAchieved" value=""> </td>#}
                                 <td>
                                     {{ form_widget(form.feed_consumption_total_kg,{'type':'number'}) }}
@@ -98,6 +106,7 @@
                                     {#<input type="number" min="0" class="form-control feedTotalKg" value="">#}
                                 </td>
                                 <td class="perBird"></td>
+                                <td class="perBirdStandard"></td>
                                 <td class="withoutMortality"></td>
                                 <td class="withMortality"></td>
                                 <td>

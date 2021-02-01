@@ -115,6 +115,31 @@ function formCommonProcessForFcr() {
         }
     });
 
+    $('.fcrReportDetails .ageDays').on('keypress keyup blur',function () {
+        var parentElement = $(this).closest('tr');
+        var fcrId = $('.fcr_id').val();
+        var ageDay= $(this).val();
+
+        if(fcrId==='' && ageDay ===''){
+            return false;
+        }
+        $.ajax({
+            url    : Routing.generate('crm_sonali_and_broiler_standard_by_age',{'id':fcrId}),
+            type   : 'post',
+            data   : {
+                'ageDay':ageDay
+            },
+            dataType : 'json',
+            success: function(response){
+                if(response.status===200){
+                    console.log(response);
+                    parentElement.find('.weightStandard').text(response.weightStandard);
+                    parentElement.find('.perBirdStandard').text(response.feedConsumptionStandard);
+                }
+            }
+        });
+    });
+
 }
 
 function dataInsertFcrUsingAjax(element) {

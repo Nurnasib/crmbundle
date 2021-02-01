@@ -61,7 +61,7 @@ class LayerStandardController extends AbstractController
             return $this->redirectToRoute('layer_standard');
         }
         $layerStandard = array();
-        $entities = $this->getDoctrine()->getRepository(LayerStandard::class)->findAll();
+        $entities = $this->getDoctrine()->getRepository(LayerStandard::class)->findBy(array(), array('age'=>'ASC'));
         foreach ($entities as $value){
             $layerStandard[$value->getReport()->getId()][]=$value;
         }

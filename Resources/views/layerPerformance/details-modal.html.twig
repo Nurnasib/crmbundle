@@ -23,7 +23,7 @@
                         <p style="color: #000000">{{ 'Reporting Month'|trans }}: {{ layerPerformance.reportingMonth|date("F, Y") }}</p>
                     </div>
                 </div>
-                <div style="padding-top: 0" class="card-body card-body-inner">
+                <div style="padding-top: 0; overflow-x: scroll" class="card-body card-body-inner">
                     <div class="row">
                         <table class="table table-striped table-bordered table-hover layer_performance_details" id="datatable">
                             <thead class="thead-dark">
@@ -31,16 +31,16 @@
                                 <th scope="col" rowspan="2">S/N</th>
                                 <th scope="col" rowspan="2">Agent's Name</th>
                                 <th scope="col" rowspan="2">Farmer's Name</th>
-                                <th scope="col" rowspan="2">Total Birds</th>
-                                <th scope="col" rowspan="2" width="75px">Age(wk)</th>
+                                <th scope="col" rowspan="2"><pre style="font-size: 100%; margin: 0px">Total Birds</pre></th>
+                                <th scope="col" rowspan="2" width="80px">Age(wk)</th>
                                 <th scope="col" colspan="2">B.Weight(gm)</th>
                                 <th scope="col" colspan="2">Feed Intake(gm)</th>
                                 <th scope="col" colspan="2">Egg Production%</th>
                                 <th scope="col" colspan="2">Egg Weight(gm)</th>
                                 <th scope="col" colspan="4">Feed Information</th>
                                 <th scope="col" colspan="3">Others Information</th>
-                                <th scope="col" rowspan="2">Disease</th>
-                                <th scope="col" rowspan="2">Remarks</th>
+                                <th style="width: 200px" scope="col" rowspan="2">Disease</th>
+                                <th style="width: 300px" scope="col" rowspan="2">Remarks</th>
                                 <th scope="col text-center" rowspan="2"><i class="feather icon-settings"></i></th>
                             </tr>
                             <tr>
@@ -52,13 +52,13 @@
                                 <th scope="col">Target</th>
                                 <th scope="col">Achieved</th>
                                 <th scope="col">Stand</th>
-                                <th scope="col">F.Type</th>
+                                <th style="width: 150px" scope="col">F.Type</th>
                                 <th scope="col">P.Date</th>
-                                <th scope="col">Batch No</th>
-                                <th scope="col">Feed Mill</th>
-                                <th scope="col">Hatchery</th>
-                                <th scope="col">Breed</th>
-                                <th scope="col">Color</th>
+                                <th style="width: 200px" scope="col">Batch No</th>
+                                <th style="width: 150px" scope="col">Feed Mill</th>
+                                <th style="width: 150px" scope="col">Hatchery</th>
+                                <th style="width: 150px" scope="col">Breed</th>
+                                <th style="width: 130px" scope="col">Color</th>
 
                             </tr>
                             <tr>

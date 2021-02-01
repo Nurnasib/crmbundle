@@ -134,7 +134,7 @@ class CrmVisitController extends AbstractController
             'subAgents'=>$subAgents,
             'otherAgents'=>$otherAgents,
             'form' => $form->createView(),
-            'reports' => $reports,
+            'fcr_after_reports' => $reports,
         ]);
     }
 
@@ -212,6 +212,8 @@ class CrmVisitController extends AbstractController
 
     public function CRMDetailsRefresh($id, $process='farmer'): Response
     {
+        $reports = $this->getDoctrine()->getRepository(Setting::class)->findBy(['settingType'=>'FARMER_REPORT','slug'=>['fcr-after-sale-boiler','fcr-after-sale-sonali']]);
+
         $entity = $this->getDoctrine()->getRepository(CrmVisit::class)->find($id);
         $lifeCycleReport =$this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType'=>'FARMER_REPORT'));
         $breedTypes =$this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType'=>'BREED_TYPE','status'=>1));
@@ -220,6 +222,7 @@ class CrmVisitController extends AbstractController
             'entity' => $entity,
             'lifeCycleReport' => $lifeCycleReport,
             'breedTypes' => $breedTypes,
+            'fcr_after_reports' => $reports,
         ]);
     }
 
