@@ -167,7 +167,7 @@ function formCommonProcess() {
     });
 
 
-    $('.layerLifeCycleDetails_section').on('keypress' , '.layerLifeCycleDetails input[type=text], .layerLifeCycleDetails input[type=number], .layerLifeCycleDetails select', function (e) {
+    $('.layerLifeCycleDetails_section').on('keypress blur' , '.layerLifeCycleDetails input[type=text], .layerLifeCycleDetails input[type=number], .layerLifeCycleDetails select', function (e) {
         if (e.which === 13) {
             e.preventDefault();
             var $canfocus = $('.layerLifeCycleDetails :focusable');
@@ -176,9 +176,8 @@ function formCommonProcess() {
                 index = 0;
             }
             $canfocus.eq(index).focus().select();
-
-            layerLifeCycleDetailDataInsertUsingAjax($(this));
         }
+        layerLifeCycleDetailDataInsertUsingAjax($(this));
     });
 
 
