@@ -95,13 +95,13 @@ class SearchFilterFormType extends AbstractType
 //                'choice_label' => 'fcrOfFeed',
 //                'placeholder' => 'Feed Type'
 //            ])
-            ->add('feedType', ChoiceType::class,[
-                'choices'=>[
-                    'Feed Type' => Null,
-                    'Before' => 'BEFORE',
-                    'After' => 'AFTER'
-                ]
-            ])
+//            ->add('feedType', ChoiceType::class,[
+//                'choices'=>[
+//                    'Feed Type' => Null,
+//                    'Before' => 'BEFORE',
+//                    'After' => 'AFTER'
+//                ]
+//            ])
             ->add('filter', SubmitType::class,[
                 'attr'=>[
                     'class' => 'btn btn-primary btn-block'

@@ -15,7 +15,7 @@ class CattleFarmVisitReportController extends AbstractController
     /**
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
-     * @Route("/report/cattle-farm-visit")
+     * @Route("/crm/cattle/farm-visit", name="cattle_farm_visit_report")
      */
     public function cattleFarmVisitReport(Request $request)
     {

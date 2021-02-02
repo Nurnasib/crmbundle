@@ -6,9 +6,9 @@
             <div class="card">
                 <div class="card-header p-3">
                     <h5>{{ 'FCR SALE REPORT'|trans }}</h5>
-                    {% if filterBy is not empty %}
+                    {% if entities is not empty %}
                         <div class="btn-group btn-group-sm float-right" role="group" aria-label="Button group with nested dropdown">
-                            <a target="_blank" href="/en/crm/chick/27/report/pdf" class="btn blue-bg white-font btn-sm"><i class="fa fa-file-pdf"></i> PDF</a>
+                            <a target="_blank" href="{{ path('crm_chick_report_fcr_pdf',{'filterBy': filterBy}) }}" class="btn blue-bg white-font btn-sm"><i class="fa fa-file-pdf"></i> PDF</a>
                             <a target="_blank" href="{{ path('fcr_report_excel',{'filterBy': filterBy}) }}" class="btn btn-sm bg-primary white-font"><i class="fa fa-file-excel"></i> Excel</a>
                         </div>
                     {% endif %}
@@ -34,10 +34,10 @@
                                 {{ form_label(searchForm.endDate, 'End of Month:') }}
                                 {{ form_widget(searchForm.endDate, {'id':'end-date'}) }}
                             </th>
-                            <th>
-                                {{ form_label(searchForm.feedType, 'Feed Type:') }}
-                                {{ form_widget(searchForm.feedType) }}
-                            </th>
+{#                            <th>#}
+{#                                {{ form_label(searchForm.feedType, 'Feed Type:') }}#}
+{#                                {{ form_widget(searchForm.feedType) }}#}
+{#                            </th>#}
                             <th>
                                 {{ form_label(searchForm.employee, 'Select Employee:') }}
                                 {{ form_widget(searchForm.employee) }}
@@ -157,9 +157,4 @@
     "responsive": false,
     "scrollX": true
     });
-
-
-
-
-
 {% endblock %}
