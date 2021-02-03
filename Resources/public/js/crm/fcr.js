@@ -190,11 +190,13 @@ function dataInsertFcrUsingAjax(element) {
         dataType : 'json',
         success: function(response){
             if(response.status===200){
-                parentElement.find(':input').val('');
+                parentElement.find(':input').not('.customerId').val('');
                 parentElement.find('.mortalityPercent').text('');
                 parentElement.find('.perBird').text('');
                 parentElement.find('.withoutMortality').text('');
                 parentElement.find('.withMortality').text('');
+                parentElement.find('.weightStandard').text('');
+                parentElement.find('.perBirdStandard').text('');
                 var refreshUrl = Routing.generate('fcr_details_refresh',{'id':fcrId});
                 $("#fcrReportDetails tbody").load(refreshUrl);
             }

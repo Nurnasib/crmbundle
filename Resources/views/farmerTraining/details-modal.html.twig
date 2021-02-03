@@ -1,11 +1,50 @@
+<div class="form-inner-no-space">
 
-<div class="portlet box">
-    <div class="portlet-title">
-        <div class="caption">{{farmerTrainingReport.agentPurpose.name}}</div>
+    <div class="row">
+        <div class="col-md-12">
+            <h4>{{farmerTrainingReport.agentPurpose.name}}</h4>
+            <h4>{{ 'Agent'|trans }}: {{ farmerTrainingReport.agent.name }}</h4>
+        </div>
+        <div class="col-md-12">
+            <table class="table">
+
+                <tbody>
+                {% if farmerTrainingReport.farmerTrainingReportDetails is not empty %}
+                    {% for index, details in farmerTrainingReport.farmerTrainingReportDetails %}
+                        <tr>
+                            <td>{{ farmerTrainingReport.trainingDate|date('F, Y') }}</td>
+                            <td>{{ farmerTrainingReport.trainingDate|date('d-m-Y') }}</td>
+                            <td>{{ farmerTrainingReport.agent.name|default('') }}</td>
+                            <td>{{ farmerTrainingReport.agent.address|default('') }}</td>
+                            <td>{{ farmerTrainingReport.agent.mobile|default('') }}</td>
+                            <td>{{ index +1 }}</td>
+                            <td>{{ details.customer.name|default('') }}</td>
+                            <td>{{ details.customer.address|default('') }}</td>
+                            <td>{{ details.customer.mobile|default('') }}</td>
+                            {#<td>{{ dump(details.farmerCapacity|json_decode) }}</td>#}
+                            {% if species is not empty %}
+                                {% set farmerCapacity = details.farmerCapacity|json_decode %}
+                                {% for specie in species %}
+                                    <td>{{ farmerCapacity[specie.id]|default('') }}</td>
+                                {% endfor %}
+                            {% endif %}
+
+                            {% if farmerTrainingReport.trainingMaterial is not empty %}
+                                {% set trainingMaterialQty = details.trainingMaterialQty|json_decode %}
+                                {% for i, material in farmerTrainingReport.trainingMaterial|json_decode  %}
+                                <td>{{ trainingMaterialQty[i]|default('') }}</td>
+                                {% endfor %}
+                            {% endif %}
+                            <td>{{ farmerTrainingReport.trainingTopics|default('') }}</td>
+                            <td>{{ farmerTrainingReport.remarks|default('') }}</td>
+                        </tr>
+                    {% endfor %}
+                {% endif %}
+                </tbody>
+
+            </table>
+
+        </div>
     </div>
-    {#{{ dump(report) }}#}
 
-    <div class="portlet-body form">
-
-    </div>
 </div>

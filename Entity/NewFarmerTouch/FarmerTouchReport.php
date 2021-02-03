@@ -85,6 +85,12 @@ class FarmerTouchReport
     private $otherCultureSpecies;
 
     /**
+     * @var string
+     * @Orm\Column(type="string", nullable=true)
+     */
+    private $conventionalFeed;
+
+    /**
      * @var float
      *
      * @ORM\Column(name="culture_area_decimal", type="float")
@@ -281,6 +287,22 @@ class FarmerTouchReport
     public function setOtherCultureSpecies(string $otherCultureSpecies): void
     {
         $this->otherCultureSpecies = $otherCultureSpecies;
+    }
+
+    /**
+     * @return string
+     */
+    public function getConventionalFeed()
+    {
+        return $this->conventionalFeed;
+    }
+
+    /**
+     * @param string $conventionalFeed
+     */
+    public function setConventionalFeed(string $conventionalFeed): void
+    {
+        $this->conventionalFeed = $conventionalFeed;
     }
 
     /**

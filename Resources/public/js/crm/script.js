@@ -248,6 +248,10 @@ function formCommonProcess() {
         formSubmitProcessForFishFarmerTouchReport();
     });
 
+    $('.farmer_training_report_section').on('click', '.farmer_training_report_button', function () {
+        formSubmitProcessForFarmerTrainingReport($(this));
+    });
+
 
 
 }

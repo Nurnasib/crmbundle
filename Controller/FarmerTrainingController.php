@@ -55,10 +55,14 @@ class FarmerTrainingController extends AbstractController
 
         $requestFarmers = isset($data['farmers'])?$data['farmers']:null;
         $training_materials = isset($data['training_material'])?$data['training_material']:[];
+        $training_material_qty = isset($data['training_material_qty'])?$data['training_material_qty']:[];
+        $selectedMaterialQty = array_intersect_key($training_material_qty, $training_materials);
+
+        $species_capacity = isset($data['species_capacity'])?$data['species_capacity']:[];
+
         $trainingDate = isset($data['farmer_training_report_form']['training_date'])?date('Y-m-d',strtotime($data['farmer_training_report_form']['training_date'])):date('Y-m-d',strtotime('now'));
 
-        $form = $this->createForm(FarmerTrainingReportFormType::class, $entity)
-            ->add('SaveAndCreate', SubmitType::class);
+        $form = $this->createForm(FarmerTrainingReportFormType::class, $entity);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
 
@@ -68,7 +72,11 @@ class FarmerTrainingController extends AbstractController
             }
 
             if($existReport){
-                return $this->redirectToRoute('farmer_training_report_detail_modal', ['id'=>$existReport->getId(),'process'=>'postView_'.$existReport->getId(),'action'=>'form_submit']);
+                return new JsonResponse(array(
+                    'status'=>'old',
+                    'id'=>$entity->getId()
+                )
+                );
             }
 
             $entity->setTrainingDate(new \DateTime($trainingDate));
@@ -87,19 +95,20 @@ class FarmerTrainingController extends AbstractController
 
                 $farmerTrainingDetails->setCustomer($farmer);
                 $farmerTrainingDetails->setFarmerTrainingReport($entity);
-                $farmerTrainingDetails->setFarmerCapacity(json_encode(array()));
-                $farmerTrainingDetails->setTrainingMaterialQty(json_encode(array()));
+                $farmerTrainingDetails->setFarmerCapacity(json_encode($species_capacity));
+                $farmerTrainingDetails->setTrainingMaterialQty(json_encode($selectedMaterialQty));
                 $em = $this->getDoctrine()->getManager();
                 $em->persist($farmerTrainingDetails);
 
             }
             $em->flush();
 
-            $this->addFlash('success', 'post.created_successfully');
-            if ($form->get('SaveAndCreate')->isClicked()) {
-                return new Response('success');
+            return new JsonResponse(array(
+                    'status'=>'new',
+                    'id'=>$entity->getId()
+                )
+            );
               //  return $this->redirectToRoute('cattle_new_modal', ['id'=>$crmCustomer->getId(),'report'=>$report->getId()]);
-            }
 //            return $this->redirectToRoute('cattle_new_modal');
         }
         $farmers = $this->getDoctrine()->getRepository(CrmCustomer::class)->getAgentWise($agent);
@@ -115,13 +124,16 @@ class FarmerTrainingController extends AbstractController
 
     /**
      * @param FarmerTrainingReport $farmerTrainingReport
-     * @Route("/details/{id}/modal", methods={"GET", "POST"}, name="farmer_training_report_detail_modal")
+     * @Route("/details/{id}/modal", methods={"GET", "POST"}, name="farmer_training_report_detail_modal", options={"expose"=true})
      */
-    public function lifeCycleDetailsModal(FarmerTrainingReport $farmerTrainingReport): Response
+    public function lifeCycleDetailsModal($id): Response
     {
 
+        $farmerTrainingReport = $this->getDoctrine()->getRepository(FarmerTrainingReport::class)->find($id);
+        $species = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('status'=>1,'settingType'=>'SPECIES_TYPE','parent'=>$farmerTrainingReport->getBreedName()->getId()));
         return $this->render('@TerminalbdCrm/farmerTraining/details-modal.html.twig', [
             'farmerTrainingReport' => $farmerTrainingReport,
+            'species' => $species,
         ]);
     }
 
@@ -131,12 +143,17 @@ class FarmerTrainingController extends AbstractController
     public function getFarmerTrainingMaterialByBreedName($id): Response
     {
         $entities = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType'=>'TRAINING_MATERIAL','parent'=>$id));
+        $species = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('status'=>1,'settingType'=>'SPECIES_TYPE','parent'=>$id));
 
         $arrayData = array();
         /**@var Setting $entity*/
         foreach ($entities as $entity){
-                $arrayData[]=array('id'=>$entity->getId(),'text'=>$entity->getName());
+                $arrayData['materials'][]=array('id'=>$entity->getId(),'text'=>$entity->getName());
 
+        }
+        /**@var Setting $specie*/
+        foreach ($species as $specie){
+                $arrayData['species'][]=array('id'=>$specie->getId(),'text'=>$specie->getName());
         }
 
         return new JsonResponse($arrayData);

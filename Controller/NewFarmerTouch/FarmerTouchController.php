@@ -24,7 +24,9 @@ use Terminalbd\CrmBundle\Entity\CrmCustomer;
 use Terminalbd\CrmBundle\Entity\NewFarmerTouch\FarmerTouchReport;
 use Terminalbd\CrmBundle\Entity\Setting;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
-use Terminalbd\CrmBundle\Form\NewFarmerTouch\FarmerTouchFormType;
+use Terminalbd\CrmBundle\Form\NewFarmerTouch\CattleFarmerTouchFormType;
+use Terminalbd\CrmBundle\Form\NewFarmerTouch\FishFarmerTouchFormType;
+use Terminalbd\CrmBundle\Form\NewFarmerTouch\PoultryFarmerTouchFormType;
 
 
 /**
@@ -47,7 +49,13 @@ class FarmerTouchController extends AbstractController
 
         $entity = new FarmerTouchReport();
 
-        $form = $this->createForm(FarmerTouchFormType::class, $entity,array('user' => $this->getUser(),'report' =>$report));
+        if($reportParentParent->getSlug()=='poultry-breed' && $reportParentParent->getSettingType()== 'BREED_NAME'){
+            $form = $this->createForm(PoultryFarmerTouchFormType::class, $entity,array('user' => $this->getUser(),'report' =>$report));
+        }elseif ($reportParentParent->getSlug()=='cattle-breed' && $reportParentParent->getSettingType()== 'BREED_NAME'){
+            $form = $this->createForm(CattleFarmerTouchFormType::class, $entity,array('user' => $this->getUser(),'report' =>$report));
+        }else{
+            $form = $this->createForm(FishFarmerTouchFormType::class, $entity,array('user' => $this->getUser(),'report' =>$report));
+        }
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -72,13 +80,37 @@ class FarmerTouchController extends AbstractController
             return new Response('success');
         }
         $farmerTouchReports = $this->getDoctrine()->getRepository(FarmerTouchReport::class)->getFishFarmerTouchReportByDateAndEmployeeAndReport($reportParentParent,$this->getUser());
-        return $this->render('@TerminalbdCrm/farmerTouchReport/new-modal.html.twig', [
+
+        if($reportParentParent->getSlug()=='poultry-breed' && $reportParentParent->getSettingType()== 'BREED_NAME'){
+            return $this->render('@TerminalbdCrm/farmerTouchReport/poultry-new-modal.html.twig', [
+                'report' => $report,
+                'employee' => $this->getUser(),
+                'crmCustomer' => $crmCustomer,
+                'fishSpecies' => $fishSpecies,
+                'form' => $form->createView(),
+                'farmerTouchReports' => $farmerTouchReports,
+                'reportParentParent' => $reportParentParent,
+            ]);
+        }elseif ($reportParentParent->getSlug()=='cattle-breed' && $reportParentParent->getSettingType()== 'BREED_NAME'){
+            return $this->render('@TerminalbdCrm/farmerTouchReport/cattle-new-modal.html.twig', [
+                'report' => $report,
+                'employee' => $this->getUser(),
+                'crmCustomer' => $crmCustomer,
+                'fishSpecies' => $fishSpecies,
+                'form' => $form->createView(),
+                'farmerTouchReports' => $farmerTouchReports,
+                'reportParentParent' => $reportParentParent,
+            ]);
+        }
+
+        return $this->render('@TerminalbdCrm/farmerTouchReport/fish-new-modal.html.twig', [
             'report' => $report,
             'employee' => $this->getUser(),
             'crmCustomer' => $crmCustomer,
             'fishSpecies' => $fishSpecies,
             'form' => $form->createView(),
             'farmerTouchReports' => $farmerTouchReports,
+            'reportParentParent' => $reportParentParent,
         ]);
     }
 
@@ -93,7 +125,19 @@ class FarmerTouchController extends AbstractController
 
         $farmerTouchReport = $this->getDoctrine()->getRepository(FarmerTouchReport::class)->getFishFarmerTouchReportByDateAndEmployeeAndReport($reportParentParent,$this->getUser());
 
-        return $this->render('@TerminalbdCrm/farmerTouchReport/fish-farmer-touch-report-body.html.twig', [
+        if($reportParentParent->getSlug()=='poultry-breed' && $reportParentParent->getSettingType()== 'BREED_NAME'){
+            return $this->render('@TerminalbdCrm/farmerTouchReport/partial/poultry-farmer-touch-report-body.html.twig', [
+                'farmerTouchReports' => $farmerTouchReport,
+                'fishSpecies' => $fishSpecies,
+            ]);
+        }elseif ($reportParentParent->getSlug()=='cattle-breed' && $reportParentParent->getSettingType()== 'BREED_NAME'){
+            return $this->render('@TerminalbdCrm/farmerTouchReport/partial/cattle-farmer-touch-report-body.html.twig', [
+                'farmerTouchReports' => $farmerTouchReport,
+                'fishSpecies' => $fishSpecies,
+            ]);
+        }
+
+        return $this->render('@TerminalbdCrm/farmerTouchReport/partial/fish-farmer-touch-report-body.html.twig', [
             'farmerTouchReports' => $farmerTouchReport,
             'fishSpecies' => $fishSpecies,
         ]);

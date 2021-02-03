@@ -46,6 +46,7 @@ class FarmerTrainingReportFormType extends AbstractType
                 'placeholder' => 'Choose Breed Name',
                 'choice_label' => 'name',
                 'attr'=>array('class'=>'span12 m-wrap breed_name '),
+                'required' => true,
                 'query_builder' => function(EntityRepository $er){
                     return $er->createQueryBuilder('e')
                         ->where("e.settingType ='BREED_NAME'")
@@ -65,7 +66,7 @@ class FarmerTrainingReportFormType extends AbstractType
             ->add('training_topics', TextareaType::class, [
                 'attr' => ['autofocus' => true],
                 'label' => 'label.training_topics',
-                'required' => false,
+                'required' => true,
             ])
             ->add('remarks', TextareaType::class, [
                 'attr' => ['autofocus' => true],

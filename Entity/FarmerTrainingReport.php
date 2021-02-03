@@ -158,7 +158,7 @@ class FarmerTrainingReport
     /**
      * @return FarmerTrainingReportDetails
      */
-    public function getFarmerTrainingReportDetails(): FarmerTrainingReportDetails
+    public function getFarmerTrainingReportDetails()
     {
         return $this->farmerTrainingReportDetails;
     }
