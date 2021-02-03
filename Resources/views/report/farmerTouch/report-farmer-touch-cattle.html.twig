@@ -1,0 +1,132 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block body %}
+<div class="pcoded-inner-content">
+    <!-- [ breadcrumb ] start -->
+    <div class="page-header">
+        <div class="page-block">
+            <div class="row align-items-center">
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/"><i class="feather icon-home"></i></a></li>
+                    {#<li class="breadcrumb-item"> <a href="{{ path('crm_chick') }}">  {{ 'Chick Life Cycle'|trans }}</a></li>#}
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="card">
+            <div class="card-header">
+                <h5>{{ 'Farmer Touch Report (Cattle)'|trans }}</h5>
+{#                {% if entities is not empty %}#}
+                    <div class="btn-group btn-group-sm float-right" role="group" aria-label="Button group with nested dropdown">
+                        <a target="_blank" href="javascript:" class="btn blue-bg white-font btn-sm"><i class="fa fa-file-pdf"></i> PDF</a>
+                        <a target="_blank" href="javascript:" class="btn btn-sm bg-primary white-font"><i class="fa fa-file-excel"></i> Excel</a>
+                    </div>
+{#                {% endif %}#}
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            {{ form_start(searchForm) }}
+            <table class="table table-borderd">
+                <thead class="thead-dark">
+                <tr>
+                    <th>
+                        {{ form_label(searchForm.startDate, 'Start Date:') }}
+                        {{ form_widget(searchForm.startDate, {'id':'start-date'}) }}
+                    </th>
+                    <th>
+                        {{ form_label(searchForm.endDate, 'End Date:') }}
+                        {{ form_widget(searchForm.endDate, {'id':'end-date'}) }}
+                    </th>
+                    <th>
+                        {{ form_label(searchForm.employee, 'Select Employee:') }}
+                        {{ form_widget(searchForm.employee) }}
+                    </th>
+                    <th>
+                        {{ form_widget(searchForm.filter,{'attr':{'style': 'margin-top:18px'}}) }}
+                    </th>
+                </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="card" style="overflow-x: scroll">
+            <div class="card-block">
+                <h3 class="text-center">NOURISH POULTRY AND HATCHERY LTD</h3>
+                <h5 class="text-center">UTTARA, DHAKA.</h5>
+                <h6 class="text-center">Agent Wise Farmers List</h6>
+                <table class="table table-borderd">
+                    <thead class="thead-dark">
+                    <tr>
+                        <th>Name of CSO: ###</th>
+                        <th>Region: ###</th>
+                    </tr>
+                    </thead>
+                </table>
+                <table class="table table-striped table-bordered table-hover" id="datatable">
+                    <thead class="thead-dark">
+                    <tr>
+                        <th scope="col" rowspan="2" style="text-align: center">Agent ID / Mobile No</th>
+                        <th scope="col" rowspan="2" style="text-align: center">Name of Agents</th>
+                        <th scope="col" rowspan="2" style="text-align: center">District</th>
+                        <th scope="col" rowspan="2" style="text-align: center">Thana</th>
+                        <th scope="col" rowspan="2" style="text-align: center">Sl No</th>
+                        <th scope="col" rowspan="2" style="text-align: center">Name of Farmers</th>
+                        <th scope="col" rowspan="2" style="text-align: center">Address</th>
+                        <th scope="col" rowspan="2" style="text-align: center">Mobile</th>
+                        <th scope="col" colspan="3" style="text-align: center">Capacity</th>
+                        <th scope="col" colspan="2" style="text-align: center">Feed</th>
+                        <th scope="col" rowspan="2" style="text-align: center">Remarks</th>
+                    </tr>
+
+                    <tr>
+                        <th scope="col">Broiler</th>
+                        <th scope="col">Layer</th>
+                        <th scope="col">Sonali</th>
+                        <th scope="col">Nourish</th>
+                        <th scope="col">Others</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+</div>
+
+{% endblock %}
+{% block cssBlock %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('assets/module/css/app.css') }}">
+{% endblock  %}
+{% block javascripts %}
+    {{ parent() }}
+    <script type="application/javascript" src="{{ asset('assets/module/js/app.js') }}"></script>
+{% endblock  %}
+{% block documentready %}
+    {{ parent() }}
+
+    $('#start-date').datepicker(
+    {
+    dateFormat: 'yy-mm-dd'
+    }
+    );
+    $('#end-date').datepicker(
+    {
+    dateFormat: 'yy-mm-dd'
+    }
+    );
+
+{% endblock %}

@@ -13,6 +13,7 @@ namespace Terminalbd\CrmBundle\Repository\NewFarmerTouch;
 
 use Doctrine\ORM\EntityRepository;
 use Terminalbd\CrmBundle\Entity\Fcr;
+use Terminalbd\CrmBundle\Repository\BaseRepository;
 
 /**
  * This custom Doctrine repository contains some methods which are useful when
@@ -22,7 +23,7 @@ use Terminalbd\CrmBundle\Entity\Fcr;
  *
  * @author Md Shafiqul islam <shafiqabs@gmail.com>
  */
-class FarmerTouchRepository extends EntityRepository
+class FarmerTouchRepository extends BaseRepository
 {
 
     public function getFishFarmerTouchReportByDateAndEmployeeAndReport($report, $employee)
@@ -40,6 +41,40 @@ class FarmerTouchRepository extends EntityRepository
             return $query->getQuery()->getResult();
         }
         return array();
+    }
+
+    public function getFarmerTouchReport($filterBy)
+    {
+        $qb = $this->createQueryBuilder('e');
+
+        $qb->select('e.remarks','e.cultureSpeciesItemAndQty','e.nourishItemName','e.otherCultureSpecies');
+        $qb->addSelect('agent.name AS agentName', 'agent.mobile AS agentMobile', 'agentDistrict.name AS agentDistrictName', 'agentUpozila.name AS agentThana');
+        $qb->addSelect('farmer.name AS farmerName', 'farmer.address AS farmerAddress', 'farmer.mobile AS farmerMobile');
+
+        $qb->addSelect('employee.name AS employeeName', 'employeeRegion.name AS employeeRegionName');
+
+        $qb->leftJoin('e.agent', 'agent');
+        $qb->leftJoin('agent.upozila', 'agentUpozila');
+        $qb->leftJoin('agent.district', 'agentDistrict');
+        $qb->leftJoin('e.customer', 'farmer');
+//        $qb->leftJoin('e.employee', 'employee');
+        $this->handleSearchFilterBetween($qb, $filterBy);
+        $qb->leftJoin('employee.regional', 'employeeRegion');
+
+        $results = $qb->getQuery()->getArrayResult();
+        $data = [];
+        foreach ($results as $result){
+            $agentName= $result['agentName'];
+//            $data[$agentName]['agentDistrict'] = $result['agentDistrictName'];
+//            $data[$agentName]['agentThana'] = $result['agentThana'];
+//            $data[$agentName]['agentMobile'] = $result['agentMobile'];
+            $data['employeeName'] = $result['employeeName'];
+            $data['employeeRegionName'] = $result['employeeRegionName'];
+//            $data[$agentName]['cultureSpeciesItemAndQty'] = json_decode($result['cultureSpeciesItemAndQty'], true);
+            $data[$agentName][] = $result;
+        }
+
+       return $data;
     }
 
 }
