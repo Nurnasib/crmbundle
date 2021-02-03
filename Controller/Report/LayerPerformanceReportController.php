@@ -5,12 +5,16 @@ namespace Terminalbd\CrmBundle\Controller\Report;
 
 
 use App\Entity\User;
+use Dompdf\Dompdf;
+use Dompdf\Options;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Terminalbd\CrmBundle\Entity\CrmCustomer;
+use Terminalbd\CrmBundle\Entity\LayerLifeCycle;
 use Terminalbd\CrmBundle\Entity\LayerPerformance;
 use Terminalbd\CrmBundle\Form\SearchFilterFormType;
 
@@ -55,6 +59,42 @@ class LayerPerformanceReportController extends AbstractController
 
         echo $html;
         die();
+    }
+
+
+    /**
+     * @Route("/crm/layer-performance/report/pdf", methods={"GET"}, name="crm_layer_performance_report_pdf")
+     */
+    public function reportPdf(Request $request): Response
+    {
+        $filteBy = $request->query->get('filterBy');
+        $filteBy['employe'] = $this->getDoctrine()->getRepository(User::class)->find($filteBy['employeeId']);
+
+        $entities = $this->getDoctrine()->getRepository(LayerPerformance::class)->getLayerPerformanceReport($filteBy);
+
+        // Configure Dompdf according to your needs
+        $pdfOptions = new Options();
+        $pdfOptions->set('defaultFont', 'Arial');
+
+        // Instantiate Dompdf with our options
+        $dompdf = new Dompdf($pdfOptions);
+
+        // Retrieve the HTML generated in our twig file
+        $html = $this->renderView('@TerminalbdCrm/report/layer/report-performance-pdf.html.twig',['entities' => $entities]);
+
+        // Load HTML to Dompdf
+        $dompdf->loadHtml($html);
+
+        // (Optional) Setup the paper size and orientation 'portrait' or 'landscape'
+        $dompdf->setPaper('legal', 'landscape');
+
+        // Render the HTML as PDF
+        $dompdf->render();
+
+        // Output the generated PDF to Browser (force download)
+        $dompdf->stream("layer-performance-report.pdf", [
+            "Attachment" => false
+        ]);
     }
 
 }

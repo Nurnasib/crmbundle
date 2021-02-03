@@ -3,6 +3,8 @@
 
 namespace Terminalbd\CrmBundle\Controller\Report;
 
+use Dompdf\Dompdf;
+use Dompdf\Options;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -21,10 +23,10 @@ class ChickLifeCycleReportController extends AbstractController
 {
     /**
      * @param $report
-     * @Route("/crm/chick/{report}", methods={"GET","POST"}, name="crm_chick_report")
+     * @Route("/crm/chick/{slug}", methods={"GET","POST"}, name="crm_chick_report")
      * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_AGM')")
      */
-    public function indexReport( string $report, Request $request): Response
+    public function indexReport( string $slug, Request $request): Response
     {
         $entities = [];
         $filterBy = [];
@@ -33,9 +35,10 @@ class ChickLifeCycleReportController extends AbstractController
 
         if ($searchForm->isSubmitted()){
             $filterBy = $searchForm->getData();
-            $filterBy['slug'] = $report;
+            $filterBy['slug'] = $slug;
             $filterBy['farmerId'] = $searchForm->get('farmer')->getData()->getId();
 
+//            dd($filterBy);
             $entities = $this->getDoctrine()->getRepository(ChickLifeCycle::class)->getChickLifeCycleByReportType($filterBy);
         }
         return $this->render('@TerminalbdCrm/report/chick/report-life-cycle.html.twig',['searchForm' => $searchForm->createView(), 'entities' => $entities, 'filterBy'=>$filterBy]);
@@ -65,6 +68,47 @@ class ChickLifeCycleReportController extends AbstractController
         echo $html;
         die();
 
+    }
+
+
+    /**
+     * @Route("/crm/chick/report/pdf", methods={"GET"}, name="crm_chick_report_pdf")
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_AGM')")
+     */
+    public function reportPdf(Request $request): Response
+    {
+        $filterBy = $request->query->get('filterBy');
+
+
+//        dd($filterBy);
+        $farmer = $this->getDoctrine()->getRepository(CrmCustomer::class)->find($filterBy['farmerId']);
+        $filterBy['farmer'] = $farmer;
+
+        $entities = $this->getDoctrine()->getRepository(ChickLifeCycle::class)->getChickLifeCycleByReportType($filterBy);
+
+        // Configure Dompdf according to your needs
+        $pdfOptions = new Options();
+        $pdfOptions->set('defaultFont', 'Arial');
+
+        // Instantiate Dompdf with our options
+        $dompdf = new Dompdf($pdfOptions);
+
+        // Retrieve the HTML generated in our twig file
+        $html = $this->renderView('@TerminalbdCrm/report/chick/report-life-cycle-pdf.html.twig',['entities' => $entities]);
+
+        // Load HTML to Dompdf
+        $dompdf->loadHtml($html);
+
+        // (Optional) Setup the paper size and orientation 'portrait' or 'landscape'
+        $dompdf->setPaper('legal', 'landscape');
+
+        // Render the HTML as PDF
+        $dompdf->render();
+
+        // Output the generated PDF to Browser (force download)
+        $dompdf->stream($filterBy['slug'] . ".pdf", [
+            "Attachment" => false
+        ]);
     }
 
 }

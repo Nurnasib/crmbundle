@@ -5,10 +5,14 @@ namespace Terminalbd\CrmBundle\Controller\Report;
 
 
 use App\Entity\User;
+use Dompdf\Dompdf;
+use Dompdf\Options;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Terminalbd\CrmBundle\Entity\ChickLifeCycle;
+use Terminalbd\CrmBundle\Entity\CrmCustomer;
 use Terminalbd\CrmBundle\Entity\Fcr;
 use Terminalbd\CrmBundle\Form\SearchFilterFormType;
 
@@ -20,9 +24,9 @@ class FcrReportController extends AbstractController
 {
     /**
      * @return \Symfony\Component\HttpFoundation\Response
-     * @Route("/crm/fcr/report", name="fcr_report")
+     * @Route("/crm/chick/fcr/{slug}", methods={"GET","POST"}, name="chick_fcr_report")
      */
-    public function saleReport(Request $request): Response
+    public function saleReport(Request $request, string $slug): Response
     {
         $entities = [];
         $filterBy = [];
@@ -31,6 +35,9 @@ class FcrReportController extends AbstractController
         if ($searchForm->isSubmitted()){
             $filterBy = $searchForm->getData();
             $filterBy['employeeId'] = $searchForm->get('employee')->getData()->getId();
+            $filterBy['slug'] = $slug;
+
+//            dd($filterBy);
 
             $entities = $this->getDoctrine()->getRepository(Fcr::class)->getFcrReport($filterBy);
         }
@@ -39,7 +46,7 @@ class FcrReportController extends AbstractController
 
     /**
      * @param Request $request
-     * @Route("/report/fcr/excel", name="fcr_report_excel")
+     * @Route("/crm/chick/report/fcr/excel", name="fcr_report_excel")
      */
     public function reportExcel(Request $request)
     {
@@ -56,6 +63,42 @@ class FcrReportController extends AbstractController
 
         echo $html;
         die();
+    }
+
+
+    /**
+     * @Route("/crm/chick/report/fcr/pdf", methods={"GET"}, name="crm_chick_report_fcr_pdf")
+     */
+    public function reportPdf(Request $request): Response
+    {
+        $filterBy = $request->query->get('filterBy');
+        $filterBy['employee'] = $this->getDoctrine()->getRepository(User::class)->find($filterBy['employeeId']);
+
+        $entities = $this->getDoctrine()->getRepository(Fcr::class)->getFcrReport($filterBy);
+
+        // Configure Dompdf according to your needs
+        $pdfOptions = new Options();
+        $pdfOptions->set('defaultFont', 'Arial');
+
+        // Instantiate Dompdf with our options
+        $dompdf = new Dompdf($pdfOptions);
+
+        // Retrieve the HTML generated in our twig file
+        $html = $this->renderView('@TerminalbdCrm/report/fcr/report-fcr-pdf.html.twig',['entities' => $entities]);
+
+        // Load HTML to Dompdf
+        $dompdf->loadHtml($html);
+
+        // (Optional) Setup the paper size and orientation 'portrait' or 'landscape'
+        $dompdf->setPaper('legal', 'landscape');
+
+        // Render the HTML as PDF
+        $dompdf->render();
+
+        // Output the generated PDF to Browser (force download)
+        $dompdf->stream($filterBy['slug'] . ".pdf", [
+            "Attachment" => false
+        ]);
     }
 
 }

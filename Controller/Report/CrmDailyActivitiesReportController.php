@@ -13,12 +13,11 @@ use Terminalbd\CrmBundle\Entity\CrmVisit;
 /**
  * Class CrmDailyActivitiesReportController
  * @package Terminalbd\CrmBundle\Controller\Report
- * @Route("/crm")
  */
 class CrmDailyActivitiesReportController extends AbstractController
 {
     /**
-     * @Route("/daily-activities", name="daily_activities")
+     * @Route("/crm/daily-activities/report", name="daily_activities_report")
      */
     public function dailyReport(Request $request)
     {
@@ -26,7 +25,8 @@ class CrmDailyActivitiesReportController extends AbstractController
         $form = $this->createFormBuilder()
             ->add('date', TextType::class,[
                 'attr' =>[
-                    'autocomplete' => 'off'
+                    'autocomplete' => 'off',
+                    'value' => '2021-01-14'
                 ]
             ])
             ->add('FindReport', SubmitType::class,[
@@ -40,12 +40,12 @@ class CrmDailyActivitiesReportController extends AbstractController
         if ($form->isSubmitted()){
             $date = $form->getData();
             $activities = $this->crmDailyReport($date);
-//            dd($activities);
+//            dd($date);
 
             if (empty($activities)){
 //                dd($activities);
                 $this->addFlash('message', "No Activities are found for " . $date['date'] );
-                return $this->redirectToRoute('daily_activities');
+                return $this->redirectToRoute('daily_activities_report');
             }else{
                 return $this->render("@TerminalbdCrm/report/customerDailyActivities/report-daily-activities.html.twig", ['form'=>$form->createView(),'data'=>$activities]);
             }
@@ -61,7 +61,7 @@ class CrmDailyActivitiesReportController extends AbstractController
             'endDate' => $date['date'] . ' 23:59:59'
         ];
 
-
+//        dd($filterBy);
         $data = $this->getDoctrine()->getRepository(CrmVisit::class)->findDailyReport($filterBy);
         return $data;
     }
