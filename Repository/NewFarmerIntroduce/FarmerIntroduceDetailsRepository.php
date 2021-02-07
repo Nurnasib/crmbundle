@@ -6,8 +6,9 @@ use Doctrine\ORM\EntityRepository;
 use Terminalbd\CrmBundle\Entity\CrmCustomer;
 use Terminalbd\CrmBundle\Entity\NewFarmerIntroduce\FarmerIntroduceDetails;
 use Terminalbd\CrmBundle\Entity\Setting;
+use Terminalbd\CrmBundle\Repository\BaseRepository;
 
-class FarmerIntroduceDetailsRepository extends EntityRepository
+class FarmerIntroduceDetailsRepository extends BaseRepository
 {
 
 
@@ -34,6 +35,36 @@ class FarmerIntroduceDetailsRepository extends EntityRepository
             $em->persist($entity);
             $em->flush();
         }
+
+    }
+
+    public function getFarmerIntroduceReport($filterBy)
+    {
+//        dd($filterBy);
+        $qb = $this->createQueryBuilder('e');
+        $qb->select('e.previousAgentName', 'e.previousAgentAddress', 'e.previousFeedName','e.cultureSpeciesItemAndQty', 'e.remarks', 'e.createdAt');
+        $qb->addSelect('farmer.name AS farmerName', 'farmer.address AS farmerAddress', 'farmer.mobile AS farmerMobile');
+        $qb->addSelect('agent.name AS agentName','agent.address AS agentAddress');
+        $qb->where('e.createdAt >= :bOfYear')->setParameter('bOfYear', $filterBy['bOfYear']);
+        $qb->andWhere('e.createdAt <= :eOfYear')->setParameter('eOfYear', $filterBy['eOfYear']);
+        $qb->andWhere('farmerType.slug = :breedType')->setParameter('breedType', $filterBy['breedType']);
+        $qb->leftJoin('e.customer', 'farmer');
+        $qb->leftJoin('farmer.agent', 'agent');
+        $qb->leftJoin('e.farmerType', 'farmerType');
+        $this->handleSearchFilterBetween($qb, $filterBy);
+//
+        $results = $qb->getQuery()->getArrayResult();
+
+        $data = [];
+
+        foreach ($results as $result){
+            $month = $result['createdAt']->format('F-Y');
+
+            $data[$month][] = $result;
+        }
+//        dd($data);
+
+        return $data;
 
     }
 

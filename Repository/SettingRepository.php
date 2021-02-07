@@ -50,4 +50,16 @@ class SettingRepository extends EntityRepository
         return $result;
     }
 
+    public function getSpeciesForFarmerTouchReport($breedTypeId)
+    {
+        $qb = $this->createQueryBuilder('e');
+        $qb->select('e.name');
+        $qb->where('e.parent = :breedTypeId')->setParameter('breedTypeId', $breedTypeId);
+        $qb->andWhere('e.status = :status')->setParameter('status', 1);
+        $qb->andWhere('e.settingType = :sType')->setParameter('sType', 'SPECIES_TYPE');
+
+        $results = $qb->getQuery()->getArrayResult();
+        return $results;
+    }
+
 }

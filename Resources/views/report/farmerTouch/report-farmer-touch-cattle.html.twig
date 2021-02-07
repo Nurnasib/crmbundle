@@ -8,7 +8,6 @@
             <div class="row align-items-center">
                 <ul class="breadcrumb">
                     <li class="breadcrumb-item"><a href="/"><i class="feather icon-home"></i></a></li>
-                    {#<li class="breadcrumb-item"> <a href="{{ path('crm_chick') }}">  {{ 'Chick Life Cycle'|trans }}</a></li>#}
                 </ul>
             </div>
         </div>
@@ -17,12 +16,12 @@
         <div class="card">
             <div class="card-header">
                 <h5>{{ 'Farmer Touch Report (Cattle)'|trans }}</h5>
-{#                {% if entities is not empty %}#}
+                {% if entities is not empty %}
                     <div class="btn-group btn-group-sm float-right" role="group" aria-label="Button group with nested dropdown">
-                        <a target="_blank" href="javascript:" class="btn blue-bg white-font btn-sm"><i class="fa fa-file-pdf"></i> PDF</a>
-                        <a target="_blank" href="javascript:" class="btn btn-sm bg-primary white-font"><i class="fa fa-file-excel"></i> Excel</a>
+                        <a target="_blank" href="{{ path('farmer_touch_report_pdf', {'filterBy': filterBy, 'species':species}) }}" class="btn blue-bg white-font btn-sm"><i class="fa fa-file-pdf"></i> PDF</a>
+                        <a target="_blank" href="{{ path('farmer_touch_report_excel', {'filterBy': filterBy, 'species':species}) }}" class="btn btn-sm bg-primary white-font"><i class="fa fa-file-excel"></i> Excel</a>
                     </div>
-{#                {% endif %}#}
+                {% endif %}
             </div>
         </div>
     </div>
@@ -52,53 +51,77 @@
             </table>
         </div>
     </div>
+    {% if entities is not empty %}
+        <div class="row">
+            <div class="card" style="overflow-x: scroll">
+                <div class="card-block">
+                    <h3 class="text-center">{{ 'NOURISH POULTRY AND HATCHERY LTD'|trans }}</h3>
+                    <h5 class="text-center">{{ 'UTTARA, DHAKA.'|trans }}</h5>
+                    <h6 class="text-center">{{ 'Farmer Touch Report'|trans }}</h6>
+                    <table class="table table-borderd">
+                        <thead class="thead-dark">
+                        <tr>
+                            <th>{{ 'Name of CSO'|trans }}: {{ filterBy.employee.name|default('N/A') }}</th>
+                            <th style="text-align: right">{{ 'Region'|trans }}: {{ filterBy.employee.regional.name|default('N/A') }}</th>
+                        </tr>
+                        </thead>
+                    </table>
+                    <table class="table table-striped table-bordered table-hover" id="datatable">
+                        <thead class="thead-dark">
+                        <tr>
+                            <th scope="col" rowspan="2" style="text-align: center">{{ 'Agent ID / Mobile No'|trans }}</th>
+                            <th scope="col" rowspan="2" style="text-align: center">{{ 'Name of Agents'|trans }}</th>
+                            <th scope="col" rowspan="2" style="text-align: center">{{ 'District'|trans }}</th>
+                            <th scope="col" rowspan="2" style="text-align: center">{{ 'Thana'|trans }}</th>
+                            <th scope="col" rowspan="2" style="text-align: center">{{ 'Sl No'|trans }}</th>
+                            <th scope="col" rowspan="2" style="text-align: center">{{ 'Name of Farmers'|trans }}</th>
+                            <th scope="col" rowspan="2" style="text-align: center">{{ 'Address'|trans }}</th>
+                            <th scope="col" rowspan="2" style="text-align: center">{{ 'Mobile'|trans }}</th>
+                            <th scope="col" colspan="{{ (species|length) + 1 }}" style="text-align: center">{{ 'Capacity'|trans }}</th>
+                            <th scope="col" colspan="3" style="text-align: center">{{ 'Feed'|trans }}</th>
+                            <th scope="col" rowspan="2" style="text-align: center">{{ 'Remarks'|trans }}</th>
+                        </tr>
 
-    <div class="row">
-        <div class="card" style="overflow-x: scroll">
-            <div class="card-block">
-                <h3 class="text-center">NOURISH POULTRY AND HATCHERY LTD</h3>
-                <h5 class="text-center">UTTARA, DHAKA.</h5>
-                <h6 class="text-center">Agent Wise Farmers List</h6>
-                <table class="table table-borderd">
-                    <thead class="thead-dark">
-                    <tr>
-                        <th>Name of CSO: ###</th>
-                        <th>Region: ###</th>
-                    </tr>
-                    </thead>
-                </table>
-                <table class="table table-striped table-bordered table-hover" id="datatable">
-                    <thead class="thead-dark">
-                    <tr>
-                        <th scope="col" rowspan="2" style="text-align: center">Agent ID / Mobile No</th>
-                        <th scope="col" rowspan="2" style="text-align: center">Name of Agents</th>
-                        <th scope="col" rowspan="2" style="text-align: center">District</th>
-                        <th scope="col" rowspan="2" style="text-align: center">Thana</th>
-                        <th scope="col" rowspan="2" style="text-align: center">Sl No</th>
-                        <th scope="col" rowspan="2" style="text-align: center">Name of Farmers</th>
-                        <th scope="col" rowspan="2" style="text-align: center">Address</th>
-                        <th scope="col" rowspan="2" style="text-align: center">Mobile</th>
-                        <th scope="col" colspan="3" style="text-align: center">Capacity</th>
-                        <th scope="col" colspan="2" style="text-align: center">Feed</th>
-                        <th scope="col" rowspan="2" style="text-align: center">Remarks</th>
-                    </tr>
+                        <tr>
+                            {% for cattleType in species %}
+                                <th scope="col">{{ cattleType.name }}</th>
+                            {% endfor %}
+                            <th scope="col">{{ 'Total'|trans }}</th>
+                            <th scope="col">{{ 'Nourish'|trans }}</th>
+                            <th scope="col">{{ 'Others'|trans }}</th>
+                            <th scope="col">{{ 'Conventional'|trans }}</th>
+                        </tr>
+                        </thead>
 
-                    <tr>
-                        <th scope="col">Broiler</th>
-                        <th scope="col">Layer</th>
-                        <th scope="col">Sonali</th>
-                        <th scope="col">Nourish</th>
-                        <th scope="col">Others</th>
-                    </tr>
-                    </thead>
-
-                    <tbody>
-
-                    </tbody>
-                </table>
+                        <tbody>
+                        {% for entity in entities %}
+                            {% set sum = 0 %}
+                            <tr>
+                                <td>{{ entity.agentMobile|default('N/A') }}</td>
+                                <td>{{ entity.agentName|default('N/A') }}</td>
+                                <td>{{ entity.agentDistrictName|default('N/A') }}</td>
+                                <td>{{ entity.agentThana|default('N/A') }}</td>
+                                <td>{{ loop.index }}</td>
+                                <td>{{ entity.farmerName|default('N/A') }}</td>
+                                <td>{{ entity.farmerAddress|default('N/A') }}</td>
+                                <td>{{ entity.farmerMobile|default('N/A') }}</td>
+                                {% for item in entity.cultureSpeciesItemAndQty|json_decode() %}
+                                    {% set sum = sum + item %}
+                                    <td>{{ item }}</td>
+                                {% endfor %}
+                                <td>{{ sum }}</td>
+                                <td>{{ entity.nourishItemName|default('N/A') }}</td>
+                                <td>{{ entity.otherCultureSpecies|default('N/A') }}</td>
+                                <td>{{ entity.conventionalFeed|default('N/A') }}</td>
+                                <td>{{ entity.remarks|default('N/A') }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
-    </div>
+    {% endif %}
 
 
 

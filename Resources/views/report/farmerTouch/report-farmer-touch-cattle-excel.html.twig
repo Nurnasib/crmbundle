@@ -1,0 +1,77 @@
+{% if entities is not empty %}
+    <table>
+        <thead>
+        <tr>
+            <th colspan="16" align="center">{{ 'NOURISH POULTRY AND HATCHERY LTD'|trans }}</th>
+        </tr>
+        <tr>
+            <th colspan="16" align="center">{{ 'UTTARA, DHAKA.'|trans }}</th>
+        </tr>
+        <tr>
+            <th colspan="16" align="center">{{ 'Farmer Touch Report'|trans }}</th>
+        </tr>
+        <tr>
+            <th></th>
+        </tr>
+        <tr>
+            <th colspan="8" align="left">{{ 'Name of CSO'|trans }}: {{ filterBy.employee.name|default('N/A') }}</th>
+            <th colspan="8" align="left">{{ 'Region'|trans }}: {{ filterBy.employee.regional.name|default('N/A') }}</th>
+        </tr>
+        <tr>
+            <th></th>
+        </tr>
+        </thead>
+    </table>
+    <table>
+        <thead>
+        <tr>
+            <th scope="col" rowspan="2" style="text-align: center">{{ 'Agent ID / Mobile No'|trans }}</th>
+            <th scope="col" rowspan="2" style="text-align: center">{{ 'Name of Agents'|trans }}</th>
+            <th scope="col" rowspan="2" style="text-align: center">{{ 'District'|trans }}</th>
+            <th scope="col" rowspan="2" style="text-align: center">{{ 'Thana'|trans }}</th>
+            <th scope="col" rowspan="2" style="text-align: center">{{ 'Sl No'|trans }}</th>
+            <th scope="col" rowspan="2" style="text-align: center">{{ 'Name of Farmers'|trans }}</th>
+            <th scope="col" rowspan="2" style="text-align: center">{{ 'Address'|trans }}</th>
+            <th scope="col" rowspan="2" style="text-align: center">{{ 'Mobile'|trans }}</th>
+            <th scope="col" colspan="{{ (species|length) + 1 }}" style="text-align: center">{{ 'Capacity'|trans }}</th>
+            <th scope="col" colspan="3" style="text-align: center">{{ 'Feed'|trans }}</th>
+            <th scope="col" rowspan="2" style="text-align: center">{{ 'Remarks'|trans }}</th>
+        </tr>
+
+        <tr>
+            {% for cattleType in species %}
+                <th scope="col">{{ cattleType.name }}</th>
+            {% endfor %}
+            <th scope="col">{{ 'Total'|trans }}</th>
+            <th scope="col">{{ 'Nourish'|trans }}</th>
+            <th scope="col">{{ 'Others'|trans }}</th>
+            <th scope="col">{{ 'Conventional'|trans }}</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        {% for entity in entities %}
+            {% set sum = 0 %}
+            <tr>
+                <td>{{ entity.agentMobile|default('N/A') }}</td>
+                <td>{{ entity.agentName|default('N/A') }}</td>
+                <td>{{ entity.agentDistrictName|default('N/A') }}</td>
+                <td>{{ entity.agentThana|default('N/A') }}</td>
+                <td>{{ loop.index }}</td>
+                <td>{{ entity.farmerName|default('N/A') }}</td>
+                <td>{{ entity.farmerAddress|default('N/A') }}</td>
+                <td>{{ entity.farmerMobile|default('N/A') }}</td>
+                {% for item in entity.cultureSpeciesItemAndQty|json_decode() %}
+                    {% set sum = sum + item %}
+                    <td>{{ item }}</td>
+                {% endfor %}
+                <td>{{ sum }}</td>
+                <td>{{ entity.nourishItemName|default('N/A') }}</td>
+                <td>{{ entity.otherCultureSpecies|default('N/A') }}</td>
+                <td>{{ entity.conventionalFeed|default('N/A') }}</td>
+                <td>{{ entity.remarks|default('N/A') }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endif %}

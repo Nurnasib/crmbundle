@@ -1,0 +1,164 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block body %}
+    <div class="pcoded-inner-content">
+        <!-- [ breadcrumb ] start -->
+        <div class="page-header">
+            <div class="page-block">
+                <div class="row align-items-center">
+                    <ul class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/"><i class="feather icon-home"></i></a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="card">
+                <div class="card-header">
+                    <h5>{{ 'New Farmer List (Fish)'|trans }}</h5>
+                    {% if entities is not empty %}
+                        <div class="btn-group btn-group-sm float-right" role="group"
+                             aria-label="Button group with nested dropdown">
+                            <a target="_blank"
+                               href="{{ path('farmer_introduce_report_pdf', {'filterBy': filterBy, 'species':species}) }}"
+                               class="btn blue-bg white-font btn-sm"><i class="fa fa-file-pdf"></i> PDF</a>
+                            <a target="_blank"
+                               href="{{ path('farmer_introduce_report_excel', {'filterBy': filterBy, 'species':species}) }}"
+                               class="btn btn-sm bg-primary white-font"><i class="fa fa-file-excel"></i> Excel</a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 offset-3">
+                {{ form_start(searchForm) }}
+                <table class="table table-borderd">
+                    <thead class="thead-dark">
+                    <tr>
+                        <th>
+                            {{ form_label(searchForm.employee, 'Select Employee:'|trans) }}
+                            {{ form_widget(searchForm.employee) }}
+                        </th>
+                        <th>
+                            {{ form_widget(searchForm.filter,{'attr':{'style': 'margin-top:18px'}}) }}
+                        </th>
+                    </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+
+        {% if entities is not empty %}
+            <div class="row">
+                <div class="card" style="overflow-x: scroll">
+                    <div class="card-block">
+                        <h3 class="text-center">NOURISH POULTRY AND HATCHERY LTD</h3>
+                        <h5 class="text-center">UTTARA, DHAKA.</h5>
+                        <h6 class="text-center">{{ 'List of New Farm Introduce to Nourish Family (Min. 1farm each month)'|trans }}</h6>
+                        <table class="table table-borderd mt-4">
+                            <thead class="thead-dark">
+                            <tr>
+                                <th align="left">{{ 'Name of CSO'|trans }}
+                                    : {{ filterBy.employee.name|default('N/A') }}</th>
+                                <th align="left">{{ 'Designation'|trans }}
+                                    : {{ filterBy.employee.designation.name|default('N/A') }}</th>
+                                <th align="left">{{ 'Region'|trans }}
+                                    : {{ filterBy.employee.regional.name|default('N/A') }}</th>
+                                <th class="text-right">{{ 'ID'|trans }}: {{ filterBy.employee.id|default('N/A') }}</th>
+                            </tr>
+                            </thead>
+                        </table>
+                        <table class="table table-striped table-bordered table-hover" id="datatable">
+                            <thead class="thead-dark">
+                            <tr>
+                                <th scope="col" rowspan="2" style="text-align: center">{{ 'Month'|trans }}</th>
+                                <th scope="col" rowspan="2" style="text-align: center">{{ 'SL No.'|trans }}</th>
+                                <th scope="col" rowspan="2"
+                                    style="text-align: center">{{ 'Name of Farmers'|trans }}</th>
+                                <th scope="col" rowspan="2" style="text-align: center">{{ 'Address'|trans }}</th>
+                                <th scope="col" rowspan="2" style="text-align: center">{{ 'Mobile No.'|trans }}</th>
+                                <th scope="col" colspan="{{ species|length }}"
+                                    style="text-align: center">{{ 'Cultute Species & Quentity'|trans }}</th>
+                                <th scope="col" colspan="3"
+                                    style="text-align: center">{{ 'Present Agent Information'|trans }}</th>
+                                <th scope="col" colspan="3"
+                                    style="text-align: center">{{ 'Previous Agent Information'|trans }}</th>
+                                <th scope="col" rowspan="2" style="text-align: center">{{ 'Remarks'|trans }}</th>
+                            </tr>
+
+                            <tr>
+                                {% if species is not empty %}
+                                    {% for poultryType in species %}
+                                        <th scope="col">{{ poultryType.name }}</th>
+                                    {% endfor %}
+                                {% endif %}
+                                <th scope="col">{{ 'Agent\'s Name'|trans }}</th>
+                                <th scope="col" style="text-align: center">{{ 'Address'|trans }}</th>
+                                <th scope="col">{{ 'Mobile No.'|trans }}</th>
+                                <th scope="col">{{ 'Previous Agent\'s Name'|trans }}</th>
+                                <th scope="col">{{ 'Address'|trans }}</th>
+                                <th scope="col">{{ 'Previous Feed Name'|trans }}</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+
+                            {% for key, entity in entities %}
+                                {% if entity is iterable %}
+                                    {% for detail in entity %}
+                                        <tr>
+                                            {% if loop.index==1 %}
+                                                <td rowspan="{{ loop.index==1?entity|length:'' }}">{{ key }}</td>
+                                            {% endif %}
+                                            <td>{{ loop.index }}</td>
+                                            <td>{{ detail.farmerName|default('N/A') }}</td>
+                                            <td>{{ detail.farmerAddress|default('N/A') }}</td>
+                                            <td>{{ detail.farmerMobile|default('N/A') }}</td>
+                                            {% for item in detail.cultureSpeciesItemAndQty|json_decode() %}
+                                                <td>{{ item }}</td>
+                                            {% endfor %}
+                                            <td>{{ detail.agentName|default('N/A') }}</td>
+                                            <td>{{ detail.agentAddress|default('N/A') }}</td>
+                                            <td>Present Agent Info Feed Name</td>
+                                            <td>{{ detail.previousAgentName|default('N/A') }}</td>
+                                            <td>{{ detail.previousAgentAddress|default('N/A') }}</td>
+                                            <td>{{ detail.previousFeedName|default('N/A') }}</td>
+                                            <td>{{ detail.remarks|default('N/A') }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                {% endif %}
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+
+    </div>
+
+{% endblock %}
+{% block cssBlock %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('assets/module/css/app.css') }}">
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    <script type="application/javascript" src="{{ asset('assets/module/js/app.js') }}"></script>
+{% endblock %}
+{% block documentready %}
+    {{ parent() }}
+
+    $('#start-date').datepicker(
+    {
+    dateFormat: 'yy-mm-dd'
+    }
+    );
+    $('#end-date').datepicker(
+    {
+    dateFormat: 'yy-mm-dd'
+    }
+    );
+
+{% endblock %}
