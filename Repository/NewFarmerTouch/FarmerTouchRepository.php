@@ -63,16 +63,13 @@ class FarmerTouchRepository extends BaseRepository
         $qb->leftJoin('e.customer', 'farmer');
         $qb->leftJoin('farmer.location', 'farmerLocation');
         $qb->leftJoin('farmerLocation.parent', 'farmerLocationParent');
-//        $qb->leftJoin('e.employee', 'employee');
         $this->handleSearchFilterBetween($qb, $filterBy);
         $qb->leftJoin('employee.regional', 'employeeRegion');
         $qb->leftJoin('employee.designation', 'employeeDesignation');
 
         $results = $qb->getQuery()->getArrayResult();
-//        dd([$results, $filterBy]);
         $data = [];
         if($filterBy['slug'] == 'farmer-touch-report-poultry'){
-//            $data['poultry'] = 'poultry';
             foreach ($results as $result){
                 $agentName= $result['agentName'];
                 $data['employeeName'] = $result['employeeName'];
@@ -80,7 +77,6 @@ class FarmerTouchRepository extends BaseRepository
                 $data[$agentName][] = $result;
             }
         }elseif($filterBy['slug'] == 'farmer-touch-report-fish'){
-//            $data['fish'] = 'fish';
             foreach ($results as $result){
                 $month = $result['createdAt']->format('F-Y');
                 $data['employeeName'] = $result['employeeName'];
@@ -89,11 +85,8 @@ class FarmerTouchRepository extends BaseRepository
                 $data[$month][] = $result;
             }
         }else{
-//            $data['cattle'] = 'cattle';
 
             return $results;
-            dd($results);
-
         }
 
 //        dd($data);

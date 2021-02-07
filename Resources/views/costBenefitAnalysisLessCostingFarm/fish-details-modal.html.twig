@@ -1,0 +1,258 @@
+
+    <div class="row">
+        <div class="col-md-12">
+           <h3 class="text-right">{{ 'Month'|trans }}: {{ lessCostingFarm.reportingMonth|date('F, Y') }}</h3>
+        </div>
+        <div class="col-md-12" style="text-align: left">
+            <table class="table table-bordered">
+                <tbody>
+                <tr>
+                    <td>{{ 'Name of CSO'|trans }}: {{ lessCostingFarm.employee.name|default('') }}</td>
+                    <td>{{ 'Designation'|trans }}: {{ lessCostingFarm.employee.designation.name|default('') }}</td>
+                    <td>{{ 'Region'|trans }}: {{ lessCostingFarm.employee.regional.name|default('') }}</td>
+                </tr>
+                <tr>
+                    <td>{{ 'Agent Name'|trans }}: {{ lessCostingFarm.agent.name|default('') }}</td>
+                    <td>{{ 'Address'|trans }}: {{ lessCostingFarm.agent.address|default('') }}</td>
+                    <td>{{ 'Mobile'|trans }}: {{ lessCostingFarm.agent.mobile|default('') }}</td>
+                </tr>
+                <tr>
+                    <td>{{ 'Farmer Name'|trans }}: {{ lessCostingFarm.customer.name|default('') }}</td>
+                    <td>{{ 'Address'|trans }}: {{ lessCostingFarm.customer.address|default('') }}</td>
+                    <td>{{ 'Mobile'|trans }}: {{ lessCostingFarm.customer.mobile|default('') }}</td>
+                </tr>
+                <tr>
+                    <td>{{ 'Fish Species'|trans }}: {{ lessCostingFarm.species.name|default('') }}</td>
+                    <td>{{ 'Pond Size'|trans }}: {{ lessCostingFarm.pondSize|default('') }}</td>
+                    <td>{{ 'Stocking Densit'|trans }}: </td>
+                </tr>
+                <tr>
+                    <td>{{ 'Fingerling Size (gm)'|trans }}: {{ lessCostingFarm.fingerlingSize|default('') }} &nbsp;&nbsp;&nbsp; {{ 'Harvesting Size (gm)'|trans }}: {{ lessCostingFarm.harvestingSize|default('') }}</td>
+                    <td>{{ 'Fry Source'|trans }}: {{ lessCostingFarm.hatchery.name|default('') }}</td>
+                    <td>{{ 'Feed'|trans }}: {{ lessCostingFarm.feed.name|default('') }}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th>{{'SL NO'|trans }}</th>
+                    <th>{{'Particulars'|trans}}</th>
+                    <th>{{'Quantity'|trans }}</th>
+                    <th>{{'Particulars'|trans}}</th>
+                    <th>{{'Quantity'|trans }}</th>
+                    <th>{{'Particulars'|trans}}</th>
+                    <th>{{'Quantity'|trans }}</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>{{ '1'|trans }}</td>
+                    <td class="text-left">{{ 'Total Stocked Fingerling (Pcs)'|trans }}</td>
+                    <td class="text-right">{{ lessCostingFarm.totalStockedChicksPcs|number_format(2,'.','') }}</td>
+                    <td class="text-left">{{ 'Average Fingerling Price (Pcs)'|trans }}</td>
+                    <td class="text-right">{{ lessCostingFarm.itemPricePerPcs|number_format(2,'.','') }}</td>
+                    <td class="text-left">{{ 'Pond Rend)'|trans }}</td>
+                    <td class="text-right">{{ lessCostingFarm.litterOrPondRentCost|number_format(2,'.','') }}</td>
+                </tr>
+                <tr>
+                    <td>{{ '2'|trans}}</td>
+                    <td class="text-left">{{ 'Total Feed Used (Kg)'|trans }}</td>
+                    <td class="text-right">{{ lessCostingFarm.totalFeedUsedKg|number_format(2,'.','') }}</td>
+                    <td class="text-left">{{ 'Average Feed Price (Kg)'|trans }}</td>
+                    <td class="text-right">{{ lessCostingFarm.feedPricePerKg|number_format(2,'.','') }}</td>
+                    <td class="text-left">{{ 'Electricity & Fuel Cost'|trans }}</td>
+                    <td class="text-right">{{ lessCostingFarm.electricityAndFuelCost|number_format(2,'.','') }}</td>
+                </tr>
+                <tr>
+                    <td>{{ '3'|trans}}</td>
+                    <td class="text-left">{{ 'Total Fish Weight (Kg)'|trans }}</td>
+                    <td class="text-right">{{ lessCostingFarm.totalBroilerWeightKg|number_format(2,'.','') }}</td>
+                    <td class="text-left">{{ 'Selling Fish Price (Kg)'|trans }}</td>
+                    <td class="text-right">{{ lessCostingFarm.broilerOrFishPricePerKg|number_format(2,'.','') }}</td>
+                    <td class="text-left">{{ 'Labour Cost'|trans }}</td>
+                    <td class="text-right">{{ lessCostingFarm.labourCost|number_format(2,'.','') }}</td>
+                </tr>
+
+                <tr>
+                    <td>{{ '4'|trans}}</td>
+                    <td class="text-left">{{ 'Mortality (Pcs)'|trans }}</td>
+                    <td class="text-right">{{ lessCostingFarm.mortality|number_format(2,'.','') }}</td>
+                    <td class="text-left">{{ 'Pond Preparation Cost (Total)'|trans }}</td>
+                    <td class="text-right">{{ lessCostingFarm.totalPondPreparationCost|number_format(2,'.','') }}</td>
+                    <td class="text-left">{{ 'Transport Cost'|trans }}</td>
+                    <td class="text-right">{{ lessCostingFarm.transportCost|number_format(2,'.','') }}</td>
+
+                </tr>
+                <tr>
+                    <td>{{ '5'|trans}}</td>
+                    <td class="text-left">{{ 'Cultrue Days)'|trans }}</td>
+                    <td class="text-right">{{ lessCostingFarm.ageDays|number_format(0,'.','') }}</td>
+                    <td class="text-left">{{ 'Medicine Cost (Total)'|trans }}</td>
+                    <td class="text-right">{{ lessCostingFarm.totalMedicineCost|number_format(2,'.','') }}</td>
+                    <td class="text-left">{{ 'Others'|trans }}</td>
+                    <td class="text-right">{{ lessCostingFarm.otherCost|number_format(2,'.','') }}</td>
+                </tr>
+                <tr>
+                    <td>{{ '6'|trans}}</td>
+                    <td class="text-left">{{ 'FCR'|trans }}</td>
+                    <td class="text-right">{{ lessCostingFarm.fcr|number_format(2,'.','') }}</td>
+                    <td class="text-left">{{ 'Used Bag Selling Price (Pcs)'|trans }}</td>
+                    <td class="text-right">{{ lessCostingFarm.usedBagPricePerPcs|number_format(2,'.','') }}</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <h3 class="text-left">{{ '(a)'|trans }} {{ 'Production Cost (Please don\'t fill up)'|trans }}</h3>
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th>{{ 'SL NO'|trans }}</th>
+                    <th>{{ 'Item or Area of Cost'|trans }}</th>
+                    <th>{{ 'Unit Price (TK)'|trans }}</th>
+                    <th>{{ 'Total Price (TK)'|trans }}</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>{{ '1'|trans }}</td>
+                    <td class="text-left">{{ 'Fingerling'|trans }}</td>
+                    <td class="text-right">{{ lessCostingFarm.itemPricePerPcs|number_format('2','.','') }}</td>
+                    <td class="text-right">{{ lessCostingFarm.calculateChickTotalPrice|number_format('2','.','') }}</td>
+                </tr>
+                <tr>
+                    <td>{{ '2'|trans }}</td>
+                    <td class="text-left">{{ 'Feed'|trans }}</td>
+                    <td class="text-right">{{ lessCostingFarm.calculateFeedCostUnitPrice|number_format('2','.','') }}</td>
+                    <td class="text-right">{{ lessCostingFarm.calculateFeedCostTotalPrice|number_format('2','.','') }}</td>
+                </tr>
+                <tr>
+                    <td>{{ '3'|trans }}</td>
+                    <td class="text-left">{{ 'Medicine (Lime, Disinfectant, Probiotics etc.)'|trans }}</td>
+                    <td class="text-right">{{ lessCostingFarm.calculateMedicineCostUnitPrice|number_format('2','.','') }}</td>
+                    <td class="text-right">{{ lessCostingFarm.calculateMedicineCostTotalPrice|number_format('2','.','') }}</td>
+                </tr>
+                <tr>
+                    <td>{{ '4'|trans }}</td>
+                    <td class="text-left">{{ 'Labour Cost'|trans }}</td>
+                    <td class="text-right">{{ lessCostingFarm.calculateLabourCostUnitPrice|number_format('2','.','') }}</td>
+                    <td class="text-right">{{ lessCostingFarm.calculateLabourCostTotalPrice|number_format('2','.','') }}</td>
+                </tr>
+                <tr>
+                    <td>{{ '5'|trans }}</td>
+                    <td class="text-left">{{ 'Electricity & Fuel Cost'|trans }}</td>
+                    <td class="text-right">{{ lessCostingFarm.calculateElectricityCostUnitPrice|number_format('2','.','') }}</td>
+                    <td class="text-right">{{ lessCostingFarm.calculateElectricityCostTotalPrice|number_format('2','.','') }}</td>
+                </tr>
+                <tr>
+                    <td>{{ '6'|trans }}</td>
+                    <td class="text-left">{{ 'Pond Rent Cost'|trans }}</td>
+                    <td class="text-right">{{ lessCostingFarm.calculateLitterOrPondRentCostUnitPrice|number_format('2','.','') }}</td>
+                    <td class="text-right">{{ lessCostingFarm.calculateLitterOrPondRentCostTotalPrice|number_format('2','.','') }}</td>
+                </tr>
+                <tr>
+                    <td>{{ '7'|trans }}</td>
+                    <td class="text-left">{{ 'Pond Preparation Cost'|trans }}</td>
+                    <td class="text-right">{{ lessCostingFarm.calculatePondPreparationCostUnitPrice|number_format('2','.','') }}</td>
+                    <td class="text-right">{{ lessCostingFarm.calculatePondPreparationCostTotalPrice|number_format('2','.','') }}</td>
+                </tr>
+                <tr>
+                    <td>{{ '8'|trans }}</td>
+                    <td class="text-left">{{ 'Transport Cost'|trans }}</td>
+                    <td class="text-right">{{ lessCostingFarm.calculateTransportCostUnitPrice|number_format('2','.','') }}</td>
+                    <td class="text-right">{{ lessCostingFarm.calculateTransportCostTotalPrice|number_format('2','.','') }}</td>
+                </tr>
+                <tr>
+                    <td>{{ '9'|trans }}</td>
+                    <td class="text-left">{{ 'Others'|trans }}</td>
+                    <td class="text-right">{{ lessCostingFarm.calculateOtherCostUnitPrice|number_format('2','.','') }}</td>
+                    <td class="text-right">{{ lessCostingFarm.calculateOtherCostTotalPrice|number_format('2','.','') }}</td>
+                </tr>
+                </tbody>
+                <tfoot>
+                <tr>
+                    <td colspan="2">{{ 'Total'|trans }}</td>
+                    <td class="text-right">{{ lessCostingFarm.calculateTotalProductionItemUnitPrice|number_format('2','.','') }}</td>
+                    <td class="text-right">{{ lessCostingFarm.calculateTotalProductionItemTotalPrice|number_format('2','.','') }}</td>
+                </tr>
+                <tr><td colspan="4" style="height: 25px"></td></tr>
+                <tr>
+                    <td class="text-right" colspan="3">{{ 'Production Cost per Kg (Tk)'|trans }}</td>
+                    <td class="text-right">{{ lessCostingFarm.calculateProductionCostPerKg|number_format('2','.','') }}</td>
+                </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <h3 class="text-left">{{ '(b)'|trans }} {{ 'Total Selling Price (Please don\'t fill up)'|trans }}</h3>
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th>{{ 'SL NO'|trans }}</th>
+                    <th>{{ 'Item or Area'|trans }}</th>
+                    <th>{{ 'Unit Price (TK)'|trans }}</th>
+                    <th>{{ 'Total Price (TK)'|trans }}</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>{{ '1'|trans }}</td>
+                    <td class="text-left">{{ 'Total Fish Sale'|trans }}</td>
+                    <td class="text-right">{{ lessCostingFarm.calculateBroilerSaleUnitPrice|number_format('2','.','') }}</td>
+                    <td class="text-right">{{ lessCostingFarm.calculateBroilerSaleTotalPrice|number_format('2','.','') }}</td>
+                </tr>
+                <tr>
+                    <td>{{ '2'|trans }}</td>
+                    <td class="text-left">{{ 'Feed Bag sale'|trans }}</td>
+                    <td class="text-right">{{ lessCostingFarm.calculateFeedBagSaleUnitPrice|number_format('2','.','') }}</td>
+                    <td class="text-right">{{ lessCostingFarm.calculateFeedBagSaleTotalPrice|number_format('2','.','') }}</td>
+                </tr>
+                </tbody>
+                <tfoot>
+                <tr>
+                    <td colspan="2">{{ 'Total'|trans }}</td>
+                    <td class="text-right">{{ lessCostingFarm.calculateTotalSellingUnitPrice|number_format('2','.','') }}</td>
+                    <td class="text-right">{{ lessCostingFarm.calculateTotalSellingTotalPrice|number_format('2','.','') }}</td>
+                </tr>
+                <tr><td colspan="4" style="height: 25px"></td></tr>
+                <tr>
+                    <td class="text-right" colspan="3">{{ 'Selling Price per Kg (Tk)'|trans }}</td>
+                    <td class="text-right">{{ lessCostingFarm.calculateSellingPricePerKg|number_format('2','.','') }}</td>
+                </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <h3 class="text-left">{{ '(c)'|trans }} {{ 'Net Profit: (Please don\'t fill up)'|trans }}</h3>
+            <table class="table table-bordered">
+                <tbody>
+                <tr>
+                    <td>{{ '1'|trans }}</td>
+                    <td class="text-left">{{ 'Total Net Profit (Tk)'|trans }}</td>
+                    <td class="text-right">{{ lessCostingFarm.calculateTotalNetProfit|number_format('2','.','') }}</td>
+                </tr>
+                <tr>
+                    <td>{{ '2'|trans }}</td>
+                    <td class="text-left">{{ 'Net Profit Per Kg (Tk)'|trans }}</td>
+                    <td class="text-right">{{ lessCostingFarm.calculateNetProfitPerKg|number_format('2','.','') }}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>

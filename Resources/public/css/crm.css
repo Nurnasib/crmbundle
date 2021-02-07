@@ -102,3 +102,10 @@
 input.is-invalid, select.is-invalid {
     border-color: #dc3545!important;
 }
+
+.monthYearPicker .ui-datepicker-calendar {
+    display: none;
+}
+.hide{
+    display: none!important;
+}

@@ -1,6 +1,6 @@
 <?php
 
-namespace Terminalbd\CrmBundle\Entity\NewFarmerTouch;
+namespace Terminalbd\CrmBundle\Entity;
 
 use App\Entity\Core\Agent;
 use App\Entity\User;
@@ -13,7 +13,7 @@ use Terminalbd\CrmBundle\Entity\Setting;
 /**
  *
  * @ORM\Table(name="crm_cost_benefit_analysis_for_less_costing_farm")
- * @ORM\Entity(repositoryClass="Terminalbd\CrmBundle\Repository\NewFarmerTouch\FarmerTouchRepository")
+ * @ORM\Entity(repositoryClass="Terminalbd\CrmBundle\Repository\CostBenefitAnalysisForLessCostingFarmRepository")
  */
 class CostBenefitAnalysisForLessCostingFarm
 {
@@ -74,16 +74,51 @@ class CostBenefitAnalysisForLessCostingFarm
 
     /**
      * @var Setting
-     * @ORM\ManyToOne(targetEntity="Terminalbd\CrmBundle\Entity\Setting", inversedBy="costBenefitAnalysisForLessCostingFarm")
+     * @ORM\ManyToOne(targetEntity="Terminalbd\CrmBundle\Entity\Setting", inversedBy="antibioticFreeFarm")
      * @ORM\JoinColumn(name="feed_id", referencedColumnName="id", onDelete="SET NULL", nullable=true)
      */
     private $feed;
+
+    /**
+     * @var Setting
+     * @ORM\ManyToOne(targetEntity="Terminalbd\CrmBundle\Entity\Setting", inversedBy="antibioticFreeFarm")
+     * @ORM\JoinColumn(name="species_id", referencedColumnName="id", onDelete="SET NULL", nullable=true)
+     */
+    private $species;
 
     /**
      * @var \DateTime
      * @ORM\Column(type="date", nullable=true)
      */
     private $hatchingDate;
+
+    /**
+     * @var \DateTime
+     * @ORM\Column(type="date", nullable=true)
+     */
+    private $reportingMonth;
+
+    /**
+     * @var string
+     * @ORM\Column(type="string", nullable=true)
+     */
+    private $pondSize;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(type="float")
+     */
+
+    private $fingerlingSize=0;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(type="float")
+     */
+
+    private $harvestingSize=0;
 
 //    particulars item section start 1-9:
     /**
@@ -117,6 +152,113 @@ class CostBenefitAnalysisForLessCostingFarm
      */
 
     private $mortality=0;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(type="float")
+     */
+
+    private $ageDays=0;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(type="float")
+     */
+
+    private $fcr=0;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(type="float")
+     */
+
+    private $itemPricePerPcs=0;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(type="float")
+     */
+
+    private $feedPricePerKg=0;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(type="float")
+     */
+
+    private $broilerOrFishPricePerKg=0;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(type="float")
+     */
+
+    private $totalMedicineCost=0;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(type="float")
+     */
+
+    private $totalVaccineCost=0;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(type="float")
+     */
+
+    private $totalPondPreparationCost=0;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(type="float")
+     */
+
+    private $usedBagPricePerPcs=0;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(type="float")
+     */
+    private $litterOrPondRentCost=0;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(type="float")
+     */
+    private $electricityAndFuelCost=0;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(type="float")
+     */
+    private $labourCost=0;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(type="float")
+     */
+    private $transportCost=0;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(type="float")
+     */
+    private $otherCost=0;
 
     /**
      * @var string
@@ -276,6 +418,22 @@ class CostBenefitAnalysisForLessCostingFarm
     }
 
     /**
+     * @return Setting
+     */
+    public function getSpecies()
+    {
+        return $this->species;
+    }
+
+    /**
+     * @param Setting $species
+     */
+    public function setSpecies(Setting $species): void
+    {
+        $this->species = $species;
+    }
+
+    /**
      * @return \DateTime
      */
     public function getHatchingDate()
@@ -349,6 +507,256 @@ class CostBenefitAnalysisForLessCostingFarm
     }
 
     /**
+     * @return \DateTime
+     */
+    public function getReportingMonth()
+    {
+        return $this->reportingMonth;
+    }
+
+    /**
+     * @param \DateTime $reportingMonth
+     */
+    public function setReportingMonth(\DateTime $reportingMonth): void
+    {
+        $this->reportingMonth = $reportingMonth;
+    }
+
+    /**
+     * @return float
+     */
+    public function getAgeDays()
+    {
+        return $this->ageDays;
+    }
+
+    /**
+     * @param float $ageDays
+     */
+    public function setAgeDays(float $ageDays): void
+    {
+        $this->ageDays = $ageDays;
+    }
+
+    /**
+     * @return float
+     */
+    public function getFcr()
+    {
+        return $this->fcr;
+    }
+
+    /**
+     * @param float $fcr
+     */
+    public function setFcr(float $fcr): void
+    {
+        $this->fcr = $fcr;
+    }
+
+    public function calculateFcr()
+    {
+        $returnResult = 0;
+
+        if($this->totalBroilerWeightKg>0){
+            $returnResult = $this->totalFeedUsedKg/$this->totalBroilerWeightKg;
+        }
+        return $returnResult;
+    }
+
+    /**
+     * @return float
+     */
+    public function getItemPricePerPcs()
+    {
+        return $this->itemPricePerPcs;
+    }
+
+    /**
+     * @param float $itemPricePerPcs
+     */
+    public function setItemPricePerPcs(float $itemPricePerPcs): void
+    {
+        $this->itemPricePerPcs = $itemPricePerPcs;
+    }
+
+    /**
+     * @return float
+     */
+    public function getFeedPricePerKg()
+    {
+        return $this->feedPricePerKg;
+    }
+
+    /**
+     * @param float $feedPricePerKg
+     */
+    public function setFeedPricePerKg(float $feedPricePerKg): void
+    {
+        $this->feedPricePerKg = $feedPricePerKg;
+    }
+
+    /**
+     * @return float
+     */
+    public function getBroilerOrFishPricePerKg()
+    {
+        return $this->broilerOrFishPricePerKg;
+    }
+
+    /**
+     * @param float $broilerOrFishPricePerKg
+     */
+    public function setBroilerOrFishPricePerKg(float $broilerOrFishPricePerKg): void
+    {
+        $this->broilerOrFishPricePerKg = $broilerOrFishPricePerKg;
+    }
+
+    /**
+     * @return float
+     */
+    public function getTotalMedicineCost()
+    {
+        return $this->totalMedicineCost;
+    }
+
+    /**
+     * @param float $totalMedicineCost
+     */
+    public function setTotalMedicineCost(float $totalMedicineCost): void
+    {
+        $this->totalMedicineCost = $totalMedicineCost;
+    }
+
+    /**
+     * @return float
+     */
+    public function getTotalVaccineCost()
+    {
+        return $this->totalVaccineCost;
+    }
+
+    /**
+     * @param float $totalVaccineCost
+     */
+    public function setTotalVaccineCost(float $totalVaccineCost): void
+    {
+        $this->totalVaccineCost = $totalVaccineCost;
+    }
+
+    /**
+     * @return float
+     */
+    public function getTotalPondPreparationCost()
+    {
+        return $this->totalPondPreparationCost;
+    }
+
+    /**
+     * @param float $totalPondPreparationCost
+     */
+    public function setTotalPondPreparationCost(float $totalPondPreparationCost): void
+    {
+        $this->totalPondPreparationCost = $totalPondPreparationCost;
+    }
+
+    /**
+     * @return float
+     */
+    public function getUsedBagPricePerPcs()
+    {
+        return $this->usedBagPricePerPcs;
+    }
+
+    /**
+     * @param float $usedBagPricePerPcs
+     */
+    public function setUsedBagPricePerPcs(float $usedBagPricePerPcs): void
+    {
+        $this->usedBagPricePerPcs = $usedBagPricePerPcs;
+    }
+
+    /**
+     * @return float
+     */
+    public function getLitterOrPondRentCost()
+    {
+        return $this->litterOrPondRentCost;
+    }
+
+    /**
+     * @param float $litterOrPondRentCost
+     */
+    public function setLitterOrPondRentCost(float $litterOrPondRentCost): void
+    {
+        $this->litterOrPondRentCost = $litterOrPondRentCost;
+    }
+
+    /**
+     * @return float
+     */
+    public function getElectricityAndFuelCost()
+    {
+        return $this->electricityAndFuelCost;
+    }
+
+    /**
+     * @param float $electricityAndFuelCost
+     */
+    public function setElectricityAndFuelCost(float $electricityAndFuelCost): void
+    {
+        $this->electricityAndFuelCost = $electricityAndFuelCost;
+    }
+
+    /**
+     * @return float
+     */
+    public function getLabourCost()
+    {
+        return $this->labourCost;
+    }
+
+    /**
+     * @param float $labourCost
+     */
+    public function setLabourCost(float $labourCost): void
+    {
+        $this->labourCost = $labourCost;
+    }
+
+    /**
+     * @return float
+     */
+    public function getTransportCost()
+    {
+        return $this->transportCost;
+    }
+
+    /**
+     * @param float $transportCost
+     */
+    public function setTransportCost(float $transportCost): void
+    {
+        $this->transportCost = $transportCost;
+    }
+
+    /**
+     * @return float
+     */
+    public function getOtherCost()
+    {
+        return $this->otherCost;
+    }
+
+    /**
+     * @param float $otherCost
+     */
+    public function setOtherCost(float $otherCost): void
+    {
+        $this->otherCost = $otherCost;
+    }
+
+    /**
      * @param float $mortality
      */
     public function setMortality(float $mortality): void
@@ -373,6 +781,54 @@ class CostBenefitAnalysisForLessCostingFarm
     }
 
     /**
+     * @return string
+     */
+    public function getPondSize()
+    {
+        return $this->pondSize;
+    }
+
+    /**
+     * @param string $pondSize
+     */
+    public function setPondSize(string $pondSize): void
+    {
+        $this->pondSize = $pondSize;
+    }
+
+    /**
+     * @return float
+     */
+    public function getFingerlingSize()
+    {
+        return $this->fingerlingSize;
+    }
+
+    /**
+     * @param float $fingerlingSize
+     */
+    public function setFingerlingSize(float $fingerlingSize): void
+    {
+        $this->fingerlingSize = $fingerlingSize;
+    }
+
+    /**
+     * @return float
+     */
+    public function getHarvestingSize()
+    {
+        return $this->harvestingSize;
+    }
+
+    /**
+     * @param float $harvestingSize
+     */
+    public function setHarvestingSize(float $harvestingSize): void
+    {
+        $this->harvestingSize = $harvestingSize;
+    }
+
+    /**
      * @return \DateTime
      */
     public function getCreatedAt()
@@ -386,6 +842,239 @@ class CostBenefitAnalysisForLessCostingFarm
     public function setCreatedAt(\DateTime $createdAt)
     {
         $this->createdAt = $createdAt;
+    }
+    
+//    calculate section
+
+    public function calculateChickTotalPrice()
+    {
+        return $this->itemPricePerPcs* $this->totalStockedChicksPcs;
+    }
+
+    public function calculateFeedCostUnitPrice()
+    {
+        $price = 0;
+
+        if($this->totalStockedChicksPcs>0){
+            $price = ($this->totalFeedUsedKg/$this->totalStockedChicksPcs)*$this->feedPricePerKg;
+        }
+        return $price;
+    }
+
+    public function calculateFeedCostTotalPrice()
+    {
+        $price = $this->calculateFeedCostUnitPrice()*$this->totalStockedChicksPcs;
+        return $price;
+    }
+
+    public function calculateMedicineCostUnitPrice()
+    {
+        $price = 0;
+
+        if($this->totalStockedChicksPcs>0){
+            $price = $this->totalMedicineCost/$this->totalStockedChicksPcs;
+        }
+        return $price;
+    }
+
+    public function calculateMedicineCostTotalPrice()
+    {
+        $price = $this->calculateMedicineCostUnitPrice()*$this->totalStockedChicksPcs;
+        return $price;
+    }
+
+    public function calculateVaccineCostUnitPrice()
+    {
+        $price = 0;
+
+        if($this->totalStockedChicksPcs>0){
+            $price = $this->totalVaccineCost/$this->totalStockedChicksPcs;
+        }
+        return $price;
+    }
+
+    public function calculateVaccineCostTotalPrice()
+    {
+        $price = $this->calculateVaccineCostUnitPrice()*$this->totalStockedChicksPcs;
+        return $price;
+    }
+
+    public function calculateLabourCostUnitPrice()
+    {
+        $price = 0;
+
+        if($this->totalStockedChicksPcs>0){
+            $price = $this->labourCost/$this->totalStockedChicksPcs;
+        }
+        return $price;
+    }
+
+    public function calculateLabourCostTotalPrice()
+    {
+        $price = $this->calculateLabourCostUnitPrice()*$this->totalStockedChicksPcs;
+        return $price;
+    }
+
+    public function calculateElectricityCostUnitPrice()
+    {
+        $price = 0;
+
+        if($this->totalStockedChicksPcs>0){
+            $price = $this->electricityAndFuelCost/$this->totalStockedChicksPcs;
+        }
+        return $price;
+    }
+
+    public function calculateElectricityCostTotalPrice()
+    {
+        $price = $this->calculateElectricityCostUnitPrice()*$this->totalStockedChicksPcs;
+        return $price;
+    }
+
+    public function calculateLitterOrPondRentCostUnitPrice()
+    {
+        $price = 0;
+
+        if($this->totalStockedChicksPcs>0){
+            $price = $this->litterOrPondRentCost/$this->totalStockedChicksPcs;
+        }
+        return $price;
+    }
+
+    public function calculateLitterOrPondRentCostTotalPrice()
+    {
+        $price = $this->calculateLitterOrPondRentCostUnitPrice()*$this->totalStockedChicksPcs;
+        return $price;
+    }
+
+    public function calculatePondPreparationCostUnitPrice()
+    {
+        $price = 0;
+
+        if($this->totalStockedChicksPcs>0){
+            $price = $this->totalPondPreparationCost/$this->totalStockedChicksPcs;
+        }
+        return $price;
+    }
+
+    public function calculatePondPreparationCostTotalPrice()
+    {
+        $price = $this->calculatePondPreparationCostUnitPrice()*$this->totalStockedChicksPcs;
+        return $price;
+    }
+
+    public function calculateTransportCostUnitPrice()
+    {
+        $price = 0;
+
+        if($this->totalStockedChicksPcs>0){
+            $price = $this->transportCost/$this->totalStockedChicksPcs;
+        }
+        return $price;
+    }
+
+    public function calculateTransportCostTotalPrice()
+    {
+        $price = $this->calculateTransportCostUnitPrice()*$this->totalStockedChicksPcs;
+        return $price;
+    }
+
+    public function calculateOtherCostUnitPrice()
+    {
+        $price = 0;
+
+        if($this->totalStockedChicksPcs>0){
+            $price = $this->otherCost/$this->totalStockedChicksPcs;
+        }
+        return $price;
+    }
+
+    public function calculateOtherCostTotalPrice()
+    {
+        $price = $this->calculateOtherCostUnitPrice()*$this->totalStockedChicksPcs;
+        return $price;
+    }
+
+    public function calculateTotalProductionItemUnitPrice()
+    {
+        return $this->itemPricePerPcs + $this->calculateElectricityCostUnitPrice()+$this->calculateFeedCostUnitPrice()+$this->calculateLabourCostUnitPrice()+$this->calculateLitterOrPondRentCostUnitPrice()+
+            $this->calculateVaccineCostUnitPrice()+$this->calculateMedicineCostUnitPrice()+$this->calculateOtherCostUnitPrice()+$this->calculateTransportCostUnitPrice()+$this->calculatePondPreparationCostUnitPrice();
+    }
+
+    public function calculateTotalProductionItemTotalPrice()
+    {
+        return $this->calculateChickTotalPrice() + $this->calculateElectricityCostTotalPrice()+$this->calculateFeedCostTotalPrice()+$this->calculateLabourCostTotalPrice()+$this->calculateLitterOrPondRentCostTotalPrice()+
+            $this->calculateVaccineCostTotalPrice()+$this->calculateMedicineCostTotalPrice()+$this->calculateOtherCostTotalPrice()+$this->calculateTransportCostTotalPrice()+$this->calculatePondPreparationCostTotalPrice();
+    }
+
+    public function calculateProductionCostPerKg()
+    {
+        $price=0;
+        if ($this->totalBroilerWeightKg>0){
+            $price = $this->calculateTotalProductionItemTotalPrice()/$this->totalBroilerWeightKg;
+        }
+        return $price;
+    }
+
+    public function calculateBroilerSaleUnitPrice()
+    {
+        $price = 0;
+
+        if($this->totalStockedChicksPcs>0){
+            $price = ($this->totalBroilerWeightKg/$this->totalStockedChicksPcs)*$this->broilerOrFishPricePerKg;
+        }
+
+        return $price;
+    }
+
+    public function calculateBroilerSaleTotalPrice()
+    {
+        return $this->calculateBroilerSaleUnitPrice()*$this->totalStockedChicksPcs;
+    }
+
+    public function calculateFeedBagSaleUnitPrice()
+    {
+        $price = 0;
+
+        if($this->totalStockedChicksPcs>0){
+            $price = (($this->totalFeedUsedKg/50)/$this->totalStockedChicksPcs)*$this->usedBagPricePerPcs;
+        }
+
+        return $price;
+    }
+
+    public function calculateFeedBagSaleTotalPrice()
+    {
+        return $this->calculateFeedBagSaleUnitPrice()*$this->totalStockedChicksPcs;
+    }
+
+    public function calculateTotalSellingUnitPrice()
+    {
+        return $this->calculateBroilerSaleUnitPrice()+$this->calculateFeedBagSaleUnitPrice();
+    }
+
+    public function calculateTotalSellingTotalPrice()
+    {
+        return $this->calculateBroilerSaleTotalPrice()+$this->calculateFeedBagSaleTotalPrice();
+    }
+
+    public function calculateSellingPricePerKg()
+    {
+        $price = 0;
+        if($this->totalBroilerWeightKg>0){
+            $price = $this->calculateTotalSellingTotalPrice()/$this->totalBroilerWeightKg;
+        }
+        return $price;
+    }
+
+    public function calculateTotalNetProfit()
+    {
+        return $this->calculateTotalSellingTotalPrice()-$this->calculateTotalProductionItemTotalPrice();
+    }
+
+    public function calculateNetProfitPerKg()
+    {
+        return $this->calculateSellingPricePerKg()-$this->calculateProductionCostPerKg();
     }
 
 }

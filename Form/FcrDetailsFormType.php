@@ -95,7 +95,8 @@ class FcrDetailsFormType extends AbstractType
                 'attr'=>array('class'=>'span12 m-wrap hatchery'),
                 'query_builder' => function(EntityRepository $er){
                     return $er->createQueryBuilder('e')
-                        ->where("e.settingType ='HATCHERY'")
+                        ->where("e.status =1")
+                        ->andWhere("e.settingType ='HATCHERY'")
                         ->orderBy('e.name', 'ASC');
                 },
             ))
@@ -122,7 +123,8 @@ class FcrDetailsFormType extends AbstractType
                 'attr'=>array('class'=>'span12 m-wrap feed'),
                 'query_builder' => function(EntityRepository $er){
                     return $er->createQueryBuilder('e')
-                        ->where("e.settingType ='FEED_NAME'")
+                        ->where("e.status =1")
+                        ->andWhere("e.settingType ='FEED_NAME'")
                         ->orderBy('e.name', 'ASC');
                 },
             ))
@@ -134,7 +136,8 @@ class FcrDetailsFormType extends AbstractType
                 'attr'=>array('class'=>'span12 m-wrap feedType'),
                 'query_builder' => function(EntityRepository $er)use($report){
                     return $er->createQueryBuilder('e')
-                        ->where("e.settingType ='FEED_TYPE'")
+                        ->where("e.status =1")
+                        ->andWhere("e.settingType ='FEED_TYPE'")
                         ->andWhere("e.parent = :parent")
                         ->setParameter('parent',$report)
                         ->orderBy('e.name', 'ASC');
@@ -148,7 +151,8 @@ class FcrDetailsFormType extends AbstractType
                 'attr'=>array('class'=>'span12 m-wrap feedMill'),
                 'query_builder' => function(EntityRepository $er){
                     return $er->createQueryBuilder('e')
-                        ->where("e.settingType ='FEED_MILL'")
+                        ->where("e.status =1")
+                        ->andWhere("e.settingType ='FEED_MILL'")
                         ->orderBy('e.name', 'ASC');
                 },
             ))

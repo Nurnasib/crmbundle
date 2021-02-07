@@ -6,17 +6,52 @@
             <h4>{{ 'Agent'|trans }}: {{ farmerTrainingReport.agent.name }}</h4>
         </div>
         <div class="col-md-12">
-            <table class="table">
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    {% set trainingMaterialItem = farmerTrainingReport.trainingMaterial|json_decode %}
+
+                    <td rowspan="2">{{ 'Month'|trans }}</td>
+                    <td rowspan="2">{{ 'Date of Training'|trans}}</td>
+                    <td rowspan="2">{{ 'Name of Agent'|trans}}</td>
+                    <td rowspan="2">{{ 'Address'|trans}}</td>
+                    <td rowspan="2">{{ 'Mobile No'|trans}}</td>
+                    <td colspan="4">{{ 'Participants Information'|trans}}</td>
+                    <td colspan="{{ species|length }}">{{ 'Capacity'|trans}}</td>
+                    <td colspan="{{ trainingMaterialItem|length }}">{{ 'Training Materials'|trans}}</td>
+                    <td rowspan="2">{{ 'Training Topics'|trans}}</td>
+                    <td rowspan="2">{{ 'Remarks'|trans}}</td>
+                </tr>
+                <tr>
+                    <td>{{ 'SL No'|trans }}</td>
+                    <td>{{ 'Farmers Name'|trans }}</td>
+                    <td>{{ 'Address'|trans }}</td>
+                    <td>{{ 'Mobile No'|trans }}</td>
+                    {% if species is not empty %}
+                        {% for specie in species %}
+                            <td>{{ specie.name|default('') }}</td>
+                        {% endfor %}
+                    {% endif %}
+
+                    {% if farmerTrainingReport.trainingMaterial is not empty %}
+                        {% for i, material in farmerTrainingReport.trainingMaterial|json_decode  %}
+                            <td>{{ material|default('') }}</td>
+                        {% endfor %}
+                    {% endif %}
+                </tr>
+                </thead>
 
                 <tbody>
                 {% if farmerTrainingReport.farmerTrainingReportDetails is not empty %}
                     {% for index, details in farmerTrainingReport.farmerTrainingReportDetails %}
                         <tr>
-                            <td>{{ farmerTrainingReport.trainingDate|date('F, Y') }}</td>
-                            <td>{{ farmerTrainingReport.trainingDate|date('d-m-Y') }}</td>
-                            <td>{{ farmerTrainingReport.agent.name|default('') }}</td>
-                            <td>{{ farmerTrainingReport.agent.address|default('') }}</td>
-                            <td>{{ farmerTrainingReport.agent.mobile|default('') }}</td>
+                            {% if index==0 %}
+                            <td rowspan="{{ farmerTrainingReport.farmerTrainingReportDetails|length }}">{{ farmerTrainingReport.trainingDate|date('F, Y') }}</td>
+                            <td rowspan="{{ farmerTrainingReport.farmerTrainingReportDetails|length }}">{{ farmerTrainingReport.trainingDate|date('d-m-Y') }}</td>
+                            <td rowspan="{{ farmerTrainingReport.farmerTrainingReportDetails|length }}">{{ farmerTrainingReport.agent.name|default('') }}</td>
+                            <td rowspan="{{ farmerTrainingReport.farmerTrainingReportDetails|length }}">{{ farmerTrainingReport.agent.address|default('') }}</td>
+                            <td rowspan="{{ farmerTrainingReport.farmerTrainingReportDetails|length }}">{{ farmerTrainingReport.agent.mobile|default('') }}</td>
+                            {% endif %}
                             <td>{{ index +1 }}</td>
                             <td>{{ details.customer.name|default('') }}</td>
                             <td>{{ details.customer.address|default('') }}</td>
@@ -35,8 +70,10 @@
                                 <td>{{ trainingMaterialQty[i]|default('') }}</td>
                                 {% endfor %}
                             {% endif %}
-                            <td>{{ farmerTrainingReport.trainingTopics|default('') }}</td>
-                            <td>{{ farmerTrainingReport.remarks|default('') }}</td>
+                            {% if index==0 %}
+                            <td rowspan="{{ farmerTrainingReport.farmerTrainingReportDetails|length }}">{{ farmerTrainingReport.trainingTopics|default('') }}</td>
+                            <td rowspan="{{ farmerTrainingReport.farmerTrainingReportDetails|length }}">{{ farmerTrainingReport.remarks|default('') }}</td>
+                            {% endif %}
                         </tr>
                     {% endfor %}
                 {% endif %}

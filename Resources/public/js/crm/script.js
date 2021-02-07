@@ -84,6 +84,21 @@ $(document).on('click','.report_complete_layer', function () {
 });
 
 function formCommonProcess() {
+
+
+    $(".add-row").on('click', function(){
+        var table = $(this).closest('.table');
+        var nrow = table.find('tr:eq(1)').clone();
+        nrow.find('td').find('button').removeClass('hide');
+        nrow.find("input[type=text]").val("");
+        table.append(nrow);
+    });
+
+    // Find and remove selected table rows
+    $('body').on('click','.remove_row', function(){
+        $(this).closest("tr").remove();
+    });
+
     $( ".sticky_section" ).scroll(function() {
         var scroll = $(this).scrollTop();
         if (scroll >= 50) {
@@ -128,6 +143,34 @@ function formCommonProcess() {
         showButtonPanel: true,
         buttonImage: "/assets/images/icon-calendar-green.png",
         buttonImageOnly: true
+    });
+
+    $('.monthYearPicker').datepicker({
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'mm-yy',
+
+        onClose: function() {
+            $("#ui-datepicker-div").removeClass('monthYearPicker');
+            var iMonth = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
+            var iYear = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
+            $(this).datepicker('setDate', new Date(iYear, iMonth, 1));
+        },
+
+        beforeShow: function() {
+            $("#ui-datepicker-div").addClass('monthYearPicker');
+            // console.log($(this).val());
+            if ((selDate = $(this).val()).length > 0)
+            {
+                iYear = selDate.substring(selDate.length - 4, selDate.length);
+                iMonth = selDate.substring(0, 2);
+                // iMonth = jQuery.inArray(selDate.substring(1, 2), $(this).datepicker('option', 'monthNames'));
+                // console.log(iMonth);
+                iMonth = iMonth-1;
+                $(this).datepicker('option', 'defaultDate', new Date(iYear, iMonth, 1));
+                $(this).datepicker('setDate', new Date(iYear, iMonth, 1));
+            }
+        }
     });
 
 
@@ -250,6 +293,15 @@ function formCommonProcess() {
 
     $('.farmer_training_report_section').on('click', '.farmer_training_report_button', function () {
         formSubmitProcessForFarmerTrainingReport($(this));
+    });
+
+
+    $('.antibiotic_free_farm_section').on('click', '.antibiotic_free_farm_button', function () {
+        formSubmitProcessForAntibioticFreeFarm($(this));
+    });
+
+    $('.less_costing_farm_section').on('click', '.less_costing_farm_button', function () {
+        formSubmitProcessForLessCostingFarm($(this));
     });
 
 

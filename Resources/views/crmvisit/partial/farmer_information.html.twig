@@ -60,6 +60,12 @@
                 {% if details.report is not empty and details.report.slug in ['farmer-touch-report-fish','farmer-touch-report-poultry','farmer-touch-report-cattle'] %}
                      <a class="btn btn-primary btn-sm" data-action='{{ path('farmer_touch_new_modal',{'id': details.crmCustomer is not empty?details.crmCustomer.id:'', 'report':details.report.id}) }}' href='?process=postView_{{ details.id }}_{{ details.report.id }}&report={{ details.report.slug }}&check=show#modal' id='postView_{{ details.id }}_{{ details.report.id }}' >{{ 'Report'|trans }}</a>
                 {% endif %}
+                {% if details.report is not empty and details.report.slug in ['antibiotic-free-farm-poultry','antibiotic-free-farm-fish','antibiotic-free-farm-cattle'] %}
+                     <a class="btn btn-primary btn-sm" data-action='{{ path('antibiotic_free_farm_new_modal',{'id': details.crmCustomer is not empty?details.crmCustomer.id:'', 'report':details.report.id}) }}' href='?process=postView_{{ details.id }}_{{ details.report.id }}&report={{ details.report.slug }}&check=show#modal' id='postView_{{ details.id }}_{{ details.report.id }}' >{{ 'Report'|trans }}</a>
+                {% endif %}
+                {% if details.report is not empty and details.report.slug in ['less-costing-farm-poultry','less-costing-farm-fish'] %}
+                     <a class="btn btn-primary btn-sm" data-action='{{ path('cost_benefit_analysis_less_costing_farm_new_modal',{'id': details.crmCustomer is not empty?details.crmCustomer.id:'', 'report':details.report.id, 'parentParent':details.report.parent.parent.id}) }}' href='?process=postView_{{ details.id }}_{{ details.report.id }}&report={{ details.report.slug }}&check=show#modal' id='postView_{{ details.id }}_{{ details.report.id }}' >{{ 'Report'|trans }}</a>
+                {% endif %}
                 </td>
             </tr>
         {% endif %}

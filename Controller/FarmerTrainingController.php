@@ -126,7 +126,7 @@ class FarmerTrainingController extends AbstractController
      * @param FarmerTrainingReport $farmerTrainingReport
      * @Route("/details/{id}/modal", methods={"GET", "POST"}, name="farmer_training_report_detail_modal", options={"expose"=true})
      */
-    public function lifeCycleDetailsModal($id): Response
+    public function farmerTrainingDetailsModal($id): Response
     {
 
         $farmerTrainingReport = $this->getDoctrine()->getRepository(FarmerTrainingReport::class)->find($id);
