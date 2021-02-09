@@ -57,7 +57,13 @@ class CostBenefitAnalysisForLessCostingFarmController extends AbstractController
         $allRequest = $request->request->all();
 
         if($parentParent->getSlug()=='poultry-breed' && $parentParent->getSettingType()== 'BREED_NAME'){
-            $form = $this->createForm(CostBenefitAnalysisLessCostingFarmForPoultryFormType::class, $entity,array('report' => $report))
+            $farmTypesByParentPoultry = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('status'=>1,'settingType'=>'FARM_TYPE','parent'=>$parentParent));
+
+            $farmTypeId = [];
+            foreach ($farmTypesByParentPoultry as $value){
+                $farmTypeId[]= $value->getId();
+            }
+            $form = $this->createForm(CostBenefitAnalysisLessCostingFarmForPoultryFormType::class, $entity,array('report' => $report, 'farmTypeId'=>$farmTypeId))
                 ->add('SaveAndCreate', ButtonType::class);
         }elseif ($parentParent->getSlug()=='fish-breed' && $parentParent->getSettingType()== 'BREED_NAME'){
             $form = $this->createForm(CostBenefitAnalysisLessCostingFarmForFishFormType::class, $entity,array('report' => $report))

@@ -1,0 +1,64 @@
+<div class="portlet box">
+    <div class="portlet-title">
+        <div class="caption">{{report.name}}</div>
+    </div>
+    {#{{ dump(report) }}#}
+
+    <div class="portlet-body form antibiotic_free_farm_section">
+        <div class="row form-body ">
+            <div class="form-inner-no-space">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h4>{{ 'NOURISH POULTRY & HATCHERY LTD'|trans }}</h4>
+                        <h5>{{ 'Uttara, Dhaka.'|trans }}</h5>
+                        <h4>{{ 'Monthly Troubleshooting &'|trans }} {{report.name}}</h4>
+                    </div>
+                </div>
+                <div class="disease_mapping_section">
+                    {{ form_start(form, {'attr': {'method':'post','action': path('disease_mapping_new_modal',{'id':crmCustomer.id,'report':report.id }),'class': 'form-horizontal right','id':'disease_mapping_form'}}) }}
+                    <table class="table table-bordered disease_mapping_table" id="datatable">
+                        <thead>
+                        <tr>
+                            <th>{{ 'Agent Name'|trans }}</th>
+                            <th>{{ 'Farmer Name'|trans }}</th>
+                            <th style="width: 120px">{{ 'Visting Date'|trans }}</th>
+                            <th style="width: 150px">{{ 'Hatchery'|trans }}</th>
+                            <th style="width: 150px">{{ 'Feed'|trans }}</th>
+                            <th style="width: 150px">{{ 'Type of Birds'|trans }}</th>
+                            <th>{{ 'Flock Size'|trans }}</th>
+                            <th>{{ 'Age'|trans }}</th>
+                            <th style="width: 200px">{{ 'Presumptive Diagnosis'|trans }}</th>
+                            <th>{{ 'Action'|trans }}</th>
+                        </tr>
+                        <tr>
+                            <td>{{ crmCustomer.agent.name }}</td>
+                            <td>{{ crmCustomer.name }}</td>
+                            <td>
+                                <div class="date_section">
+                                    {{ form_widget(form.visitingDate) }}
+                                </div>
+                            </td>
+                            <td>{{ form_widget(form.hatchery) }}</td>
+                            <td>{{ form_widget(form.feed) }}</td>
+                            <td>{{ form_widget(form.farmType) }}</td>
+                            <td>{{ form_widget(form.flockSizeOrCapacity,{'type':'number'}) }}</td>
+                            <td>{{ form_widget(form.ageDays,{'type':'number'}) }}</td>
+                            <td>{{ form_widget(form.disease) }}</td>
+                            <td>
+                                <button title="Save" type="button" class="btn btn-primary btn-sm disease_mapping_button"><i class="fa fa-save"></i></button>
+                            </td>
+                        </tr>
+                        </thead>
+                        <tbody class="disease_mapping_detail">
+                        {% include '@TerminalbdCrm/diseaseMapping/details-modal.html.twig' %}
+                        </tbody>
+                    </table>
+
+                    {{ form_widget(form._token) }}
+                    {{ form_end(form) }}
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

@@ -35,6 +35,7 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 use Terminalbd\CrmBundle\Entity\AntibioticFreeFarm;
 use Terminalbd\CrmBundle\Entity\ChickLifeCycle;
 use Terminalbd\CrmBundle\Entity\CrmCustomer;
+use Terminalbd\CrmBundle\Entity\DiseaseMapping;
 use Terminalbd\CrmBundle\Entity\Setting;
 
 
@@ -43,7 +44,7 @@ use Terminalbd\CrmBundle\Entity\Setting;
  *
  * @author Md Shafiqul Islam <shafiqabs@gmail.com>
  */
-class AntibioticFreeFarmFormType extends AbstractType
+class DiseaseMappingFormType extends AbstractType
 {
     /**
      * {@inheritdoc}
@@ -51,28 +52,18 @@ class AntibioticFreeFarmFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
 
-        $report =  $options['report']->getParent();
-        $reportParentParentChild =  $options['farmTypeId'];
+        $report =  $options['report'];
+        $parentParent =  $report->getParent()->getParent();
         $builder
-            ->add($builder->create('hatching_date', TextType::class, array(
+            ->add($builder->create('visitingDate', TextType::class, array(
                 'label' => 'Hatching Date',
                 'attr' => array(
-                    'class' => 'datePicker',
+                    'class' => 'datePicker disease_visiting_date',
                     'autocomplete' => 'off',
                     'placeholder' => 'dd-mm-YYYY'
                 ),
                 'empty_data' => new \DateTime(),
             ))->addViewTransformer(new DateTimeToStringTransformer(null, null, 'd-m-Y')))
-
-            ->add($builder->create('reporting_month', TextType::class, array(
-                'label' => 'Reporting Month',
-                'attr' => array(
-                    'class' => 'monthYearPicker',
-                    'autocomplete' => 'off',
-                    'placeholder' => 'mm-YYYY'
-                ),
-                'empty_data' => new \DateTime(),
-            ))->addViewTransformer(new DateTimeToStringTransformer(null, null, 'm-Y')))
 
             ->add('hatchery', EntityType::class, array(
                 'required'    => false,
@@ -86,18 +77,35 @@ class AntibioticFreeFarmFormType extends AbstractType
                         ->orderBy('e.name', 'ASC');
                 },
             ))
-            ->add('breed', EntityType::class, array(
+            ->add('farmType', EntityType::class, array(
                 'required'    => false,
                 'class' => Setting::class,
                 'placeholder' => 'Choose Breed',
                 'choice_label' => 'name',
                 'attr'=>array('class'=>'span12 m-wrap breed'),
-                'query_builder' => function(EntityRepository $er)use($reportParentParentChild){
+                'query_builder' => function(EntityRepository $er)use($parentParent){
                     return $er->createQueryBuilder('e')
                         ->where("e.status =1")
-                        ->andWhere("e.settingType ='BREED_TYPE'")
-                        ->andWhere("e.parent IN (:parent)")
-                        ->setParameter('parent',$reportParentParentChild)
+                        ->andWhere("e.settingType ='FARM_TYPE'")
+                        ->andWhere("e.parent = :parent")
+                        ->andWhere("e.slug NOT LIKE :slug")
+                        ->setParameter('parent',$parentParent)
+                        ->setParameter('slug', 'others%')
+                        ->orderBy('e.name', 'ASC');
+                },
+            ))
+            ->add('disease', EntityType::class, array(
+                'required'    => false,
+                'class' => Setting::class,
+                'placeholder' => 'Choose Disease',
+                'choice_label' => 'name',
+                'attr'=>array('class'=>'span12 m-wrap disease'),
+                'query_builder' => function(EntityRepository $er)use($parentParent){
+                    return $er->createQueryBuilder('e')
+                        ->where("e.status =1")
+                        ->andWhere("e.settingType ='DISEASE_NAME'")
+                        ->andWhere("e.parent = :parent")
+                        ->setParameter('parent',$parentParent)
                         ->orderBy('e.name', 'ASC');
                 },
             ))
@@ -113,29 +121,14 @@ class AntibioticFreeFarmFormType extends AbstractType
                         ->orderBy('e.name', 'ASC');
                 },
             ))
-            ->add('totalStockedChicksPcs', NumberType::class, [
+            ->add('flockSizeOrCapacity', NumberType::class, [
                 'attr' => ['autofocus' => true],
-                'label' => 'label.totalStockedChicksPcs',
-                'required'=>false
-            ])
-            ->add('totalFeedUsedKg', NumberType::class, [
-                'attr' => ['autofocus' => true],
-                'label' => 'label.totalFeedUsedKg',
+                'label' => 'label.flockSizeOrCapacity',
                 'required'=>false
             ])
             ->add('ageDays', NumberType::class, [
                 'attr' => ['autofocus' => true],
                 'label' => 'label.ageDays',
-                'required'=>false
-            ])
-            ->add('mortality', NumberType::class, [
-                'attr' => ['autofocus' => true],
-                'label' => 'label.mortality',
-                'required'=>false
-            ])
-            ->add('totalBroilerWeightKg', NumberType::class, [
-                'attr' => ['autofocus' => true],
-                'label' => 'label.totalBroilerWeightKg',
                 'required'=>false
             ])
         ;
@@ -147,7 +140,7 @@ class AntibioticFreeFarmFormType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => AntibioticFreeFarm::class,
+            'data_class' => DiseaseMapping::class,
             'report' => Setting::class,
             'farmTypeId' => '',
         ]);

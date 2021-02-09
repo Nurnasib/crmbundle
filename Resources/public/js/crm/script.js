@@ -183,7 +183,6 @@ function formCommonProcess() {
                 index = 0;
             }
             $canfocus.eq(index).focus().select();
-
         }
         dataInsertChickUsingAjax($(this));
     });
@@ -286,6 +285,22 @@ function formCommonProcess() {
         }
     });
 
+    $('#disease_mapping_form').on('keypress','.disease_mapping_table input[type=text], .disease_mapping_table input[type=number], .disease_mapping_table select',function (e) {
+        if (e.which === 13) {
+            e.preventDefault();
+            var $canfocus = $('.disease_mapping_table :focusable');
+            var index = $canfocus.index(this) + 1;
+            if (index >= $canfocus.length-1){
+                index = 0;
+            }
+            $canfocus.eq(index).focus().select();
+
+            $('#disease_mapping_form').submit(function() {
+                return false;
+            });
+        }
+    });
+
     $('.fishFarmerTouchSection').on('click', '.fish_farmer_touch_report_button', function () {
 
         formSubmitProcessForFishFarmerTouchReport();
@@ -302,6 +317,10 @@ function formCommonProcess() {
 
     $('.less_costing_farm_section').on('click', '.less_costing_farm_button', function () {
         formSubmitProcessForLessCostingFarm($(this));
+    });
+
+    $('.disease_mapping_section').on('click', '.disease_mapping_button', function () {
+        formSubmitProcessForDiseaseMapping($(this));
     });
 
 

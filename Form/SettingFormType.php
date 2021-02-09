@@ -67,17 +67,19 @@ class SettingFormType extends AbstractType
                     'Customer Group' => 'CUSTOMER_GROUP',
                     'Visiting_Week'=>'Visiting_Week',
                     'Designation'=>'Designation',
-                    'Farmer Report'=>'FARMER_REPORT',
+                    'Farmer Report'=>'FARMER_REPORT', //parent FARM_TYPE (broiler, sonali, layer, dairy, fattening etc)
                     'Hatchery'=>'HATCHERY',
                     'Breed Name'=>'BREED_NAME',
-                    'Breed Type'=>'BREED_TYPE',
+                    'Breed Type'=>'BREED_TYPE', //parent FARM_TYPE (broiler, sonali, layer, dairy, fattening etc)
                     'Feed Type'=>'FEED_TYPE',
                     'Feed Name'=>'FEED_NAME',
                     'Feed Mill'=>'FEED_MILL',
-                    'Species Type'=>'SPECIES_TYPE',
+                    'Species Type'=>'SPECIES_TYPE', //parent BREED_NAME (poultry, cattle, fish etc)
                     'Color'=>'COLOR',
                     'Chick Type'=>'CHICK_TYPE',
-                    'Training Material'=>'TRAINING_MATERIAL',
+                    'Training Material'=>'TRAINING_MATERIAL', //parent BREED_NAME (poultry, cattle, fish etc)
+                    'Disease Name'=>'DISEASE_NAME', //parent BREED_NAME (poultry, cattle, fish etc)
+                    'Product Type'=>'PRODUCT_TYPE', //parent FARM_TYPE (broiler, sonali, layer, dairy, fattening etc)
                 ],
             ])
 

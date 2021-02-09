@@ -53,6 +53,8 @@ class CostBenefitAnalysisLessCostingFarmForPoultryFormType extends AbstractType
     {
 
         $report =  $options['report']->getParent();
+        $reportParentParentChild =  $options['farmTypeId'];
+//        dd($reportParentParentChild);
         $builder
             ->add($builder->create('hatching_date', TextType::class, array(
                 'label' => 'Hatching Date',
@@ -93,12 +95,12 @@ class CostBenefitAnalysisLessCostingFarmForPoultryFormType extends AbstractType
                 'placeholder' => 'Choose Breed',
                 'choice_label' => 'name',
                 'attr'=>array('class'=>'span12 m-wrap breed'),
-                'query_builder' => function(EntityRepository $er)use($report){
+                'query_builder' => function(EntityRepository $er)use($reportParentParentChild){
                     return $er->createQueryBuilder('e')
                         ->where("e.status =1")
                         ->andWhere("e.settingType ='BREED_TYPE'")
-                        ->andWhere("e.parent = :parent")
-                        ->setParameter('parent',$report)
+                        ->andWhere("e.parent IN (:parent)")
+                        ->setParameter('parent',$reportParentParentChild)
                         ->orderBy('e.name', 'ASC');
                 },
             ))
@@ -193,6 +195,7 @@ class CostBenefitAnalysisLessCostingFarmForPoultryFormType extends AbstractType
         $resolver->setDefaults([
             'data_class' => CostBenefitAnalysisForLessCostingFarm::class,
             'report' => Setting::class,
+            'farmTypeId' => '',
         ]);
     }
 }

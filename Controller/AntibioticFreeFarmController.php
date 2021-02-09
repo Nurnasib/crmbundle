@@ -1,14 +1,5 @@
 <?php
 
-/*
- * This file is part of the Symfony package.
- *
- * (c) Fabien Potencier <fabien@symfony.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace Terminalbd\CrmBundle\Controller;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -51,8 +42,16 @@ class AntibioticFreeFarmController extends AbstractController
 
         $allRequest = $request->request->all();
 
+        $farmTypesByParent = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('status'=>1,'settingType'=>'FARM_TYPE','parent'=>$reportParentParent));
 
-        $form = $this->createForm(AntibioticFreeFarmFormType::class, $entity,array('report' => $report))
+        $farmTypeId = [];
+        if($farmTypesByParent){
+            foreach ($farmTypesByParent as $value){
+                $farmTypeId[]= $value->getId();
+            }
+        }
+
+        $form = $this->createForm(AntibioticFreeFarmFormType::class, $entity,array('report' => $report, 'farmTypeId'=>$farmTypeId))
             ->add('SaveAndCreate', ButtonType::class);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
