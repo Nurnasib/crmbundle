@@ -398,7 +398,11 @@ function layerLifeCycleDetailDataInsertUsingAjax(element) {
             $( ".presentBird" ).each(function( index ) {
                 $( this ).text(response.presentBird[index]) ;
             });
-            parentElement.find('.eggProduction').text(response.eggProduction);
+
+            $( ".eggProduction" ).each(function( index ) {
+                $( this ).text(response.eggProduction[index]) ;
+            });
+            // parentElement.find('.eggProduction').text(response.eggProduction);
             parentElement.find('.targetWeight').text(response.targetWeight);
             parentElement.find('.targetFeedPerBird').text(response.targetFeedPerBird);
             parentElement.find('.targetEggProduction').text(response.targetEggProduction);
