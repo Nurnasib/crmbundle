@@ -115,14 +115,6 @@ class LayerLifeCycleDetails
 
     private $totalEggs=0;
 
-
-    /**
-     * @var float
-     * @ORM\Column(name="egg_production", type="float")
-     */
-
-    private $eggProduction=0;
-
     /**
      * @var float
      * @ORM\Column(name="target_egg_production", type="float")
@@ -292,7 +284,7 @@ class LayerLifeCycleDetails
             $deadBird+=$this->deadBird;
         }
 
-        return number_format($this->getTotalBirds()-$deadBird,2,'.','');
+        return number_format($this->getTotalBirds()-$deadBird,0,'.','');
     }
 
     /**
@@ -391,32 +383,20 @@ class LayerLifeCycleDetails
         $this->totalEggs = $totalEggs;
     }
 
-    /**
-     * @return float
-     */
-    public function getEggProduction()
-    {
-        return number_format($this->eggProduction,2,'.','');
-    }
-
-    /**
-     * @param float $eggProduction
-     */
-    public function setEggProduction(float $eggProduction): void
-    {
-        $this->eggProduction = $eggProduction;
-    }
-
     public function calculateEggProduction()
     {
         $result = 0;
-        $presentBird = $this->getTotalBirds()-$this->getDeadBird();
+//        $presentBird = $this->calculatePresentBird();
+        static $deadBird=0;
+
+        if($this->deadBird>0){
+            $deadBird+=$this->deadBird;
+        }
+        $presentBird = $this->getTotalBirds()-$deadBird;
         if($presentBird>0){
             $result = ($this->getTotalEggs()*100)/$presentBird;
         }
-
-        return $result;
-
+        return number_format($result,2,'.','');
     }
 
     /**

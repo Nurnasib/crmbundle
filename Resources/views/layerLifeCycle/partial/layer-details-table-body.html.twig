@@ -41,7 +41,7 @@
                                          data-meta-key="TotalEggs" class="form-control"
                                          value="{{ entity.totalEggs }}" min="0"></td>
 
-            <td class="eggProduction"> {{ entity.eggProduction }} </td>
+            <td class="eggProduction"> {{ entity.calculateEggProduction }} </td>
             <td class="targetEggProduction">{{ entity.targetEggProduction }}</td>
 
             <td class="eggWeightActual"><input type="number" data-input-type="number" data-entity-id="{{ entity.id }}"

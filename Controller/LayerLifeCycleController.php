@@ -167,8 +167,6 @@ class LayerLifeCycleController extends AbstractController
 
             $entity->$set($metaValue);
 
-            $entity->setEggProduction($entity->calculateEggProduction());
-
             $entity->setTargetWeight($layerStandard?$layerStandard->getTargetBodyWeight():0);
             $entity->setTargetFeedPerBird($layerStandard?$layerStandard->getTargetFeedConsumption():0);
             $entity->setTargetEggProduction($layerStandard?$layerStandard->getTargetEggProduction():0);
@@ -186,13 +184,18 @@ class LayerLifeCycleController extends AbstractController
         foreach ($lifeCycleDetails as $lifeCycleDetail){
             $returnArray[]= $lifeCycleDetail->calculatePresentBird();
         }
+        $returnEggProductionArray = array();
+        /* @var LayerLifeCycleDetails $lifeCycleDetail */
+        foreach ($lifeCycleDetails as $lifeCycleDetail){
+            $returnEggProductionArray[]= $lifeCycleDetail->calculateEggProduction();
+        }
 
 
         return new JsonResponse(
             array(
                 'success'=>'Success',
                 'presentBird'=>$returnArray,
-                'eggProduction'=>$entity->getEggProduction(),
+                'eggProduction'=>$returnEggProductionArray,
                 'targetWeight'=>$entity->getTargetWeight(),
                 'targetFeedPerBird'=>$entity->getTargetFeedPerBird(),
                 'targetEggProduction'=>$entity->getTargetEggProduction(),
