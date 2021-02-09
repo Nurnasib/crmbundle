@@ -72,6 +72,8 @@ class SearchFilterFormType extends AbstractType
                 'class' => CrmCustomer::class,
                 'query_builder' => function(EntityRepository $repository){
                 return $repository->createQueryBuilder('e')
+                    ->where('setting.slug = :slug')->setParameter('slug', 'farmer')
+                    ->leftJoin('e.customerGroup', 'setting')
                     ->orderBy('e.name');
                 },
                 'choice_label' => 'name',
