@@ -40,7 +40,6 @@
                         </tr>
                         </thead>
                     </table>
-                    {#                                    {{ form_end(searchForm) }}#}
                 </div>
             </div>
         </div>
@@ -106,25 +105,24 @@
                                 </thead>
 
                                 <tbody>
-{#                                {% for entity in entities %}#}
-{#                                {% if entity is iterable %}#}
+                                {% set dead_bird = 0 %}
                                     {% for detail in entity %}
+                                        {% set dead_bird = dead_bird + detail.deadBird %}
+                                        {% set presentBird = detail.totalBirds-dead_bird %}
+                                        {% set eggProduction = (detail.totalEggs*100)/presentBird %}
                                         <tr style="border-bottom: 2px solid #9cc2cb">
-{#                                        {% if loop.index==1 %}
-                                            <td rowspan="{{ loop.index==1?entity|length:0 }}">{{ loop.index }}</td>
-                                        {% endif %}#}
                                             <td>{{ detail.visitingDate|date('d-m-Y') }}</td>
                                             <td>{{ detail.ageWeek|default(0) }}</td>
                                             <td>{{ detail.totalBirds|default(0) }}</td>
-                                            <td>{{ detail.deadBirds|default(0) }}</td>
-                                            <td>Present Bird</td>
+                                            <td>{{ detail.deadBird|default(0) }}</td>
+                                            <td>{{ presentBird|number_format(0,'.') }}</td>
                                             <td>{{ detail.avgWeight|default(0) }}</td>
                                             <td>{{ detail.targetWeight|default(0) }}</td>
                                             <td>{{ detail.uniformity|default(0) }}</td>
                                             <td>{{ detail.feedPerBird|default(0) }}</td>
                                             <td>{{ detail.targetFeedPerBird|default(0) }}</td>
                                             <td>{{ detail.totalEggs|default(0) }}</td>
-                                            <td>{{ detail.eggProduction|default(0) }}</td>
+                                            <td>{{ eggProduction|number_format(2,'.') }}</td>
                                             <td>{{ detail.targetEggProduction|default(0) }}</td>
                                             <td>{{ detail.eggWeightActual|default(0) }}</td>
                                             <td>{{ detail.eggWeightStandard|default(0) }}</td>
@@ -136,8 +134,6 @@
                                             <td>{{ detail.remarks|default(0) }}</td>
                                         </tr>
                                     {% endfor %}
-{#                                    {% endif %}#}
-{#                                    {% endfor %}#}
                                 </tbody>
                             </table>
                         {% endif %}

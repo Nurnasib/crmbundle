@@ -72,13 +72,17 @@ class FarmerTrainingReportController extends AbstractController
             return $this->render('@TerminalbdCrm/report/farmerTraining/report-farmer-training-fish.html.twig',[
                 'searchForm' => $searchForm->createView(),
                 'filterBy' => $filterBy,
-                'entities' => $entities
+                'entities' => $entities,
+                'species' => $species,
+                'materials' => $trainingMaterial
             ]);
         }else{
             return $this->render('@TerminalbdCrm/report/farmerTraining/report-farmer-training-cattle.html.twig',[
                 'searchForm' => $searchForm->createView(),
                 'filterBy' => $filterBy,
-                'entities' => $entities
+                'entities' => $entities,
+                'species' => $species,
+                'materials' => $trainingMaterial
             ]);
         }
     }
@@ -99,11 +103,28 @@ class FarmerTrainingReportController extends AbstractController
         $entities = $this->getDoctrine()->getRepository(FarmerTrainingReport::class)->getFarmerTrainingReport($filterBy);
 
 
-        $fileName = 'farmer_training_report' . $filterBy['breedTypeSlug'] . '_' . time() . '.xls';
+        $fileName = 'farmer_training_report_' . $filterBy['breedTypeSlug'] . '_' . time() . '.xls';
 
         if ($filterBy['breedTypeSlug'] == 'poultry-breed'){
             // Retrieve the HTML generated in our twig file
             $html = $this->renderView('@TerminalbdCrm/report/farmerTraining/report-farmer-training-poultry-excel.html.twig',[
+                'filterBy' => $filterBy,
+                'entities' => $entities,
+                'species' => $species,
+                'materials' => $materials
+            ]);
+        }elseif ($filterBy['breedTypeSlug'] == 'fish-breed'){
+            // Retrieve the HTML generated in our twig file
+            $html = $this->renderView('@TerminalbdCrm/report/farmerTraining/report-farmer-training-fish-excel.html.twig',[
+                'filterBy' => $filterBy,
+                'entities' => $entities,
+                'species' => $species,
+                'materials' => $materials
+            ]);
+        }
+        else{
+            // Retrieve the HTML generated in our twig file
+            $html = $this->renderView('@TerminalbdCrm/report/farmerTraining/report-farmer-training-cattle-excel.html.twig',[
                 'filterBy' => $filterBy,
                 'entities' => $entities,
                 'species' => $species,
@@ -149,14 +170,29 @@ class FarmerTrainingReportController extends AbstractController
                 'species' => $species,
                 'materials' => $materials
             ]);
-
+        }elseif ($filterBy['breedTypeSlug'] == 'fish-breed'){
+            // Retrieve the HTML generated in our twig file
+            $html = $this->renderView('@TerminalbdCrm/report/farmerTraining/report-farmer-training-fish-pdf.html.twig',[
+                'filterBy' => $filterBy,
+                'entities' => $entities,
+                'species' => $species,
+                'materials' => $materials
+            ]);
+        }else{
+            // Retrieve the HTML generated in our twig file
+            $html = $this->renderView('@TerminalbdCrm/report/farmerTraining/report-farmer-training-cattle-pdf.html.twig',[
+                'filterBy' => $filterBy,
+                'entities' => $entities,
+                'species' => $species,
+                'materials' => $materials
+            ]);
         }
 
         // Load HTML to Dompdf
         $dompdf->loadHtml($html);
 
         // (Optional) Setup the paper size and orientation 'portrait' or 'landscape'
-        $dompdf->setPaper('legal', 'landscape');
+        $dompdf->setPaper('A2', 'landscape');
 
         // Render the HTML as PDF
         $dompdf->render();

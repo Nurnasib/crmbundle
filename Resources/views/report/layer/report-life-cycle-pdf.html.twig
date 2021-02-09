@@ -2,22 +2,23 @@
 {% block body %}
     {% if entities is not empty%}
         <div style="text-align: center">
-            <p class="title-h4">NOURISH POULTRY AND HATCHERY LTD</p>
-            <p class="title-h5">UTTARA, DHAKA.</p>
-            <p class="title-h6">LAYER LIFE CYCLE REPORT</p>
+            <p class="title-h4">{{ 'NOURISH POULTRY AND HATCHERY LTD'|trans }}</p>
+            <p class="title-h5">{{ 'UTTARA, DHAKA.'|trans }}</p>
+            <p class="title-h6">{{ 'LAYER LIFE CYCLE REPORT'|trans }}</p>
         </div>
         <table>
+            {{ 'ddddddd'|trans }}
             <thead>
             <tr>
-                <th align="left">Name of Farmer: {{ entities['farmerName']|default('N/A') }}</th>
-                <th align="left">Address: {{ entities['farmerAddress']|default('N/A') }}</th>
-                <th align="left" colspan="2">Mobile: {{ entities['farmerMobile']|default('N/A') }}</th>
+                <th align="left">{{ 'Name of Farmer'|trans }}: {{ entities['farmerName']|default('N/A') }}</th>
+                <th align="left">{{ 'Address'|trans }}: {{ entities['farmerAddress']|default('N/A') }}</th>
+                <th align="left" colspan="2">{{ 'Mobile'|trans }}: {{ entities['farmerMobile']|default('N/A') }}</th>
             </tr>
             <tr>
-                <th align="left">Total Birds: {{ entities['totalBirds']|default('N/A') }}</th>
-                <th align="left">Hatchery Date: {{ entities['hatcheryDate']|date('d-m-Y') }}</th>
-                <th align="left">Hatchery: {{ entities['hatcheryName']|default('N/A') }}</th>
-                <th align="left">Breed: {{ entities['breedName']|default('N/A') }}</th>
+                <th align="left">{{ 'Total Bird'|trans }}s: {{ entities['totalBirds']|default('N/A') }}</th>
+                <th align="left">{{ 'Hatchery Date'|trans }}: {{ entities['hatcheryDate']|date('d-m-Y') }}</th>
+                <th align="left">{{ 'Hatchery'|trans }}: {{ entities['hatcheryName']|default('N/A') }}</th>
+                <th align="left">{{ 'Breed'|trans }}: {{ entities['breedName']|default('N/A') }}</th>
             </tr>
             </thead>
         </table>
@@ -26,54 +27,58 @@
                 <table border="1" cellpadding="0" cellspacing="0">
                     <thead>
                     <tr>
-                        <th scope="col" rowspan="2"class="text-center">VisitingDate</th>
-                        <th scope="col" rowspan="2"class="text-center">Age (wk)</th>
-                        <th scope="col" colspan="3"class="text-center">Birds</th>
-                        <th scope="col" colspan="2"class="text-center">Weight</th>
-                        <th scope="col" rowspan="2"class="text-center">Uniformity(%)</th>
-                        <th scope="col" colspan="2"class="text-center">Feed</th>
-                        <th scope="col" colspan="3"class="text-center">Egg Production</th>
-                        <th scope="col" colspan="2"class="text-center">Egg Weight</th>
-                        <th scope="col" colspan="4"class="text-center">Feed Information</th>
-                        <th scope="col" rowspan="2"class="text-center">Vaccine / Medicine</th>
-                        <th scope="col" rowspan="2"class="text-center">Remarks</th>
+                        <th scope="col" rowspan="2"class="text-center">{{ 'VisitingDate'|trans }}</th>
+                        <th scope="col" rowspan="2"class="text-center">{{ 'Age (wk)'|trans }}</th>
+                        <th scope="col" colspan="3"class="text-center">{{ 'Birds'|trans }}</th>
+                        <th scope="col" colspan="2"class="text-center">{{ 'Weight'|trans }}</th>
+                        <th scope="col" rowspan="2"class="text-center">{{ 'Uniformity(%)'|trans }}</th>
+                        <th scope="col" colspan="2"class="text-center">{{ 'Feed'|trans }}</th>
+                        <th scope="col" colspan="3"class="text-center">{{ 'Egg Production'|trans }}</th>
+                        <th scope="col" colspan="2"class="text-center">{{ 'Egg Weight'|trans }}</th>
+                        <th scope="col" colspan="4"class="text-center">{{ 'Feed Information'|trans }}</th>
+                        <th scope="col" rowspan="2"class="text-center">{{ 'Vaccine / Medicine'|trans }}</th>
+                        <th scope="col" rowspan="2"class="text-center">{{ 'Remarks'|trans }}</th>
                     </tr>
 
                     <tr>
-                        <th scope="col"class="text-center">Total Birds</th>
-                        <th scope="col"class="text-center">dead bird</th>
-                        <th scope="col"class="text-center">Present Bird</th>
-                        <th scope="col"class="text-center">Avg. wt (gm)</th>
-                        <th scope="col"class="text-center">Target wt (gm)</th>
-                        <th scope="col"class="text-center">Feed/bird (gm)</th>
-                        <th scope="col"class="text-center">Target feed/bird</th>
-                        <th scope="col"class="text-center">Total Eggs</th>
-                        <th scope="col"class="text-center">Egg Prod%</th>
-                        <th scope="col"class="text-center">Target egg prod%</th>
-                        <th scope="col"class="text-center">Actual</th>
-                        <th scope="col"class="text-center">Standard</th>
-                        <th scope="col"class="text-center">Feed Type</th>
-                        <th scope="col"class="text-center">P. Date</th>
-                        <th scope="col"class="text-center">Batch No</th>
-                        <th scope="col"class="text-center">Feed Mill</th>
+                        <th scope="col"class="text-center">{{ 'Total Birds'|trans }}</th>
+                        <th scope="col"class="text-center">{{ 'Dead bird'|trans }}</th>
+                        <th scope="col"class="text-center">{{ 'Present Bird'|trans }}</th>
+                        <th scope="col"class="text-center">{{ 'Avg. wt (gm)'|trans }}</th>
+                        <th scope="col"class="text-center">{{ 'Target wt (gm)'|trans }}</th>
+                        <th scope="col"class="text-center">{{ 'Feed/bird (gm)'|trans }}</th>
+                        <th scope="col"class="text-center">{{ 'Target feed/bird'|trans }}</th>
+                        <th scope="col"class="text-center">{{ 'Total Eggs'|trans }}</th>
+                        <th scope="col"class="text-center">{{ 'Egg Prod(%)'|trans }}</th>
+                        <th scope="col"class="text-center">{{ 'Target egg prod(%)'|trans }}</th>
+                        <th scope="col"class="text-center">{{ 'Actual'|trans }}</th>
+                        <th scope="col"class="text-center">{{ 'Standard'|trans }}</th>
+                        <th scope="col"class="text-center">{{ 'Feed Type'|trans }}</th>
+                        <th scope="col"class="text-center">{{ 'P. Date'|trans }}</th>
+                        <th scope="col"class="text-center">{{ 'Batch No'|trans }}</th>
+                        <th scope="col"class="text-center">{{ 'Feed Mill'|trans }}</th>
                     </tr>
                     </thead>
 
                     <tbody>
+                    {% set dead_bird = 0 %}
                     {% for detail in entity %}
+                        {% set dead_bird = dead_bird + detail.deadBird %}
+                        {% set presentBird = detail.totalBirds-dead_bird %}
+                        {% set eggProduction = (detail.totalEggs*100)/presentBird %}
                         <tr style="border-bottom: 2px solid #9cc2cb">
                             <td>{{ detail.visitingDate|date('d-m-Y') }}</td>
                             <td>{{ detail.ageWeek|default(0) }}</td>
                             <td>{{ detail.totalBirds|default(0) }}</td>
-                            <td>{{ detail.deadBirds|default(0) }}</td>
-                            <td>Present Bird</td>
+                            <td>{{ detail.deadBird|default(0) }}</td>
+                            <td>{{ presentBird|number_format(0,'.') }}</td>
                             <td>{{ detail.avgWeight|default(0) }}</td>
                             <td>{{ detail.targetWeight|default(0) }}</td>
                             <td>{{ detail.uniformity|default(0) }}</td>
                             <td>{{ detail.feedPerBird|default(0) }}</td>
                             <td>{{ detail.targetFeedPerBird|default(0) }}</td>
                             <td>{{ detail.totalEggs|default(0) }}</td>
-                            <td>{{ detail.eggProduction|default(0) }}</td>
+                            <td>{{ eggProduction|number_format(2,'.') }}</td>
                             <td>{{ detail.targetEggProduction|default(0) }}</td>
                             <td>{{ detail.eggWeightActual|default(0) }}</td>
                             <td>{{ detail.eggWeightStandard|default(0) }}</td>
