@@ -20,6 +20,7 @@ use Terminalbd\CrmBundle\Entity\ComplainDifferentProduct;
 use Terminalbd\CrmBundle\Entity\CrmCustomer;
 use Terminalbd\CrmBundle\Entity\DiseaseMapping;
 use Terminalbd\CrmBundle\Entity\FcrDifferentCompanies;
+use Terminalbd\CrmBundle\Entity\LabService;
 use Terminalbd\CrmBundle\Form\AntibioticFreeFarmFormType;
 use Terminalbd\CrmBundle\Form\BroilerLifeCycleFormType;
 use Terminalbd\CrmBundle\Entity\Setting;
@@ -28,55 +29,62 @@ use Terminalbd\CrmBundle\Form\DiseaseMappingFormType;
 
 
 /**
- * @Route("/crm/fcr/differnt/company")
+ * @Route("/crm/lab/service")
  */
-class FcrDifferentCompanyController extends AbstractController
+class LabServiceController extends AbstractController
 {
     /**
      * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
-     * @Route("/{breed_name}/new/modal", methods={"GET", "POST"}, name="fcr_different_company_new_modal", options={"expose"=true})
+     * @Route("/{breed_name}/new/modal", methods={"GET", "POST"}, name="lab_service_new_modal", options={"expose"=true})
      */
     public function newModal(Request $request, $breed_name): Response
     {
         $em = $this->getDoctrine()->getManager();
 
-        $entity = new FcrDifferentCompanies();
+//        $entity = new LabService();
 
-        $hatcheries = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('status'=>1,'settingType'=>'HATCHERY'));
+        $labNames = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('status'=>1,'settingType'=>'LAB_NAME'));
+        $labServices = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('status'=>1,'settingType'=>'LAB_SERVICE_NAME'));
 
-        foreach ($hatcheries as $hatchery){
+        foreach ($labNames as $lab){
 
-            $exitingFcrDifferentCompany = $this->getDoctrine()->getRepository(FcrDifferentCompanies::class)->getExitingCheckFcrDifferentCompanyByCreatedDateEmployeeAndCompany($this->getUser(), $hatchery, $breed_name);
-            if(!$exitingFcrDifferentCompany){
+            foreach ($labServices as $labService){
 
-                $entity = new FcrDifferentCompanies();
+                $exitingFcrDifferentCompany = $this->getDoctrine()->getRepository(LabService::class)->getExitingCheckLabServiceByCreatedDateEmployeeAndCompany($this->getUser(), $lab, $labService, $breed_name);
 
-                $entity->setBreedName($breed_name);
-                $entity->setHatchery($hatchery);
-                $entity->setEmployee($this->getUser());
+                if(!$exitingFcrDifferentCompany){
 
-                $em->persist($entity);
-                $em->flush();
+                    $entity = new LabService();
+
+                    $entity->setBreedName($breed_name);
+                    $entity->setLab($lab);
+                    $entity->setService($labService);
+                    $entity->setEmployee($this->getUser());
+
+                    $em->persist($entity);
+                    $em->flush();
+                }
             }
+
         }
 
-        $fcrDifferentCompanies = $this->getDoctrine()->getRepository(FcrDifferentCompanies::class)->getFcrDifferentCompanyByCreatedDateAndEmployee($this->getUser(), $breed_name);
+        $allLabServices = $this->getDoctrine()->getRepository(LabService::class)->getFcrDifferentCompanyByCreatedDateAndEmployee($this->getUser(), $breed_name);
 
-
-        return $this->render('@TerminalbdCrm/fcrDifferentCompany/new-modal.html.twig', [
-            'hatcheries' => $hatcheries,
-            'entity' => $entity,
-            'fcrDifferentCompanies' => $fcrDifferentCompanies,
+        return $this->render('@TerminalbdCrm/labService/new-modal.html.twig', [
+            'services' => $labServices,
+            'labs' => $labNames,
+            'labServices' => $allLabServices,
+            'user' => $this->getUser(),
         ]);
     }
 
 
     /**
-     * @Route("/{id}/edit", methods={"POST"}, name="fcr_different_company_edit", options={"expose"=true})
+     * @Route("/{id}/edit", methods={"POST"}, name="lab_service_edit", options={"expose"=true})
      * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      */
 
-    public function editLifeCycleDetails(Request $request, FcrDifferentCompanies $entity): Response
+    public function editLifeCycleDetails(Request $request, LabService $entity): Response
     {
         $data = $request->request->all();
         $metaKey = $data['dataMetaKey'];
@@ -88,7 +96,6 @@ class FcrDifferentCompanyController extends AbstractController
             $set = 'set'.$metaKey;
 
             $entity->$set($metaValue);
-
         }
 
         $em = $this->getDoctrine()->getManager();

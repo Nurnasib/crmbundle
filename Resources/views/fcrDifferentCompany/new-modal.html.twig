@@ -4,8 +4,8 @@
     </div>
     {#{{ dump(report) }}#}
 
-    <div class="portlet-body form">
-        <div class="row form-body ">
+    <div class="portlet-body form" style="padding-top: 0!important;">
+        <div class="row form-body" style="padding-top: 0!important;">
             <div class="form-inner-no-space">
                 <div class="row">
                     <div class="col-md-12">
@@ -41,16 +41,16 @@
                                 {% set monthNameDigit =datea|date("m") %}
                                 {% set currentMonth = "now"|date('m') %}
                                 <td style="padding: 0!important;" class="text-left">
-
                                     {% set total = total+fcrDifferentCompanies[company.id][monthName]['value'] %}
-                                    {% if currentMonth==monthNameDigit %}
-                                    <input class="form-control fcr_different_company_month_amount" type="number" min="0" data-meta-key="{{ monthName }}" data-entity-id="{{ fcrDifferentCompanies[company.id][monthName]['id'] }}" value="{{ fcrDifferentCompanies[company.id][monthName]['value'] }}">
+                                    {% if currentMonth==monthNameDigit or currentMonth+1==monthNameDigit %}
+                                    <input class="form-control month_{{ month }}" type="number" min="0" data-meta-key="{{ monthName }}" data-entity-id="{{ fcrDifferentCompanies[company.id][monthName]['id'] }}" value="{{ fcrDifferentCompanies[company.id][monthName]['value'] }}">
                                         {% else %}
                                             {{ fcrDifferentCompanies[company.id][monthName]['value'] }}
+                                    <input class="form-control month_{{ month }}" type="hidden" min="0" value="{{ fcrDifferentCompanies[company.id][monthName]['value'] }}">
                                     {% endif %}
                                 </td>
                             {% endfor %}
-                            <td>{{ total|number_format(2,'.','') }}</td>
+                            <td class="total">{{ total|number_format(2,'.','') }}</td>
 
                         </tr>
 
@@ -60,6 +60,11 @@
                         <tfoot>
                         <tr>
                             <td>{{ 'Total'|trans }}</td>
+                            {% for month in 1..12 %}
+                            <td class="total_month_{{ month }}"></td>
+                            {% endfor %}
+
+                            <td class="grand_total"></td>
 
                         </tr>
                         </tfoot>
