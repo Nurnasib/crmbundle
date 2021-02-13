@@ -62,4 +62,17 @@ class SettingRepository extends EntityRepository
         return $results;
     }
 
+    public function getProductTypeByParentParentChildren($childrenIds)
+    {
+        $qb = $this->createQueryBuilder('e');
+            $qb->select('e.id','e.name')
+        ->where("e.status =1")
+        ->andWhere("e.settingType ='PRODUCT_TYPE'")
+        ->andWhere("e.parent IN (:parent)")
+        ->setParameter('parent',$childrenIds)
+        ->orderBy('e.id', 'ASC');
+        $results = $qb->getQuery()->getArrayResult();
+        return $results;
+    }
+
 }

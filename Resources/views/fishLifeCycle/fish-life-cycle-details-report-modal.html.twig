@@ -41,16 +41,16 @@
                             <tr>
                                 <th scope="col">S/N</th>
                                 {#<th scope="col">Bird Type</th>#}
-                                <th style="width: 120px" scope="col">ReportingDate</th>
-                                <th style="width: 120px" scope="col">Feed</th>
-                                <th scope="col">FeedType</th>
-                                <th scope="col">FeedItemName</th>
-                                <th scope="col">FarmarName</th>
-                                <th scope="col">MainCulture Species</th>
-                                <th scope="col">Other Culture Species</th>
+                                <th style="width: 120px" scope="col">Reporting Date</th>
+                                <th style="width: 150px" scope="col">Feed</th>
+                                <th style="width: 160px" scope="col">Feed Type</th>
+                                <th scope="col">FeedItem Name</th>
+                                <th scope="col">{{ 'Farmar Name'|trans }}</th>
+                                <th style="width: 150px" scope="col">MainCulture Species</th>
+                                <th style="width: 150px" scope="col">Other Culture Species</th>
                                 <th scope="col">culture Area Decimal</th>
-                                <th scope="col">Hatchery</th>
-                                <th scope="col">StockingDate</th>
+                                <th style="width: 150px" scope="col">Hatchery</th>
+                                <th style="width: 120px" scope="col">StockingDate</th>
                                 <th scope="col">No.of initial fish (pcs.)</th>
 
                                 <th scope="col">Stocking density (pcs/decimal)</th>
@@ -62,8 +62,8 @@
                                 <th scope="col">Average Present weight of Fish (g)</th>
 
                                 <th scope="col">Current feed consumption (kg)</th>
-                                <th scope="col">Farmer's Comments</th>
-                                <th scope="col">Employee's Comments</th>
+                                <th style="width: 200px" scope="col">Farmer's Comments</th>
+                                <th style="width: 200px" scope="col">Employee's Comments</th>
                                 <th scope="col"></th>
 
                             </tr>
@@ -83,7 +83,7 @@
                                 <td>
                                     {{ form_widget(form.feed_item_name) }}
                                 </td>
-                                <td></td>
+                                <td>{{ fishLifeCycle.customer.name }}</td>
                                 <td>
                                     {{ form_widget(form.mainCultureSpecies) }}
                                 </td>

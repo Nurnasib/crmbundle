@@ -1,0 +1,46 @@
+{% if complains is not empty %}
+
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th>Month</th>
+            {% if productsName is not empty %}
+                {% for productName in productsName %}
+                <th>{{ productName.name }}</th>
+                {% endfor %}
+            {% endif %}
+        </tr>
+        </thead>
+        <tbody>
+        {% for month in 1..12 %}
+            <tr>
+            {% set date = month ~ "/1" %}
+                <td class="text-left">{{ date|date("F") }}</td>
+            {% if productsName is not empty %}
+                {% for productName in productsName %}
+                        <td style="vertical-align: top!important; padding: 0px!important;">
+                        <table class="table" style="width: 100%;margin: 0px!important;table-layout: fixed;">
+                        {% if complains[date|date("F")][productName.id] is defined %}
+                            {% for complain in complains[date|date("F")][productName.id] %}
+                                {% if complain.complains is not empty %}
+                                <tr>
+                                    <td class="text-left">{{complain.complains  }}</td>
+                                    <td style="width: 10%; padding: 0!important;">
+                                        <a data-action="{{ path('complain_different_product_delete',{id:complain.id}) }}" class="btn btn-danger btn-sm remove">x</a>
+                                    </td>
+                                </tr>
+                                {% endif %}
+                            {% endfor %}
+
+                        {% endif %}
+
+                        </table>
+                        </td>
+                {% endfor %}
+            {% endif %}
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endif %}

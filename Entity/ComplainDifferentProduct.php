@@ -57,7 +57,7 @@ class ComplainDifferentProduct
      * @ORM\ManyToOne(targetEntity="Terminalbd\CrmBundle\Entity\Setting", inversedBy="complainDifferentProduct")
      * @ORM\JoinColumn(name="product_name_id", referencedColumnName="id", onDelete="SET NULL", nullable=true)
      */
-    private $product_name;
+    private $productName;
 
     /**
      * @var string
@@ -107,7 +107,7 @@ class ComplainDifferentProduct
     /**
      * @return Agent
      */
-    public function getAgent(): Agent
+    public function getAgent()
     {
         return $this->agent;
     }
@@ -139,7 +139,7 @@ class ComplainDifferentProduct
     /**
      * @return User
      */
-    public function getEmployee(): User
+    public function getEmployee()
     {
         return $this->employee;
     }
@@ -157,15 +157,15 @@ class ComplainDifferentProduct
      */
     public function getProductName()
     {
-        return $this->product_name;
+        return $this->productName;
     }
 
     /**
-     * @param \Terminalbd\CrmBundle\Entity\Setting $product_name
+     * @param \Terminalbd\CrmBundle\Entity\Setting $productName
      */
-    public function setProductName(\Terminalbd\CrmBundle\Entity\Setting $product_name): void
+    public function setProductName(\Terminalbd\CrmBundle\Entity\Setting $productName): void
     {
-        $this->product_name = $product_name;
+        $this->productName = $productName;
     }
 
     /**

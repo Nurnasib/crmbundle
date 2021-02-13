@@ -209,7 +209,7 @@ function formCommonProcess() {
     });
 
 
-    $('.layerLifeCycleDetails_section').on('keypress blur' , '.layerLifeCycleDetails input[type=text], .layerLifeCycleDetails input[type=number], .layerLifeCycleDetails select', function (e) {
+    $('.layerLifeCycleDetails_section').on('keypress' , '.layerLifeCycleDetails input[type=text], .layerLifeCycleDetails input[type=number], .layerLifeCycleDetails select', function (e) {
         if (e.which === 13) {
             e.preventDefault();
             var $canfocus = $('.layerLifeCycleDetails :focusable');
@@ -218,7 +218,10 @@ function formCommonProcess() {
                 index = 0;
             }
             $canfocus.eq(index).focus().select();
+            layerLifeCycleDetailDataInsertUsingAjax($(this));
         }
+    });
+    $('.layerLifeCycleDetails_section').on('blur' , '.layerLifeCycleDetails input[type=text], .layerLifeCycleDetails input[type=number], .layerLifeCycleDetails select', function (e) {
         layerLifeCycleDetailDataInsertUsingAjax($(this));
     });
 
@@ -301,6 +304,23 @@ function formCommonProcess() {
         }
     });
 
+    $('.fcr_different_company_section').on('keypress','.fcr_different_company_table input[type=number]',function (e) {
+        if (e.which === 13) {
+            e.preventDefault();
+            var $canfocus = $('.fcr_different_company_table :focusable');
+            var index = $canfocus.index(this) + 1;
+            if (index >= $canfocus.length-1){
+                index = 0;
+            }
+            $canfocus.eq(index).focus().select();
+            fcrDifferentCompanyDataInsertUsingAjax($(this))
+        }
+    });
+    $('.fcr_different_company_section').on('blur','.fcr_different_company_table input[type=number]',function (e) {
+        fcrDifferentCompanyDataInsertUsingAjax($(this))
+    });
+
+
     $('.fishFarmerTouchSection').on('click', '.fish_farmer_touch_report_button', function () {
 
         formSubmitProcessForFishFarmerTouchReport();
@@ -323,7 +343,9 @@ function formCommonProcess() {
         formSubmitProcessForDiseaseMapping($(this));
     });
 
-
+    $('.complain_different_product_section').on('click', '.complain_different_product_button', function () {
+        formSubmitProcessForComplainDifferentProduct($(this));
+    });
 
 }
 
@@ -407,6 +429,31 @@ function layerLifeCycleDetailDataInsertUsingAjax(element) {
             parentElement.find('.targetFeedPerBird').text(response.targetFeedPerBird);
             parentElement.find('.targetEggProduction').text(response.targetEggProduction);
             parentElement.find('.eggWeightStandard').text(response.eggWeightStandard);
+
+        }
+    });
+}
+
+function fcrDifferentCompanyDataInsertUsingAjax(element) {
+    var entityId=element.attr('data-entity-id');
+    var dataMetaKey=element.attr('data-meta-key');
+    var dataMetaValue=element.val();
+
+    if(entityId===''){
+        return false;
+    }
+
+    $.ajax({
+        url    : Routing.generate('fcr_different_company_edit',{'id':entityId}),
+        type   : 'post',
+        data   : {
+            'dataMetaKey':dataMetaKey,
+            'dataMetaValue':dataMetaValue
+        },
+        dataType : 'json',
+        success: function(response){
+            // parentElement.find('.eggProduction').text(response.eggProduction);
+            element.val(response.value);
 
         }
     });
