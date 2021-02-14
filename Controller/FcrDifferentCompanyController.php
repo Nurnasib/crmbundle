@@ -40,7 +40,7 @@ class FcrDifferentCompanyController extends AbstractController
     {
         $em = $this->getDoctrine()->getManager();
 
-        $entity = new FcrDifferentCompanies();
+//        $entity = new FcrDifferentCompanies();
 
         $hatcheries = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('status'=>1,'settingType'=>'HATCHERY'));
 
@@ -65,7 +65,7 @@ class FcrDifferentCompanyController extends AbstractController
 
         return $this->render('@TerminalbdCrm/fcrDifferentCompany/new-modal.html.twig', [
             'hatcheries' => $hatcheries,
-            'entity' => $entity,
+//            'entity' => $entity,
             'fcrDifferentCompanies' => $fcrDifferentCompanies,
         ]);
     }

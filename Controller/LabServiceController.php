@@ -45,7 +45,6 @@ class LabServiceController extends AbstractController
 
         $labNames = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('status'=>1,'settingType'=>'LAB_NAME'));
         $labServices = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('status'=>1,'settingType'=>'LAB_SERVICE_NAME'));
-
         foreach ($labNames as $lab){
 
             foreach ($labServices as $labService){
@@ -63,6 +62,8 @@ class LabServiceController extends AbstractController
 
                     $em->persist($entity);
                     $em->flush();
+
+                    $dataArray[]=$entity->getId();
                 }
             }
 
