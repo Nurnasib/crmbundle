@@ -21,7 +21,7 @@ use Doctrine\ORM\EntityRepository;
  *
  * @author Md Shafiqul islam <shafiqabs@gmail.com>
  */
-class CostBenefitAnalysisForLessCostingFarmRepository extends EntityRepository
+class CostBenefitAnalysisForLessCostingFarmRepository extends BaseRepository
 {
     public function getCostBenefitAnalysisByReportingMonthEmployeeCustomerAndReport($report, $employee, $customer, $reportingMonth)
     {
@@ -39,6 +39,34 @@ class CostBenefitAnalysisForLessCostingFarmRepository extends EntityRepository
             return $query->getQuery()->getOneOrNullResult();
         }
         return array();
+    }
+
+    public function getCostBenefitAnalysisReport($filterBy)
+    {
+//        dd($filterBy);
+        $qb = $this->createQueryBuilder('e');
+        $qb->select('e.hatchingDate','e.totalStockedChicksPcs','e.totalFeedUsedKg','e.totalBroilerWeightKg','e.mortality','e.ageDays','e.fcr','e.itemPricePerPcs','e.feedPricePerKg','e.broilerOrFishPricePerKg','e.totalMedicineCost','e.totalVaccineCost','e.litterOrPondRentCost','e.electricityAndFuelCost','e.labourCost','e.transportCost','e.reportingMonth');
+        $qb->addSelect('agent.name AS agentName','agent.address AS agentAddress', 'agent.mobile AS agentMobile');
+        $qb->addSelect('farmer.name AS farmerName','farmer.address AS farmerAddress', 'farmer.mobile AS farmerMobile');
+        $qb->addSelect('hatchery.name AS hatcheryName');
+        $qb->addSelect('breed.name AS breedName');
+
+        $qb->leftJoin('e.agent', 'agent');
+//        $qb->leftJoin('e.customer', 'farmer');
+        $qb->leftJoin('e.hatchery', 'hatchery');
+        $qb->leftJoin('e.breed', 'breed');
+/*        $qb->where('e.reportingMonth >= :reportingMonthBOM')->setParameter('reportingMonthBOM', $filterBy['reportingMonthBOM']);
+        $qb->andWhere('e.reportingMonth <= :reportingMonthEOM')->setParameter('reportingMonthEOM', $filterBy['reportingMonthEOM']);*/
+
+        $this->handleSearchFilterBetween($qb, $filterBy);
+        $results = $qb->getQuery()->getResult();
+        $data = [];
+        foreach ($results as $result){
+//            $month = $result['reportingMonth']->format('F-Y');
+            $data[$result['farmerName']] = $result;
+        }
+//        dd($data);
+        return $data;
     }
 
 }

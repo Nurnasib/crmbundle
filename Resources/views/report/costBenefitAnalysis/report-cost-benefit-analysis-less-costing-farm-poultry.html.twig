@@ -1,0 +1,474 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block body %}
+
+    <div class="pcoded-inner-content">
+        <!-- [ breadcrumb ] start -->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="page-header">
+                    <div class="page-block">
+                        <div class="row align-items-center">
+                            <ul class="breadcrumb">
+                                <li class="breadcrumb-item"><a href="/"><i class="feather icon-home"></i></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="card">
+                <div class="card-header">
+                    <h5>{{ 'Cost Benefit Analysis for Less Costing Farm (Fish)'|trans }}</h5>
+{#                    {% if entities is not empty %}#}
+                        <div class="btn-group btn-group-sm float-right" role="group" aria-label="Button group with nested dropdown">
+                            <a target="_blank" href="#" class="btn blue-bg white-font btn-sm"><i class="fa fa-file-pdf"></i> PDF</a>
+                            <a target="_blank" href="#" class="btn btn-sm bg-primary white-font"><i class="fa fa-file-excel"></i> Excel</a>
+                        </div>
+{#                    {% endif %}#}
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                {{ form_start(searchForm) }}
+                <table class="table table-borderd">
+                    <thead class="thead-dark">
+                    <tr>
+                        <th>
+                            {{ form_label(searchForm.startDate, 'Beginning of Month:') }}
+                            {{ form_widget(searchForm.startDate, {'id':'start-date'}) }}
+                        </th>
+                        <th>
+                            {{ form_label(searchForm.endDate, 'End of Month:') }}
+                            {{ form_widget(searchForm.endDate, {'id':'end-date'}) }}
+                        </th>
+                        <th>
+                            {{ form_label(searchForm.farmer, 'Select Farmer:',{'required':''}) }}
+                            {{ form_widget(searchForm.farmer) }}
+                        </th>
+                        <th>
+                            {{ form_label(searchForm.employee, 'Select Employee:') }}
+                            {{ form_widget(searchForm.employee) }}
+                        </th>
+                        <th>
+                            {{ form_widget(searchForm.filter,{'attr':{'style': 'margin-top:18px'}}) }}
+                        </th>
+                    </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+        {% if entities is not empty %}
+            <div class="card">
+                <div class="card-block" style="overflow-x: scroll">
+                    <h3 class="text-center">{{ 'NOURISH POULTRY AND HATCHERY LTD'|trans }}</h3>
+                    <h5 class="text-center">{{ 'UTTARA, DHAKA.'|trans }}</h5>
+                    <h6 class="text-center">{{ 'Farmer Touch Report'|trans }}</h6>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <table class="table">
+                                <thead class="thead-dark">
+                                <tr>
+                                    <th>{{ 'Name of CSO'|trans }}: {{ filterBy.employee.name|default('') }}</th>
+                                    <th>{{ 'Designation'|trans }}: {{ filterBy.employee.designation.name|default('') }}</th>
+                                    <th>{{ 'Region'|trans }}: {{ filterBy.employee.regional.name|default('') }}</th>
+                                </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                    {% for entity in entities %}
+                        <table class="table table-bordered table-striped">
+                            <thead class="thead-dark">
+                            <tr>
+                                <th scope="col" rowspan="2" style="text-align: center">{{ 'Month'|trans }}</th>
+                                <th scope="col" rowspan="2" style="text-align: center">{{ 'SL No.'|trans }}</th>
+                                <th scope="col" colspan="3" style="text-align: center">{{ 'Agent Information'|trans }}</th>
+                                <th scope="col" colspan="3" style="text-align: center">{{ 'Farmer Information'|trans }}</th>
+                                <th scope="col" colspan="3" style="text-align: center">{{ 'DOC Information'|trans }}</th>
+                                <th scope="col" colspan="6" style="text-align: center">{{ 'Flock Details'|trans }}</th>
+                                <th scope="col" colspan="3" style="text-align: center">{{ 'Price Details'|trans }}</th>
+                                <th scope="col" colspan="8" style="text-align: center">{{ 'Cost Details'|trans }}</th>
+                                <th scope="col" colspan="3" style="text-align: center">{{ 'Production Cost'|trans }}</th>
+                                <th scope="col" colspan="3" style="text-align: center">{{ 'Selling Price'|trans }}</th>
+                                <th scope="col" colspan="3" style="text-align: center">{{ 'Net Profit'|trans }}</th>
+                            </tr>
+                            <tr>
+                                <th scope="col">{{ 'Agent Name'|trans }}</th>
+                                <th scope="col">{{ 'Address'|trans }}</th>
+                                <th scope="col">{{ 'Mobile'|trans }}</th>
+                                <th scope="col">{{ 'Farmer Name'|trans }}</th>
+                                <th scope="col">{{ 'Address'|trans }}</th>
+                                <th scope="col">{{ 'Mobile'|trans }}</th>
+                                <th scope="col">{{ 'Hatch Date'|trans }}</th>
+                                <th scope="col">{{ 'Hatchery'|trans }}</th>
+                                <th scope="col">{{ 'Breed'|trans }}</th>
+                                <th scope="col">{{ 'Total Chicks (Pcs)'|trans }}</th>
+                                <th scope="col">{{ 'Total Feed(kg)'|trans }}</th>
+                                <th scope="col">{{ 'Total Broiler Wt(kg)'|trans }}</th>
+                                <th scope="col">{{ 'Mortality (Pcs)'|trans }}</th>
+                                <th scope="col">{{ 'Age (Days)'|trans }}</th>
+                                <th scope="col">{{ 'FCR'|trans }}</th>
+                                <th scope="col">{{ 'Chick Price (Pcs)'|trans }}</th>
+                                <th scope="col">{{ 'Feed Price (kg)'|trans }}</th>
+                                <th scope="col">{{ 'Broiler Price (kg)'|trans }}</th>
+                                <th scope="col">{{ 'Chick Cost (Total)'|trans }}</th>
+                                <th scope="col">{{ 'Feed Cost (Total)'|trans }}</th>
+                                <th scope="col">{{ 'Medicine Cost (Total)'|trans }}</th>
+                                <th scope="col">{{ 'Vaccine Cost (Total)'|trans }}</th>
+                                <th scope="col">{{ 'Litter Cost'|trans }}</th>
+                                <th scope="col">{{ 'Electricity Cost'|trans }}</th>
+                                <th scope="col">{{ 'Labour Cost'|trans }}</th>
+                                <th scope="col">{{ 'Transport Cost'|trans }}</th>
+                                <th scope="col">{{ 'Total Costing'|trans }}</th>
+                                <th scope="col">{{ 'Costing/Unit'|trans }}</th>
+                                <th scope="col">{{ 'Costing/kg'|trans }}</th>
+                                <th scope="col">{{ 'Total Broiler Price'|trans }}</th>
+                                <th scope="col">{{ 'Broiler Price/Unit'|trans }}</th>
+                                <th scope="col">{{ 'Broiler Price/kg'|trans }}</th>
+                                <th scope="col">{{ 'Total Profit'|trans }}</th>
+                                <th scope="col">{{ 'Profit/Unit'|trans }}</th>
+                                <th scope="col">{{ 'Profit/kg'|trans }}</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {{ dump(entity) }}
+                            {% set chickCostTotal = entity.totalStockedChicksPcs * entity.itemPricePerPcs %}
+                            {% set feedCostTotal = entity.totalFeedUsedKg * entity.feedPricePerKg %}
+                            {% set totalCosting = chickCostTotal + entity.transportCost %}
+                            {% set costingPerUnit = totalCosting / entity.totalStockedChicksPcs %}
+                            {% set costingPerKg = totalCosting / entity.totalBroilerWeightKg %}
+                            {% set totalBroilerPrice = entity.broilerOrFishPricePerKg / entity.totalBroilerWeightKg %}
+                            {% if entity is iterable %}
+                                <tr>
+                                    <td>{{ entity.reportingMonth|date('F-Y')|default('') }}</td>
+                                    <td>{{ loop.index }}</td>
+                                    <td>{{ entity.agentName|default('') }}</td>
+                                    <td>{{ entity.agentAddress|default('') }}</td>
+                                    <td>{{ entity.agentMobile|default('') }}</td>
+                                    <td>{{ entity.farmerName|default('') }}</td>
+                                    <td>{{ entity.farmerAddress|default('') }}</td>
+                                    <td>{{ entity.farmerMobile|default('') }}</td>
+                                    <td>{{ entity.hatchingDate|date('d-m-Y') }}</td>
+                                    <td>{{ entity.hatcheryName|default('') }}</td>
+                                    <td>{{ entity.breedName|default('') }}</td>
+                                    <td>{{ entity.totalStockedChicksPcs|default('') }}</td>
+                                    <td>{{ entity.totalFeedUsedKg|default('') }}</td>
+                                    <td>{{ entity.totalBroilerWeightKg|default('') }}</td>
+                                    <td>{{ entity.mortality|default('') }}</td>
+                                    <td>{{ entity.ageDays|default('') }}</td>
+                                    <td>{{ entity.fcr|default('') }}</td>
+                                    <td>{{ entity.itemPricePerPcs|default('') }}</td>
+                                    <td>{{ entity.feedPricePerKg|default('') }}</td>
+                                    <td>{{ entity.broilerOrFishPricePerKg|default('') }}</td>
+                                    <td>{{ chickCostTotal|default('') }}</td>
+                                    <td>{{ feedCostTotal|default('') }}</td>
+                                    <td>{{ entity.totalMedicineCost|default('') }}</td>
+                                    <td>{{ entity.totalVaccineCost|default('') }}</td>
+                                    <td>{{ entity.litterOrPondRentCost|default('') }}</td>
+                                    <td>{{ entity.electricityAndFuelCost|default('') }}</td>
+                                    <td>{{ entity.labourCost|default('') }}</td>
+                                    <td>{{ entity.transportCost|default('') }}</td>
+                                    <td>{{ totalCosting|default('') }}</td>
+                                    <td>{{ costingPerUnit|default('') }}</td>
+                                    <td>{{ costingPerKg|default('') }}</td>
+                                    <td>{{ totalBroilerPrice|default('') }}</td>
+                                </tr>
+                            {% endif %}
+                            </tbody>
+                        </table>
+{#                        <div class="row">
+                            <div class="col-md-12">
+                                <table class="table table-bordered">
+                                    <tbody>
+                                    <tr>
+                                        <td>{{ '1'|trans }}</td>
+                                        <td>{{ 'Name of CSO'|trans }}: {{ filterBy.employee.name|default('') }}</td>
+                                        <td>{{ 'Designation'|trans }}: {{ filterBy.employee.designation.name|default('') }}</td>
+                                        <td>{{ 'Region'|trans }}: {{ filterBy.employee.regional.name|default('') }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{ '2'|trans }}</td>
+                                        <td>{{ 'Agent Name'|trans }}: {{ entity.agentName|default('') }}</td>
+                                        <td>{{ 'Address'|trans }}: {{ entity.agentAddress|default('') }}</td>
+                                        <td>{{ 'Mobile'|trans }}: {{ entity.agentMobile|default('') }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{ '3'|trans }}</td>
+                                        <td>{{ 'Farmer Name'|trans }}: {{ entity.customer.name|default('') }}</td>
+                                        <td>{{ 'Address'|trans }}: {{ entity.customer.address|default('') }}</td>
+                                        <td>{{ 'Mobile'|trans }}: {{ entity.customer.mobile|default('') }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{ '4'|trans }}</td>
+                                        <td>{{ 'Hatch Date'|trans }}: {{ entity.hatchingDate|date('d-m-Y') }}</td>
+                                        <td>{{ 'Hatchery'|trans }}: {{ entity.hatchery.name|default('') }}</td>
+                                        <td>{{ 'Breed'|trans }}: {{ entity.breed.name|default('') }}</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <table class="table table-bordered">
+                                    <thead>
+                                    <tr>
+                                        <th>{{'SL NO'|trans }}</th>
+                                        <th>{{'Particulars'|trans}}</th>
+                                        <th>{{'Quantity'|trans }}</th>
+                                        <th>{{'Particulars'|trans}}</th>
+                                        <th>{{'Quantity'|trans }}</th>
+                                        <th>{{'Particulars'|trans}}</th>
+                                        <th>{{'Quantity'|trans }}</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td>{{ '1'|trans }}</td>
+                                        <td class="text-left">{{ 'Total Chicks (Pcs)'|trans }}</td>
+                                        <td class="text-right">{{ entity.totalStockedChicksPcs|number_format(2,'.','') }}</td>
+                                        <td class="text-left">{{ 'Chick Price (Pcs)'|trans }}</td>
+                                        <td class="text-right">{{ entity.itemPricePerPcs|number_format(2,'.','') }}</td>
+                                        <td class="text-left">{{ 'Litter Cost)'|trans }}</td>
+                                        <td class="text-right">{{ entity.litterOrPondRentCost|number_format(2,'.','') }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{ '2'|trans}}</td>
+                                        <td class="text-left">{{ 'Total Feed (Kg)'|trans }}</td>
+                                        <td class="text-right">{{ entity.totalFeedUsedKg|number_format(2,'.','') }}</td>
+                                        <td class="text-left">{{ 'Feed Price (Kg)'|trans }}</td>
+                                        <td class="text-right">{{ entity.feedPricePerKg|number_format(2,'.','') }}</td>
+                                        <td class="text-left">{{ 'Electricity'|trans }}</td>
+                                        <td class="text-right">{{ entity.electricityAndFuelCost|number_format(2,'.','') }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{ '3'|trans}}</td>
+                                        <td class="text-left">{{ 'Total Broiler Wt (Kg)'|trans }}</td>
+                                        <td class="text-right">{{ entity.totalBroilerWeightKg|number_format(2,'.','') }}</td>
+                                        <td class="text-left">{{ 'Broiler Price (Kg)'|trans }}</td>
+                                        <td class="text-right">{{ entity.broilerOrFishPricePerKg|number_format(2,'.','') }}</td>
+                                        <td class="text-left">{{ 'Labour'|trans }}</td>
+                                        <td class="text-right">{{ entity.labourCost|number_format(2,'.','') }}</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>{{ '4'|trans}}</td>
+                                        <td class="text-left">{{ 'Mortality (Pcs)'|trans }}</td>
+                                        <td class="text-right">{{ entity.mortality|number_format(2,'.','') }}</td>
+                                        <td class="text-left">{{ 'Medicine Cost (Total)'|trans }}</td>
+                                        <td class="text-right">{{ entity.totalMedicineCost|number_format(2,'.','') }}</td>
+                                        <td class="text-left">{{ 'Transport'|trans }}</td>
+                                        <td class="text-right">{{ entity.transportCost|number_format(2,'.','') }}</td>
+
+                                    </tr>
+                                    <tr>
+                                        <td>{{ '5'|trans}}</td>
+                                        <td class="text-left">{{ 'Age (days)'|trans }}</td>
+                                        <td class="text-right">{{ entity.ageDays|number_format(0,'.','') }}</td>
+                                        <td class="text-left">{{ 'Vaccine Cost (Total))'|trans }}</td>
+                                        <td class="text-right">{{ entity.totalVaccineCost|number_format(2,'.','') }}</td>
+                                        <td class="text-left">{{ 'Others'|trans }}</td>
+                                        <td class="text-right">{{ entity.otherCost|number_format(2,'.','') }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{ '6'|trans}}</td>
+                                        <td class="text-left">{{ 'FCR'|trans }}</td>
+                                        <td class="text-right">{{ entity.fcr|number_format(2,'.','') }}</td>
+                                        <td class="text-left">{{ 'Used Bag Price (Pcs)'|trans }}</td>
+                                        <td class="text-right">{{ entity.usedBagPricePerPcs|number_format(2,'.','') }}</td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h3 class="text-left">{{ '(a)'|trans }} {{ 'Production Cost (Please don\'t fill up)'|trans }}</h3>
+                                <table class="table table-bordered">
+                                    <thead>
+                                    <tr>
+                                        <th>{{ 'SL NO'|trans }}</th>
+                                        <th>{{ 'Item or Area of Cost'|trans }}</th>
+                                        <th>{{ 'Unit Price (TK)'|trans }}</th>
+                                        <th>{{ 'Total Price (TK)'|trans }}</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td>{{ '1'|trans }}</td>
+                                        <td class="text-left">{{ 'Chicks'|trans }}</td>
+                                        <td class="text-right">{{ entity.itemPricePerPcs|number_format('2','.','') }}</td>
+                                        <td class="text-right">{{ entity.calculateChickTotalPrice|number_format('2','.','') }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{ '2'|trans }}</td>
+                                        <td class="text-left">{{ 'Feed Cost'|trans }}</td>
+                                        <td class="text-right">{{ entity.calculateFeedCostUnitPrice|number_format('2','.','') }}</td>
+                                        <td class="text-right">{{ entity.calculateFeedCostTotalPrice|number_format('2','.','') }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{ '3'|trans }}</td>
+                                        <td class="text-left">{{ 'Medicine'|trans }}</td>
+                                        <td class="text-right">{{ entity.calculateMedicineCostUnitPrice|number_format('2','.','') }}</td>
+                                        <td class="text-right">{{ entity.calculateMedicineCostTotalPrice|number_format('2','.','') }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{ '4'|trans }}</td>
+                                        <td class="text-left">{{ 'Vaccine'|trans }}</td>
+                                        <td class="text-right">{{ entity.calculateVaccineCostUnitPrice|number_format('2','.','') }}</td>
+                                        <td class="text-right">{{ entity.calculateVaccineCostTotalPrice|number_format('2','.','') }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{ '5'|trans }}</td>
+                                        <td class="text-left">{{ 'Labour Cost'|trans }}</td>
+                                        <td class="text-right">{{ entity.calculateLabourCostUnitPrice|number_format('2','.','') }}</td>
+                                        <td class="text-right">{{ entity.calculateLabourCostTotalPrice|number_format('2','.','') }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{ '6'|trans }}</td>
+                                        <td class="text-left">{{ 'Electricity'|trans }}</td>
+                                        <td class="text-right">{{ entity.calculateElectricityCostUnitPrice|number_format('2','.','') }}</td>
+                                        <td class="text-right">{{ entity.calculateElectricityCostTotalPrice|number_format('2','.','') }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{ '7'|trans }}</td>
+                                        <td class="text-left">{{ 'Litter'|trans }}</td>
+                                        <td class="text-right">{{ entity.calculateLitterOrPondRentCostUnitPrice|number_format('2','.','') }}</td>
+                                        <td class="text-right">{{ entity.calculateLitterOrPondRentCostTotalPrice|number_format('2','.','') }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{ '8'|trans }}</td>
+                                        <td class="text-left">{{ 'Vehicle Cost'|trans }}</td>
+                                        <td class="text-right">{{ entity.calculateTransportCostUnitPrice|number_format('2','.','') }}</td>
+                                        <td class="text-right">{{ entity.calculateTransportCostTotalPrice|number_format('2','.','') }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{ '8'|trans }}</td>
+                                        <td class="text-left">{{ 'Others'|trans }}</td>
+                                        <td class="text-right">{{ entity.calculateOtherCostUnitPrice|number_format('2','.','') }}</td>
+                                        <td class="text-right">{{ entity.calculateOtherCostTotalPrice|number_format('2','.','') }}</td>
+                                    </tr>
+                                    </tbody>
+                                    <tfoot>
+                                    <tr>
+                                        <td colspan="2">{{ 'Total'|trans }}</td>
+                                        <td class="text-right">{{ entity.calculateTotalProductionItemUnitPrice|number_format('2','.','') }}</td>
+                                        <td class="text-right">{{ entity.calculateTotalProductionItemTotalPrice|number_format('2','.','') }}</td>
+                                    </tr>
+                                    <tr><td colspan="4" style="height: 25px"></td></tr>
+                                    <tr>
+                                        <td class="text-right" colspan="3">{{ 'Production Cost per Kg (Tk)'|trans }}</td>
+                                        <td class="text-right">{{ entity.calculateProductionCostPerKg|number_format('2','.','') }}</td>
+                                    </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h3 class="text-left">{{ '(b)'|trans }} {{ 'Total Selling Price (Please don\'t fill up)'|trans }}</h3>
+                                <table class="table table-bordered">
+                                    <thead>
+                                    <tr>
+                                        <th>{{ 'SL NO'|trans }}</th>
+                                        <th>{{ 'Item or Area'|trans }}</th>
+                                        <th>{{ 'Unit Price (TK)'|trans }}</th>
+                                        <th>{{ 'Total Price (TK)'|trans }}</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td>{{ '1'|trans }}</td>
+                                        <td class="text-left">{{ 'Broiler Sale'|trans }}</td>
+                                        <td class="text-right">{{ entity.calculateBroilerSaleUnitPrice|number_format('2','.','') }}</td>
+                                        <td class="text-right">{{ entity.calculateBroilerSaleTotalPrice|number_format('2','.','') }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{ '2'|trans }}</td>
+                                        <td class="text-left">{{ 'Feed Bag sale'|trans }}</td>
+                                        <td class="text-right">{{ entity.calculateFeedBagSaleUnitPrice|number_format('2','.','') }}</td>
+                                        <td class="text-right">{{ entity.calculateFeedBagSaleTotalPrice|number_format('2','.','') }}</td>
+                                    </tr>
+                                    </tbody>
+                                    <tfoot>
+                                    <tr>
+                                        <td colspan="2">{{ 'Total'|trans }}</td>
+                                        <td class="text-right">{{ entity.calculateTotalSellingUnitPrice|number_format('2','.','') }}</td>
+                                        <td class="text-right">{{ entity.calculateTotalSellingTotalPrice|number_format('2','.','') }}</td>
+                                    </tr>
+                                    <tr><td colspan="4" style="height: 25px"></td></tr>
+                                    <tr>
+                                        <td class="text-right" colspan="3">{{ 'Selling Price per Kg (Tk)'|trans }}</td>
+                                        <td class="text-right">{{ entity.calculateSellingPricePerKg|number_format('2','.','') }}</td>
+                                    </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h3 class="text-left">{{ '(c)'|trans }} {{ 'Net Profit: (Please don\'t fill up)'|trans }}</h3>
+                                <table class="table table-bordered">
+                                    <tbody>
+                                    <tr>
+                                        <td>{{ '1'|trans }}</td>
+                                        <td class="text-left">{{ 'Total Net Profit (Tk)'|trans }}</td>
+                                        <td class="text-right">{{ entity.calculateTotalNetProfit|number_format('2','.','') }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{ '2'|trans }}</td>
+                                        <td class="text-left">{{ 'Net Profit Per Kg (Tk)'|trans }}</td>
+                                        <td class="text-right">{{ entity.calculateNetProfitPerKg|number_format('2','.','') }}</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <hr style="height: 2px; width: 100%;">#}
+                    {% endfor %}
+                </div>
+            </div>
+
+        {% endif %}
+
+
+
+
+
+    </div>
+
+
+
+
+
+
+
+{% endblock %}
+{% block cssBlock %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('assets/module/css/app.css') }}">
+{% endblock  %}
+{% block javascripts %}
+    {{ parent() }}
+    <script type="application/javascript" src="{{ asset('assets/module/js/app.js') }}"></script>
+{% endblock  %}
+{% block documentready %}
+    {{ parent() }}
+
+    $('#start-date').datepicker(
+    {
+    dateFormat: 'yy-mm-dd'
+    }
+    );
+    $('#end-date').datepicker(
+    {
+    dateFormat: 'yy-mm-dd'
+    }
+    );
+
+{% endblock %}
