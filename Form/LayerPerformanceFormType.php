@@ -31,6 +31,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Terminalbd\CrmBundle\Entity\CrmCustomer;
 use Terminalbd\CrmBundle\Entity\LayerPerformance;
+use Terminalbd\CrmBundle\Entity\LayerPerformanceDetails;
 use Terminalbd\CrmBundle\Entity\Setting;
 
 
@@ -67,7 +68,7 @@ class LayerPerformanceFormType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => LayerPerformance::class,
+            'data_class' => LayerPerformanceDetails::class,
             'user' => User::class,
             'agentRepo' => AgentRepository::class,
         ]);

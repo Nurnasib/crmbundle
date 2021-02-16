@@ -1,6 +1,6 @@
 <div class="portlet box ">
     <div class="portlet-title">
-        <div class="caption">{{ layerPerformance.report.name }} </div>
+        <div class="caption">{{ report.name }} </div>
     </div>
     {#{{ dump(report) }}#}
 
@@ -12,15 +12,16 @@
                     <div class="col-md-12">
                         <h4>NOURISH POULTRY & HATCHERY LTD</h4>
                         <h5>Uttara, Dhaka.</h5>
-                        <h5>{{ layerPerformance.report.name }}</h5>
+                        <h5>{{ report.name }}</h5>
                     </div>
-                    <input type="hidden" class="layer_performance_id" value="{{ layerPerformance.id }}">
+                    <input type="hidden" class="report_id" value="{{ report.id }}">
+                    <input type="hidden" class="customerId" value="{{ customer.id }}">
                     <div class="col-md-4">
-                        <p style="color: #000000">{{ 'Name of CSO/Sr.CSO'|trans }}: {{ layerPerformance.employee.name }}</p>
+                        <p style="color: #000000">{{ 'Name of CSO/Sr.CSO'|trans }}: {{ employee.name }}</p>
                     </div>
                     <div class="col-md-4"></div>
                     <div class="col-md-4">
-                        <p style="color: #000000">{{ 'Reporting Month'|trans }}: {{ layerPerformance.reportingMonth|date("F, Y") }}</p>
+                        <p style="color: #000000">{{ 'Reporting Month'|trans }}: {{ "now"|date("F, Y") }}</p>
                     </div>
                 </div>
                 <div style="padding-top: 0; overflow-x: scroll" class="card-body card-body-inner">
@@ -62,10 +63,10 @@
 
                             </tr>
                             <tr>
-                                <td scope="col" colspan="3">
-                                    <input type="hidden" class="customerId" value="{{ customer }}">
+                                <td scope="col" colspan="2" style="font-size: 10px">
+                                    {{ customer.agent.name|default('') }}
                                 </td>
-
+                                <td style="font-size: 10px">{{ customer.name }}</td>
                                 <td scope="col"><input type="number" class="form-control totalBirds" min="0" name="totalBirds"></td>
                                 <td scope="col">
                                     <select name="ageWeek" id="" class="form-control ageWeek">

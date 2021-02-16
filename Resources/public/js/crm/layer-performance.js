@@ -16,21 +16,11 @@ $(document).on('keypress','.layer_performance_details input[type=text], .layer_p
         $canfocus.eq(index).focus().select();
     }
 });
-/*
-$(document).on('click',".remove", function (event) {
-
-    var id = $(this).attr('data-id');
-    var url = $(this).attr('data-action');
-    $.get(url, function( data ) {
-        $(event.target).closest('tr').hide();
-    });
-});
-*/
 
 function layerPerformanceDetailDataInsertUsingAjax(element) {
-    var layer_performance_id = $('.layer_performance_id').val();
+    var customerId=$('.customerId').val();
+    var report_id = $('.report_id').val();
     var parentElement = element.closest('tr');
-    var customerId=parentElement.find('.customerId').val();
     var totalBirds=parentElement.find('.totalBirds').val();
     var ageWeek=parentElement.find('.ageWeek').val();
     var bodyWeightAchieved=parentElement.find('.bodyWeightAchieved').val();
@@ -47,12 +37,12 @@ function layerPerformanceDetailDataInsertUsingAjax(element) {
     var batchNo=parentElement.find('.batch_no').val();
     var remarks=parentElement.find('.remarks').val();
 
-    if(layer_performance_id===''){
+    if(report_id===''){
         return false;
     }
 
     $.ajax({
-        url    : Routing.generate('crm_layer_performance_detail_report_add',{'id':layer_performance_id}),
+        url    : Routing.generate('crm_layer_performance_detail_report_add',{'id':report_id}),
         type   : 'post',
         data   : {
             'customerId':customerId,
@@ -77,7 +67,7 @@ function layerPerformanceDetailDataInsertUsingAjax(element) {
 
             if(response.status===200){
 
-                var refreshUrl = Routing.generate('layer_performance_details_refresh',{'id':layer_performance_id});
+                var refreshUrl = Routing.generate('layer_performance_details_refresh',{'id':report_id});
                 $(".layer_performance_details tbody").load(refreshUrl);
             }
         }

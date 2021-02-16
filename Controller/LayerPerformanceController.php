@@ -54,71 +54,29 @@ class LayerPerformanceController extends AbstractController
      */
     public function new(Request $request, CrmCustomer $crmCustomer, Setting $report): Response
     {
-        $entity = new LayerPerformance();
-
-        $existingReport = $this->getDoctrine()->getRepository(LayerPerformance::class)->getLayerPerformanceReportByReportingDateAndFeedType($report, $this->getUser());
-
-        if($existingReport){
-            return $this->redirectToRoute('layer_performance_details_modal', ['id'=>$existingReport->getId(), 'customer'=>$crmCustomer->getId()]);
-        }
-
-        $reportingDate = date('Y-m-d',strtotime('now'));
-
-        $entity->setReportingMonth(new \DateTime($reportingDate));
-        $entity->setReport($report);
-//        $entity->setCustomer($crmCustomer);
-        $entity->setEmployee($this->getUser());
-        $em = $this->getDoctrine()->getManager();
-        $em->persist($entity);
-        $em->flush();
-        $this->addFlash('success', 'post.created_successfully');
-
-        return $this->redirectToRoute('layer_performance_details_modal', ['id'=>$entity->getId(), 'customer'=>$crmCustomer->getId()]);
-
-    }
-
-    /**
-     * @param LayerPerformance $layerPerformance
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
-     * @Route("/{id}/details/modal", methods={"GET", "POST"}, name="layer_performance_details_modal")
-     */
-    public function newModal(Request $request, LayerPerformance $layerPerformance): Response
-    {
         $data = $request->request->all();
-        $noOfWeek = $this->getDoctrine()->getRepository(SettingLifeCycle::class)->getLifeCycleWeekByLifeCycle($layerPerformance->getReport()->getSlug());
-        $breeds = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType'=>'BREED_TYPE','parent'=>$layerPerformance->getReport()->getParent()),['name' => 'ASC']);
+        $noOfWeek = $this->getDoctrine()->getRepository(SettingLifeCycle::class)->getLifeCycleWeekByLifeCycle($report->getSlug());
+        $breeds = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType'=>'BREED_TYPE','parent'=>$report->getParent()),['name' => 'ASC']);
         $hatcheries = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType'=>'HATCHERY'),['name' => 'ASC']);
-        $feedTypes = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType'=>'FEED_TYPE','parent'=>$layerPerformance->getReport()->getParent()),['name' => 'ASC']);
+        $feedTypes = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType'=>'FEED_TYPE','parent'=>$report->getParent()),['name' => 'ASC']);
         $feedMills = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType'=>'FEED_MILL'),['name' => 'ASC']);
         $colors = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType'=>'COLOR'),['name' => 'ASC']);
 
+        $layerPerformanceDetails = $this->getDoctrine()->getRepository(LayerPerformanceDetails::class)->getLayerPerformanceReportByReportingDateAndFeedType( $report, $this->getUser());
+
         return $this->render('@TerminalbdCrm/layerPerformance/details-modal.html.twig', [
-            'layerPerformance' => $layerPerformance,
             'noOfWeeks' => $noOfWeek,
             'breeds' => $breeds,
             'hatcheries' => $hatcheries,
             'feedTypes' => $feedTypes,
             'feedMills' => $feedMills,
             'colors' => $colors,
-            'customer' => $request->query->get('customer'),
+            'customer' => $crmCustomer,
+            'report' => $report,
+            'employee' => $this->getUser(),
+            'crmLayerPerformanceDetails' => $layerPerformanceDetails,
         ]);
     }
-
-    /**
-     * Deletes a LayerPerformance entity.
-     * @Route("/{id}/delete", methods={"GET"}, name="layer_performance_delete")
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
-     */
-    public function delete($id): Response
-    {
-        $entity = $this->getDoctrine()->getRepository(LayerPerformance::class)->find($id);
-        $em = $this->getDoctrine()->getManager();
-        $em->remove($entity);
-        $em->flush();
-        $this->addFlash('success', 'post.deleted_successfully');
-        return new Response('Success');
-    }
-
 
     /**
      * @Route("/details/{id}/delete", methods={"POST"}, name="layer_parformance_details_delete")
@@ -140,7 +98,7 @@ class LayerPerformanceController extends AbstractController
      * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM') or is_granted('ROLE_CSO')")
      */
 
-    public function addLayerPerformanceDetails(Request $request, LayerPerformance $layerPerformance): Response
+    public function addLayerPerformanceDetails(Request $request, Setting $report): Response
     {
         $data = $request->request->all();
 
@@ -191,9 +149,15 @@ class LayerPerformanceController extends AbstractController
         $entity->setRemarks(isset($data['remarks'])?$data['remarks']:'');
         $entity->setCustomer($customer);
         $entity->setAgent($customer?$customer->getAgent():null);
-        $entity->setCrmLayerPerformanceReport($layerPerformance);
+
+        $entity->setEmployee($this->getUser());
+        $entity->setReport($report);
+
+        $reportingDate = date('Y-m-d',strtotime('now'));
+        $entity->setReportingMonth(new \DateTime($reportingDate));
+
         /* @var LayerStandard $layerPerformanceStandard*/
-        $layerPerformanceStandard= $this->getDoctrine()->getRepository(LayerStandard::class)->findOneBy(array('age'=>$entity->getAgeWeek(),'report'=>$layerPerformance->getReport()));
+        $layerPerformanceStandard= $this->getDoctrine()->getRepository(LayerStandard::class)->findOneBy(array('age'=>$entity->getAgeWeek(),'report'=>$report));
         if($layerPerformanceStandard){
             $entity->setBirdWeightTarget($layerPerformanceStandard->getTargetBodyWeight());
             $entity->setFeedTarget($layerPerformanceStandard->getTargetFeedConsumption());
@@ -216,15 +180,16 @@ class LayerPerformanceController extends AbstractController
     }
 
     /**
-     * @param LayerPerformance $layerPerformance
+     * @param Setting $report
      * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      * @Route("/{id}/details/refresh", methods={"GET", "POST"}, name="layer_performance_details_refresh", options={"expose"=true})
      */
-    public function layerPerformanceDetailsRefresh(LayerPerformance $layerPerformance): Response
+    public function layerPerformanceDetailsRefresh(Setting $report): Response
     {
+        $layerPerformanceDetails = $this->getDoctrine()->getRepository(LayerPerformanceDetails::class)->getLayerPerformanceReportByReportingDateAndFeedType( $report, $this->getUser());
 
         return $this->render('@TerminalbdCrm/layerPerformance/partial/layer-performance-details.html.twig', [
-            'layerPerformance' => $layerPerformance,
+            'crmLayerPerformanceDetails' => $layerPerformanceDetails,
         ]);
     }
 

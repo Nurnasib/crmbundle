@@ -35,19 +35,21 @@
                 {{ form_start(searchForm) }}
                 <table class="table table-borderd">
                     <thead class="thead-dark">
-                        <th>
-                            {{ form_label(searchForm.startDateCreated,'Starting Date:') }}
-                            {{ form_widget(searchForm.startDateCreated,{'id': 'start-date'}) }}
-                        </th>
-                        <th>
-                            {{ form_label(searchForm.endDateCreated,'Ending Date:') }}
-                            {{ form_widget(searchForm.endDateCreated,{'id': 'end-date'}) }}
-                        </th>
-                        <th>
-                            {{ form_label(searchForm.employee,'Employee Name:') }}
-                            {{ form_widget(searchForm.employee) }}
-                        </th>
-                        <th>{{ form_widget(searchForm.filter,{'attr':{'style': 'margin-top: 18px'}}) }}</th>
+                        <tr>
+                            <th>
+                                {{ form_label(searchForm.startDateCreated,'Starting Date:') }}
+                                {{ form_widget(searchForm.startDateCreated,{'id': 'start-date'}) }}
+                            </th>
+                            <th>
+                                {{ form_label(searchForm.endDateCreated,'Ending Date:') }}
+                                {{ form_widget(searchForm.endDateCreated,{'id': 'end-date'}) }}
+                            </th>
+                            <th>
+                                {{ form_label(searchForm.employee,'Employee Name:') }}
+                                {{ form_widget(searchForm.employee) }}
+                            </th>
+                            <th>{{ form_widget(searchForm.filter,{'attr':{'style': 'margin-top: 18px'}}) }}</th>
+                        </tr>
                     </thead>
                 </table>
 {#                {{ form_end(searchForm) }}#}
@@ -110,15 +112,14 @@
 
                         </thead>
                         <tbody>
-                        {% for entity in entities %}
-                            {% for detail in entity.crmLayerPerformanceDetails %}
+                            {% for detail in entities %}
                                 <tr>
                                     <td>{{ detail.agent.name|default('N/A') }}</td>
                                     <td>{{ detail.agent.address|default('N/A') }}</td>
                                     <td>{{ detail.customer.name|default('N/A') }}</td>
                                     <td>{{ detail.customer.mobile|default('N/A') }}</td>
                                     <td>{{ detail.totalBirds|default(0) }}</td>
-                                    <td>{{ detail.ageWeek|default(0) }}</td>
+                                    <td>{{ detail.ageWeek|default('') }}</td>
                                     <td>{{ detail.birdWeightAchieved|default(0) }}</td>
                                     <td>{{ detail.birdWeightTarget|default(0) }}</td>
                                     <td>{{ detail.feedIntakePerBird|default(0) }}</td>
@@ -138,7 +139,6 @@
                                     <td>{{ detail.remarks|default('N/A') }}</td>
                                 </tr>
                             {% endfor %}
-                        {% endfor %}
                         </tbody>
                     </table>
                 </div>

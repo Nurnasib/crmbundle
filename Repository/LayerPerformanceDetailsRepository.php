@@ -22,7 +22,7 @@ use Terminalbd\CrmBundle\Repository\BaseRepository;
  *
  * @author Md Shafiqul islam <shafiqabs@gmail.com>
  */
-class LayerPerformanceRepository extends BaseRepository
+class LayerPerformanceDetailsRepository extends BaseRepository
 {
 
     public function getLayerPerformanceReportByReportingDateAndFeedType($report, $employee)
@@ -38,7 +38,7 @@ class LayerPerformanceRepository extends BaseRepository
                 ->andWhere('lpr.employee = :employee')
                 ->setParameters(array('startDate'=>$startDate, 'endDate'=>$endDate, 'report'=>$report, 'employee'=>$employee));
 
-            return $query->getQuery()->getOneOrNullResult();
+            return $query->getQuery()->getResult();
         }
         return array();
     }

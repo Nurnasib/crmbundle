@@ -18,7 +18,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 use NumberFormatter;
 
 /**
- * @ORM\Entity(repositoryClass="Terminalbd\CrmBundle\Repository\LayerPerformanceRepository")
+ * @ORM\Entity(repositoryClass="Terminalbd\CrmBundle\Repository\LayerPerformanceDetailsRepository")
  * @ORM\Table(name="crm_layer_performance_details")
  * @author Md Shafiqul Islam <shafiqabs@gmail.com>
  */
@@ -33,14 +33,27 @@ class LayerPerformanceDetails
      */
     private $id;
 
+
     /**
-     * @var LayerPerformance
-     * @ORM\ManyToOne(targetEntity="Terminalbd\CrmBundle\Entity\LayerPerformance", inversedBy="crmLayerPerformanceDetails")
-     * @ORM\JoinColumn(name="layer_performance_id", referencedColumnName="id")
+     * @var User
+     * @ORM\ManyToOne(targetEntity="App\Entity\User" , inversedBy="crmLayerPerformanceDetails")
+     */
+    private $employee;
+
+    /**
+     * @var Setting
+     * @ORM\ManyToOne(targetEntity="Setting", inversedBy="crmLayerPerformanceDetails")
+     * @ORM\JoinColumn(name="report_id", referencedColumnName="id")
      * @ORM\JoinColumn(onDelete="CASCADE")
      */
 
-    private $crmLayerPerformanceReport;
+    private $report;
+    /**
+     * @var \DateTime
+     * @ORM\Column(name="repoting_month", type="date", nullable=true)
+     */
+
+    private $reportingMonth;
 
     /**
      * @var Agent
@@ -631,5 +644,55 @@ class LayerPerformanceDetails
     {
         $this->updated = $updated;
     }
+
+    /**
+     * @return User
+     */
+    public function getEmployee()
+    {
+        return $this->employee;
+    }
+
+    /**
+     * @param User $employee
+     */
+    public function setEmployee(User $employee): void
+    {
+        $this->employee = $employee;
+    }
+
+    /**
+     * @return Setting
+     */
+    public function getReport()
+    {
+        return $this->report;
+    }
+
+    /**
+     * @param Setting $report
+     */
+    public function setReport(Setting $report): void
+    {
+        $this->report = $report;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getReportingMonth()
+    {
+        return $this->reportingMonth;
+    }
+
+    /**
+     * @param \DateTime $reportingMonth
+     */
+    public function setReportingMonth(\DateTime $reportingMonth): void
+    {
+        $this->reportingMonth = $reportingMonth;
+    }
+
+
 
 }

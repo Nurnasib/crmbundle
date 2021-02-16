@@ -55,8 +55,7 @@
 
             </thead>
             <tbody>
-            {% for entity in entities %}
-                {% for detail in entity.crmLayerPerformanceDetails %}
+                {% for detail in entities %}
                     <tr>
                         <td>{{ detail.agent.name|default('N/A') }}</td>
                         <td>{{ detail.agent.address|default('N/A') }}</td>
@@ -83,7 +82,6 @@
                         <td>{{ detail.remarks|default('N/A') }}</td>
                     </tr>
                 {% endfor %}
-            {% endfor %}
             </tbody>
         </table>
         <!-- [ Main Content ] end -->

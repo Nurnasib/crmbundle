@@ -15,7 +15,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Terminalbd\CrmBundle\Entity\CrmCustomer;
 use Terminalbd\CrmBundle\Entity\LayerLifeCycle;
-use Terminalbd\CrmBundle\Entity\LayerPerformance;
+use Terminalbd\CrmBundle\Entity\LayerPerformanceDetails;
 use Terminalbd\CrmBundle\Form\SearchFilterFormType;
 
 class LayerPerformanceReportController extends AbstractController
@@ -34,7 +34,7 @@ class LayerPerformanceReportController extends AbstractController
         if ($searchForm->isSubmitted()){
             $filterBy = $searchForm->getData();
             $filterBy['employeeId'] = $searchForm->get('employee')->getData()->getId();
-            $entities = $this->getDoctrine()->getRepository(LayerPerformance::class)->getLayerPerformanceReport($filterBy);
+            $entities = $this->getDoctrine()->getRepository(LayerPerformanceDetails::class)->getLayerPerformanceReport($filterBy);
         }
 
         return $this->render('@TerminalbdCrm/report/layer/report-performance.html.twig',['searchForm' => $searchForm->createView(), 'entities' => $entities, 'filterBy' => $filterBy]);
@@ -49,7 +49,7 @@ class LayerPerformanceReportController extends AbstractController
         $filteBy = $request->query->get('filterBy');
         $filteBy['employe'] = $this->getDoctrine()->getRepository(User::class)->find($filteBy['employeeId']);
 
-        $entities = $this->getDoctrine()->getRepository(LayerPerformance::class)->getLayerPerformanceReport($filteBy);
+        $entities = $this->getDoctrine()->getRepository(LayerPerformanceDetails::class)->getLayerPerformanceReport($filteBy);
 
         $fileName = 'layer_performance_report'.'_'.time().'.xls';
         $html = $this->renderView('@TerminalbdCrm/report/layer/report-performance-excel.html.twig',['entities'=>$entities]);
@@ -70,7 +70,7 @@ class LayerPerformanceReportController extends AbstractController
         $filteBy = $request->query->get('filterBy');
         $filteBy['employe'] = $this->getDoctrine()->getRepository(User::class)->find($filteBy['employeeId']);
 
-        $entities = $this->getDoctrine()->getRepository(LayerPerformance::class)->getLayerPerformanceReport($filteBy);
+        $entities = $this->getDoctrine()->getRepository(LayerPerformanceDetails::class)->getLayerPerformanceReport($filteBy);
 
         // Configure Dompdf according to your needs
         $pdfOptions = new Options();
