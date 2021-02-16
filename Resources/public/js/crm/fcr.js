@@ -11,7 +11,7 @@ function formCommonProcessForFcr() {
             var $canfocus = $('.fcrReportDetails :focusable');
             var index = $canfocus.index(this) + 1;
             // if (index >= $canfocus.length) index = 0;
-            if (index >= $canfocus.length){
+            if (index >= $canfocus.length-1){
                 index = 0;
             }
 
@@ -117,14 +117,14 @@ function formCommonProcessForFcr() {
 
     $('.fcrReportDetails .ageDays').on('keypress keyup blur',function () {
         var parentElement = $(this).closest('tr');
-        var fcrId = $('.fcr_id').val();
+        var reportId = $('.report_id').val();
         var ageDay= $(this).val();
 
-        if(fcrId==='' && ageDay ===''){
+        if(reportId==='' && ageDay ===''){
             return false;
         }
         $.ajax({
-            url    : Routing.generate('crm_sonali_and_broiler_standard_by_age',{'id':fcrId}),
+            url    : Routing.generate('crm_sonali_and_broiler_standard_by_age',{'id':reportId}),
             type   : 'post',
             data   : {
                 'ageDay':ageDay
@@ -136,6 +136,11 @@ function formCommonProcessForFcr() {
                     parentElement.find('.weightStandard').text(response.weightStandard);
                     parentElement.find('.perBirdStandard').text(response.feedConsumptionStandard);
                 }
+                if(response.status===404){
+                    console.log(response);
+                    parentElement.find('.weightStandard').text('');
+                    parentElement.find('.perBirdStandard').text('');
+                }
             }
         });
     });
@@ -143,63 +148,40 @@ function formCommonProcessForFcr() {
 }
 
 function dataInsertFcrUsingAjax(element) {
-    var fcrId = $('.fcr_id').val();
+    var reportId = $('.report_id').val();
+    var afterBefore = $('.afterBefore').val();
     var parentElement = element.closest('tr');
-    var customerId=parentElement.find('.customerId').val();
-    var agent=parentElement.find('.agent').val();
     var hatchingDate=parentElement.find('.hatching_date').val();
-    var totalBirds=parentElement.find('.totalBirds').val();
-    var ageDays=parentElement.find('.ageDays').val();
-    var mortalityPes=parentElement.find('.mortalityPes').val();
-    var weightAchieved=parentElement.find('.weightAchieved').val();
-    var feedTotalKg=parentElement.find('.feedTotalKg').val();
-    var hatchery=parentElement.find('.hatchery').val();
-    var breed=parentElement.find('.breed').val();
-    var feed=parentElement.find('.feed').val();
-    var feedMill=parentElement.find('.feedMill').val();
-    var feedType=parentElement.find('.feedType').val();
-    var proDate=parentElement.find('.proDate').val();
-    var batchNo=parentElement.find('.batchNo').val();
-    var remarks=parentElement.find('.remarks').val();
 
-    if(fcrId==='' || hatchingDate ==='' || typeof hatchingDate === "undefined"){
+
+    if(hatchingDate ==='' || typeof hatchingDate === "undefined"){
         return false;
     }
 
     $.ajax({
-        url    : Routing.generate('crm_fcr_detail_report_add',{'id':fcrId}),
-        type   : 'post',
-        data   : {
-            'customerId':customerId,
-            'agent':agent,
-            'hatchingDate':hatchingDate,
-            'totalBirds':totalBirds,
-            'ageDays':ageDays,
-            'mortalityPes':mortalityPes,
-            'weightAchieved':weightAchieved,
-            'feedTotalKg':parseFloat(feedTotalKg).toFixed(2),
-            'hatchery':hatchery,
-            'breed':breed,
-            'feed':feed,
-            'feedMill':feedMill,
-            'feedType':feedType,
-            'proDate':proDate,
-            'batchNo':batchNo,
-            'remarks':remarks
+        url         : $('form#fcr_details_form').attr( 'action' ),
+        type        : $('form#fcr_details_form').attr( 'method' ),
+        data        : new FormData($('form#fcr_details_form')[0]),
+        processData : false,
+        contentType : false,
+        beforeSend: function() {
+            $('.form-submit').attr('disabled', 'disabled');
         },
-        dataType : 'json',
         success: function(response){
-            if(response.status===200){
-                parentElement.find(':input').not('.customerId').val('');
-                parentElement.find('.mortalityPercent').text('');
-                parentElement.find('.perBird').text('');
-                parentElement.find('.withoutMortality').text('');
-                parentElement.find('.withMortality').text('');
-                parentElement.find('.weightStandard').text('');
-                parentElement.find('.perBirdStandard').text('');
-                var refreshUrl = Routing.generate('fcr_details_refresh',{'id':fcrId});
-                $("#fcrReportDetails tbody").load(refreshUrl);
-            }
+            $("#process-msg").show();
+            $(".alert-success").html(response);
+            $(".form-submit").prop("disabled", false);
+            $('form#fcr_details_form')[0].reset();
+            parentElement.find('.mortalityPercent').text('');
+            parentElement.find('.weightStandard').text('');
+            parentElement.find('.perBird').text('');
+            parentElement.find('.perBirdStandard').text('');
+            parentElement.find('.withoutMortality').text('');
+            parentElement.find('.withMortality').text('');
+            var refreshUrl = Routing.generate('fcr_details_refresh',{'id':reportId,'afterBefore':afterBefore});
+            $("#fcrReportDetails tbody").load(refreshUrl);
+
+
         }
     });
 }

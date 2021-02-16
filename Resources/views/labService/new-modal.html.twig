@@ -62,7 +62,7 @@
                                                                 {% set currentMonth = "now"|date('m') %}
                                                                 <td style="padding: 0!important;" class="text-left">
                                                                     {% set total = total+labServices[lab.id][service.id][monthName]['value'] %}
-                                                                    {% if currentMonth==monthNameDigit or currentMonth+1==monthNameDigit %}
+                                                                    {% if currentMonth==monthNameDigit or currentMonth-1==monthNameDigit %}
                                                                         <input class="form-control month_{{ month }}" type="number" min="0" data-meta-key="{{ monthName }}" data-entity-id="{{ labServices[lab.id][service.id][monthName]['id'] }}" value="{{ labServices[lab.id][service.id][monthName]['value'] }}">
                                                                     {% else %}
                                                                         {{ labServices[lab.id][service.id][monthName]['value'] }}

@@ -45,7 +45,7 @@ class LabServiceRepository extends EntityRepository
         return array();
     }
 
-    public function getFcrDifferentCompanyByCreatedDateAndEmployee($employee, $breed_name)
+    public function getLabServiceByCreatedDateAndEmployee($employee, $breed_name)
     {
         if($employee){
             $startDate = date('Y-01-01');

@@ -1,22 +1,22 @@
-{% for fcrDetail in entity.fcrDetails|sort|reverse %}
+{% for fcrDetail in fcrDetails|sort %}
 <tr class="added_item">
     <td>{{ fcrDetail.agent.name|default('') }}</td>
     <td>{{ fcrDetail.hatchingDate|date('d-m-Y') }}</td>
     <td>{{ fcrDetail.totalBirds }}</td>
     <td>{{ fcrDetail.ageDay }}</td>
     <td>{{ fcrDetail.mortalityPes }}</td>
-    <td>{{ fcrDetail.mortalityPercent }}</td>
+    <td>{{ fcrDetail.mortalityPercent|number_format(2,'.','') }}</td>
     <td>{{ fcrDetail.weightStandard }}</td>
     <td>{{ fcrDetail.weight }}</td>
     <td>{{ fcrDetail.feedConsumptionTotalKg }}</td>
     <td>{{ fcrDetail.feedConsumptionPerBird }}</td>
     <td>{{ fcrDetail.feedConsumptionStandard }}</td>
-    <td>{{ fcrDetail.fcrWithoutMortality }}</td>
-    <td>{{ fcrDetail.fcrWithMortality }}</td>
+    <td>{{ fcrDetail.fcrWithoutMortality|number_format(2,'.','') }}</td>
+    <td>{{ fcrDetail.fcrWithMortality|number_format(2,'.','') }}</td>
     <td>{{ fcrDetail.hatchery.name|default('') }}</td>
     <td>{{ fcrDetail.breed.name|default('') }}</td>
     <td>{{ fcrDetail.feed.name|default('') }}</td>
-    {% if entity.fcrOfFeed == "BEFORE" %}
+    {% if fcrDetail.fcrOfFeed == "BEFORE" %}
     <td>{{ fcrDetail.feedMill.name|default('') }}</td>
     <td>{{ fcrDetail.feedType.name|default('') }}</td>
     <td>{{ fcrDetail.proDate|date('d-m-Y') }}</td>

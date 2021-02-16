@@ -1,6 +1,6 @@
 <div class="portlet box ">
     <div class="portlet-title">
-        <div class="caption">{{ entity.report.name|default('') }}</div>
+        <div class="caption">{{ report.name|default('') }}</div>
     </div>
     {#{{ dump(report) }}#}
 
@@ -13,22 +13,23 @@
                         <h4>NOURISH POULTRY & HATCHERY LTD</h4>
                         <h5>Uttara, Dhaka.</h5>
                     </div>
-                    <input type="hidden" class="fcr_id" value="{{ entity.id }}">
+                    <input type="hidden" class="report_id" value="{{ report.id }}">
+                    <input type="hidden" class="afterBefore" value="{{ fcrOfFeed }}">
                     <div class="col-md-4">
-                        <p style="color: #000000">{{ 'Name of CSO/Sr.CSO:'|trans }}: {{ entity.employee.name }}</p>
+                        <p style="color: #000000">{{ 'Name of CSO/Sr.CSO:'|trans }}: {{ employee.name }}</p>
                     </div>
                     <div class="col-md-4">
-                        <p style="color: #000000">{{ entity.report.name|default('') }}</p>
+                        <p style="color: #000000">{{ report.name|default('') }}</p>
                     </div>
                     <div class="col-md-4">
-                        <p style="color: #000000">{{ 'Reporting Month'|trans }}: {{ entity.reportingMonth|date("F, Y") }}</p>
+                        <p style="color: #000000">{{ 'Reporting Month'|trans }}: {{ "now"|date("F, Y") }}</p>
 
                     </div>
 
                 </div>
                 <div class="card-body-inner" style="overflow-x: scroll">
-                    <div class="">
-                        {#{{ form_start(form, {'attr': {'method':'post','action': path('fcr_details_modal',{'id':entity.id }),'class': 'form-horizontal right','id':'fcr_details_form'}}) }}#}
+                    <div class="fcrReportDetails_section">
+                        {{ form_start(form, {'attr': {'method':'post','action': path('fcr_new',{'customer':customer.id,'report':report.id,'afterBefore':'before' }),'class': 'form-horizontal right','id':'fcr_details_form'}}) }}
                         <table class="table table-striped table-bordered table-hover fcrReportDetails" id="fcrReportDetails">
                             <thead class="thead-dark">
                             <tr>
@@ -44,7 +45,7 @@
                                 <th style="width: 150px;" scope="col" rowspan="2">Hatchery</th>
                                 <th style="width: 150px;" scope="col" rowspan="2">Breed</th>
                                 <th style="width: 150px;" scope="col" rowspan="2">Feed</th>
-                                {% if entity.fcrOfFeed == "BEFORE" %}
+                                {% if fcrOfFeed == "BEFORE" %}
                                 <th style="width: 150px;" scope="col" rowspan="2">FeedMill</th>
                                 <th style="width: 150px;" scope="col" rowspan="2">FeedType</th>
                                 <th style="width: 150px;" style="width: 105px" scope="col" rowspan="2">Pro. Date</th>
@@ -71,8 +72,8 @@
 
                             </tr>
                             <tr>
-                                <td colspan="2">
-                                    <input type="hidden" class="customerId" value="{{ customer }}">
+                                <td style="font-size: 10px">{{ customer.agent.name|default('') }}</td>
+                                <td colspan="1">
                                     <div class="date_section">
                                         {{ form_widget(form.hatching_date) }}
                                     </div>
@@ -125,7 +126,7 @@
                                     {#<input type="text" class="form-control {{ entity.fcrOfFeed }} feed" value="">#}
                                 </td>
 
-                                {% if entity.fcrOfFeed =='BEFORE' %}
+                                {% if fcrOfFeed =='BEFORE' %}
                                 <td>
                                     {{ form_widget(form.feed_mill) }}
                                     {{ form_errors(form.feed_mill) }}
@@ -163,14 +164,14 @@
                             <tbody>
 
 
-                                {% if entity.fcrDetails is not empty %}
+                                {% if fcrDetails is not empty %}
                                 {% include '@TerminalbdCrm/fcr/partial/fcr-details.html.twig' %}
 
                                 {% endif %}
                             </tbody>
                         </table>
-                        {#{{ form_widget(form._token) }}#}
-                        {#{{ form_end(form) }}#}
+                        {{ form_widget(form._token) }}
+                        {{ form_end(form) }}
                     </div>
                 </div>
             </div>

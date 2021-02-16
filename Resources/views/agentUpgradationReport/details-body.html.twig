@@ -1,0 +1,19 @@
+{% if agentUpgradationReports is not empty %}
+    {% for index, detail in agentUpgradationReports %}
+        <tr>
+            <td class="text-left detail_id_{{ detail.id }}">{{ detail.agent.name|default('') }}</td>
+            <td class="text-left">{{ detail.breedName.name|default('') }}</td>
+            <td>{{ detail.agentStatus=='NEW'?detail.agentStatus:'' }}</td>
+            <td>{{ detail.agentStatus=='UPGRADE'?detail.agentStatus:'' }}</td>
+            <td>{{ detail.previousSaleTon|default('') }}</td>
+            <td>{{ detail.calculationPreviousCategory }}</td>
+            <td>{{ detail.presentSaleTon|default('') }}</td>
+            <td>{{ detail.calculationPresentCategory }}</td>
+            <td>{{ detail.remarks|default('') }}</td>
+
+            <td class="remove">
+                <a data-action="{{ path('agent_upgradation_report_delete',{id:detail.id}) }}" class="btn btn-danger btn-sm remove">x</a>
+            </td>
+        </tr>
+    {% endfor %}
+{% endif %}

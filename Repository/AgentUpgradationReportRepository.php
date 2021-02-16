@@ -21,25 +21,23 @@ use Doctrine\ORM\EntityRepository;
  *
  * @author Md Shafiqul islam <shafiqabs@gmail.com>
  */
-class FcrDetailsRepository extends EntityRepository
+class AgentUpgradationReportRepository extends BaseRepository
 {
-    public function getFcrReportByReportingDateAndFeedType($data, $report, $employee)
-    {
-        if(isset($data) && $report && $employee){
+    public function getAgentUpgradationReportByCreatedDateEmployeeReport($purpose, $employee){
+        if($purpose&&$employee){
             $startDate = date('Y-m-01', strtotime("now"));
             $endDate = date('Y-m-t', strtotime("now"));
-            $query = $this->createQueryBuilder('f')
-                ->where('f.reportingMonth >= :startDate')
-                ->andWhere('f.reportingMonth <= :endDate')
-                ->andWhere('f.fcrOfFeed = :type')
-                ->andWhere('f.report = :report')
-                ->andWhere('f.employee = :employee')
-//                ->andWhere('f.customer = :customer')
-                ->setParameters(array('startDate'=>$startDate, 'endDate'=>$endDate, 'type'=>$data, 'report'=>$report, 'employee'=>$employee));
+            $query = $this->createQueryBuilder('aur')
+                ->where('aur.createdAt >= :startDate')
+                ->andWhere('aur.createdAt <= :endDate')
+                ->andWhere('aur.agentPurpose = :purpose')
+                ->andWhere('aur.employee = :employee')
+                ->setParameters(array('startDate'=>$startDate.' 00:00:00', 'endDate'=>$endDate.' 23:59:59', 'purpose'=>$purpose, 'employee'=>$employee));
 
             return $query->getQuery()->getResult();
         }
         return array();
     }
+
 
 }

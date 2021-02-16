@@ -69,7 +69,7 @@ class LabServiceController extends AbstractController
 
         }
 
-        $allLabServices = $this->getDoctrine()->getRepository(LabService::class)->getFcrDifferentCompanyByCreatedDateAndEmployee($this->getUser(), $breed_name);
+        $allLabServices = $this->getDoctrine()->getRepository(LabService::class)->getLabServiceByCreatedDateAndEmployee($this->getUser(), $breed_name);
 
         return $this->render('@TerminalbdCrm/labService/new-modal.html.twig', [
             'services' => $labServices,
@@ -85,7 +85,7 @@ class LabServiceController extends AbstractController
      * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      */
 
-    public function editLifeCycleDetails(Request $request, LabService $entity): Response
+    public function editLabServiceDetails(Request $request, LabService $entity): Response
     {
         $data = $request->request->all();
         $metaKey = $data['dataMetaKey'];

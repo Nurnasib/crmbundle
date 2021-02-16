@@ -330,6 +330,10 @@ function formCommonProcess() {
     $('.complain_different_product_section').on('click', '.complain_different_product_button', function () {
         formSubmitProcessForComplainDifferentProduct($(this));
     });
+
+    $('.agent_upgradation_report_section').on('click', '.agent_upgradation_report_button', function () {
+        formSubmitProcessForAgentUpgradationReport($(this));
+    });
 }
 
 function dataInsertChickUsingAjax(element) {

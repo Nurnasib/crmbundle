@@ -21,10 +21,12 @@
                 <div class="card-header">
                     <h5>{{ 'Manage Daily Activies'|trans }}</h5>
                     <div class="card-header-right">
-                        <div class="btn-group btn-group-sm" role="group" aria-label="Button group with nested dropdown">
-                            {#<a href="{{ path('kpi_markchart_new') }}" class="btn btn-sm  green-bg white-font"><i class="fas fa-plus"></i>{{ 'Add New'|trans }}</a>#}
-                            {#<a href="{{ path('kpi_markchart') }}" class="btn btn-sm gray-bg white-font"><i class="fa fa-th-list"></i>{{ 'KPI Mark Chart'|trans }}</a>#}
-                        </div>
+                        {% if (is_granted("ROLE_CRM"))  %}
+                            <div class="btn-group btn-group-sm" role="group" aria-label="Button group with nested dropdown">
+                                <a href="{{ path('crm_visit') }}" class="btn btn-sm gray-bg white-font"><i class="fa fa-th-list"></i>{{ 'CRM VISIT'|trans }}</a>
+                            </div>
+                        {% endif %}
+
                     </div>
                 </div>
             </div>

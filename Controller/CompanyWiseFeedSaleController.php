@@ -1,0 +1,141 @@
+<?php
+
+namespace Terminalbd\CrmBundle\Controller;
+
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Extension\Core\Type\ButtonType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Terminalbd\CrmBundle\Entity\AntibioticFreeFarm;
+use Terminalbd\CrmBundle\Entity\AntibioticFreeFarmMedicineOrVaccineCost;
+use Terminalbd\CrmBundle\Entity\BroilerLifeCycle;
+use Terminalbd\CrmBundle\Entity\CompanyWiseFeedSale;
+use Terminalbd\CrmBundle\Entity\ComplainDifferentProduct;
+use Terminalbd\CrmBundle\Entity\CrmCustomer;
+use Terminalbd\CrmBundle\Entity\DiseaseMapping;
+use Terminalbd\CrmBundle\Entity\FcrDifferentCompanies;
+use Terminalbd\CrmBundle\Entity\LabService;
+use Terminalbd\CrmBundle\Form\AntibioticFreeFarmFormType;
+use Terminalbd\CrmBundle\Form\BroilerLifeCycleFormType;
+use Terminalbd\CrmBundle\Entity\Setting;
+use Terminalbd\CrmBundle\Form\ComplainDifferentProductFormType;
+use Terminalbd\CrmBundle\Form\DiseaseMappingFormType;
+
+
+/**
+ * @Route("/crm/company/wise/feed/sale")
+ */
+class CompanyWiseFeedSaleController extends AbstractController
+{
+    /**
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @Route("/{breed_name}/new", methods={"GET", "POST"}, name="company_wise_feed_sale_new", options={"expose"=true})
+     */
+    public function newModal(Request $request, $breed_name): Response
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $breedNameObj = $this->getDoctrine()->getRepository(Setting::class)->findOneBy(array('status'=>1, 'settingType'=>'BREED_NAME','slug'=>$breed_name.'-breed'));
+
+        $farmTypesByParent = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('status'=>1,'settingType'=>'FARM_TYPE','parent'=>$breedNameObj));
+
+        $farmTypeId = [];
+        if($farmTypesByParent){
+            foreach ($farmTypesByParent as $value){
+                $farmTypeId[]= $value->getId();
+            }
+        }
+
+        $productsName = $this->getDoctrine()->getRepository(Setting::class)->getProductTypeByParentParentChildren($farmTypeId);
+
+        $feedCompanies = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('status'=>1,'settingType'=>'FEED_NAME'));
+        $arrayMonth=[];
+        $arrayMonthRange=[];
+        $currentYear = date('Y');
+        $yearRange[]=$currentYear;
+
+        for($i=1; $i<=12; $i++){
+            $monthDigit = date('m', mktime(0, 0, 0, $i, 10));
+            $month = date('F', mktime(0, 0, 0, $i, 10));
+            $currentMonth = date('m');
+
+            $arrayMonth[]=$month;
+            if($currentMonth==$monthDigit || $currentMonth-1==$monthDigit){
+                $arrayMonthRange[]=$month;
+                foreach ($feedCompanies as $feedCompany){
+                    $exitingCompanyWiseFeedSale = $this->getDoctrine()->getRepository(CompanyWiseFeedSale::class)->getExitingCheckCompanyWiseFeedSaleByMonthYearEmployeeAndCompany($currentYear, $month, $feedCompany, $this->getUser(), $breed_name);
+
+                    if(!$exitingCompanyWiseFeedSale){
+                        $companyWiseFeedSale= new CompanyWiseFeedSale();
+                        $companyWiseFeedSale->setBreedName($breed_name);
+                        $companyWiseFeedSale->setEmployee($this->getUser());
+                        $companyWiseFeedSale->setFeedCompany($feedCompany);
+                        $companyWiseFeedSale->setMonthName($month);
+                        $companyWiseFeedSale->setYear($currentYear);
+
+                        $em->persist($companyWiseFeedSale);
+                        $em->flush();
+                    }
+
+                }
+            }
+        }
+
+        $allFeedSales = $this->getDoctrine()->getRepository(CompanyWiseFeedSale::class)->getCompanyWiseFeedSaleByCreatedDateAndEmployee( $yearRange, $arrayMonthRange, $this->getUser(), $breed_name);
+
+        return $this->render('@TerminalbdCrm/companyWiseFeedSale/new-modal.html.twig', [
+            'productsName' => $productsName,
+            'user' => $this->getUser(),
+            'arrayMonth' => $arrayMonth,
+            'allFeedSales' => $allFeedSales,
+            'yearRange' => $yearRange,
+            'arrayMonthRange' => $arrayMonthRange,
+            'feedCompanies' => $feedCompanies,
+        ]);
+    }
+
+
+    /**
+     * @Route("/{id}/edit", methods={"POST"}, name="lab_service_edit", options={"expose"=true})
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     */
+
+    public function editLifeCycleDetails(Request $request, LabService $entity): Response
+    {
+        $data = $request->request->all();
+        $metaKey = $data['dataMetaKey'];
+        $metaValue = $data['dataMetaValue'];
+        $metaKey = ucfirst($metaKey);
+
+        if($metaKey!=''&&$metaValue!=''){
+
+            $set = 'set'.$metaKey;
+
+            $entity->$set($metaValue);
+        }
+
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($entity);
+        $em->flush();
+        $get = 'get'.$metaKey;
+
+        $value = $entity->$get($metaValue);
+
+        return new JsonResponse(
+            array(
+                'success'=>'Success',
+                'value'=>$value,
+                'status'=>200,
+            )
+        );
+
+    }
+
+}

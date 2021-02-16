@@ -1,0 +1,86 @@
+{% extends 'admin/layout.html.twig' %}
+{#{% block body_id 'kpi_domain_new' %}#}
+{% block body %}
+    <div class="pcoded-inner-content">
+        <!-- [ breadcrumb ] start -->
+        <!-- [ breadcrumb ] end -->
+        <!-- [ Main Content ] start -->
+        <div class="row">
+            <div class="card">
+                <div class="portlet box">
+                    <div class="portlet-body form">
+                        <div class="row form-body" style="padding-top: 0!important;">
+                            <div class="form-inner-no-space">
+                                <div class="row">
+                                    <div class="col-md-12 text-center">
+                                        <h4>{{ 'NOURISH POULTRY & HATCHERY LTD'|trans }}</h4>
+                                        <h5>{{ 'Uttara, Dhaka.'|trans }}</h5>
+                                        <h4>{{ 'Summery of Lab Service'|trans }}, {{ "now"|date('Y') }}</h4>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12 companyWiseFeedSale_section">
+
+                                        {% if arrayMonthRange is not empty %}
+                                            {% for year in yearRange %}
+                                            {% for month in arrayMonthRange %}
+                                            <h5>{{ 'Month'|trans }}: {{ month }}-{{ year }}</h5>
+                                                <table class="table table-bordered" id="datatable">
+                                                    <thead>
+                                                    <tr>
+                                                        <th>{{ 'SL No'|trans }}</th>
+                                                        <th>{{ 'Company'|trans }}</th>
+                                                        {% for productName in productsName %}
+                                                            <th>{{ productName.name }}</th>
+                                                        {% endfor %}
+                                                        <th>{{ 'Total'|trans }}</th>
+                                                        <th>{{ 'Market Share By Nourish (%)'|trans }}</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody class="companyWiseFeedSale_body_section">
+                                                    {% if feedCompanies is not empty %}
+                                                        {% for index, feedCompany in feedCompanies %}
+                                                            <tr>
+                                                                <td>{{ index+1 }}</td>
+                                                                <td>{{ feedCompany.name|default('') }}</td>
+                                                                {% for productName in productsName %}
+                                                                    <td><input type="number" class="form-control productAndQty" min="0" name="productAndQty[]" value="" data-entity-id="{{ allFeedSales[year][month][feedCompany.id].id }}" data-product-id="{{ productName.id }}"></td>
+                                                                {% endfor %}
+                                                                <td class="line_total"></td>
+                                                                <td class="lineMarketShare"></td>
+                                                            </tr>
+                                                        {% endfor %}
+                                                    {% endif %}
+                                                    </tbody>
+
+
+                                                </table>
+                                            {% endfor %}
+                                            {% endfor %}
+                                        {% endif %}
+
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- [ Main Content ] end -->
+    </div>
+
+{% endblock %}
+ {% block cssBlock %}
+     <link rel="stylesheet" href="{{ asset('assets/module/css/app.css') }}">
+     <link rel="stylesheet" href="{{ asset('bundles/terminalbdcrm/css/crm.css') }}">
+ {% endblock  %}
+{% block javascripts %}
+    {#<script>#}
+    {{ parent() }}
+    <script type="application/javascript" src="{{ asset('bundles/terminalbdcrm/js/crm/company-wise-feed-sale.js') }}"></script>
+{% endblock  %}
+
+

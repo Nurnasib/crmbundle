@@ -16,6 +16,8 @@ use Gedmo\Mapping\Annotation as Gedmo;
  */
 class FcrDetails
 {
+    const FCR_FEED_BEFORE = 'BEFORE';
+    const FCR_FEED_AFTER = 'AFTER';
     /**
      * @var integer
      * @ORM\Column(name="id", type="integer")
@@ -26,13 +28,31 @@ class FcrDetails
     private $id;
 
     /**
-     * @var Fcr
-     * @ORM\ManyToOne(targetEntity="Terminalbd\CrmBundle\Entity\Fcr", inversedBy="fcrDetails")
-     * @ORM\JoinColumn(name="fcr_id", referencedColumnName="id")
-     * @ORM\JoinColumn(onDelete="CASCADE")
+     * @var Setting
+     * @ORM\ManyToOne(targetEntity="Setting", inversedBy="fcr")
+     * @ORM\JoinColumn(name="report_id", referencedColumnName="id", onDelete="SET NULL", nullable=true)
+     */
+    private $report;
+
+
+    /**
+     * @var User
+     * @ORM\ManyToOne(targetEntity="App\Entity\User" , inversedBy="fcr")
+     */
+    private $employee;
+
+    /**
+     * @var string
+     * @ORM\Column(name="fcr_of_feed", type="string",nullable=true)
      */
 
-    private $fcr;
+    private $fcrOfFeed; //BEFORE OR AFTER
+
+    /**
+     * @var \DateTime
+     * @ORM\Column(name="reporting_month", type="date", nullable=true)
+     */
+    private $reportingMonth;
 
     /**
      * @var Agent
@@ -221,19 +241,67 @@ class FcrDetails
     }
 
     /**
-     * @return Fcr
+     * @return Setting
      */
-    public function getFcr()
+    public function getReport()
     {
-        return $this->fcr;
+        return $this->report;
     }
 
     /**
-     * @param Fcr $fcr
+     * @param Setting $report
      */
-    public function setFcr(Fcr $fcr): void
+    public function setReport(Setting $report): void
     {
-        $this->fcr = $fcr;
+        $this->report = $report;
+    }
+
+    /**
+     * @return User
+     */
+    public function getEmployee()
+    {
+        return $this->employee;
+    }
+
+    /**
+     * @param User $employee
+     */
+    public function setEmployee(User $employee): void
+    {
+        $this->employee = $employee;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFcrOfFeed()
+    {
+        return $this->fcrOfFeed;
+    }
+
+    /**
+     * @param string $fcrOfFeed
+     */
+    public function setFcrOfFeed(string $fcrOfFeed): void
+    {
+        $this->fcrOfFeed = $fcrOfFeed;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getReportingMonth()
+    {
+        return $this->reportingMonth;
+    }
+
+    /**
+     * @param \DateTime $reportingMonth
+     */
+    public function setReportingMonth(\DateTime $reportingMonth): void
+    {
+        $this->reportingMonth = $reportingMonth;
     }
 
     /**
@@ -321,7 +389,8 @@ class FcrDetails
         if($this->getTotalBirds()>0) {
             $result =  number_format((($this->getFeedConsumptionTotalKg()/$this->getTotalBirds())*1000),2,'.','');
         }
-        return number_format($result,2,'.','');
+//        return number_format($result,2,'.','');
+        return $result;
     }
 
     /**
@@ -346,7 +415,8 @@ class FcrDetails
 
             $result = (($this->getFeedConsumptionTotalKg() / $this->getTotalBirds()) / $this->getWeight()) * 1000;
         }
-        return number_format($result,2,'.','');
+//        return number_format($result,2,'.','');
+        return $result;
 
     }
     /**
@@ -372,7 +442,8 @@ class FcrDetails
             $result = (($this->getFeedConsumptionTotalKg()/($this->getTotalBirds()-$this->getMortalityPes()))/$this->getWeight())*1000;
         }
 
-        return number_format($result,2,'.','');
+//        return number_format($result,2,'.','');
+        return $result;
 
     }
 
@@ -537,12 +608,10 @@ class FcrDetails
         $this->mortalityPercent = $mortalityPercent;
     }
 
-
-
     public function calculateMortalityPercent(){
         $return = 0;
         if($this->getTotalBirds()>0){
-            $return = number_format(($this->getMortalityPes()*100)/$this->getTotalBirds(),2,'.','');
+            $return = ($this->getMortalityPes()*100)/$this->getTotalBirds();
         }
         return $return;
     }
