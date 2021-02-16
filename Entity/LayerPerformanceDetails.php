@@ -238,22 +238,6 @@ class LayerPerformanceDetails
     }
 
     /**
-     * @return LayerPerformance
-     */
-    public function getCrmLayerPerformanceReport()
-    {
-        return $this->crmLayerPerformanceReport;
-    }
-
-    /**
-     * @param LayerPerformance $crmLayerPerformanceReport
-     */
-    public function setCrmLayerPerformanceReport(LayerPerformance $crmLayerPerformanceReport): void
-    {
-        $this->crmLayerPerformanceReport = $crmLayerPerformanceReport;
-    }
-
-    /**
      * @return Agent
      */
     public function getAgent()
