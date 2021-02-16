@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Terminalbd\CrmBundle\Entity\ChickLifeCycle;
 use Terminalbd\CrmBundle\Entity\CrmCustomer;
-use Terminalbd\CrmBundle\Entity\Fcr;
+use Terminalbd\CrmBundle\Entity\FcrDetails;
 use Terminalbd\CrmBundle\Form\SearchFilterFormType;
 
 /**
@@ -39,7 +39,7 @@ class FcrReportController extends AbstractController
 
 //            dd($filterBy);
 
-            $entities = $this->getDoctrine()->getRepository(Fcr::class)->getFcrReport($filterBy);
+            $entities = $this->getDoctrine()->getRepository(FcrDetails::class)->getFcrReport($filterBy);
         }
         return $this->render('@TerminalbdCrm/report/fcr/report-fcr.html.twig',['searchForm'=>$searchForm->createView(),'entities' => $entities,'filterBy'=>$filterBy]);
     }
@@ -53,7 +53,7 @@ class FcrReportController extends AbstractController
         $filterBy = $request->query->get('filterBy');
         $filterBy['employee'] = $this->getDoctrine()->getRepository(User::class)->find($filterBy['employeeId']);
 
-        $entities = $this->getDoctrine()->getRepository(Fcr::class)->getFcrReport($filterBy);
+        $entities = $this->getDoctrine()->getRepository(FcrDetails::class)->getFcrReport($filterBy);
 
         $fileName = 'fcr_report'.'_'.time().'.xls';
         $html = $this->renderView('@TerminalbdCrm/report/fcr/report-fcr-excel.html.twig', ['entities'=>$entities]);
@@ -74,7 +74,7 @@ class FcrReportController extends AbstractController
         $filterBy = $request->query->get('filterBy');
         $filterBy['employee'] = $this->getDoctrine()->getRepository(User::class)->find($filterBy['employeeId']);
 
-        $entities = $this->getDoctrine()->getRepository(Fcr::class)->getFcrReport($filterBy);
+        $entities = $this->getDoctrine()->getRepository(FcrDetails::class)->getFcrReport($filterBy);
 
         // Configure Dompdf according to your needs
         $pdfOptions = new Options();

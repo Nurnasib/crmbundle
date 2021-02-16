@@ -64,19 +64,19 @@
                     <td>{{ entity.total_birds|default(0) }}</td>
                     <td>{{ entity.age|default(0) }}</td>
                     <td>{{ entity.mortality_pes|default(0) }}</td>
-                    <td>{{ entity.mortality_percent|default(0) }}</td>
+                    <td>{{ entity.mortality_percent|number_format(2,'.','') }}</td>
                     <td>{{ entity.weight|default(0) }}</td>
                     <td>{{ entity.total_feed_cons|default(0) }}</td>
-                    <td>{{ entity.feed_cons_per_bird|default(0) }}</td>
-                    <td>{{ entity.without_mortality|default(0) }}</td>
-                    <td>{{ entity.with_mortality|default(0) }}</td>
+                    <td>{{ entity.feed_cons_per_bird|number_format(2,'.','') }}</td>
+                    <td>{{ entity.without_mortality|number_format(2,'.','') }}</td>
+                    <td>{{ entity.with_mortality|number_format(2,'.','') }}</td>
                     <td>{{ entity.hatchery_name|default('N/A')}}</td>
                     <td>{{ entity.breed_name|default('N/A')}}</td>
                     <td>{{ entity.feed_name|default('N/A')}}</td>
                     <td>{{ entity.feed_mill_name|default('N/A')}}</td>
                     <td>{{ entity.feed_type_name|default('N/A')}}</td>
                     <td>{{ entity.pro_date|date('d-m-Y') }}</td>
-                    <td>{{ entity.batch_no|default(0)}}</td>
+                    <td>{{ entity.batch_no|default('')}}</td>
                     <td>{{ entity.remarks|default('N/A')}}</td>
                 </tr>
             {% endfor %}

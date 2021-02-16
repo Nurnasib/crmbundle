@@ -387,7 +387,7 @@ class FcrDetails
     public function calculatePerBird(){
         $result = 0;
         if($this->getTotalBirds()>0) {
-            $result =  number_format((($this->getFeedConsumptionTotalKg()/$this->getTotalBirds())*1000),2,'.','');
+            $result =  (($this->getFeedConsumptionTotalKg()/$this->getTotalBirds())*1000);
         }
 //        return number_format($result,2,'.','');
         return $result;
