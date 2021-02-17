@@ -103,35 +103,23 @@ class CompanyWiseFeedSaleController extends AbstractController
 
 
     /**
-     * @Route("/{id}/edit", methods={"POST"}, name="lab_service_edit", options={"expose"=true})
+     * @Route("/{id}/edit", methods={"POST"}, name="company_wise_feed_sale_edit", options={"expose"=true})
      * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      */
 
-    public function editLifeCycleDetails(Request $request, LabService $entity): Response
+    public function editCompanyWiseFeedSale(Request $request, CompanyWiseFeedSale $entity): Response
     {
         $data = $request->request->all();
-        $metaKey = $data['dataMetaKey'];
         $metaValue = $data['dataMetaValue'];
-        $metaKey = ucfirst($metaKey);
-
-        if($metaKey!=''&&$metaValue!=''){
-
-            $set = 'set'.$metaKey;
-
-            $entity->$set($metaValue);
-        }
+        $entity->setProductWiseQty(json_encode(array_filter($metaValue, 'strlen')));
 
         $em = $this->getDoctrine()->getManager();
         $em->persist($entity);
         $em->flush();
-        $get = 'get'.$metaKey;
-
-        $value = $entity->$get($metaValue);
 
         return new JsonResponse(
             array(
                 'success'=>'Success',
-                'value'=>$value,
                 'status'=>200,
             )
         );

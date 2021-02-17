@@ -54,7 +54,17 @@ class CompanyWiseFeedSaleRepository extends BaseRepository
             $returnArray=[];
             /* @var CompanyWiseFeedSale $value*/
             foreach ($query->getQuery()->getResult() as $value){
-                $returnArray[$value->getYear()][$value->getMonthName()][$value->getFeedCompany()->getId()]=$value;
+                $decodeValue = json_decode($value->getProductWiseQty(),true);
+                $arraySum = array_sum($decodeValue);
+                $returnArray['items'][$value->getYear()][$value->getMonthName()][$value->getFeedCompany()->getId()]=$value;
+                if (isset($returnArray['grand_total'][$value->getYear()][$value->getMonthName()]))
+                {
+                    $returnArray['grand_total'][$value->getYear()][$value->getMonthName()] += $arraySum;
+                }
+                else
+                {
+                    $returnArray['grand_total'][$value->getYear()][$value->getMonthName()] = $arraySum;
+                }
             }
 //            dd($returnArray);
 

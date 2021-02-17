@@ -1,5 +1,6 @@
-// companyWiseFeedSaleReportCalculation();
-// lab_service_section
+
+companyWiseFeedSaleCalculation();
+
 $('.companyWiseFeedSale_section').on('keypress','.companyWiseFeedSale_body_section input[type=number]',function (e) {
     if (e.which === 13) {
         e.preventDefault();
@@ -9,67 +10,95 @@ $('.companyWiseFeedSale_section').on('keypress','.companyWiseFeedSale_body_secti
             index = 0;
         }
         $canfocus.eq(index).focus().select();
-        // companyWiseFeedSaleDataInsertUsingAjax($(this))
     }
-    companyWiseFeedSaleReportCalculation($(this));
+    companyWiseFeedSaleDataInsertUsingAjax($(this));
 });
-$('.lab_service_section').on('blur','.active .lab_service_table input[type=number]',function (e) {
+$('.companyWiseFeedSale_section').on('blur','.companyWiseFeedSale_body_section input[type=number]',function (e) {
     companyWiseFeedSaleDataInsertUsingAjax($(this))
 });
 
-$('.lab_tab').on('click',function () {
-    companyWiseFeedSaleReportCalculation()
-});
-
-
 
 function companyWiseFeedSaleDataInsertUsingAjax(element) {
+
+    var result = [];
+    var total=0;
+    var parentElement = $(element).closest('tr');
+    parentElement.find('.productAndQty').each (function (index, td) {
+            var value =$(td).val();
+            var productId =$(td).attr('data-product-id');
+            if (!value) value = 0;
+            total += parseFloat(value);
+            result[productId] = value;
+        });
+
     var entityId=element.attr('data-entity-id');
-    var dataMetaKey=element.attr('data-meta-key');
-    var dataMetaValue=element.val();
+    var dataMetaValue=result;
 
     if(entityId===''){
         return false;
     }
 
     $.ajax({
-        url    : Routing.generate('lab_service_edit',{'id':entityId}),
+        url    : Routing.generate('company_wise_feed_sale_edit',{'id':entityId}),
         type   : 'post',
         data   : {
-            'dataMetaKey':dataMetaKey,
             'dataMetaValue':dataMetaValue
         },
         dataType : 'json',
         success: function(response){
-            // parentElement.find('.eggProduction').text(response.eggProduction);
-            element.val(response.value);
-            companyWiseFeedSaleReportCalculation();
+            parentElement.find('.line_total').text(total);
+
+            companyWiseFeedSaleCalculation();
         }
     });
 
 }
 
-function companyWiseFeedSaleReportCalculation(element) {
 
-    var result = [];
-        var total=0;
-        var entityId='';
+function companyWiseFeedSaleCalculation() {
 
-        var parentElement = $(element).closest('tr');
-    parentElement.find('.productAndQty').each (function (index, td) {
-            var value =$(td).val();
-            var entityId = $(td).attr('data-entity-id');
-            var productId =$(td).attr('data-product-id');
-            if (!value) value = 0;
-            total += parseFloat(value);
-            // if(!result[index]) result[index] = 0;
-            // result[index] += parseInt($(val).text());
-            result[productId] = value;
+
+    $('.companyWiseFeedSale_table').each(function(index, table) {
+        var result = [];
+        $(table).find('tbody > tr').each(function(index, tr) {
+            var total=0;
+            $(tr).find('.productAndQty').each (function (index, td) {
+                var productId =$(td).attr('data-product-id');
+                var value =$(td).val();
+                if (!value) value = 0;
+                if(!result[productId]) result[productId] = 0;
+                result[productId] += parseFloat(value);
+            });
+
         });
-    parentElement.find('.line_total').text(total);
-console.log(entityId);
-// console.log(total);
+
+        $(table).find('tfoot > tr').each(function(index, tr) {
+
+            var grandTotal = 0;
+
+            $(tr).find('.col_total').each (function (index, td) {
+                var productId =$(td).attr('data-product-id');
+                grandTotal+=result[productId];
+                $(tr).find('.col_total_'+productId).text(parseFloat(result[productId]).toFixed(2));
+            });
+
+            $(tr).find('.grand_total').text(parseFloat(grandTotal).toFixed(2));
+        });
+
+        $(table).find('tbody > tr').each(function(index, tr) {
+            var total= $(table).find('tfoot > tr').find('.grand_total').text();
+            $(tr).find('.line_total').each (function (index, td) {
+                var value =$(td).text();
+                if (!value) value = 0;
+                value = parseFloat(value).toFixed(4);
+                total = parseFloat(total).toFixed(4);
+                var calculationValue = (value*100)/total;
+
+                $(tr).find('.lineMarketShare').text(parseFloat(calculationValue).toFixed(2));
+            });
+
+        });
+    });
 
 
-    console.log(result);
 }
