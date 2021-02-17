@@ -111,7 +111,12 @@ class CompanyWiseFeedSaleController extends AbstractController
     {
         $data = $request->request->all();
         $metaValue = $data['dataMetaValue'];
-        $entity->setProductWiseQty(json_encode(array_filter($metaValue, 'strlen')));
+
+        $jsonValue = json_encode(array_filter($metaValue, 'strlen'));
+
+        $entity->setProductWiseQty($jsonValue);
+
+        $entity->setTotalQty(array_sum(array_filter($metaValue, 'strlen')));
 
         $em = $this->getDoctrine()->getManager();
         $em->persist($entity);
