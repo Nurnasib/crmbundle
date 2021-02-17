@@ -1,5 +1,5 @@
-{% if cattlePerformance.crmCattlePerformanceDetails is not empty %}
-    {% for index, detail in cattlePerformance.crmCattlePerformanceDetails|sort|reverse %}
+{% if crmCattlePerformanceDetails is not empty %}
+    {% for index, detail in crmCattlePerformanceDetails %}
         <tr>
             <td class="detail_id_{{ detail.id }}">{{ index+1 }}</td>
             <td>{{ detail.breedType.name|default('') }}</td>

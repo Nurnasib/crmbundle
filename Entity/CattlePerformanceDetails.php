@@ -27,13 +27,24 @@ class CattlePerformanceDetails
     private $id;
 
     /**
-     * @var CattlePerformance
-     * @ORM\ManyToOne(targetEntity="Terminalbd\CrmBundle\Entity\CattlePerformance", inversedBy="crmCattlePerformanceDetails")
-     * @ORM\JoinColumn(name="crm_cattle_performance_id", referencedColumnName="id")
-     * @ORM\JoinColumn(onDelete="CASCADE")
+     * @var User
+     * @ORM\ManyToOne(targetEntity="App\Entity\User" , inversedBy="crmCattlePerformance")
+     */
+    private $employee;
+
+    /**
+     * @var Setting
+     * @ORM\ManyToOne(targetEntity="Setting", inversedBy="crmCattlePerformance")
+     * @ORM\JoinColumn(name="report_id", referencedColumnName="id", onDelete="SET NULL", nullable=true)
+     */
+    private $report;
+
+    /**
+     * @var \DateTime
+     * @ORM\Column(name="repoting_month", type="date", nullable=true)
      */
 
-    private $crmCattlePerformance;
+    private $reportingMonth;
 
     /**
      * @var Agent
@@ -245,19 +256,51 @@ class CattlePerformanceDetails
     }
 
     /**
-     * @return CattlePerformance
+     * @return User
      */
-    public function getCrmCattlePerformance()
+    public function getEmployee()
     {
-        return $this->crmCattlePerformance;
+        return $this->employee;
     }
 
     /**
-     * @param CattlePerformance $crmCattlePerformance
+     * @param User $employee
      */
-    public function setCrmCattlePerformance($crmCattlePerformance)
+    public function setEmployee(User $employee): void
     {
-        $this->crmCattlePerformance = $crmCattlePerformance;
+        $this->employee = $employee;
+    }
+
+    /**
+     * @return Setting
+     */
+    public function getReport()
+    {
+        return $this->report;
+    }
+
+    /**
+     * @param Setting $report
+     */
+    public function setReport(Setting $report): void
+    {
+        $this->report = $report;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getReportingMonth()
+    {
+        return $this->reportingMonth;
+    }
+
+    /**
+     * @param \DateTime $reportingMonth
+     */
+    public function setReportingMonth(\DateTime $reportingMonth): void
+    {
+        $this->reportingMonth = $reportingMonth;
     }
 
     /**

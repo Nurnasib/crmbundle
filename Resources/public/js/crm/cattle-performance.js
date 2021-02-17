@@ -25,9 +25,9 @@ $(document).on('keypress','.cattle_performance_report input[type=text], .cattle_
 });
 
 function fatteningDataInsertUsingAjax(element) {
-    var cattlePerformance_id = $('.cattlePerformance_id').val();
+    var cattle_performance_report_id = $('.cattle_performance_report_id').val();
+    var customerId=$('.customer_id').val();
     var parentElement = element.closest('tr');
-    var customerId=parentElement.find('.customerId').val();
     var breed_type=parentElement.find('.breed_type').val();
     var feed_type=parentElement.find('.feed_type').val();
     var visiting_date=parentElement.find('.visiting_date').val();
@@ -43,12 +43,12 @@ function fatteningDataInsertUsingAjax(element) {
     var name_of_ready_feed=parentElement.find('.name_of_ready_feed').val();
     var remarks=parentElement.find('.remarks').val();
 
-    if(cattlePerformance_id===''){
+    if(cattle_performance_report_id===''){
         return false;
     }
 
     $.ajax({
-        url    : Routing.generate('crm_fattening_performance_detail_report_add',{'id':cattlePerformance_id}),
+        url    : Routing.generate('crm_fattening_performance_detail_report_add',{'id':cattle_performance_report_id}),
         type   : 'post',
         data   : {
             'customerId':customerId,
@@ -70,20 +70,19 @@ function fatteningDataInsertUsingAjax(element) {
         success: function(response){
             // console.log(response.data);
             if(response.status===200){
-                var refreshUrl = Routing.generate('crm_cattle_performance_detail_refresh',{'id':cattlePerformance_id});
+                var refreshUrl = Routing.generate('crm_cattle_performance_detail_refresh',{'id':cattle_performance_report_id});
                 $('body').find("tbody.cattlePerformanceDetailsSection").load(refreshUrl);
-                parentElement.find(':input').not('.customerId').val('');
+                parentElement.find(':input').val('');
                 parentElement.find('select').val('');
-                parentElement.find('.customerId').val(customerId);
             }
         }
     });
 }
 
 function dairyDataInsertUsingAjax(element) {
-    var cattlePerformance_id = $('.cattlePerformance_id').val();
+    var cattle_performance_report_id = $('.cattle_performance_report_id').val();
+    var customerId=$('.customer_id').val();
     var parentElement = element.closest('tr');
-    var customerId=parentElement.find('.customerId').val();
     var breed_type=parentElement.find('.breed_type').val();
     var feed_type=parentElement.find('.feed_type').val();
     var visiting_date=parentElement.find('.visiting_date').val();
@@ -102,12 +101,12 @@ function dairyDataInsertUsingAjax(element) {
     var name_of_ready_feed=parentElement.find('.name_of_ready_feed').val();
     var remarks=parentElement.find('.remarks').val();
 
-    if(cattlePerformance_id===''){
+    if(cattle_performance_report_id===''){
         return false;
     }
 
     $.ajax({
-        url    : Routing.generate('crm_dairy_performance_detail_report_add',{'id':cattlePerformance_id}),
+        url    : Routing.generate('crm_dairy_performance_detail_report_add',{'id':cattle_performance_report_id}),
         type   : 'post',
         data   : {
             'customerId':customerId,
@@ -130,9 +129,9 @@ function dairyDataInsertUsingAjax(element) {
         dataType : 'json',
         success: function(response){
             if(response.status===200){
-                var refreshUrl = Routing.generate('crm_cattle_performance_detail_refresh',{'id':cattlePerformance_id});
+                var refreshUrl = Routing.generate('crm_cattle_performance_detail_refresh',{'id':cattle_performance_report_id});
                 $('body').find("tbody.cattlePerformanceDetailsSection").load(refreshUrl);
-                parentElement.find(':input').not('.customerId').val('');
+                parentElement.find(':input').val('');
                 parentElement.find('select').val('');
                 // parentElement.find('.customerId').val(customerId);
             }

@@ -37,7 +37,7 @@ class CattlePerformanceRepository extends EntityRepository
                 ->andWhere('cp.employee = :employee')
                 ->setParameters(array('startDate'=>$startDate, 'endDate'=>$endDate, 'report'=>$report, 'employee'=>$employee));
 
-            return $query->getQuery()->getOneOrNullResult();
+            return $query->getQuery()->getResult();
         }
         return array();
     }

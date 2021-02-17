@@ -1,6 +1,6 @@
 <div class="portlet box ">
     <div class="portlet-title">
-        <div class="caption">{{cattlePerformance.report.name}}</div>
+        <div class="caption">{{report.name}}</div>
     </div>
 {#{{ dump(report) }}#}
 
@@ -13,21 +13,22 @@
                     <div class="col-md-12">
                         <h4>NOURISH POULTRY & HATCHERY LTD</h4>
                         <h5>Uttara, Dhaka.</h5>
-                        <h4>{{cattlePerformance.report.name}}</h4>
-                        <input type="hidden" class="cattlePerformance_id" value="{{ cattlePerformance.id }}">
+                        <h4>{{report.name}}</h4>
+                        <input type="hidden" class="cattle_performance_report_id" value="{{ report.id }}">
+                        <input type="hidden" class="customer_id" value="{{ customer.id }}">
                     </div>
 
                     <div class="col-md-4">
-                        <p style="color: #000000">{{ 'Name of CSO/Sr.CSO: Zashim'|trans }}: {{ cattlePerformance.employee.name }}</p>
+                        <p style="color: #000000">{{ 'Name of CSO/Sr.CSO'|trans }}: {{ employee.name }}</p>
                     </div>
                     <div class="col-md-4">
                     </div>
                     <div class="col-md-4">
-                        <p style="color: #000000">{{ 'Reporting Date'|trans }}: {{ cattlePerformance.reportingMonth?cattlePerformance.reportingMonth|date("F, Y"):'' }}</p>
+                        <p style="color: #000000">{{ 'Reporting Date'|trans }}: {{ "now"|date("F, Y") }}</p>
                     </div>
                 </div>
                 <div class="card-body-inner" style="padding: 0 5px; overflow-x: scroll">
-                    <div class="">
+                    <div class="cattle_performance_report_section">
 
                         <table class="table table-striped table-bordered table-hover cattle_performance_report" id="datatable">
                             <thead class="thead-dark">
@@ -70,7 +71,6 @@
                             </tr>
                             <tr>
                                 <td colspan="2">
-                                    <input type="hidden" class="customerId" value="{{ customer }}">
                                     <select name="breed_type" class="form-control breed_type">
                                         <option value="">Breed Type</option>
                                         {% if breedTypes is not empty %}

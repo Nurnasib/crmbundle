@@ -49,54 +49,28 @@ class CattlePerformanceController extends AbstractController
      */
     public function newModal(Request $request, CrmCustomer $crmCustomer, Setting $report): Response
     {
-
-        $entity = new CattlePerformance();
-        $existReport = $this->getDoctrine()->getRepository(CattlePerformance::class)->getCattlePerformanceReportByReportingDateAndFeedType($report, $this->getUser());
-        if ($existReport){
-
-            return $this->redirectToRoute('cattle_performance_details_modal', ['id'=>$existReport->getId(), 'customer'=>$crmCustomer->getId()]);
-        }
-
-            $reportingDate = date('Y-m-d',strtotime('now'));
-
-            $entity->setReportingMonth(new \DateTime($reportingDate));
-//            $entity->setCustomer($crmCustomer);
-            $entity->setReport($report);
-            $entity->setEmployee($this->getUser());
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($entity);
-            $em->flush();
-            $this->addFlash('success', 'post.created_successfully');
-
-        return $this->redirectToRoute('cattle_performance_details_modal', ['id'=>$entity->getId(), 'customer'=>$crmCustomer->getId()]);
-
-    }
-
-    /**
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
-     * @Route("/report/{id}/modal", methods={"GET", "POST"}, name="cattle_performance_details_modal", options={"expose"=true})
-     */
-    public function cattlePerformanceDetailsModal( Request $request, CattlePerformance $cattlePerformance): Response
-    {
-
-        $breedTypes = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('status'=>1,'settingType'=>'BREED_TYPE','parent'=>$cattlePerformance->getReport()->getParent()));
-        $feedTypes = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('status'=>1,'settingType'=>'FEED_TYPE','parent'=>$cattlePerformance->getReport()->getParent()));
-
-        if($cattlePerformance->getReport()->getSlug()=='dairy-performance-report'){
+        $breedTypes = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('status'=>1,'settingType'=>'BREED_TYPE','parent'=>$report->getParent()));
+        $feedTypes = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('status'=>1,'settingType'=>'FEED_TYPE','parent'=>$report->getParent()));
+        $allCattlePerformances = $this->getDoctrine()->getRepository(CattlePerformanceDetails::class)->getCattlePerformanceReportByReportingDateAndFeedType($report, $this->getUser());
+        if($report->getSlug()=='dairy-performance-report'){
 
             return $this->render('@TerminalbdCrm/cattlePerformance/dairy-performance-details-report-modal.html.twig', [
-                'cattlePerformance' => $cattlePerformance,
-                'customer' => $request->query->get('customer'),
+                'report' => $report,
+                'employee' => $this->getUser(),
+                'customer' => $crmCustomer,
                 'breedTypes' => $breedTypes,
                 'feedTypes' => $feedTypes,
+                'crmCattlePerformanceDetails' => $allCattlePerformances,
             ]);
         }
 
         return $this->render('@TerminalbdCrm/cattlePerformance/fattening-performance-details-report-modal.html.twig', [
-            'cattlePerformance' => $cattlePerformance,
-            'customer' => $request->query->get('customer'),
+            'report' => $report,
+            'employee' => $this->getUser(),
+            'customer' => $crmCustomer,
             'breedTypes' => $breedTypes,
             'feedTypes' => $feedTypes,
+            'crmCattlePerformanceDetails' => $allCattlePerformances,
         ]);
     }
 
@@ -107,7 +81,7 @@ class CattlePerformanceController extends AbstractController
      * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      */
 
-    public function addFatteningPerformanceDetailsReport(Request $request, CattlePerformance $cattlePerformance): Response
+    public function addFatteningPerformanceDetailsReport(Request $request, Setting $report): Response
     {
         $data = $request->request->all();
 
@@ -126,7 +100,12 @@ class CattlePerformanceController extends AbstractController
 
         $entity = new CattlePerformanceDetails();
 
-        $entity->setCrmCattlePerformance($cattlePerformance);
+        $entity->setEmployee($this->getUser());
+        $entity->setReport($report);
+
+        $reportingDate = date('Y-m-d',strtotime('now'));
+        $entity->setReportingMonth(new \DateTime($reportingDate));
+
         $entity->setCustomer($customer);
         $entity->setAgent($customer?$customer->getAgent():null);
 
@@ -177,7 +156,7 @@ class CattlePerformanceController extends AbstractController
      * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      */
 
-    public function addDairyPerformanceDetailsReport(Request $request, CattlePerformance $cattlePerformance): Response
+    public function addDairyPerformanceDetailsReport(Request $request, Setting $report): Response
     {
         $data = $request->request->all();
 
@@ -195,7 +174,12 @@ class CattlePerformanceController extends AbstractController
         }
 
         $entity = new CattlePerformanceDetails();
-        $entity->setCrmCattlePerformance($cattlePerformance);
+        $entity->setEmployee($this->getUser());
+        $entity->setReport($report);
+
+        $reportingDate = date('Y-m-d',strtotime('now'));
+        $entity->setReportingMonth(new \DateTime($reportingDate));
+
         $entity->setCustomer($customer);
         $entity->setAgent($customer?$customer->getAgent():null);
 
@@ -244,19 +228,21 @@ class CattlePerformanceController extends AbstractController
     }
 
     /**
-     * @param CattlePerformance cattlePerformance
+     * @param Setting $report
      * @Route("/detail/{id}/refresh", methods={"GET"}, name="crm_cattle_performance_detail_refresh", options={"expose"=true})
      * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      */
-    public function cattleLifeCycleReportRefresh(CattlePerformance $cattlePerformance): Response
+    public function cattleLifeCycleReportRefresh(Setting $report): Response
     {
-        if($cattlePerformance->getReport()->getSlug()=='dairy-performance-report') {
+        $allCattlePerformances = $this->getDoctrine()->getRepository(CattlePerformanceDetails::class)->getCattlePerformanceReportByReportingDateAndFeedType($report, $this->getUser());
+
+        if($report->getSlug()=='dairy-performance-report') {
             return $this->render('@TerminalbdCrm/cattlePerformance/partial/dairy-performance.html.twig', [
-                'cattlePerformance' => $cattlePerformance,
+                'crmCattlePerformanceDetails' => $allCattlePerformances,
             ]);
         }
         return $this->render('@TerminalbdCrm/cattlePerformance/partial/fattening-performance.html.twig', [
-            'cattlePerformance' => $cattlePerformance,
+            'crmCattlePerformanceDetails' => $allCattlePerformances,
         ]);
     }
     /**
