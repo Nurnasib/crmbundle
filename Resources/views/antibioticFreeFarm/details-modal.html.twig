@@ -61,7 +61,7 @@
                     <td class="text-left">{{ 'Total Broiler Wt (Kg)'|trans }}</td>
                     <td class="text-left">{{ antibioticFreeFarm.totalBroilerWeightKg|default('') }}</td>
                     <td class="text-left">{{ 'FCR'|trans }}</td>
-                    <td class="fcrCalculationValue text-left">{{ antibioticFreeFarm.fcr|default('') }}</td>
+                    <td class="fcrCalculationValue text-left">{{ antibioticFreeFarm.fcr|number_format(2,'.','') }}</td>
                 </tr>
                 </tbody>
             </table>

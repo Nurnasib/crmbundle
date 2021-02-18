@@ -70,6 +70,8 @@ function layerPerformanceDetailDataInsertUsingAjax(element) {
                 var refreshUrl = Routing.generate('layer_performance_details_refresh',{'id':report_id});
                 $(".layer_performance_details tbody").load(refreshUrl);
             }
+            parentElement.find(':input').val('');
+            parentElement.find('select').val('');
         }
     });
 }

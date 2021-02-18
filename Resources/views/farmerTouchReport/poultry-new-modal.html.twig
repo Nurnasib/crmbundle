@@ -21,13 +21,13 @@
                         <p style="color: #000000">{{ 'Name of CSO'|trans }}: {{ employee.name }}</p>
                     </div>
                     <div class="col-md-3">
-                        <p style="color: #000000">{{ 'Designation'|trans }}: {{ employee.address }}</p>
+                        <p style="color: #000000">{{ 'Designation'|trans }}: {{ employee.designation.name|default('') }}</p>
                     </div>
                     <div class="col-md-3">
                         <p style="color: #000000">{{ 'ID'|trans }}: </p>
                     </div>
                     <div class="col-md-3">
-                        <p style="color: #000000">{{ 'Region'|trans }}: </p>
+                        <p style="color: #000000">{{ 'Region'|trans }}: {{ employee.regional.name|default('') }}</p>
                     </div>
                 </div>
                 <div class="card-body card-body-inner" style="padding: 0 5px; overflow-x: scroll">
