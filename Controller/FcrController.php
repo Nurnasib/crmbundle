@@ -68,7 +68,7 @@ class FcrController extends AbstractController
                 $sonaliStandard= $this->getDoctrine()->getRepository(SonaliStandard::class)->findOneBy(array('age'=>$entity->getAgeDay()));
                 if($sonaliStandard){
                     $entity->setWeightStandard($sonaliStandard->getTargetBodyWeight());
-                    $entity->setFeedConsumptionStandard($sonaliStandard->getFeedIntakePerDay());
+                    $entity->setFeedConsumptionStandard($sonaliStandard->getCumulativeFeedIntake());
                 }
             }
             if(in_array($report->getSlug(),['fcr-before-sale-boiler','fcr-after-sale-boiler'])){
@@ -142,7 +142,7 @@ class FcrController extends AbstractController
                 $sonaliStandard= $this->getDoctrine()->getRepository(SonaliStandard::class)->findOneBy(array('age'=>$entity->getAgeDay()));
                 if($sonaliStandard){
                     $entity->setWeightStandard($sonaliStandard->getTargetBodyWeight());
-                    $entity->setFeedConsumptionStandard($sonaliStandard->getFeedIntakePerDay());
+                    $entity->setFeedConsumptionStandard($sonaliStandard->getCumulativeFeedIntake());
                 }
             }
             if(in_array($report->getSlug(),['fcr-before-sale-boiler','fcr-after-sale-boiler'])){
@@ -226,7 +226,7 @@ class FcrController extends AbstractController
                 $returnData = array(
                     'status'=>200,
                     'weightStandard'=> $sonaliStandard->getTargetBodyWeight(),
-                    'feedConsumptionStandard'=> $sonaliStandard->getFeedIntakePerDay(),
+                    'feedConsumptionStandard'=> $sonaliStandard->getCumulativeFeedIntake(),
 
                 );
             }else{

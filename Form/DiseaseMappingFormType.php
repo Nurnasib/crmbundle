@@ -122,7 +122,7 @@ class DiseaseMappingFormType extends AbstractType
                 },
             ))
             ->add('flockSizeOrCapacity', NumberType::class, [
-                'attr' => ['min'=>0, 'autofocus' => true],
+                'attr' => ['min'=>0,'autofocus' => true],
                 'label' => 'label.flockSizeOrCapacity',
                 'required'=>false
             ])

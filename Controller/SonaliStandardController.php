@@ -84,9 +84,9 @@ class SonaliStandardController extends AbstractController
             $this->getDoctrine()->getManager()->flush();
             $this->addFlash('success', 'post.updated_successfully');
             if ($form->get('SaveAndCreate')->isClicked()) {
-                return $this->redirectToRoute('broiler_standard', ['id' => $entity->getId()]);
+                return $this->redirectToRoute('sonali_standard');
             }
-            return $this->redirectToRoute('broiler_standard');
+            return $this->redirectToRoute('sonali_standard');
         }
         return $this->render('@TerminalbdCrm/sonaliStandard/new.html.twig', [
             'entity' => $entity,

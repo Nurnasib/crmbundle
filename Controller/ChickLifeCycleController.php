@@ -179,7 +179,7 @@ class ChickLifeCycleController extends AbstractController
             $sonaliStandard= $this->getDoctrine()->getRepository(SonaliStandard::class)->findOneBy(array('age'=>$entity->getAgeDays()));
             if($sonaliStandard){
                 $entity->setWeightStandard($sonaliStandard->getTargetBodyWeight());
-                $entity->setFeedStandard($sonaliStandard->getFeedIntakePerDay());
+                $entity->setFeedStandard($sonaliStandard->getCumulativeFeedIntake());
             }
         }
         if($entity->getCrmChickLifeCycle()->getReport()->getSlug()=='boiler-life-cycle'){

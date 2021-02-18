@@ -47,14 +47,14 @@
                         <tbody>
                         {% set cumulative =0 %}
                         {% for entity in entities %}
-                            {% set cumulative =cumulative +  entity.feedIntakePerDay  %}
+                            {% set cumulative =entity.cumulativeFeedIntake  %}
                             {% set fcr =cumulative / entity.targetBodyWeight %}
 
                         <tr>
                             <td>{{ loop.index }}</td>
                             <td>{{ entity.age }}</td>
                             <td>{{ entity.feedIntakePerDay }}</td>
-                            <td>{{ cumulative }}</td>
+                            <td>{{ cumulative|number_format(0,'.','') }}</td>
                             <td>{{ entity.targetBodyWeight }}</td>
                             <td>{{ fcr | round(2,'ceil') }}</td>
 

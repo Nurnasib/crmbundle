@@ -44,6 +44,12 @@ class SonaliStandard
     private $feedIntakePerDay;
 
     /**
+     * @var float
+     * @ORM\Column(type="float")
+     */
+    private $cumulativeFeedIntake=0;
+
+    /**
      * @var string
      * @ORM\Column(name="target_body_weight", type="string")
      */
@@ -115,11 +121,20 @@ class SonaliStandard
         $this->targetBodyWeight = $targetBodyWeight;
     }
 
+    /**
+     * @return float
+     */
+    public function getCumulativeFeedIntake()
+    {
+        return $this->cumulativeFeedIntake;
+    }
 
-
-
-
-
-
+    /**
+     * @param float $cumulativeFeedIntake
+     */
+    public function setCumulativeFeedIntake(float $cumulativeFeedIntake): void
+    {
+        $this->cumulativeFeedIntake = $cumulativeFeedIntake;
+    }
 
 }
