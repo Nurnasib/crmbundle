@@ -16,7 +16,9 @@
                         <h4>New Farmer Touch {{report.parent.parent.name}}</h4>
                         <input type="hidden" class="farmer_touch_report_id" value="{{ report.id }}">
                     </div>
-
+                    <div class="col-md-3">
+                        <p style="color: #000000">{{ 'Name of CSO'|trans }}: {{ employee.name }}</p>
+                    </div>
                     <div class="col-md-3">
                         <p style="color: #000000">{{ 'Designation'|trans }}: {{ employee.designation.name|default('') }}</p>
                     </div>
