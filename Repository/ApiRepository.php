@@ -12,6 +12,7 @@
 namespace Terminalbd\CrmBundle\Repository;
 
 //use Doctrine\ORM\EntityRepository;
+use App\Entity\Admin\Location;
 use App\Entity\Core\Agent;
 use App\Entity\User;
 use Doctrine\ORM\Query\Expr\Join;
@@ -40,23 +41,34 @@ use Terminalbd\CrmBundle\Repository\BaseRepository;
 class ApiRepository extends BaseRepository
 {
 
-    /**
-     * Agent
-     */
-    public function apiAgent( $terminal, $data = array() ): array
+    protected function handleLocationSearchBetween($qb,$data)
     {
+
+        if($data){
+            $locations = explode(',',$data);
+            $qb->where('e.upozila IN (:upozila)')->setParameter('upozila',$locations);
+        }
+
+    }
+
+    public function apiAgent( $terminal, $locations): array
+    {
+
         $em = $this->_em;
         $qb = $em->createQueryBuilder();
         $qb->from(Agent::class,'e');
         $qb->Join('e.agentGroup','ag');
         $qb->Join('e.upozila','up');
-        $qb->Join('e.district','dis');
+        $qb->leftJoin('up.parent','dis');
         $qb->select('e.id as id','e.name as name','e.mobile as mobile','e.email as email','e.name as companyName','e.agentId as agentId');
         $qb->addSelect('ag.name as agentGroup');
-        $qb->addSelect('up.name as upozila');
-        $qb->addSelect('dis.name as district');
-
-        //$qb->where('e.terminal = :terminal')->setParameter('terminal',$terminal);
+        $qb->addSelect('up.name as upozila','up.id as upozilaId');
+        $qb->addSelect('dis.name as district','dis.id as districtId');
+        //   $qb->where('e.terminal = :terminal')->setParameter('terminal',$terminal);
+        if($locations){
+            $locations = explode(',',$locations);
+            $qb->where('e.upozila IN (:upozila)')->setParameter('upozila',$locations);
+        }
         $qb->orderBy('e.name', 'ASC');
         $result = $qb->getQuery()->getArrayResult();
         $data = array();
@@ -68,10 +80,54 @@ class ApiRepository extends BaseRepository
             $data[$key]['email'] = (string)$row['email'];
             $data[$key]['agentGroup'] = (string)$row['agentGroup'];
             $data[$key]['upozila'] = (string)$row['upozila'];
+            $data[$key]['upozilaId'] = (string)$row['upozilaId'];
             $data[$key]['district'] = (string)$row['district'];
+            $data[$key]['districtId'] = (string)$row['districtId'];
         }
         return $data;
     }
+
+    /**
+     *  Customer
+     */
+    public function customerApi( $terminal,$locations): array
+    {
+        $em = $this->_em;
+        $qb = $em->createQueryBuilder();
+        $qb->from(CrmCustomer::class,'e');
+        $qb->Join('e.customerGroup','cg');
+        $qb->leftJoin('e.agent','ca');
+        $qb->Join('e.location','l');
+        $qb->Join('l.parent','dis');
+        $qb->select('e.id as id','e.name as name','e.mobile as mobile','e.address as address');
+        $qb->addSelect('cg.name as customerGroup');
+        $qb->addSelect('ca.id as agentId','ca.name as agentName');
+        $qb->addSelect('l.name as upozila','l.id as upozilaId');
+        $qb->addSelect('dis.name as district','dis.id as districtId');
+        if($locations){
+            $locations = explode(',',$locations);
+            $qb->where('e.location IN (:upozila)')->setParameter('upozila',$locations);
+        }
+        $qb->orderBy('e.id', 'ASC');
+        $result = $qb->getQuery()->getArrayResult();
+        $data = array();
+        foreach($result as $key => $row) {
+            $data[$key]['id'] = (int)$row['id'];
+            $data[$key]['name'] = (string)$row['name'];
+            $data[$key]['mobile'] = (int)$row['mobile'];
+            $data[$key]['address'] = (string)$row['address'];
+            $data[$key]['customerGroup'] = (string)$row['customerGroup'];
+            $data[$key]['agent'] = (string)$row['agentName'];
+            $data[$key]['agentId'] = (string)$row['agentId'];
+            $data[$key]['upozila'] = (string)$row['upozila'];
+            $data[$key]['upozilaId'] = (string)$row['upozilaId'];
+            $data[$key]['district'] = (string)$row['district'];
+            $data[$key]['districtId'] = (string)$row['districtId'];
+
+        }
+        return $data;
+    }
+
 
     /**
      * BROILER STANDARD
@@ -202,33 +258,6 @@ class ApiRepository extends BaseRepository
         return $data;
     }
 
-    /**
-     *  Customer
-     */
-    public function customerApi( $terminal, $data = array() ): array
-    {
-        $em = $this->_em;
-        $qb = $em->createQueryBuilder();
-        $qb->from(CrmCustomer::class,'c');
-        $qb->Join('c.customerGroup','cg');
-        $qb->leftJoin('c.agent','ca');
-        $qb->Join('c.location','cl');
-        $qb->select('c.id as id','c.name as name','c.mobile as mobile','c.address as address','cg.name as customerGroup','ca.name as agentName','cl.name as location');
-        $qb->orderBy('c.id', 'ASC');
-        $result = $qb->getQuery()->getArrayResult();
-        $data = array();
-        foreach($result as $key => $row) {
-            $data[$key]['id'] = (int)$row['id'];
-            $data[$key]['name'] = (string)$row['name'];
-            $data[$key]['mobile'] = (int)$row['mobile'];
-            $data[$key]['address'] = (string)$row['address'];
-            $data[$key]['customerGroup'] = (string)$row['customerGroup'];
-            $data[$key]['agent'] = (string)$row['agentName'];
-            $data[$key]['location'] = (string)$row['location'];
-
-        }
-        return $data;
-    }
 
     /**
      *  EMPLOYEE
