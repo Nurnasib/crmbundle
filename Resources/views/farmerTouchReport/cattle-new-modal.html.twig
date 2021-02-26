@@ -1,0 +1,109 @@
+<div class="portlet box ">
+    <div class="portlet-title">
+        <div class="caption">{{report.name}} </div>
+    </div>
+    {#{{ dump(report) }}#}
+
+    <div class="portlet-body form">
+        {#{{ form_start(form, {'attr': {'action': path('chick_new_modal',{'id':crmCustomer.id,'report':report.id }),'class': 'form-horizontal right','id':'chick_life_cycle_form'}}) }}#}
+        <div class="">
+            <div class="form-inner-no-space">
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <h4>NOURISH POULTRY & HATCHERY LTD</h4>
+                        <h5>Uttara, Dhaka.</h5>
+                        <h4>New Farmer Touch {{report.parent.parent.name}}</h4>
+                        <input type="hidden" class="farmer_touch_report_id" value="{{ report.id }}">
+                    </div>
+                    <div class="col-md-3">
+                        <p style="color: #000000">{{ 'Name of CSO'|trans }}: {{ employee.name }}</p>
+                    </div>
+                    <div class="col-md-3">
+                        <p style="color: #000000">{{ 'Designation'|trans }}: {{ employee.designation.name|default('') }}</p>
+                    </div>
+                    <div class="col-md-3">
+                        <p style="color: #000000">{{ 'ID'|trans }}: </p>
+                    </div>
+                    <div class="col-md-3">
+                        <p style="color: #000000">{{ 'Region'|trans }}: {{ employee.regional.name|default('') }}</p>
+                    </div>
+                </div>
+                <div class="card-body card-body-inner" style="padding: 0 5px; overflow-x: scroll">
+                    <div class="fishFarmerTouchSection">
+                        {{ form_start(form, {'attr': {'method':'post', 'method':'post','action': path('farmer_touch_new_modal',{'id':crmCustomer.id, 'report':report.id }),'class': 'form-horizontal right','id':'fish_farmer_touch_report_form'}}) }}
+                        {#<form id="chick_life_cycle_form" method="post" action="{{ path('cattle_life_cycle_details_modal',{id:cattleLifeCycle.id}) }}">#}
+                        <table class="table table-striped table-bordered table-hover fish_farmer_touch" id="datatable">
+                            <thead class="thead-dark">
+                            <tr>
+                                <th scope="col" rowspan="2">S/N</th>
+                                {#<th scope="col" rowspan="2">Bird Type</th>#}
+                                <th style="width: 120px" scope="col" rowspan="2">Name of Farmers</th>
+
+                                <th scope="col" colspan="{{ fishSpecies|length }}">{{ 'Capacity'|trans }}</th>
+                                <th scope="col" colspan="3">{{ 'Feed'|trans }}</th>
+
+                                <th scope="col" rowspan="2">Remarks</th>
+                                <th scope="col" rowspan="2"></th>
+
+                            </tr>
+                            <tr>
+                                {% if fishSpecies is not empty %}
+                                    {% for fishSpecie in fishSpecies %}
+                                    <th scope="col">
+                                        {{ fishSpecie.name }}
+                                    </th>
+                                    {% endfor %}
+                                {% endif %}
+
+                                <th>Nourish</th>
+                                <th>Others</th>
+                                <th>Conventional</th>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    {{ crmCustomer.name }}
+                                    {#<div class="date_section">
+                                        {{ form_widget(form.visiting_date) }}
+                                    </div>#}
+                                </td>
+                                {% if fishSpecies is not empty %}
+                                    {% for fishSpecie in fishSpecies %}
+                                        <td>
+                                            <input type="number" min="0" name="fish_specie[{{ fishSpecie.id }}]" class="form-control fish_specie_{{ fishSpecie.id }}">
+                                        </td>
+                                    {% endfor %}
+
+                                {% endif %}
+
+                                <td>
+                                    {{ form_widget(form.nourish_item_name) }}
+                                </td>
+                                <td>
+                                    {{ form_widget(form.other_culture_species) }}
+                                </td>
+                                <td>
+                                    {{ form_widget(form.conventionalFeed) }}
+                                </td>
+                                <td>
+                                    {{ form_widget(form.remarks) }}
+                                </td>
+                                <td>
+                                    <button title="Save" type="button" class="btn btn-primary btn-sm fish_farmer_touch_report_button"><i class="fa fa-save"></i></button>
+                                </td>
+                            </tr>
+                            </thead>
+                            <tbody class="fishFarmerTouchReportBody">
+                            {% include '@TerminalbdCrm/farmerTouchReport/partial/cattle-farmer-touch-report-body.html.twig' %}
+                            </tbody>
+                        </table>
+                        {{ form_widget(form._token) }}
+                        {{ form_end(form) }}
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

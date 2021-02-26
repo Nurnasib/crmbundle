@@ -1,0 +1,98 @@
+{% extends 'base-pdf.html.twig' %}
+{% block body %}
+    {% if entities is not empty%}
+        <div style="text-align: center">
+            <p class="title-h4">{{ 'NOURISH POULTRY AND HATCHERY LTD'|trans }}</p>
+            <p class="title-h5">{{ 'UTTARA, DHAKA.'|trans }}</p>
+            <p class="title-h6">{{ 'LAYER LIFE CYCLE REPORT'|trans }}</p>
+        </div>
+        <table>
+            {{ 'ddddddd'|trans }}
+            <thead>
+            <tr>
+                <th align="left">{{ 'Name of Farmer'|trans }}: {{ entities['farmerName']|default('N/A') }}</th>
+                <th align="left">{{ 'Address'|trans }}: {{ entities['farmerAddress']|default('N/A') }}</th>
+                <th align="left" colspan="2">{{ 'Mobile'|trans }}: {{ entities['farmerMobile']|default('N/A') }}</th>
+            </tr>
+            <tr>
+                <th align="left">{{ 'Total Bird'|trans }}s: {{ entities['totalBirds']|default('N/A') }}</th>
+                <th align="left">{{ 'Hatchery Date'|trans }}: {{ entities['hatcheryDate']|date('d-m-Y') }}</th>
+                <th align="left">{{ 'Hatchery'|trans }}: {{ entities['hatcheryName']|default('N/A') }}</th>
+                <th align="left">{{ 'Breed'|trans }}: {{ entities['breedName']|default('N/A') }}</th>
+            </tr>
+            </thead>
+        </table>
+        {% for entity in entities %}
+            {% if entity is iterable %}
+                <table border="1" cellpadding="0" cellspacing="0">
+                    <thead>
+                    <tr>
+                        <th scope="col" rowspan="2"class="text-center">{{ 'VisitingDate'|trans }}</th>
+                        <th scope="col" rowspan="2"class="text-center">{{ 'Age (wk)'|trans }}</th>
+                        <th scope="col" colspan="3"class="text-center">{{ 'Birds'|trans }}</th>
+                        <th scope="col" colspan="2"class="text-center">{{ 'Weight'|trans }}</th>
+                        <th scope="col" rowspan="2"class="text-center">{{ 'Uniformity(%)'|trans }}</th>
+                        <th scope="col" colspan="2"class="text-center">{{ 'Feed'|trans }}</th>
+                        <th scope="col" colspan="3"class="text-center">{{ 'Egg Production'|trans }}</th>
+                        <th scope="col" colspan="2"class="text-center">{{ 'Egg Weight'|trans }}</th>
+                        <th scope="col" colspan="4"class="text-center">{{ 'Feed Information'|trans }}</th>
+                        <th scope="col" rowspan="2"class="text-center">{{ 'Vaccine / Medicine'|trans }}</th>
+                        <th scope="col" rowspan="2"class="text-center">{{ 'Remarks'|trans }}</th>
+                    </tr>
+
+                    <tr>
+                        <th scope="col"class="text-center">{{ 'Total Birds'|trans }}</th>
+                        <th scope="col"class="text-center">{{ 'Dead bird'|trans }}</th>
+                        <th scope="col"class="text-center">{{ 'Present Bird'|trans }}</th>
+                        <th scope="col"class="text-center">{{ 'Avg. wt (gm)'|trans }}</th>
+                        <th scope="col"class="text-center">{{ 'Target wt (gm)'|trans }}</th>
+                        <th scope="col"class="text-center">{{ 'Feed/bird (gm)'|trans }}</th>
+                        <th scope="col"class="text-center">{{ 'Target feed/bird'|trans }}</th>
+                        <th scope="col"class="text-center">{{ 'Total Eggs'|trans }}</th>
+                        <th scope="col"class="text-center">{{ 'Egg Prod(%)'|trans }}</th>
+                        <th scope="col"class="text-center">{{ 'Target egg prod(%)'|trans }}</th>
+                        <th scope="col"class="text-center">{{ 'Actual'|trans }}</th>
+                        <th scope="col"class="text-center">{{ 'Standard'|trans }}</th>
+                        <th scope="col"class="text-center">{{ 'Feed Type'|trans }}</th>
+                        <th scope="col"class="text-center">{{ 'P. Date'|trans }}</th>
+                        <th scope="col"class="text-center">{{ 'Batch No'|trans }}</th>
+                        <th scope="col"class="text-center">{{ 'Feed Mill'|trans }}</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    {% set dead_bird = 0 %}
+                    {% for detail in entity %}
+                        {% set dead_bird = dead_bird + detail.deadBird %}
+                        {% set presentBird = detail.totalBirds-dead_bird %}
+                        {% set eggProduction = (detail.totalEggs*100)/presentBird %}
+                        <tr style="border-bottom: 2px solid #9cc2cb">
+                            <td>{{ detail.visitingDate|date('d-m-Y') }}</td>
+                            <td>{{ detail.ageWeek|default(0) }}</td>
+                            <td>{{ detail.totalBirds|default(0) }}</td>
+                            <td>{{ detail.deadBird|default(0) }}</td>
+                            <td>{{ presentBird|number_format(0,'.') }}</td>
+                            <td>{{ detail.avgWeight|default(0) }}</td>
+                            <td>{{ detail.targetWeight|default(0) }}</td>
+                            <td>{{ detail.uniformity|default(0) }}</td>
+                            <td>{{ detail.feedPerBird|default(0) }}</td>
+                            <td>{{ detail.targetFeedPerBird|default(0) }}</td>
+                            <td>{{ detail.totalEggs|default(0) }}</td>
+                            <td>{{ eggProduction|number_format(2,'.') }}</td>
+                            <td>{{ detail.targetEggProduction|default(0) }}</td>
+                            <td>{{ detail.eggWeightActual|default(0) }}</td>
+                            <td>{{ detail.eggWeightStandard|default(0) }}</td>
+                            <td>{{ detail.feedTypeName|default(0) }}</td>
+                            <td>{{ detail.productionDate|date('d-m-Y') }}</td>
+                            <td>{{ detail.batch_no|default(0) }}</td>
+                            <td>{{ detail.feedMillName|default(0) }}</td>
+                            <td>{{ detail.medicine|default(0) }}</td>
+                            <td>{{ detail.remarks|default(0) }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            {% endif %}
+        {% endfor %}
+        {% endif %}
+{% endblock %}

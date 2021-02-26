@@ -1,0 +1,68 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block body %}
+    <style>
+        table tbody tr td{
+            font-size: 10px !important;
+        }
+    </style>
+    <div>
+        <h3 class="text-center">NOURISH POULTRY AND HATCHERY LTD</h3>
+        <h4 class="text-center">UTTARA, DHAKA.</h4>
+    </div>
+
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <td>No. of Farms</td>
+            <td>Agent's Name</td>
+            <td>Address</td>
+            <td>Farmer's Name</td>
+            <td>Address</td>
+            <td>Mobile</td>
+            <td>Hatching Date</td>
+            <td>Visiting Week</td>
+            <td>Total Birds</td>
+            <td>Age</td>
+            <td>Mortality</td>
+            <td>Weight</td>
+            <td>Feed Consumption</td>
+            <td>FCR</td>
+            <td>Hatchery</td>
+            <td>Breed</td>
+            <td>Feed</td>
+            <td>Feed Type</td>
+            <td>Pro Date</td>
+            <td>Batch No.</td>
+            <td>Remarks</td>
+        </tr>
+        </thead>
+        <tbody>
+        {% for chickLifeCycle in chickLifeCycles %}
+{#            {{ dump(chickLifeCycle) }}#}
+            <tr>
+                <td>Farm-{{ loop.index }}</td>
+                <td>{{ chickLifeCycle.agent.name|default('N/A') }}</td>
+                <td>{{ chickLifeCycle.agent.address|default('N/A') }}</td>
+                <td>{{ chickLifeCycle.customer.name|default('N/A') }}</td>
+                <td>{{ chickLifeCycle.customer.address|default('N/A') }}</td>
+                <td>{{ chickLifeCycle.customer.mobile|default('N/A') }}</td>
+                <td>{{ chickLifeCycle.hatchingDate?chickLifeCycle.hatchingDate|date("d-m-Y"):'' }}</td>
+                <td>
+                    {% for detail in chickLifeCycle.crmChickLifeCycleDetails %}
+                        <tr>
+                            <td>{{ detail.visitingWeek|default('N/A') }}</td>
+                            <td>{{ chickLifeCycle.totalBirds|default('N/A') }}</td>
+{#                            <td>{{ chickLifeCycle.age|default('N/A') }}</td>#}
+                        </tr>
+                    {% endfor %}
+                </td>
+
+
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+
+{% endblock %}

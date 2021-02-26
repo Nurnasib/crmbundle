@@ -47,6 +47,11 @@ class SonaliStandardFormType extends AbstractType
                 'label' => 'label.feed_intake_per_day',
                 'required' => true
             ])
+            ->add('cumulativeFeedIntake', TextType::class, [
+                'attr' => ['min'=>0,'autofocus' => true,'autocomplete' => 'off'],
+                'label' => 'label.feed_intake_per_day',
+                'required' => true
+            ])
             ->add('target_body_weight', TextType::class, [
                 'attr' => ['autofocus' => true,'autocomplete' => 'off'],
                 'label' => 'label.target_body_weight',

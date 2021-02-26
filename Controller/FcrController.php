@@ -23,8 +23,15 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 //use Terminalbd\CrmBundle\Entity\BroilerStandard;
 //use Terminalbd\CrmBundle\Entity\ChickLifeCycle;
-use Terminalbd\CrmBundle\Entity\Fcr;
+use Terminalbd\CrmBundle\Entity\BroilerStandard;
+use Terminalbd\CrmBundle\Entity\CrmCustomer;
+use Terminalbd\CrmBundle\Entity\FcrDetails;
+use Terminalbd\CrmBundle\Entity\Setting;
+use Terminalbd\CrmBundle\Entity\SonaliStandard;
+use Terminalbd\CrmBundle\Form\FcrDetailsForAfterFormType;
+use Terminalbd\CrmBundle\Form\FcrDetailsFormType;
 use Terminalbd\CrmBundle\Form\FcrFormType;
+use Terminalbd\CrmBundle\Repository\FcrRepository;
 
 
 /**
@@ -33,94 +40,150 @@ use Terminalbd\CrmBundle\Form\FcrFormType;
 class FcrController extends AbstractController
 {
     /**
-     * @Route("/", methods={"GET"}, name="fcr")
      * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @Route("/{customer}/{report}/{afterBefore}/new", methods={"GET", "POST"}, name="fcr_new", options={"expose"=true})
      */
-    public function index(Request $request): Response
+    public function new(Request $request, CrmCustomer $customer, Setting $report, $afterBefore): Response
     {
-        $entitys = $this->getDoctrine()->getRepository(Fcr::class)->findAll();
-        return $this->render('@TerminalbdCrm/fcr/index.html.twig',['entities' => $entitys]);
-    }
+        $fcrAllReports = $this->getDoctrine()->getRepository(FcrDetails::class)->getFcrReportByReportingDateAndFeedType($afterBefore, $report, $this->getUser());
 
-    /**
-     * @Route("/after", methods={"GET"}, name="fcr_after")
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
-     */
-    public function index_after(Request $request): Response
-    {
-        $entitys = $this->getDoctrine()->getRepository(Fcr::class)->findBy(
-            ['fcrOfFeed'=>'AFTER']
-        );
-        return $this->render('@TerminalbdCrm/fcr/after_index.html.twig',['entities' => $entitys]);
-    }
+        $entity = new FcrDetails();
 
-
-
-
-    /**
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
-     * @Route("/new", methods={"GET", "POST"}, name="fcr_new")
-     */
-    public function new(Request $request): Response
-    {
-        $entity = new Fcr();
-        $data = $request->request->all();
-
-        $agentRepo = $this->getDoctrine()->getRepository(Agent::class);
-        $form = $this->createForm(FcrFormType::class, $entity,array('user' => $this->getUser(),'agentRepo' => $agentRepo)) ->add('SaveAndCreate', SubmitType::class);
+        $form = $this->createForm(FcrDetailsFormType::class, $entity,array('user' => $this->getUser(), 'report' => $report));
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
+            $reportingDate = date('Y-m-d',strtotime('now'));
+            $entity->setReportingMonth(new \DateTime($reportingDate));
+            $entity->setFcrOfFeed(strtoupper($afterBefore));
+            $entity->setCustomer($customer);
+            $entity->setReport($report);
+            $entity->setAgent($customer->getAgent());
             $entity->setEmployee($this->getUser());
+
+
+            if(in_array($report->getSlug(),['fcr-before-sale-sonali','fcr-after-sale-sonali'])){
+
+                /* @var SonaliStandard $sonaliStandard*/
+                $sonaliStandard= $this->getDoctrine()->getRepository(SonaliStandard::class)->findOneBy(array('age'=>$entity->getAgeDay()));
+                if($sonaliStandard){
+                    $entity->setWeightStandard($sonaliStandard->getTargetBodyWeight());
+                    $entity->setFeedConsumptionStandard($sonaliStandard->getCumulativeFeedIntake());
+                }
+            }
+            if(in_array($report->getSlug(),['fcr-before-sale-boiler','fcr-after-sale-boiler'])){
+
+                /* @var BroilerStandard $broilerStandard*/
+                $broilerStandard= $this->getDoctrine()->getRepository(BroilerStandard::class)->findOneBy(array('age'=>$entity->getAgeDay()));
+                if($broilerStandard){
+                    $entity->setWeightStandard($broilerStandard->getTargetBodyWeight());
+                    $entity->setFeedConsumptionStandard($broilerStandard->getTargetFeedConsumption());
+                }
+            }
+            $entity->setMortalityPercent($entity->calculateMortalityPercent());
+            $entity->setFeedConsumptionPerBird($entity->calculatePerBird());
+            $entity->setFcrWithoutMortality($entity->calculateWithoutMortality());
+            $entity->setFcrWithMortality($entity->calculateWithMortality());
+
+
+            $em = $this->getDoctrine()->getManager();
             $em->persist($entity);
             $em->flush();
             $this->addFlash('success', 'post.created_successfully');
-            if ($form->get('SaveAndCreate')->isClicked()) {
-                return $this->redirectToRoute('fcr_new');
-            }
-            return $this->redirectToRoute('fcr');
+            return new Response('success');
         }
-        return $this->render('@TerminalbdCrm/fcr/new.html.twig', [
-            'entity' => $entity,
+
+
+        return $this->render('@TerminalbdCrm/fcr/details-modal.html.twig', [
+            'customerId' => $customer?$customer->getId():null,
+            'customer' => $customer?$customer:null,
             'form' => $form->createView(),
+            'report'=>$report,
+            'fcrDetails'=>$fcrAllReports,
+            'employee'=>$this->getUser(),
+            'fcrOfFeed'=>strtoupper($afterBefore),
         ]);
     }
 
-    /**
-     * Displays a form to edit an existing Post entity.
-     * @Route("/{id}/edit", methods={"GET", "POST"}, name="fcr_edit")
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
-     */
 
-    public function edit(Request $request, Fcr $entity): Response
+    /**
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @Route("/{report}/{afterBefore}/new", methods={"GET", "POST"}, name="fcr_after_new", options={"expose"=true})
+     */
+    public function newAfter(Request $request, Setting $report, $afterBefore): Response
     {
-        $data = $request->request->all();
-        $agentRepo = $this->getDoctrine()->getRepository(Agent::class);
-        $form = $this->createForm(FcrFormType::class, $entity,array('user' => $this->getUser(),'agentRepo' => $agentRepo)) ->add('SaveAndCreate', SubmitType::class);
-        $form->handleRequest($request);
+        $fcrAllReports = $this->getDoctrine()->getRepository(FcrDetails::class)->getFcrReportByReportingDateAndFeedType($afterBefore, $report, $this->getUser());
+        $data = $request->request->get('fcr_details_for_after_form');
+        $agent = null;
+            $entity = new FcrDetails();
+
+            $agentRepo = $this->getDoctrine()->getRepository(Agent::class);
+            $form = $this->createForm(FcrDetailsForAfterFormType::class, $entity,array('user' => $this->getUser(),'agentRepo' => $agentRepo, 'report' => $report));
+            $form->handleRequest($request);
+
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
-            $this->addFlash('success', 'post.updated_successfully');
-            if ($form->get('SaveAndCreate')->isClicked()) {
-                return $this->redirectToRoute('fcr', ['id' => $entity->getId()]);
+
+            if(isset($data['agent'])&&$data['agent']!=''){
+                $agent = $this->getDoctrine()->getRepository(Agent::class)->find($data['agent']);
             }
-            return $this->redirectToRoute('fcr');
+
+            $reportingDate = date('Y-m-d',strtotime('now'));
+            $entity->setReportingMonth(new \DateTime($reportingDate));
+            $entity->setFcrOfFeed(strtoupper($afterBefore));
+            $entity->setReport($report);
+            $entity->setEmployee($this->getUser());
+
+            $entity->setAgent($agent);
+
+
+            if(in_array($report->getSlug(),['fcr-before-sale-sonali','fcr-after-sale-sonali'])){
+
+                /* @var SonaliStandard $sonaliStandard*/
+                $sonaliStandard= $this->getDoctrine()->getRepository(SonaliStandard::class)->findOneBy(array('age'=>$entity->getAgeDay()));
+                if($sonaliStandard){
+                    $entity->setWeightStandard($sonaliStandard->getTargetBodyWeight());
+                    $entity->setFeedConsumptionStandard($sonaliStandard->getCumulativeFeedIntake());
+                }
+            }
+            if(in_array($report->getSlug(),['fcr-before-sale-boiler','fcr-after-sale-boiler'])){
+
+                /* @var BroilerStandard $broilerStandard*/
+                $broilerStandard= $this->getDoctrine()->getRepository(BroilerStandard::class)->findOneBy(array('age'=>$entity->getAgeDay()));
+                if($broilerStandard){
+                    $entity->setWeightStandard($broilerStandard->getTargetBodyWeight());
+                    $entity->setFeedConsumptionStandard($broilerStandard->getTargetFeedConsumption());
+                }
+            }
+            $entity->setMortalityPercent($entity->calculateMortalityPercent());
+            $entity->setFeedConsumptionPerBird($entity->calculatePerBird());
+            $entity->setFcrWithoutMortality($entity->calculateWithoutMortality());
+            $entity->setFcrWithMortality($entity->calculateWithMortality());
+
+
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($entity);
+            $em->flush();
+            $this->addFlash('success', 'post.created_successfully');
+            return new Response('success');
         }
-        return $this->render('@TerminalbdCrm/fcr/new.html.twig', [
-            'entity' => $entity,
-            'form' => $form->createView(),
-        ]);
+
+            return $this->render('@TerminalbdCrm/fcr/details-modal-after.html.twig', [
+                'report'=>$report,
+                'fcrDetails'=>$fcrAllReports,
+                'fcrOfFeed'=>strtoupper($afterBefore),
+                'form' => $form->createView(),
+                'employee'=>$this->getUser(),
+            ]);
     }
 
     /**
      * Deletes a Fcr entity.
-     * @Route("/{id}/delete", methods={"GET"}, name="fcr_delete")
+     * @Route("/details/{id}/delete", methods={"POST"}, name="fcr_detail_delete")
      * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      */
-    public function delete($id): Response
+    public function deleteDetails($id): Response
     {
-        $entity = $this->getDoctrine()->getRepository(Fcr::class)->find($id);
+        $entity = $this->getDoctrine()->getRepository(FcrDetails::class)->find($id);
         $em = $this->getDoctrine()->getManager();
         $em->remove($entity);
         $em->flush();
@@ -128,7 +191,71 @@ class FcrController extends AbstractController
         return new Response('Success');
     }
 
-    
+    /**
+     * @param Setting $report
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @Route("/{id}/{afterBefore}/details/refresh", methods={"GET", "POST"}, name="fcr_details_refresh", options={"expose"=true})
+     */
+    public function fcrDetailsRefresh(Request $request, Setting $report, $afterBefore): Response
+    {
+        $fcrAllReports = $this->getDoctrine()->getRepository(FcrDetails::class)->getFcrReportByReportingDateAndFeedType($afterBefore, $report, $this->getUser());
+
+
+        return $this->render('@TerminalbdCrm/fcr/partial/fcr-details.html.twig', [
+            'fcrDetails' => $fcrAllReports,
+        ]);
+    }
+
+    /**
+     * Displays a form to edit an existing ChickLifeCycle entity.
+     * @Route("/{id}/sonali-broiler/standard", methods={"POST"}, name="crm_sonali_and_broiler_standard_by_age", options={"expose"=true})
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     */
+
+    public function getSonaliBroilerStandardUsingAjax(Request $request, Setting $report): Response
+    {
+        $ageDay = $request->request->get('ageDay');
+
+        $returnData = array();
+
+        if(in_array($report->getSlug(),['fcr-before-sale-sonali','fcr-after-sale-sonali'])){
+
+            /* @var SonaliStandard $sonaliStandard*/
+            $sonaliStandard= $this->getDoctrine()->getRepository(SonaliStandard::class)->findOneBy(array('age'=>$ageDay));
+            if($sonaliStandard){
+                $returnData = array(
+                    'status'=>200,
+                    'weightStandard'=> $sonaliStandard->getTargetBodyWeight(),
+                    'feedConsumptionStandard'=> $sonaliStandard->getCumulativeFeedIntake(),
+
+                );
+            }else{
+                $returnData = array(
+                    'status'=>404,
+                );
+            }
+        }
+        if(in_array($report->getSlug(),['fcr-before-sale-boiler','fcr-after-sale-boiler'])){
+
+            /* @var BroilerStandard $broilerStandard*/
+            $broilerStandard= $this->getDoctrine()->getRepository(BroilerStandard::class)->findOneBy(array('age'=>$ageDay));
+            if($broilerStandard){
+                $returnData = array(
+                    'status'=>200,
+                    'weightStandard'=> $broilerStandard->getTargetBodyWeight(),
+                    'feedConsumptionStandard'=> $broilerStandard->getTargetFeedConsumption(),
+
+                );
+            }else{
+                $returnData = array(
+                    'status'=>404,
+                );
+            }
+        }
+
+        return new JsonResponse($returnData);
+
+    }
 
 
 

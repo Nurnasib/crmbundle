@@ -1,0 +1,67 @@
+<?php
+
+
+namespace Terminalbd\CrmBundle\Repository;
+
+
+use Doctrine\ORM\EntityRepository;
+
+class BaseRepository extends EntityRepository
+{
+    protected function handleSearchFilterBetween($qb,$filterBy)
+    {
+        if (isset($filterBy)){
+            $startDate = isset($filterBy['startDate'])? $filterBy['startDate'] . ' 00:00:00': '';
+            $endDate = isset($filterBy['endDate'])? $filterBy['endDate'] . ' 23:59:59': '';
+
+            $startDateCreated = isset($filterBy['startDateCreated'])? $filterBy['startDateCreated'] . ' 00:00:00': '' ;
+            $endDateCreated = isset($filterBy['endDateCreated'])? $filterBy['endDateCreated'] . ' 23:59:59': '';
+
+            $slug = isset($filterBy['slug'])? $filterBy['slug']: '';
+            $farmer = isset($filterBy['farmer'])? $filterBy['farmer']: '';
+            $employee = isset($filterBy['employee'])? $filterBy['employee']: '';
+            $feedType = isset($filterBy['feedType'])? $filterBy['feedType']: '';
+
+
+
+//            if (!empty($startDate)){
+//                $qb->andWhere($qb->expr()->orX(
+//                    $qb->expr()->gte('e.createdAt', ':startDate'),
+//                    $qb->expr()->gte('e.created', ':startDate')
+//                ))->setParameter('startDate', $startDate);
+//            }
+
+            if (!empty($startDate)){
+                $qb->andWhere('e.createdAt >= :startDate')->setParameter('startDate', $startDate);
+            }
+            if (!empty($endDate)){
+                $qb->andWhere('e.createdAt <= :endDate')->setParameter('endDate', $endDate);
+            }
+
+            if (!empty($startDateCreated)){
+                $qb->andWhere('e.created >= :startDate')->setParameter('startDate', $startDateCreated);
+            }
+            if (!empty($endDateCreated)){
+                $qb->andWhere('e.created <= :endDate')->setParameter('endDate', $endDateCreated);
+            }
+
+
+            if (!empty($slug)){
+                $qb->join('e.report','report');
+                $qb->andWhere('report.slug = :slug')->setParameter('slug', $slug);
+            }
+            if (!empty($farmer)){
+                $qb->leftJoin('e.customer','farmer');
+                $qb->andWhere('farmer.id = :farmer')->setParameter('farmer', $farmer->getId());
+            }
+            if (!empty($employee)){
+                $qb->leftJoin('e.employee','employee');
+                $qb->andWhere('employee.id = :employee')->setParameter('employee', $employee->getId());
+            }
+            if (!empty($feedType)){
+                $qb->andWhere('e.fcrOfFeed = :feedType')->setParameter('feedType', $feedType);
+            }
+
+        }
+    }
+}

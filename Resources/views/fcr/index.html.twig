@@ -21,7 +21,7 @@
                     <h5>{{ 'FCR'|trans }}</h5>
                     <div class="card-header-right">
                         <div class="btn-group btn-group-sm" role="group" aria-label="Button group with nested dropdown">
-                            <a href="{{ path('fcr_new') }}" class="btn btn-sm  green-bg white-font"><i class="fas fa-plus"></i>{{ 'Add New'|trans }}</a>
+                            {#<a href="{{ path('fcr_new') }}" class="btn btn-sm  green-bg white-font"><i class="fas fa-plus"></i>{{ 'Add New'|trans }}</a>#}
                             <a href="{{ path('fcr') }}" class="btn btn-sm gray-bg white-font"><i class="fa fa-th-list"></i>{{ 'FCR'|trans }}</a>
                         </div>
                     </div>
@@ -35,73 +35,26 @@
                     <table class="table table-striped table-bordered table-hover" id="datatable">
                         <thead class="thead-dark">
                         <tr>
-                            <th scope="col" rowspan="2">S/N</th>
-                            <th scope="col" rowspan="2">Agent </th>
-                            <th scope="col" rowspan="2">District </th>
-                            <th scope="col" rowspan="2">Address </th>
-
-                            <th scope="col" rowspan="2">H.Date</th>
-                            <th scope="col" rowspan="2">Total Birds</th>
-                            <th scope="col" rowspan="2">Age(Day)</th>
-                            <th scope="col" colspan="2">Mortality</th>
-                            <th scope="col" rowspan="2">Weight</th>
-                            <th scope="col" colspan="1">Total Feed</th>
-                            <th scope="col" colspan="1">Feed cons.</th>
-                            <th scope="col" colspan="1">FCR</th>
-                            <th scope="col" colspan="1">FCR</th>
-                            <th scope="col" rowspan="2">Hatchery</th>
-                            <th scope="col" rowspan="2">Breed</th>
-                            <th scope="col" rowspan="2">Feed</th>
-                            <th scope="col" rowspan="2">Remarks</th>
-
-
-                            <th scope="col text-center" rowspan="2"><i class="feather icon-settings"></i></th>
-                        </tr>
-                        <tr>
-                            <th scope="col">Pes</th>
-                            <th scope="col">%</th>
-                            <th scope="col">Cons.(kg)</th>
-                            <th scope="col">Per Bird(gm)</th>
-                            <th scope="col">Without.M</th>
-                            <th scope="col">With.M</th>
+                            <th scope="col">S/N</th>
+                            <th scope="col">Employee Name</th>
+                            <th scope="col">FCR OF NOURISH FEED </th>
+                            <th scope="col">Reporting Date </th>
+                            <th scope="col text-center" rowspan="1"><i class="feather icon-settings"></i></th>
                         </tr>
                         </thead>
                         <tbody>
-                        {% set pesMortality =0 %}
-                        {% set feedConsumptionPerDay =0 %}
-                        {% set withoutMortality =0 %}
-                        {% set withMortality =0 %}
+
                         {% for entity in entities %}
 
-
-                            {% set pesMortality =((entity.pes)*100) /entity.totalbirds  %}
-                            {% set feedConsumptionPerDay = (entity.totalFeedConsumption/entity.totalbirds)*1000 %}
-                            {% set withoutMortality = ((entity.totalFeedConsumption/entity.totalbirds)/entity.weight)*1000 %}
-                            {% set withMortality=((entity.totalFeedConsumption/(entity.totalbirds-entity.pes))/entity.weight )*1000 %}
                         <tr>
                             <td>{{ loop.index }}</td>
-
-                            <td>{{ entity.agent.name|default('') }}</td>
-                            <td>{{ entity.agent.district.name|default('')}}</td>
-                            <td>{{ entity.agent.address|default('') }}</td>
-
-                            <td>{{ entity.HatchingDate }}</td>
-                            <td>{{ entity.totalbirds }}</td>
-                            <td>{{ entity.ageDay }}</td>
-                            <td> {{ entity.pes }}</td>
-                            <td>{{ pesMortality |round(2,'ceil') }}</td>
-                            <td>{{entity.weight  }}</td>
-                            <td>{{entity.totalFeedConsumption  }}</td>
-                            <td>{{ feedConsumptionPerDay |round(2,'ceil') }}</td>
-                            <td>{{withoutMortality| round(2,'ceil')  }}</td>
-                            <td>{{ withMortality |round(2,'ceil') }}</td>
-                            <td>{{ entity.hatchery }}</td>
-                            <td>{{ entity.breed }}</td>
-                            <td>{{ entity.feed }}</td>
-                            <td>{{ entity.remarks }}</td>
+                            <td>{{ entity.employee.name }}</td>
+                            <td>{{ entity.fcrOfFeed }}</td>
+                            <td>{{ entity.reportingMonth|date("m-Y") }}</td>
                             <td>
-                                <a class="btn btn-mini yellow-bg white-font" href="{{ path('fcr_edit',{'id':entity.id}) }}"><i class="feather icon-edit"></i> Edit</a>
-                                <a class="btn  btn-transparent btn-mini red-font remove" href="javascript:" data-action="{{ path('fcr_delete',{'id':entity.id}) }}"><i class="fa fa-remove"></i></a>
+                                {#<a class="btn btn-mini yellow-bg white-font" href="{{ path('fcr_edit',{'id':entity.id}) }}"><i class="feather icon-edit"></i> Edit</a>#}
+                                {#<a data-action='{{ path('fcr_details_modal',{'id': entity is not empty?entity.id:''}) }}' href='?process=postView_{{ entity.id }}&check=show#modal' id='postView_{{ entity.id }}' >{{ 'Generate Report'|trans }}</a>#}
+                                {#<a class="btn  btn-transparent btn-mini red-font remove" href="javascript:" data-action="{{ path('fcr_delete',{'id':entity.id}) }}"><i class="fa fa-remove"></i></a>#}
                             </td>
 
                         </tr>
@@ -116,17 +69,19 @@
 {% endblock %}
 {% block cssBlock %}
     <link rel="stylesheet" href="{{ asset('assets/module/css/app.css') }}">
+    <link rel="stylesheet" href="{{ asset('bundles/terminalbdcrm//css/crm.css') }}">
 {% endblock  %}
 {% block javascripts %}
+    {#<script>#}
     {{ parent() }}
-    <script type="application/javascript" src="{{ asset('assets/module/js/app.js') }}"></script>
+    <script type="application/javascript" src="{{ asset('bundles/terminalbdcrm/js/crm/fcr.js') }}"></script>
 {% endblock  %}
 {% block documentready %}
     {{ parent() }}
     $('#datatable').DataTable( {
     "pageLength": 25,
     'columnDefs': [ {
-    'targets': [0,4,5,6,7,8],
+    'targets': [0,4],
     'orderable': false
     }]
     });

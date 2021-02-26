@@ -1,0 +1,18 @@
+{% if diseasesMapping is not empty %}
+{% for diseaseMapping in diseasesMapping %}
+    <tr>
+        <td>{{ diseaseMapping.agent.name|default('') }}</td>
+        <td>{{ diseaseMapping.customer.name|default('') }}</td>
+        <td>{{ diseaseMapping.visitingDate|date('d-m-Y') }}</td>
+        <td>{{ diseaseMapping.hatchery.name|default('') }}</td>
+        <td>{{ diseaseMapping.feed.name|default('') }}</td>
+        <td>{{ diseaseMapping.farmType.name|default('') }}</td>
+        <td>{{ diseaseMapping.flockSizeOrCapacity|default('') }}</td>
+        <td>{{ diseaseMapping.ageDays|default('') }}</td>
+        <td>{{ diseaseMapping.disease.name|default('') }}</td>
+        <td>
+            <a data-action="{{ path('disease_mapping_delete',{id:diseaseMapping.id}) }}" class="btn btn-danger btn-sm remove">x</a>
+        </td>
+    </tr>
+    {% endfor %}
+{% endif %}

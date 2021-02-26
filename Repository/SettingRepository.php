@@ -24,5 +24,55 @@ use Doctrine\ORM\EntityRepository;
 class SettingRepository extends EntityRepository
 {
 
+    public function getReportByParentSlug($slug){
+        $return = array();
+        $qb = $this->createQueryBuilder('e');
+        $qb->join('e.parent','parent');
+        $qb->where('parent.slug = :slug')->setParameter('slug',$slug);
+        $qb->andWhere('e.settingType = :type')->setParameter('type','FARMER_REPORT');
+        $result = $qb->getQuery()->getResult();
+        /*for($i=1; $i<=$result[0]['numberOfWeek'];$i++){
+            $return[$i]= $i.' week';
+        }*/
+        return $result;
+    }
+
+    public function getReportByParentWithoutAfterFcr($parentId){
+        $return = array();
+        $qb = $this->createQueryBuilder('s');
+        $qb->where('s.parent = :parentId')->setParameter('parentId',$parentId);
+        $qb->andWhere('e.settingType = :type')->setParameter('type','FARMER_REPORT');
+        $qb->andWhere('e.settingType = :type')->setParameter('type','FARMER_REPORT');
+        $result = $qb->getQuery()->getResult();
+        /*for($i=1; $i<=$result[0]['numberOfWeek'];$i++){
+            $return[$i]= $i.' week';
+        }*/
+        return $result;
+    }
+
+    public function getSpeciesForFarmerTouchReport($breedTypeId)
+    {
+        $qb = $this->createQueryBuilder('e');
+        $qb->select('e.name');
+        $qb->where('e.parent = :breedTypeId')->setParameter('breedTypeId', $breedTypeId);
+        $qb->andWhere('e.status = :status')->setParameter('status', 1);
+        $qb->andWhere('e.settingType = :sType')->setParameter('sType', 'SPECIES_TYPE');
+
+        $results = $qb->getQuery()->getArrayResult();
+        return $results;
+    }
+
+    public function getProductTypeByParentParentChildren($childrenIds)
+    {
+        $qb = $this->createQueryBuilder('e');
+            $qb->select('e.id','e.name')
+        ->where("e.status =1")
+        ->andWhere("e.settingType ='PRODUCT_TYPE'")
+        ->andWhere("e.parent IN (:parent)")
+        ->setParameter('parent',$childrenIds)
+        ->orderBy('e.id', 'ASC');
+        $results = $qb->getQuery()->getArrayResult();
+        return $results;
+    }
 
 }

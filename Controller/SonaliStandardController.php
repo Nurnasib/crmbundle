@@ -84,9 +84,9 @@ class SonaliStandardController extends AbstractController
             $this->getDoctrine()->getManager()->flush();
             $this->addFlash('success', 'post.updated_successfully');
             if ($form->get('SaveAndCreate')->isClicked()) {
-                return $this->redirectToRoute('broiler_standard', ['id' => $entity->getId()]);
+                return $this->redirectToRoute('sonali_standard');
             }
-            return $this->redirectToRoute('broiler_standard');
+            return $this->redirectToRoute('sonali_standard');
         }
         return $this->render('@TerminalbdCrm/sonaliStandard/new.html.twig', [
             'entity' => $entity,
@@ -109,6 +109,25 @@ class SonaliStandardController extends AbstractController
         return new Response('Success');
     }
 
+    /**
+     * @Route("/weight/by/age", methods={"POST"}, name="crm_sonali_weight_standard_by_age", options={"expose"=true})
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     */
+
+    public function getSonaliWeightStandardByAge(Request $request): Response
+    {
+        $data = $request->request->all();
+        /**@var SonaliStandard $entity*/
+        $entity = $this->getDoctrine()->getRepository(SonaliStandard::class)->findOneBy(array('age'=>$data['ageDays']));
+        return new JsonResponse(
+            array(
+                'success'=>'Success',
+                'weightStandard'=>$entity->getTargetBodyWeight(),
+                'status'=>200,
+            )
+        );
+
+    }
     
 
 

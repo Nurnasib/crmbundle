@@ -17,6 +17,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Terminalbd\CrmBundle\Entity\CrmCustomer;
 use Terminalbd\CrmBundle\Entity\CrmVisitDetails;
+use Terminalbd\CrmBundle\Entity\NewFarmerIntroduce\FarmerIntroduceDetails;
 use Terminalbd\CrmBundle\Entity\Setting;
 use Terminalbd\CrmBundle\Form\CrmCustomerFormType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -38,7 +39,8 @@ class CrmCustomerController extends AbstractController
     public function index()
     {
         $entities=$this->getDoctrine()->getRepository(CrmCustomer::class)->findAll();
-
+        $webPath = $this->get('kernel')->getProjectDir();
+//        var_dump($webPath);die;
         return $this->render('@TerminalbdCrm/crmcustomer/index.html.twig', [
             'entities' =>$entities
         ]);
@@ -128,7 +130,8 @@ class CrmCustomerController extends AbstractController
           'id'=>$entity->getId(),
           'name'=>$entity->getName(),
         );
-        $this->getDoctrine()->getRepository(CrmVisitDetails::class)->insertFarmer($entity,$id,$allRequestData);
+        $this->getDoctrine()->getRepository(CrmVisitDetails::class)->insertCrmVisitDetailForFarmer($entity, $id, $allRequestData);
+        $this->getDoctrine()->getRepository(FarmerIntroduceDetails::class)->insertCrmFarmerIntroduceDetails($entity, $this->getUser(), $allRequestData);
         return new JsonResponse(array($returnData));
 
     }
@@ -152,6 +155,7 @@ class CrmCustomerController extends AbstractController
         $em->persist($entity);
         $em->flush();
         $returnData= array(
+            'status'=>200,
           'id'=>$entity->getId(),
           'name'=>$entity->getName(),
         );
@@ -183,6 +187,7 @@ class CrmCustomerController extends AbstractController
         $em->persist($entity);
         $em->flush();
         $returnData= array(
+            'status'=>200,
           'id'=>$entity->getId(),
           'name'=>$entity->getName(),
         );
@@ -239,6 +244,22 @@ class CrmCustomerController extends AbstractController
         );
         return new JsonResponse(array($returnData));
 
+    }
+
+
+    /**
+     * Displays a form to edit an existing CrmVisit entity.
+     * @Route("species/name/by/parent/{id}", methods={"GET", "POST"}, name="species_name_by_parent_id_ajax", options={"expose"=true})
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     */
+
+    public function farmerIntroduceDetails($id): Response
+    {
+        $speciesTypes =$this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType'=>'SPECIES_TYPE','status'=>1, 'parent'=>$id));
+
+        return $this->render('@TerminalbdCrm/crmcustomer/farmer-introduce-details.html.twig', [
+            'speciesTypes' => $speciesTypes,
+        ]);
     }
 
 

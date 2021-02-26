@@ -1,0 +1,213 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block body %}
+    <div class="pcoded-inner-content">
+        <!-- [ breadcrumb ] start -->
+        <div class="page-header">
+            <div class="page-block">
+                <div class="row align-items-center">
+                    <ul class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/"><i class="feather icon-home"></i></a></li>
+                        {#<li class="breadcrumb-item"> <a href="{{ path('crm_chick') }}">  {{ 'Chick Life Cycle'|trans }}</a></li>#}
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!-- [ breadcrumb ] end -->
+        <!-- [ Main Content ] start -->
+        <div class="row">
+            <div class="card">
+                <div class="card-header">
+                    <h5>{{ 'Chick Life Cycle'|trans }}</h5>
+                    {% if entities is not empty %}
+                        <div class="btn-group btn-group-sm float-right" role="group" aria-label="Button group with nested dropdown">
+                            <a target="_blank" href="{{ path('crm_chick_report_pdf',{'filterBy': filterBy}) }}" class="btn blue-bg white-font btn-sm"><i class="fa fa-file-pdf"></i> PDF</a>
+                            <a target="_blank" href="{{ path('chick_excel',{'filterBy': filterBy}) }}" class="btn btn-sm bg-primary white-font"><i class="fa fa-file-excel"></i> Excel</a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-8 offset-2">
+                <table class="table ">
+                    <thead class="thead-dark">
+                    {{ form_start(searchForm) }}
+                    <tr>
+                        <th>
+                            {{ form_label(searchForm.startDate, 'Start Date:') }}
+                            {{ form_widget(searchForm.startDate,{'id':'start-date'}) }}
+                        </th>
+                        <th>
+                            {{ form_label(searchForm.endDate, 'End Date:') }}
+                            {{ form_widget(searchForm.endDate,{'id':'end-date'}) }}
+                        </th>
+                        <th>
+                            {{ form_label(searchForm.farmer, 'Farmer Name:') }}
+                            {{ form_widget(searchForm.farmer) }}
+                        </th>
+                        <th rowspan="2">{{ form_widget(searchForm.filter,{'attr': {'style': 'margin-top: 18px'}}) }}</th>
+                    </tr>
+{#                    {{ form_end(searchForm) }}#}
+                    </thead>
+                </table>
+            </div>
+        </div>
+        {% if entities is not empty%}
+            <div class="row">
+                <div class="card" style="overflow-x: scroll">
+                    <div class="card-block">
+                        <h3 class="text-center">NOURISH POULTRY AND HATCHERY LTD</h3>
+                        <h5 class="text-center">UTTARA, DHAKA.</h5>
+                        <h6 class="text-center">{{ entities['life_cycle']|upper}} LIFE CYCLE REPORT</h6>
+                        <table class="table table-borderd">
+                            <thead class="thead-dark">
+                            <tr>
+                                <th>Officer's Name: {{ entities['officer_name'] }}</th>
+{#                                <th>Reporting Date: {{ entities[0].reportingDate|date('d-m-Y') }}</th>#}
+                                <th>Region: {{ entities['officer_region'] }}</th>
+                            </tr>
+                            </thead>
+                        </table>
+
+{#                        <h3 style="text-align: center"></h3>#}
+                        {% for month, entity in entities %}
+                            {% if entity is iterable %}
+                                <button type="button" class="btn btn-primary">
+                                    {{ month }}
+                                </button>
+                                <table class="table table-striped table-bordered table-hover" id="datatable">
+                                    <thead class="thead-dark">
+                                    <tr>
+                                        <th scope="col" colspan="2" style="text-align: center">Agent</th>
+                                        <th scope="col" colspan="3" style="text-align: center">Farmer</th>
+                                        <th scope="col" rowspan="2">H.Date</th>
+                                        <th scope="col" rowspan="2" >VisitingWeek</th>
+                                        <th scope="col" rowspan="2">Total Birds</th>
+                                        <th scope="col" rowspan="2">Age (Day)</th>
+                                        <th scope="col" colspan="2" style="text-align: center">Mortality</th>
+                                        <th scope="col" colspan="2" style="text-align: center">Weight (gm)</th>
+                                        <th scope="col" colspan="3" style="text-align: center">Feed Consumtion</th>
+                                        <th scope="col" colspan="2" style="text-align: center">F.C.R</th>
+                                        <th scope="col" rowspan="2">Hatchery</th>
+                                        <th scope="col" rowspan="2">Breed</th>
+                                        <th scope="col" rowspan="2">Freed</th>
+                                        <th scope="col" rowspan="2">Freed Type</th>
+                                        <th scope="col" rowspan="2">Pro. Date</th>
+                                        <th scope="col" rowspan="2">Batch No.</th>
+                                        <th scope="col" rowspan="2">Remarks</th>
+                                    </tr>
+
+                                    <tr>
+                                        <th scope="col">Name</th>
+                                        <th scope="col">Address</th>
+                                        <th scope="col">Name</th>
+                                        <th scope="col">Address</th>
+                                        <th scope="col">Mobile</th>
+                                        <th scope="col">Pes</th>
+                                        <th scope="col">%</th>
+                                        <th scope="col">Standard</th>
+                                        <th scope="col">Achieved</th>
+                                        <th scope="col">Total (kg)</th>
+                                        <th scope="col">Per Bird (gm)</th>
+                                        <th scope="col">Standard</th>
+                                        <th scope="col">Without M</th>
+                                        <th scope="col">With M</th>
+                                    </tr>
+                                    </thead>
+
+                                    <tbody>
+                                        {% for monthDetail in entity %}
+                                            {% for detail in monthDetail.crmChickLifeCycleDetails %}
+                                                <tr>
+{#                                                    <td>{{ loop.index }}</td>#}
+                                                    {% if loop.index==1 %}
+                                                        <td valign="middle" rowspan="{{ loop.index==1?monthDetail.crmChickLifeCycleDetails|length:0 }}">{{ loop.index==1?monthDetail.customer.agent.name|default(''):'' }}</td>
+                                                    {% endif %}
+                                                    {% if loop.index==1 %}
+                                                        <td valign="middle" rowspan="{{ loop.index==1?monthDetail.crmChickLifeCycleDetails|length:0 }}">{{ loop.index==1?monthDetail.customer.agent.address|default(''):'' }}</td>
+                                                    {% endif %}
+                                                    {% if loop.index==1 %}
+                                                        <td valign="middle" rowspan="{{ loop.index==1?monthDetail.crmChickLifeCycleDetails|length:0 }}">{{ loop.index==1?monthDetail.customer.name|default(''):'' }}</td>
+                                                    {% endif %}
+                                                    {% if loop.index==1 %}
+                                                        <td valign="middle" rowspan="{{ loop.index==1?monthDetail.crmChickLifeCycleDetails|length:0 }}">{{ loop.index==1?monthDetail.customer.address|default(''):'' }}</td>
+                                                    {% endif %}
+                                                    {% if loop.index==1 %}
+                                                        <td valign="middle" rowspan="{{ loop.index==1?monthDetail.crmChickLifeCycleDetails|length:0 }}">{{ loop.index==1?monthDetail.customer.mobile|default(''):'' }}</td>
+                                                    {% endif %}
+                                                    {% if loop.index==1 %}
+                                                        <td valign="middle" rowspan="{{ loop.index==1?monthDetail.crmChickLifeCycleDetails|length:0 }}">{{ monthDetail.hatchingDate|date('d-m-Y') }}</td>
+                                                    {% endif %}
+                                                    <td>{{ detail.visitingWeek|default('N/A') }}</td>
+                                                    <td>{{ detail.totalBirds|default(0) }}</td>
+                                                    <td>{{ detail.ageDays|default(0) }}</td>
+                                                    <td>{{ detail.mortalityPes|default(0) }}</td>
+                                                    <td>{{ detail.mortalityPercent|default(0) }}</td>
+                                                    <td>{{ detail.weightStandard|default(0) }}</td>
+                                                    <td>{{ detail.weightAchieved|default(0) }}</td>
+                                                    <td>{{ detail.feedTotalKg|default(0) }}</td>
+                                                    <td>{{ detail.perBird|default(0) }}</td>
+                                                    <td>{{ detail.feedStandard|default(0) }}</td>
+                                                    <td>{{ detail.withoutMortality|default(0) }}</td>
+                                                    <td>{{ detail.withMortality|default(0) }}</td>
+                                                    {% if loop.index==1 %}
+                                                        <td valign="middle" rowspan="{{ loop.index==1?monthDetail.crmChickLifeCycleDetails|length:0 }}">{{ monthDetail.hatchery.name|default('N/A') }}</td>
+                                                    {% endif %}
+                                                    {% if loop.index==1 %}
+                                                        <td valign="middle" rowspan="{{ loop.index==1?monthDetail.crmChickLifeCycleDetails|length:0 }}">{{ monthDetail.breed.name|default('N/A') }}</td>
+                                                    {% endif %}
+                                                    {% if loop.index==1 %}
+                                                        <td valign="middle" rowspan="{{ loop.index==1?monthDetail.crmChickLifeCycleDetails|length:0 }}">{{ monthDetail.freed.name|default('N/A') }}</td>
+                                                    {% endif %}
+                                                    <td>{{ monthDetail.freed.settingType|default('N/A') }}</td>
+                                                    <td>{{ detail.proDate|date('d-m-Y') }}</td>
+                                                    <td>{{ detail.batchNo|default('N/A') }}</td>
+                                                    <td>{{ detail.remarks|default('N/A') }}</td>
+                                                </tr>
+                                            {% endfor %}
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+        <!-- [ Main Content ] end -->
+    </div>
+{% endblock %}
+{% block cssBlock %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('assets/module/css/app.css') }}">
+{% endblock  %}
+{% block javascripts %}
+    {{ parent() }}
+    <script type="application/javascript" src="{{ asset('assets/module/js/app.js') }}"></script>
+{% endblock  %}
+{% block documentready %}
+    {{ parent() }}
+
+    $('#start-date').datepicker(
+        {
+            dateFormat: 'yy-mm-dd'
+        }
+    );
+    $('#end-date').datepicker(
+        {
+            dateFormat: 'yy-mm-dd'
+        }
+    );
+
+    $('#datatable').DataTable( {
+    "pageLength": 25,
+    "order": [[ 2, "desc" ]],
+    'columnDefs': [ {
+    'targets': [0,4,5,6,12],
+    'orderable': false
+    }],
+    "responsive": false,
+    "scrollX": true
+    });
+{% endblock %}

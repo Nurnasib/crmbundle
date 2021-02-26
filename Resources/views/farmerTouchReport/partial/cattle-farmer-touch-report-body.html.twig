@@ -1,0 +1,27 @@
+{% if farmerTouchReports is not empty %}
+
+    {% for index, detail in farmerTouchReports|sort %}
+        <tr>
+            <td class="detail_id_{{ detail.id }}">{{ index+1 }}</td>
+            <td>{{ detail.customer.name }}</td>
+            {% if fishSpecies is not empty %}
+                {% for fishSpecie in fishSpecies %}
+                    <td>
+                        {% if fishSpecie.id in detail.getCultureSpeciesQtyByItem|keys %}
+                        {{ detail.getCultureSpeciesQtyByItem[fishSpecie.id] }}
+                        {% endif %}
+                    </td>
+                {% endfor %}
+
+            {% endif %}
+            <td>{{ detail.nourishItemName|default('') }}</td>
+            <td>{{ detail.otherCultureSpecies|default('') }}</td>
+            <td>{{ detail.conventionalFeed|default('') }}</td>
+            <td>{{ detail.remarks|default('') }}</td>
+            <td>
+                <a data-action="{{ path('fish_farmer_touch_report_delete',{id:detail.id}) }}" class="btn btn-danger btn-sm remove">x</a>
+            </td>
+        </tr>
+    {% endfor %}
+
+{% endif %}

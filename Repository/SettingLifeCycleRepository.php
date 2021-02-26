@@ -24,5 +24,18 @@ use Doctrine\ORM\EntityRepository;
 class SettingLifeCycleRepository extends EntityRepository
 {
 
+    public function getLifeCycleWeekByLifeCycle($slug){
+        $return = array();
+        $qb = $this->createQueryBuilder('e');
+        $qb->join('e.report','r');
+        $qb->select('e.numberOfWeek');
+        $qb->where('r.slug = :slug')->setParameter('slug',$slug);
+        $result = $qb->getQuery()->getArrayResult();
+        for($i=1; $i<=$result[0]['numberOfWeek'];$i++){
+            $return[$i]= $i.' week';
+        }
+        return $return;
+    }
+
 
 }

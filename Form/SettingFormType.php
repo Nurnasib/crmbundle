@@ -44,6 +44,18 @@ class SettingFormType extends AbstractType
                 'label' => 'label.name',
                 'required' => true
             ])
+            ->add('parent', EntityType::class, array(
+                'required'    => false,
+                'class' => Setting::class,
+                'placeholder' => 'Choose Parent',
+                'choice_label' => 'getNameType',
+                'attr'=>array('class'=>'select2 span12 m-wrap'),
+                'query_builder' => function(EntityRepository $er){
+                    return $er->createQueryBuilder('e')
+//                        ->where("e.parent IS NULL")
+                        ->orderBy('e.name', 'ASC');
+                },
+            ))
             ->add('settingType', ChoiceType::class, [
                 'choices'  => [
                     'Farmer Purpose' => 'PURPOSE',
@@ -55,7 +67,21 @@ class SettingFormType extends AbstractType
                     'Customer Group' => 'CUSTOMER_GROUP',
                     'Visiting_Week'=>'Visiting_Week',
                     'Designation'=>'Designation',
-                    'Farmer Report'=>'FARMER_REPORT'
+                    'Farmer Report'=>'FARMER_REPORT', //parent FARM_TYPE (broiler, sonali, layer, dairy, fattening etc)
+                    'Hatchery'=>'HATCHERY',
+                    'Breed Name'=>'BREED_NAME',
+                    'Breed Type'=>'BREED_TYPE', //parent FARM_TYPE (broiler, sonali, layer, dairy, fattening etc)
+                    'Feed Type'=>'FEED_TYPE',
+                    'Feed Name'=>'FEED_NAME',
+                    'Feed Mill'=>'FEED_MILL',
+                    'Species Type'=>'SPECIES_TYPE', //parent BREED_NAME (poultry, cattle, fish etc)
+                    'Color'=>'COLOR',
+                    'Chick Type'=>'CHICK_TYPE',
+                    'Training Material'=>'TRAINING_MATERIAL', //parent BREED_NAME (poultry, cattle, fish etc)
+                    'Disease Name'=>'DISEASE_NAME', //parent BREED_NAME (poultry, cattle, fish etc)
+                    'Product Type'=>'PRODUCT_TYPE', //parent FARM_TYPE (broiler, sonali, layer, dairy, fattening etc)
+                    'Lab Name'=>'LAB_NAME', //parent FARM_TYPE (broiler, sonali, layer, dairy, fattening etc)
+                    'Lab Service Name'=>'LAB_SERVICE_NAME', //parent FARM_TYPE (broiler, sonali, layer, dairy, fattening etc)
                 ],
             ])
 

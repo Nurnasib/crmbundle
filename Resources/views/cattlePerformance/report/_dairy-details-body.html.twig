@@ -1,0 +1,75 @@
+<div class="card-body card-body-inner" style="padding: 0 10px; overflow-x: scroll">
+    <div class="row">
+        <table class="table table-striped table-bordered table-hover cattle_life_cycle" id="datatable">
+            <thead class="thead-dark">
+            <tr>
+
+                <th scope="col" rowspan="2">S/N</th>
+                <th style="width: 120px" scope="col" rowspan="2">Visiting Date</th>
+                <th scope="col" rowspan="2">Age of Cow (Month)</th>
+                <th scope="col" rowspan="2">Present Body  Weight (Kg)</th>
+                <th scope="col" rowspan="2">Lactation No</th>
+                <th scope="col" rowspan="2">Age of Lactation</th>
+                <th scope="col" rowspan="2">Av. Milk Yield Per Day (L)</th>
+                <th scope="col" rowspan="2">Av. Milk Yield Per Kg Con. Feed (L)</th>
+                <th scope="col" rowspan="2">Av. Milk Yield Per Kg DM (L)</th>
+                <th scope="col" rowspan="2">Milk Fat %</th>
+
+                <th scope="col" colspan="3">Con. Feed Intake (Kg)</th>
+                <th scope="col" colspan="2">Fodder (Kg)</th>
+                <th scope="col" colspan="2">DM of Fodder (Kg)</th>
+
+                <th scope="col" rowspan="2">Total DM (Kg)</th>
+
+                <th style="width: 120px" scope="col" rowspan="2">DM Requirement (Kg)</th>
+                <th scope="col" rowspan="2">Name of Ready Feed</th>
+                <th scope="col" rowspan="2">Remarks</th>
+
+            </tr>
+            <tr>
+                <th scope="col">Ready Feed</th>
+                <th scope="col">Conventional </th>
+                <th scope="col">Total</th>
+
+                <th scope="col">Gr. Grass</th>
+                <th scope="col">Straw</th>
+
+                <th scope="col">Gr. Grass</th>
+                <th scope="col">Straw</th>
+            </tr>
+            </thead>
+            <tbody class="dairyLifeCycleDetailsSection">
+
+            {% if cattleLifeCycle.crmCattleLifeCycleDetails is not empty %}
+                {% for index, detail in cattleLifeCycle.crmCattleLifeCycleDetails %}
+                    <tr>
+                        <td class="detail_id_{{ detail.id }}">{{ index+1 }}</td>
+                        <td>{{ detail.visitingDate|date("d-m-Y") }}</td>
+                        <td>{{ detail.ageOfCattleMonth }}</td>
+                        <td>{{ detail.presentBodyWeight }}</td>
+                        <td>{{ detail.lactationNo }}</td>
+                        <td>{{ detail.ageOfLactation }}</td>
+                        <td class="averageWeightPerDay">{{ detail.averageWeightPerDay }}</td>
+                        <td class="averageWeightPerKgConsumptionFeed">{{ detail.averageWeightPerKgConsumptionFeed }}</td>
+                        <td class="averageWeightPerKgDm">{{ detail.averageWeightPerKgDm }}</td>
+                        <td class="milkFatPercentage">{{ detail.milkFatPercentage }}</td>
+                        <td class="consumptionFeedIntakeReadyFeed">{{ detail.consumptionFeedIntakeReadyFeed }}</td>
+                        <td class="consumptionFeedIntakeConventional">{{ detail.consumptionFeedIntakeConventional }}</td>
+                        <td class="consumptionFeedIntakeTotal">{{ detail.consumptionFeedIntakeTotal }}</td>
+                        <td class="fodderGreenGrassKg">{{ detail.fodderGreenGrassKg }}</td>
+                        <td class="fodderStrawKg">{{ detail.fodderStrawKg }}</td>
+                        <td class="dmOfFodderGreenGrassKg">{{ detail.dmOfFodderGreenGrassKg }}</td>
+                        <td class="dmOfFodderStrawKg">{{ detail.dmOfFodderStrawKg }}</td>
+                        <td class="totalDmKg">{{ detail.totalDmKg }}</td>
+                        <td class="dmRequirementByBwtKg">{{ detail.dmRequirementByBwtKg }}</td>
+                        <td class="nameOfReadyFeed">{{ detail.nameOfReadyFeed }}</td>
+                        <td class="remarks">{{ detail.remarks }}</td>
+                    </tr>
+                {% endfor %}
+            {% endif %}
+
+            </tbody>
+        </table>
+
+    </div>
+</div>

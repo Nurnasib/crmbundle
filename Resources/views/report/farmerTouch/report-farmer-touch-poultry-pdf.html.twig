@@ -1,0 +1,78 @@
+{% if entities is not empty %}
+    <div style="text-align: center">
+        <p>{{ 'NOURISH POULTRY AND HATCHERY LTD'|trans }}</p>
+        <p>{{ 'UTTARA, DHAKA.'|trans }}</p>
+        <p>{{ 'Agent Wise Farmers List'|trans }}</p>
+    </div>
+    <table width="100%">
+        <thead>
+        <tr>
+            <th align="left">{{ 'Name of CSO'|trans }}: {{ entities.employeeName|default('N/A') }}</th>
+            <th align="right">Region: {{ entities.employeeRegionName|default('N/A') }}</th>
+        </tr>
+        </thead>
+    </table>
+    <table border="1" cellpadding="0" cellspacing="0">
+        <thead>
+        <tr>
+            <th scope="col" rowspan="2" style="text-align: center">{{ 'Agent ID / Mobile No'|trans }}</th>
+            <th scope="col" rowspan="2" style="text-align: center">{{ 'Name of Agents'|trans }}</th>
+            <th scope="col" rowspan="2" style="text-align: center">{{ 'District'|trans }}</th>
+            <th scope="col" rowspan="2" style="text-align: center">{{ 'Thana'|trans }}</th>
+            <th scope="col" rowspan="2" style="text-align: center">{{ 'Sl No'|trans }}</th>
+            <th scope="col" rowspan="2" style="text-align: center">{{ 'Name of Farmers'|trans }}</th>
+            <th scope="col" rowspan="2" style="text-align: center">{{ 'Address'|trans }}</th>
+            <th scope="col" rowspan="2" style="text-align: center">{{ 'Mobile'|trans }}</th>
+            <th scope="col" colspan="{{ species|length }}" style="text-align: center">{{ 'Capacity'|trans }}</th>
+            <th scope="col" colspan="2" style="text-align: center">{{ 'Feed'|trans }}</th>
+            <th scope="col" rowspan="2" style="text-align: center">{{ 'Remarks'|trans }}</th>
+        </tr>
+
+        <tr>
+            {% if species is not empty %}
+                {% for poultryType in species %}
+                    <th scope="col">{{ poultryType.name }}</th>
+                {% endfor %}
+            {% endif %}
+            <th scope="col">{{ 'Nourish'|trans }}</th>
+            <th scope="col">{{ 'Others'|trans }}</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for key, entity in entities %}
+            {% if entity is iterable %}
+                {% set count = 1 %}
+                {% for detail in entity %}
+                    {% if detail is iterable %}
+                        <tr>
+                            {% if loop.index==1 %}
+                                <td rowspan="{{ loop.index==1?entity|length:0 }}">{{ detail.agentMobile }}</td>
+                            {% endif %}
+                            {% if loop.index==1 %}
+                                <td rowspan="{{ loop.index==1?entity|length:0 }}">{{ key }}</td>
+                            {% endif %}
+                            {% if loop.index==1 %}
+                                <td rowspan="{{ loop.index==1?entity|length:0 }}">{{ detail.agentDistrictName }}</td>
+                            {% endif %}
+                            {% if loop.index==1 %}
+                                <td rowspan="{{ loop.index==1?entity|length:0 }}">{{ detail.agentThana }}</td>
+                            {% endif %}
+                            <td>{{ count }}</td>
+                            <td>{{ detail.farmerName|default('N/A') }}</td>
+                            <td>{{ detail.farmerAddress|default('N/A') }}</td>
+                            <td>{{ detail.farmerMobile|default('N/A') }}</td>
+                            {% for item in detail.cultureSpeciesItemAndQty|json_decode() %}
+                                <td>{{ item }}</td>
+                            {% endfor %}
+                            <td>{{ detail.nourishItemName|default('N/A') }}</td>
+                            <td>{{ detail.otherCultureSpecies|default('N/A') }}</td>
+                            <td>{{ detail.remarks|default('N/A') }}</td>
+                            {% set count = count + 1 %}
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+        {% endfor %}
+        </tbody>
+    </table>
+{% endif %}

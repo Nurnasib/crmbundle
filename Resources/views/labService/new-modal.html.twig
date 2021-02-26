@@ -1,0 +1,121 @@
+{% extends 'admin/layout.html.twig' %}
+{#{% block body_id 'kpi_domain_new' %}#}
+{% block body %}
+    <div class="pcoded-inner-content">
+        <!-- [ breadcrumb ] start -->
+        <!-- [ breadcrumb ] end -->
+        <!-- [ Main Content ] start -->
+        <div class="row">
+            <div class="card">
+                <div class="portlet box">
+                    <div class="portlet-body form">
+                        <div class="row form-body" style="padding-top: 0!important;">
+                            <div class="form-inner-no-space">
+                                <div class="row">
+                                    <div class="col-md-12 text-center">
+                                        <h4>{{ 'NOURISH POULTRY & HATCHERY LTD'|trans }}</h4>
+                                        <h5>{{ 'Uttara, Dhaka.'|trans }}</h5>
+                                        <h4>{{ 'Summery of Lab Service'|trans }}, {{ "now"|date('Y') }}</h4>
+                                    </div>
+                                </div>
+                                <div id="exTab2" class="lab_service_tab">
+                                    <ul class="nav nav-tabs">
+                                        {% for index, lab in labs %}
+                                            <li class="">
+                                                <a href="#{{ lab.id }}" class="lab_tab {{ index==0?'active':'' }}" data-toggle="tab">{{ lab.name }}</a>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+
+                                    <div class="tab-content lab_service_section">
+                                        {% for index, lab in labs %}
+                                            <div class="tab-pane {{ index==0?'active':'' }}" id="{{ lab.id }}">
+                                                <div class="row" style="text-align: left">
+                                                    <div class="col-md-3"><h4>{{ 'Name'|trans }}: {{ user.name }}</h4></div>
+                                                    <div class="col-md-3"><h4>{{ 'Designation'|trans }}: {{ user.designation.name|default('') }}</h4></div>
+                                                    <div class="col-md-3"><h4>{{ 'Region'|trans }}: {{ user.regional.name|default('') }}</h4></div>
+                                                    <div class="col-md-3"><h4>{{ 'Name of Lab'|trans }}: {{ lab.name|default('') }}</h4></div>
+                                                </div>
+
+                                                <table class="table table-bordered lab_service_table" style="table-layout: fixed;" id="datatable">
+                                                    <thead>
+                                                    <tr>
+                                                        <th>{{ 'Services'|trans }}</th>
+                                                        {% for month in 1..12 %}
+                                                            {% set date = month ~ "/1" %}
+                                                            <td class="text-left">{{ date|date("F") }}</td>
+                                                        {% endfor %}
+                                                        <td>{{ 'Total'|trans }}-{{ "now"|date('Y') }}</td>
+                                                    </tr>
+                                                    </thead>
+
+                                                    <tbody>
+                                                    {% for service in services %}
+                                                        {% set total = 0 %}
+                                                        <tr>
+                                                            <td>{{ service.name }}</td>
+
+                                                            {% for month in 1..12 %}
+                                                                {% set datea = month ~ "/1" %}
+                                                                {% set monthName =datea|date("F")|lower %}
+                                                                {% set monthNameDigit =datea|date("m") %}
+                                                                {% set currentMonth = "now"|date('m') %}
+                                                                <td style="padding: 0!important;" class="text-left">
+                                                                    {% set total = total+labServices[lab.id][service.id][monthName]['value'] %}
+                                                                    {% if currentMonth==monthNameDigit or currentMonth-1==monthNameDigit %}
+                                                                        <input class="form-control month_{{ month }}" type="number" min="0" data-meta-key="{{ monthName }}" data-entity-id="{{ labServices[lab.id][service.id][monthName]['id'] }}" value="{{ labServices[lab.id][service.id][monthName]['value'] }}">
+                                                                    {% else %}
+                                                                        {{ labServices[lab.id][service.id][monthName]['value'] }}
+                                                                        <input class="form-control month_{{ month }}" type="hidden" min="0" value="{{ labServices[lab.id][service.id][monthName]['value'] }}">
+                                                                    {% endif %}
+                                                                </td>
+                                                            {% endfor %}
+                                                            <td class="total">{{ total|number_format(2,'.','') }}</td>
+
+                                                        </tr>
+
+                                                    {% endfor %}
+
+                                                    </tbody>
+                                                    <tfoot>
+                                                    <tr>
+                                                        <td>{{ 'Total'|trans }}</td>
+                                                        {% for month in 1..12 %}
+                                                            <td class="total_month_{{ month }}"></td>
+                                                        {% endfor %}
+
+                                                        <td class="grand_total"></td>
+
+                                                    </tr>
+                                                    </tfoot>
+                                                </table>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- [ Main Content ] end -->
+    </div>
+
+    <style>
+
+    </style>
+{% endblock %}
+ {% block cssBlock %}
+     <link rel="stylesheet" href="{{ asset('assets/module/css/app.css') }}">
+     <link rel="stylesheet" href="{{ asset('bundles/terminalbdcrm/css/crm.css') }}">
+ {% endblock  %}
+{% block javascripts %}
+    {#<script>#}
+    {{ parent() }}
+    <script type="application/javascript" src="{{ asset('bundles/terminalbdcrm/js/crm/lab-service.js') }}"></script>
+{% endblock  %}
+
+

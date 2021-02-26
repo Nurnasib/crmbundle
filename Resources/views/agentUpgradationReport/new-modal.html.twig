@@ -1,0 +1,66 @@
+<div class="portlet box">
+    <div class="portlet-title">
+        <div class="caption"></div>
+    </div>
+    {#{{ dump(report) }}#}
+
+    <div class="portlet-body form">
+
+        <div class="row form-body ">
+            <div class="form-inner-no-space">
+                <div class="row">
+                    <div class="col-md-12 text-center">
+                        <h4>{{ 'NOURISH POULTRY & HATCHERY LTD'|trans }}</h4>
+                        <h5>{{ 'Uttara, Dhaka.'|trans }}</h5>
+                        <h4>{{ 'New Agent/Agent Upgradation Report'|trans }}</h4>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 agent_upgradation_report_section">
+                        {{ form_start(form, {'attr': {'method':'post', 'action': path('agent_upgradation_report_new_modal',{'id':agent.id,'purpose':purpose.id }),'class': 'form-horizontal right','id':'agent_upgradation_report'}}) }}
+                        <table class="table table-bordered" id="datatable">
+                            <thead>
+                            <tr>
+                                <th rowspan="2">{{ 'Agent'|trans }}</th>
+                                <th rowspan="2">{{ 'Feed Type'|trans }}</th>
+                                <th colspan="2">{{ 'Agent Status'|trans }}</th>
+                                <th colspan="2">{{ 'Previous Category'|trans }}</th>
+                                <th colspan="2">{{ 'Present Category'|trans }}</th>
+                                <th style="width: 250px;" rowspan="2">{{ 'Rmarks'|trans }}</th>
+                                <th rowspan="2">{{ 'Action'|trans }}</th>
+                            </tr>
+                            <tr>
+                                <td>{{ 'New Agent'|trans }}</td>
+                                <td>{{ 'Upgrade Agent'|trans }}</td>
+                                <td>{{ 'Sale (Ton)'|trans }}</td>
+                                <td>{{ 'Category'|trans }}</td>
+                                <td>{{ 'Sale (Ton)'|trans }}</td>
+                                <td>{{ 'Category'|trans }}</td>
+                            </tr>
+                            <tr>
+                                <td>{{ agent.name }}</td>
+                                <td>{{ form_widget(form.breedName) }}</td>
+                                <td colspan="2">{{ form_widget(form.agentStatus) }}</td>
+                                <td>{{ form_widget(form.previousSaleTon,{'type':'number'}) }}</td>
+                                <td></td>
+                                <td>{{ form_widget(form.presentSaleTon,{'type':'number'}) }}</td>
+                                <td></td>
+                                <td>{{ form_widget(form.remarks) }}</td>
+                                <td>
+                                    <button type="button" title="{{ 'Save'|trans }}" class="btn btn-primary btn-sm form-submit agent_upgradation_report_button"><i class="fa fa-save"></i></button>
+                                </td>
+                            </tr>
+                            </thead>
+                            <tbody class="agent_upgradation_report_detail">
+                            {% include '@TerminalbdCrm/agentUpgradationReport/details-body.html.twig' %}
+                            </tbody>
+                        </table>
+
+                        {{ form_widget(form._token) }}
+                        {{ form_end(form) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

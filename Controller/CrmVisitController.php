@@ -17,6 +17,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Terminalbd\CrmBundle\Entity\ChickLifeCycle;
 use Terminalbd\CrmBundle\Entity\CrmCustomer;
 use Terminalbd\CrmBundle\Entity\CrmVisit;
 use Terminalbd\CrmBundle\Entity\CrmVisitDetails;
@@ -38,9 +39,12 @@ class CrmVisitController extends AbstractController
      */
     public function index()
     {
-        $entities= $this->getDoctrine()->getRepository(CrmVisit::class)->findAll();
+        $reports = $this->getDoctrine()->getRepository(Setting::class)->findBy(['settingType'=>'FARMER_REPORT','slug'=>['fcr-after-sale-boiler','fcr-after-sale-sonali']]);
+
+        $entities= $this->getDoctrine()->getRepository(CrmVisit::class)->findBy(array('employee'=>$this->getUser()));
         return $this->render('@TerminalbdCrm/crmvisit/index.html.twig',[
-            'entities' => $entities
+            'entities' => $entities,
+            'reports' => $reports,
         ]);
     }
 
@@ -52,11 +56,24 @@ class CrmVisitController extends AbstractController
     public function new(Request $request){
 
         $entity = new CrmVisit();
-        $em = $this->getDoctrine()->getManager();
-        $entity->setEmployee($this->getUser());
-        $em->persist($entity);
-        $em->flush();
-        return $this->redirectToRoute('crm_visit_edit',array('id'=>$entity->getId()));
+
+        $form = $this->createForm(CrmVisitFormType::class, $entity,array('user' => $this->getUser()))
+            ->add('Save', SubmitType::class);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entity->setEmployee($this->getUser());
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($entity);
+            $em->flush();
+            return $this->redirectToRoute('crm_visit_edit',array('id'=>$entity->getId()));
+        }
+
+        return $this->render('@TerminalbdCrm/crmvisit/new.html.twig', [
+            'entity' => $entity,
+            'form' => $form->createView(),
+            'employee' => $this->getUser(),
+        ]);
 
     }
 
@@ -70,19 +87,17 @@ class CrmVisitController extends AbstractController
     public function edit(Request $request, CrmVisit $entity): Response
     {
         $data = $request->request->all();
+        $reports = $this->getDoctrine()->getRepository(Setting::class)->findBy(['settingType'=>'FARMER_REPORT','slug'=>['fcr-after-sale-boiler','fcr-after-sale-sonali']]);
 
         $form = $this->createForm(CrmVisitFormType::class, $entity,array('user' => $this->getUser()))
-            ->add('SaveAndCreate', SubmitType::class)
             ->add('Save', SubmitType::class);
+        $form->remove('location');
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
             $this->addFlash('success', 'post.updated_successfully');
-//            $this->getDoctrine()->getRepository(CrmVisitDetails::class)->insertDailyActivity($entity,$data);
-            if ($form->get('SaveAndCreate')->isClicked()) {
-                return $this->redirectToRoute('new_visit');
-            }
-            return $this->redirectToRoute('crm_visit');
+
+            return $this->redirectToRoute('crm_firmTypesvisit');
         }
         $agent=$this->getDoctrine()->getRepository(Agent::class)->getLocationWise($entity->getEmployee());
         $purpose =$this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType'=>'PURPOSE'));
@@ -90,23 +105,36 @@ class CrmVisitController extends AbstractController
         $otherAgentPurpose =$this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType'=>'OTHER_AGENT_PURPOSE'));
         $subAgentPurpose =$this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType'=>'SUB_AGENT_PURPOSE'));
         $lifeCycleReport =$this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType'=>'FARMER_REPORT'));
+        $firmTypes =$this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType'=>'FARM_TYPE','status'=>1));
+        $breedTypes =$this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType'=>'BREED_TYPE','status'=>1));
+        $breedNames =$this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType'=>'BREED_NAME','status'=>1));
         $farmers =$this->getDoctrine()->getRepository(CrmCustomer::class)->getLocationWise($entity->getEmployee(),'farmer');
         $subAgents =$this->getDoctrine()->getRepository(CrmCustomer::class)->getLocationWise($entity->getEmployee(),'sub-agent');
         $otherAgents =$this->getDoctrine()->getRepository(CrmCustomer::class)->getLocationWise($entity->getEmployee(),'other-agent');
 
+        $firmTypesArray=array();
 
-        return $this->render('@TerminalbdCrm/crmvisit/new.html.twig', [
+        foreach ($firmTypes as $firmType){
+            $firmTypesArray[$firmType->getParent()->getName()][]=$firmType;
+        }
+
+
+        return $this->render('@TerminalbdCrm/crmvisit/edit.html.twig', [
             'entity' => $entity,
             'purposes'=>$purpose,
             'agentPurposes'=>$agentPurpose,
             'otherAgentPurposes'=>$otherAgentPurpose,
             'subAgentPurposes'=>$subAgentPurpose,
             'lifeCycleReport'=>$lifeCycleReport,
+            'firmTypes'=>$firmTypesArray,
+            'breedTypes'=>$breedTypes,
+            'breedNames'=>$breedNames,
             'agents'=>$agent,
             'farmers'=>$farmers,
             'subAgents'=>$subAgents,
             'otherAgents'=>$otherAgents,
             'form' => $form->createView(),
+            'fcr_after_reports' => $reports,
         ]);
     }
 
@@ -142,18 +170,30 @@ class CrmVisitController extends AbstractController
         if($request->request->get('farmer')){
             $farmer = $this->getDoctrine()->getRepository(CrmCustomer::class)->find($request->request->get('farmer'));
             $entity->setCrmCustomer($farmer?$farmer:null);
+            $entity->setAgent($entity->getCrmCustomer()->getAgent());
         }
-        $agent=null;
-        if($request->request->get('agent')){
+
+        if($request->request->get('process')=='agent' && $request->request->get('agent')!=''){
             $agent = $this->getDoctrine()->getRepository(Agent::class)->find($request->request->get('agent'));
             $entity->setAgent($agent?$agent:null);
         }
 
         $purpose = $this->getDoctrine()->getRepository(Setting::class)->find($request->request->get('purpose'));
 
+        if($request->request->get('farmer_firm_type')!=''){
+            $farmer_firm_type = $this->getDoctrine()->getRepository(Setting::class)->find($request->request->get('farmer_firm_type'));
+            $entity->setFirmType($farmer_firm_type?$farmer_firm_type:null);
+        }
+
+        if($request->request->get('farmer_report')!=''){
+            $farmer_report = $this->getDoctrine()->getRepository(Setting::class)->find($request->request->get('farmer_report'));
+            $entity->setReport($farmer_report?$farmer_report:null);
+        }
+
         $entity->setCrmVisit($crmVisit?$crmVisit:null);
         $entity->setPurpose($purpose?$purpose:null);
-        $entity->setFarmCapacity($request->request->get('farmer_capacity')?$request->request->get('farmer_capacity'):null);
+        $entity->setFarmCapacity($request->request->get('farmer_capacity')!=''?$request->request->get('farmer_capacity'):null);
+
         $entity->setComments($request->request->get('comments'));
         $entity->setProcess($request->request->get('process'));
         $em->persist($entity);
@@ -172,12 +212,17 @@ class CrmVisitController extends AbstractController
 
     public function CRMDetailsRefresh($id, $process='farmer'): Response
     {
+        $reports = $this->getDoctrine()->getRepository(Setting::class)->findBy(['settingType'=>'FARMER_REPORT','slug'=>['fcr-after-sale-boiler','fcr-after-sale-sonali']]);
+
         $entity = $this->getDoctrine()->getRepository(CrmVisit::class)->find($id);
         $lifeCycleReport =$this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType'=>'FARMER_REPORT'));
+        $breedTypes =$this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType'=>'BREED_TYPE','status'=>1));
 
         return $this->render('@TerminalbdCrm/crmvisit/partial/'.$process.'_information.html.twig', [
             'entity' => $entity,
             'lifeCycleReport' => $lifeCycleReport,
+            'breedTypes' => $breedTypes,
+            'fcr_after_reports' => $reports,
         ]);
     }
 
@@ -198,10 +243,23 @@ class CrmVisitController extends AbstractController
         ));
     }
 
+    /**
+     * @Route("/report/{id}/ajax", methods={"GET"}, name="crm_report_farm_type_ajax", options={"expose"=true})
+     */
+    public function getReportByFarmType($id): Response
+    {
+        $entities = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType'=>'FARMER_REPORT','parent'=>$id));
 
+        $arrayData = array();
+        /**@var Setting $entity*/
+        foreach ($entities as $entity){
+            if(!in_array($entity->getSlug(),['fcr-after-sale-boiler','fcr-after-sale-sonali'])){
+                $arrayData[]=array('id'=>$entity->getId(),'name'=>$entity->getName());
+            }
 
+        }
 
-
-
+        return new JsonResponse($arrayData);
+    }
 
 }

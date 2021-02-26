@@ -1,0 +1,32 @@
+{% if cattleLifeCycle.crmCattleLifeCycleDetails is not empty %}
+
+    {% for index, detail in cattleLifeCycle.crmCattleLifeCycleDetails|sort %}
+        <tr>
+            <td class="detail_id_{{ detail.id }}">{{ index+1 }}</td>
+            <td>{{ detail.visitingDate|date("d-m-Y") }}</td>
+            <td>{{ detail.ageOfCattleMonth }}</td>
+            <td>{{ detail.previousBodyWeight }}</td>
+            <td>{{ detail.presentBodyWeight }}</td>
+            <td>{{ detail.presentBodyWeight - detail.previousBodyWeight }}</td>
+            <td>{{ detail.durationOfBwtDifference }}</td>
+            <td class="averageWeightPerDay">{{ detail.averageWeightPerDay }}</td>
+            <td class="averageWeightPerKgConsumptionFeed">{{ detail.averageWeightPerKgConsumptionFeed }}</td>
+            <td class="averageWeightPerKgDm">{{ detail.averageWeightPerKgDm }}</td>
+            <td class="consumptionFeedIntakeReadyFeed">{{ detail.consumptionFeedIntakeReadyFeed }}</td>
+            <td class="consumptionFeedIntakeConventional">{{ detail.consumptionFeedIntakeConventional }}</td>
+            <td class="consumptionFeedIntakeTotal">{{ detail.consumptionFeedIntakeTotal }}</td>
+            <td class="fodderGreenGrassKg">{{ detail.fodderGreenGrassKg }}</td>
+            <td class="fodderStrawKg">{{ detail.fodderStrawKg }}</td>
+            <td class="dmOfFodderGreenGrassKg">{{ detail.dmOfFodderGreenGrassKg }}</td>
+            <td class="dmOfFodderStrawKg">{{ detail.dmOfFodderStrawKg }}</td>
+            <td class="totalDmKg">{{ detail.totalDmKg }}</td>
+            <td class="dmRequirementByBwtKg">{{ detail.dmRequirementByBwtKg }}</td>
+            <td class="nameOfReadyFeed">{{ detail.nameOfReadyFeed }}</td>
+            <td class="remarks">{{ detail.remarks }}</td>
+            <td>
+                <a data-action="{{ path('cattle_life_cycle_detail_delete',{id:detail.id}) }}" class="btn btn-danger btn-sm remove">x</a>
+            </td>
+        </tr>
+    {% endfor %}
+
+{% endif %}

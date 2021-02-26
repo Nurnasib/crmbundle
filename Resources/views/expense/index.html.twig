@@ -19,12 +19,12 @@
             <div class="card">
                 <div class="card-header">
                     <h5>{{ 'Expense'|trans }}</h5>
-                    <div class="card-header-right">
+                    {#<div class="card-header-right">
                         <div class="btn-group btn-group-sm" role="group" aria-label="Button group with nested dropdown">
                             <a href="{{ path('crm_expense_new') }}" class="btn btn-sm  green-bg white-font"><i class="fas fa-plus"></i>{{ 'Add New'|trans }}</a>
                             <a href="{{ path('crm_expense') }}" class="btn btn-sm gray-bg white-font"><i class="fa fa-th-list"></i>{{ 'Expense'|trans }}</a>
                         </div>
-                    </div>
+                    </div>#}
                 </div>
             </div>
         </div>
@@ -48,7 +48,7 @@
                             <th scope="col">Service Charge</th>
                             <th scope="col">Others</th>
 
-                            <th scope="col text-center"><i class="feather icon-settings"></i></th>
+                            {#<th scope="col text-center"><i class="feather icon-settings"></i></th>#}
                         </tr>
                         </thead>
                         <tbody>
@@ -67,10 +67,10 @@
                             <td>{{ entity.tollBill }}</td>
                             <td>{{ entity.serviceCharge }}</td>
                             <td>{{ entity.others }}</td>
-                            <td>
-                                <a class="btn btn-mini yellow-bg white-font" href="{{ path('crm_expense_edit',{'id':entity.id}) }}"><i class="feather icon-edit"></i> Edit</a>
-                                <a class="btn  btn-transparent btn-mini red-font remove" href="javascript:" data-action="{{ path('crm_expense_delete',{'id':entity.id}) }}"><i class="fa fa-remove"></i></a>
-                            </td>
+                            {#<td>
+                                #}{#<a class="btn btn-mini yellow-bg white-font" href="{{ path('crm_expense_edit',{'id':entity.id}) }}"><i class="feather icon-edit"></i> Edit</a>#}{#
+                                #}{#<a class="btn  btn-transparent btn-mini red-font remove" href="javascript:" data-action="{{ path('crm_expense_delete',{'id':entity.id}) }}"><i class="fa fa-remove"></i></a>#}{#
+                            </td>#}
 
                         </tr>
                         {% endfor %}
@@ -89,13 +89,4 @@
     {{ parent() }}
     <script type="application/javascript" src="{{ asset('assets/module/js/app.js') }}"></script>
 {% endblock  %}
-{% block documentready %}
-    {{ parent() }}
-    $('#datatable').DataTable( {
-    "pageLength": 25,
-    'columnDefs': [ {
-    'targets': [0,4],
-    'orderable': false
-    }]
-    });
-{% endblock %}
+

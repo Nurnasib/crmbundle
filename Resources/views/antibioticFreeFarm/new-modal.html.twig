@@ -1,0 +1,224 @@
+<div class="portlet box">
+    <div class="portlet-title">
+        <div class="caption">{{report.name}}</div>
+    </div>
+    {#{{ dump(report) }}#}
+
+    <div class="portlet-body form antibiotic_free_farm_section">
+        <div class="row form-body ">
+            <div class="form-inner-no-space">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h4>NOURISH POULTRY & HATCHERY LTD</h4>
+                        <h5>Uttara, Dhaka.</h5>
+                        <h4>{{ 'Medicine & Vaccine Cost for'|trans }} {{report.name}}</h4>
+                    </div>
+                </div>
+                <div class="antibiotic_free_farm_details_section">
+                    {{ form_start(form, {'attr': {'method':'post','action': path('antibiotic_free_farm_new_modal',{'id':crmCustomer.id,'report':report.id }),'class': 'form-horizontal right','id':'antibiotic_free_farm_form'}}) }}
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="col-md-4 control-label" for="">{{ 'Agent'|trans }}</label>
+                                <div class="col-md-8">
+                                    <span class="not-blank"> {{ 'Required'|trans }}</span>
+                                    <p style="text-align: left" class="form-control">{{ crmCustomer.agent.name }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4"></div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="col-md-4 control-label" for="">{{ 'Farmer Name'|trans }}</label>
+                                <div class="col-md-8">
+                                    <span class="not-blank"> {{ 'Required'|trans }}</span>
+                                    <p style="text-align: left" class="form-control">{{ crmCustomer.name }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="col-md-4 control-label" for="">{{ 'Reporting Month'|trans }}</label>
+                                <div class="col-md-8">
+                                    <span class="not-blank"> {{ 'Required'|trans }}</span>
+                                    <div class="date_section">
+                                        {{ form_widget(form.reporting_month) }}
+                                        {{ form_errors(form.reporting_month) }}
+                                        {#<input autocomplete="off" type="text" name="hatching_date" class="form-control datePicker" value="{{ entity.hatchingDate?entity.hatchingDate|date("d-m-Y"):'' }}">#}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4"></div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="col-md-4 control-label" for="">{{ 'Hatching Date'|trans }}</label>
+                                <div class="col-md-8">
+                                    <span class="not-blank"> {{ 'Required'|trans }}</span>
+                                    <div class="date_section">
+                                        {{ form_widget(form.hatching_date) }}
+                                        {{ form_errors(form.hatching_date) }}
+                                        {#<input autocomplete="off" type="text" name="hatching_date" class="form-control datePicker" value="{{ entity.hatchingDate?entity.hatchingDate|date("d-m-Y"):'' }}">#}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                {{ form_label(form.hatchery, 'Hatchery'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
+                                <div class="col-md-8">
+                                    {#<span class="not-blank"> {{ 'Required'|trans }}</span>#}
+                                    {{ form_widget(form.hatchery) }}
+                                    {{ form_errors(form.hatchery) }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                {{ form_label(form.breed, 'Breed'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
+                                <div class="col-md-8">
+                                    {#<span class="not-blank"> {{ 'Required'|trans }}</span>#}
+                                    {{ form_widget(form.breed) }}
+                                    {{ form_errors(form.breed) }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                {{ form_label(form.feed, 'Feed'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
+                                <div class="col-md-8">
+                                    {{ form_widget(form.feed) }}
+                                    {{ form_errors(form.feed) }}
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <table class="table table-bordered">
+                                <thead>
+                                <tr>
+                                    <th>{{'SL NO'|trans }}</th>
+                                    <th>{{'Particulars'|trans}}</th>
+                                    <th>{{'Quantity'|trans }}</th>
+                                    <th>{{'Particulars'|trans}}</th>
+                                    <th>{{'Quantity'|trans }}</th>
+                                    <th>{{'Particulars'|trans}}</th>
+                                    <th>{{'Quantity'|trans }}</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>{{ '1'|trans }}</td>
+                                    <td>{{ 'Total Chicks (Pcs)'|trans }}</td>
+                                    <td>{{ form_widget(form.totalStockedChicksPcs,{'type':'number'}) }}</td>
+                                    <td>{{ 'Total Feed (Kg)'|trans }}</td>
+                                    <td>{{ form_widget(form.totalFeedUsedKg,{'type':'number'}) }}</td>
+                                    <td>{{ 'Age (days)'|trans }}</td>
+                                    <td>{{ form_widget(form.ageDays,{'type':'number'}) }}</td>
+                                </tr>
+                                <tr>
+                                    <td>{{ '2'|trans}}</td>
+                                    <td>{{ 'Mortality (Pcs)'|trans }}</td>
+                                    <td>{{ form_widget(form.mortality,{'type':'number'}) }}</td>
+                                    <td>{{ 'Total Broiler Wt (Kg)'|trans }}</td>
+                                    <td>{{ form_widget(form.totalBroilerWeightKg,{'type':'number'}) }}</td>
+                                    <td>{{ 'FCR'|trans }}</td>
+                                    <td class="fcrCalculationValue"></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-md-12">
+                            <h3>{{ 'Medicine Cost'|trans }}:</h3>
+
+                            <table class="table table-bordered">
+                                <thead>
+                                <tr>
+                                    <th>{{ 'Name of Medicine'|trans }}</th>
+                                    <th>{{ 'Duration of Use (Age)'|trans }}</th>
+                                    <th>{{ 'Purpose'|trans }}</th>
+                                    <th>{{ 'Dosage'|trans }}</th>
+                                    <th>{{ 'Quantity'|trans }}</th>
+                                    <th>{{ 'Price (TK)'|trans }}</th>
+                                    <th><button style="margin-right: 0" type="button" class="btn btn-info btn-sm add-row"><i class="fa fa-plus" aria-hidden="true"></i> Add Row</button></th>
+                                </tr>
+                                </thead>
+                                <tbody class="medicine_cost_section">
+                                <tr>
+                                    <td><input type="text" name="medicine_name[]" class="form-control medicine_name"></td>
+                                    <td><input min="0" value="" type="number" name="medicine_duration_age[]" class="form-control medicine_duration_age"></td>
+                                    <td><input value="" type="text" name="medicine_purpose[]" class="form-control medicine_purpose"></td>
+                                    <td><input value="" type="text" name="medicine_dosage[]" class="form-control medicine_dosage"></td>
+                                    <td><input min="0" value="" type="number" name="medicine_quantity[]" class="form-control medicine_quantity"></td>
+                                    <td><input min="0" value="" type="number" name="medicine_price[]" class="form-control medicine_price"></td>
+                                    <td>
+                                        <button type="button" class="btn btn-danger btn-sm remove_row hide">X</button>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h3>{{ 'Vaccine Cost'|trans }}:</h3>
+                            <table class="table table-bordered">
+                                <thead>
+                                <tr>
+                                    <th>{{ 'Name of Vaccine'|trans }}</th>
+                                    <th>{{ 'Age'|trans }}</th>
+                                    <th>{{ 'Disease'|trans }}</th>
+                                    <th>{{ 'Dosage'|trans }}</th>
+                                    <th>{{ 'Route'|trans }}</th>
+                                    <th>{{ 'Price (TK)'|trans }}</th>
+                                    <th><button style="margin-right: 0" type="button" class="btn btn-info btn-sm add-row"><i class="fa fa-plus" aria-hidden="true"></i> Add Row</button></th>
+                                </tr>
+                                </thead>
+                                <tbody class="vaccine_cost_section">
+                                <tr>
+                                    <td><input value="" type="text" name="vaccine_name[]" class="form-control vaccine_name"></td>
+                                    <td><input min="0" value="" type="number" name="vaccine_duration_age[]" class="form-control vaccine_duration_age"></td>
+                                    <td><input value="" type="text" name="vaccine_purpose[]" class="form-control vaccine_purpose"></td>
+                                    <td><input value="" type="text" name="vaccine_dosage[]" class="form-control vaccine_dosage"></td>
+                                    <td><input min="0" value="" type="number" name="vaccine_quantity[]" class="form-control vaccine_quantity"></td>
+                                    <td><input min="0" value="" type="number" name="vaccine_price[]" class="form-control vaccine_price"></td>
+                                    <td>
+                                        <button type="button" class="btn btn-danger btn-sm remove_row hide">X</button>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <div class="col-md-6 ">
+                        </div>
+                        <div class="col-md-6 text-right">
+                            <div class="btn-group" role="group" aria-label="Button group with nested dropdown"><button type="reset" class="btn btn-sm yellow-bg white-font"><i class="fa fa-refresh"></i>Restore</button>
+                                {{ form_widget(form.SaveAndCreate, {label: 'label.save.continue',value:'label.save.continue', attr: { class: 'btn btn-info form-submit antibiotic_free_farm_button'}}) }}
+                            </div>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                    {{ form_widget(form._token) }}
+                    {{ form_end(form) }}
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

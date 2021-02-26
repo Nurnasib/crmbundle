@@ -19,6 +19,7 @@ use App\Repository\Core\AgentRepository;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\DataTransformer\DateTimeToStringTransformer;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -52,60 +53,15 @@ class FcrFormType extends AbstractType
                     'BEFORE' => 'BEFORE',
                 ]
             ])
-            ->add('reporting_month', TextType::class, [
-                'attr' => ['autofocus' => true,'class'=>'dateCalendar col-md-10', 'placeholder' => 'Reporting Month','autocomplete' => 'off' ],
-                'label' => 'label.reporting_month',
-            ])
-            ->add('hatching_date', TextType::class, [
-                'attr' => ['autofocus' => true ,'class'=>'dateCalendar col-md-10', 'placeholder' => 'Reporting Date','autocomplete' => 'off'],
-                'label' => 'label.hatching_date',
-            ])
-            ->add('totalbirds', TextType::class, [
-                'attr' => ['autofocus' => true],
-                'label' => 'label.totalbirds',
-            ])->add('age_day', TextType::class, [
-                'attr' => ['autofocus' => true],
-                'label' => 'label.age_day',
-            ])
-            ->add('pes', TextType::class, [
-                'attr' => ['autofocus' => true],
-                'label' => 'label.pes',
-                'required' => false,
-            ])
-            ->add('weight', TextType::class, [
-                'attr' => ['autofocus' => true],
-                'label' => 'label.weight',
-            ])
-            ->add('total_feed_consumption', TextType::class, [
-                'attr' => ['autofocus' => true],
-                'label' => 'label.total_feed_consumption',
-            ])
-            ->add('hatchery', TextType::class, [
-                'attr' => ['autofocus' => true],
-                'label' => 'label.hatchery',
-                'required' => false,
-            ])->add('breed', TextType::class, [
-                'attr' => ['autofocus' => true],
-                'label' => 'label.breed',
-                'required' => false,
-            ])->add('feed', TextType::class, [
-                'attr' => ['autofocus' => true],
-                'label' => 'label.feed',
-                'required' => false,
-            ])
-            ->add('remarks', TextareaType::class, [
-                'attr' => ['autofocus' => true],
-                'label' => 'label.remarks',
-                'required' => false,
-            ])
-            ->add('agent', EntityType::class, [
-                'class' => Agent::class,
-                'attr'=>['class'=>'span12'],
-                'required'    => false,
-                'choice_label' => 'name',
-                'placeholder' => 'Choose a agent',
-                'choices'   => $options['agentRepo']->getLocationWiseAgentForm($options['user'])
-            ])
+            ->add($builder->create('reporting_month', TextType::class, array(
+                'label' => 'Reporting Date',
+                'attr' => array(
+                    'class' => 'datePicker',
+                    'autocomplete' => 'off',
+                    'placeholder' => 'date-month-Year'
+                ),
+                'empty_data' => new \DateTime(),
+            ))->addViewTransformer(new DateTimeToStringTransformer(null, null, 'd-m-Y')))
         ;
     }
 

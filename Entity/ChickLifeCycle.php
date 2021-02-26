@@ -30,21 +30,20 @@ class ChickLifeCycle
 
     /**
      * @var CrmCustomer
-     * @ORM\ManyToOne(targetEntity="CrmCustomer" , inversedBy="chicklifecycle")
+     * @ORM\ManyToOne(targetEntity="CrmCustomer", inversedBy="crmChickLifeCycle")
      */
     private $customer;
 
     /**
      * @var Setting
      * @ORM\ManyToOne(targetEntity="Setting", inversedBy="crmChickLifeCycle")
-     * @ORM\JoinColumn(name="report_id", referencedColumnName="id")
-     * @ORM\JoinColumn(onDelete="CASCADE")
+     * @ORM\JoinColumn(name="report_id", referencedColumnName="id", onDelete="SET NULL", nullable=true)
      */
     private $report;
 
     /**
      * @var Agent
-     * @ORM\ManyToOne(targetEntity="App\Entity\Core\Agent" , inversedBy="chicklifecycle")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Core\Agent" , inversedBy="crmChickLifeCycle")
      */
     private $agent;
 
@@ -68,31 +67,38 @@ class ChickLifeCycle
 
     /**
      * @var \DateTime
-     * @ORM\Column(name="hatching_date", type="datetime", nullable=true)
+     * @ORM\Column(name="hatching_date", type="date", nullable=true)
      */
     private $hatchingDate;
 
     /**
-     * @var string
-     * @Orm\Column(name="hatchery", type="string", length=50, nullable=true)
+     * @var Setting
+     * @ORM\ManyToOne(targetEntity="Setting", inversedBy="crmChickLifeCycleDetails")
+     * @ORM\JoinColumn(name="hatchery_id", referencedColumnName="id", onDelete="SET NULL", nullable=true)
      */
-
     private $hatchery;
 
     /**
-     * @var string
-     * @Orm\Column(name="breed", type="string", length=50, nullable=true)
+     * @var Setting
+     * @ORM\ManyToOne(targetEntity="Setting", inversedBy="crmChickLifeCycleDetails")
+     * @ORM\JoinColumn(name="breed_id", referencedColumnName="id", onDelete="SET NULL", nullable=true)
      */
-
     private $breed;
 
+    /**
+     * @var Setting
+     * @ORM\ManyToOne(targetEntity="Setting", inversedBy="crmChickLifeCycleDetails")
+     * @ORM\JoinColumn(name="feed_id", referencedColumnName="id", onDelete="SET NULL", nullable=true)
+     */
+    private $feed;
 
     /**
-     * @var string
-     * @Orm\Column(name="feed", type="string", length=50, nullable=true)
+     * @var float
+     *
+     * @ORM\Column(name="total_birds", type="float")
      */
 
-    private $feed;
+    private $totalBirds=0;
 
     /**
      * @var string
@@ -150,7 +156,7 @@ class ChickLifeCycle
     /**
      * @return Setting
      */
-    public function getReport(): Setting
+    public function getReport()
     {
         return $this->report;
     }
@@ -198,7 +204,7 @@ class ChickLifeCycle
     /**
      * @return User
      */
-    public function getEmployee(): User
+    public function getEmployee()
     {
         return $this->employee;
     }
@@ -209,6 +215,22 @@ class ChickLifeCycle
     public function setEmployee(User $employee): void
     {
         $this->employee = $employee;
+    }
+
+    /**
+     * @return float
+     */
+    public function getTotalBirds()
+    {
+        return $this->totalBirds;
+    }
+
+    /**
+     * @param float $totalBirds
+     */
+    public function setTotalBirds(float $totalBirds): void
+    {
+        $this->totalBirds = $totalBirds;
     }
 
     /**
@@ -227,51 +249,50 @@ class ChickLifeCycle
         $this->hatchingDate = $hatchingDate;
     }
 
-
     /**
-     * @return string
+     * @return Setting
      */
-    public function getHatchery(): string
+    public function getHatchery()
     {
         return $this->hatchery;
     }
 
     /**
-     * @param string $hatchery
+     * @param Setting $hatchery
      */
-    public function setHatchery(string $hatchery): void
+    public function setHatchery(Setting $hatchery): void
     {
         $this->hatchery = $hatchery;
     }
 
     /**
-     * @return string
+     * @return Setting
      */
-    public function getBreed(): string
+    public function getBreed()
     {
         return $this->breed;
     }
 
     /**
-     * @param string $breed
+     * @param Setting $breed
      */
-    public function setBreed(string $breed): void
+    public function setBreed(Setting $breed)
     {
         $this->breed = $breed;
     }
 
     /**
-     * @return string
+     * @return Setting
      */
-    public function getFeed(): string
+    public function getFeed()
     {
         return $this->feed;
     }
 
     /**
-     * @param string $feed
+     * @param Setting $feed
      */
-    public function setFeed(string $feed): void
+    public function setFeed(Setting $feed)
     {
         $this->feed = $feed;
     }
@@ -279,7 +300,7 @@ class ChickLifeCycle
     /**
      * @return string
      */
-    public function getLifeCycleState(): string
+    public function getLifeCycleState()
     {
         return $this->lifeCycleState;
     }
@@ -295,7 +316,7 @@ class ChickLifeCycle
     /**
      * @return string
      */
-    public function getRemarks(): string
+    public function getRemarks()
     {
         return $this->remarks;
     }

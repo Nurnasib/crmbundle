@@ -32,7 +32,7 @@ class Expense
 
     /**
      * @var string
-     * @ORM\Column(name="schedule_visit" )
+     * @ORM\Column(name="schedule_visit", nullable=true )
      */
     private $scheduleVisit;
 
@@ -43,6 +43,12 @@ class Expense
     private $visitingArea;
 
     /**
+     * @var CrmVisit
+     * @ORM\ManyToOne(targetEntity="Terminalbd\CrmBundle\Entity\CrmVisit" , inversedBy="expense")
+     */
+    private $crmVisit;
+
+    /**
      * @var Setting
      * @ORM\ManyToOne(targetEntity="Setting" , inversedBy="expenses")
      */
@@ -50,46 +56,46 @@ class Expense
 
     /**
      * @var string
-     * @ORM\Column(name="conveyance" ,nullable=true)
+     * @ORM\Column(name="conveyance", nullable=true)
      */
     private $conveyance;
 
     /**
      * @var string
-     * @ORM\Column(name="daily_allowance",nullable=true)
+     * @ORM\Column(name="daily_allowance", nullable=true)
      */
     private $dailyAllowance;
 
     /**
      * @var string
-     * @ORM\Column(name="hotel_rent",nullable=true)
+     * @ORM\Column(name="hotel_rent", nullable=true)
      */
     private $hotelRent;
 
     /**
      * @var string
-     * @ORM\Column(name="photostate",nullable=true)
+     * @ORM\Column(name="photostate", nullable=true)
      */
     private $photostate;
 
 
     /**
      * @var string
-     * @ORM\Column(name="courier",nullable=true)
+     * @ORM\Column(name="courier", nullable=true)
      */
     private $courier;
 
 
     /**
      * @var string
-     * @ORM\Column(name="food",nullable=true)
+     * @ORM\Column(name="food", nullable=true)
      */
     private $food;
 
 
     /**
      * @var string
-     * @ORM\Column(name="mobile",nullable=true)
+     * @ORM\Column(name="mobile", nullable=true)
      */
     private $mobile;
 
@@ -97,28 +103,35 @@ class Expense
 
     /**
      * @var string
-     * @ORM\Column(name="maintenace",nullable=true)
+     * @ORM\Column(name="maintenace", nullable=true)
      */
     private $maintenace;
 
 
     /**
      * @var string
-     * @ORM\Column(name="toll_bill",nullable=true)
+     * @ORM\Column(name="toll_bill", nullable=true)
      */
     private $tollBill;
 
     /**
      * @var string
-     * @ORM\Column(name="service_charge",nullable=true)
+     * @ORM\Column(name="service_charge", nullable=true)
      */
     private $serviceCharge;
 
     /**
      * @var string
-     * @ORM\Column(name="others",nullable=true)
+     * @ORM\Column(name="others", nullable=true)
      */
     private $others;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $status = false;
 
     /**
      * @return int
@@ -361,8 +374,36 @@ class Expense
         $this->visitingArea = $visitingArea;
     }
 
+    /**
+     * @return CrmVisit
+     */
+    public function getCrmVisit()
+    {
+        return $this->crmVisit;
+    }
 
+    /**
+     * @param CrmVisit $crmVisit
+     */
+    public function setCrmVisit($crmVisit)
+    {
+        $this->crmVisit = $crmVisit;
+    }
 
+    /**
+     * @return bool
+     */
+    public function isStatus(): bool
+    {
+        return $this->status;
+    }
 
+    /**
+     * @param bool $status
+     */
+    public function setStatus(bool $status): void
+    {
+        $this->status = $status;
+    }
 
 }

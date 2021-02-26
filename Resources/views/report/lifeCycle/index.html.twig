@@ -1,0 +1,29 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block body %}
+    {{ form_start(form) }}
+    <div class="row">
+        <div class="col-md-8 offset-2">
+            <table class="table ">
+                <thead class="thead-dark">
+                <tr>
+                    <th>{{ form_widget(form.month) }}</th>
+                    <th>{{ form_widget(form.lifeCycle) }}</th>
+                    <th>{{ form_widget(form.employee) }}</th>
+                    <th>{{ form_widget(form.Date) }}</th>
+                    <th>{{ form_widget(form.find) }}</th>
+                </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+    {% if filterBy is defined %}
+        <div class="row">
+            <div class="col">
+                {{ dump(filterBy) }}
+            </div>
+        </div>
+
+    {% endif %}
+
+{% endblock %}

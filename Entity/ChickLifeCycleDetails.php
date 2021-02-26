@@ -35,20 +35,26 @@ class ChickLifeCycleDetails
 
     private $crmChickLifeCycle;
 
+
+    /**
+     * @var Setting
+     * @ORM\ManyToOne(targetEntity="Setting", inversedBy="crmChickLifeCycleDetails")
+     * @ORM\JoinColumn(name="feed_type_id", referencedColumnName="id", onDelete="SET NULL", nullable=true)
+     */
+    private $feedType;
+
+    /**
+     * @var \DateTime
+     * @ORM\Column(name="reporting_date", type="date", nullable=true)
+     */
+    private $reportingDate;
+
     /**
      * @var string
      * @ORM\Column(name="visiting_week", type="string", length=50, nullable=true)
      */
 
     private $visitingWeek;
-
-    /**
-     * @var float
-     *
-     * @ORM\Column(name="total_birds", type="float")
-     */
-
-    private $totalBirds=0;
 
     /**
      * @var float
@@ -119,15 +125,6 @@ class ChickLifeCycleDetails
 
     private $withMortality=0;
 
-
-    /**
-     * @var string
-     * @Orm\Column(name="feedType", type="string", nullable=true)
-     */
-
-    private $feedType;
-
-
     /**
      * @var \DateTime
      * @ORM\Column(name="pro_date", type="datetime", nullable=true)
@@ -157,6 +154,13 @@ class ChickLifeCycleDetails
     private $createdAt;
 
     /**
+     * @var \DateTime
+     * @Gedmo\Timestampable(on="update")
+     * @ORM\Column(name="updated_at", type="datetime", nullable=true)
+     */
+    private $updatedAt;
+
+    /**
      * @return int
      */
     public function getId()
@@ -175,7 +179,7 @@ class ChickLifeCycleDetails
     /**
      * @return ChickLifeCycle
      */
-    public function getCrmChickLifeCycle(): ChickLifeCycle
+    public function getCrmChickLifeCycle()
     {
         return $this->crmChickLifeCycle;
     }
@@ -183,15 +187,47 @@ class ChickLifeCycleDetails
     /**
      * @param ChickLifeCycle $crmChickLifeCycle
      */
-    public function setCrmChickLifeCycle(ChickLifeCycle $crmChickLifeCycle): void
+    public function setCrmChickLifeCycle($crmChickLifeCycle)
     {
         $this->crmChickLifeCycle = $crmChickLifeCycle;
     }
 
     /**
+     * @return Setting
+     */
+    public function getFeedType()
+    {
+        return $this->feedType;
+    }
+
+    /**
+     * @param Setting $feedType
+     */
+    public function setFeedType($feedType)
+    {
+        $this->feedType = $feedType;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getReportingDate()
+    {
+        return $this->reportingDate;
+    }
+
+    /**
+     * @param \DateTime $reportingDate
+     */
+    public function setReportingDate(\DateTime $reportingDate): void
+    {
+        $this->reportingDate = $reportingDate;
+    }
+
+    /**
      * @return string
      */
-    public function getVisitingWeek(): string
+    public function getVisitingWeek()
     {
         $locale = 'en_US';
         $nf = new NumberFormatter($locale, NumberFormatter::ORDINAL);
@@ -209,23 +245,15 @@ class ChickLifeCycleDetails
     /**
      * @return float
      */
-    public function getTotalBirds(): float
+    public function getTotalBirds()
     {
-        return $this->totalBirds;
-    }
-
-    /**
-     * @param float $totalBirds
-     */
-    public function setTotalBirds(float $totalBirds): void
-    {
-        $this->totalBirds = $totalBirds;
+        return $this->getCrmChickLifeCycle()->getTotalBirds();
     }
 
     /**
      * @return float
      */
-    public function getAgeDays(): float
+    public function getAgeDays()
     {
         return $this->ageDays;
     }
@@ -241,7 +269,7 @@ class ChickLifeCycleDetails
     /**
      * @return float
      */
-    public function getMortalityPes(): float
+    public function getMortalityPes()
     {
         return $this->mortalityPes;
     }
@@ -257,9 +285,9 @@ class ChickLifeCycleDetails
     /**
      * @return float
      */
-    public function getMortalityPercent(): float
+    public function getMortalityPercent()
     {
-        return $this->mortalityPercent;
+        return number_format($this->mortalityPercent,2,'.','');
     }
 
     /**
@@ -271,13 +299,17 @@ class ChickLifeCycleDetails
     }
 
     public function calculateMortalityPercent(){
-        return number_format(($this->getMortalityPes()*100)/$this->getTotalBirds(),2,'.','');
+        $result = 0;
+        if($this->getTotalBirds()>0){
+            $result = ($this->getMortalityPes()*100)/$this->getTotalBirds();
+        }
+        return  $result;
     }
 
     /**
      * @return float
      */
-    public function getWeightStandard(): float
+    public function getWeightStandard()
     {
         return $this->weightStandard;
     }
@@ -293,7 +325,7 @@ class ChickLifeCycleDetails
     /**
      * @return float
      */
-    public function getWeightAchieved(): float
+    public function getWeightAchieved()
     {
         return $this->weightAchieved;
     }
@@ -309,7 +341,7 @@ class ChickLifeCycleDetails
     /**
      * @return float
      */
-    public function getFeedTotalKg(): float
+    public function getFeedTotalKg()
     {
         return $this->feedTotalKg;
     }
@@ -325,9 +357,9 @@ class ChickLifeCycleDetails
     /**
      * @return float
      */
-    public function getPerBird(): float
+    public function getPerBird()
     {
-        return $this->perBird;
+        return  number_format($this->perBird,2,'.','');
     }
 
     /**
@@ -340,13 +372,18 @@ class ChickLifeCycleDetails
 
     public function calculatePerBird(){
 
-        return number_format((($this->getFeedTotalKg()/$this->getTotalBirds())*1000),2,'.','');
+        $result =0;
+        if($this->getTotalBirds()>0){
+            $result = (($this->getFeedTotalKg()/$this->getTotalBirds())*1000);
+        }
+
+        return $result;
     }
 
     /**
      * @return float
      */
-    public function getFeedStandard(): float
+    public function getFeedStandard()
     {
         return $this->feedStandard;
     }
@@ -362,9 +399,9 @@ class ChickLifeCycleDetails
     /**
      * @return float
      */
-    public function getWithoutMortality(): float
+    public function getWithoutMortality()
     {
-        return $this->withoutMortality;
+        return number_format($this->withoutMortality,2,'.','');
     }
 
     /**
@@ -375,12 +412,22 @@ class ChickLifeCycleDetails
         $this->withoutMortality = $withoutMortality;
     }
 
+    public function calculateWithoutMortality(){
+        $result = 0;
+        if($this->getTotalBirds()>0 && $this->getWeightAchieved()>0) {
+
+            $result = (($this->getFeedTotalKg() / $this->getTotalBirds()) / $this->getWeightAchieved()) * 1000;
+        }
+        return $result;
+
+    }
+
     /**
      * @return float
      */
-    public function getWithMortality(): float
+    public function getWithMortality()
     {
-        return $this->withMortality;
+        return number_format($this->withMortality,2,'.','');
     }
 
     /**
@@ -391,20 +438,15 @@ class ChickLifeCycleDetails
         $this->withMortality = $withMortality;
     }
 
-    /**
-     * @return string
-     */
-    public function getFeedType()
-    {
-        return $this->feedType;
-    }
+    public function calculateWithMortality(){
+        $result = 0;
+        if($this->getTotalBirds()>0 && $this->getWeightAchieved()>0){
 
-    /**
-     * @param string $feedType
-     */
-    public function setFeedType(string $feedType): void
-    {
-        $this->feedType = $feedType;
+            $result = (($this->getFeedTotalKg()/($this->getTotalBirds()-$this->getMortalityPes()))/$this->getWeightAchieved())*1000;
+        }
+
+        return $result;
+
     }
 
     /**
@@ -470,5 +512,22 @@ class ChickLifeCycleDetails
     {
         $this->createdAt = $createdAt;
     }
+
+    /**
+     * @return \DateTime
+     */
+    public function getUpdatedAt(): \DateTime
+    {
+        return $this->updatedAt;
+    }
+
+    /**
+     * @param \DateTime $updatedAt
+     */
+    public function setUpdatedAt(\DateTime $updatedAt): void
+    {
+        $this->updatedAt = $updatedAt;
+    }
+
 
 }
