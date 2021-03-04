@@ -9,7 +9,9 @@
 namespace Terminalbd\CrmBundle\Controller;
 
 use App\Entity\User;
+use App\Entity\Admin\Location;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\Encoder\EncoderFactory;
@@ -17,6 +19,15 @@ use Symfony\Component\Security\Core\Encoder\MessageDigestPasswordEncoder;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
 use Terminalbd\CrmBundle\Entity\Api;
+use Terminalbd\CrmBundle\Entity\BroilerStandard;
+use Terminalbd\CrmBundle\Entity\CrmCustomer;
+use Terminalbd\CrmBundle\Entity\CrmVisit;
+use Terminalbd\CrmBundle\Entity\FcrDetails;
+use Terminalbd\CrmBundle\Entity\Setting;
+use Terminalbd\CrmBundle\Entity\SettingLifeCycle;
+use Terminalbd\CrmBundle\Entity\SonaliStandard;
+use Terminalbd\CrmBundle\Form\CrmVisitFormType;
+use Terminalbd\CrmBundle\Form\FcrDetailsFormType;
 use Terminalbd\KpiBundle\Entity\LocationSalesTarget;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -30,8 +41,6 @@ use Symfony\Component\HttpFoundation\Response;
 
 class ApiController extends AbstractController
 {
-
-
     /**
      * @Route("/login", methods={"POST","GET"}, options={"expose"=true})
      */
@@ -244,6 +253,42 @@ class ApiController extends AbstractController
     }
 
     /**
+     * @Route("/crm/visit", methods={"POST"}, name="crmvisit")
+     */
+    public function crmVisit(Request $request)
+    {
+        set_time_limit(0);
+        ignore_user_abort(true);
+        $username = isset($_REQUEST['username']) ? $_REQUEST['username'] : "";
+        //$terminal = $this->getUser()->getTerminal()->getId();
+        $entities = $this->getDoctrine()->getRepository(Api::class)->crmVisit(1,$username);
+        //dd($entities);
+        $response = new Response();
+        $response->headers->set('Content-Type', 'application/json');
+        $response->setContent(json_encode($entities));
+        $response->setStatusCode(Response::HTTP_OK);
+        return $response;
+    }
+
+    /**
+     * @Route("/employee", methods={"POST"}, name="employeeApi")
+     */
+    public function employeeApi(Request $request)
+    {
+        set_time_limit(0);
+        ignore_user_abort(true);
+        $username = isset($_REQUEST['username']) ? $_REQUEST['username'] : "";
+        //$terminal = $this->getUser()->getTerminal()->getId();
+        $entities = $this->getDoctrine()->getRepository(Api::class)->employeeApi(1, $username);
+        dd($entities);
+        $response = new Response();
+        $response->headers->set('Content-Type', 'application/json');
+        $response->setContent(json_encode($entities));
+        $response->setStatusCode(Response::HTTP_OK);
+        return $response;
+    }
+
+    /**
      * @Route("/broiler/standard", name="crm_api_brolier")
      */
     public function apiBroiler()
@@ -329,34 +374,44 @@ class ApiController extends AbstractController
     }
 
 
-
     /**
-     * @Route("/employee", name="employeeApi")
-     */
-    public function employeeApi()
-    {
-        set_time_limit(0);
-        ignore_user_abort(true);
-        //$terminal = $this->getUser()->getTerminal()->getId();
-        $entities = $this->getDoctrine()->getRepository(Api::class)->employeeApi(1);
-        //dd($entities);
-        $response = new Response();
-        $response->headers->set('Content-Type', 'application/json');
-        $response->setContent(json_encode($entities));
-        $response->setStatusCode(Response::HTTP_OK);
-        return $response;
-    }
-
-    /**
-     * @Route("/report/farmer-introduce-report", methods={"POST"}, name="farmer-introduce-report")
+     * @Route("/report/farmer-introduce-report", methods={"POST"}, name="farmerintroducereport")
      */
     public function farmerIntroduceReport(Request $request)
     {
-        $farmerType = $request->request->get('farmer_type');
+        $breedName = $request->request->get('breed_name');
+        $employeeName = $request->request->get('employee');
+
+        $employee = $this->getDoctrine()->getRepository(User::class)->findOneBy(array('name' => $employeeName));
+        //$agentName = $request->request->get('agent_name');
         set_time_limit(0);
         ignore_user_abort(true);
         // $terminal = $this->getUser()->getTerminal()->getId();
-        $entities = $this->getDoctrine()->getRepository(Api::class)->farmerIntroduceReport(1,$farmerType);
+        $entities = $this->getDoctrine()->getRepository(Api::class)->farmerIntroduceReport(1,$breedName,$employee);
+        //dd($entities);
+        $response = new Response();
+        $response->headers->set('Content-Type', 'application/json');
+        $response->setContent(json_encode($entities));
+        $response->setStatusCode(Response::HTTP_OK);
+        return $response;
+    }
+    /**
+     * @Route("/report/farmer-touch-report", methods={"POST"}, name="farmertouchreport")
+     */
+    public function farmerTouchReport(Request $request)
+    {
+        $startDate = $request->request->get('startDate');
+        $endDate = $request->request->get('endDate');
+        $reportSlug = $request->request->get('report');
+        $employeeName = $request->request->get('employee');
+
+        $report = $this->getDoctrine()->getRepository(Setting::class)->findOneBy(array('slug' => $reportSlug));
+
+        $employee = $this->getDoctrine()->getRepository(User::class)->findOneBy(array('name' => $employeeName));
+
+        set_time_limit(0);
+        ignore_user_abort(true);
+        $entities = $this->getDoctrine()->getRepository(Api::class)->farmerTouchReport(1,$startDate, $endDate, $report, $employee);
         //dd($entities);
         $response = new Response();
         $response->headers->set('Content-Type', 'application/json');
@@ -366,14 +421,70 @@ class ApiController extends AbstractController
     }
 
     /**
-     * @Route("/report/sonali-life-cycle", name="sonali-life-cycle")
+     * @Route("/report/farmer-training-report", methods={"POST"}, name="farmer-training-report")
      */
-    public function sonaliLifeCycleReportPoultry()
+    public function farmerTrainingReport(Request $request)
+    {
+        $breedName = $request->request->get('breed_name');
+        $employeeName = $request->request->get('employee');
+
+        $employee = $this->getDoctrine()->getRepository(User::class)->findOneBy(array('name' => $employeeName));
+        //$agentName = $request->request->get('agent_name');
+        set_time_limit(0);
+        ignore_user_abort(true);
+        // $terminal = $this->getUser()->getTerminal()->getId();
+        $entities = $this->getDoctrine()->getRepository(Api::class)->farmerTrainingReport(1,$breedName, $employee);
+        //dd($entities);
+        $response = new Response();
+        $response->headers->set('Content-Type', 'application/json');
+        $response->setContent(json_encode($entities));
+        $response->setStatusCode(Response::HTTP_OK);
+        return $response;
+    }
+
+    
+
+    /**
+     * @Route("/report/poultry", methods={"POST"}, name="reportPoultry")
+     */
+    public function poultryLifeCylceReport(Request $request)
     {
         set_time_limit(0);
         ignore_user_abort(true);
+        $startDate = $request->request->get('startDate');
+        $endDate = $request->request->get('endDate');
+        $reportSlug = $request->request->get('report');
+        $customerName = $request->request->get('customer');
+
+        $report = $this->getDoctrine()->getRepository(Setting::class)->findOneBy(array('slug' => $reportSlug));
+
+        $customer = $this->getDoctrine()->getRepository(CrmCustomer::class)->findOneBy(array('name' => $customerName));
+
+
         //$terminal = $this->getUser()->getTerminal()->getId();
-        $entities = $this->getDoctrine()->getRepository(Api::class)->sonaliLifeCycleReportPoultry(1);
+        $entities = $this->getDoctrine()->getRepository(Api::class)->poultryLifeCylceReport(1, $startDate, $endDate,$reportSlug, $customerName);
+        $response = new Response();
+        $response->headers->set('Content-Type', 'application/json');
+        $response->setContent(json_encode($entities));
+        $response->setStatusCode(Response::HTTP_OK);
+        return $response;
+    }
+
+    /**
+     * @Route("/cattle/crm-visit", methods={"POST"}, name="cattle-crm-visit")
+     */
+    public function farmCattleVisit(Request $request)
+    {
+        $startDate = $request->request->get('startDate');
+        $endDate = $request->request->get('endDate');
+        $employeeName = $request->request->get('employee');
+
+        set_time_limit(0);
+        ignore_user_abort(true);
+
+        $employee = $this->getDoctrine()->getRepository(User::class)->findOneBy(array('name' => $employeeName));
+        //$terminal = $this->getUser()->getTerminal()->getId();
+        $entities = $this->getDoctrine()->getRepository(Api::class)->farmVisitCattle(1,$startDate,$endDate,$employee);
         //dd($entities);
         $response = new Response();
         $response->headers->set('Content-Type', 'application/json');
@@ -383,14 +494,24 @@ class ApiController extends AbstractController
     }
 
     /**
-     * @Route("/report/boiler-life-cycle", name="boiler-life-cycle")
+     * @Route("/chick/fcr", methods={"POST"}, name="chickfcr")
      */
-    public function boilerLifeCycleReportPoultry()
+    public function frcReportPoulty(Request $request)
     {
         set_time_limit(0);
         ignore_user_abort(true);
-        //$terminal = $this->getUser()->getTerminal()->getId();
-        $entities = $this->getDoctrine()->getRepository(Api::class)->boilerLifeCycleReportPoultry(1);
+
+        $startDate = $request->request->get('startDate');
+        $endDate = $request->request->get('endDate');
+        $reportSlug = $request->request->get('report');
+        $employeeName = $request->request->get('employee');
+
+
+        $report = $this->getDoctrine()->getRepository(Setting::class)->findOneBy(array('slug' => $reportSlug));
+
+        $employee = $this->getDoctrine()->getRepository(User::class)->findOneBy(array('name' => $employeeName));
+
+        $entities = $this->getDoctrine()->getRepository(Api::class)->frcReportPoulty(1, $startDate, $endDate, $reportSlug,$employeeName);
         //dd($entities);
         $response = new Response();
         $response->headers->set('Content-Type', 'application/json');
@@ -400,53 +521,139 @@ class ApiController extends AbstractController
     }
 
     /**
-     * @Route("/report/layer-life-cycle", name="layer-life-cycle")
+     * @Route("/fcr/before/{type}/new", methods={"GET", "POST"}, name="api_fcr_before_new", options={"expose"=true})
      */
-    public function layerLifeCycleReportPoultry()
+    // type = sonali or boiler
+    public function apiFcrBeforeNew(Request $request, $type): Response
     {
-        set_time_limit(0);
-        ignore_user_abort(true);
-        //$terminal = $this->getUser()->getTerminal()->getId();
-        $entities = $this->getDoctrine()->getRepository(Api::class)->layerLifeCycleReportPoultry(1);
-        //dd($entities);
-        $response = new Response();
-        $response->headers->set('Content-Type', 'application/json');
-        $response->setContent(json_encode($entities));
-        $response->setStatusCode(Response::HTTP_OK);
-        return $response;
+        $data = $request->request->all();
+        $slug = 'fcr-before-sale-'.$type;
+        $report = $this->getDoctrine()->getRepository(Setting::class)->findOneBy(['slug'=>$slug, 'settingType'=>'FARMER_REPORT', 'status'=>1]);
+
+        $hatchery = $this->getDoctrine()->getRepository(Setting::class)->findOneBy(['id'=>$data['hatchery_id'], 'status'=>1]);
+
+        $breed = $this->getDoctrine()->getRepository(Setting::class)->findOneBy(['id'=>$data['breed_id'], 'status'=>1]);
+
+        $feed = $this->getDoctrine()->getRepository(Setting::class)->findOneBy(['id'=>$data['feed_id'], 'status'=>1]);
+
+        $feedMill = $this->getDoctrine()->getRepository(Setting::class)->findOneBy(['id'=>$data['feed_Mill'], 'status'=>1]);
+
+        $feedType = $this->getDoctrine()->getRepository(Setting::class)->findOneBy(['id'=>$data['feedType'], 'status'=>1]);
+
+        $employee = $this->getDoctrine()->getRepository(User::class)->find($data['user_id']);
+
+        $customer = $this->getDoctrine()->getRepository(CrmCustomer::class)->find($data['customer_id']);
+
+        $entity = new FcrDetails();
+        $reportingDate = date('Y-m-d',strtotime('now'));
+        $hatchingDate = date('Y-m-d',strtotime('now'));
+        $proDate = date('Y-m-d',strtotime('now'));
+        $entity->setReportingMonth(new \DateTime($reportingDate));
+        $entity->setHatchingDate(new \DateTime($hatchingDate));
+        $entity->setProDate(new \DateTime($proDate));
+        $entity->setFcrOfFeed(strtoupper('before'));
+        $entity->setCustomer($customer);
+        $entity->setReport($report);
+        $entity->setAgent($customer->getAgent());
+        $entity->setEmployee($employee);
+        $entity->setTotalBirds($data['totalBirds']);
+        $entity->setAgeDay($data['age']);
+        $entity->setMortalityPes($data['mortality_pcs']);
+        $entity->setHatchery($hatchery?$hatchery:null);
+        $entity->setBreed($breed?$breed:null);
+        $entity->setFeed($feed?$feed:null);
+        $entity->setFeedMill($feedMill?$feedMill:null);
+        $entity->setFeedType($feedType?$feedType:null);
+        $entity->setBatchNo($data['batch_no']);
+        $entity->setRemarks($data['remarks']);
+
+        if($report->getSlug()=='fcr-before-sale-sonali'){
+
+            /* @var SonaliStandard $sonaliStandard*/
+            $sonaliStandard= $this->getDoctrine()->getRepository(SonaliStandard::class)->findOneBy(array('age'=>$entity->getAgeDay()));
+            if($sonaliStandard){
+                $entity->setWeightStandard($sonaliStandard->getTargetBodyWeight());
+                $entity->setFeedConsumptionStandard($sonaliStandard->getCumulativeFeedIntake());
+            }
+        }
+        if($report->getSlug()=='fcr-before-sale-boiler'){
+
+            /* @var BroilerStandard $broilerStandard*/
+            $broilerStandard= $this->getDoctrine()->getRepository(BroilerStandard::class)->findOneBy(array('age'=>$entity->getAgeDay()));
+            if($broilerStandard){
+                $entity->setWeightStandard($broilerStandard->getTargetBodyWeight());
+                $entity->setFeedConsumptionStandard($broilerStandard->getTargetFeedConsumption());
+            }
+        }
+        $entity->setMortalityPercent($entity->calculateMortalityPercent());
+        $entity->setFeedConsumptionPerBird($entity->calculatePerBird());
+        $entity->setFcrWithoutMortality($entity->calculateWithoutMortality());
+        $entity->setFcrWithMortality($entity->calculateWithMortality());
+
+
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($entity);
+        $em->flush();
+
+        return new JsonResponse('success');
     }
 
     /**
-     * @Route("/cattle/crm-visit", name="crm-visit")
+     * @Route("/crmvisitingarea", methods={"GET","POST"}, name="crmVisitingArea")
      */
-    public function farmCattleVisit()
+    public function crmVisitingArea(Request $request)
     {
-        set_time_limit(0);
-        ignore_user_abort(true);
-        //$terminal = $this->getUser()->getTerminal()->getId();
-        $entities = $this->getDoctrine()->getRepository(Api::class)->farmCattleVisit();
-        //dd($entities);
-        $response = new Response();
-        $response->headers->set('Content-Type', 'application/json');
-        $response->setContent(json_encode($entities));
-        $response->setStatusCode(Response::HTTP_OK);
-        return $response;
+
+        $terminal = 1;
+
+        $formData = $_REQUEST;
+        $userId = $request->request->get('user_id');
+
+        $user = $this->getDoctrine()->getRepository(User::class)->find($userId);
+
+        if (!empty($user)) {
+
+            /* @var $user User */
+
+            $upozilas = [];
+            foreach ($user->getUpozila() as $location):
+                $upozilas[] = $location->getId();
+                $upozilaName[] = $location->getName();
+            endforeach;
+            $locations = implode(",", $upozilas);
+            $data = array(
+                'upozilas' => $upozilas,
+                'upozilaName' => $upozilaName,
+            );
+            $response = new Response();
+            $response->headers->set('Content-Type', 'application/json');
+            $response->setContent(json_encode($data));
+            $response->setStatusCode(Response::HTTP_OK);
+            return $response;
+        }
     }
 
     /**
-     * @Route("/crm/visit", name="crm-visit")
+     * @Route("/crmvisitnew", methods={"GET","POST"}, name="crmVisitNew")
      */
-    public function crmVisit()
+    public function new(Request $request)
     {
-        set_time_limit(0);
-        ignore_user_abort(true);
-        //$terminal = $this->getUser()->getTerminal()->getId();
-        $entities = $this->getDoctrine()->getRepository(Api::class)->crmVisit(1);
-        //dd($entities);
-        $response = new Response();
-        $response->headers->set('Content-Type', 'application/json');
-        $response->setContent(json_encode($entities));
-        $response->setStatusCode(Response::HTTP_OK);
-        return $response;
+        $data = $request->request->all();
+
+        $employee = $this->getDoctrine()->getRepository(User::class)->find($data['user_id']);
+
+        $locations = $this->getDoctrine()->getRepository(Location::class)->find($data['id']);
+
+        $entity = new CrmVisit();
+        $entity->setEmployee($employee);
+        $entity->setLocation($locations);
+        $entity->setWorkingDuration($data['workingduration']);
+        $entity->setWorkingDurationTo($data['workingdurationto']);
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($entity);
+        $em->flush();
+
+        return new JsonResponse('success');
     }
+
 }

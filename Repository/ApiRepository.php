@@ -21,9 +21,12 @@ use Terminalbd\CrmBundle\Entity\CattleFarmVisit;
 use Terminalbd\CrmBundle\Entity\ChickLifeCycle;
 use Terminalbd\CrmBundle\Entity\CrmCustomer;
 use Terminalbd\CrmBundle\Entity\CrmVisit;
+use Terminalbd\CrmBundle\Entity\FarmerTrainingReport;
+use Terminalbd\CrmBundle\Entity\FcrDetails;
 use Terminalbd\CrmBundle\Entity\LayerLifeCycle;
 use Terminalbd\CrmBundle\Entity\LayerStandard;
 use Terminalbd\CrmBundle\Entity\NewFarmerIntroduce\FarmerIntroduceDetails;
+use Terminalbd\CrmBundle\Entity\NewFarmerTouch\FarmerTouchReport;
 use Terminalbd\CrmBundle\Entity\Setting;
 use Terminalbd\CrmBundle\Entity\Fcr;
 use Terminalbd\CrmBundle\Entity\SettingLifeCycle;
@@ -53,7 +56,6 @@ class ApiRepository extends BaseRepository
 
     public function apiAgent( $terminal, $locations): array
     {
-
         $em = $this->_em;
         $qb = $em->createQueryBuilder();
         $qb->from(Agent::class,'e');
@@ -64,6 +66,7 @@ class ApiRepository extends BaseRepository
         $qb->addSelect('ag.name as agentGroup');
         $qb->addSelect('up.name as upozila','up.id as upozilaId');
         $qb->addSelect('dis.name as district','dis.id as districtId');
+
         //   $qb->where('e.terminal = :terminal')->setParameter('terminal',$terminal);
         if($locations){
             $locations = explode(',',$locations);
@@ -123,6 +126,86 @@ class ApiRepository extends BaseRepository
             $data[$key]['upozilaId'] = (string)$row['upozilaId'];
             $data[$key]['district'] = (string)$row['district'];
             $data[$key]['districtId'] = (string)$row['districtId'];
+
+        }
+        return $data;
+    }
+
+    /**
+     * CRM Visit Report
+     */
+
+    public function crmVisit( $terminal, $username ): array
+    {
+        $em = $this->_em;
+        $qb = $em->createQueryBuilder();
+        $qb->from(CrmVisit::class,'cv');
+        $qb->leftJoin('cv.employee','cve');
+        $qb->leftJoin('cve.designation','cved');
+        $qb->leftJoin('cv.location','cvl');
+
+        $qb->select('cv.id as id','cv.workingDuration as workingDurationForm','cv.workingDurationTo as workingDurationTo','cv.created as created');
+        $qb->addSelect('cve.name as employeeName');
+        $qb->addSelect('cved.name as designationName');
+        $qb->addSelect('cvl.name as areaName');
+
+        if($username){
+            $username = explode(',',$username);
+            $qb->where('cve.username IN (:username)')->setParameter('username',$username);
+        }
+
+        $qb->orderBy('cv.id', 'ASC');
+        $result = $qb->getQuery()->getArrayResult();
+        $data = array();
+        foreach($result as $key => $row) {
+            $data[$key]['id'] = (int)$row['id'];
+            $data[$key]['employeeName'] = (string)$row['employeeName'];
+            $data[$key]['designationName'] = (string)$row['designationName'];
+            $data[$key]['areaName'] = (string)$row['areaName'];
+            $data[$key]['workingDurationForm'] = (string)$row['workingDurationForm'];
+            $data[$key]['workingDurationTo'] = (string)$row['workingDurationTo'];
+            $data[$key]['created'] = $row['created']->format('Y-m-d');
+
+        }
+        return $data;
+    }
+
+    /**
+     *  EMPLOYEE
+     */
+    public function employeeApi( $terminal, $username ): array
+    {
+        $em = $this->_em;
+        $qb = $em->createQueryBuilder();
+        $qb->from(User::class,'u');
+        $qb->Join('u.userGroup','ug');
+        $qb->leftJoin('u.designation','ud');
+        $qb->leftJoin('u.department','d');
+        $qb->select('u.id as id','u.name as name','u.username as username','u.email as email','u.mobile as mobile','u.enabled as enabled');
+        $qb->addSelect('ug.name as groupName');
+        $qb->addSelect('ud.name as designation');
+        $qb->addSelect('d.name as department');
+
+        if($username){
+            $username = explode(',',$username);
+            $qb->where('u.username IN (:username)')->setParameter('username',$username);
+        }
+
+       // $qb->where('ug.id = 9');
+
+        $qb->orderBy('u.id', 'ASC');
+        $result = $qb->getQuery()->getArrayResult();
+        $data = array();
+        foreach($result as $key => $row) {
+            $data[$key]['id'] = (int)$row['id'];
+            $data[$key]['group'] = (string)$row['groupName'];
+            $data[$key]['name'] = (string)$row['name'];
+            $data[$key]['username'] = (string)$row['username'];
+            $data[$key]['designation'] = (string)$row['designation'];
+            $data[$key]['email'] = (string)$row['email'];
+            $data[$key]['mobile'] = (string)$row['mobile'];
+            $data[$key]['department'] = (string)$row['department'];
+            $data[$key]['status'] = (string)$row['enabled'];
 
         }
         return $data;
@@ -215,18 +298,20 @@ class ApiRepository extends BaseRepository
         $qb->from(Setting::class,'s');
         $qb->leftJoin('s.parent','p');
         $qb->select('s.id as id','s.name as name','s.settingType as settingType','s.slug as slug','s.status as status'/*,'p.settingType as parent'*/,'p.name as parentName'/*,'p.id as parent_id'*/);
+        $qb->where('s.status = 1');
         $qb->orderBy('s.settingType', 'ASC');
         $result = $qb->getQuery()->getArrayResult();
         $data = array();
         foreach($result as $key => $row) {
-            $data[$key]['id'] = (int)$row['id'];
-            $data[$key]['name'] = (string)$row['name'];
-            $data[$key]['settingType'] = (string)$row['settingType'];
-            //$data[$key]['parentType'] = (string)$row['parent'];
-            $data[$key]['parentName'] = (string)$row['parentName'];
-//            $data[$key]['parent_id'] = (int)$row['parent_id'];
-            $data[$key]['slug'] = (string)$row['slug'];
-            $data[$key]['status'] = (bool)$row['status'];
+
+            $data[$row['settingType']][]= array(
+                'id'=>(int)$row['id'],
+                'name'=>$row['name'],
+                'settingType'=>$row['settingType'],
+                'parentName'=>$row['parentName'],
+                'slug'=>$row['slug'],
+            );
+
         }
         return $data;
     }
@@ -259,42 +344,12 @@ class ApiRepository extends BaseRepository
     }
 
 
-    /**
-     *  EMPLOYEE
-     */
-    public function employeeApi( $terminal, $data = array() ): array
-    {
-        $em = $this->_em;
-        $qb = $em->createQueryBuilder();
-        $qb->from(User::class,'u');
-        $qb->Join('u.userGroup','ug');
-        $qb->Join('u.designation','ud');
-        $qb->leftJoin('u.department','d');
-        $qb->select('u.id as id','ug.name as groupName','u.name as name','u.username as username','ud.name as designation','u.email as email','u.mobile as mobile','u.enabled as enabled');
-        $qb->addSelect('d.name as department');
-        $qb->where('ug.id = 9');
-        $qb->orderBy('u.id', 'ASC');
-        $result = $qb->getQuery()->getArrayResult();
-        $data = array();
-        foreach($result as $key => $row) {
-            $data[$key]['id'] = (int)$row['id'];
-            $data[$key]['group'] = (string)$row['groupName'];
-            $data[$key]['name'] = (string)$row['name'];
-            $data[$key]['username'] = (string)$row['username'];
-            $data[$key]['designation'] = (string)$row['designation'];
-            $data[$key]['email'] = (string)$row['email'];
-            $data[$key]['mobile'] = (string)$row['mobile'];
-            $data[$key]['department'] = (string)$row['department'];
-            $data[$key]['status'] = (string)$row['enabled'];
 
-        }
-        return $data;
-    }
 
     /**
-     *  Farmer Introduce Report Cattle
+     *  Farmer Introduce Report
      */
-    public function farmerIntroduceReport( $terminal, $requestData ): array
+    public function farmerIntroduceReport( $terminal, $farmerType, $employee ): array
     {
         $em = $this->_em;
         $qb = $em->createQueryBuilder();
@@ -304,14 +359,17 @@ class ApiRepository extends BaseRepository
         $qb->Join('fid.farmerType','ft');
         $qb->select('fid.createdAt as createdAt','fid.id as id','fid.previousAgentName as previousAgentName','fn.name as farmerName','fa.name as agent','fn.address as address','fn.mobile as mobile','fid.previousFeedName as previousFeedName','fa.address as agentAddress','fid.previousAgentAddress as previousAgentAddress','fid.remarks as remarks','fid.cultureSpeciesItemAndQty as cultureSpeciesItemAndQty');
 
-        $qb->where('ft.slug = :farmerType');
-        $qb->setParameter('farmerType', $requestData);
+        $qb->where('ft.slug = :farmerType')
+            ->andWhere('fid.employee = :employee')
+            ->setParameters(array('farmerType' => $farmerType, 'employee' => $employee));
+       // $qb->where('ft.slug = :farmerType');
+       // $qb->setParameter('farmerType', $requestData);
         $qb->orderBy('fid.id', 'ASC');
         $result = $qb->getQuery()->getArrayResult();
         $data = array();
         //$sum = 0;
         foreach($result as $key => $row) {
-            $data[$key]['createdAt'] = $row['createdAt'];
+            $data[$key]['createdAt'] = $row['createdAt']->format('Y-m-d');
             $data[$key]['id'] = (int)$row['id'];
             $data[$key]['farmerName'] = (string)$row['farmerName'];
             $data[$key]['mobile'] = (string)$row['mobile'];
@@ -331,189 +389,192 @@ class ApiRepository extends BaseRepository
         }
         return $data;
     }
-
     /**
-     *  Sonali Life Cycle Report Poultry
+     *  Farmer Training Report
      */
-    public function sonaliLifeCycleReportPoultry( $terminal, $data = array() ): array
+    public function farmerTrainingReport( $terminal,$breedName, $employee): array
     {
         $em = $this->_em;
         $qb = $em->createQueryBuilder();
-        $qb->from(ChickLifeCycle::class,'clc');
-        $qb->leftJoin('clc.customer','cc');
-        $qb->leftJoin('clc.agent','ca');
-        $qb->leftJoin('clc.hatchery','ch');
-        $qb->leftJoin('clc.breed','cd');
-        $qb->leftJoin('clc.feed','cf');
-        $qb->leftJoin('clc.crmChickLifeCycleDetails','cclcd');
-        $qb->leftJoin('cclcd.feedType','ft');
-        $qb->leftJoin('clc.employee','ce');
+        $qb->from(FarmerTrainingReport::class,'f');
+        $qb->leftJoin('f.agent','agent');
+        $qb->leftJoin('f.breedName', 'breedName');
+        $qb->leftJoin('f.farmerTrainingReportDetails','farmerTrainingReportDetails');
+        $qb->leftJoin('farmerTrainingReportDetails.customer','farmer');
 
-        $qb->select('clc.id as id','clc.hatchingDate as hatchingDate','clc.totalBirds as totalBirds');
+        $qb->select('f.id as id','f.trainingDate as trainingDate','f.trainingMaterial as trainingMaterial','f.trainingTopics as trainingTopics','f.remarks as remarks');
+        $qb->addSelect('agent.name AS agentName','agent.address AS agentAddress', 'agent.mobile AS agentMobile');
+        $qb->addSelect('farmer.id as farmerId','farmer.name AS farmerName', 'farmer.address AS farmerAddress', 'farmer.mobile AS farmerMobile');
+        $qb->addSelect('farmerTrainingReportDetails.farmerCapacity as farmerCapacity','farmerTrainingReportDetails.trainingMaterialQty as trainingMaterialQty');
 
-        $qb->addSelect('ca.name as agentName','ca.address as agentAddress');
-        $qb->addSelect('cclcd.visitingWeek as visitingWeek','cclcd.ageDays as ageDays','cclcd.mortalityPes as mortalityPes','cclcd.mortalityPercent as mortalityPercent','cclcd.weightStandard as weightStandard','cclcd.weightAchieved as weightAchieved','cclcd.feedTotalKg as feedTotalKg','cclcd.perBird as perBird','cclcd.feedStandard as feedStandard','cclcd.withoutMortality as withoutMortality','cclcd.withMortality as withMortality','cclcd.proDate as proDate','cclcd.batchNo as batchNo','cclcd.remarks as remarks');
-        $qb->addSelect('cc.name as name','cc.address as address','cc.mobile as mobile');
-        $qb->addSelect('ch.name as hatchery');
-        $qb->addSelect('ft.name as feedTypeName');
-        $qb->addSelect('cd.name as breed');
-        $qb->addSelect('cf.name as feed');
+        $qb->where('breedName.slug = :breedName')
+            ->andWhere('f.employee = :employee')
+            ->setParameters(array('breedName' => $breedName, 'employee' => $employee));
 
-        //$qb->where('cc.id = :employeeId')->setParameter('employeeId', $employeeId);
-        //$qb->where('clc.id = 20');
-        $qb->where('clc.id = 20');
-        $qb->orderBy('clc.id', 'ASC');
+        $qb->orderBy('f.id', 'ASC');
         $result = $qb->getQuery()->getArrayResult();
         $data = array();
-
         foreach($result as $key => $row) {
-            //$data[$key]['id'] = (int)$row['id'];
+            $data[$key]['trainingDate'] = $row['trainingDate']->format('Y-m-d');
             $data[$key]['agentName'] = (string)$row['agentName'];
             $data[$key]['agentAddress'] = (string)$row['agentAddress'];
-            $data[$key]['name'] = (string)$row['name'];
-            $data[$key]['address'] = (string)$row['address'];
-            $data[$key]['mobile'] = (string)$row['mobile'];
-            $data[$key]['hatchingDate'] = $row['hatchingDate']->format('Y-m-d');
-            $data[$key]['visitingWeek'] = (int)$row['visitingWeek'];
-            $data[$key]['totalBirds'] = (int)$row['totalBirds'];
-            $data[$key]['ageDays'] = (int)$row['ageDays'];
-            $data[$key]['mortalityPes'] = (int)$row['mortalityPes'];
-            $data[$key]['mortalityPercent'] = (float)$row['mortalityPercent'];
-            $data[$key]['weightStandard'] = (int)$row['weightStandard'];
-            $data[$key]['weightAchieved'] = (int)$row['weightAchieved'];
-            $data[$key]['feedTotalKg'] = (int)$row['feedTotalKg'];
-            $data[$key]['perBird'] = (float)$row['perBird'];
-            $data[$key]['feedStandard'] = (float)$row['feedStandard'];
-            $data[$key]['withoutMortality'] = (float)$row['withoutMortality'];
-            $data[$key]['withMortality'] = (float)$row['withMortality'];
-            $data[$key]['hatchery'] = (string)$row['hatchery'];
-            $data[$key]['breed'] = (string)$row['breed'];
-            $data[$key]['feed'] = (string)$row['feed'];
-            //$data[$key]['feedTypeName'] = (string)$row['feedTypeName'];
-            $data[$key]['proDate'] = $row['proDate']->format('Y-m-d');
-            $data[$key]['batchNo'] = (int)$row['batchNo'];
+            $data[$key]['agentMobile'] = (string)$row['agentMobile'];
+            $data[$key]['farmerId'] = (string)$row['farmerId'];
+            $data[$key]['farmerName'] = (string)$row['farmerName'];
+            $data[$key]['farmerAddress'] = (string)$row['farmerAddress'];
+            $data[$key]['farmerMobile'] = (string)$row['farmerMobile'];
+            $data[$key]['farmerCapacity'] = json_decode((string)$row['farmerCapacity']);
+            $data[$key]['trainingMaterialQty'] = json_decode((string)$row['trainingMaterialQty']);
+            $data[$key]['trainingMaterial'] = json_decode((string)$row['trainingMaterial']);
+            $data[$key]['trainingTopics'] = (string)$row['trainingTopics'];
             $data[$key]['remarks'] = (string)$row['remarks'];
 
         }
         return $data;
     }
 
+
+
     /**
-     *  Boiler Life Cycle Report Poultry
+     * Farmer Touch Report
      */
-    public function boilerLifeCycleReportPoultry( $terminal, $data = array() ): array
+    public function farmerTouchReport($terminal,$start, $end, $report, $employee): array
     {
         $em = $this->_em;
-        $qb = $em->createQueryBuilder();
-        $qb->from(ChickLifeCycle::class,'clc');
-        $qb->leftJoin('clc.customer','cc');
-        $qb->leftJoin('clc.agent','ca');
-        $qb->leftJoin('clc.hatchery','ch');
-        $qb->leftJoin('clc.breed','cd');
-        $qb->leftJoin('clc.feed','cf');
-        $qb->leftJoin('clc.crmChickLifeCycleDetails','cclcd');
-        $qb->leftJoin('cclcd.feedType','ft');
-        $qb->leftJoin('clc.employee','ce');
+        $startDate = date('Y-m-01', strtotime($start));
+        $endDate = date('Y-m-t', strtotime($end));
 
-        $qb->select('clc.id as id','clc.hatchingDate as hatchingDate');
+        if($report&&$employee) {
+            $qb = $em->createQueryBuilder();
+            $qb->from(FarmerTouchReport::class,'f');
+            $qb->join('f.agent','agent');
+            $qb->join('f.customer','farmer');
+            $qb->join('f.report','reportName');
+            $qb->leftJoin('agent.district','agentdistrict');
+            $qb->leftJoin('agent.upozila','agentupozila');
 
-        $qb->addSelect('ca.name as agentName','ca.address as agentAddress');
-        $qb->addSelect('cclcd.visitingWeek as visitingWeek','cclcd.ageDays as ageDays','cclcd.mortalityPes as mortalityPes','cclcd.mortalityPercent as mortalityPercent','cclcd.weightStandard as weightStandard','cclcd.weightAchieved as weightAchieved','cclcd.feedTotalKg as feedTotalKg','cclcd.perBird as perBird','cclcd.feedStandard as feedStandard','cclcd.withoutMortality as withoutMortality','cclcd.withMortality as withMortality','cclcd.proDate as proDate','cclcd.batchNo as batchNo','cclcd.remarks as remarks');
-        $qb->addSelect('cc.name as name','cc.address as address');
-        $qb->addSelect('ch.name as hatchery');
-        $qb->addSelect('ft.name as feedTypeName');
-        $qb->addSelect('cd.name as breed');
-        $qb->addSelect('cf.name as feed');
+            $qb->select('f.cultureSpeciesItemAndQty as cultureSpeciesItemAndQty','f.nourishItemName as nourishItemName','f.otherCultureSpecies as otherCultureSpecies','f.remarks as remarks');
+            $qb->addSelect('agent.mobile as mobile','agent.name as name');
+            $qb->addSelect('agentdistrict.name as districtName');
+            $qb->addSelect('agentupozila.name as upozilaName');
+            $qb->addSelect('farmer.name as farmerName','farmer.address as farmerAddress','farmer.mobile as farmerMoblie');
 
-        $qb->where('clc.id = 15');
-        $qb->orderBy('clc.id', 'ASC');
-        $result = $qb->getQuery()->getArrayResult();
-        $data = array();
-        foreach($result as $key => $row) {
-            $data[$key]['id'] = (int)$row['id'];
-            $data[$key]['agentName'] = (string)$row['agentName'];
-            $data[$key]['agentAddress'] = (string)$row['agentAddress'];
-            $data[$key]['name'] = (string)$row['name'];
-            $data[$key]['address'] = (string)$row['address'];
-            $data[$key]['hatchingDate'] = $row['hatchingDate'];
-            $data[$key]['visitingWeek'] = (int)$row['visitingWeek'];
-            $data[$key]['ageDays'] = (int)$row['ageDays'];
-            $data[$key]['mortalityPes'] = (int)$row['mortalityPes'];
-            $data[$key]['mortalityPercent'] = (float)$row['mortalityPercent'];
-            $data[$key]['weightStandard'] = (int)$row['weightStandard'];
-            $data[$key]['weightAchieved'] = (int)$row['weightAchieved'];
-            $data[$key]['feedTotalKg'] = (int)$row['feedTotalKg'];
-            $data[$key]['perBird'] = (float)$row['perBird'];
-            $data[$key]['feedStandard'] = (float)$row['feedStandard'];
-            $data[$key]['withoutMortality'] = (float)$row['withoutMortality'];
-            $data[$key]['withMortality'] = (float)$row['withMortality'];
-            $data[$key]['hatchery'] = (string)$row['hatchery'];
-            $data[$key]['breed'] = (string)$row['breed'];
-            $data[$key]['feed'] = (string)$row['feed'];
-            $data[$key]['feedTypeName'] = (string)$row['feedTypeName'];
-            $data[$key]['proDate'] = $row['proDate'];
-            $data[$key]['batchNo'] = (int)$row['batchNo'];
-            $data[$key]['remarks'] = (string)$row['remarks'];
+            $qb->where('f.createdAt >= :startDate')
+                ->andWhere('f.createdAt <= :endDate')
+                ->andWhere('f.reportParentParent = :report')
+                ->andWhere('f.employee = :employee')
+                ->setParameters(array('startDate' => $startDate . ' 00:00:00', 'endDate' => $endDate . ' 23:59:59', 'report' => $report, 'employee' => $employee));
+            $qb->orderBy('f.id', 'ASC');
+            $result = $qb->getQuery()->getArrayResult();
 
+            $data = array();
+
+            foreach($result as $key => $row) {
+                $data[$key]['mobile'] =(string)$row['mobile'];
+                $data[$key]['name'] =(string)$row['name'];
+                $data[$key]['districtName'] =(string)$row['districtName'];
+                $data[$key]['upozilaName'] =(string)$row['upozilaName'];
+                $data[$key]['farmerName'] =(string)$row['farmerName'];
+                $data[$key]['farmerAddress'] =(string)$row['farmerAddress'];
+                $data[$key]['farmerMoblie'] =(string)$row['farmerMoblie'];
+                $data[$key]['cultureSpeciesItemAndQty'] = json_decode((string)$row['cultureSpeciesItemAndQty']);
+                $data[$key]['nourishItemName'] =(string)$row['nourishItemName'];
+                $data[$key]['otherCultureSpecies'] =(string)$row['otherCultureSpecies'];
+                $data[$key]['remarks'] =(string)$row['remarks'];
+
+            }
+            return $data;
         }
-        return $data;
+        return array();
     }
 
     /**
-     *  Layer Life Cycle Report Poultry
+     *  Report Poultry
      */
-    public function layerLifeCycleReportPoultry( $terminal, $data = array() ): array
+    public function poultryLifeCylceReport( $terminal, $start, $end, $report, $customer): array
     {
         $em = $this->_em;
-        $qb = $em->createQueryBuilder();
-        $qb->from(LayerLifeCycle::class,'llc');
-        $qb->leftJoin('llc.crmLayerLifeCycleDetails','lcd');
-        $qb->leftJoin('llc.customer','lc');
-//        $qb->innerJoin('llc.feedMill','lfm');
-//        $qb->innerJoin('llc.feedType','lft');
+        $startDate = date('Y-m-01', strtotime($start));
+        $endDate = date('Y-m-t', strtotime($end));
+        if($report&&$customer) {
+            $qb = $em->createQueryBuilder();
+            $qb->from(ChickLifeCycle::class, 'c');
+            $qb->Join('c.agent', 'agent');
+            $qb->Join('c.customer', 'farmer');
+            $qb->Join('c.report', 'cr');
+            $qb->Join('cr.parent', 'crp');
+            $qb->Join('c.crmChickLifeCycleDetails', 'cc');
+            $qb->leftJoin('c.hatchery', 'ch');
+            $qb->leftJoin('c.breed', 'cb');
+            $qb->leftJoin('c.feed', 'cf');
+            $qb->leftJoin('cf.parent', 'cfp');
 
+            $qb->select('c.id as id', 'c.hatchingDate as hatchingDate', 'c.totalBirds as totalBirds');
+            $qb->addSelect('agent.name as agentName', 'agent.address as agentAddress');
+            $qb->addSelect('farmer.name as farmerName', 'farmer.address as farmerAddress', 'farmer.mobile as farmerMobile');
+            $qb->addSelect('cc.visitingWeek as visitingWeek', 'cc.ageDays as ageDays', 'cc.mortalityPes as mortalityPes', 'cc.mortalityPercent as mortalityPercent', 'cc.weightStandard as weightStandard', 'cc.weightAchieved as weightAchieved', 'cc.feedTotalKg as feedTotalKg', 'cc.perBird as perBird', 'cc.feedStandard as feedStandard', 'cc.withoutMortality as withoutMortality', 'cc.withMortality as withMortality', 'cc.proDate as proDate', 'cc.batchNo as batchNo', 'cc.remarks as remarks');
+            $qb->addSelect('ch.name as hatchery');
+            $qb->addSelect('cb.name as breed');
+            $qb->addSelect('cf.name as feed');
+            $qb->addSelect('cfp.name as feedtype');
 
-        $qb->select('llc.id as id','llc.totalBirds as totalBirds');
-//        $qb->addselect('lfm.name as feedMill');
-//        $qb->addselect('lft.name as feedType');
-        $qb->addSelect('lcd.visitingDate as visitingDate','lcd.ageWeek as ageWeek','lcd.deadBird as deadBird','lcd.avgWeight as avgWeight','lcd.targetWeight as targetWeight','lcd.uniformity as uniformity','lcd.feedPerBird as feedPerBird','lcd.targetFeedPerBird as targetFeedPerBird','lcd.totalEggs as totalEggs','lcd.eggProduction as eggProduction','lcd.targetEggProduction as targetEggProduction','lcd.eggWeightActual as eggWeightActual','lcd.eggWeightStandard as eggWeightStandard','lcd.productionDate as productionDate','lcd.batch_no as batch_no');
+            $qb->where('c.createdAt >= :startDate')
+                ->andWhere('c.createdAt <= :endDate')
+                ->andWhere('cr.slug = :report')
+                ->andWhere('farmer.name = :farmer')
+                ->setParameters(array(
+                    'startDate' => $startDate . ' 00:00:00',
+                    'endDate' => $endDate . ' 23:59:59',
+                    'report' => $report,
+                    'farmer' => $customer,
+                ));
+            //$qb->where('c.id = 20');
+            $qb->orderBy('c.id', 'ASC');
+            $result = $qb->getQuery()->getArrayResult();
+            //dd($result);
+            $data = array();
 
+            foreach ($result as $key => $row) {
+                $data[$key]['agentName'] = (string)$row['agentName'];
+                $data[$key]['agentAddress'] = (string)$row['agentAddress'];
+                $data[$key]['farmerName'] = (string)$row['farmerName'];
+                $data[$key]['farmerAddress'] = (string)$row['farmerAddress'];
+                $data[$key]['farmerMobile'] = (string)$row['farmerMobile'];
+                $data[$key]['hatchingDate'] = $row['hatchingDate']->format('Y-m-d');
+                $data[$key]['visitingWeek'] = (int)$row['visitingWeek'];
+                $data[$key]['totalBirds'] = (int)$row['totalBirds'];
+                $data[$key]['ageDays'] = (int)$row['ageDays'];
+                $data[$key]['mortalityPes'] = (int)$row['mortalityPes'];
+                $data[$key]['mortalityPercent'] = (float)$row['mortalityPercent'];
+                $data[$key]['weightStandard'] = (int)$row['weightStandard'];
+                $data[$key]['weightAchieved'] = (int)$row['weightAchieved'];
+                $data[$key]['feedTotalKg'] = (int)$row['feedTotalKg'];
+                $data[$key]['perBird'] = (float)$row['perBird'];
+                $data[$key]['feedStandard'] = (float)$row['feedStandard'];
+                $data[$key]['withoutMortality'] = (float)$row['withoutMortality'];
+                $data[$key]['withMortality'] = (float)$row['withMortality'];
+                $data[$key]['hatchery'] = (string)$row['hatchery'];
+                $data[$key]['breed'] = (string)$row['breed'];
+                $data[$key]['feed'] = (string)$row['feed'];
+                $data[$key]['feedtype'] = (string)$row['feedtype'];
+                $data[$key]['proDate'] = $row['proDate'];
+                $data[$key]['batchNo'] = (int)$row['batchNo'];
+                $data[$key]['remarks'] = (string)$row['remarks'];
 
-
-        $qb->where('llc.id = 8');
-        $qb->orderBy('llc.id', 'ASC');
-        $result = $qb->getQuery()->getArrayResult();
-        $data = array();
-        foreach($result as $key => $row) {
-            $data[$key]['visitingDate'] = $row['visitingDate'];
-            $data[$key]['ageWeek'] = (int)$row['ageWeek'];
-            $data[$key]['totalBirds'] = (int)$row['totalBirds'];
-            $data[$key]['deadBird'] = (int)$row['deadBird'];
-            $data[$key]['avgWeight'] = (int)$row['avgWeight'];
-            $data[$key]['targetWeight'] = (int)$row['targetWeight'];
-            $data[$key]['uniformity'] = (int)$row['uniformity'];
-            $data[$key]['feedPerBird'] = (int)$row['feedPerBird'];
-            $data[$key]['targetFeedPerBird'] = (int)$row['targetFeedPerBird'];
-            $data[$key]['totalEggs'] = (int)$row['totalEggs'];
-            $data[$key]['eggProduction'] = (int)$row['eggProduction'];
-            $data[$key]['targetEggProduction'] = (int)$row['targetEggProduction'];
-            $data[$key]['eggWeightActual'] = (int)$row['eggWeightActual'];
-            $data[$key]['eggWeightStandard'] = (int)$row['eggWeightStandard'];
-            $data[$key]['productionDate'] = $row['productionDate'];
-            $data[$key]['batch_no'] = (int)$row['batch_no'];
-//            $data[$key]['feedType'] = (int)$row['feedType'];
-//            $data[$key]['feedType'] = (int)$row['feedMill'];
-
+            }
+            return $data;
         }
-        return $data;
     }
 
     /**
-     *  Cattle Farm Visit Life Cycle Report Poultry
+     *  Cattle Farm Visit
      */
-    public function farmCattleVisit( $terminal, $data = array() ): array
+    public function farmVisitCattle( $terminal,$start, $end, $employee): array
     {
         $em = $this->_em;
+        $startDate = date('Y-m-01', strtotime($start));
+        $endDate = date('Y-m-t', strtotime($end));
+
         $qb = $em->createQueryBuilder();
         $qb->from(CattleFarmVisit::class,'cfv');
         $qb->leftJoin('cfv.crmCattleFarmVisitDetails','cfvd');
@@ -528,12 +589,16 @@ class ApiRepository extends BaseRepository
         $qb->addselect('cfvdaz.name as agentUpozila');
         $qb->addselect('cfvdad.name as agentDistrict');
 
+        $qb->where('cfv.reportingMonth >= :startDate')
+            ->andWhere('cfv.reportingMonth <= :endDate')
+            ->andWhere('cfv.employee = :employee')
+            ->setParameters(array('startDate' => $startDate . ' 00:00:00', 'endDate' => $endDate . ' 23:59:59',  'employee' => $employee));
 
         $qb->orderBy('cfv.id', 'ASC');
         $result = $qb->getQuery()->getArrayResult();
         $data = array();
         foreach($result as $key => $row) {
-            $data[$key]['visitingDate'] = $row['visitingDate'];
+            $data[$key]['visitingDate'] = $row['visitingDate']->format('Y-m-d');
             $data[$key]['customerName'] = (string)$row['customerName'];
             $data[$key]['customerAddress'] = (string)$row['customerAddress'];
             $data[$key]['agentPhone'] = (string)$row['agentPhone'];
@@ -555,37 +620,78 @@ class ApiRepository extends BaseRepository
         return $data;
     }
 
-    /* Zashim123 */
-
     /**
-     * CRM Visit Report
+     * Report Poultry FRC
      */
-
-    public function crmVisit( $terminal, $data = array() ): array
+    public function frcReportPoulty($terminal,$start, $end, $report, $employee): array
     {
         $em = $this->_em;
-        $qb = $em->createQueryBuilder();
-        $qb->from(CrmVisit::class,'cv');
-        $qb->leftJoin('cv.employee','cve');
-        $qb->leftJoin('cv.location','cvl');
 
-        $qb->select('cv.id as id','cv.workingDuration as workingDuration');
-        $qb->addSelect('cve.name as employeeName');
-        $qb->addSelect('cvl.name as areaName');
+        $startDate = date('Y-m-01', strtotime($start));
+        $endDate = date('Y-m-t', strtotime($end));
 
-        $qb->where('cve.id = 21');
-        $qb->orderBy('cv.id', 'ASC');
-        $result = $qb->getQuery()->getArrayResult();
-        $data = array();
-        foreach($result as $key => $row) {
-            $data[$key]['id'] = (int)$row['id'];
-            $data[$key]['employeeName'] = (string)$row['employeeName'];
-            $data[$key]['workingDuration'] = (string)$row['workingDuration'];
-            $data[$key]['areaName'] = (string)$row['areaName'];
+        if($report && $employee) {
+            $qb = $em->createQueryBuilder();
+            $qb->from(FcrDetails::class, 'f');
+            $qb->join('f.agent', 'agent');
+            $qb->Join('f.report', 'fr');
+            $qb->Join('f.employee', 'employee');
+            $qb->join('f.hatchery', 'hatchery');
+            $qb->join('f.breed', 'breed');
+            $qb->join('f.feed', 'feed');
+            $qb->leftjoin('f.feedMill', 'feedMill');
+            $qb->leftJoin('agent.district', 'agentdistrict');
 
+            $qb->select('f.id as id', 'f.hatchingDate as hatchingDate', 'f.totalBirds as totalBirds', 'f.ageDay as ageDay', 'f.mortalityPes as mortalityPes', 'f.mortalityPercent as mortalityPercent', 'f.weightStandard as weightStandard', 'f.feedConsumptionTotalKg as feedConsumptionTotalKg', 'f.feedConsumptionPerBird as feedConsumptionPerBird', 'f.fcrWithoutMortality as fcrWithoutMortality', 'f.fcrWithMortality as fcrWithMortality', 'f.proDate as proDate', 'f.batchNo as batchNo', 'f.remarks as remarks');
+            $qb->addSelect('agent.name as agentName', 'agent.address as agentAddress');
+            $qb->addSelect('agentdistrict.name as districtName');
+            $qb->addSelect('hatchery.name as hatcheryName');
+            $qb->addSelect('breed.name as breedName');
+            $qb->addSelect('feed.name as feedName');
+            $qb->addSelect('feedMill.name as feedMillName');
+
+            $qb->where('f.reportingMonth >= :startDate')
+                ->andWhere('f.reportingMonth <= :endDate')
+                ->andWhere('fr.slug = :report')
+                ->andWhere('employee.name = :employee')
+                ->setParameters(array(
+                    'startDate' => $startDate . ' 00:00:00',
+                    'endDate' => $endDate . ' 23:59:59',
+                    'report' => $report,
+                    'employee' => $employee
+                ));
+
+            $qb->orderBy('f.id', 'ASC');
+            $result = $qb->getQuery()->getArrayResult();
+
+            $data = array();
+            foreach ($result as $key => $row) {
+                $data[$key]['agentName'] = (string)$row['agentName'];
+                $data[$key]['districtName'] = (string)$row['districtName'];
+                $data[$key]['agentAddress'] = (string)$row['agentAddress'];
+                $data[$key]['hatchingDate'] = $row['hatchingDate']->format('Y-m-d');
+                $data[$key]['totalBirds'] = (int)$row['totalBirds'];
+                $data[$key]['ageDay'] = (int)$row['ageDay'];
+                $data[$key]['mortalityPes'] = (int)$row['mortalityPes'];
+                $data[$key]['weightStandard'] = (int)$row['weightStandard'];
+                $data[$key]['feedConsumptionTotalKg'] = (int)$row['feedConsumptionTotalKg'];
+                $data[$key]['feedConsumptionPerBird'] = (int)$row['feedConsumptionPerBird'];
+                $data[$key]['fcrWithoutMortality'] = (float)$row['fcrWithoutMortality'];
+                $data[$key]['fcrWithMortality'] = (float)$row['fcrWithMortality'];
+                $data[$key]['hatcheryName'] = (string)$row['hatcheryName'];
+                $data[$key]['breedName'] = (string)$row['breedName'];
+                $data[$key]['feedName'] = (string)$row['feedName'];
+                $data[$key]['feedMillName'] = (string)$row['feedMillName'];
+                $data[$key]['proDate'] = $row['proDate'];
+                $data[$key]['batchNo'] = (int)$row['batchNo'];
+                $data[$key]['remarks'] = (string)$row['remarks'];
+            }
+         return $data;
         }
-        return $data;
+
     }
+
+
 
 
 }
