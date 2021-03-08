@@ -75,6 +75,7 @@ class ApiController extends AbstractController
             endforeach;
             $locations = implode(",", $upozilas);
             $data = array(
+                'userid' => $user->getId(),
                 'username' => $user->getUsername(),
                 'name' => $user->getName(),
                 'roles' => $rolesSeparated,
@@ -384,6 +385,7 @@ class ApiController extends AbstractController
 
         $employee = $this->getDoctrine()->getRepository(User::class)->findOneBy(array('name' => $employeeName));
         //$agentName = $request->request->get('agent_name');
+
         set_time_limit(0);
         ignore_user_abort(true);
         // $terminal = $this->getUser()->getTerminal()->getId();
@@ -442,7 +444,7 @@ class ApiController extends AbstractController
         return $response;
     }
 
-    
+
 
     /**
      * @Route("/report/poultry", methods={"POST"}, name="reportPoultry")
@@ -610,7 +612,7 @@ class ApiController extends AbstractController
         $userId = $request->request->get('user_id');
 
         $user = $this->getDoctrine()->getRepository(User::class)->find($userId);
-
+        //dd($user);
         if (!empty($user)) {
 
             /* @var $user User */
@@ -655,5 +657,85 @@ class ApiController extends AbstractController
 
         return new JsonResponse('success');
     }
+
+    /**
+     * @Route("/dailyActiviesPurpose", methods={"GET"}, name="dailyActiviesPurpose")
+     */
+    public function dailyActiviesPurpose()
+    {
+
+        set_time_limit(0);
+        ignore_user_abort(true);
+
+        $entities = $this->getDoctrine()->getRepository(Api::class)->dailyActiviesPurpose(1);
+        $response = new Response();
+        $response->headers->set('Content-Type', 'application/json');
+        $response->setContent(json_encode($entities));
+        $response->setStatusCode(Response::HTTP_OK);
+        return $response;
+    }
+
+    /**
+     * @Route("/farmerSelectPurpose", methods={"GET","POST"}, name="farmerSelectPurpose")
+     */
+    public function farmerSelectPurpose(Request $request)
+    {
+        set_time_limit(0);
+        ignore_user_abort(true);
+
+        $employeeId = $request->request->get('user_id');
+
+        $employee = $this->getDoctrine()->getRepository(User::class)->findOneBy(array('id' => $employeeId));
+
+        $entities = $this->getDoctrine()->getRepository(Api::class)->farmerSelectPurpose(1, $employee);
+
+        $response = new Response();
+        $response->headers->set('Content-Type', 'application/json');
+        $response->setContent(json_encode($entities));
+        $response->setStatusCode(Response::HTTP_OK);
+        return $response;
+    }
+
+    /**
+     * @Route("/selectFarmType", methods={"GET"}, name="selectFarmType")
+     */
+    public function selectFarmType()
+    {
+
+        set_time_limit(0);
+        ignore_user_abort(true);
+
+        $entities = $this->getDoctrine()->getRepository(Api::class)->selectFarmType(1);
+        $response = new Response();
+        $response->headers->set('Content-Type', 'application/json');
+        $response->setContent(json_encode($entities));
+        $response->setStatusCode(Response::HTTP_OK);
+        return $response;
+    }
+
+
+
+    /**
+     * @Route("/farmSelectReport", methods={"POST"}, name="farmSelectReport")
+     */
+    public function farmSelectReport(Request $request)
+    {
+        set_time_limit(0);
+        ignore_user_abort(true);
+
+        $breedId = $request->request->get('breed_id');
+        $farmerReport = $request->request->get('settingType');
+
+        $entities = $this->getDoctrine()->getRepository(Api::class)->farmSelectReport(1, $breedId, $farmerReport);
+
+        $response = new Response();
+        $response->headers->set('Content-Type', 'application/json');
+        $response->setContent(json_encode($entities));
+        $response->setStatusCode(Response::HTTP_OK);
+        return $response;
+    }
+
+
+
 
 }

@@ -691,7 +691,117 @@ class ApiRepository extends BaseRepository
 
     }
 
+    /**
+     * Daily Activies Purpose
+     */
+    public function dailyActiviesPurpose()
+    {
+        $em = $this->_em;
+        $qb = $em->createQueryBuilder();
+        $qb->from(Setting::class,'s');
+        $qb->leftJoin('s.parent','p');
+        $qb->select('s.id as id','s.name as name','s.settingType as settingType');
 
+        $qb->where("s.settingType = 'PURPOSE'");
+        $qb->orderBy('s.id', 'ASC');
+        $result = $qb->getQuery()->getArrayResult();
+        $data = array();
+        foreach($result as $key => $row) {
+
+            $data[$row['settingType']][]= array(
+                'id'=>(int)$row['id'],
+                'name'=>$row['name']
+            );
+
+        }
+        return $data;
+
+    }
+
+    /**
+     * Farmer Select Purpose
+     */
+    public function farmerSelectPurpose($terminal, $employee)
+    {
+        $em = $this->_em;
+        $qb = $em->createQueryBuilder();
+        $qb->from(FarmerIntroduceDetails::class,'fid');
+        $qb->Join('fid.customer','farmer');
+        $qb->Join('fid.employee','employee');
+
+        $qb->select('farmer.id as id','farmer.name as name','farmer.mobile as mobile');
+
+        $qb->where('employee.id = :employeeId')->setParameters(array('employeeId'=> $employee));
+
+        $qb->orderBy('fid.id', 'ASC');
+        $result = $qb->getQuery()->getArrayResult();
+        //dd($result);
+        $data = array();
+        foreach ($result as $key => $row) {
+            $data[$key]['id'] = (string)$row['id'];
+            $data[$key]['name'] = (string)$row['name'];
+            $data[$key]['mobile'] = (string)$row['mobile'];
+
+
+        }
+        return $data;
+    }
+
+    /**
+     * Select Farm Type
+     */
+    public function selectFarmType()
+    {
+        $em = $this->_em;
+        $qb = $em->createQueryBuilder();
+        $qb->from(Setting::class,'s');
+        $qb->leftJoin('s.parent','p');
+
+        $qb->select('s.id as id','s.name as name','s.settingType as settingType');
+        $qb->addselect('p.name as breedName');
+
+        $qb->where("s.settingType = 'FARM_TYPE'");
+        $qb->orderBy('s.id', 'ASC');
+        $result = $qb->getQuery()->getArrayResult();
+        $data = array();
+        foreach($result as $key => $row) {
+
+            $data[$row['breedName']][]= array(
+                'id'=>(int)$row['id'],
+                'name'=>$row['name']
+            );
+
+        }
+        return $data;
+    }
+
+    /**
+     * Farm Select Report
+     */
+    public function farmSelectReport($terminal,$breedId,$farmerReport)
+    {
+        $em = $this->_em;
+        $qb = $em->createQueryBuilder();
+        $qb->from(Setting::class,'s');
+        $qb->leftJoin('s.parent','p');
+
+        $qb->select('s.id as id','s.name as name');
+
+        $qb->where('p.id = :breedId')
+            ->andWhere('s.settingType = :farmerReport')
+            ->setParameters(array('breedId'=> $breedId, 'farmerReport' => $farmerReport));
+
+        $qb->orderBy('s.id', 'ASC');
+        $result = $qb->getQuery()->getArrayResult();
+
+        $data = array();
+        foreach ($result as $key => $row) {
+            $data[$key]['id'] = (string)$row['id'];
+            $data[$key]['name'] = (string)$row['name'];
+
+        }
+        return $data;
+    }
 
 
 }
