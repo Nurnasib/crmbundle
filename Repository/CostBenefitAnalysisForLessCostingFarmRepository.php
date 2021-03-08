@@ -43,7 +43,6 @@ class CostBenefitAnalysisForLessCostingFarmRepository extends BaseRepository
 
     public function getCostBenefitAnalysisReport($filterBy)
     {
-//        dd($filterBy);
         $qb = $this->createQueryBuilder('e');
         $qb->select('e.hatchingDate','e.totalStockedChicksPcs','e.totalFeedUsedKg','e.totalBroilerWeightKg','e.mortality','e.ageDays','e.fcr','e.itemPricePerPcs','e.feedPricePerKg','e.broilerOrFishPricePerKg','e.totalMedicineCost','e.totalVaccineCost','e.litterOrPondRentCost','e.electricityAndFuelCost','e.labourCost','e.transportCost','e.reportingMonth');
         $qb->addSelect('agent.name AS agentName','agent.address AS agentAddress', 'agent.mobile AS agentMobile');
@@ -52,11 +51,8 @@ class CostBenefitAnalysisForLessCostingFarmRepository extends BaseRepository
         $qb->addSelect('breed.name AS breedName');
 
         $qb->leftJoin('e.agent', 'agent');
-//        $qb->leftJoin('e.customer', 'farmer');
         $qb->leftJoin('e.hatchery', 'hatchery');
         $qb->leftJoin('e.breed', 'breed');
-/*        $qb->where('e.reportingMonth >= :reportingMonthBOM')->setParameter('reportingMonthBOM', $filterBy['reportingMonthBOM']);
-        $qb->andWhere('e.reportingMonth <= :reportingMonthEOM')->setParameter('reportingMonthEOM', $filterBy['reportingMonthEOM']);*/
 
         $this->handleSearchFilterBetween($qb, $filterBy);
         $results = $qb->getQuery()->getResult();
@@ -67,6 +63,24 @@ class CostBenefitAnalysisForLessCostingFarmRepository extends BaseRepository
         }
 //        dd($data);
         return $data;
+    }
+
+    public function getMonthlyLessCostingFarmOrSkillFarmDevelopTotalReport($filterBy)
+    {
+        $qb = $this->createQueryBuilder('e');
+        $qb->select('COUNT(e) as totalReport');
+
+        $qb->join('e.employee', 'employee');
+        $qb->join('e.report', 'report');
+
+        $qb->where('employee.id = :employeeId')->setParameter('employeeId', $filterBy['employeeId']);
+        $qb->andWhere('e.reportingMonth >= :monthStart')->setParameter('monthStart', $filterBy['monthStart']);
+        $qb->andWhere('e.reportingMonth <= :monthEnd')->setParameter('monthEnd', $filterBy['monthEnd']);
+        $qb->andWhere('report.settingType = :settingType')->setParameter('settingType', 'FARMER_REPORT');
+        $qb->andWhere('report.slug = :slug')->setParameter('slug', 'less-costing-farm-poultry');
+
+        $results = $qb->getQuery()->getSingleResult();
+        return $results['totalReport'];
     }
 
 }

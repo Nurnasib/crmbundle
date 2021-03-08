@@ -40,7 +40,6 @@ class FarmerIntroduceDetailsRepository extends BaseRepository
 
     public function getFarmerIntroduceReport($filterBy)
     {
-//        dd($filterBy);
         $qb = $this->createQueryBuilder('e');
         $qb->select('e.previousAgentName', 'e.previousAgentAddress', 'e.previousFeedName','e.cultureSpeciesItemAndQty', 'e.remarks', 'e.createdAt');
         $qb->addSelect('farmer.name AS farmerName', 'farmer.address AS farmerAddress', 'farmer.mobile AS farmerMobile');
@@ -52,7 +51,6 @@ class FarmerIntroduceDetailsRepository extends BaseRepository
         $qb->leftJoin('farmer.agent', 'agent');
         $qb->leftJoin('e.farmerType', 'farmerType');
         $this->handleSearchFilterBetween($qb, $filterBy);
-//
         $results = $qb->getQuery()->getArrayResult();
 
         $data = [];
@@ -62,10 +60,24 @@ class FarmerIntroduceDetailsRepository extends BaseRepository
 
             $data[$month][] = $result;
         }
-//        dd($data);
 
         return $data;
 
+    }
+
+    public function getMonthlyNewFarmerIntroduceTotalReport($filterBy)
+    {
+        $qb = $this->createQueryBuilder('e');
+        $qb->select('COUNT(e) as totalReport');
+
+        $qb->join('e.employee', 'employee');
+
+        $qb->where('employee.id = :employeeId')->setParameter('employeeId', $filterBy['employeeId']);
+        $qb->andWhere('e.createdAt >= :monthStart')->setParameter('monthStart', $filterBy['monthStart'] . ' 00:00:00');
+        $qb->andWhere('e.createdAt <= :monthEnd')->setParameter('monthEnd', $filterBy['monthEnd'] . ' 23:59:59');
+
+        $results = $qb->getQuery()->getSingleResult();
+        return $results['totalReport'];
     }
 
 }

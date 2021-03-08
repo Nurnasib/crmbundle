@@ -40,4 +40,17 @@ class DiseaseMappingRepository extends EntityRepository
         return array();
     }
 
+    public function getMonthlyTroubleshootingAndDiseasesMappingTotalReport($filterBy)
+    {
+        $qb = $this->createQueryBuilder('e');
+        $qb->select('COUNT(e) as totalReport');
+        $qb->join('e.employee', 'employee');
+        $qb->where('employee.id = :employeeId')->setParameter('employeeId', $filterBy['employeeId']);
+        $qb->andWhere('e.visitingDate >= :monthStart')->setParameter('monthStart', $filterBy['monthStart']);
+        $qb->andWhere('e.visitingDate <= :monthEnd')->setParameter('monthEnd', $filterBy['monthEnd']);
+
+        $results = $qb->getQuery()->getSingleResult();
+        return $results['totalReport'];
+    }
+
 }

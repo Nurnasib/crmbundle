@@ -25,7 +25,6 @@ class FarmerTrainingReportRepository extends BaseRepository
 {
     public function getFarmerTrainingReport($filterBy)
     {
-//        dd($filterBy);
         $qb = $this->createQueryBuilder('e');
         $qb->select('e.trainingTopics','e.trainingDate', 'e.remarks', 'e.trainingMaterial');
         $qb->addSelect('agent.name AS agentName','agent.address AS agentAddress', 'agent.mobile AS agentMobile');
@@ -40,7 +39,6 @@ class FarmerTrainingReportRepository extends BaseRepository
         $qb->leftJoin('e.farmerTrainingReportDetails','farmerTrainingReportDetails');
         $qb->leftJoin('farmerTrainingReportDetails.customer','farmer');
         $qb->leftJoin('e.breedName', 'breedName');
-//        $qb->leftJoin('e.employee', 'employee');
         $this->handleSearchFilterBetween($qb, $filterBy);
 
 
@@ -53,8 +51,22 @@ class FarmerTrainingReportRepository extends BaseRepository
             $data[$month][] = $result;
         }
 
-//        dd($data);
         return $data;
+    }
+
+    public function getMonthlyfarmersTrainingProgramTotalReport($filterBy)
+    {
+        $qb = $this->createQueryBuilder('e');
+        $qb->select('COUNT(e) as totalReport');
+
+        $qb->join('e.employee', 'employee');
+
+        $qb->where('employee.id = :employeeId')->setParameter('employeeId', $filterBy['employeeId']);
+        $qb->andWhere('e.trainingDate >= :monthStart')->setParameter('monthStart', $filterBy['monthStart']);
+        $qb->andWhere('e.trainingDate <= :monthEnd')->setParameter('monthEnd', $filterBy['monthEnd']);
+
+        $results = $qb->getQuery()->getSingleResult();
+        return $results['totalReport'];
     }
 
 }

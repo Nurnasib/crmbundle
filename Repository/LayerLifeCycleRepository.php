@@ -66,4 +66,22 @@ class LayerLifeCycleRepository extends BaseRepository
     }
 
 
+    public function getMonthlyLayerLifeCycleTotalReport($filterBy)
+    {
+        $qb = $this->createQueryBuilder('e');
+
+        $qb->select('COUNT(e) as totalReport');
+
+        $qb->join('e.employee', 'employee');
+
+        $qb->where('employee.id = :employeeId')->setParameter('employeeId', $filterBy['employeeId']);
+        $qb->andWhere('e.lifeCycleState = :lifecycleState')->setParameter('lifecycleState', 'IN_PROGRESS');
+        $qb->andWhere('e.created >= :monthStart')->setParameter('monthStart', $filterBy['monthStart'] . ' 00:00:00');
+        $qb->andWhere('e.created <= :monthEnd')->setParameter('monthEnd', $filterBy['monthEnd'] . ' 23:59:59');
+
+        $results = $qb->getQuery()->getSingleResult();
+        return $results['totalReport'];
+    }
+
+
 }

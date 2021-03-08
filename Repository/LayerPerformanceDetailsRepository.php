@@ -50,10 +50,25 @@ class LayerPerformanceDetailsRepository extends BaseRepository
         $results = $qb->getQuery()->getResult();
 
        // $results['month'] = $results[0]->getCreated()->format('F-Y');
-//        dd($results);
 
         return $results;
 
 
+    }
+
+
+    public function getMonthlyLayerPerformanceTotalReport($filterBy)
+    {
+        $qb = $this->createQueryBuilder('e');
+        $qb->select('COUNT(e) as totalReport');
+
+        $qb->join('e.employee', 'employee');
+
+        $qb->where('employee.id = :employeeId')->setParameter('employeeId', $filterBy['employeeId']);
+        $qb->andWhere('e.reportingMonth >= :monthStart')->setParameter('monthStart', $filterBy['monthStart']);
+        $qb->andWhere('e.reportingMonth <= :monthEnd')->setParameter('monthEnd', $filterBy['monthEnd']);
+
+        $results = $qb->getQuery()->getSingleResult();
+        return $results['totalReport'];
     }
 }

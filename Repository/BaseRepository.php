@@ -11,11 +11,14 @@ class BaseRepository extends EntityRepository
     protected function handleSearchFilterBetween($qb,$filterBy)
     {
         if (isset($filterBy)){
+
             $startDate = isset($filterBy['startDate'])? $filterBy['startDate'] . ' 00:00:00': '';
             $endDate = isset($filterBy['endDate'])? $filterBy['endDate'] . ' 23:59:59': '';
 
             $startDateCreated = isset($filterBy['startDateCreated'])? $filterBy['startDateCreated'] . ' 00:00:00': '' ;
             $endDateCreated = isset($filterBy['endDateCreated'])? $filterBy['endDateCreated'] . ' 23:59:59': '';
+
+            $reportingMonth = isset($filterBy['reportingMonth'])? $filterBy['reportingMonth']: '';
 
             $slug = isset($filterBy['slug'])? $filterBy['slug']: '';
             $farmer = isset($filterBy['farmer'])? $filterBy['farmer']: '';
@@ -43,6 +46,11 @@ class BaseRepository extends EntityRepository
             }
             if (!empty($endDateCreated)){
                 $qb->andWhere('e.created <= :endDate')->setParameter('endDate', $endDateCreated);
+            }
+
+            if (!empty($reportingMonth)){
+                $qb->andWhere('e.reportingMonth >= :reportingMonthStart')->setParameter('reportingMonthStart', $reportingMonth . '-' . '01');
+                $qb->andWhere('e.reportingMonth <= :reportingMonthEnd')->setParameter('reportingMonthEnd', date('Y-m-t', strtotime($reportingMonth)));
             }
 
 

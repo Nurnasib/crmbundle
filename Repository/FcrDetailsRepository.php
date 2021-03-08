@@ -99,4 +99,36 @@ class FcrDetailsRepository extends BaseRepository
 
     }
 
+    public function getMonthlyFcrAfterSaleTotalReport($filterBy)
+    {
+        $qb = $this->createQueryBuilder('e');
+        $qb->select('COUNT(e) as totalReport');
+        $qb->join('e.employee', 'employee');
+        $qb->where('employee.id = :employeeId')->setParameter('employeeId', $filterBy['employeeId']);
+        $qb->andWhere('e.fcrOfFeed = :fcrFeed')->setParameter('fcrFeed', 'AFTER');
+        $qb->andWhere('e.reportingMonth >= :monthStart')->setParameter('monthStart', $filterBy['monthStart']);
+        $qb->andWhere('e.reportingMonth <= :monthEnd')->setParameter('monthEnd', $filterBy['monthEnd']);
+
+        $results = $qb->getQuery()->getSingleResult();
+        return $results['totalReport'];
+    }
+
+    public function getMonthlyBroilerBeforeSaleTotalReport($filterBy)
+    {
+        $qb = $this->createQueryBuilder('e');
+        $qb->select('COUNT(e) as totalReport');
+
+        $qb->join('e.employee', 'employee');
+        $qb->join('e.report', 'report');
+
+        $qb->where('employee.id = :employeeId')->setParameter('employeeId', $filterBy['employeeId']);
+        $qb->andWhere('e.fcrOfFeed = :fcrFeed')->setParameter('fcrFeed', 'BEFORE');
+        $qb->andWhere('e.reportingMonth >= :monthStart')->setParameter('monthStart', $filterBy['monthStart']);
+        $qb->andWhere('e.reportingMonth <= :monthEnd')->setParameter('monthEnd', $filterBy['monthEnd']);
+        $qb->andWhere('report.slug = :slug')->setParameter('slug', 'fcr-before-sale-boiler');
+
+        $results = $qb->getQuery()->getSingleResult();
+        return $results['totalReport'];
+    }
+
 }

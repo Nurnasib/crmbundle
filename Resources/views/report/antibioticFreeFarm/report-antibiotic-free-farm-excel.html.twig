@@ -1,0 +1,115 @@
+<table>
+    <thead>
+    <tr>
+        <th colspan="26" align="center">{{ 'NOURISH POULTRY AND HATCHERY LTD'|trans }}</th>
+    </tr>
+    <tr>
+        <th colspan="26" align="center">{{ 'UTTARA, DHAKA.'|trans }}</th>
+    </tr>
+    <tr>
+        <th colspan="26" align="center">{{ 'Medicine & Vaccine Cost for Antibiotic Free Farm'|trans }}</th>
+    </tr>
+    <tr>
+        <th></th>
+    </tr>
+    <tr>
+        <th colspan="9">{{ 'Name of CSO'|trans }}: {{ filterBy.employee.name|default('') }}</th>
+        <th colspan="9">{{ 'Designation'|trans }}: {{ filterBy.employee.designation.name }}</th>
+        <th colspan="9">{{ 'Region'|trans }}: {{ filterBy.employee.regional.name|default('N/A') }}</th>
+    </tr>
+    <tr>
+        <th></th>
+    </tr>
+    </thead>
+</table>
+
+<table>
+    <thead>
+    <tr>
+        <th scope="col" rowspan="2" style="text-align: center">{{ 'Month'|trans }}</th>
+        <th scope="col" rowspan="2" style="text-align: center">{{ 'SL NO'|trans }}</th>
+        <th scope="col" colspan="3" style="text-align: center">{{ 'Agent Information'|trans }}</th>
+        <th scope="col" colspan="3" style="text-align: center">{{ 'Farmer Information'|trans }}</th>
+        <th scope="col" colspan="3" style="text-align: center">{{ 'DOC Information'|trans }}</th>
+        <th scope="col" colspan="6" style="text-align: center">{{ 'Flock Details'|trans }}</th>
+        <th scope="col" colspan="3" style="text-align: center">{{ 'Cost Details (Total)'|trans }}</th>
+        <th scope="col" colspan="3" style="text-align: center">{{ 'Cost Details (Per Bird)'|trans }}</th>
+        <th scope="col" colspan="3" style="text-align: center">{{ 'Cost Details (Per kg)'|trans }}</th>
+    </tr>
+
+    <tr>
+        <th scope="col" style="text-align: center">{{ 'Agent Name'|trans }}</th>
+        <th scope="col" style="text-align: center">{{ 'Address'|trans }}</th>
+        <th scope="col" style="text-align: center">{{ 'Mobile'|trans }}</th>
+        <th scope="col" style="text-align: center">{{ 'Farmer Name'|trans }}</th>
+        <th scope="col" style="text-align: center">{{ 'Address'|trans }}</th>
+        <th scope="col" style="text-align: center">{{ 'Mobile'|trans }}</th>
+        <th scope="col" style="text-align: center">{{ 'Hatch Date'|trans }}</th>
+        <th scope="col" style="text-align: center">{{ 'Hatchery'|trans }}</th>
+        <th scope="col" style="text-align: center">{{ 'Breed'|trans }}</th>
+        <th scope="col" style="text-align: center">{{ 'Total Chicks (Pcs)'|trans }}</th>
+        <th scope="col" style="text-align: center">{{ 'Total Feed (Kg)'|trans }}</th>
+        <th scope="col" style="text-align: center">{{ 'Total Broiler Wt (Kg)'|trans }}</th>
+        <th scope="col" style="text-align: center">{{ 'Mortality (Pcs)'|trans }}</th>
+        <th scope="col" style="text-align: center">{{ 'Age (days)'|trans }}</th>
+        <th scope="col" style="text-align: center">{{ 'FCR'|trans }}</th>
+        <th scope="col" style="text-align: center">{{ 'Medicine Cost (Total)'|trans }}</th>
+        <th scope="col" style="text-align: center">{{ 'Vaccine Cost (Total)'|trans }}</th>
+        <th scope="col" style="text-align: center">{{ 'M & V Cost (Total)'|trans }}</th>
+        <th scope="col" style="text-align: center">{{ 'Medicine Cost / Bird'|trans }}</th>
+        <th scope="col" style="text-align: center">{{ 'Vaccine Cost / Bird'|trans }}</th>
+        <th scope="col" style="text-align: center">{{ 'M & V Cost / Bird'|trans }}</th>
+        <th scope="col" style="text-align: center">{{ 'Medicine Cost / kg'|trans }}</th>
+        <th scope="col" style="text-align: center">{{ 'Vaccine Cost / kg'|trans }}</th>
+        <th scope="col" style="text-align: center">{{ 'M & V Cost / kg'|trans }}</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% if entities is iterable %}
+        {% set count = 1 %}
+        {% set agentCount = 1 %}
+        {% for key,entity in entities %}
+            {% set farmerCount = 1 %}
+            {% for details in entity %}
+                {% set totalCost = medicineCost[details.id]['MEDICINE'] + medicineCost[details.id]['VACCINE'] %}
+                <tr>
+                    {% if count == 1 %}
+                        <td rowspan="{{ count == 1 ? entities|multiArrayLength : '' }}">{{ filterBy['reportingMonth']|date('F-Y') }}</td>
+                    {% endif %}
+                    {% if farmerCount == 1 %}
+                        <td rowspan="{{ entity|length }}">{{ agentCount }}</td>
+                        <td rowspan="{{ entity|length }}">{{ key|default('') }}</td>
+                        <td rowspan="{{ entity|length }}">{{ details.agentAddress|default('') }}</td>
+                        <td rowspan="{{ entity|length }}">{{ details.agentMobile|default('') }}</td>
+                    {% endif %}
+                    <td>{{ count }}</td>
+                    <td>{{ details.farmerName|default('') }}</td>
+                    <td>{{ details.farmerAddress|default('') }}</td>
+                    <td>{{ details.farmerMobile|default('') }}</td>
+                    <td>{{ details.hatchingDate|date('d-m-Y') }}</td>
+                    <td>{{ details.hatcheryName|default('') }}</td>
+                    <td>{{ details.breedName|default('') }}</td>
+                    <td>{{ details.totalStockedChicksPcs|round|default('') }}</td>
+                    <td>{{ details.totalFeedUsedKg|round|default('') }}</td>
+                    <td>{{ details.totalBroilerWeightKg|round|default('') }}</td>
+                    <td>{{ details.mortality|round|default('') }}</td>
+                    <td>{{ details.ageDays|round|default('') }}</td>
+                    <td>{{ details.fcr|number_format(3)|default('') }}</td>
+                    <td>{{ medicineCost[details.id]['MEDICINE'] }}</td>
+                    <td>{{ medicineCost[details.id]['VACCINE'] }}</td>
+                    <td>{{ totalCost }}</td>
+                    <td>{{ (medicineCost[details.id]['MEDICINE']/details.totalStockedChicksPcs)|number_format(3) }}</td>
+                    <td>{{ (medicineCost[details.id]['VACCINE']/details.totalStockedChicksPcs)|number_format(3) }}</td>
+                    <td>{{ (totalCost/details.totalStockedChicksPcs)|number_format(3) }}</td>
+                    <td>{{ (medicineCost[details.id]['MEDICINE']/details.totalBroilerWeightKg)|number_format(3) }}</td>
+                    <td>{{ (medicineCost[details.id]['VACCINE']/details.totalBroilerWeightKg)|number_format(3) }}</td>
+                    <td>{{ (totalCost/details.totalBroilerWeightKg)|number_format(3) }}</td>
+                </tr>
+                {% set count = count + 1 %}
+                {% set farmerCount = farmerCount + 1 %}
+            {% endfor %}
+            {% set agentCount = agentCount + 1 %}
+        {% endfor %}
+    {% endif %}
+    </tbody>
+</table>
