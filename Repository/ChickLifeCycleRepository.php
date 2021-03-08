@@ -43,4 +43,23 @@ class ChickLifeCycleRepository extends BaseRepository
         return $data;
     }
 
+    public function getMonthlyBroilerLifeCycleTotalReport($filterBy)
+    {
+        $qb = $this->createQueryBuilder('e');
+
+        $qb->select('COUNT(e) as totalReport');
+
+        $qb->join('e.employee', 'employee');
+        $qb->join('e.report', 'report');
+
+        $qb->where('employee.id = :employeeId')->setParameter('employeeId', $filterBy['employeeId']);
+        $qb->andWhere('e.reportingDate >= :monthStart')->setParameter('monthStart', $filterBy['monthStart']);
+        $qb->andWhere('e.reportingDate <= :monthEnd')->setParameter('monthEnd', $filterBy['monthEnd']);
+        $qb->andWhere('report.slug = :slug')->setParameter('slug', 'boiler-life-cycle');
+
+        $results = $qb->getQuery()->getSingleResult();
+        return $results['totalReport'];
+    }
+
+
 }
