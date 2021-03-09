@@ -716,17 +716,14 @@ class ApiController extends AbstractController
 
 
     /**
-     * @Route("/farmSelectReport", methods={"POST"}, name="farmSelectReport")
+     * @Route("/farmSelectReport", methods={"GET"}, name="farmSelectReport")
      */
-    public function farmSelectReport(Request $request)
+    public function farmSelectReport()
     {
         set_time_limit(0);
         ignore_user_abort(true);
 
-        $breedId = $request->request->get('breed_id');
-        $farmerReport = $request->request->get('settingType');
-
-        $entities = $this->getDoctrine()->getRepository(Api::class)->farmSelectReport(1, $breedId, $farmerReport);
+        $entities = $this->getDoctrine()->getRepository(Api::class)->farmSelectReport(1);
 
         $response = new Response();
         $response->headers->set('Content-Type', 'application/json');
@@ -735,7 +732,44 @@ class ApiController extends AbstractController
         return $response;
     }
 
+    /**
+     * @Route("/searchfarmer", methods={"POST"}, name="searchfarmer")
+     */
+    public function searchfarmer(Request $request)
+    {
+        set_time_limit(0);
+        ignore_user_abort(true);
 
+        $data = $request->request->all();
+
+        $employee = $this->getDoctrine()->getRepository(User::class)->find($data['user_id']);
+
+        $entities = $this->getDoctrine()->getRepository(Api::class)->searchfarmer($employee);
+
+        $response = new Response();
+        $response->headers->set('Content-Type', 'application/json');
+        $response->setContent(json_encode($entities));
+        $response->setStatusCode(Response::HTTP_OK);
+        return $response;
+
+    }
+
+    /**
+     * @Route("/newfarmertype", methods={"GET"}, name="newfarmertype")
+     */
+    public function newFarmType()
+    {
+
+        set_time_limit(0);
+        ignore_user_abort(true);
+
+        $entities = $this->getDoctrine()->getRepository(Api::class)->newfarmertype(1);
+        $response = new Response();
+        $response->headers->set('Content-Type', 'application/json');
+        $response->setContent(json_encode($entities));
+        $response->setStatusCode(Response::HTTP_OK);
+        return $response;
+    }
 
 
 }

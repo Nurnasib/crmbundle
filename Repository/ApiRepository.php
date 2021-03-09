@@ -62,7 +62,7 @@ class ApiRepository extends BaseRepository
         $qb->Join('e.agentGroup','ag');
         $qb->Join('e.upozila','up');
         $qb->leftJoin('up.parent','dis');
-        $qb->select('e.id as id','e.name as name','e.mobile as mobile','e.email as email','e.name as companyName','e.agentId as agentId');
+        $qb->select('e.id as id','e.name as name','e.mobile as mobile','e.email as email','e.name as companyName','e.agentId as agentId','e.address as address');
         $qb->addSelect('ag.name as agentGroup');
         $qb->addSelect('up.name as upozila','up.id as upozilaId');
         $qb->addSelect('dis.name as district','dis.id as districtId');
@@ -81,6 +81,7 @@ class ApiRepository extends BaseRepository
             $data[$key]['name'] = (string)$row['name'];
             $data[$key]['mobile'] = (string)$row['mobile'];
             $data[$key]['email'] = (string)$row['email'];
+            $data[$key]['address'] = (string)$row['address'];
             $data[$key]['agentGroup'] = (string)$row['agentGroup'];
             $data[$key]['upozila'] = (string)$row['upozila'];
             $data[$key]['upozilaId'] = (string)$row['upozilaId'];
@@ -466,9 +467,7 @@ class ApiRepository extends BaseRepository
                 ->setParameters(array('startDate' => $startDate . ' 00:00:00', 'endDate' => $endDate . ' 23:59:59', 'report' => $report, 'employee' => $employee));
             $qb->orderBy('f.id', 'ASC');
             $result = $qb->getQuery()->getArrayResult();
-
             $data = array();
-
             foreach($result as $key => $row) {
                 $data[$key]['mobile'] =(string)$row['mobile'];
                 $data[$key]['name'] =(string)$row['name'];
@@ -778,7 +777,7 @@ class ApiRepository extends BaseRepository
     /**
      * Farm Select Report
      */
-    public function farmSelectReport($terminal,$breedId,$farmerReport)
+    public function farmSelectReport()
     {
         $em = $this->_em;
         $qb = $em->createQueryBuilder();
@@ -787,9 +786,7 @@ class ApiRepository extends BaseRepository
 
         $qb->select('s.id as id','s.name as name');
 
-        $qb->where('p.id = :breedId')
-            ->andWhere('s.settingType = :farmerReport')
-            ->setParameters(array('breedId'=> $breedId, 'farmerReport' => $farmerReport));
+        $qb->where("s.settingType = 'FARMER_REPORT'");
 
         $qb->orderBy('s.id', 'ASC');
         $result = $qb->getQuery()->getArrayResult();
@@ -803,5 +800,59 @@ class ApiRepository extends BaseRepository
         return $data;
     }
 
+    /**
+     * Search Farmer
+     */
+    public function searchfarmer($user)
+    {
+        $arrs = array();
+        foreach ($user->getUpozila() as $location){
+            $arrs[] = $location->getId();
+        }
+        $em = $this->_em;
+        $qb = $em->createQueryBuilder();
+        $qb->from(CrmCustomer::class,'e');
+        $qb->join('e.location','location');
+        $qb->join('e.customerGroup','s');
+        $qb->select('e.id as id','e.name as name','e.address as address','e.mobile as mobile');
+        $qb->where('s.slug = :slug')->setParameter('slug','farmer');
+        $qb->andWhere('location.id IN (:upozils)')->setParameter('upozils',$arrs);
+        $result = $qb->getQuery()->getArrayResult();
+
+        $data = array();
+        foreach ($result as $key => $row) {
+            $data[$key]['id'] = (int)$row['id'];
+            $data[$key]['name'] = $row['name'];
+            $data[$key]['address'] = $row['address'];
+            $data[$key]['mobile'] = $row['mobile'];
+        }
+        return $data;
+    }
+
+    /**
+     * New Farmer Type
+     */
+    public function newfarmertype()
+    {
+        $em = $this->_em;
+        $qb = $em->createQueryBuilder();
+        $qb->from(Setting::class,'s');
+        $qb->leftJoin('s.parent','p');
+
+        $qb->select('s.id as id','s.name as name','s.settingType as settingType');
+        $qb->addselect('p.name as breedName');
+
+        $qb->where("s.settingType = 'BREED_NAME'");
+        $qb->orderBy('s.id', 'ASC');
+        $result = $qb->getQuery()->getArrayResult();
+        $data = array();
+        foreach ($result as $key => $row) {
+            $data[$key]['id'] = (int)$row['id'];
+            $data[$key]['name'] = $row['name'];
+
+        }
+
+        return $data;
+    }
 
 }
