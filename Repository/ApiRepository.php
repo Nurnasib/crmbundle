@@ -784,7 +784,8 @@ class ApiRepository extends BaseRepository
         $qb->from(Setting::class,'s');
         $qb->leftJoin('s.parent','p');
 
-        $qb->select('s.id as id','s.name as name');
+        $qb->select('s.id as id','s.name as name','s.slug as slug');
+        $qb->addSelect('p.name as farmType');
 
         $qb->where("s.settingType = 'FARMER_REPORT'");
 
@@ -795,6 +796,8 @@ class ApiRepository extends BaseRepository
         foreach ($result as $key => $row) {
             $data[$key]['id'] = (string)$row['id'];
             $data[$key]['name'] = (string)$row['name'];
+            $data[$key]['farmType'] = (string)$row['farmType'];
+            $data[$key]['slug'] = (string)$row['slug'];
 
         }
         return $data;

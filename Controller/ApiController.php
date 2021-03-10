@@ -228,7 +228,7 @@ class ApiController extends AbstractController
         $locations = isset($_REQUEST['locations']) ? $_REQUEST['locations'] : "";
         //$terminal = $this->getUser()->getTerminal()->getId();
         $entities = $this->getDoctrine()->getRepository(Api::class)->apiAgent(1,$locations);
-        //dd($entities);
+       
         $response = new Response();
         $response->headers->set('Content-Type', 'application/json');
         $response->setContent(json_encode($entities));
@@ -263,7 +263,7 @@ class ApiController extends AbstractController
         $username = isset($_REQUEST['username']) ? $_REQUEST['username'] : "";
         //$terminal = $this->getUser()->getTerminal()->getId();
         $entities = $this->getDoctrine()->getRepository(Api::class)->crmVisit(1,$username);
-        //dd($entities);
+
         $response = new Response();
         $response->headers->set('Content-Type', 'application/json');
         $response->setContent(json_encode($entities));
@@ -281,7 +281,7 @@ class ApiController extends AbstractController
         $username = isset($_REQUEST['username']) ? $_REQUEST['username'] : "";
         //$terminal = $this->getUser()->getTerminal()->getId();
         $entities = $this->getDoctrine()->getRepository(Api::class)->employeeApi(1, $username);
-        dd($entities);
+
         $response = new Response();
         $response->headers->set('Content-Type', 'application/json');
         $response->setContent(json_encode($entities));
@@ -298,7 +298,7 @@ class ApiController extends AbstractController
         ignore_user_abort(true);
         //$terminal = $this->getUser()->getTerminal()->getId();
         $entities = $this->getDoctrine()->getRepository(Api::class)->apiBroiler(1);
-        //dd($entities);
+
         $response = new Response();
         $response->headers->set('Content-Type', 'application/json');
         $response->setContent(json_encode($entities));
@@ -315,7 +315,7 @@ class ApiController extends AbstractController
         ignore_user_abort(true);
         //$terminal = $this->getUser()->getTerminal()->getId();
         $entities = $this->getDoctrine()->getRepository(Api::class)->apiSonali(1);
-        //dd($entities);
+
         $response = new Response();
         $response->headers->set('Content-Type', 'application/json');
         $response->setContent(json_encode($entities));
@@ -332,7 +332,7 @@ class ApiController extends AbstractController
         ignore_user_abort(true);
         //$terminal = $this->getUser()->getTerminal()->getId();
         $entities = $this->getDoctrine()->getRepository(Api::class)->apiLifeCycleSetting(1);
-        //dd($entities);
+
         $response = new Response();
         $response->headers->set('Content-Type', 'application/json');
         $response->setContent(json_encode($entities));
@@ -349,7 +349,7 @@ class ApiController extends AbstractController
         ignore_user_abort(true);
         //$terminal = $this->getUser()->getTerminal()->getId();
         $entities = $this->getDoctrine()->getRepository(Api::class)->apiSetting(1);
-        //dd($entities);
+
         $response = new Response();
         $response->headers->set('Content-Type', 'application/json');
         $response->setContent(json_encode($entities));
@@ -366,7 +366,7 @@ class ApiController extends AbstractController
         ignore_user_abort(true);
         //$terminal = $this->getUser()->getTerminal()->getId();
         $entities = $this->getDoctrine()->getRepository(Api::class)->apiLayer(1);
-        //dd($entities);
+
         $response = new Response();
         $response->headers->set('Content-Type', 'application/json');
         $response->setContent(json_encode($entities));
@@ -390,7 +390,7 @@ class ApiController extends AbstractController
         ignore_user_abort(true);
         // $terminal = $this->getUser()->getTerminal()->getId();
         $entities = $this->getDoctrine()->getRepository(Api::class)->farmerIntroduceReport(1,$breedName,$employee);
-        //dd($entities);
+
         $response = new Response();
         $response->headers->set('Content-Type', 'application/json');
         $response->setContent(json_encode($entities));
@@ -414,7 +414,7 @@ class ApiController extends AbstractController
         set_time_limit(0);
         ignore_user_abort(true);
         $entities = $this->getDoctrine()->getRepository(Api::class)->farmerTouchReport(1,$startDate, $endDate, $report, $employee);
-        //dd($entities);
+
         $response = new Response();
         $response->headers->set('Content-Type', 'application/json');
         $response->setContent(json_encode($entities));
@@ -436,7 +436,7 @@ class ApiController extends AbstractController
         ignore_user_abort(true);
         // $terminal = $this->getUser()->getTerminal()->getId();
         $entities = $this->getDoctrine()->getRepository(Api::class)->farmerTrainingReport(1,$breedName, $employee);
-        //dd($entities);
+
         $response = new Response();
         $response->headers->set('Content-Type', 'application/json');
         $response->setContent(json_encode($entities));
@@ -485,9 +485,9 @@ class ApiController extends AbstractController
         ignore_user_abort(true);
 
         $employee = $this->getDoctrine()->getRepository(User::class)->findOneBy(array('name' => $employeeName));
-        //$terminal = $this->getUser()->getTerminal()->getId();
+
         $entities = $this->getDoctrine()->getRepository(Api::class)->farmVisitCattle(1,$startDate,$endDate,$employee);
-        //dd($entities);
+
         $response = new Response();
         $response->headers->set('Content-Type', 'application/json');
         $response->setContent(json_encode($entities));
@@ -508,13 +508,12 @@ class ApiController extends AbstractController
         $reportSlug = $request->request->get('report');
         $employeeName = $request->request->get('employee');
 
-
         $report = $this->getDoctrine()->getRepository(Setting::class)->findOneBy(array('slug' => $reportSlug));
 
         $employee = $this->getDoctrine()->getRepository(User::class)->findOneBy(array('name' => $employeeName));
 
         $entities = $this->getDoctrine()->getRepository(Api::class)->frcReportPoulty(1, $startDate, $endDate, $reportSlug,$employeeName);
-        //dd($entities);
+
         $response = new Response();
         $response->headers->set('Content-Type', 'application/json');
         $response->setContent(json_encode($entities));
@@ -612,7 +611,7 @@ class ApiController extends AbstractController
         $userId = $request->request->get('user_id');
 
         $user = $this->getDoctrine()->getRepository(User::class)->find($userId);
-        //dd($user);
+
         if (!empty($user)) {
 
             /* @var $user User */
