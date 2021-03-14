@@ -1,4 +1,4 @@
-<div class="portlet box">
+<div class="portlet box" style="overflow-x: scroll">
     <div class="portlet-title">
         <div class="caption">{{ layerLifeCycle.report.name }} </div>
     </div>
@@ -41,7 +41,7 @@
                         <p class="text-left" style="color: #000000; margin-bottom: 5px">{{ 'Feed'|trans }}: {{ layerLifeCycle.feed.name }}</p>
                     </div>
                     <div class="col-md-3">
-                        <p class="text-left" style="color: #000000; margin-bottom: 5px">{{ 'Hatchery Date'|trans }}
+                        <p class="text-left" style="color: #000000; margin-bottom: 5px">{{ 'Hatching Date'|trans }}
                             : {{ layerLifeCycle.hatcheryDate?layerLifeCycle.hatcheryDate|date("d-m-Y"):'' }}</p>
                     </div>
                 </div>
@@ -57,8 +57,8 @@
                             <thead class="thead-dark sticky_header">
                             <tr>
                                 <th scope="col" rowspan="2">S/N</th>
-                                <th scope="col" rowspan="2" style="width: 55px">Age Week</th>
-                                <th scope="col" rowspan="2" width="105px">Visiting Date</th>
+                                <th scope="col" rowspan="2" style="width: 55px">Age (Week)</th>
+                                <th scope="col" rowspan="2" width="105px">VisitingDate</th>
                                 <th scope="col" colspan="3">Birds</th>
                                 <th scope="col" colspan="2">Weight</th>
                                 <th scope="col" rowspan="2">Uniformity (%)</th>
@@ -70,7 +70,7 @@
                                 <th style="width: 300px;" scope="col" rowspan="2">Remarks</th>
                             </tr>
                             <tr>
-                                <th scope="col"><pre style="font-size: 100%; margin: 0px">Total Birds</pre></th>
+                                <th scope="col"><pre style="font-size: 100%; margin: 0px;">Total Birds</pre></th>
                                 <th scope="col"><pre style="font-size: 100%; margin: 0px">Dead Birds</pre></th>
                                 <th scope="col"><pre style="font-size: 100%; margin: 0px">Present Birds</pre></th>
                                 <th scope="col">Avg.wt (gm)</th>

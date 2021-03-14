@@ -24,6 +24,7 @@ use Terminalbd\CrmBundle\Entity\CrmVisit;
 use Terminalbd\CrmBundle\Entity\FarmerTrainingReport;
 use Terminalbd\CrmBundle\Entity\FcrDetails;
 use Terminalbd\CrmBundle\Entity\LayerLifeCycle;
+use Terminalbd\CrmBundle\Entity\LayerPerformanceDetails;
 use Terminalbd\CrmBundle\Entity\LayerStandard;
 use Terminalbd\CrmBundle\Entity\NewFarmerIntroduce\FarmerIntroduceDetails;
 use Terminalbd\CrmBundle\Entity\NewFarmerTouch\FarmerTouchReport;
@@ -707,10 +708,14 @@ class ApiRepository extends BaseRepository
         $data = array();
         foreach($result as $key => $row) {
 
-            $data[$row['settingType']][]= array(
+            $data[$key]['id'] = (string)$row['id'];
+            $data[$key]['name'] = (string)$row['name'];
+            //$data[$key]['breedName'] = (string)$row['breedName'];
+
+            /*$data[$row['settingType']][]= array(
                 'id'=>(int)$row['id'],
                 'name'=>$row['name']
-            );
+            );*/
 
         }
         return $data;
@@ -741,7 +746,6 @@ class ApiRepository extends BaseRepository
             $data[$key]['name'] = (string)$row['name'];
             $data[$key]['mobile'] = (string)$row['mobile'];
 
-
         }
         return $data;
     }
@@ -763,12 +767,17 @@ class ApiRepository extends BaseRepository
         $qb->orderBy('s.id', 'ASC');
         $result = $qb->getQuery()->getArrayResult();
         $data = array();
-        foreach($result as $key => $row) {
+        foreach ($result as $key => $row) {
 
-            $data[$row['breedName']][]= array(
+            $data[$key]['id'] = (string)$row['id'];
+            $data[$key]['name'] = (string)$row['name'];
+            $data[$key]['breedName'] = (string)$row['breedName'];
+
+            /*$data[$row['breedName']][]= array(
                 'id'=>(int)$row['id'],
-                'name'=>$row['name']
-            );
+                'name'=>$row['name'],
+                'breedName'=>$row['breedName'],
+            );*/
 
         }
         return $data;
@@ -825,9 +834,9 @@ class ApiRepository extends BaseRepository
         $data = array();
         foreach ($result as $key => $row) {
             $data[$key]['id'] = (int)$row['id'];
-            $data[$key]['name'] = $row['name'];
-            $data[$key]['address'] = $row['address'];
-            $data[$key]['mobile'] = $row['mobile'];
+            $data[$key]['name'] = (string)$row['name'];
+            $data[$key]['address'] = (string)$row['address'];
+            $data[$key]['mobile'] = (string)$row['mobile'];
         }
         return $data;
     }
@@ -851,7 +860,162 @@ class ApiRepository extends BaseRepository
         $data = array();
         foreach ($result as $key => $row) {
             $data[$key]['id'] = (int)$row['id'];
-            $data[$key]['name'] = $row['name'];
+            $data[$key]['name'] = (string)$row['name'];
+
+        }
+
+        return $data;
+    }
+
+    /**
+     * ageweek
+     */
+    public function ageweek()
+    {
+        $em = $this->_em;
+        $qb = $em->createQueryBuilder();
+        $qb->from(LayerStandard::class,'l');
+
+        $qb->select('l.id as id','l.age as ageWeek');
+
+        $qb->orderBy('l.id', 'ASC');
+        $result = $qb->getQuery()->getArrayResult();
+        $data = array();
+        foreach ($result as $key => $row) {
+            $data[$key]['id'] = (int)$row['id'];
+            $data[$key]['ageWeek'] =(float)$row['ageWeek'];
+
+        }
+
+        return $data;
+    }
+
+    /**
+     * Feed Type
+     */
+    public function feedType()
+    {
+        $em = $this->_em;
+        $qb = $em->createQueryBuilder();
+        $qb->from(Setting::class,'s');
+        $qb->leftJoin('s.parent','p');
+
+
+        $qb->select('s.id as id','s.name as feedTypeName');
+        $qb->addSelect('p.name as feedName');
+
+        $qb->where("s.settingType = 'FEED_TYPE'");
+        $qb->orderBy('s.id', 'ASC');
+        $result = $qb->getQuery()->getArrayResult();
+        $data = array();
+        foreach ($result as $key => $row) {
+
+            $data[$key]['id'] = (int)$row['id'];
+            $data[$key]['feedTypeName'] = (string)$row['feedTypeName'];
+            $data[$key]['feedName'] = (string)$row['feedName'];
+
+        }
+
+        return $data;
+    }
+
+    /**
+     * Hatchery
+     */
+    public function hatchery()
+    {
+        $em = $this->_em;
+        $qb = $em->createQueryBuilder();
+        $qb->from(Setting::class,'s');
+
+
+        $qb->select('s.id as id','s.name as hatchery');
+
+        $qb->where("s.settingType = 'HATCHERY'");
+        $qb->orderBy('s.name', 'ASC');
+        $result = $qb->getQuery()->getArrayResult();
+        $data = array();
+        foreach ($result as $key => $row) {
+
+            $data[$key]['id'] = (int)$row['id'];
+            $data[$key]['hatchery'] = (string)$row['hatchery'];
+
+        }
+
+        return $data;
+    }
+
+    /**
+     * FEED MILL
+     */
+    public function feedMill()
+    {
+        $em = $this->_em;
+        $qb = $em->createQueryBuilder();
+        $qb->from(Setting::class,'s');
+
+
+        $qb->select('s.id as id','s.name as feedMill');
+
+        $qb->where("s.settingType = 'FEED_MILL'");
+        $qb->orderBy('s.name', 'ASC');
+        $result = $qb->getQuery()->getArrayResult();
+        $data = array();
+        foreach ($result as $key => $row) {
+
+            $data[$key]['id'] = (int)$row['id'];
+            $data[$key]['feedMill'] = (string)$row['feedMill'];
+
+        }
+
+        return $data;
+    }
+
+    /**
+     * BREED TYPE
+     */
+    public function breedType()
+    {
+        $em = $this->_em;
+        $qb = $em->createQueryBuilder();
+        $qb->from(Setting::class,'s');
+        $qb->leftJoin('s.parent','p');
+
+        $qb->select('s.id as id','s.name as breedType');
+        $qb->addSelect('p.name as breedName');
+
+        $qb->where("s.settingType = 'BREED_TYPE'");
+        $qb->orderBy('s.name', 'ASC');
+        $result = $qb->getQuery()->getArrayResult();
+        $data = array();
+        foreach ($result as $key => $row) {
+            $data[$key]['id'] = (int)$row['id'];
+            $data[$key]['breedType'] = (string)$row['breedType'];
+            $data[$key]['breedName'] = (string)$row['breedName'];
+
+        }
+
+        return $data;
+    }
+
+    /**
+     * Color
+     */
+    public function color()
+    {
+        $em = $this->_em;
+        $qb = $em->createQueryBuilder();
+        $qb->from(Setting::class,'s');
+
+        $qb->select('s.id as id','s.name as color');
+
+        $qb->where("s.settingType = 'COLOR'");
+        $qb->orderBy('s.name', 'ASC');
+        $result = $qb->getQuery()->getArrayResult();
+        $data = array();
+        foreach ($result as $key => $row) {
+            $data[$key]['id'] = (int)$row['id'];
+            $data[$key]['color'] = (string)$row['color'];
 
         }
 

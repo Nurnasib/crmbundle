@@ -49,7 +49,7 @@ class LayerLifeCycleFormType extends AbstractType
         $report =  $options['report']->getParent();
         $builder
             ->add($builder->create('hatchery_date', TextType::class, array(
-                'label' => 'Hatchery Date',
+                'label' => 'Hatching Date',
                 'attr' => array(
                     'class' => 'datePicker',
                     'autocomplete' => 'off',

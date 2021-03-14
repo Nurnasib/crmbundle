@@ -83,6 +83,13 @@
     width: 1920px;
     position: relative;
 }
+.sticky_section .table thead th pre {
+    color: #0d0c0c;
+}
+
+.table thead th pre {
+    font-family: "Open Sans", sans-serif !important;
+}
 .sticky_section .table thead.sticky th {
     position: -webkit-sticky;
     position: sticky;
@@ -90,6 +97,11 @@
     z-index: 999;
     background-color: rgba(0,0,0,.7);
     color: #fff;
+}
+
+.sticky_section .table thead.sticky th pre{
+    color: #fff;
+    font-family: "Open Sans", sans-serif;
 }
 
 .sticky_section .table thead.sticky th[scope=row] {
