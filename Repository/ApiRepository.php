@@ -18,6 +18,7 @@ use App\Entity\User;
 use Doctrine\ORM\Query\Expr\Join;
 use Terminalbd\CrmBundle\Entity\BroilerStandard;
 use Terminalbd\CrmBundle\Entity\CattleFarmVisit;
+use Terminalbd\CrmBundle\Entity\CattleFarmVisitDetails;
 use Terminalbd\CrmBundle\Entity\ChickLifeCycle;
 use Terminalbd\CrmBundle\Entity\CrmCustomer;
 use Terminalbd\CrmBundle\Entity\CrmVisit;
@@ -899,10 +900,12 @@ class ApiRepository extends BaseRepository
         $qb = $em->createQueryBuilder();
         $qb->from(Setting::class,'s');
         $qb->leftJoin('s.parent','p');
+        $qb->leftJoin('p.parent','pp');
 
 
         $qb->select('s.id as id','s.name as feedTypeName');
         $qb->addSelect('p.name as feedName');
+        $qb->addSelect('pp.name as parentName');
 
         $qb->where("s.settingType = 'FEED_TYPE'");
         $qb->orderBy('s.id', 'ASC');
@@ -913,11 +916,14 @@ class ApiRepository extends BaseRepository
             $data[$key]['id'] = (int)$row['id'];
             $data[$key]['feedTypeName'] = (string)$row['feedTypeName'];
             $data[$key]['feedName'] = (string)$row['feedName'];
+            $data[$key]['parentName'] = (string)$row['parentName'];
 
         }
 
         return $data;
     }
+
+
 
     /**
      * Hatchery
@@ -980,18 +986,21 @@ class ApiRepository extends BaseRepository
         $qb = $em->createQueryBuilder();
         $qb->from(Setting::class,'s');
         $qb->leftJoin('s.parent','p');
+        $qb->leftJoin('p.parent','pp');
 
         $qb->select('s.id as id','s.name as breedType');
         $qb->addSelect('p.name as breedName');
+        $qb->addSelect('pp.name as parentName');
 
         $qb->where("s.settingType = 'BREED_TYPE'");
-        $qb->orderBy('s.name', 'ASC');
+        $qb->orderBy('s.id', 'ASC');
         $result = $qb->getQuery()->getArrayResult();
         $data = array();
         foreach ($result as $key => $row) {
             $data[$key]['id'] = (int)$row['id'];
             $data[$key]['breedType'] = (string)$row['breedType'];
             $data[$key]['breedName'] = (string)$row['breedName'];
+            $data[$key]['parentName'] = (string)$row['parentName'];
 
         }
 
@@ -1021,5 +1030,116 @@ class ApiRepository extends BaseRepository
 
         return $data;
     }
+
+    /**
+     * Feed
+     */
+    public function feed()
+    {
+        $em = $this->_em;
+        $qb = $em->createQueryBuilder();
+        $qb->from(Setting::class,'s');
+
+        $qb->select('s.id as id','s.name as feedName');
+
+        $qb->where("s.settingType = 'FEED_NAME'");
+        $qb->orderBy('s.name', 'ASC');
+        $result = $qb->getQuery()->getArrayResult();
+        $data = array();
+        foreach ($result as $key => $row) {
+
+            $data[$key]['id'] = (int)$row['id'];
+            $data[$key]['feedName'] = (string)$row['feedName'];
+
+        }
+
+        return $data;
+    }
+
+    /**
+     * Disease
+     */
+    public function disease()
+    {
+        $em = $this->_em;
+        $qb = $em->createQueryBuilder();
+        $qb->from(Setting::class,'s');
+        $qb->leftJoin('s.parent','p');
+
+        $qb->select('s.id as id','s.name as feedName');
+        $qb->addSelect('p.name as breedName');
+
+        $qb->where("s.settingType = 'DISEASE_NAME'");
+        $qb->orderBy('s.id', 'ASC');
+        $result = $qb->getQuery()->getArrayResult();
+        $data = array();
+        foreach ($result as $key => $row) {
+
+            $data[$key]['id'] = (int)$row['id'];
+            $data[$key]['feedName'] = (string)$row['feedName'];
+            $data[$key]['breedName'] = (string)$row['breedName'];
+
+        }
+
+        return $data;
+    }
+
+    /**
+     * Product Name
+     */
+    public function product()
+    {
+        $em = $this->_em;
+        $qb = $em->createQueryBuilder();
+        $qb->from(Setting::class,'s');
+        $qb->leftJoin('s.parent','p');
+        $qb->leftJoin('p.parent','pp');
+
+        $qb->select('s.id as id','s.name as feedName');
+        $qb->addSelect('pp.name as name');
+
+        $qb->where("s.settingType = 'PRODUCT_TYPE'");
+        $qb->orderBy('s.id', 'ASC');
+        $result = $qb->getQuery()->getArrayResult();
+        $data = array();
+        foreach ($result as $key => $row) {
+
+            $data[$key]['id'] = (int)$row['id'];
+            $data[$key]['feedName'] = (string)$row['feedName'];
+            $data[$key]['name'] = (string)$row['name'];
+
+        }
+
+        return $data;
+    }
+
+    /**
+     * Main Culture Species
+     */
+    public function mainculturespecies()
+    {
+        $em = $this->_em;
+        $qb = $em->createQueryBuilder();
+        $qb->from(Setting::class,'s');
+        $qb->leftJoin('s.parent','p');
+
+        $qb->select('s.id as id','s.name as feedName');
+        $qb->addSelect('p.name as name');
+
+        $qb->where("s.settingType = 'SPECIES_TYPE'");
+        $qb->orderBy('s.id', 'ASC');
+        $result = $qb->getQuery()->getArrayResult();
+        $data = array();
+        foreach ($result as $key => $row) {
+
+            $data[$key]['id'] = (int)$row['id'];
+            $data[$key]['feedName'] = (string)$row['feedName'];
+            $data[$key]['name'] = (string)$row['name'];
+
+        }
+
+        return $data;
+    }
+
 
 }

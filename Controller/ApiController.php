@@ -804,6 +804,8 @@ class ApiController extends AbstractController
         return $response;
     }
 
+
+
     /**
      * @Route("/hatchery", methods={"GET"}, name="hatchery")
      */
@@ -865,6 +867,74 @@ class ApiController extends AbstractController
         ignore_user_abort(true);
 
         $entities = $this->getDoctrine()->getRepository(Api::class)->color(1);
+        $response = new Response();
+        $response->headers->set('Content-Type', 'application/json');
+        $response->setContent(json_encode($entities));
+        $response->setStatusCode(Response::HTTP_OK);
+        return $response;
+    }
+
+    /**
+     * @Route("/feed", methods={"GET"}, name="feed")
+     */
+    public function feed()
+    {
+
+        set_time_limit(0);
+        ignore_user_abort(true);
+
+        $entities = $this->getDoctrine()->getRepository(Api::class)->feed(1);
+        $response = new Response();
+        $response->headers->set('Content-Type', 'application/json');
+        $response->setContent(json_encode($entities));
+        $response->setStatusCode(Response::HTTP_OK);
+        return $response;
+    }
+
+    /**
+     * @Route("/disease", methods={"GET"}, name="disease")
+     */
+    public function disease()
+    {
+
+        set_time_limit(0);
+        ignore_user_abort(true);
+
+        $entities = $this->getDoctrine()->getRepository(Api::class)->disease(1);
+        $response = new Response();
+        $response->headers->set('Content-Type', 'application/json');
+        $response->setContent(json_encode($entities));
+        $response->setStatusCode(Response::HTTP_OK);
+        return $response;
+    }
+
+    /**
+     * @Route("/product", methods={"GET"}, name="product")
+     */
+    public function product()
+    {
+
+        set_time_limit(0);
+        ignore_user_abort(true);
+
+        $entities = $this->getDoctrine()->getRepository(Api::class)->product(1);
+        $response = new Response();
+        $response->headers->set('Content-Type', 'application/json');
+        $response->setContent(json_encode($entities));
+        $response->setStatusCode(Response::HTTP_OK);
+        return $response;
+    }
+
+    /**
+     * @Route("/mainculturespecies", methods={"GET"}, name="mainculturespecies")
+     */
+    public function mainculturespecies()
+    {
+
+        set_time_limit(0);
+        ignore_user_abort(true);
+
+        $entities = $this->getDoctrine()->getRepository(Api::class)->mainculturespecies(1);
         $response = new Response();
         $response->headers->set('Content-Type', 'application/json');
         $response->setContent(json_encode($entities));
