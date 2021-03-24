@@ -176,7 +176,7 @@ class CrmVisit
     /**
      * @return string
      */
-    public function getWorkingDurationTo(): string
+    public function getWorkingDurationTo()
     {
         return $this->workingDurationTo;
     }
@@ -184,7 +184,7 @@ class CrmVisit
     /**
      * @param string $workingDurationTo
      */
-    public function setWorkingDurationTo(string $workingDurationTo): void
+    public function setWorkingDurationTo($workingDurationTo): void
     {
         $this->workingDurationTo = $workingDurationTo;
     }

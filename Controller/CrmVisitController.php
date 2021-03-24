@@ -118,6 +118,26 @@ class CrmVisitController extends AbstractController
             $firmTypesArray[$firmType->getParent()->getName()][]=$firmType;
         }
 
+        if($this->getUser()->getServiceMode() && $this->getUser()->getServiceMode()->getSlug()=='sales-marketing'){
+            return $this->render('@TerminalbdCrm/crmvisit/edit-sales-marketing.html.twig', [
+                'entity' => $entity,
+                'purposes'=>$purpose,
+                'agentPurposes'=>$agentPurpose,
+                'otherAgentPurposes'=>$otherAgentPurpose,
+                'subAgentPurposes'=>$subAgentPurpose,
+                'lifeCycleReport'=>$lifeCycleReport,
+                'firmTypes'=>$firmTypesArray,
+                'breedTypes'=>$breedTypes,
+                'breedNames'=>$breedNames,
+                'agents'=>$agent,
+                'farmers'=>$farmers,
+                'subAgents'=>$subAgents,
+                'otherAgents'=>$otherAgents,
+                'form' => $form->createView(),
+                'fcr_after_reports' => $reports,
+            ]);
+        }
+
 
         return $this->render('@TerminalbdCrm/crmvisit/edit.html.twig', [
             'entity' => $entity,

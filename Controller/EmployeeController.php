@@ -38,6 +38,7 @@ class EmployeeController extends AbstractController
      */
     public function index(Request $request): Response
     {
+//        dd($this->getUser()->getUserGroup()->getId());
         $entities = $this->getDoctrine()->getRepository(User::class)->findBy(array('userGroup'=>'9'));
         return $this->render('@TerminalbdCrm/employee/index.html.twig',['entities' => $entities]);
     }
