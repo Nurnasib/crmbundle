@@ -228,7 +228,7 @@ class ApiController extends AbstractController
         $locations = isset($_REQUEST['locations']) ? $_REQUEST['locations'] : "";
         //$terminal = $this->getUser()->getTerminal()->getId();
         $entities = $this->getDoctrine()->getRepository(Api::class)->apiAgent(1,$locations);
-       
+
         $response = new Response();
         $response->headers->set('Content-Type', 'application/json');
         $response->setContent(json_encode($entities));
@@ -254,7 +254,7 @@ class ApiController extends AbstractController
     }
 
     /**
-     * @Route("/crm/visit", methods={"POST"}, name="crmvisit")
+     * @Route("/crmvisit", methods={"POST"}, name="crmvisit")
      */
     public function crmVisit(Request $request)
     {
@@ -624,7 +624,7 @@ class ApiController extends AbstractController
             $locations = implode(",", $upozilas);
             $data = array(
                 'upozilas' => $upozilas,
-                'upozilaName' => $upozilaName,
+                'upozilaName' => $upozilaName
             );
             $response = new Response();
             $response->headers->set('Content-Type', 'application/json');
@@ -941,6 +941,27 @@ class ApiController extends AbstractController
         $response->setStatusCode(Response::HTTP_OK);
         return $response;
     }
+
+    /**
+     * @Route("/usercrmvisitingarea", methods={"POST"}, name="usercrmvisitingarea")
+     */
+    public function usercrmvisitingarea(Request $request)
+    {
+
+        set_time_limit(0);
+        ignore_user_abort(true);
+
+        $employeeId = $request->request->get('user_id');
+
+        $entities = $this->getDoctrine()->getRepository(Api::class)->usercrmvisitingarea($employeeId);
+        $response = new Response();
+        $response->headers->set('Content-Type', 'application/json');
+        $response->setContent(json_encode($entities));
+        $response->setStatusCode(Response::HTTP_OK);
+        return $response;
+    }
+
+
 
 
 }

@@ -194,7 +194,7 @@ class ApiRepository extends BaseRepository
             $qb->where('u.username IN (:username)')->setParameter('username',$username);
         }
 
-       // $qb->where('ug.id = 9');
+        // $qb->where('ug.id = 9');
 
         $qb->orderBy('u.id', 'ASC');
         $result = $qb->getQuery()->getArrayResult();
@@ -365,8 +365,8 @@ class ApiRepository extends BaseRepository
         $qb->where('ft.slug = :farmerType')
             ->andWhere('fid.employee = :employee')
             ->setParameters(array('farmerType' => $farmerType, 'employee' => $employee));
-       // $qb->where('ft.slug = :farmerType');
-       // $qb->setParameter('farmerType', $requestData);
+        // $qb->where('ft.slug = :farmerType');
+        // $qb->setParameter('farmerType', $requestData);
         $qb->orderBy('fid.id', 'ASC');
         $result = $qb->getQuery()->getArrayResult();
         $data = array();
@@ -687,7 +687,7 @@ class ApiRepository extends BaseRepository
                 $data[$key]['batchNo'] = (int)$row['batchNo'];
                 $data[$key]['remarks'] = (string)$row['remarks'];
             }
-         return $data;
+            return $data;
         }
 
     }
@@ -827,7 +827,11 @@ class ApiRepository extends BaseRepository
         $qb->from(CrmCustomer::class,'e');
         $qb->join('e.location','location');
         $qb->join('e.customerGroup','s');
+        $qb->join('e.agent','a');
+
         $qb->select('e.id as id','e.name as name','e.address as address','e.mobile as mobile');
+        $qb->addSelect('a.id as agentId','a.name as agentName');
+
         $qb->where('s.slug = :slug')->setParameter('slug','farmer');
         $qb->andWhere('location.id IN (:upozils)')->setParameter('upozils',$arrs);
         $result = $qb->getQuery()->getArrayResult();
@@ -838,6 +842,8 @@ class ApiRepository extends BaseRepository
             $data[$key]['name'] = (string)$row['name'];
             $data[$key]['address'] = (string)$row['address'];
             $data[$key]['mobile'] = (string)$row['mobile'];
+            $data[$key]['agentId'] = (string)$row['agentId'];
+            $data[$key]['agentName'] = (string)$row['agentName'];
         }
         return $data;
     }
@@ -1135,6 +1141,34 @@ class ApiRepository extends BaseRepository
             $data[$key]['id'] = (int)$row['id'];
             $data[$key]['feedName'] = (string)$row['feedName'];
             $data[$key]['name'] = (string)$row['name'];
+
+        }
+
+        return $data;
+    }
+
+    /**
+     * User Visiting Area
+     */
+    public function usercrmvisitingarea($employee)
+    {
+        $em = $this->_em;
+        $qb = $em->createQueryBuilder();
+        $qb->from(User::class,'u');
+        $qb->Join('u.upozila','uz');
+
+        $qb->select('u.id as id','u.name as name');
+        $qb->addSelect('uz.id as upozilaId','uz.name as upozilaName');
+
+        $qb->where('u.id = :employeeId')->setParameters(array('employeeId'=> $employee));
+        $qb->orderBy('u.id', 'ASC');
+        $result = $qb->getQuery()->getArrayResult();
+        $data = array();
+        foreach ($result as $key => $row) {
+            /*$data[$key]['id'] = (int)$row['id'];
+            $data[$key]['name'] = (string)$row['name'];*/
+            $data[$key]['upozilaId'] = (string)$row['upozilaId'];
+            $data[$key]['upozilaName'] = (string)$row['upozilaName'];
 
         }
 

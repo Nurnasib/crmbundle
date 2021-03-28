@@ -29,7 +29,7 @@
                                 {% endfor %}
                             </div>
                         {% endif %}
-                        {{ dump(app.user.serviceMode.slug) }}
+
                         {% if app.user.serviceMode is not empty and app.user.serviceMode.slug =='sales-marketing' %}
                             <div class="btn-group btn-group-sm" role="group" aria-label="Button group with nested dropdown">
                                 <a style="margin-right: 5px" class="btn btn-primary btn-sm" data-action='{{ path('daily_chick_price',{'location':entity.location.id}) }}' href='?process=postView_daily_chick_price_report&report={{ '' }}&check=show#modal' id='postView_daily_chick_price_report' >{{ 'Daily Chick Price Report' }}</a>
