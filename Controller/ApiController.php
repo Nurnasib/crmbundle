@@ -53,7 +53,7 @@ class ApiController extends AbstractController
         $formData = $_REQUEST;
         $_username = $formData['username'];
         $_password = $formData['password'];
-        $user = $this->getDoctrine()->getRepository(User::class)->checkLoginUser($_username);
+        $user = $this->getDoctrine()->getRepository(User::class)->checkLoginUser($_username,$_password);
         /// End Retrieve user
         // Check if the user exists !
         if(!$user){
@@ -228,7 +228,7 @@ class ApiController extends AbstractController
         $locations = isset($_REQUEST['locations']) ? $_REQUEST['locations'] : "";
         //$terminal = $this->getUser()->getTerminal()->getId();
         $entities = $this->getDoctrine()->getRepository(Api::class)->apiAgent(1,$locations);
-
+       
         $response = new Response();
         $response->headers->set('Content-Type', 'application/json');
         $response->setContent(json_encode($entities));
@@ -961,7 +961,39 @@ class ApiController extends AbstractController
         return $response;
     }
 
+    /**
+     * @Route("/dairyBreedType", methods={"GET"}, name="dairyBreedType")
+     */
+    public function dairyBreedType()
+    {
 
+        set_time_limit(0);
+        ignore_user_abort(true);
+
+        $entities = $this->getDoctrine()->getRepository(Api::class)->dairyBreedType(1);
+        $response = new Response();
+        $response->headers->set('Content-Type', 'application/json');
+        $response->setContent(json_encode($entities));
+        $response->setStatusCode(Response::HTTP_OK);
+        return $response;
+    }
+
+    /**
+     * @Route("/fatteningBreedType", methods={"GET"}, name="fatteningBreedType")
+     */
+    public function fatteningBreedType()
+    {
+
+        set_time_limit(0);
+        ignore_user_abort(true);
+
+        $entities = $this->getDoctrine()->getRepository(Api::class)->fatteningBreedType(1);
+        $response = new Response();
+        $response->headers->set('Content-Type', 'application/json');
+        $response->setContent(json_encode($entities));
+        $response->setStatusCode(Response::HTTP_OK);
+        return $response;
+    }
 
 
 }

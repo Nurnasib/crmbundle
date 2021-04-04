@@ -25,6 +25,7 @@ use Terminalbd\CrmBundle\Entity\CrmVisit;
 use Terminalbd\CrmBundle\Entity\FarmerTrainingReport;
 use Terminalbd\CrmBundle\Entity\FcrDetails;
 use Terminalbd\CrmBundle\Entity\LayerLifeCycle;
+use Terminalbd\CrmBundle\Entity\LayerLifeCycleDetails;
 use Terminalbd\CrmBundle\Entity\LayerPerformanceDetails;
 use Terminalbd\CrmBundle\Entity\LayerStandard;
 use Terminalbd\CrmBundle\Entity\NewFarmerIntroduce\FarmerIntroduceDetails;
@@ -194,7 +195,7 @@ class ApiRepository extends BaseRepository
             $qb->where('u.username IN (:username)')->setParameter('username',$username);
         }
 
-        // $qb->where('ug.id = 9');
+       // $qb->where('ug.id = 9');
 
         $qb->orderBy('u.id', 'ASC');
         $result = $qb->getQuery()->getArrayResult();
@@ -254,8 +255,8 @@ class ApiRepository extends BaseRepository
             $cumulative = (int)$row['cumulativeFeedIntake'];
             $data[$key]['id'] = (int)$row['id'];
             $data[$key]['age'] = (int)$row['age'];
-            $data[$key]['feedIntakePerDay'] = (int)$row['feedIntakePerDay'];
-            $data[$key]['cumulativeFeedIntake'] = (int)$row['cumulativeFeedIntake'];
+            $data[$key]['feedIntakePerDay'] = (float)$row['feedIntakePerDay'];
+            $data[$key]['cumulativeFeedIntake'] = (float)$row['cumulativeFeedIntake'];
             $data[$key]['targetBodyWeight'] = (int)$row['targetBodyWeight'];
             $data[$key]['fcr'] = $cumulative/(int)$row['targetBodyWeight'];
         }
@@ -365,8 +366,8 @@ class ApiRepository extends BaseRepository
         $qb->where('ft.slug = :farmerType')
             ->andWhere('fid.employee = :employee')
             ->setParameters(array('farmerType' => $farmerType, 'employee' => $employee));
-        // $qb->where('ft.slug = :farmerType');
-        // $qb->setParameter('farmerType', $requestData);
+       // $qb->where('ft.slug = :farmerType');
+       // $qb->setParameter('farmerType', $requestData);
         $qb->orderBy('fid.id', 'ASC');
         $result = $qb->getQuery()->getArrayResult();
         $data = array();
@@ -687,7 +688,7 @@ class ApiRepository extends BaseRepository
                 $data[$key]['batchNo'] = (int)$row['batchNo'];
                 $data[$key]['remarks'] = (string)$row['remarks'];
             }
-            return $data;
+         return $data;
         }
 
     }
@@ -882,8 +883,11 @@ class ApiRepository extends BaseRepository
         $em = $this->_em;
         $qb = $em->createQueryBuilder();
         $qb->from(LayerStandard::class,'l');
+        $qb->leftJoin('l.report','r');
 
         $qb->select('l.id as id','l.age as ageWeek');
+
+        $qb->where("r.slug = 'layer-life-cycle-brown'");
 
         $qb->orderBy('l.id', 'ASC');
         $result = $qb->getQuery()->getArrayResult();
@@ -1169,6 +1173,62 @@ class ApiRepository extends BaseRepository
             $data[$key]['name'] = (string)$row['name'];*/
             $data[$key]['upozilaId'] = (string)$row['upozilaId'];
             $data[$key]['upozilaName'] = (string)$row['upozilaName'];
+
+        }
+
+        return $data;
+    }
+
+    /**
+     * Dairy Breed Type
+     */
+    public function dairyBreedType()
+    {
+        $em = $this->_em;
+        $qb = $em->createQueryBuilder();
+        $qb->from(Setting::class,'s');
+        $qb->leftJoin('s.parent','p');
+
+        $qb->select('s.id as id','s.name as breedType');
+        $qb->addSelect('p.name as breedName');
+
+        $qb->where("s.settingType = 'BREED_TYPE'");
+        $qb->andWhere("p.name = 'Dairy'");
+        $qb->orderBy('s.id', 'ASC');
+        $result = $qb->getQuery()->getArrayResult();
+        $data = array();
+        foreach ($result as $key => $row) {
+            $data[$key]['id'] = (int)$row['id'];
+            $data[$key]['breedType'] = (string)$row['breedType'];
+
+
+        }
+
+        return $data;
+    }
+
+    /**
+     * Fattening Breed Type
+     */
+    public function fatteningBreedType()
+    {
+        $em = $this->_em;
+        $qb = $em->createQueryBuilder();
+        $qb->from(Setting::class,'s');
+        $qb->leftJoin('s.parent','p');
+
+        $qb->select('s.id as id','s.name as breedType');
+        $qb->addSelect('p.name as breedName');
+
+        $qb->where("s.settingType = 'BREED_TYPE'");
+        $qb->andWhere("p.name = 'Fattening'");
+        $qb->orderBy('s.id', 'ASC');
+        $result = $qb->getQuery()->getArrayResult();
+        $data = array();
+        foreach ($result as $key => $row) {
+            $data[$key]['id'] = (int)$row['id'];
+            $data[$key]['breedType'] = (string)$row['breedType'];
+
 
         }
 
