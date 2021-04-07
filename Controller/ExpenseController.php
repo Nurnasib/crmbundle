@@ -45,6 +45,10 @@ class ExpenseController extends AbstractController
     /**
      * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      * @Route("/{crmVisit}/{location}/new", methods={"GET", "POST"}, name="crm_expense_new")
+     * @param Request $request
+     * @param CrmVisit $crmVisit
+     * @param Location $location
+     * @return Response
      */
     public function new(Request $request,  CrmVisit $crmVisit,  Location $location): Response
     {
@@ -71,6 +75,9 @@ class ExpenseController extends AbstractController
      *
      * @Route("/{id}/edit", methods={"GET", "POST"}, name="crm_expense_edit")
      * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @param Request $request
+     * @param Expense $entity
+     * @return Response
      */
 
     public function edit(Request $request, Expense $entity): Response
