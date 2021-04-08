@@ -8,10 +8,10 @@
         <div class="row form-body expense_form_body">
             <div class="form-inner-no-space">
                 <div class="row">
-                    <div class="col-md-4">
+                    <div class="col-md-8">
                         <div class="form-group">
-                            {{ form_label(form.purpose, 'Purpose'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
-                            <div class="col-md-8">
+                            {{ form_label(form.purpose, 'Purpose'|trans, {'label_attr': {'class': 'col-md-1'}}) }}
+                            <div class="col-md-11">
                                 <span class="not-blank"> {{ 'Required'|trans }}</span>
 
                                 {{ form_widget(form.purpose) }}
@@ -158,18 +158,17 @@
                             </div>
                         </div>
                     </div>
-{#
                     <div class="row">
-                        <div class="col-md-4 offset-4">
+                        <div class="col-md-10 offset-1">
                             <div class="form-group">
-                                {{ form_label(form.vehicle, 'Vehicle '|trans, {'label_attr': {'class': 'col-md-4'}}) }}
-                                <div class="col-md-8">
+                                {{ form_label(form.vehicle, 'Vehicle '|trans, {'label_attr': {'class': 'col-md-2'}}) }}
+                                <div class="col-md-10">
                                     {{ form_widget(form.vehicle) }}
                                     {{ form_errors(form.vehicle) }}
                                 </div>
                             </div>
                         </div>
-                    </div>#}
+                    </div>
 
                 </div>
 

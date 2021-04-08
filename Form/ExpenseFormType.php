@@ -103,19 +103,19 @@ class ExpenseFormType extends AbstractType
                         ->setParameter('sType','PURPOSE')
                         ->orderBy('e.name','ASC');
                 },
-                'attr'=>['class'=>'span12 select2'],
+                'attr'=>['class'=>'span12 multi-select2'],
                 'choice_label' => 'name',
                 'placeholder' => 'Choose your Purpose',
             ])
-/*            ->add('vehicle',ChoiceType::class,[
+            ->add('vehicle',ChoiceType::class,[
                 'choices' => [
                     'Rickshaw' => 'rickshaw',
-                    'Rickshaw' => 'rickshaw',
-                    'Rickshaw' => 'rickshaw',
+                    'Bike' => 'bike',
+                    'Bus' => 'bus',
                 ],
                 'multiple' => true,
                 'expanded' => true
-            ])*/
+            ])
         ;
     }
 
