@@ -24,6 +24,7 @@ $(document).on('click', '.expense_form_button', function () {
 
 function formSubmitExpenseForm() {
 
+
     $.ajax({
         url         : $('form#expense_form').attr( 'action' ),
         type        : $('form#expense_form').attr( 'method' ),

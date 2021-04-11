@@ -58,11 +58,13 @@ class Expense
     public function __construct()
     {
         $this->purpose = new ArrayCollection();
+        $this->vehicle = new ArrayCollection();
     }
 
     /**
-     * @var string
-     * @ORM\Column(type="string", nullable=true)
+     * @var Setting
+     * @ORM\ManyToMany(targetEntity="Setting")
+     * @ORM\JoinTable(name="crm_expence_vehicle")
      */
     private $vehicle;
 
@@ -194,7 +196,7 @@ class Expense
     }
 
     /**
-     * @return string
+     * @return Setting
      */
     public function getVehicle()
     {
@@ -202,13 +204,12 @@ class Expense
     }
 
     /**
-     * @param string $vehicle
+     * @param Setting $vehicle
      */
     public function setVehicle($vehicle)
     {
         $this->vehicle = $vehicle;
     }
-
 
     /**
      * @return string

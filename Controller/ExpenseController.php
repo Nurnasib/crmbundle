@@ -87,9 +87,9 @@ class ExpenseController extends AbstractController
             ->add('SaveAndCreate', SubmitType::class);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $entity->setStatus(1);
-
             $em = $this->getDoctrine()->getManager();
+
+            $entity->setStatus(1);
 
             $em->persist($entity);
             $em->flush();

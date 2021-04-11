@@ -107,14 +107,15 @@ class ExpenseFormType extends AbstractType
                 'choice_label' => 'name',
                 'placeholder' => 'Choose your Purpose',
             ])
-            ->add('vehicle',ChoiceType::class,[
-                'choices' => [
-                    'Rickshaw' => 'rickshaw',
-                    'Bike' => 'bike',
-                    'Bus' => 'bus',
-                ],
+            ->add('vehicle',EntityType::class,[
+                'class' => Setting::class,
+                'choice_label' => 'name',
+                'query_builder' => function(EntityRepository $er){
+                return $er->createQueryBuilder('e')
+                    ->where("e.settingType = 'VEHICLE'");
+                },
                 'multiple' => true,
-                'expanded' => true
+                'expanded' => true,
             ])
         ;
     }
