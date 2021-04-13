@@ -37,31 +37,29 @@
                         <thead class="thead-dark">
                         <tr>
                             <th rowspan="2" scope="col">S/N</th>
-                            <th rowspan="2" scope="col">Employee Name</th>
-                            <th rowspan="2" scope="col">Designation</th>
                             <th rowspan="2" scope="col">Area Name</th>
                             <th colspan="2" scope="col">Working Duration</th>
                             <th rowspan="2" scope="col">{{ 'Created Date'|trans }}</th>
-                            <th rowspan="2" scope="col text-center"><i class="feather icon-KPI Setup"></i></th>
+                            <th rowspan="2" scope="col text-center"><i class="feather icon-settings"></i></th>
                         </tr>
                         <tr>
-                            <td>{{ 'From'|trans }}</td>
-                            <td>{{ 'To'|trans }}</td>
+                            <th>{{ 'From'|trans }}</th>
+                            <th>{{ 'To'|trans }}</th>
                         </tr>
                         </thead>
                         <tbody>
                         {% for entity in entities %}
                             <tr>
                                 <td>{{ loop.index }}</td>
-                                <td>{{ entity.employee.name }}</td>
-                                <td>{% if entity.employee.designation is not empty %}{{ entity.employee.designation.name }}{% endif %}</td>
                                 <td>{% if entity.location is not empty %}{{ entity.location.name }}{% endif %}</td>
                                 <td>{{ entity.WorkingDuration }}</td>
                                 <td>{{ entity.WorkingDurationTo }}</td>
                                 <td>{{ entity.created|date('d-m-Y') }}</td>
                                 <td>
-                                    <a class="btn btn-mini yellow-bg white-font" href="{{ path('crm_visit_edit',{'id':entity.id}) }}"><i class="feather icon-edit"></i> Edit</a>
-                                    <a class="btn  btn-transparent btn-mini red-font remove" href="javascript:" data-action="{{ path('crm_visit_delete',{'id':entity.id}) }}"><i class="fa fa-remove"></i></a>
+                                    <a class="btn btn-mini yellow-bg white-font" href="{{ path('crm_visit_edit',{'id':entity.id}) }}"><i class="feather icon-edit"></i> In Progress</a>
+                                    {% if entity.created|date('d-m-Y') == 'now'|date('d-m-Y') %}
+                                        <a class="btn btn-transparent btn-mini red-font remove" href="javascript:" data-action="{{ path('crm_visit_delete',{'id':entity.id}) }}"><i class="fa fa-remove"></i></a>
+                                    {% endif %}
                                 </td>
 
                             </tr>

@@ -43,7 +43,7 @@ class CrmVisitController extends AbstractController
     {
         $reports = $this->getDoctrine()->getRepository(Setting::class)->findBy(['settingType'=>'FARMER_REPORT','slug'=>['fcr-after-sale-boiler','fcr-after-sale-sonali']]);
 
-        $entities= $this->getDoctrine()->getRepository(CrmVisit::class)->findBy(array('employee'=>$this->getUser()));
+        $entities= $this->getDoctrine()->getRepository(CrmVisit::class)->findBy(array('employee'=>$this->getUser()),['created' => 'DESC']);
         return $this->render('@TerminalbdCrm/crmvisit/index.html.twig',[
             'entities' => $entities,
             'reports' => $reports,
