@@ -1236,4 +1236,14 @@ class ApiRepository extends BaseRepository
     }
 
 
+    public function getJsonData()
+    {
+        $qb = $this->createQueryBuilder('e');
+
+        $qb->select('e.jsonData','e.process', 'e.employeeId');
+
+        $results =  $qb->getQuery()->getArrayResult();
+        return $results;
+    }
+
 }

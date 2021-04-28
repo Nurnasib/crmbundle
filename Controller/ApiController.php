@@ -996,4 +996,64 @@ class ApiController extends AbstractController
     }
 
 
+    /**
+     * @Route("/store-json-data", name="store_json_data")
+     */
+    public function storeAllJsonDataFromApi()
+    {
+        $jsonData = '[
+        {
+        "id": 1,
+        "duration_to": "2:46 AM",
+        "duration_from": "10:13 AM",
+        "employee_id": 23,
+        "location_id": 371,
+        "visitAreaName": "BHALUKA",
+        "created_at": "08-04-2021"
+        },
+        {
+        "id": 2,
+        "duration_to": "3:6 AM",
+        "duration_from": "1:38 AM",
+        "employee_id": 23,
+        "location_id": 371,
+        "visitAreaName": "BHALUKA",
+        "created_at": "18-04-2021"
+        }
+        ]';
+        if ($jsonData){
+            $em = $this->getDoctrine()->getManager();
+
+            $apiData = new Api();
+            $apiData->setDeviceId(1);
+            $apiData->setEmployeeId(1);
+            $apiData->setProcess('CUSTOMER_VISIT');
+            $apiData->setJsonData($jsonData);
+
+            $em->persist($apiData);
+            $em->flush();
+
+            return new JsonResponse('success');
+        }else{
+            return new JsonResponse('Failed!');
+        }
+    }
+
+    /**
+     * @Route("/insert-json-data", name="insert_json_data")
+     */
+    public function insertDataIntoCorrespondingTable()
+    {
+        $entities = $this->getDoctrine()->getRepository(Api::class)->getJsonData();
+//        dd($jsonData);
+        foreach ($entities as $data){
+            if($data['porcess'] == 'CUSTOMER_VISIT'){
+
+                $jsonToArray = json_decode($data['jsonData'], true);
+                dd($jsonToArray);
+            }
+        }
+
+    }
+
 }
