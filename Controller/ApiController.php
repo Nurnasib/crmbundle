@@ -997,62 +997,114 @@ class ApiController extends AbstractController
 
 
     /**
-     * @Route("/store-json-data", name="store_json_data")
+     * @Route("/store-json-data", methods={"POST"}, name="store_json_data")
+     * @param Request $request
+     * @return JsonResponse
      */
-    public function storeAllJsonDataFromApi()
+    public function storeAllJsonDataFromApi(Request $request)
     {
+        $process = $request->request->get('process');
         $jsonData = '[
-        {
-        "id": 1,
-        "duration_to": "2:46 AM",
-        "duration_from": "10:13 AM",
-        "employee_id": 23,
-        "location_id": 371,
-        "visitAreaName": "BHALUKA",
-        "created_at": "08-04-2021"
-        },
-        {
-        "id": 2,
-        "duration_to": "3:6 AM",
-        "duration_from": "1:38 AM",
-        "employee_id": 23,
-        "location_id": 371,
-        "visitAreaName": "BHALUKA",
-        "created_at": "18-04-2021"
-        }
-        ]';
+   {
+      "id":10,
+      "report_id":364,
+      "agent_id":1742,
+      "customer_id":23,
+      "employee_id":23,
+      "product_name_id":358,
+      "complains":"hhgb",
+      "created_at":"5-2021",
+      "productName":"Dairy Feed Regular"
+   },
+   {
+      "id":11,
+      "report_id":364,
+      "agent_id":1742,
+      "customer_id":23,
+      "employee_id":23,
+      "product_name_id":359,
+      "complains":"vvv",
+      "created_at":"5-2021",
+      "productName":"Dairy Feed Economy"
+   },
+   {
+      "id":12,
+      "report_id":364,
+      "agent_id":1742,
+      "customer_id":23,
+      "employee_id":23,
+      "product_name_id":360,
+      "complains":"vgg",
+      "created_at":"5-2021",
+      "productName":"Cattle Feed Economy"
+   }
+]';
         if ($jsonData){
             $em = $this->getDoctrine()->getManager();
 
             $apiData = new Api();
             $apiData->setDeviceId(1);
             $apiData->setEmployeeId(1);
-            $apiData->setProcess('CUSTOMER_VISIT');
+            $apiData->setProcess($process);
             $apiData->setJsonData($jsonData);
 
             $em->persist($apiData);
             $em->flush();
 
-            return new JsonResponse('success');
+            return new JsonResponse([
+                'status' => 200,
+            ]);
         }else{
             return new JsonResponse('Failed!');
         }
     }
 
     /**
-     * @Route("/insert-json-data", name="insert_json_data")
+     * @Route("/list", name="api_response_list")
      */
-    public function insertDataIntoCorrespondingTable()
+    public function apiResponseList()
     {
-        $entities = $this->getDoctrine()->getRepository(Api::class)->getJsonData();
-//        dd($jsonData);
-        foreach ($entities as $data){
-            if($data['porcess'] == 'CUSTOMER_VISIT'){
+        $list = $this->getDoctrine()->getRepository(Api::class)->getData();
 
-                $jsonToArray = json_decode($data['jsonData'], true);
-                dd($jsonToArray);
+        return $this->render('@TerminalbdCrm/api/api-response-list.html.twig',[
+            'list' => $list,
+        ]);
+    }
+
+    /**
+     * @Route("/{id}/insert-data", name="insert_json_data")
+     * @param Api $api
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    public function insertDataIntoCorrespondingTable(Api $api)
+    {
+
+        if ($api->isStatus() == 0){
+            $jsonToArray = json_decode($api->getJsonData(), true);
+            if ($api->getProcess() == 'crm_visit'){
+                foreach( $jsonToArray as $item){
+                    $this->getDoctrine()->getRepository(CrmVisit::class)->insertDataFromApi($item);
+                }
             }
+            $api->setStatus(1);
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($api);
+            $em->flush();
+            $this->addFlash('success', 'Data has been migrated!');
+            return $this->redirectToRoute('api_response_list');
+        }else{
+            $this->addFlash('error', 'Somthing Wrong!');
+            return $this->redirectToRoute('api_response_list');
         }
+//        $entities = $this->getDoctrine()->getRepository(Api::class)->getJsonData();
+//        dd($jsonData);
+//        foreach ($entities as $data){
+//            if($data['porcess'] == 'CUSTOMER_VISIT'){
+//
+//                $jsonToArray = json_decode($data['jsonData'], true);
+//                dd($jsonToArray);
+//            }
+//        }
 
     }
 

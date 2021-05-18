@@ -10,6 +10,8 @@
  */
 
 namespace Terminalbd\CrmBundle\Repository;
+use App\Entity\Admin\Location;
+use App\Entity\User;
 use Doctrine\ORM\EntityRepository;
 
 /**
@@ -52,5 +54,25 @@ class CrmVisitRepository extends EntityRepository
         $qb->andwhere('crm_visit_details.created <= :endDate')->setParameter('endDate', $endDate);
 
         return $qb->getQuery()->getArrayResult();
+    }
+
+    public function insertDataFromApi(array $item)
+    {
+        $created = new \DateTime($item['created_at']);
+        $employee = $this->getEntityManager()->getRepository(User::class)->find($item['employee_id']);
+        $location = $this->getEntityManager()->getRepository(Location::class)->find($item['location_id']);
+
+        if ($employee && $location){
+            $sql = "INSERT INTO `crm_visit`(`created`, `working_duration`, `employee_id`, `location_id`, `working_duration_to`, `app_id`) VALUES (:created_at, :duration_from, :employee_id, :location_id, :duration_to, :app_id)";
+            $em = $this->_em;
+            $stmt = $em->getConnection()->prepare($sql);
+            $stmt->bindValue('created_at', $created->format('Y-m-d H:i:s'));
+            $stmt->bindValue('duration_from', $item['duration_from']);
+            $stmt->bindValue('employee_id', $item['employee_id']);
+            $stmt->bindValue('location_id', $item['location_id']);
+            $stmt->bindValue('duration_to', $item['duration_to']);
+            $stmt->bindValue('app_id', $item['id']);
+            $stmt->execute();
+        }
     }
 }

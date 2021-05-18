@@ -86,6 +86,12 @@ class CrmVisit
     private $crmVisitDetails;
 
     /**
+     * @var $appId
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $appId;
+
+    /**
      * @return int
      */
     public function getId()

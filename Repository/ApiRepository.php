@@ -1235,15 +1235,13 @@ class ApiRepository extends BaseRepository
         return $data;
     }
 
-
-    public function getJsonData()
+    public function getData()
     {
         $qb = $this->createQueryBuilder('e');
 
-        $qb->select('e.jsonData','e.process', 'e.employeeId');
+        $qb->select('e.id','e.process', 'e.deviceId', 'e.status');
 
-        $results =  $qb->getQuery()->getArrayResult();
-        return $results;
+        return $qb->getQuery()->getArrayResult();
     }
 
 }
