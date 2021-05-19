@@ -22,7 +22,9 @@ use Terminalbd\CrmBundle\Entity\Api;
 use Terminalbd\CrmBundle\Entity\BroilerStandard;
 use Terminalbd\CrmBundle\Entity\CrmCustomer;
 use Terminalbd\CrmBundle\Entity\CrmVisit;
+use Terminalbd\CrmBundle\Entity\CrmVisitDetails;
 use Terminalbd\CrmBundle\Entity\FcrDetails;
+use Terminalbd\CrmBundle\Entity\LayerPerformanceDetails;
 use Terminalbd\CrmBundle\Entity\Setting;
 use Terminalbd\CrmBundle\Entity\SettingLifeCycle;
 use Terminalbd\CrmBundle\Entity\SonaliStandard;
@@ -1064,8 +1066,61 @@ class ApiController extends AbstractController
      */
     public function apiResponseList()
     {
-        $list = $this->getDoctrine()->getRepository(Api::class)->getData();
+/*        $array = [
+            'crm_visit' => [
+                'id' => 1,
+                'duration_to' => null,
+                'duration_from' => '1:47 PM',
+                'employee_id' => 23,
+                'location_id' => 340,
+                'visitAreaName' => 'SARISHABARI UPAZILA',
+                'created_at' => '05-05-2021',
+            ],
+            'farmer_report' => [
+                [
+                  "id" => 4,
+                  "crm_visit_id" => 1,
+                  "farmCapacity" => "5",
+                  "updated" => null,
+                  "comments" => "gvb",
+                  "created" => "05-05-2021",
+                  "customer_id" => 23,
+                  "process" => null,
+                  "agent_id" => 1742,
+                  "purpose_id" => 16,
+                  "firm_type_id" => 223,
+                  "report_id" => 239,
+                  "purposeName" => "Market Promotion",
+                  "farmerName" => "Md Rakibul Hasan",
+                  "phoneNumber" => "7000804",
+                  "farmTypeName" => "Others (Poultry)",
+                  "reportTypeName" => "Antibiotic Free Farm Poultry"
+                ],
+                [
+                    "id" => 3,
+                    "crm_visit_id" => 1,
+                    "farmCapacity" => "5",
+                    "updated" => null,
+                    "comments" => "g",
+                    "created" => "05-05-2021",
+                    "customer_id" => 23,
+                    "process" => null,
+                    "agent_id" => 1742,
+                    "purpose_id" => 13,
+                    "firm_type_id" => 224,
+                    "report_id" => 219,
+                    "purposeName" => "Problem Farm Visit",
+                    "farmerName" => "Tanveer",
+                    "phoneNumber" => "4512",
+                    "farmTypeName" => "Others (Fish)",
+                    "reportTypeName" => "Farmer Touch Report"
+                ]
+            ],
+        ];
+        echo json_encode($array);
+        die();*/
 
+        $list = $this->getDoctrine()->getRepository(Api::class)->getData();
         return $this->render('@TerminalbdCrm/api/api-response-list.html.twig',[
             'list' => $list,
         ]);
@@ -1082,8 +1137,21 @@ class ApiController extends AbstractController
         if ($api->isStatus() == 0){
             $jsonToArray = json_decode($api->getJsonData(), true);
             if ($api->getProcess() == 'crm_visit'){
-                foreach( $jsonToArray as $item){
-                    $this->getDoctrine()->getRepository(CrmVisit::class)->insertDataFromApi($item);
+                foreach( $jsonToArray as $data){
+                    $this->getDoctrine()->getRepository(CrmVisit::class)->insertDataFromApi($data);
+                }
+            }elseif ($api->getProcess() == 'farmer_report'){
+                foreach( $jsonToArray as $data){
+                    if ($data['crm_visit_id'] !== null){
+                        $findVisit = $this->getDoctrine()->getRepository(CrmVisit::class)->findOneBy(['appId' => $data['crm_visit_id']]);
+                        if ($findVisit){
+                            $this->getDoctrine()->getRepository(CrmVisitDetails::class)->insertDataFromApi($data, $findVisit->getId());
+                        }
+                    }
+                }
+            }elseif ($api->getProcess() == 'layer_performance_report'){
+                foreach( $jsonToArray as $data){
+                    $this->getDoctrine()->getRepository(LayerPerformanceDetails::class)->insertDataFromApi($data);
                 }
             }
             $api->setStatus(1);

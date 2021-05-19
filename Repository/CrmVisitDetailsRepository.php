@@ -172,4 +172,32 @@ class CrmVisitDetailsRepository extends EntityRepository
         $em->flush();
     }
 
+    public function insertDataFromApi(array $data, $visitId)
+    {
+        $created = new \DateTime($data['created']);
+        $customer = $this->getEntityManager()->getRepository(CrmCustomer::class)->find($data['customer_id']);
+        $agent = $this->getEntityManager()->getRepository(Agent::class)->findOneBy(['agentId' => $data['agent_id'], 'status' => 1]);
+
+        $purpose = $this->getEntityManager()->getRepository(Setting::class)->findOneBy(['id' => $data['purpose_id'], 'settingType' => 'PURPOSE', 'status' => 1]);
+        $firmType = $this->getEntityManager()->getRepository(Setting::class)->find($data['firm_type_id']);
+        $report = $this->getEntityManager()->getRepository(Setting::class)->findOneBy(['id' => $data['report_id'], 'settingType' => 'FARMER_REPORT', 'status' => 1]);
+
+        if ($customer && $agent){
+            $sql = "INSERT INTO `crm_visit_details`(`crm_visit_id`, `farmCapacity`, `updated`, `comments`, `created`, `customer_id`, `process`, `agent_id`, `purpose_id`, `firm_type_id`, `report_id`) VALUES (:visitId, :farmCapacity, :updated, :comments, :created, :customerId, :process, :agentId, :purposeId, :firmTypeId, :reportId)";
+            $em = $this->_em;
+            $stmt = $em->getConnection()->prepare($sql);
+            $stmt->bindValue('visitId', $visitId);
+            $stmt->bindValue('farmCapacity', $data['farmCapacity']);
+            $stmt->bindValue('updated', $data['updated']);
+            $stmt->bindValue('comments', $data['comments']);
+            $stmt->bindValue('created', $created->format('Y-m-d H:i:s'));
+            $stmt->bindValue('customerId', $customer->getId());
+            $stmt->bindValue('process', $data['process']);
+            $stmt->bindValue('agentId', $agent->getId());
+            $stmt->bindValue('purposeId', $purpose ? $purpose->getId() : null);
+            $stmt->bindValue('firmTypeId', $firmType ? $firmType->getId() : null);
+            $stmt->bindValue('reportId', $report ? $report->getId() : null);
+            $stmt->execute();
+        }
+    }
 }
