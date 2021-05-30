@@ -2,6 +2,7 @@
 
 namespace Terminalbd\CrmBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 
@@ -23,6 +24,12 @@ class Api
     private $id;
 
     /**
+     * @var $apiDetails
+     * @ORM\OneToMany(targetEntity="Terminalbd\CrmBundle\Entity\ApiDetails", mappedBy="batch")
+     */
+    private $apiDetails;
+
+    /**
      * @var integer
      * @ORM\Column(type="integer")
      */
@@ -35,21 +42,27 @@ class Api
     private $employeeId;
 
     /**
-     * @var string
-     * @ORM\Column(type="string")
-     */
-    private $process;
-
-    /**
-     * @ORM\Column(type="text")
-     */
-    private $jsonData;
-
-    /**
      * @var boolean
      * @ORM\Column(type="boolean")
      */
     private $status = false;
+
+    /**
+     * @var $createdAt
+     * @ORM\Column(type="datetime")
+     */
+    private $createdAt;
+
+    /**
+     * @var $updatedAt
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $updatedAt;
+    
+    public function __construct()
+    {
+        $this->apiDetails = new ArrayCollection();
+    }
 
     /**
      * @return int
@@ -98,39 +111,7 @@ class Api
     {
         $this->employeeId = $employeeId;
     }
-
-    /**
-     * @return string
-     */
-    public function getProcess(): string
-    {
-        return $this->process;
-    }
-
-    /**
-     * @param string $process
-     */
-    public function setProcess(string $process): void
-    {
-        $this->process = $process;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getJsonData()
-    {
-        return $this->jsonData;
-    }
-
-    /**
-     * @param mixed $jsonData
-     */
-    public function setJsonData($jsonData): void
-    {
-        $this->jsonData = $jsonData;
-    }
-
+    
     /**
      * @return bool
      */
@@ -145,6 +126,60 @@ class Api
     public function setStatus(bool $status): void
     {
         $this->status = $status;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCreatedAt()
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * @param mixed $createdAt
+     */
+    public function setCreatedAt($createdAt)
+    {
+        $this->createdAt = $createdAt;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updatedAt;
+    }
+
+    /**
+     * @param mixed $updatedAt
+     */
+    public function setUpdatedAt($updatedAt)
+    {
+        $this->updatedAt = $updatedAt;
+    }
+
+    public function addApiDetails(ApiDetails $apiDetails ): self
+    {
+        if (!$this->apiDetails->contains($apiDetails)) {
+            $this->apiDetails[] = $apiDetails;
+            $apiDetails->setApi($this);
+        }
+
+        return $this;
+    }
+
+    public function removeApiDetails(ApiDetails $breedDetail): self
+    {
+        if ($this->breedDetails->removeElement($breedDetail)) {
+            // set the owning side to null (unless already changed)
+            if ($breedDetail->getBreed() === $this) {
+                $breedDetail->setBreed(null);
+            }
+        }
+
+        return $this;
     }
 
 }

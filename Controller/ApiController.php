@@ -19,6 +19,7 @@ use Symfony\Component\Security\Core\Encoder\MessageDigestPasswordEncoder;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
 use Terminalbd\CrmBundle\Entity\Api;
+use Terminalbd\CrmBundle\Entity\ApiDetails;
 use Terminalbd\CrmBundle\Entity\BroilerStandard;
 use Terminalbd\CrmBundle\Entity\CrmCustomer;
 use Terminalbd\CrmBundle\Entity\CrmVisit;
@@ -1005,52 +1006,29 @@ class ApiController extends AbstractController
      */
     public function storeAllJsonDataFromApi(Request $request)
     {
-        $process = $request->request->get('process');
-        $jsonData = '[
-   {
-      "id":10,
-      "report_id":364,
-      "agent_id":1742,
-      "customer_id":23,
-      "employee_id":23,
-      "product_name_id":358,
-      "complains":"hhgb",
-      "created_at":"5-2021",
-      "productName":"Dairy Feed Regular"
-   },
-   {
-      "id":11,
-      "report_id":364,
-      "agent_id":1742,
-      "customer_id":23,
-      "employee_id":23,
-      "product_name_id":359,
-      "complains":"vvv",
-      "created_at":"5-2021",
-      "productName":"Dairy Feed Economy"
-   },
-   {
-      "id":12,
-      "report_id":364,
-      "agent_id":1742,
-      "customer_id":23,
-      "employee_id":23,
-      "product_name_id":360,
-      "complains":"vgg",
-      "created_at":"5-2021",
-      "productName":"Cattle Feed Economy"
-   }
-]';
-        if ($jsonData){
+        set_time_limit(0);
+        ignore_user_abort(true);
+
+        $data = $request->request->all();
+//        return new JsonResponse($data);
+
+        if ($data){
             $em = $this->getDoctrine()->getManager();
 
-            $apiData = new Api();
-            $apiData->setDeviceId(1);
-            $apiData->setEmployeeId(1);
-            $apiData->setProcess($process);
-            $apiData->setJsonData($jsonData);
+            $api = new Api();
+            $api->setDeviceId($data['device_id'] ?: null);
+            $api->setEmployeeId($data['employee_id'] ?: null);
+            $api->setStatus(0);
+            $api->setCreatedAt(new \DateTime('now'));
 
-            $em->persist($apiData);
+            $apiDetails = new ApiDetails();
+            $apiDetails->setBatch($api->getId());
+            $apiDetails->setProcess($data['process']);
+            $apiDetails->setJsonData($data['json_body']);
+            $apiDetails->setStatus(0);
+            $api->setApiDetails($apiDetails);
+
+            $em->persist($api);
             $em->flush();
 
             return new JsonResponse([
@@ -1133,6 +1111,8 @@ class ApiController extends AbstractController
      */
     public function insertDataIntoCorrespondingTable(Api $api)
     {
+        set_time_limit(0);
+        ignore_user_abort(true);
 
         if ($api->isStatus() == 0){
             $jsonToArray = json_decode($api->getJsonData(), true);
