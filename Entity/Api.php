@@ -163,7 +163,7 @@ class Api
     /**
      * @return Collection|ApiDetails[]
      */
-    public function getApiDetails(): Collection
+    public function getApiDetails()
     {
         return $this->apiDetails;
     }
