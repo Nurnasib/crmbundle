@@ -1010,32 +1010,43 @@ class ApiController extends AbstractController
         ignore_user_abort(true);
 
         $data = $request->request->all();
-//        return new JsonResponse($data);
 
         if ($data){
             $em = $this->getDoctrine()->getManager();
 
-            $api = new Api();
-            $api->setDeviceId($data['device_id'] ?: null);
-            $api->setEmployeeId($data['employee_id'] ?: null);
-            $api->setStatus(0);
-            $api->setCreatedAt(new \DateTime('now'));
+            $findParent = $this->getDoctrine()->getRepository(Api::class)->findOneBy(['deviceId' => $data['device_id'], 'employeeId' => $data['employee_id']]);
+            if (!$findParent){
+                $api = new Api();
+                $api->setDeviceId($data['device_id'] ?: null);
+                $api->setEmployeeId($data['employee_id'] ?: null);
+                $api->setStatus(0);
+                $api->setCreatedAt(new \DateTime('now'));
 
-            $apiDetails = new ApiDetails();
-            $apiDetails->setBatch($api->getId());
-            $apiDetails->setProcess($data['process']);
-            $apiDetails->setJsonData($data['json_body']);
-            $apiDetails->setStatus(0);
-            $api->setApiDetails($apiDetails);
+                $apiDetails = new ApiDetails();
+                $apiDetails->setBatch($api);
+                $apiDetails->setProcess($data['process']);
+                $apiDetails->setJsonData($data['json_body']);
+                $apiDetails->setStatus(0);
+                $api->addApiDetails($apiDetails);
+                $em->persist($api);
+                $em->flush();
 
-            $em->persist($api);
-            $em->flush();
-
+            } else {
+                $apiDetails = new ApiDetails();
+                $apiDetails->setBatch($findParent);
+                $apiDetails->setProcess($data['process']);
+                $apiDetails->setJsonData($data['json_body']);
+                $apiDetails->setStatus(0);
+                $em->persist($apiDetails);
+                $em->flush();
+            }
             return new JsonResponse([
                 'status' => 200,
             ]);
-        }else{
-            return new JsonResponse('Failed!');
+        } else {
+            return new JsonResponse([
+                'status' => false,
+            ]);
         }
     }
 

@@ -25,7 +25,7 @@ class Api
 
     /**
      * @var $apiDetails
-     * @ORM\OneToMany(targetEntity="Terminalbd\CrmBundle\Entity\ApiDetails", mappedBy="batch")
+     * @ORM\OneToMany(targetEntity="Terminalbd\CrmBundle\Entity\ApiDetails", mappedBy="batch", cascade={"persist"})
      */
     private $apiDetails;
 
@@ -160,23 +160,19 @@ class Api
         $this->updatedAt = $updatedAt;
     }
 
-    public function addApiDetails(ApiDetails $apiDetails ): self
+    /**
+     * @return Collection|ApiDetails[]
+     */
+    public function getApiDetails(): Collection
     {
-        if (!$this->apiDetails->contains($apiDetails)) {
-            $this->apiDetails[] = $apiDetails;
-            $apiDetails->setApi($this);
-        }
-
-        return $this;
+        return $this->apiDetails;
     }
 
-    public function removeApiDetails(ApiDetails $breedDetail): self
+    public function addApiDetails(ApiDetails $apiDetail): self
     {
-        if ($this->breedDetails->removeElement($breedDetail)) {
-            // set the owning side to null (unless already changed)
-            if ($breedDetail->getBreed() === $this) {
-                $breedDetail->setBreed(null);
-            }
+        if (!$this->apiDetails->contains($apiDetail)) {
+            $this->apiDetails[] = $apiDetail;
+            $apiDetail->setBatch($this);
         }
 
         return $this;
