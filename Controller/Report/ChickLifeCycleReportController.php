@@ -79,8 +79,6 @@ class ChickLifeCycleReportController extends AbstractController
     {
         $filterBy = $request->query->get('filterBy');
 
-
-//        dd($filterBy);
         $farmer = $this->getDoctrine()->getRepository(CrmCustomer::class)->find($filterBy['farmerId']);
         $filterBy['farmer'] = $farmer;
 

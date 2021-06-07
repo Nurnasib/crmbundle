@@ -14,7 +14,7 @@ $(document).on('opened', '.remodal', function () {
     var url = document.getElementById(id).getAttribute("data-action");
     $('#modal-container').load(url, function(){
         formCommonProcess();
-        // formCommonProcessForFcr();
+        formCommonProcessForFcr();
         if(check === 'edit'){
             formEditSubmitProcess();
         }else{
