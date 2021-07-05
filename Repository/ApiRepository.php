@@ -195,7 +195,7 @@ class ApiRepository extends BaseRepository
             $qb->where('u.username IN (:username)')->setParameter('username',$username);
         }
 
-        // $qb->where('ug.id = 9');
+       // $qb->where('ug.id = 9');
 
         $qb->orderBy('u.id', 'ASC');
         $result = $qb->getQuery()->getArrayResult();
@@ -366,8 +366,8 @@ class ApiRepository extends BaseRepository
         $qb->where('ft.slug = :farmerType')
             ->andWhere('fid.employee = :employee')
             ->setParameters(array('farmerType' => $farmerType, 'employee' => $employee));
-        // $qb->where('ft.slug = :farmerType');
-        // $qb->setParameter('farmerType', $requestData);
+       // $qb->where('ft.slug = :farmerType');
+       // $qb->setParameter('farmerType', $requestData);
         $qb->orderBy('fid.id', 'ASC');
         $result = $qb->getQuery()->getArrayResult();
         $data = array();
@@ -688,7 +688,7 @@ class ApiRepository extends BaseRepository
                 $data[$key]['batchNo'] = (int)$row['batchNo'];
                 $data[$key]['remarks'] = (string)$row['remarks'];
             }
-            return $data;
+         return $data;
         }
 
     }

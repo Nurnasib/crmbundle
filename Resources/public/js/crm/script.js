@@ -1116,6 +1116,7 @@ $(document).on('change', '.sub_agent', function(e) {
 $(document).on('change', '.agent', function(e) {
     var element = $(this);
     var id = $(this).val();
+    console.log(id);
     element.closest('tr').find('.agent_address').val('');
     element.closest('tr').find('.agent_mobile').val('');
     if(id==''){
@@ -1133,6 +1134,34 @@ $(".modal").on("hidden.bs.modal", function(){
     // $(".modal-body").html("");
     $(this).find('form')[0].reset();
     // $('form#farmerForm')[0].reset();
+});
+
+//Prevent Enter press
+$('.meat-egg-price').on('keypress', function(event){
+
+        if (event.which == '13') {
+            $('form#crm_visit_form').submit(function() {
+                return false;
+            });
+        }
+    });
+//CRM visit Meat & Egg Price Update
+$(document).on('change', '.meat-egg-price', function() {
+
+    var price = $(this).val();
+    var url = $(this).attr('data-action');
+    var visitId = $(this).attr('data-visit-id');
+    var regionId = $(this).attr('data-region-id');
+    var breedTypeId = $(this).attr('data-breed-type-id');
+
+    $.ajax({
+        url: url,
+        type: 'POST',
+        data: {'visitId':visitId, 'regionId':regionId, 'breedTypeId':breedTypeId, 'price':price},
+        success: function (response) {
+            console.log(response);
+        }
+    })
 });
 
 

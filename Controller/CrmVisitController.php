@@ -8,6 +8,7 @@
 namespace Terminalbd\CrmBundle\Controller;
 
 
+use App\Entity\Admin\Location;
 use App\Entity\Core\Agent;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -21,6 +22,7 @@ use Terminalbd\CrmBundle\Entity\ChickLifeCycle;
 use Terminalbd\CrmBundle\Entity\CrmCustomer;
 use Terminalbd\CrmBundle\Entity\CrmVisit;
 use Terminalbd\CrmBundle\Entity\CrmVisitDetails;
+use Terminalbd\CrmBundle\Entity\PoultryMeatEggPrice;
 use Terminalbd\CrmBundle\Entity\Setting;
 use Terminalbd\CrmBundle\Form\CrmCustomerFormType;
 use Terminalbd\CrmBundle\Form\CrmVisitFormType;
@@ -41,7 +43,7 @@ class CrmVisitController extends AbstractController
     {
         $reports = $this->getDoctrine()->getRepository(Setting::class)->findBy(['settingType'=>'FARMER_REPORT','slug'=>['fcr-after-sale-boiler','fcr-after-sale-sonali']]);
 
-        $entities= $this->getDoctrine()->getRepository(CrmVisit::class)->findBy(array('employee'=>$this->getUser()));
+        $entities= $this->getDoctrine()->getRepository(CrmVisit::class)->findBy(array('employee'=>$this->getUser()),['created' => 'DESC']);
         return $this->render('@TerminalbdCrm/crmvisit/index.html.twig',[
             'entities' => $entities,
             'reports' => $reports,
@@ -97,7 +99,7 @@ class CrmVisitController extends AbstractController
             $this->getDoctrine()->getManager()->flush();
             $this->addFlash('success', 'post.updated_successfully');
 
-            return $this->redirectToRoute('crm_firmTypesvisit');
+            return $this->redirectToRoute('crm_visit');
         }
         $agent=$this->getDoctrine()->getRepository(Agent::class)->getLocationWise($entity->getEmployee());
         $purpose =$this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType'=>'PURPOSE'));
@@ -119,22 +121,30 @@ class CrmVisitController extends AbstractController
         }
 
         if($this->getUser()->getServiceMode() && $this->getUser()->getServiceMode()->getSlug()=='sales-marketing'){
+            $visitId = $entity->getId();
+            $regions = $this->getDoctrine()->getRepository(Location::class)->findBy(['level' => 3]);
+            $breedTypes = $this->getDoctrine()->getRepository(Setting::class)->findBy(['settingType' => 'MEAT_EGG_TYPE']);
+            $price = $this->getDoctrine()->getRepository(PoultryMeatEggPrice::class)->processPrice($regions,$breedTypes, $visitId);
+//            dd($price);
             return $this->render('@TerminalbdCrm/crmvisit/edit-sales-marketing.html.twig', [
                 'entity' => $entity,
                 'purposes'=>$purpose,
                 'agentPurposes'=>$agentPurpose,
                 'otherAgentPurposes'=>$otherAgentPurpose,
                 'subAgentPurposes'=>$subAgentPurpose,
-                'lifeCycleReport'=>$lifeCycleReport,
-                'firmTypes'=>$firmTypesArray,
-                'breedTypes'=>$breedTypes,
-                'breedNames'=>$breedNames,
+//                'lifeCycleReport'=>$lifeCycleReport,
+//                'firmTypes'=>$firmTypesArray,
+//                'breedTypes'=>$breedTypes,
+//                'breedNames'=>$breedNames,
                 'agents'=>$agent,
                 'farmers'=>$farmers,
                 'subAgents'=>$subAgents,
                 'otherAgents'=>$otherAgents,
+                'regions'=>$regions,
+                'breedTypes'=>$breedTypes,
+                'price'=>$price,
                 'form' => $form->createView(),
-                'fcr_after_reports' => $reports,
+//                'fcr_after_reports' => $reports,
             ]);
         }
 
@@ -280,6 +290,29 @@ class CrmVisitController extends AbstractController
         }
 
         return new JsonResponse($arrayData);
+    }
+
+    /**
+     * @Route("/update/{id}/meat-egg-price", name="crm_visit_meat_egg_price_update", options={"expose"=true})
+     */
+    public function updateMeatAndEggPrice(Request $request)
+    {
+        $visitId = $_REQUEST['visitId'];
+        $regionId = $_REQUEST['regionId'];
+        $breedTypeId = $_REQUEST['breedTypeId'];
+        $price = $_REQUEST['price'];
+
+        $entity = $this->getDoctrine()->getRepository(PoultryMeatEggPrice::class)->findOneBy(['crmVisit' => $visitId, 'region' => $regionId, 'breedType' => $breedTypeId]);
+
+        if($entity){
+            $em = $this->getDoctrine()->getManager();
+            $entity->setPrice($price);
+            $em->persist($entity);
+            $em->flush();
+            return new JsonResponse('Success');
+        }
+        return new JsonResponse('Failed');
+
     }
 
 }

@@ -13,9 +13,9 @@
                             <div class="form-inner-no-space">
                                 <div class="row">
                                     <div class="col-md-12 text-center">
-                                        <h4>{{ 'NOURISH POULTRY & HATCHERY LTD'|trans }}</h4>
-                                        <h5>{{ 'Uttara, Dhaka.'|trans }}</h5>
-                                        <h4>{{ 'FCR REPORT OF DIFFERENT COMPANIES'|trans }}</h4>
+                                        <h4 class="h4">{{ 'NOURISH POULTRY & HATCHERY LTD'|trans }}</h4>
+                                        <h5 class="h5">{{ 'Uttara, Dhaka.'|trans }}</h5>
+                                        <h6 class="h6">{{ 'FCR REPORT OF DIFFERENT COMPANIES'|trans }}</h6>
                                     </div>
                                 </div>
                                 <div class="fcr_different_company_section">
@@ -26,9 +26,9 @@
                                             <th>{{ 'Company'|trans }}</th>
                                             {% for month in 1..12 %}
                                                 {% set date = month ~ "/1" %}
-                                                <td class="text-left">{{ date|date("F") }}</td>
+                                                <td align="center">{{ date|date("F") }}</td>
                                             {% endfor %}
-                                            <td>{{ 'Total'|trans }}-{{ "now"|date('Y') }}</td>
+                                            <td align="center">{{ 'Total'|trans }}-{{ "now"|date('Y') }}</td>
                                         </tr>
                                         </thead>
 
@@ -44,7 +44,7 @@
                                                     {% set monthName =datea|date("F")|lower %}
                                                     {% set monthNameDigit =datea|date("m") %}
                                                     {% set currentMonth = "now"|date('m') %}
-                                                    <td style="padding: 0!important;" class="text-left">
+                                                    <td class="text-center">
                                                         {% set total = total+fcrDifferentCompanies[company.id][monthName]['value'] %}
                                                         {% if currentMonth==monthNameDigit or currentMonth-1==monthNameDigit %}
                                                             <input class="form-control month_{{ month }}" type="number" min="0" data-meta-key="{{ monthName }}" data-entity-id="{{ fcrDifferentCompanies[company.id][monthName]['id'] }}" value="{{ fcrDifferentCompanies[company.id][monthName]['value'] }}">

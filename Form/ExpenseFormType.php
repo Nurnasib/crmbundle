@@ -93,18 +93,29 @@ class ExpenseFormType extends AbstractType
                 'required' => false
 
             ])
-            ->add('setting', EntityType::class, [
+            ->add('purpose', EntityType::class, [
                 'class' => Setting::class,
                 'required' => true,
+                'multiple' => true,
                 'query_builder' => function (EntityRepository $er) {
                     return $er->createQueryBuilder('e')
                         ->where('e.settingType = :sType')
                         ->setParameter('sType','PURPOSE')
                         ->orderBy('e.name','ASC');
                 },
-                'attr'=>['class'=>'span12'],
+                'attr'=>['class'=>'span12 multi-select2'],
                 'choice_label' => 'name',
                 'placeholder' => 'Choose your Purpose',
+            ])
+            ->add('vehicle',EntityType::class,[
+                'class' => Setting::class,
+                'choice_label' => 'name',
+                'query_builder' => function(EntityRepository $er){
+                return $er->createQueryBuilder('e')
+                    ->where("e.settingType = 'VEHICLE'");
+                },
+                'multiple' => true,
+                'expanded' => true,
             ])
         ;
     }

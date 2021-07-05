@@ -11,6 +11,7 @@
 
 namespace Terminalbd\CrmBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
@@ -50,9 +51,22 @@ class Expense
 
     /**
      * @var Setting
-     * @ORM\ManyToOne(targetEntity="Setting" , inversedBy="expenses")
+     * @ORM\ManyToMany(targetEntity="Setting")
+     * @ORM\JoinTable(name="crm_expence_purpose")
      */
-    private $setting;
+    private $purpose;
+    public function __construct()
+    {
+        $this->purpose = new ArrayCollection();
+        $this->vehicle = new ArrayCollection();
+    }
+
+    /**
+     * @var Setting
+     * @ORM\ManyToMany(targetEntity="Setting")
+     * @ORM\JoinTable(name="crm_expence_vehicle")
+     */
+    private $vehicle;
 
     /**
      * @var string
@@ -165,21 +179,36 @@ class Expense
         $this->scheduleVisit = $scheduleVisit;
     }
 
+    /**
+     * @return Setting
+     */
+    public function getPurpose()
+    {
+        return $this->purpose;
+    }
+
+    /**
+     * @param Setting $purpose
+     */
+    public function setPurpose($purpose)
+    {
+        $this->purpose = $purpose;
+    }
 
     /**
      * @return Setting
      */
-    public function getSetting()
+    public function getVehicle()
     {
-        return $this->setting;
+        return $this->vehicle;
     }
 
     /**
-     * @param Setting $setting
+     * @param Setting $vehicle
      */
-    public function setSetting($setting)
+    public function setVehicle($vehicle)
     {
-        $this->setting = $setting;
+        $this->vehicle = $vehicle;
     }
 
     /**

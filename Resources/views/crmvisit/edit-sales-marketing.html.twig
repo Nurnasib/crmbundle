@@ -21,38 +21,14 @@
                 <div class="card-header">
                     <h5>{{ 'Manage Daily Activies'|trans }}</h5>
                     <div class="card-header-right">
-                        {% if app.user.serviceMode is not empty and app.user.serviceMode.slug !='sales-marketing' %}
-                            <div class="btn-group btn-group-sm" role="group"
-                                 aria-label="Button group with nested dropdown">
-                                {#<a class="btn btn-primary btn-sm" data-action='{{ path('fcr_after_new',{'report':report.id,'afterBefore':'after'}) }}' href='?process=postView_{{ details.id }}_{{ details.report is not empty? details.report.id:'' }}&report={{ details.report is not empty? details.report.slug:'' }}&check=show#modal' id='postView_{{ details.id }}_{{ details.report is not empty? details.report.id:'' }}' >{{ 'Report'|trans }}</a>#}
-                                {% for report in fcr_after_reports %}
-                                    <a style="margin-right: 5px" class="btn btn-primary btn-sm"
-                                       data-action='{{ path('fcr_after_new',{'report':report is not empty? report.id:'','afterBefore':'after'}) }}'
-                                       href='?process=postView_fcr_after_{{ report.id }}&report={{ report is not empty? report.slug:'' }}&check=show#modal'
-                                       id='postView_fcr_after_{{ report is not empty? report.id:'' }}'>{{ report.name }}</a>
-                                {% endfor %}
-                            </div>
-                        {% endif %}
-                        {% if app.user.serviceMode is not empty and app.user.serviceMode.slug =='sales-marketing' %}
-                            <div class="btn-group btn-group-sm" role="group"
-                                 aria-label="Button group with nested dropdown">
-                                <a style="margin-right: 5px" class="btn btn-primary btn-sm"
-                                   data-action='{{ path('daily_chick_price',{'location':entity.location.id}) }}'
-                                   href='?process=postView_daily_chick_price_report&report={{ '' }}&check=show#modal'
-                                   id='postView_daily_chick_price_report'>{{ 'Daily Chick Price Report' }}</a>
-                            </div>
-                        {% endif %}
                         <div class="btn-group btn-group-sm" role="group" aria-label="Button group with nested dropdown">
-                            <a style="margin-right: 5px" class="btn btn-primary btn-sm"
-                               data-action='{{ path('crm_expense_new',{'crmVisit':entity.id, 'location':entity.location.id}) }}'
-                               href='?process=postView_crm_expense_new&report={{ '' }}&check=show#modal'
-                               id='postView_crm_expense_new'>{{ 'Expense' }}</a>
-
-                            <a href="{{ path('crm_visit') }}" class="btn btn-sm gray-bg white-font"><i
-                                        class="fa fa-th-list"></i>{{ 'CRM VISIT'|trans }}</a>
-
+                            <a style="margin-right: 5px" class="btn btn-primary btn-sm" data-action='{{ path('daily_chick_price',{'location':entity.location.id}) }}' href='?process=postView_daily_chick_price_report&report={{ '' }}&check=show#modal' id='postView_daily_chick_price_report'>{{ 'Daily Chick Price Report' }}</a>
                         </div>
+                        <div class="btn-group btn-group-sm" role="group" aria-label="Button group with nested dropdown">
+                            <a style="margin-right: 5px" class="btn btn-primary btn-sm" data-action='{{ path('crm_expense_new',{'crmVisit':entity.id, 'location':entity.location.id}) }}' href='?process=postView_crm_expense_new&report={{ '' }}&check=show#modal' id='postView_crm_expense_new'>{{ 'Expense' }}</a>
 
+                            <a href="{{ path('crm_visit') }}" class="btn btn-sm gray-bg white-font"><i class="fa fa-th-list"></i>{{ 'CRM VISIT'|trans }}</a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -64,7 +40,7 @@
                         <div class="caption">{{ 'Manage Daily Activies'|trans }} </div>
                     </div>
                     <div class="portlet-body form">
-                        {{ form_start(form, {'attr': {'class': 'form-horizontal right'}}) }}
+                        {{ form_start(form, {'attr': {'id':'crm_visit_form','class': 'form-horizontal right'}}) }}
                         <input type="hidden" class="crm_visit_id" value="{{ entity.id }}">
                         <div class="row form-body">
                             <div class="form-inner-no-space">
@@ -79,7 +55,6 @@
                                             <label class="col-md-4 control-label">{{ 'Name of Area :'|trans }}</label>
                                             <div class="col-md-8">{{ entity.location.name|default('') }}</div>
                                         </div>
-
                                     </div>
                                     <div class="col-md-5 offset-1">
                                         <div class="form-group">
@@ -89,14 +64,12 @@
                                         <div class="form-group">
                                             {{ form_label(form.working_duration,'Working Duration'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
                                             <div class="col-md-4">
-                                                <span style="text-align: left"
-                                                      class="not-blank"> {{ 'From'|trans }}</span>
+                                                <span style="text-align: left" class="not-blank"> {{ 'From'|trans }}</span>
                                                 {{ form_widget(form.working_duration) }}
                                                 {{ form_errors(form.working_duration) }}
                                             </div>
                                             <div class="col-md-4">
-                                                <span style="text-align: left;"
-                                                      class="not-blank"> {{ 'To'|trans }}</span>
+                                                <span style="text-align: left;" class="not-blank"> {{ 'To'|trans }}</span>
                                                 {{ form_widget(form.working_duration_to) }}
                                                 {{ form_errors(form.working_duration_to) }}
                                             </div>
@@ -108,12 +81,7 @@
                                     <h5>Farmer Information</h5>
                                     <div class="card-header-right">
                                         <div class="btn-group btn-group-sm">
-
-                                            <button type="button" class="btn btn-primary" data-toggle="modal"
-                                                    data-target="#farmerModal" data-whatever="@mdo"><i
-                                                        class="fas fa-plus"></i> New Farmer
-                                            </button>
-
+                                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#farmerModal" data-whatever="@mdo"><i class="fas fa-plus"></i> New Farmer</button>
                                         </div>
                                     </div>
                                 </div>
@@ -124,8 +92,7 @@
                                             <thead>
                                             <tr class="farmer_section">
                                                 <td>
-                                                    <select name="purpose" id=""
-                                                            class="form-control farmer_purpose">
+                                                    <select name="purpose" id="" class="form-control farmer_purpose">
                                                         <option value="">Select Purpose</option>
                                                         {% for purpose in purposes %}
                                                             <option value="{{ purpose.id }}"> {{ purpose.name }} </option>
@@ -141,31 +108,9 @@
                                                     </select>
                                                 </td>
                                                 <td>
-                                                    <input type="text" disabled="disabled"
-                                                           class="form-control form-control-sm farmer_phone"
-                                                           placeholder="Phone" value="">
+                                                    <input type="text" disabled="disabled" class="form-control form-control-sm farmer_phone" placeholder="Phone" value="">
                                                 </td>
-{#                                                <td>
-                                                    <select name="farmer_firm_type"
-                                                            class="form-control farmer_firm_type">
-                                                        <option value="">Select Farm Type</option>
-                                                        {% for index, items in firmTypes %}
-                                                            <optgroup label="{{ index }}">
 
-                                                                {% for firmType in items %}
-                                                                    <option value="{{ firmType.id }}"> {{ firmType.name }} </option>
-                                                                {% endfor %}
-                                                            </optgroup>
-
-                                                        {% endfor %}
-                                                    </select>
-
-                                                </td>
-                                                <td>
-                                                    <select name="farmer_report" class="form-control farmer_report">
-                                                        <option value="">Select Report</option>
-                                                    </select>
-                                                </td>#}
                                                 <td>
                                                     <input type="text" name="capacity" id="capacity"
                                                            class="form-control form-control-sm farmer_capacity"
@@ -398,6 +343,38 @@
                                     </div>
                                     <div class="clearfix"></div>
                                 </div>
+                                <div class="clearfix"></div>
+                                <div class="card-header grey-bg inner-header">
+                                    <h5>Poultry Meat And Egg Price</h5>
+                                </div>
+                                {#agent-addmore#}
+                                <div class="card-body card-body-inner">
+                                    <table class="table table-bordered" id="datatable">
+                                        <thead class="thead-dark">
+                                        <tr>
+                                            <td style="text-align: center">{{ 'Rigion'|default('') }}</td>
+                                            {% for breedType in breedTypes %}
+                                                <td style="text-align: center">{{ breedType.name|default('') }} {{ breedType.slug == 'white-layer-egg' or breedType.slug == 'brown-layer-egg' ? '(Egg 100 Pcs)':'(kg)' }}</td>
+                                            {% endfor %}
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for region in regions %}
+                                                <tr>
+                                                    <td>{{ region.name }}</td>
+                                                    {% for breedType in breedTypes %}
+
+                                                        {% set key = region.id~'-'~breedType.id %}
+
+                                                        <td><input class="form-control meat-egg-price" type="number" data-action="{{ path('crm_visit_meat_egg_price_update',{'id': price[key].recordId}) }}" data-record-id="{{ price[key].recordId }}" data-visit-id="{{ entity.id }}" data-region-id="{{ region.id }}" data-breed-type-id="{{ breedType.id }}" value={{ price[key].price }}>
+                                                        </td>
+                                                    {% endfor %}
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                    <div class="clearfix"></div>
+                                </div>
 
                                 {#end#}
                                 <div class="form-actions">
@@ -485,29 +462,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="farmer_type"
-                                               class="col-form-label col-md-4">{{ 'Farmer Type'|trans }}</label>
-                                        <select name="farmer_type" id="farmer_type" class="form-control farmer_type"
-                                                required>
-                                            <option value="">Select Farmer Type</option>
-                                            {% for breedName in breedNames %}
-                                                <option value="{{ breedName.id }}"> {{ breedName.name }} </option>
-                                            {% endfor %}
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="farmer_address"
-                                               class="col-form-label col-md-4">{{ 'Address'|trans }}:</label>
-                                        <textarea class="form-control col-md-8" name="address"
-                                                  id="farmer_address"></textarea>
-                                    </div>
-                                </div>
-                            </div>
+
                             <div class="cultureSpeciesArea"></div>
                             <h4>{{ 'Previous Information'|trans }}</h4>
                             <div class="row">
@@ -539,46 +494,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <h4>{{ 'Report Information'|trans }}</h4>
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label for="message-text" class="col-form-label col-md-4">Purpose</label>
-                                        <select name="purpose" id="" class="form-control">
-                                            <option value="">Select Purpose</option>
-                                            {% for purpose in purposes %}
-                                                <option value="{{ purpose.id }}"> {{ purpose.name }} </option>
-                                            {% endfor %}
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="col-form-label col-md-4">{{ 'Report Type'|trans }}</label>
-                                        <select name="farmer_firm_type" class="form-control farmer_firm_type">
-                                            <option value="">Select Farm Type</option>
-                                            {% for index, items in firmTypes %}
-                                                <optgroup label="{{ index }}">
 
-                                                    {% for firmType in items %}
-                                                        <option value="{{ firmType.id }}"> {{ firmType.name }} </option>
-                                                    {% endfor %}
-                                                </optgroup>
-
-                                            {% endfor %}
-                                        </select>
-
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label class="col-form-label col-md-4">{{ 'Report'|trans }}</label>
-                                        <select name="farmer_report" class="form-control farmer_report">
-                                            <option value="">Select Report</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
                             <div class="row">
                                 <div class="col-md-4">
                                     <div class="form-group">
@@ -789,24 +705,8 @@
     {#<script>#}
     {{ parent() }}
     <script type="application/javascript" src="{{ asset('bundles/terminalbdcrm/js/crm/script.js') }}"></script>
-    <script type="application/javascript" src="{{ asset('bundles/terminalbdcrm/js/crm/fcr.js') }}"></script>
-    <script type="application/javascript"
-            src="{{ asset('bundles/terminalbdcrm/js/crm/cattle-performance.js') }}"></script>
-    <script type="application/javascript"
-            src="{{ asset('bundles/terminalbdcrm/js/crm/layer-performance.js') }}"></script>
-    <script type="application/javascript"
-            src="{{ asset('bundles/terminalbdcrm/js/crm/daily-chick-price.js') }}"></script>
+
+    <script type="application/javascript" src="{{ asset('bundles/terminalbdcrm/js/crm/daily-chick-price.js') }}"></script>
     <script type="application/javascript" src="{{ asset('bundles/terminalbdcrm/js/crm/expense.js') }}"></script>
-    <script type="application/javascript"
-            src="{{ asset('bundles/terminalbdcrm/js/crm/farmer-touch/farmer-touch.js') }}"></script>
-    <script type="application/javascript" src="{{ asset('bundles/terminalbdcrm/js/crm/farmer-training.js') }}"></script>
-    <script type="application/javascript"
-            src="{{ asset('bundles/terminalbdcrm/js/crm/antibiotic-free-farm.js') }}"></script>
-    <script type="application/javascript"
-            src="{{ asset('bundles/terminalbdcrm/js/crm/less-costing-farm.js') }}"></script>
-    <script type="application/javascript" src="{{ asset('bundles/terminalbdcrm/js/crm/disease-mapping.js') }}"></script>
-    <script type="application/javascript"
-            src="{{ asset('bundles/terminalbdcrm/js/crm/complain-different-product.js') }}"></script>
-    <script type="application/javascript"
-            src="{{ asset('bundles/terminalbdcrm/js/crm/agent-upgradation-report.js') }}"></script>
+
 {% endblock %}

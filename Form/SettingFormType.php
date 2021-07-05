@@ -58,6 +58,8 @@ class SettingFormType extends AbstractType
             ))
             ->add('settingType', ChoiceType::class, [
                 'choices'  => [
+                    'Vehicle' => 'VEHICLE',
+                    'Meat & Egg Type' => 'MEAT_EGG_TYPE',
                     'Farmer Purpose' => 'PURPOSE',
                     'Agent Purpose' => 'AGENT_PURPOSE',
                     'Other Agent Purpose' => 'OTHER_AGENT_PURPOSE',
