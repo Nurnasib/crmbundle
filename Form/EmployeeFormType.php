@@ -276,7 +276,7 @@ class EmployeeFormType extends AbstractType
                 },
             ))
 
-             ->add('district', EntityType::class, array(
+             /*->add('district', EntityType::class, array(
                 'required'    => true,
                 'class' => Location::class,
                 'placeholder' => 'Choose a District',
@@ -287,7 +287,22 @@ class EmployeeFormType extends AbstractType
                         ->where("e.level = 4")
                         ->orderBy('e.name', 'ASC');
                 },
-            ))
+            ))*/
+             ->add('district', EntityType::class, [
+                 'class' => Location::class,
+                 'multiple' => true,
+                 'required'    => false,
+                 'group_by'  => 'parent.name',
+                 'choice_label'  => 'name',
+                 'attr'=>['class'=>'span12'],
+                 'placeholder' => 'Choose a upozila',
+                 'choice_translation_domain' => true,
+                 'query_builder' => function(EntityRepository $er){
+                     return $er->createQueryBuilder('e')
+                         ->where("e.level = 4")
+                         ->orderBy('e.parent', 'ASC');
+                 },
+             ])
 
             ->add('upozila', EntityType::class, [
                 'class' => Location::class,
