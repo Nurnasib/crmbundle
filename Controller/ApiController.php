@@ -19,10 +19,13 @@ use Symfony\Component\Security\Core\Encoder\MessageDigestPasswordEncoder;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
 use Terminalbd\CrmBundle\Entity\Api;
+use Terminalbd\CrmBundle\Entity\ApiDetails;
 use Terminalbd\CrmBundle\Entity\BroilerStandard;
 use Terminalbd\CrmBundle\Entity\CrmCustomer;
 use Terminalbd\CrmBundle\Entity\CrmVisit;
+use Terminalbd\CrmBundle\Entity\CrmVisitDetails;
 use Terminalbd\CrmBundle\Entity\FcrDetails;
+use Terminalbd\CrmBundle\Entity\LayerPerformanceDetails;
 use Terminalbd\CrmBundle\Entity\Setting;
 use Terminalbd\CrmBundle\Entity\SettingLifeCycle;
 use Terminalbd\CrmBundle\Entity\SonaliStandard;
@@ -53,7 +56,7 @@ class ApiController extends AbstractController
         $formData = $_REQUEST;
         $_username = $formData['username'];
         $_password = $formData['password'];
-        $user = $this->getDoctrine()->getRepository(User::class)->checkLoginUser($_username);
+        $user = $this->getDoctrine()->getRepository(User::class)->checkLoginUser($_username,$_password);
         /// End Retrieve user
         // Check if the user exists !
         if(!$user){
@@ -675,6 +678,23 @@ class ApiController extends AbstractController
     }
 
     /**
+     * @Route("/vehicle", methods={"GET"}, name="vehicle")
+     */
+    public function vehicle()
+    {
+
+        set_time_limit(0);
+        ignore_user_abort(true);
+
+        $entities = $this->getDoctrine()->getRepository(Api::class)->vehicle(1);
+        $response = new Response();
+        $response->headers->set('Content-Type', 'application/json');
+        $response->setContent(json_encode($entities));
+        $response->setStatusCode(Response::HTTP_OK);
+        return $response;
+    }
+
+    /**
      * @Route("/farmerSelectPurpose", methods={"GET","POST"}, name="farmerSelectPurpose")
      */
     public function farmerSelectPurpose(Request $request)
@@ -961,7 +981,207 @@ class ApiController extends AbstractController
         return $response;
     }
 
+    /**
+     * @Route("/dairyBreedType", methods={"GET"}, name="dairyBreedType")
+     */
+    public function dairyBreedType()
+    {
+
+        set_time_limit(0);
+        ignore_user_abort(true);
+
+        $entities = $this->getDoctrine()->getRepository(Api::class)->dairyBreedType(1);
+        $response = new Response();
+        $response->headers->set('Content-Type', 'application/json');
+        $response->setContent(json_encode($entities));
+        $response->setStatusCode(Response::HTTP_OK);
+        return $response;
+    }
+
+    /**
+     * @Route("/fatteningBreedType", methods={"GET"}, name="fatteningBreedType")
+     */
+    public function fatteningBreedType()
+    {
+
+        set_time_limit(0);
+        ignore_user_abort(true);
+
+        $entities = $this->getDoctrine()->getRepository(Api::class)->fatteningBreedType(1);
+        $response = new Response();
+        $response->headers->set('Content-Type', 'application/json');
+        $response->setContent(json_encode($entities));
+        $response->setStatusCode(Response::HTTP_OK);
+        return $response;
+    }
 
 
+    /**
+     * @Route("/store-json-data", methods={"POST"}, name="store_json_data")
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function storeAllJsonDataFromApi(Request $request)
+    {
+        set_time_limit(0);
+        ignore_user_abort(true);
+
+        $data = $request->request->all();
+
+        if ($data){
+            $em = $this->getDoctrine()->getManager();
+
+            $findParent = $this->getDoctrine()->getRepository(Api::class)->findOneBy(['deviceId' => $data['device_id'], 'employeeId' => $data['employee_id']]);
+            if (!$findParent){
+                $api = new Api();
+                $api->setDeviceId($data['device_id'] ?: null);
+                $api->setEmployeeId($data['employee_id'] ?: null);
+                $api->setStatus(0);
+                $api->setCreatedAt(new \DateTime('now'));
+
+                $apiDetails = new ApiDetails();
+                $apiDetails->setBatch($api);
+                $apiDetails->setProcess($data['process']);
+                $apiDetails->setJsonData($data['json_body']);
+                $apiDetails->setStatus(0);
+                $api->addApiDetails($apiDetails);
+                $em->persist($api);
+                $em->flush();
+
+            } else {
+                $apiDetails = new ApiDetails();
+                $apiDetails->setBatch($findParent);
+                $apiDetails->setProcess($data['process']);
+                $apiDetails->setJsonData($data['json_body']);
+                $apiDetails->setStatus(0);
+                $em->persist($apiDetails);
+                $em->flush();
+            }
+            return new JsonResponse([
+                'status' => 200,
+            ]);
+        } else {
+            return new JsonResponse([
+                'status' => false,
+            ]);
+        }
+    }
+
+    /**
+     * @Route("/list", name="api_response_list")
+     */
+    public function apiResponseList()
+    {
+        /*        $array = [
+                    'crm_visit' => [
+                        'id' => 1,
+                        'duration_to' => null,
+                        'duration_from' => '1:47 PM',
+                        'employee_id' => 23,
+                        'location_id' => 340,
+                        'visitAreaName' => 'SARISHABARI UPAZILA',
+                        'created_at' => '05-05-2021',
+                    ],
+                    'farmer_report' => [
+                        [
+                          "id" => 4,
+                          "crm_visit_id" => 1,
+                          "farmCapacity" => "5",
+                          "updated" => null,
+                          "comments" => "gvb",
+                          "created" => "05-05-2021",
+                          "customer_id" => 23,
+                          "process" => null,
+                          "agent_id" => 1742,
+                          "purpose_id" => 16,
+                          "firm_type_id" => 223,
+                          "report_id" => 239,
+                          "purposeName" => "Market Promotion",
+                          "farmerName" => "Md Rakibul Hasan",
+                          "phoneNumber" => "7000804",
+                          "farmTypeName" => "Others (Poultry)",
+                          "reportTypeName" => "Antibiotic Free Farm Poultry"
+                        ],
+                        [
+                            "id" => 3,
+                            "crm_visit_id" => 1,
+                            "farmCapacity" => "5",
+                            "updated" => null,
+                            "comments" => "g",
+                            "created" => "05-05-2021",
+                            "customer_id" => 23,
+                            "process" => null,
+                            "agent_id" => 1742,
+                            "purpose_id" => 13,
+                            "firm_type_id" => 224,
+                            "report_id" => 219,
+                            "purposeName" => "Problem Farm Visit",
+                            "farmerName" => "Tanveer",
+                            "phoneNumber" => "4512",
+                            "farmTypeName" => "Others (Fish)",
+                            "reportTypeName" => "Farmer Touch Report"
+                        ]
+                    ],
+                ];
+                echo json_encode($array);
+                die();*/
+
+        $list = $this->getDoctrine()->getRepository(Api::class)->getData();
+        return $this->render('@TerminalbdCrm/api/api-response-list.html.twig',[
+            'list' => $list,
+        ]);
+    }
+
+    /**
+     * @Route("/{id}/insert-data", name="insert_json_data")
+     * @param Api $api
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    public function insertDataIntoCorrespondingTable(Api $api)
+    {
+        set_time_limit(0);
+        ignore_user_abort(true);
+
+        if ($api->isStatus() == 0){
+            $jsonToArray = json_decode($api->getJsonData(), true);
+            if ($api->getProcess() == 'crm_visit'){
+                foreach( $jsonToArray as $data){
+                    $this->getDoctrine()->getRepository(CrmVisit::class)->insertDataFromApi($data);
+                }
+            }elseif ($api->getProcess() == 'farmer_report'){
+                foreach( $jsonToArray as $data){
+                    if ($data['crm_visit_id'] !== null){
+                        $findVisit = $this->getDoctrine()->getRepository(CrmVisit::class)->findOneBy(['appId' => $data['crm_visit_id']]);
+                        if ($findVisit){
+                            $this->getDoctrine()->getRepository(CrmVisitDetails::class)->insertDataFromApi($data, $findVisit->getId());
+                        }
+                    }
+                }
+            }elseif ($api->getProcess() == 'layer_performance_report'){
+                foreach( $jsonToArray as $data){
+                    $this->getDoctrine()->getRepository(LayerPerformanceDetails::class)->insertDataFromApi($data);
+                }
+            }
+            $api->setStatus(1);
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($api);
+            $em->flush();
+            $this->addFlash('success', 'Data has been migrated!');
+            return $this->redirectToRoute('api_response_list');
+        }else{
+            $this->addFlash('error', 'Somthing Wrong!');
+            return $this->redirectToRoute('api_response_list');
+        }
+//        $entities = $this->getDoctrine()->getRepository(Api::class)->getJsonData();
+//        dd($jsonData);
+//        foreach ($entities as $data){
+//            if($data['porcess'] == 'CUSTOMER_VISIT'){
+//
+//                $jsonToArray = json_decode($data['jsonData'], true);
+//                dd($jsonToArray);
+//            }
+//        }
+
+    }
 
 }

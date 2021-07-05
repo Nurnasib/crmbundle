@@ -25,6 +25,7 @@ use Terminalbd\CrmBundle\Entity\CrmVisit;
 use Terminalbd\CrmBundle\Entity\FarmerTrainingReport;
 use Terminalbd\CrmBundle\Entity\FcrDetails;
 use Terminalbd\CrmBundle\Entity\LayerLifeCycle;
+use Terminalbd\CrmBundle\Entity\LayerLifeCycleDetails;
 use Terminalbd\CrmBundle\Entity\LayerPerformanceDetails;
 use Terminalbd\CrmBundle\Entity\LayerStandard;
 use Terminalbd\CrmBundle\Entity\NewFarmerIntroduce\FarmerIntroduceDetails;
@@ -254,8 +255,8 @@ class ApiRepository extends BaseRepository
             $cumulative = (int)$row['cumulativeFeedIntake'];
             $data[$key]['id'] = (int)$row['id'];
             $data[$key]['age'] = (int)$row['age'];
-            $data[$key]['feedIntakePerDay'] = (int)$row['feedIntakePerDay'];
-            $data[$key]['cumulativeFeedIntake'] = (int)$row['cumulativeFeedIntake'];
+            $data[$key]['feedIntakePerDay'] = (float)$row['feedIntakePerDay'];
+            $data[$key]['cumulativeFeedIntake'] = (float)$row['cumulativeFeedIntake'];
             $data[$key]['targetBodyWeight'] = (int)$row['targetBodyWeight'];
             $data[$key]['fcr'] = $cumulative/(int)$row['targetBodyWeight'];
         }
@@ -724,6 +725,31 @@ class ApiRepository extends BaseRepository
     }
 
     /**
+     * Vehicle
+     */
+    public function vehicle()
+    {
+        $em = $this->_em;
+        $qb = $em->createQueryBuilder();
+        $qb->from(Setting::class,'s');
+        $qb->select('s.id as id','s.name as name','s.settingType as settingType');
+
+        $qb->where("s.settingType = 'VEHICLE'");
+        $qb->orderBy('s.id', 'ASC');
+        $result = $qb->getQuery()->getArrayResult();
+        $data = array();
+        foreach($result as $key => $row) {
+
+            $data[$key]['id'] = (string)$row['id'];
+            $data[$key]['name'] = (string)$row['name'];
+
+
+        }
+        return $data;
+
+    }
+
+    /**
      * Farmer Select Purpose
      */
     public function farmerSelectPurpose($terminal, $employee)
@@ -882,8 +908,11 @@ class ApiRepository extends BaseRepository
         $em = $this->_em;
         $qb = $em->createQueryBuilder();
         $qb->from(LayerStandard::class,'l');
+        $qb->leftJoin('l.report','r');
 
         $qb->select('l.id as id','l.age as ageWeek');
+
+        $qb->where("r.slug = 'layer-life-cycle-brown'");
 
         $qb->orderBy('l.id', 'ASC');
         $result = $qb->getQuery()->getArrayResult();
@@ -1175,5 +1204,67 @@ class ApiRepository extends BaseRepository
         return $data;
     }
 
+    /**
+     * Dairy Breed Type
+     */
+    public function dairyBreedType()
+    {
+        $em = $this->_em;
+        $qb = $em->createQueryBuilder();
+        $qb->from(Setting::class,'s');
+        $qb->leftJoin('s.parent','p');
+
+        $qb->select('s.id as id','s.name as breedType');
+        $qb->addSelect('p.name as breedName');
+
+        $qb->where("s.settingType = 'BREED_TYPE'");
+        $qb->andWhere("p.name = 'Dairy'");
+        $qb->orderBy('s.id', 'ASC');
+        $result = $qb->getQuery()->getArrayResult();
+        $data = array();
+        foreach ($result as $key => $row) {
+            $data[$key]['id'] = (int)$row['id'];
+            $data[$key]['breedType'] = (string)$row['breedType'];
+
+
+        }
+
+        return $data;
+    }
+
+    /**
+     * Fattening Breed Type
+     */
+    public function fatteningBreedType()
+    {
+        $em = $this->_em;
+        $qb = $em->createQueryBuilder();
+        $qb->from(Setting::class,'s');
+        $qb->leftJoin('s.parent','p');
+
+        $qb->select('s.id as id','s.name as breedType');
+        $qb->addSelect('p.name as breedName');
+
+        $qb->where("s.settingType = 'BREED_TYPE'");
+        $qb->andWhere("p.name = 'Fattening'");
+        $qb->orderBy('s.id', 'ASC');
+        $result = $qb->getQuery()->getArrayResult();
+        $data = array();
+        foreach ($result as $key => $row) {
+            $data[$key]['id'] = (int)$row['id'];
+            $data[$key]['breedType'] = (string)$row['breedType'];
+
+
+        }
+
+        return $data;
+    }
+
+    public function getData()
+    {
+        $qb = $this->createQueryBuilder('e');
+        $qb->select('e.id','e.process', 'e.deviceId', 'e.status');
+        return $qb->getQuery()->getArrayResult();
+    }
 
 }
