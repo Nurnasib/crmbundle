@@ -66,18 +66,24 @@ class FishLifeCycleDetails
     private $otherCultureSpecies;
 
     /**
-     * @var float
+     * @var string
      *
-     * @ORM\Column(name="culture_area_decimal", type="float")
+     * @ORM\Column(name="culture_area_decimal", type="string", nullable=true)
      */
 
-    private $cultureAreaDecimal=0;
+    private $cultureAreaDecimal;
 
     /**
      * @var float
      * @Orm\Column(name="no_of_initial_fish", type="float")
      */
     private $noOfInitialFish=0;
+
+    /**
+     * @var float
+     * @Orm\Column(type="float")
+     */
+    private $noOfFinalFish=0;
 
     /**
      * @var float
@@ -106,6 +112,12 @@ class FishLifeCycleDetails
 
     /**
      * @var float
+     * @Orm\Column(name="total_day_of_culture", type="float")
+     */
+    private $totalDayOfCulture=0;
+
+    /**
+     * @var float
      * @Orm\Column(name="average_present_weight", type="float")
      */
     private $averagePresentWeight=0;
@@ -126,9 +138,42 @@ class FishLifeCycleDetails
 
     /**
      * @var float
+     * @Orm\Column( type="float")
+     */
+
+    private $previousFinalWeightGm=0;
+
+    /**
+     * @var float
+     * @Orm\Column( type="float")
+     */
+
+    private $finalWeightGm=0;
+
+    /**
+     * @var float
+     * @Orm\Column(type="float")
+     */
+
+    private $finalWeightKg=0;
+
+    /**
+     * @var float
      * @Orm\Column(name="current_feed_consumption_kg", type="float")
      */
     private $currentFeedConsumptionKg=0;
+
+    /**
+     * @var float
+     * @Orm\Column( type="float")
+     */
+    private $previousTotalFeedConsumptionKg=0;
+
+    /**
+     * @var float
+     * @Orm\Column(name="total_feed_consumption_kg", type="float")
+     */
+    private $totalFeedConsumptionKg=0;
 
     /**
      * @var float
@@ -141,6 +186,23 @@ class FishLifeCycleDetails
      * @Orm\Column(name="current_adg", type="float")
      */
     private $currentAdg=0;
+    /**
+     * @var float
+     * @Orm\Column(name="final_fcr", type="float")
+     */
+    private $finalFcr=0;
+
+    /**
+     * @var float
+     * @Orm\Column(name="final_adg", type="float")
+     */
+    private $finalAdg=0;
+
+    /**
+     * @var float
+     * @Orm\Column(type="float")
+     */
+    private $srPercentage=0;
 
     /**
      * @var Setting
@@ -321,7 +383,7 @@ class FishLifeCycleDetails
     }
 
     /**
-     * @return float
+     * @return string
      */
     public function getCultureAreaDecimal()
     {
@@ -329,12 +391,14 @@ class FishLifeCycleDetails
     }
 
     /**
-     * @param float $cultureAreaDecimal
+     * @param string $cultureAreaDecimal
      */
-    public function setCultureAreaDecimal(float $cultureAreaDecimal)
+    public function setCultureAreaDecimal(string $cultureAreaDecimal)
     {
         $this->cultureAreaDecimal = $cultureAreaDecimal;
     }
+
+
 
     /**
      * @return float
@@ -368,13 +432,13 @@ class FishLifeCycleDetails
         $this->stockingDensity = $stockingDensity;
     }
 
-    public function getCalculateStockingDensity(){
+    /*public function getCalculateStockingDensity(){
         $returnResult = 0;
         if($this->getCultureAreaDecimal()>0){
             $returnResult = $this->getNoOfInitialFish()/$this->getCultureAreaDecimal();
         }
         return $returnResult;
-    }
+    }*/
     /**
      * @return float
      */
@@ -407,6 +471,10 @@ class FishLifeCycleDetails
         $this->totalInitialWeight = $totalInitialWeight;
     }
 
+    public function calculateTotalInitialWeight(){
+        return ($this->noOfInitialFish*$this->averageInitialWeight)/1000;
+    }
+
     /**
      * @return float
      */
@@ -424,11 +492,14 @@ class FishLifeCycleDetails
     }
     
     public function calculateCurrentCultureDays(){
-        $presentDate = strtotime($this->getPresentSamplingDate()->format('Y-m-d'));
-        $previousDate = strtotime($this->getPreviousSamplingDate()->format('Y-m-d'));
-        $dateDiff = $presentDate - $previousDate;
+        if($this->getPresentSamplingDate() && $this->getPreviousSamplingDate()){
+            $presentDate = strtotime($this->getPresentSamplingDate()->format('Y-m-d'));
+            $previousDate = strtotime($this->getPreviousSamplingDate()->format('Y-m-d'));
+            $dateDiff = $presentDate - $previousDate;
 
-        return round($dateDiff / (60 * 60 * 24));
+            return round($dateDiff / (60 * 60 * 24));
+        }
+        return 0;
     }
 
     /**
@@ -506,9 +577,45 @@ class FishLifeCycleDetails
     /**
      * @return float
      */
+    public function getPreviousTotalFeedConsumptionKg()
+    {
+        return $this->previousTotalFeedConsumptionKg;
+    }
+
+    /**
+     * @param float $previousTotalFeedConsumptionKg
+     */
+    public function setPreviousTotalFeedConsumptionKg(float $previousTotalFeedConsumptionKg)
+    {
+        $this->previousTotalFeedConsumptionKg = $previousTotalFeedConsumptionKg;
+    }
+
+    /**
+     * @return float
+     */
+    public function getTotalFeedConsumptionKg()
+    {
+        return $this->totalFeedConsumptionKg;
+    }
+
+    /**
+     * @param float $totalFeedConsumptionKg
+     */
+    public function setTotalFeedConsumptionKg(float $totalFeedConsumptionKg)
+    {
+        $this->totalFeedConsumptionKg = $totalFeedConsumptionKg;
+    }
+    
+    public function calculateTotalFeedConsumptionKg(){
+        return $this->getPreviousTotalFeedConsumptionKg()+ $this->getCurrentFeedConsumptionKg();
+    }
+
+    /**
+     * @return float
+     */
     public function getCurrentFcr()
     {
-        return $this->currentFcr;
+        return number_format($this->currentFcr,2,'.','');
     }
 
     /**
@@ -534,7 +641,7 @@ class FishLifeCycleDetails
      */
     public function getCurrentAdg()
     {
-        return $this->currentAdg;
+        return number_format($this->currentAdg,2,'.','');
     }
 
     /**
@@ -550,7 +657,7 @@ class FishLifeCycleDetails
         $returnResult = 0;
 
         if($this->calculateCurrentCultureDays()>0){
-            $returnResult = ($this->getAveragePresentWeight()-$this->getAverageInitialWeight())/$this->calculateCurrentCultureDays();
+            $returnResult = $this->getWeightGainGm()/$this->calculateCurrentCultureDays();
         }
         return $returnResult;
     }
@@ -713,6 +820,179 @@ class FishLifeCycleDetails
     public function setCreatedAt(\DateTime $createdAt)
     {
         $this->createdAt = $createdAt;
+    }
+
+    /**
+     * @return float
+     */
+    public function getNoOfFinalFish()
+    {
+        return $this->noOfFinalFish;
+    }
+
+    /**
+     * @param float $noOfFinalFish
+     */
+    public function setNoOfFinalFish(float $noOfFinalFish)
+    {
+        $this->noOfFinalFish = $noOfFinalFish;
+    }
+
+    /**
+     * @return float
+     */
+    public function getTotalDayOfCulture()
+    {
+        return $this->totalDayOfCulture;
+    }
+
+    /**
+     * @param float $totalDayOfCulture
+     */
+    public function setTotalDayOfCulture(float $totalDayOfCulture)
+    {
+        $this->totalDayOfCulture = $totalDayOfCulture;
+    }
+
+    public function calculateTotalDayOfCulture(){
+        if($this->getPresentSamplingDate() && $this->getStockingDate() ){
+            $presentDate = strtotime($this->getPresentSamplingDate()->format('Y-m-d'));
+            $stockingDate = strtotime($this->getStockingDate()->format('Y-m-d'));
+            $dateDiff = $presentDate - $stockingDate;
+
+            return round($dateDiff / (60 * 60 * 24));
+        }
+        return 0;
+    }
+
+    /**
+     * @return float
+     */
+    public function getPreviousFinalWeightGm()
+    {
+        return $this->previousFinalWeightGm;
+    }
+
+    /**
+     * @param float $previousFinalWeightGm
+     */
+    public function setPreviousFinalWeightGm(float $previousFinalWeightGm)
+    {
+        $this->previousFinalWeightGm = $previousFinalWeightGm;
+    }
+
+    /**
+     * @return float
+     */
+    public function getFinalWeightGm()
+    {
+        return $this->finalWeightGm;
+    }
+
+    /**
+     * @param float $finalWeightGm
+     */
+    public function setFinalWeightGm(float $finalWeightGm)
+    {
+        $this->finalWeightGm = $finalWeightGm;
+    }
+
+    public function calculateFinalWeightGm(){
+        return $this->getPreviousFinalWeightGm()+$this->getWeightGainGm();
+    }
+
+    /**
+     * @return float
+     */
+    public function getFinalWeightKg()
+    {
+        return $this->finalWeightKg;
+    }
+
+    /**
+     * @param float $finalWeightKg
+     */
+    public function setFinalWeightKg(float $finalWeightKg)
+    {
+        $this->finalWeightKg = $finalWeightKg;
+    }
+
+    public function calculateFinalWeightKg(){
+       return ($this->getNoOfFinalFish()*$this->getFinalWeightGm())/1000;
+    }
+
+    /**
+     * @return float
+     */
+    public function getFinalFcr()
+    {
+        return number_format($this->finalFcr,2,'.','');
+    }
+
+    /**
+     * @param float $finalFcr
+     */
+    public function setFinalFcr(float $finalFcr)
+    {
+        $this->finalFcr = $finalFcr;
+    }
+    
+    public function calculateFinalFcr(){
+        $returnResult = 0;
+        if($this->calculateFinalWeightKg()>0){
+            $returnResult = $this->calculateTotalFeedConsumptionKg()/$this->calculateFinalWeightKg();
+        }
+
+        return $returnResult;
+    }
+
+    /**
+     * @return float
+     */
+    public function getFinalAdg()
+    {
+        return number_format($this->finalAdg,2,'.','');
+    }
+
+    /**
+     * @param float $finalAdg
+     */
+    public function setFinalAdg(float $finalAdg)
+    {
+        $this->finalAdg = $finalAdg;
+    }
+
+    public function calculateFinalAdg(){
+        $returnResult = 0;
+        if($this->calculateTotalDayOfCulture()>0){
+            $returnResult = ($this->calculateFinalWeightGm()-$this->getAverageInitialWeight())/$this->calculateTotalDayOfCulture();
+        }
+
+        return $returnResult;
+    }
+
+    /**
+     * @return float
+     */
+    public function getSrPercentage()
+    {
+        return number_format($this->srPercentage,2,'.','');
+    }
+
+    /**
+     * @param float $srPercentage
+     */
+    public function setSrPercentage(float $srPercentage)
+    {
+        $this->srPercentage = $srPercentage;
+    }
+
+    public function calculateSrPercentage(){
+        $returnResult = 0;
+        if($this->getNoOfInitialFish()>0){
+            $returnResult = ($this->getNoOfFinalFish()*100)/$this->getNoOfInitialFish();
+        }
+        return $returnResult;
     }
 
 }

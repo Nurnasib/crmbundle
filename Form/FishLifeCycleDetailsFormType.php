@@ -95,7 +95,7 @@ class FishLifeCycleDetailsFormType extends AbstractType
                         ->orderBy('e.name', 'ASC');
                 },
             ))
-            ->add('feed', EntityType::class, array(
+            /*->add('feed', EntityType::class, array(
                 'required'    => false,
                 'class' => Setting::class,
                 'placeholder' => 'Choose Feed',
@@ -106,7 +106,7 @@ class FishLifeCycleDetailsFormType extends AbstractType
                         ->where("e.settingType ='FEED_NAME'")
                         ->orderBy('e.name', 'ASC');
                 },
-            ))
+            ))*/
             ->add('mainCultureSpecies', EntityType::class, array(
                 'required'    => false,
                 'class' => Setting::class,

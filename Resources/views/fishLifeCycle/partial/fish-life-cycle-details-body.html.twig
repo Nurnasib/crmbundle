@@ -1,6 +1,6 @@
-{% if fishLifeCycle.fishLifeCycleDetails is not empty %}
+{% if fishLifeCycleDetailsByReportingMonth is not empty %}
 
-    {% for index, detail in fishLifeCycle.fishLifeCycleDetails|sort|reverse %}
+    {% for index, detail in fishLifeCycleDetailsByReportingMonth %}
         <tr>
             <td class="detail_id_{{ detail.id }}">{{ index+1 }}</td>
             <td>{{ detail.reportingDate|date("d-m-Y") }}</td>
@@ -30,3 +30,5 @@
     {% endfor %}
 
 {% endif %}
+
+

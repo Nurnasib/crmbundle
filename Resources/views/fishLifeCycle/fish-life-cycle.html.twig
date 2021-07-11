@@ -1,0 +1,140 @@
+{% extends 'admin/layout.html.twig' %}
+{#{% block body_id 'kpi_domain_new' %}#}
+{% block body %}
+    <div class="pcoded-inner-content">
+        <div class="row">
+            <div class="card">
+                <div class="portlet box blue">
+                    <div class="portlet-title">
+                        <div class="caption">{{report.name}} </div>
+                    </div>
+                    {#{{ dump(report) }}#}
+
+                    <div class="portlet-body form">
+                        {#{{ form_start(form, {'attr': {'action': path('chick_new_modal',{'id':crmCustomer.id,'report':report.id }),'class': 'form-horizontal right','id':'chick_life_cycle_form'}}) }}#}
+                        <div class="form-body">
+                            <div class="form-inner-no-space">
+
+                                <div class="row">
+                                    <div class="col-md-12 text-center">
+                                        <h4>NOURISH POULTRY & HATCHERY LTD</h4>
+                                        <h5>Uttara, Dhaka.</h5>
+                                        <h4>{{report.name}}</h4>
+                                        {#<input type="hidden" class="fishLifeCycle_id" value="{{ id }}">#}
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <p style="color: #000000">{{ 'Farmer Name'|trans }}: {{ customer.name }}</p>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <p style="color: #000000">{{ 'Address'|trans }}: {{ customer.address }}</p>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <p style="color: #000000">{{ 'Agent'|trans }}: {{ customer.agent.name }}</p>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <p style="color: #000000">{{ 'Reporting Date'|trans }}: {{ "now"|date("d-m-Y") }}</p>
+                                    </div>
+                                    <div class="col-md-4">
+                                    </div>
+
+
+                                </div>
+                                {{ form_start(form, {'attr': {'method':'post','class': 'form-horizontal right','id':'fish_life_cycle_form'}}) }}
+                                <div class="row">
+                                    <div class="col-md-12">
+
+                                        <div class="form-group">
+                                            {{ form_label(form.feed,'Feed Company'|trans, {'label_attr': {'class': 'col-md-2'}}) }}
+                                            <div class="col-md-10">
+                                                <span class="not-blank"> {{ 'Required'|trans }}</span>
+                                                {{ form_widget(form.feed) }}
+                                                {{ form_errors(form.feed) }}
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                                <div class="clearfix"></div>
+
+                                <div class="form-actions">
+                                    <div class="row">
+                                        <div class="col-md-6 "></div>
+                                        <div class="col-md-6 text-right">
+                                            <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                                                <button type="reset" class="btn btn-sm yellow-bg white-font"><i class="fa fa-refresh"></i>Restore</button>
+                                                {{ form_widget(form.Save, {label: 'Save',value:'Save', attr: { class: 'btn btn-primary form-submit'}}) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                </div>
+
+                                {{ form_widget(form._token) }}
+                                {{ form_end(form) }}
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('assets/module/css/app.css') }}">
+{% endblock  %}
+{% block javascripts %}
+    {{ parent() }}
+    <script type="application/javascript" src="{{ asset('assets/module/js/jquery.quicksearch.js') }}"></script>
+    <script type="application/javascript" src="{{ asset('assets/module/js/app.js') }}"></script>
+    <script type="application/javascript" src="{{ asset('assets/module/core/js/user.js') }}"></script>
+{% endblock  %}
+{% block documentready %}
+    {{ parent() }}
+    formSubmitProcess();
+
+    $('#form_feed').multiSelect({
+    selectableHeader: "<input type='text' class='form-control' autocomplete='off' placeholder='Search...'>",
+    selectionHeader: "<input type='text' class='form-control' autocomplete='off' placeholder='Search...'>",
+    afterInit: function(ms) {
+    var that = this,
+    $selectableSearch = that.$selectableUl.prev(),
+    $selectionSearch = that.$selectionUl.prev(),
+    selectableSearchString = '#' + that.$container.attr('id') + ' .ms-elem-selectable:not(.ms-selected)',
+    selectionSearchString = '#' + that.$container.attr('id') + ' .ms-elem-selection.ms-selected';
+
+    that.qs1 = $selectableSearch.quicksearch(selectableSearchString)
+    .on('keydown', function(e) {
+    if (e.which === 40) {
+    that.$selectableUl.focus();
+    return false;
+    }
+    });
+
+    that.qs2 = $selectionSearch.quicksearch(selectionSearchString)
+    .on('keydown', function(e) {
+    if (e.which == 40) {
+    that.$selectionUl.focus();
+    return false;
+    }
+    });
+    },
+    afterSelect: function() {
+    this.qs1.cache();
+    this.qs2.cache();
+    },
+    afterDeselect: function() {
+    this.qs1.cache();
+    this.qs2.cache();
+    },
+    selectableOptgroup: true
+    });
+
+{% endblock %}

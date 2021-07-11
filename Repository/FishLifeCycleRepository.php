@@ -28,20 +28,18 @@ class FishLifeCycleRepository extends EntityRepository
     public function getFishReportByReportingDateAndFeedType( $report, $customer, $employee)
     {
         if($report && $customer && $employee){
-            $startDate = date('Y-m-01', strtotime("now"));
-            $endDate = date('Y-m-t', strtotime("now"));
+            $startDate = date('Y-m-d', strtotime("now"));
+//            $endDate = date('Y-m-d', strtotime("now"));
             $query = $this->createQueryBuilder('f')
-                ->where('f.reportingMonth >= :startDate')
-                ->andWhere('f.reportingMonth <= :endDate')
+                ->where('f.reportingMonth = :startDate')
                 ->andWhere('f.report = :report')
                 ->andWhere('f.employee = :employee')
                 ->andWhere('f.customer = :customer')
-                ->setParameters(array('startDate'=>$startDate, 'endDate'=>$endDate, 'report'=>$report, 'customer'=>$customer, 'employee'=>$employee));
+                ->setParameters(array('startDate'=>$startDate, 'report'=>$report, 'customer'=>$customer, 'employee'=>$employee));
 
             return $query->getQuery()->getOneOrNullResult();
         }
         return array();
     }
-
 
 }
