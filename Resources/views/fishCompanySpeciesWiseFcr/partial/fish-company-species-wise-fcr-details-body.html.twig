@@ -1,0 +1,19 @@
+{% if fcrMonthWise is not empty  %}
+    {% for entity in fcrMonthWise %}
+
+        <tr>
+            <td>{{ loop.index }}</td>
+            <td>{{ entity.feed.name|default('') }}</td>
+            <td>{{ entity.feedType.name|default('') }}</td>
+            {% if mainCultureSpecies is not empty %}
+                {% for index, species in mainCultureSpecies %}
+                    <td>
+                        {{ fcrDetailsMonthWise[entity.feed.id][entity.feedType.id][species.id] is defined? fcrDetailsMonthWise[entity.feed.id][entity.feedType.id][species.id]['avgQty']:'' }}
+                    </td>
+                {% endfor %}
+            {% endif %}
+        </tr>
+
+    {% endfor %}
+
+{% endif %}

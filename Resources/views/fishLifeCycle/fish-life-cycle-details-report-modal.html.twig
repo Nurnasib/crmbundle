@@ -39,7 +39,7 @@
                             </div>
                         </div>
                         <div class="card-body card-body-inner" style="padding: 0 5px;">
-                            <div class="fishLifeCycleSection" style=" overflow-x: scroll">
+                            <div class="fishLifeCycleSection">
                                 <table class="table table-striped table-bordered table-hover fish_life_cycle" id="datatable">
                                     <thead class="thead-dark">
                                     <tr>
@@ -377,34 +377,43 @@
                                     </tbody>
                                 </table>
 
+
+                            </div>
+                            <div style=" overflow-x: scroll">
                                 <table class="table table-striped table-bordered table-hover fish_life_cycle" id="datatable">
                                     <thead class="thead-dark">
                                     <tr>
-                                        <th scope="col">S/N</th>
-                                        {#<th scope="col">Bird Type</th>#}
-                                        <th style="width: 120px" scope="col">Reporting Date</th>
-                                        <th style="width: 150px" scope="col">Feed</th>
-                                        <th style="width: 160px" scope="col">Feed Type</th>
-                                        <th scope="col">FeedItem Name</th>
+                                        <th style="width: 160px" scope="col">Feed Used Type</th>
+                                        <th scope="col">Feed Item Name</th>
+                                        <th style="width: 150px" scope="col">Feed Company</th>
                                         <th scope="col">{{ 'Farmar Name'|trans }}</th>
+                                        <th scope="col">{{ 'Mobile No.'|trans }}</th>
                                         <th style="width: 150px" scope="col">MainCulture Species</th>
-                                        <th style="width: 150px" scope="col">Other Culture Species</th>
-                                        <th scope="col">culture Area Decimal</th>
-                                        <th style="width: 150px" scope="col">Hatchery</th>
+                                        <th style="width: 150px" scope="col">Culturearea (m2) or decimal</th>
+                                        <th style="width: 150px" scope="col">Hatchery Name</th>
                                         <th style="width: 120px" scope="col">StockingDate</th>
                                         <th scope="col">No.of initial fish (pcs.)</th>
-
-                                        <th scope="col">Stocking density (pcs/decimal)</th>
-                                        <th scope="col">Average initial weight of Fish (g)</th>
-                                        <th scope="col">Total initial weight of Fish (kg)</th>
+                                        <th scope="col">Average initial weight (g)</th>
+                                        <th scope="col">Total initial weight (kg)</th>
 
                                         <th style="width: 100px" scope="col">Previous SamplingDate</th>
                                         <th style="width: 100px" scope="col">Present SamplingDate</th>
-                                        <th scope="col">Average Present weight of Fish (g)</th>
-
+                                        <th style="width: 100px" scope="col">Culture days (During sampling)</th>
+                                        <th scope="col">Weight gain (g)</th>
+                                        <th scope="col">Weight gain (kg)</th>
                                         <th scope="col">Current feed consumption (kg)</th>
+                                        <th scope="col">Current FCR</th>
+                                        <th scope="col">Current ADG (g/fish/day)</th>
+                                        <th scope="col">No.of Final fish (pcs.)</th>
+                                        <th scope="col">Final weight (g)</th>
+                                        <th scope="col">Final weight (kg)</th>
+                                        <th scope="col">Total DOC (Day Of Culture)</th>
+                                        <th scope="col">Total feed consumption (kg)</th>
+                                        <th scope="col">Final FCR</th>
+                                        <th scope="col">Final ADG (g/fish/day)</th>
+                                        <th scope="col">SR (%)</th>
                                         <th style="width: 200px" scope="col">Farmer's Comments</th>
-                                        <th style="width: 200px" scope="col">Employee's Comments</th>
+                                        <th style="width: 200px" scope="col">Visitor's Comments</th>
                                         <th scope="col"></th>
 
                                     </tr>

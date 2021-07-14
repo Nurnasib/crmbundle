@@ -72,11 +72,12 @@ class SettingFormType extends AbstractType
                     'Farmer Report'=>'FARMER_REPORT', //parent FARM_TYPE (broiler, sonali, layer, dairy, fattening etc)
                     'Hatchery'=>'HATCHERY',
                     'Breed Name'=>'BREED_NAME',
-                    'Breed Type'=>'BREED_TYPE', //parent FARM_TYPE (broiler, sonali, layer, dairy, fattening etc)
-                    'Feed Type'=>'FEED_TYPE',
+                    'Breed Type'=>'BREED_TYPE', //parent FARM_TYPE (broiler, sonali, layer, dairy, fish, fattening etc)
+                    'Feed Type'=>'FEED_TYPE',  //parent FARM_TYPE (broiler, sonali, layer, dairy, fish, fattening etc)
                     'Feed Name'=>'FEED_NAME',
                     'Feed Mill'=>'FEED_MILL',
                     'Species Type'=>'SPECIES_TYPE', //parent BREED_NAME (poultry, cattle, fish etc)
+                    'Species Name'=>'SPECIES_NAME', //parent FEED_TYPE (Floating, Sinking)
                     'Color'=>'COLOR',
                     'Chick Type'=>'CHICK_TYPE',
                     'Training Material'=>'TRAINING_MATERIAL', //parent BREED_NAME (poultry, cattle, fish etc)
