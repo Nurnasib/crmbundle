@@ -54,9 +54,9 @@
                                                                         <td><input type="number" class="form-control productAndQty product_{{ productName.id }}" min="0" name="productAndQty[]" value="{{ quantity[productName.id]|default(0) }}" data-entity-id="{{ allFeedSales['items'][year][month][feedCompany.id].id }}" data-product-id="{{ productName.id }}"></td>
                                                                     {% endfor %}
                                                                     <td class="line_total">{{ line_total }}</td>
-                                                                    <td class="lineMarketShare">{{ ((line_total*100)/grand_total)|number_format(3,'.','') }}</td>
+                                                                    <td class="lineMarketShare">{{ grand_total>0?((line_total*100)/grand_total)|number_format(3,'.',''):0 }}</td>
                                                                 </tr>
-                                                                {% set grand_total_percentage = grand_total_percentage+((line_total*100)/grand_total) %}
+                                                                {% set grand_total_percentage = grand_total_percentage+(grand_total>0?(line_total*100)/grand_total:0) %}
                                                             {% endfor %}
                                                         {% endif %}
                                                         </tbody>

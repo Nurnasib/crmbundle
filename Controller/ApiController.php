@@ -1184,4 +1184,20 @@ class ApiController extends AbstractController
 
     }
 
+    /**
+     * @Route("/companySpeciesWiseAvarageFCRBefore", methods={"GET"}, name="companySpeciesWiseAvarageFCRBefore")
+     */
+
+    public function companySpeciesWiseAvarageFCRBefore(){
+        set_time_limit(0);
+        ignore_user_abort(true);
+
+        $entities = $this->getDoctrine()->getRepository(Api::class)->companySpeciesWiseAvarageFCRBefore(1);
+        $response = new Response();
+        $response->headers->set('Content-Type', 'application/json');
+        $response->setContent(json_encode($entities));
+        $response->setStatusCode(Response::HTTP_OK);
+        return $response;
+    }
+
 }

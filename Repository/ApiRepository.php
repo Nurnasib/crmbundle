@@ -195,7 +195,7 @@ class ApiRepository extends BaseRepository
             $qb->where('u.username IN (:username)')->setParameter('username',$username);
         }
 
-       // $qb->where('ug.id = 9');
+        // $qb->where('ug.id = 9');
 
         $qb->orderBy('u.id', 'ASC');
         $result = $qb->getQuery()->getArrayResult();
@@ -366,8 +366,8 @@ class ApiRepository extends BaseRepository
         $qb->where('ft.slug = :farmerType')
             ->andWhere('fid.employee = :employee')
             ->setParameters(array('farmerType' => $farmerType, 'employee' => $employee));
-       // $qb->where('ft.slug = :farmerType');
-       // $qb->setParameter('farmerType', $requestData);
+        // $qb->where('ft.slug = :farmerType');
+        // $qb->setParameter('farmerType', $requestData);
         $qb->orderBy('fid.id', 'ASC');
         $result = $qb->getQuery()->getArrayResult();
         $data = array();
@@ -688,7 +688,7 @@ class ApiRepository extends BaseRepository
                 $data[$key]['batchNo'] = (int)$row['batchNo'];
                 $data[$key]['remarks'] = (string)$row['remarks'];
             }
-         return $data;
+            return $data;
         }
 
     }
@@ -1260,11 +1260,39 @@ class ApiRepository extends BaseRepository
         return $data;
     }
 
+
     public function getData()
     {
         $qb = $this->createQueryBuilder('e');
         $qb->select('e.id','e.process', 'e.deviceId', 'e.status');
         return $qb->getQuery()->getArrayResult();
+    }
+
+    public function companySpeciesWiseAvarageFCRBefore()
+    {
+        $em = $this->_em;
+        $qb = $em->createQueryBuilder();
+        $qb->from(Setting::class,'s');
+        $qb->leftJoin('s.parent','p');
+
+        $qb->select('s.id as id','s.name as fishName');
+        $qb->addSelect('p.name as fishType');
+
+        $qb->where("s.settingType = 'SPECIES_NAME'");
+        $qb->andWhere("p.settingType = 'FEED_TYPE'");
+        $qb->orderBy('s.id', 'ASC');
+        $result = $qb->getQuery()->getArrayResult();
+        $data = array();
+        foreach ($result as $key => $row) {
+            $data[$key]['id'] = (int)$row['id'];
+            $data[$key]['fishName'] = (string)$row['fishName'];
+            $data[$key]['fishType'] = (string)$row['fishType'];
+
+
+        }
+
+        return $data;
+
     }
 
 }
