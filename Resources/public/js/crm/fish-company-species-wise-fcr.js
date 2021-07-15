@@ -3,7 +3,7 @@ $('.companySpeciesWiseFcrSection').on('keypress','.company_species_wise_fcr inpu
         e.preventDefault();
         var $canfocus = $('.company_species_wise_fcr :focusable');
         var index = $canfocus.index(this) + 1;
-        if (index >= $canfocus.length-1){
+        if (index >= $canfocus.length){
             index = 0;
         }
         $canfocus.eq(index).focus().select();

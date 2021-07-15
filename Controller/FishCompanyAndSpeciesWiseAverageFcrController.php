@@ -33,6 +33,7 @@ use Terminalbd\CrmBundle\Entity\FishLifeCycle;
 use Terminalbd\CrmBundle\Entity\FishLifeCycleDetails;
 use Terminalbd\CrmBundle\Entity\CrmCustomer;
 use Terminalbd\CrmBundle\Entity\SettingLifeCycle;
+use Terminalbd\CrmBundle\Form\CompanySpeciesWiseFcrAfterFormType;
 use Terminalbd\CrmBundle\Form\CompanySpeciesWiseFcrFormType;
 use Terminalbd\CrmBundle\Form\FishLifeCycleDetailsFormType;
 use Terminalbd\CrmBundle\Entity\Setting;
@@ -115,7 +116,7 @@ class FishCompanyAndSpeciesWiseAverageFcrController extends AbstractController
 
             $this->addFlash('success', 'post.created_successfully');
 
-            return $this->redirectToRoute('fish_company_species_wise_fcr_details', ['feedType'=>$feedType->getId(),'ids'=>$returnIds,'created_date'=>$reportingDate]);
+            return $this->redirectToRoute('fish_company_species_wise_fcr_details', ['beforeAfter'=>"BEFORE",'feedType'=>$feedType->getId(),'ids'=>$returnIds,'created_date'=>$reportingDate]);
 
         }
 
@@ -129,9 +130,9 @@ class FishCompanyAndSpeciesWiseAverageFcrController extends AbstractController
 
     /**
      * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
-     * @Route("/{feedType}/details", methods={"GET", "POST"}, name="fish_company_species_wise_fcr_details", options={"expose"=true})
+     * @Route("/{beforeAfter}/{feedType}/details", methods={"GET", "POST"}, name="fish_company_species_wise_fcr_details", options={"expose"=true})
      */
-    public function companySpeciesWiseFcrDetails(Request $request, Setting $feedType): Response
+    public function companySpeciesWiseFcrDetails(Request $request, Setting $feedType, $beforeAfter): Response
     {
         $ids= $request->query->get('ids');
         $reportingDate = $request->query->get('created_date');
@@ -155,8 +156,8 @@ class FishCompanyAndSpeciesWiseAverageFcrController extends AbstractController
             }
         }
 
-        $fcrDetailsMonthWise = $this->getDoctrine()->getRepository(FishCompanyAndSpeciesWiseAverageFcrDetails::class)->getCompanySpeciesWiseFcrDetailsByReportingMonth('BEFORE', $feedType->getId(), $reportingDate, $this->getUser()->getId());
-        $fcrMonthWise = $this->getDoctrine()->getRepository(FishCompanyAndSpeciesWiseAverageFcr::class)->getFishCompanySpeciesWiseFcrByReportingMonth('BEFORE', $feedType, $reportingDate, $this->getUser());
+        $fcrDetailsMonthWise = $this->getDoctrine()->getRepository(FishCompanyAndSpeciesWiseAverageFcrDetails::class)->getCompanySpeciesWiseFcrDetailsByReportingMonth($beforeAfter, $feedType->getId(), $reportingDate, $this->getUser()->getId());
+        $fcrMonthWise = $this->getDoctrine()->getRepository(FishCompanyAndSpeciesWiseAverageFcr::class)->getFishCompanySpeciesWiseFcrByReportingMonth($beforeAfter, $feedType, $reportingDate, $this->getUser());
 
         return $this->render('@TerminalbdCrm/fishCompanySpeciesWiseFcr/fish-company-species-wise-fcr-details-report-modal.html.twig', [
             'companySpeciesWiseFcrs' => $companySpeciesWiseFcrs,
@@ -219,6 +220,87 @@ class FishCompanyAndSpeciesWiseAverageFcrController extends AbstractController
             'fcrMonthWise' => $fcrMonthWise,
         ]);
     }
+
+    /**
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @Route("/report/{report}/after/new/modal", methods={"GET", "POST"}, name="fish_company_species_wise_fcr_after_modal", options={"expose"=true})
+     */
+    public function newAfterModal(Request $request, Setting $report): Response
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $agentRepo = $this->getDoctrine()->getRepository(Agent::class);
+
+        $form = $this->createForm(CompanySpeciesWiseFcrAfterFormType::class, null, array('report' => $report, 'user' => $this->getUser(),'agentRepo' => $agentRepo));
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted()){
+            $data = $request->request->get('company_species_wise_fcr_after_form');
+//            dd($data);
+            $reportingDate = isset($data['reporting_date'])? $data['reporting_date'] : date('Y-m-d',strtotime('now'));
+            $date=new \DateTime($reportingDate);
+            if(isset($data['feed'])){
+                $returnIds=[];
+                $feedType = isset($data['feed_type'])?$this->getDoctrine()->getRepository(Setting::class)->find($data['feed_type']):null;
+                $agent = isset($data['agent'])?$agentRepo->find($data['agent']):null;
+                foreach ($data['feed'] as $feedId){
+
+
+                    $feed = $this->getDoctrine()->getRepository(Setting::class)->find($feedId);
+
+                    $entity = new FishCompanyAndSpeciesWiseAverageFcr();
+                    $existReport = $this->getDoctrine()->getRepository(FishCompanyAndSpeciesWiseAverageFcr::class)->findOneBy(array('reportingMonth'=>$date, 'report'=>$report, 'agent'=>$agent, 'employee'=>$this->getUser(),'feed'=>$feed,'feedType'=>$feedType));
+
+                    if($existReport){
+                        $entity=$existReport;
+                    }
+
+                    if($existReport){
+                        $entity->setReportingMonth($entity->getReportingMonth());
+                    }else{
+                        $entity->setReportingMonth(new \DateTime($reportingDate));
+                    }
+                    $entity->setAgent($agent?$agent:null);
+                    $entity->setReport($report);
+                    $entity->setEmployee($this->getUser());
+                    $entity->setFeed($feed);
+                    $entity->setFcrOfFeed('AFTER');
+                    $entity->setFeedType($feedType);
+                    $em->persist($entity);
+
+                    $speciesNameByFeedType= $this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType'=>'SPECIES_NAME','status'=>1,'parent'=>$feedType));
+                    if($speciesNameByFeedType){
+                        foreach ($speciesNameByFeedType as $item){
+                            $fishCompanySpeciesWiseFcrDetails = new FishCompanyAndSpeciesWiseAverageFcrDetails();
+
+                            $existDetails = $this->getDoctrine()->getRepository(FishCompanyAndSpeciesWiseAverageFcrDetails::class)->findOneBy(array('speciesName'=>$item, 'fishCompanyAndSpeciesWiseAverageFcr'=>$entity));
+                            if($existDetails){
+                                $fishCompanySpeciesWiseFcrDetails=$existDetails;
+                            }
+                            $fishCompanySpeciesWiseFcrDetails->setSpeciesName($item);
+                            $fishCompanySpeciesWiseFcrDetails->setFishCompanyAndSpeciesWiseAverageFcr($entity);
+                            $em->persist($fishCompanySpeciesWiseFcrDetails);
+                        }
+                    }
+                    $returnIds[]=$entity->getId();
+                }
+
+                $em->flush();
+            }
+
+            $this->addFlash('success', 'post.created_successfully');
+
+            return $this->redirectToRoute('fish_company_species_wise_fcr_details', ['beforeAfter'=>'AFTER','feedType'=>$feedType->getId(),'ids'=>$returnIds,'created_date'=>$reportingDate]);
+
+        }
+
+
+        return $this->render('@TerminalbdCrm/fishCompanySpeciesWiseFcr/after/fish-company-species-wise-fcr.html.twig', [
+            'report' => $report,
+            'form' => $form->createView(),
+        ]);
+    }
+
 
     /**
      * Deletes a Fcr entity.

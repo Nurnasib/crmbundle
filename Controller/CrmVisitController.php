@@ -89,7 +89,7 @@ class CrmVisitController extends AbstractController
     public function edit(Request $request, CrmVisit $entity): Response
     {
         $data = $request->request->all();
-        $reports = $this->getDoctrine()->getRepository(Setting::class)->findBy(['settingType'=>'FARMER_REPORT','slug'=>['fcr-after-sale-boiler','fcr-after-sale-sonali']]);
+        $reports = $this->getDoctrine()->getRepository(Setting::class)->findBy(['settingType'=>'FARMER_REPORT','slug'=>['fcr-after-sale-boiler','fcr-after-sale-sonali','company-species-wise-average-fcr-after']]);
 
         $form = $this->createForm(CrmVisitFormType::class, $entity,array('user' => $this->getUser()))
             ->add('Save', SubmitType::class);
@@ -242,7 +242,7 @@ class CrmVisitController extends AbstractController
 
     public function CRMDetailsRefresh($id, $process='farmer'): Response
     {
-        $reports = $this->getDoctrine()->getRepository(Setting::class)->findBy(['settingType'=>'FARMER_REPORT','slug'=>['fcr-after-sale-boiler','fcr-after-sale-sonali']]);
+        $reports = $this->getDoctrine()->getRepository(Setting::class)->findBy(['settingType'=>'FARMER_REPORT','slug'=>['fcr-after-sale-boiler','fcr-after-sale-sonali','company-species-wise-average-fcr-after']]);
 
         $entity = $this->getDoctrine()->getRepository(CrmVisit::class)->find($id);
         $lifeCycleReport =$this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType'=>'FARMER_REPORT'));

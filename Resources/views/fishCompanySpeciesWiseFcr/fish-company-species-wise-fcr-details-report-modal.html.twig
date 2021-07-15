@@ -95,7 +95,7 @@
                                                 {% if mainCultureSpecies is not empty %}
                                                     {% for index, species in mainCultureSpecies %}
                                                         <td>
-                                                            {{ fcrDetailsMonthWise[entity.feed.id][entity.feedType.id][species.id] is defined? fcrDetailsMonthWise[entity.feed.id][entity.feedType.id][species.id]['avgQty']:'' }}
+                                                            {{ fcrDetailsMonthWise[entity.feed.id][entity.feedType.id][species.id] is defined? fcrDetailsMonthWise[entity.feed.id][entity.feedType.id][species.id]['avgQty']|number_format(2,'.',''):'' }}
                                                         </td>
                                                     {% endfor %}
                                                 {% endif %}
