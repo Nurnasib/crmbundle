@@ -78,6 +78,7 @@ class SettingFormType extends AbstractType
                     'Feed Mill'=>'FEED_MILL',
                     'Species Type'=>'SPECIES_TYPE', //parent BREED_NAME (poultry, cattle, fish etc)
                     'Species Name'=>'SPECIES_NAME', //parent FEED_TYPE (Floating, Sinking)
+                    'Fish Size'=>'FISH_SIZE', //parent SPECIES_TYPE (Tilapia, Pangas etc.)
                     'Color'=>'COLOR',
                     'Chick Type'=>'CHICK_TYPE',
                     'Training Material'=>'TRAINING_MATERIAL', //parent BREED_NAME (poultry, cattle, fish etc)
