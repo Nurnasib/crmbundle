@@ -1,0 +1,33 @@
+{% if allTilapiaFrySales['agents'] is not empty %}
+    {% for agentId ,agent in allTilapiaFrySales['agents'] %}
+        <tr>
+            <td>{{ loop.index }}</td>
+            <td>{{ agent|default('') }}</td>
+            {% set lineTotal=0 %}
+            {% for month in arrayMonth %}
+                <td class="text-right">{{allTilapiaFrySales['items'][agentId][month].qty|default(0)|number_format(2,'.',',')}}</td>
+                {% set lineTotal=lineTotal+allTilapiaFrySales['items'][agentId][month].qty|default(0) %}
+            {% endfor %}
+            <td class="text-right">{{ lineTotal|number_format(2,'.',',') }}</td>
+        </tr>
+    {% endfor %}
+
+    <tr>
+        <th colspan="2">Grand Total</th>
+        {% set grandTotal=0 %}
+        {% for month in arrayMonth %}
+            <th class="text-right">
+                {% if allTilapiaFrySales['grandTotal'][month] is defined %}
+                    {{allTilapiaFrySales['grandTotal'][month]|arraySum|number_format(2,'.',',')}}
+                    {% set grandTotal=grandTotal+ allTilapiaFrySales['grandTotal'][month]|arraySum%}
+                {% else %}
+                    {{ 0|number_format(2,'.',',') }}
+                {% endif %}
+
+            </th>
+            {#{% set lineTotal=lineTotal+allTilapiaFrySales['items'][agentId][month].qty|default(0) %}#}
+        {% endfor %}
+        <th class="text-right">{{ grandTotal|number_format(2,'.',',') }}</th>
+    </tr>
+
+{% endif %}

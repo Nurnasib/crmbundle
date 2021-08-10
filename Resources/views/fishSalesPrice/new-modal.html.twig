@@ -1,0 +1,98 @@
+{% extends 'admin/layout.html.twig' %}
+{#{% block body_id 'kpi_domain_new' %}#}
+{% block body %}
+    <div class="pcoded-inner-content">
+        <!-- [ breadcrumb ] start -->
+        <!-- [ breadcrumb ] end -->
+        <!-- [ Main Content ] start -->
+        <div class="row">
+            <div class="card">
+                <div class="portlet box">
+                    <div class="portlet-body form">
+                        <div class="row form-body" style="padding-top: 0!important;">
+                            <div class="form-inner-no-space">
+                                <div class="row">
+                                    <div class="col-md-12 text-center">
+                                        <h4>{{ 'NOURISH POULTRY & HATCHERY LTD'|trans }}</h4>
+                                        <h5>{{ 'Uttara, Dhaka.'|trans }}</h5>
+                                        <h4>{{ 'Average Fish Sale Price (Farmer Price)'|trans }} {{ 'now'|date('Y') }}</h4>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12 fishSalesPrice_section" style="overflow-x: scroll">
+
+                                        <table class="table table-bordered fishSalesPrice_table" id="datatable">
+                                            <thead>
+                                            <tr>
+                                                <th rowspan="2">{{ 'Month'|trans }}</th>
+                                                {% if speciesTypes is not empty%}
+                                                    {% for speciesType in speciesTypes %}
+                                                    <th class="text-center" colspan="{{ fishSizes[speciesType.id]|length }}">{{ speciesType.name }}</th>
+                                                    {% endfor %}
+
+                                                {% endif %}
+                                            </tr>
+                                            <tr>
+                                                {% if speciesTypes is not empty%}
+                                                    {% for speciesType in speciesTypes %}
+                                                        {% if fishSizes[speciesType.id] is defined %}
+                                                            {% for fishSize in fishSizes[speciesType.id] %}
+                                                                <th>{{ fishSize.name }}</th>
+                                                            {% endfor %}
+                                                        {% endif %}
+                                                    {% endfor %}
+
+                                                {% endif %}
+                                            </tr>
+                                            </thead>
+                                            <tbody class="fishSalesPrice_body_section">
+
+                                            {% for month in arrayMonth %}
+                                            <tr>
+                                                <td>{{month}}</td>
+                                                {% if speciesTypes is not empty%}
+                                                    {% for speciesType in speciesTypes %}
+                                                        {% if fishSizes[speciesType.id] is defined %}
+                                                            {% for fishSize in fishSizes[speciesType.id] %}
+                                                                <td>
+                                                                    {% if month in arrayMonthRange %}
+                                                                        <input type="number" class="form-control price" data-id="{{ allFishSalesPrice['items'][currentYear][month][fishSize.id].id|default(0) }}" value="{{ allFishSalesPrice['items'][currentYear][month][fishSize.id].price|default(0) }}">
+                                                                    {% else %}
+                                                                        {{ allFishSalesPrice['items'][currentYear][month][fishSize.id].price|default(0) }}
+                                                                    {% endif %}
+                                                                </td>
+                                                            {% endfor %}
+                                                        {% endif %}
+                                                    {% endfor %}
+
+                                                {% endif %}
+                                            </tr>
+                                            {% endfor %}
+                                            </tbody>
+                                        </table>
+
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- [ Main Content ] end -->
+    </div>
+
+{% endblock %}
+ {% block cssBlock %}
+     <link rel="stylesheet" href="{{ asset('assets/module/css/app.css') }}">
+     <link rel="stylesheet" href="{{ asset('bundles/terminalbdcrm/css/crm.css') }}">
+ {% endblock  %}
+{% block javascripts %}
+    {#<script>#}
+    {{ parent() }}
+    <script type="application/javascript" src="{{ asset('bundles/terminalbdcrm/js/crm/fish-sales-price.js') }}"></script>
+{% endblock  %}
+
+

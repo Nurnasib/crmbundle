@@ -1,0 +1,192 @@
+{% extends 'admin/layout.html.twig' %}
+{#{% block body_id 'kpi_domain_new' %}#}
+{% block body %}
+    <div class="pcoded-inner-content">
+        <!-- [ breadcrumb ] start -->
+        <!-- [ breadcrumb ] end -->
+        <!-- [ Main Content ] start -->
+        <div class="row">
+            <div class="card">
+                <div class="portlet box">
+                    <div class="portlet-body form">
+                        <div class="row form-body" style="padding-top: 0!important;">
+                            <div class="form-inner-no-space">
+                                <div class="row">
+                                    <div class="col-md-12 text-center">
+                                        <h4>{{ 'NOURISH POULTRY & HATCHERY LTD'|trans }}</h4>
+                                        <h5>{{ 'Uttara, Dhaka.'|trans }}</h5>
+                                        <h4>{{ 'Agent Wise Tilapia Fry Sales'|trans }} - {{ 'now'|date('Y') }}</h4>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12 tilapiaFrySales_section">
+                                        <h4 class="text-center">{{ "Nourish Tilapia Fry Sales  (pcs) by Nourish Agent's"|trans }}</h4>
+                                        <table class="table table-bordered" id="datatable">
+                                            <thead>
+                                            <tr class="text-center">
+                                                <th>Agent Name</th>
+                                                <th>Month</th>
+                                                <th>Quantity</th>
+                                                <th></th>
+                                            </tr>
+
+                                            </thead>
+                                            <tbody>
+                                            <tr>
+                                                <td>
+                                                    <select name="agent_id" id="agent_id" class="form-control agent_id">
+                                                        <option value="">Select Agent</option>
+                                                        {% if agents is not empty %}
+                                                            {% for agent in agents %}
+                                                                <option value="{{ agent['id'] }}">{{ agent['name'] }}</option>
+                                                            {% endfor %}
+
+                                                        {% endif %}
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <select name="month" id="month" class="form-control month">
+                                                        <option value="">Select Month</option>
+                                                        {% if arrayMonthRange is not empty %}
+                                                            {% for month in arrayMonthRange %}
+                                                                <option value="{{ month }}">{{ month }}</option>
+                                                            {% endfor %}
+
+                                                        {% endif %}
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <input type="number" class="form-control quantity" name="quantity" min="0" value="">
+                                                </td>
+                                                <td>
+                                                    <button type="button" id="tilapia_fry_sales_add_button" class="btn btn-primary btn-sm tilapia_fry_sales_add_button">Add</button>
+                                                </td>
+                                            </tr>
+
+                                            </tbody>
+                                        </table>
+                                        <table class="table table-bordered tilapiaFrySales_nourish_table" id="datatable">
+                                            <thead>
+                                            <tr class="text-center">
+                                                <th>SL</th>
+                                                <th>Agent Name</th>
+                                                {% for month in arrayMonth %}
+                                                    <th>{{month}}</th>
+                                                {% endfor %}
+                                                <th>{{ 'Total'|trans }}</th>
+                                            </tr>
+
+                                            </thead>
+                                            <tbody class="tilapiaFrySales_body_section">
+                                            {% include '@TerminalbdCrm/tilapiaFrySales/_content_table_body.html.twig' %}
+
+                                            </tbody>
+                                        </table>
+
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12 tilapiaFrySales_competitor_section">
+                                        <h4 class="text-center">{{ "Competitors Company Tilapia Fry Sales (pcs) by Nourish Agent's"|trans }}</h4>
+                                        <table class="table table-bordered" id="datatable">
+                                            <thead>
+                                            <tr class="text-center">
+                                                <th>Agent Name</th>
+                                                <th>Company Name</th>
+                                                <th>Month</th>
+                                                <th>Quantity</th>
+                                                <th></th>
+                                            </tr>
+
+                                            </thead>
+                                            <tbody>
+                                            <tr>
+                                                <td>
+                                                    <select name="agent_id" id="agent_id" class="form-control agent_id">
+                                                        <option value="">Select Agent</option>
+                                                        {% if agents is not empty %}
+                                                            {% for agent in agents %}
+                                                                <option value="{{ agent['id'] }}">{{ agent['name'] }}</option>
+                                                            {% endfor %}
+
+                                                        {% endif %}
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <select name="feed_id" id="feed_id" class="form-control feed_id">
+                                                        <option value="">Select Company</option>
+                                                        {% if feeds is not empty %}
+                                                            {% for feed in feeds %}
+                                                                <option value="{{ feed.id }}">{{ feed.name }}</option>
+                                                            {% endfor %}
+
+                                                        {% endif %}
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <select name="month" id="month" class="form-control month">
+                                                        <option value="">Select Month</option>
+                                                        {% if arrayMonthRange is not empty %}
+                                                            {% for month in arrayMonthRange %}
+                                                                <option value="{{ month }}">{{ month }}</option>
+                                                            {% endfor %}
+
+                                                        {% endif %}
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <input type="number" class="form-control quantity" name="quantity" min="0" value="">
+                                                </td>
+                                                <td>
+                                                    <button type="button" id="tilapia_fry_sales_competitor_add_button" class="btn btn-primary btn-sm tilapia_fry_sales_competitor_add_button">Add</button>
+                                                </td>
+                                            </tr>
+
+                                            </tbody>
+                                        </table>
+                                        <table class="table table-bordered tilapiaFrySales_competitor_table" id="datatable">
+                                            <thead>
+                                            <tr class="text-center">
+                                                <th>SL</th>
+                                                <th>Agent Name</th>
+                                                {% if competitorsTilapiaFrySales['feeds'] is not empty %}
+                                                {% for feed in competitorsTilapiaFrySales['feeds'] %}
+                                                    <th>{{feed|default('')}}</th>
+                                                {% endfor %}
+                                                {% endif %}
+                                                <th>{{ 'Total'|trans }}</th>
+                                            </tr>
+
+                                            </thead>
+                                            <tbody class="tilapiaFrySales_competitor_body_section">
+                                            {% include '@TerminalbdCrm/tilapiaFrySales/_competitor_content_table_body.html.twig' %}
+
+                                            </tbody>
+                                        </table>
+
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- [ Main Content ] end -->
+    </div>
+
+{% endblock %}
+ {% block cssBlock %}
+     <link rel="stylesheet" href="{{ asset('assets/module/css/app.css') }}">
+     <link rel="stylesheet" href="{{ asset('bundles/terminalbdcrm/css/crm.css') }}">
+ {% endblock  %}
+{% block javascripts %}
+    {#<script>#}
+    {{ parent() }}
+    <script type="application/javascript" src="{{ asset('bundles/terminalbdcrm/js/crm/tilapia-fry-sales.js') }}"></script>
+{% endblock  %}
+
+
