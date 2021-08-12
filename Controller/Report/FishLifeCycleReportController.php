@@ -29,7 +29,7 @@ class FishLifeCycleReportController extends AbstractController
         $searchForm->handleRequest($request);
         if ($searchForm->isSubmitted()){
             $filterBy = array_intersect_key($searchForm->getData(), $keepElement);
-            dd($filterBy);
+            return $this->redirectToRoute('crm_fish_life_cycle');
         }
 
         return $this->render('@TerminalbdCrm/report/fish/index.html.twig',[
