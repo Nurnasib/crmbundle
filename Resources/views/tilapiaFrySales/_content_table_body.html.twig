@@ -1,4 +1,4 @@
-{% if allTilapiaFrySales['agents'] is not empty %}
+{% if allTilapiaFrySales['agents'] is defined %}
     {% for agentId ,agent in allTilapiaFrySales['agents'] %}
         <tr>
             <td>{{ loop.index }}</td>

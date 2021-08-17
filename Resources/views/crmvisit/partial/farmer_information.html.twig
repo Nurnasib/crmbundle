@@ -73,6 +73,9 @@
                 {% if details.report is not empty and details.report.slug in ['complain-different-products-poultry','complain-different-products-cattle','complain-different-products-fish'] %}
                      <a class="btn blue-bg btn-sm text-white" data-action='{{ path('complain_different_product_new_modal',{'id': details.crmCustomer is not empty?details.crmCustomer.id:'', 'report':details.report.id}) }}' href='?process=postView_{{ details.id }}_{{ details.report.id }}&report={{ details.report.slug }}&check=show#modal' id='postView_{{ details.id }}_{{ details.report.id }}' >{{ 'Report'|trans }}</a>
                 {% endif %}
+                {% if details.report is not empty and details.report.slug in ['fish-feed-complain'] %}
+                     <a class="btn blue-bg btn-sm text-white" data-action='{{ path('fish_feed_complain_new_modal',{'id': details.crmCustomer is not empty?details.crmCustomer.id:'', 'report':details.report.id}) }}' href='?process=postView_{{ details.id }}_{{ details.report.id }}&report={{ details.report.slug }}&check=show#modal' id='postView_{{ details.id }}_{{ details.report.id }}' >{{ 'Report'|trans }}</a>
+                {% endif %}
                 </td>
                 <td>
                     <a data-id="{{ details.id }}" class="btn btn-sm btn-transparent red-font row-remove">

@@ -86,35 +86,24 @@ class SearchFilterFormType extends AbstractType
                     ->orderBy('e.name');
                 },
                 'choice_label' => 'name',
-                'placeholder' => 'Select Employee',
-                'required' => false,
-                'attr' => [
-                    'class' => 'select2'
-                ]
+                'placeholder' => 'Select Employee'
             ])
-            ->add('month', ChoiceType::class,[
-                'choices' => [
-                    'January' => '01',
-                    'February' => '02',
-                    'March' => '03',
-                    'April' => '04',
-                    'May' => '05',
-                    'June' => '06',
-                    'July' => '07',
-                    'August' => '08',
-                    'September' => '09',
-                    'October' => '10',
-                    'November' => '11',
-                    'December' => '12',
-                ],
-                'placeholder' => 'Select month',
-                'required' => false
-            ])
-            ->add('year', ChoiceType::class,[
-                'choices' => $this->getYears(2021),
-                'placeholder' => 'Select year',
-                'required' => false
-            ])
+//            ->add('feedType', EntityType::class,[
+//                'class' => Fcr::class,
+//                'query_builder' =>function(EntityRepository $repository){
+//                return $repository->createQueryBuilder('e')
+//                    ->orderBy('e.fcrOfFeed');
+//                },
+//                'choice_label' => 'fcrOfFeed',
+//                'placeholder' => 'Feed Type'
+//            ])
+//            ->add('feedType', ChoiceType::class,[
+//                'choices'=>[
+//                    'Feed Type' => Null,
+//                    'Before' => 'BEFORE',
+//                    'After' => 'AFTER'
+//                ]
+//            ])
             ->add('filter', SubmitType::class,[
                 'attr'=>[
                     'class' => 'btn btn-primary btn-block'
@@ -123,12 +112,6 @@ class SearchFilterFormType extends AbstractType
             ])
 
         ;
-    }
-
-    private function getYears($min, $max='current')
-    {
-        $years = range($min, ($max === 'current' ? date('Y') : $max));
-        return array_combine($years, $years);
     }
 
     /**

@@ -151,7 +151,7 @@
                                             <tr class="text-center">
                                                 <th>SL</th>
                                                 <th>Agent Name</th>
-                                                {% if competitorsTilapiaFrySales['feeds'] is not empty %}
+                                                {% if competitorsTilapiaFrySales['feeds'] is defined %}
                                                 {% for feed in competitorsTilapiaFrySales['feeds'] %}
                                                     <th>{{feed|default('')}}</th>
                                                 {% endfor %}

@@ -331,6 +331,10 @@ function formCommonProcess() {
         formSubmitProcessForComplainDifferentProduct($(this));
     });
 
+    $('.fish_feed_complain_section').on('click', '.fish_feed_complain_button', function () {
+        formSubmitProcessForFishFeedComplain($(this));
+    });
+
     $('.agent_upgradation_report_section').on('click', '.agent_upgradation_report_button', function () {
         formSubmitProcessForAgentUpgradationReport($(this));
     });

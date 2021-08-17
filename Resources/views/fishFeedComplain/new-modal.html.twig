@@ -1,0 +1,82 @@
+<div class="portlet box">
+    <div class="portlet-title">
+        <div class="caption">{{report.name}}</div>
+    </div>
+    {#{{ dump(report) }}#}
+
+    <div class="portlet-body form">
+        <div class="row form-body ">
+            <div class="form-inner-no-space">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h4>{{ 'NOURISH POULTRY & HATCHERY LTD'|trans }}</h4>
+                        <h5>{{ 'Uttara, Dhaka.'|trans }}</h5>
+                        <h4>{{ 'Month Wish'|trans }} {{report.name}}-{{ 'now'|date('Y') }}</h4>
+                    </div>
+                </div>
+                <div class="fish_feed_complain_section">
+                    {{ form_start(form, {'attr': {'method':'post','action': path('fish_feed_complain_new_modal',{'id':crmCustomer.id,'report':report.id }),'class': 'form-horizontal right','id':'fish_feed_complain_form'}}) }}
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <table class="table table-striped table-bordered table-hover layer_performance_details" id="datatable">
+                                <thead>
+                                <tr>
+                                    <th>{{ 'Performance Related Complain'|trans }}</th>
+                                    <th>{{ 'Physical Apperance Related Complain'|trans }}</th>
+                                    <th>{{ 'Feed Item'|trans }}</th>
+                                    <th>{{ 'Production Details'|trans }}</th>
+                                    <th>{{ 'Feed Mill'|trans }}</th>
+                                    <th>{{ 'Complaint Dealer Name and  Adress'|trans }}</th>
+                                    <th>{{ 'Remarks'|trans }}</th>
+                                    <th>{{ 'Action'|trans }}</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>
+                                        {{ form_widget(form.performanceRelatedComplain) }}
+                                        {{ form_errors(form.performanceRelatedComplain) }}
+                                    </td>
+                                    <td>
+                                        {{ form_widget(form.physicalApperanceRelatedComplain) }}
+                                        {{ form_errors(form.physicalApperanceRelatedComplain) }}
+                                    </td>
+                                    <td>
+                                        {{ form_widget(form.feedItem) }}
+                                        {{ form_errors(form.feedItem) }}
+                                    </td>
+                                    <td>
+                                        {{ form_widget(form.feedItemDetails) }}
+                                        {{ form_errors(form.feedItemDetails) }}
+                                    </td>
+                                    <td style="width: 135px">
+                                        {{ form_widget(form.feedMaill) }}
+                                        {{ form_errors(form.feedMaill) }}
+                                    </td>
+                                    <td class="text-left">
+                                        Agent: {{ crmCustomer.agent.name|default('') }}; Customer: {{ crmCustomer.name|default('') }}
+                                    </td>
+                                    <td>
+                                        {{ form_widget(form.remarks) }}
+                                        {{ form_errors(form.remarks) }}
+                                    </td>
+                                    <td>
+                                        <button type="button" class="btn btn-info form-submit fish_feed_complain_button">{{ 'Save'|trans }}</button>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    {{ form_widget(form._token) }}
+                    {{ form_end(form) }}
+                </div>
+
+                <div class="fish_feed_complain_details" style="margin-top: 20px">
+                    {% include '@TerminalbdCrm/fishFeedComplain/details-modal.html.twig' %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

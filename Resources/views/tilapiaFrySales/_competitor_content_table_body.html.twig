@@ -3,7 +3,7 @@
         <tr>
             <th colspan="20">{{ month }}</th>
         </tr>
-        {% if competitorsTilapiaFrySales['agents'][month] is not empty %}
+        {% if competitorsTilapiaFrySales['agents'][month] is defined %}
             {% for agentId ,agent in competitorsTilapiaFrySales['agents'][month] %}
                 <tr>
                     <td>{{ loop.index }}</td>
@@ -21,6 +21,7 @@
         <tr>
             <th colspan="2"> Grand Total</th>
             {% set grandTotal=0 %}
+            {% if competitorsTilapiaFrySales['feeds'] is defined %}
             {% for feedId, feed in competitorsTilapiaFrySales['feeds'] %}
                 <th class="text-right">
                     {% if competitorsTilapiaFrySales['grandTotal'][month][feedId] is defined  %}
@@ -32,6 +33,7 @@
                     {% endif %}
                 </th>
             {% endfor %}
+            {% endif %}
             <th class="text-right">{{ grandTotal|number_format(2,'.',',') }}</th>
         </tr>
     {% endfor %}

@@ -1,0 +1,33 @@
+{% if complains is not empty %}
+    <h4 class="text-left">Month: {{ 'now'|date("F' Y") }}</h4>
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th>{{ 'SL'|trans }}</th>
+            <th>{{ 'Performance Related Complain'|trans }}</th>
+            <th>{{ 'Physical Apperance Related Complain'|trans }}</th>
+            <th>{{ 'Feed Item'|trans }}</th>
+            <th>{{ 'Production Details'|trans }}</th>
+            <th>{{ 'Feed Mill'|trans }}</th>
+            <th>{{ 'Complaint Dealer Name and  Adress'|trans }}</th>
+            <th>{{ 'Remarks'|trans }}</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for complain in complains %}
+        <tr class="text-left">
+            <td>{{ loop.index }}</td>
+            <td>{{ complain.performanceRelatedComplain }}</td>
+            <td>{{ complain.physicalApperanceRelatedComplain }}</td>
+            <td>{{ complain.feedItem }}</td>
+            <td>{{ complain.feedItemDetails }}</td>
+            <td>{{ complain.feedMaill.name|default('') }}</td>
+            <td>Dealer: {{ complain.customer.agent.name|default('') }}; <br> Customer: {{ complain.customer.name|default('') }}</td>
+            <td>{{ complain.remarks }}</td>
+        </tr>
+        {% endfor %}
+
+        </tbody>
+    </table>
+
+{% endif %}

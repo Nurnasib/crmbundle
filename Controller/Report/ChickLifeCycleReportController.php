@@ -22,9 +22,7 @@ use Terminalbd\CrmBundle\Form\SearchFilterFormType;
 class ChickLifeCycleReportController extends AbstractController
 {
     /**
-     * @param string $slug
-     * @param Request $request
-     * @return Response
+     * @param $report
      * @Route("/crm/chick/{slug}", methods={"GET","POST"}, name="crm_chick_report")
      * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_AGM')")
      */
@@ -47,8 +45,8 @@ class ChickLifeCycleReportController extends AbstractController
     }
 
     /**
-     * @param Request $request
-     * @return void
+     * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
+     * @throws \PhpOffice\PhpSpreadsheet\Writer\Exception
      * @Route("/excel", name="chick_excel")
      */
     public function reportExcel(Request $request)

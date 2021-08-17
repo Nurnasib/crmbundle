@@ -28,7 +28,7 @@
                                                 <th rowspan="2">{{ 'Month'|trans }}</th>
                                                 {% if speciesTypes is not empty%}
                                                     {% for speciesType in speciesTypes %}
-                                                    <th class="text-center" colspan="{{ fishSizes[speciesType.id]|length }}">{{ speciesType.name }}</th>
+                                                    <th class="text-center" colspan="{{ fishSizes[speciesType.id] is defined?fishSizes[speciesType.id]|length:'' }}">{{ speciesType.name }}</th>
                                                     {% endfor %}
 
                                                 {% endif %}
