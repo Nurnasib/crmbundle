@@ -35,6 +35,7 @@ use Terminalbd\KpiBundle\Entity\LocationSalesTarget;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use function Doctrine\Common\Cache\Psr6\set;
 
 /**
  * Class ApiController
@@ -1199,5 +1200,39 @@ class ApiController extends AbstractController
         $response->setStatusCode(Response::HTTP_OK);
         return $response;
     }
+
+
+    /**
+     * @Route("/fishSalesPrice", methods={"GET"}, name="fishSalesPrice")
+     */
+
+    public function fishSalesPrice(){
+        set_time_limit(0);
+        ignore_user_abort(true);
+
+        $entities = $this->getDoctrine()->getRepository(Api::class)->fishSalesPrice(1);
+        $response = new Response();
+        $response->headers->set('Content-Type', 'application/json');
+        $response->setContent(json_encode($entities));
+        $response->setStatusCode(Response::HTTP_OK);
+        return $response;
+    }
+
+    /**
+     * @Route("/companyWiseFeedSaleFish", methods={"GET"}, name="companyWiseFeedSaleFish")
+     */
+
+    public function companyWiseFeedSaleFish(){
+        set_time_limit(0);
+        ignore_user_abort(true);
+
+        $entities = $this->getDoctrine()->getRepository(Api::class)->companyWiseFeedSaleFish(1);
+        $response = new Response();
+        $response->headers->set('Content-Type', 'application/json');
+        $response->setContent(json_encode($entities));
+        $response->setStatusCode(Response::HTTP_OK);
+        return $response;
+    }
+
 
 }

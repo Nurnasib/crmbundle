@@ -827,13 +827,16 @@ class ApiRepository extends BaseRepository
 
         $qb->orderBy('s.id', 'ASC');
         $result = $qb->getQuery()->getArrayResult();
+        $exceptSlug = array('fcr-after-sale-boiler','fcr-after-sale-sonali','company-species-wise-average-fcr-after');
 
         $data = array();
         foreach ($result as $key => $row) {
-            $data[$key]['id'] = (string)$row['id'];
-            $data[$key]['name'] = (string)$row['name'];
-            $data[$key]['farmType'] = (string)$row['farmType'];
-            $data[$key]['slug'] = (string)$row['slug'];
+            if(!in_array($row['slug'],$exceptSlug)){
+                $data[$key]['id'] = (string)$row['id'];
+                $data[$key]['name'] = (string)$row['name'];
+                $data[$key]['farmType'] = (string)$row['farmType'];
+                $data[$key]['slug'] = (string)$row['slug'];
+            }
 
         }
         return $data;
@@ -1287,12 +1290,60 @@ class ApiRepository extends BaseRepository
             $data[$key]['id'] = (int)$row['id'];
             $data[$key]['fishName'] = (string)$row['fishName'];
             $data[$key]['fishType'] = (string)$row['fishType'];
+        }
+        return $data;
+    }
 
+    public function fishSalesPrice()
+    {
+        $em = $this->_em;
+        $qb = $em->createQueryBuilder();
+        $qb->from(Setting::class,'s');
+        $qb->leftJoin('s.parent','p');
+
+        $qb->select('s.id as id','s.name as gmPcs');
+        $qb->addSelect('p.name as fishName', 'p.id as fishId');
+
+        $qb->where("s.settingType = 'FISH_SIZE'");
+        $qb->orderBy('s.id','ASC');
+        $result = $qb->getQuery()->getArrayResult();
+
+        $data = [];
+        foreach ($result as $key => $row) {
+            $data[$key]['id'] = (int)$row['id'];
+            $data[$key]['fishId'] = (int)$row['fishId'];
+            $data[$key]['fishName'] = (string)$row['fishName'];
+            $data[$key]['gmPcs'] = (string)$row['gmPcs'];
+
+        }
+        return $data;
+
+    }
+
+    public function companyWiseFeedSaleFish()
+    {
+        $em = $this->_em;
+        $qb = $em->createQueryBuilder();
+        $qb->from(Setting::class,'s');
+        $qb->leftJoin('s.parent','p');
+
+        $qb->select('s.id as id','s.name as name');
+        $qb->addSelect('p.name as feedName');
+
+        $qb->where("s.settingType = 'PRODUCT_TYPE'");
+        $qb->andWhere("p.name = 'Fish'");
+        $qb->orderBy('s.id', 'ASC');
+        $result = $qb->getQuery()->getArrayResult();
+        $data = array();
+        foreach ($result as $key => $row) {
+
+            $data[$key]['id'] = (int)$row['id'];
+            $data[$key]['name'] = (string)$row['name'];
+            $data[$key]['feedName'] = (string)$row['feedName'];
 
         }
 
         return $data;
-
     }
 
 }
