@@ -1234,5 +1234,37 @@ class ApiController extends AbstractController
         return $response;
     }
 
+    /**
+     * @Route("/company", methods={"GET"}, name="company")
+     */
+    public function company()
+    {
+        set_time_limit(0);
+        ignore_user_abort(true);
+
+        $entities = $this->getDoctrine()->getRepository(Api::class)->company(1);
+        $response = New Response();
+        $response->headers->set("Content-Type","application/json");
+        $response->setContent(json_encode($entities));
+        $response->setStatusCode(Response::HTTP_OK);
+        return $response;
+    }
+
+    /**
+     * @Route("/competitorsCompany", methods={"GET"}, name="competitorsCompany")
+     */
+    public function competitorsCompany()
+    {
+        set_time_limit(0);
+        ignore_user_abort(true);
+
+        $entities = $this->getDoctrine()->getRepository(Api::class)->competitorsCompany(1);
+        $response = New Response();
+        $response->headers->set("Content-Type","application/json");
+        $response->setContent(json_encode($entities));
+        $response->setStatusCode(Response::HTTP_OK);
+        return $response;
+    }
+
 
 }

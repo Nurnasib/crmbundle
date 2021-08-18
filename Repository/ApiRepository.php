@@ -815,6 +815,8 @@ class ApiRepository extends BaseRepository
      */
     public function farmSelectReport()
     {
+        $exceptSlug = array('fcr-after-sale-boiler','fcr-after-sale-sonali','company-species-wise-average-fcr-after');
+
         $em = $this->_em;
         $qb = $em->createQueryBuilder();
         $qb->from(Setting::class,'s');
@@ -824,19 +826,21 @@ class ApiRepository extends BaseRepository
         $qb->addSelect('p.name as farmType');
 
         $qb->where("s.settingType = 'FARMER_REPORT'");
+//        $qb->andWhere($qb->expr()->notIn('s.slug',  $exceptSlug));
+        $qb->andWhere('s.slug NOT IN (:slug)')->setParameter('slug', $exceptSlug);
+
 
         $qb->orderBy('s.id', 'ASC');
         $result = $qb->getQuery()->getArrayResult();
-        $exceptSlug = array('fcr-after-sale-boiler','fcr-after-sale-sonali','company-species-wise-average-fcr-after');
 
         $data = array();
         foreach ($result as $key => $row) {
-            if(!in_array($row['slug'],$exceptSlug)){
+//            if(!in_array($row['slug'],$exceptSlug)){
                 $data[$key]['id'] = (string)$row['id'];
                 $data[$key]['name'] = (string)$row['name'];
                 $data[$key]['farmType'] = (string)$row['farmType'];
                 $data[$key]['slug'] = (string)$row['slug'];
-            }
+//            }
 
         }
         return $data;
@@ -961,8 +965,6 @@ class ApiRepository extends BaseRepository
         return $data;
     }
 
-
-
     /**
      * Hatchery
      */
@@ -1063,9 +1065,7 @@ class ApiRepository extends BaseRepository
         foreach ($result as $key => $row) {
             $data[$key]['id'] = (int)$row['id'];
             $data[$key]['color'] = (string)$row['color'];
-
         }
-
         return $data;
     }
 
@@ -1077,7 +1077,6 @@ class ApiRepository extends BaseRepository
         $em = $this->_em;
         $qb = $em->createQueryBuilder();
         $qb->from(Setting::class,'s');
-
         $qb->select('s.id as id','s.name as feedName');
 
         $qb->where("s.settingType = 'FEED_NAME'");
@@ -1085,12 +1084,9 @@ class ApiRepository extends BaseRepository
         $result = $qb->getQuery()->getArrayResult();
         $data = array();
         foreach ($result as $key => $row) {
-
             $data[$key]['id'] = (int)$row['id'];
             $data[$key]['feedName'] = (string)$row['feedName'];
-
         }
-
         return $data;
     }
 
@@ -1112,13 +1108,10 @@ class ApiRepository extends BaseRepository
         $result = $qb->getQuery()->getArrayResult();
         $data = array();
         foreach ($result as $key => $row) {
-
             $data[$key]['id'] = (int)$row['id'];
             $data[$key]['feedName'] = (string)$row['feedName'];
             $data[$key]['breedName'] = (string)$row['breedName'];
-
         }
-
         return $data;
     }
 
@@ -1256,8 +1249,6 @@ class ApiRepository extends BaseRepository
         foreach ($result as $key => $row) {
             $data[$key]['id'] = (int)$row['id'];
             $data[$key]['breedType'] = (string)$row['breedType'];
-
-
         }
 
         return $data;
@@ -1270,6 +1261,8 @@ class ApiRepository extends BaseRepository
         $qb->select('e.id','e.process', 'e.deviceId', 'e.status');
         return $qb->getQuery()->getArrayResult();
     }
+
+
 
     public function companySpeciesWiseAvarageFCRBefore()
     {
@@ -1294,6 +1287,10 @@ class ApiRepository extends BaseRepository
         return $data;
     }
 
+
+    /**
+     * Average Fish Sale Price (Farmer Price)
+     */
     public function fishSalesPrice()
     {
         $em = $this->_em;
@@ -1320,6 +1317,9 @@ class ApiRepository extends BaseRepository
 
     }
 
+    /**
+     * Company Wise Feed Sale Report fish
+     */
     public function companyWiseFeedSaleFish()
     {
         $em = $this->_em;
@@ -1343,6 +1343,52 @@ class ApiRepository extends BaseRepository
 
         }
 
+        return $data;
+    }
+
+    /**
+     * Company Or Feed Name
+     */
+    public function company()
+    {
+        $em = $this->_em;
+        $qb = $em->createQueryBuilder();
+        $qb->from(Setting::class,'s');
+
+        $qb->select('s.id as id','s.name as name');
+        $qb->where("s.settingType = 'FEED_NAME'");
+        $qb->orderBy('s.id', 'ASC');
+        $result = $qb->getQuery()->getArrayResult();
+
+        $data = [];
+        foreach ($result as $key => $row) {
+            $data[$key]['id'] = (int)$row['id'];
+            $data[$key]['name'] = (string)$row['name'];
+        }
+        return $data;
+    }
+
+    /**
+     * Competitors Company Tilapia Fry Sales
+     */
+    public function competitorsCompany()
+    {
+        $exceptName = ['Nourish'];
+
+        $em = $this->_em;
+        $qb = $em->createQueryBuilder();
+        $qb->from(Setting::class,'s');
+        $qb->select('s.id as id', 's.name as name');
+        $qb->where("s.settingType = 'FEED_NAME'");
+        $qb->andWhere('s.name NOT IN (:name)')->setParameter('name', $exceptName);
+        $qb->orderBy('s.id','ASC');
+        $result = $qb->getQuery()->getArrayResult();
+
+        $data = [];
+        foreach ($result as $key => $row){
+            $data[$key]['id'] = (int)$row['id'];
+            $data[$key]['name'] = (string)$row['name'];
+        }
         return $data;
     }
 
