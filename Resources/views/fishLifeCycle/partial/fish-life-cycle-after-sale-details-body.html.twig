@@ -1,0 +1,42 @@
+{% if fishLifeCycleDetailsByReportingMonth is not empty %}
+
+    {% for index, detail in fishLifeCycleDetailsByReportingMonth %}
+        <tr>
+            <td>{{ detail.feedType.name|default('') }}</td>
+            <td>{{ detail.feedItemName|default('') }}</td>
+            <td>{{ detail.feed.name|default('') }}</td>
+            <td>{{ detail.customer.name|default('') }}</td>
+            <td>{{ detail.customer.mobile|default('') }}</td>
+            <td>{{ detail.mainCultureSpecies.name|default('') }}</td>
+            <td>{{ detail.cultureAreaDecimal|default('') }}</td>
+            <td>{{ detail.hatchery.name|default('') }}</td>
+            <td>{{ detail.stockingDate|date("d-m-Y") }}</td>
+            <td>{{ detail.noOfInitialFish|default('') }}</td>
+            <td>{{ detail.averageInitialWeight|default('') }}</td>
+            <td>{{ detail.totalInitialWeight|default('') }}</td>
+            <td>{{ detail.previousSamplingDate|date("d-m-Y") }}</td>
+            <td>{{ detail.presentSamplingDate|date("d-m-Y") }}</td>
+            <td class="currentCultureDays">{{ detail.currentCultureDays }}</td>
+            <td class="weightGainGm">{{ detail.weightGainGm }}</td>
+            <td class="weightGainKg">{{ detail.weightGainKg }}</td>
+            <td class="currentFeedConsumptionKg">{{ detail.currentFeedConsumptionKg }}</td>
+            <td class="currentFcr">{{ detail.currentFcr }}</td>
+            <td class="currentAdg">{{ detail.currentAdg }}</td>
+            <td class="noOfFinalFish">{{ detail.noOfFinalFish }}</td>
+            <td class="finalWeightGm">{{ detail.finalWeightGm }}</td>
+            <td class="totalDayOfCulture">{{ detail.totalDayOfCulture }}</td>
+            <td class="totalFeedConsumptionKg">{{ detail.totalFeedConsumptionKg }}</td>
+            <td class="finalFcr">{{ detail.finalFcr }}</td>
+            <td class="finalAdg">{{ detail.finalAdg }}</td>
+            <td class="srPercentage">{{ detail.srPercentage }}</td>
+            <td class="farmerRemarks">{{ detail.farmerRemarks }}</td>
+            <td class="employeeRemarks">{{ detail.employeeRemarks }}</td>
+            <td>
+                <a data-action="{{ path('fish_life_cycle_detail_delete',{id:detail.id}) }}" class="btn btn-danger btn-sm remove">x</a>
+            </td>
+        </tr>
+    {% endfor %}
+
+{% endif %}
+
+

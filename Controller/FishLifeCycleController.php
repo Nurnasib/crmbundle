@@ -44,9 +44,9 @@ class FishLifeCycleController extends AbstractController
      * @param CrmCustomer $crmCustomer
      * @ParamConverter("crmCustomer", class="Terminalbd\CrmBundle\Entity\CrmCustomer")
      * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
-     * @Route("/customer/{id}/report/{report}/new/modal", methods={"GET", "POST"}, name="fish_new_modal", options={"expose"=true})
+     * @Route("/customer/{id}/report/{report}/{afterBefore}/new/modal", methods={"GET", "POST"}, name="fish_new_modal", options={"expose"=true})
      */
-    public function newModal(Request $request, CrmCustomer $crmCustomer, Setting $report): Response
+    public function newModal(Request $request, CrmCustomer $crmCustomer, Setting $report, $afterBefore): Response
     {
         $em = $this->getDoctrine()->getManager();
         /*$existReport = $this->getDoctrine()->getRepository(FishLifeCycle::class)->getFishReportByReportingDateAndFeedType($report, $crmCustomer, $this->getUser());
@@ -80,7 +80,7 @@ class FishLifeCycleController extends AbstractController
                 $date=new \DateTime($reportingDate);
 
                 $entity = new FishLifeCycle();
-                $existReport = $this->getDoctrine()->getRepository(FishLifeCycle::class)->findOneBy(array('reportingMonth'=>$date, 'report'=>$report, 'customer'=>$crmCustomer, 'employee'=>$this->getUser()));
+                $existReport = $this->getDoctrine()->getRepository(FishLifeCycle::class)->findOneBy(array('reportingMonth'=>$date, 'report'=>$report, 'customer'=>$crmCustomer, 'employee'=>$this->getUser(), 'reportType'=>$afterBefore));
 
                 if($existReport){
                     $entity=$existReport;
@@ -90,6 +90,12 @@ class FishLifeCycleController extends AbstractController
                 $entity->setCustomer($crmCustomer);
                 $entity->setReport($report);
                 $entity->setEmployee($this->getUser());
+                if($afterBefore=='before'){
+                    $entity->setReportType(FishLifeCycle::REPORT_TYPE_BEFORE);
+                }
+                if($afterBefore=='after'){
+                    $entity->setReportType(FishLifeCycle::REPORT_TYPE_AFTER);
+                }
 
                 $em->persist($entity);
 
@@ -138,6 +144,17 @@ class FishLifeCycleController extends AbstractController
         $mainCultureSpecies = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('status'=>1,'settingType'=>'SPECIES_TYPE','parent'=>$fishLifeCycle->getReport()->getParent()->getParent()),['name' => 'ASC']);
         $hatcheries = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('status'=>1,'settingType'=>'HATCHERY'),['name' => 'ASC']);
 
+        if($fishLifeCycle->getReportType()==FishLifeCycle::REPORT_TYPE_AFTER){
+            return $this->render('@TerminalbdCrm/fishLifeCycle/fish-life-cycle-after-sale-details-report-modal.html.twig', [
+                'fishLifeCycle' => $fishLifeCycle,
+                'fishLifeCycleDetails' => $fishLifeCycleDetails,
+                'feedCompanies' => $feedCompanies,
+                'feedTypes' => $feedTypes,
+                'mainCultureSpecies' => $mainCultureSpecies,
+                'hatcheries' => $hatcheries,
+                'fishLifeCycleDetailsByReportingMonth' => $fishLifeCycleDetailsByReportingMonth,
+            ]);
+        }
 
         return $this->render('@TerminalbdCrm/fishLifeCycle/fish-life-cycle-details-report-modal.html.twig', [
             'fishLifeCycle' => $fishLifeCycle,
@@ -147,7 +164,6 @@ class FishLifeCycleController extends AbstractController
             'mainCultureSpecies' => $mainCultureSpecies,
             'hatcheries' => $hatcheries,
             'fishLifeCycleDetailsByReportingMonth' => $fishLifeCycleDetailsByReportingMonth,
-//            'form' => $form->createView(),
         ]);
     }
 
@@ -193,12 +209,33 @@ class FishLifeCycleController extends AbstractController
             $entity->setCurrentFcr($entity->calculateCurrentFcr());
             $entity->setCurrentAdg($entity->calculateCurrentAdg());
 
-            $entity->setFinalWeightGm($entity->calculateFinalWeightGm());
+
+
+            if(strtoupper($entity->getFishLifeCycle()->getReportType())==FishLifeCycle::REPORT_TYPE_BEFORE){
+                $entity->setFinalWeightGm($entity->calculateFinalWeightGm());
+                $entity->setTotalDayOfCulture($entity->calculateTotalDayOfCulture());
+                $entity->setFinalFcr($entity->calculateFinalFcr());
+                $entity->setFinalAdg($entity->calculateFinalAdg());
+            }
+            if(strtoupper($entity->getFishLifeCycle()->getReportType())==FishLifeCycle::REPORT_TYPE_AFTER){
+                $entity->setTotalDayOfCulture($entity->calculateDayOfCultureForAfterSale());
+                $entity->setFinalFcr($entity->calculateFinalFcrForAfterSale());
+                $entity->setFinalAdg($entity->calculateFinalAdgForAfterSale());
+            }
             $entity->setFinalWeightKg($entity->calculateFinalWeightKg());
-            $entity->setTotalDayOfCulture($entity->calculateTotalDayOfCulture());
             $entity->setTotalFeedConsumptionKg($entity->calculateTotalFeedConsumptionKg());
-            $entity->setFinalFcr($entity->calculateFinalFcr());
-            $entity->setFinalAdg($entity->calculateFinalAdg());
+
+            if(strtoupper($entity->getFishLifeCycle()->getReportType())==FishLifeCycle::REPORT_TYPE_AFTER){
+                $entity->setTotalSeedCost($entity->calculateTotalSeedCost());
+                $entity->setTotalFeedCost($entity->calculateTotalFeedCost());
+                $entity->setFeedCostPerKgFish($entity->calculateFeedCostPerKgFish());
+                $entity->setTotalCost($entity->calculateTotalCost());
+                $entity->setProductionCostPerKgFish($entity->calculateProductionCostPerKgFish());
+                $entity->setTotalIncome($entity->calculateTotalIncome());
+                $entity->setNetProfitOrLoss($entity->calculateNetProfitOrLoss());
+                $entity->setRetuneOverInvestment($entity->calculateRetuneOverInvestment());
+            }
+
             $entity->setSrPercentage($entity->calculateSrPercentage());
 
         }
@@ -224,6 +261,14 @@ class FishLifeCycleController extends AbstractController
                 'finalFcr'=>$entity->getFinalFcr(),
                 'finalAdg'=>$entity->getFinalAdg(),
                 'srPercentage'=>$entity->getSrPercentage(),
+                'totalSeedCost'=>$entity->getTotalSeedCost(),
+                'totalFeedCost'=>$entity->getTotalFeedCost(),
+                'feedCostPerKgFish'=>$entity->getFeedCostPerKgFish(),
+                'totalCost'=>$entity->getTotalCost(),
+                'productionCostPerKgFish'=>$entity->getProductionCostPerKgFish(),
+                'totalIncome'=>$entity->getTotalIncome(),
+                'netProfitOrLoss'=>$entity->getNetProfitOrLoss(),
+                'retuneOverInvestment'=>$entity->getRetuneOverInvestment(),
                 'status'=>200,
             )
         );

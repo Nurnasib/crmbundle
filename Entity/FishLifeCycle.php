@@ -16,6 +16,8 @@ use Gedmo\Mapping\Annotation as Gedmo;
  */
 class FishLifeCycle
 {
+    const REPORT_TYPE_BEFORE = 'BEFORE';
+    const REPORT_TYPE_AFTER = 'AFTER';
 
     /**
      * @ORM\Id
@@ -23,6 +25,14 @@ class FishLifeCycle
      * @ORM\GeneratedValue(strategy="UUID")
      */
     private $id;
+
+
+    /**
+     * @var string
+     * @ORM\Column(name="report_type", type="string",nullable=true)
+     */
+
+    private $reportType; //BEFORE OR AFTER
 
     /**
      * @var FishLifeCycleDetails
@@ -36,7 +46,6 @@ class FishLifeCycle
      * @ORM\JoinColumn(name="report_id", referencedColumnName="id", onDelete="SET NULL", nullable=true)
      */
     private $report;
-
 
     /**
      * @var User
@@ -174,6 +183,22 @@ class FishLifeCycle
     public function setCustomer($customer)
     {
         $this->customer = $customer;
+    }
+
+    /**
+     * @return string
+     */
+    public function getReportType()
+    {
+        return $this->reportType;
+    }
+
+    /**
+     * @param string $reportType
+     */
+    public function setReportType(string $reportType): void
+    {
+        $this->reportType = $reportType;
     }
 
 

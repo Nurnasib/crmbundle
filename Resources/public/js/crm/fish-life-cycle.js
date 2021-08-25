@@ -3,7 +3,7 @@ $('.fishLifeCycleSection').on('keypress','.fish_life_cycle input[type=text], .fi
         e.preventDefault();
         var $canfocus = $('.fish_life_cycle :focusable');
         var index = $canfocus.index(this) + 1;
-        if (index >= $canfocus.length-1){
+        if (index >= $canfocus.length){
             index = 0;
         }
         $canfocus.eq(index).focus().select();
@@ -54,6 +54,14 @@ function fishLifeCycleDetailDataUpdateUsingAjax(element) {
                 $('.'+response.id+'_finalFcr').text(response.finalFcr);
                 $('.'+response.id+'_finalAdg').text(response.finalAdg);
                 $('.'+response.id+'_srPercentage').text(response.srPercentage);
+                $('.'+response.id+'_totalSeedCost').text(response.totalSeedCost);
+                $('.'+response.id+'_totalFeedCost').text(response.totalFeedCost);
+                $('.'+response.id+'_feedCostPerKgFish').text(response.feedCostPerKgFish);
+                $('.'+response.id+'_totalCost').text(response.totalCost);
+                $('.'+response.id+'_productionCostPerKgFish').text(response.productionCostPerKgFish);
+                $('.'+response.id+'_totalIncome').text(response.totalIncome);
+                $('.'+response.id+'_netProfitOrLoss').text(response.netProfitOrLoss);
+                $('.'+response.id+'_retuneOverInvestment').text(response.retuneOverInvestment);
 
                 var refreshUrl = Routing.generate('crm_fish_life_cycle_refresh',{'id':fishLifeCycle_id});
                 $(".fishLifeCycleDetailsSection").load(refreshUrl);

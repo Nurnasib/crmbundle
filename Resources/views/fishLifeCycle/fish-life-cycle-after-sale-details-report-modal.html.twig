@@ -1,0 +1,478 @@
+{% extends 'admin/layout.html.twig' %}
+{#{% block body_id 'kpi_domain_new' %}#}
+{% block body %}
+    <div class="pcoded-inner-content">
+        <div class="row">
+            <div class="card">
+                <div class="portlet box ">
+            <div class="portlet-title">
+                <div class="caption">{{fishLifeCycle.report.name}} </div>
+            </div>
+        {#{{ dump(report) }}#}
+
+            <div class="portlet-body form">
+                {#{{ form_start(form, {'attr': {'action': path('chick_new_modal',{'id':crmCustomer.id,'report':report.id }),'class': 'form-horizontal right','id':'chick_life_cycle_form'}}) }}#}
+                <div class="form-body">
+                    <div class="form-inner-no-space">
+
+                        <div class="row">
+                            <div class="col-md-12 text-center">
+                                <h4>NOURISH POULTRY & HATCHERY LTD</h4>
+                                <h5>Uttara, Dhaka.</h5>
+                                <h4>{{fishLifeCycle.report.name}}</h4>
+                                <input type="hidden" class="fishLifeCycle_id" value="{{ fishLifeCycle.id }}">
+                            </div>
+
+                            <div class="col-md-12">
+                                <div class="col-md-3">
+                                    <p style="color: #000000">{{ 'Farmer Name'|trans }}: {{ fishLifeCycle.customer.name }}</p>
+                                </div>
+                                <div class="col-md-3">
+                                    <p style="color: #000000">{{ 'Address'|trans }}: {{ fishLifeCycle.customer.address }}</p>
+                                </div>
+                                <div class="col-md-3">
+                                    <p style="color: #000000">{{ 'Agent'|trans }}: {{ fishLifeCycle.customer.agent.name }}</p>
+                                </div>
+                                <div class="col-md-3">
+                                    <p style="color: #000000">{{ 'Reporting Date'|trans }}: {{ fishLifeCycle.reportingMonth?fishLifeCycle.reportingMonth|date("d-m-Y"):'' }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body card-body-inner" style="padding: 0 5px;">
+                            <div class="fishLifeCycleSection">
+                                <table class="table table-striped table-bordered table-hover fish_life_cycle" id="datatable">
+                                    <thead class="thead-dark">
+                                    <tr>
+                                        <th scope="col">Feed Company Name</th>
+                                        {% if feedCompanies is not empty %}
+                                            {% for index, feedCompany in feedCompanies %}
+                                                <th>{{ feedCompany }}</th>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td>Feed Used</td>
+                                        {% if feedCompanies is not empty %}
+                                            {% for index, feedCompany in feedCompanies %}
+                                                <th>
+                                                    <select  data-input-type="select" data-meta-key="FeedType"  data-entity-id="{{ fishLifeCycleDetails[index].id }}" name="feed_type" class="form-control ">
+                                                        <option value="">Choose Feed Type</option>
+                                                        {% if feedTypes is not empty %}
+                                                            {% for feedType in feedTypes %}
+                                                                <option value="{{ feedType.id }}" {{fishLifeCycleDetails[index].feedType is not empty and fishLifeCycleDetails[index].feedType.id==feedType.id?'selected="selected"':'' }}>{{ feedType.name }}</option>
+                                                            {% endfor %}
+                                                        {% endif %}
+                                                    </select>
+                                                </th>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </tr>
+                                    {#<tr>
+                                        <td>Feed Item Name</td>
+                                        {% if feedCompanies is not empty %}
+                                            {% for index, feedCompany in feedCompanies %}
+                                                <th>
+                                                    <input type="text" data-input-type="text" data-entity-id="{{ fishLifeCycleDetails[index].id }}"
+                                                           data-meta-key="FeedItemName" class="form-control"
+                                                           value="{{ fishLifeCycleDetails[index].feedItemName }}">
+                                                </th>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </tr>#}
+                                    <tr>
+                                        <td>Species </td>
+                                        {% if feedCompanies is not empty %}
+                                            {% for index, feedCompany in feedCompanies %}
+                                                <th>
+                                                    <select  data-input-type="select" data-meta-key="MainCultureSpecies"  data-entity-id="{{ fishLifeCycleDetails[index].id }}" name="main_culture_species" class="form-control ">
+                                                        <option value="">Choose Culture Species</option>
+                                                        {% if mainCultureSpecies is not empty %}
+                                                            {% for mainCultureSpecie in mainCultureSpecies %}
+                                                                <option value="{{ mainCultureSpecie.id }}" {{fishLifeCycleDetails[index].mainCultureSpecies is not empty and fishLifeCycleDetails[index].mainCultureSpecies.id==mainCultureSpecie.id?'selected="selected"':'' }}>{{ mainCultureSpecie.name }}</option>
+                                                            {% endfor %}
+                                                        {% endif %}
+                                                    </select>
+                                                </th>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </tr>
+                                    <tr>
+                                        <td>Hatchery Name</td>
+                                        {% if feedCompanies is not empty %}
+                                            {% for index, feedCompany in feedCompanies %}
+                                                <th>
+                                                    <select data-input-type="select" data-meta-key="Hatchery"  data-entity-id="{{ fishLifeCycleDetails[index].id }}" name="hatchery" class="form-control ">
+                                                        <option value="">Choose Hatchery</option>
+                                                        {% if hatcheries is not empty %}
+                                                            {% for hatchery in hatcheries %}
+                                                                <option value="{{ hatchery.id }}" {{fishLifeCycleDetails[index].hatchery is not empty and fishLifeCycleDetails[index].hatchery.id==hatchery.id?'selected="selected"':'' }}>{{ hatchery.name }}</option>
+                                                            {% endfor %}
+                                                        {% endif %}
+                                                    </select>
+                                                </th>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </tr>
+                                    <tr>
+                                        <td>Stocking date</td>
+                                        {% if feedCompanies is not empty %}
+                                            {% for index, feedCompany in feedCompanies %}
+                                                <td>
+                                                    <div class="date_section">
+                                                        <input type="text" data-input-type="datetime" data-entity-id="{{ fishLifeCycleDetails[index].id }}"
+                                                               data-meta-key="StockingDate" class="form-control datePicker"
+                                                               value="{{ fishLifeCycleDetails[index].stockingDate?fishLifeCycleDetails[index].stockingDate|date('d-m-Y'):'' }}">
+                                                    </div>
+                                                </td>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </tr>
+                                    <tr>
+                                        <td>Harvest date</td>
+                                        {% if feedCompanies is not empty %}
+                                            {% for index, feedCompany in feedCompanies %}
+                                                <td>
+                                                    <div class="date_section">
+                                                        <input type="text" data-input-type="datetime" data-entity-id="{{ fishLifeCycleDetails[index].id }}"
+                                                               data-meta-key="HarvestDate" class="form-control datePicker"
+                                                               value="{{ fishLifeCycleDetails[index].harvestDate?fishLifeCycleDetails[index].harvestDate|date('d-m-Y'):'' }}">
+                                                    </div>
+                                                </td>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </tr>
+                                    <tr>
+                                        <td>Culture area (m2)</td>
+                                        {% if feedCompanies is not empty %}
+                                            {% for index, feedCompany in feedCompanies %}
+                                                <th>
+                                                    <input type="text" name="culture_area_decimal" data-input-type="text" data-entity-id="{{ fishLifeCycleDetails[index].id }}"
+                                                           data-meta-key="CultureAreaDecimal" class="form-control"
+                                                           value="{{ fishLifeCycleDetails[index].cultureAreaDecimal }}">
+                                                </th>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </tr>
+
+                                    <tr>
+                                        <td>No.of initial fish (pcs.)</td>
+                                        {% if feedCompanies is not empty %}
+                                            {% for index, feedCompany in feedCompanies %}
+                                                <td>
+                                                    <input type="number" name="no_of_initial_fish" data-input-type="number" data-entity-id="{{ fishLifeCycleDetails[index].id }}"
+                                                           data-meta-key="NoOfInitialFish" class="form-control"
+                                                           value="{{ fishLifeCycleDetails[index].noOfInitialFish }}" min="0">
+                                                </td>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </tr>
+                                    <tr>
+                                        <td>Total initial weight (kg)</td>
+                                        {% if feedCompanies is not empty %}
+                                            {% for index, feedCompany in feedCompanies %}
+                                                <td class="{{ fishLifeCycleDetails[index].id }}_totalInitialWeight">{{ fishLifeCycleDetails[index].totalInitialWeight }}</td>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </tr>
+                                    <tr>
+                                        <td>Average initial weight (g)</td>
+                                        {% if feedCompanies is not empty %}
+                                            {% for index, feedCompany in feedCompanies %}
+                                                <td>
+                                                    <input type="number" name="average_initial_weight" data-input-type="number" data-entity-id="{{ fishLifeCycleDetails[index].id }}"
+                                                           data-meta-key="AverageInitialWeight" class="form-control"
+                                                           value="{{ fishLifeCycleDetails[index].averageInitialWeight }}" min="0">
+                                                </td>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </tr>
+                                    <tr>
+                                        <td>No.of Final fish (pcs.)</td>
+                                        {% if feedCompanies is not empty %}
+                                            {% for index, feedCompany in feedCompanies %}
+                                                <td>
+                                                    <input type="number" name="noOfFinalFish" data-input-type="number" data-entity-id="{{ fishLifeCycleDetails[index].id }}"
+                                                           data-meta-key="NoOfFinalFish" class="form-control"
+                                                           value="{{ fishLifeCycleDetails[index].noOfFinalFish }}" min="0">
+                                                </td>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </tr>
+                                    <tr>
+                                        <td>No. of final (kg)</td>
+                                        {% if feedCompanies is not empty %}
+                                            {% for index, feedCompany in feedCompanies %}
+                                                <td class="{{ fishLifeCycleDetails[index].id }}_finalWeightKg">{{ fishLifeCycleDetails[index].finalWeightKg }}</td>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </tr>
+                                    <tr>
+                                        <td>Average final weight (g)</td>
+                                        {% if feedCompanies is not empty %}
+                                            {% for index, feedCompany in feedCompanies %}
+                                                <td class="{{ fishLifeCycleDetails[index].id }}_previousFinalWeightGm">
+                                                    <input type="number" name="finalWeightGm" data-input-type="number" data-entity-id="{{ fishLifeCycleDetails[index].id }}"
+                                                           data-meta-key="FinalWeightGm" class="form-control"
+                                                           value="{{ fishLifeCycleDetails[index].finalWeightGm }}" min="0">
+{#                                                    {{ fishLifeCycleDetails[index].finalWeightGm }}#}
+                                                </td>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </tr>
+
+                                    <tr>
+                                        <td>Total feed consumption (kg)</td>
+                                        {% if feedCompanies is not empty %}
+                                            {% for index, feedCompany in feedCompanies %}
+                                                <td>
+                                                    <input type="number" name="previousTotalFeedConsumptionKg" data-input-type="number" data-entity-id="{{ fishLifeCycleDetails[index].id }}"
+                                                           data-meta-key="PreviousTotalFeedConsumptionKg" class="form-control"
+                                                           value="{{ fishLifeCycleDetails[index].previousTotalFeedConsumptionKg }}" min="0">
+                                                </td>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </tr>
+                                    <tr>
+                                        <td>DOC (Day Of Culture)</td>
+                                        {% if feedCompanies is not empty %}
+                                            {% for index, feedCompany in feedCompanies %}
+                                                <td class="{{ fishLifeCycleDetails[index].id }}_totalDayOfCulture">{{ fishLifeCycleDetails[index].totalDayOfCulture }}</td>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </tr>
+                                    <tr>
+                                        <td>ADG (g/fish/day)</td>
+                                        {% if feedCompanies is not empty %}
+                                            {% for index, feedCompany in feedCompanies %}
+                                                <td class="{{ fishLifeCycleDetails[index].id }}_finalAdg">{{ fishLifeCycleDetails[index].finalAdg }}</td>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </tr>
+                                    <tr>
+                                        <td>FCR</td>
+                                        {% if feedCompanies is not empty %}
+                                            {% for index, feedCompany in feedCompanies %}
+                                                <td class="{{ fishLifeCycleDetails[index].id }}_finalFcr">{{ fishLifeCycleDetails[index].finalFcr }}</td>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </tr>
+                                    <tr>
+                                        <td>SR (%)</td>
+                                        {% if feedCompanies is not empty %}
+                                            {% for index, feedCompany in feedCompanies %}
+                                                <td class="{{ fishLifeCycleDetails[index].id }}_srPercentage">{{ fishLifeCycleDetails[index].srPercentage }}</td>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </tr>
+                                    <tr>
+                                        <td>Seed cost per pcs</td>
+                                        {% if feedCompanies is not empty %}
+                                            {% for index, feedCompany in feedCompanies %}
+                                                <td>
+                                                    <input type="number" name="perPcsSeedCost" data-input-type="number" data-entity-id="{{ fishLifeCycleDetails[index].id }}"
+                                                           data-meta-key="PerPcsSeedCost" class="form-control"
+                                                           value="{{ fishLifeCycleDetails[index].perPcsSeedCost }}" min="0">
+                                                </td>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </tr>
+
+                                    <tr>
+                                        <td>Total seed cost (Taka)</td>
+                                        {% if feedCompanies is not empty %}
+                                            {% for index, feedCompany in feedCompanies %}
+                                                <td class="{{ fishLifeCycleDetails[index].id }}_totalSeedCost">{{ fishLifeCycleDetails[index].totalSeedCost }}</td>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </tr>
+                                    <tr>
+                                        <td>Feed price per kg</td>
+                                        {% if feedCompanies is not empty %}
+                                            {% for index, feedCompany in feedCompanies %}
+                                                <td>
+                                                    <input type="number" name="perKgFeedRate" data-input-type="number" data-entity-id="{{ fishLifeCycleDetails[index].id }}"
+                                                           data-meta-key="PerKgFeedRate" class="form-control"
+                                                           value="{{ fishLifeCycleDetails[index].perKgFeedRate }}" min="0">
+                                                </td>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </tr>
+
+                                    <tr>
+                                        <td>Total feed cost (Taka)</td>
+                                        {% if feedCompanies is not empty %}
+                                            {% for index, feedCompany in feedCompanies %}
+                                                <td class="{{ fishLifeCycleDetails[index].id }}_totalFeedCost">{{ fishLifeCycleDetails[index].totalFeedCost }}</td>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </tr>
+
+                                    <tr>
+                                        <td>Feed Cost/kg fish (tk.)</td>
+                                        {% if feedCompanies is not empty %}
+                                            {% for index, feedCompany in feedCompanies %}
+                                                <td class="{{ fishLifeCycleDetails[index].id }}_feedCostPerKgFish">{{ fishLifeCycleDetails[index].feedCostPerKgFish }}</td>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </tr>
+                                    <tr>
+                                        <td>Total Others Cost (tk.)</td>
+                                        {% if feedCompanies is not empty %}
+                                            {% for index, feedCompany in feedCompanies %}
+                                                <td>
+                                                    <input type="number" name="totalOtherCost" data-input-type="number" data-entity-id="{{ fishLifeCycleDetails[index].id }}"
+                                                           data-meta-key="TotalOtherCost" class="form-control"
+                                                           value="{{ fishLifeCycleDetails[index].totalOtherCost }}" min="0">
+                                                </td>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </tr>
+                                    <tr>
+                                        <td>Total Cost (tk.)</td>
+                                        {% if feedCompanies is not empty %}
+                                            {% for index, feedCompany in feedCompanies %}
+                                                <td class="{{ fishLifeCycleDetails[index].id }}_totalCost">{{ fishLifeCycleDetails[index].totalCost }}</td>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </tr>
+                                    <tr>
+                                        <td>Production Cost/Kg fish (tk.)</td>
+                                        {% if feedCompanies is not empty %}
+                                            {% for index, feedCompany in feedCompanies %}
+                                                <td class="{{ fishLifeCycleDetails[index].id }}_productionCostPerKgFish">{{ fishLifeCycleDetails[index].productionCostPerKgFish }}</td>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </tr>
+                                    <tr>
+                                        <td>Sales price per kg</td>
+                                        {% if feedCompanies is not empty %}
+                                            {% for index, feedCompany in feedCompanies %}
+                                                <td>
+                                                    <input type="number" name="salesPricePerKg" data-input-type="number" data-entity-id="{{ fishLifeCycleDetails[index].id }}"
+                                                           data-meta-key="SalesPricePerKg" class="form-control"
+                                                           value="{{ fishLifeCycleDetails[index].salesPricePerKg }}" min="0">
+                                                </td>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </tr>
+
+                                    <tr>
+                                        <td>Total income (tk.)</td>
+                                        {% if feedCompanies is not empty %}
+                                            {% for index, feedCompany in feedCompanies %}
+                                                <td class="{{ fishLifeCycleDetails[index].id }}_totalIncome">{{ fishLifeCycleDetails[index].totalIncome }}</td>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </tr>
+                                    <tr>
+                                        <td>Profit/Loss (tk.)</td>
+                                        {% if feedCompanies is not empty %}
+                                            {% for index, feedCompany in feedCompanies %}
+                                                <td class="{{ fishLifeCycleDetails[index].id }}_netProfitOrLoss">{{ fishLifeCycleDetails[index].netProfitOrLoss }}</td>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </tr>
+                                    <tr>
+                                        <td>ROI (Retune Over Investment)%</td>
+                                        {% if feedCompanies is not empty %}
+                                            {% for index, feedCompany in feedCompanies %}
+                                                <td class="{{ fishLifeCycleDetails[index].id }}_retuneOverInvestment">{{ fishLifeCycleDetails[index].retuneOverInvestment }}</td>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </tr>
+                                    <tr>
+                                        <td>Farmer Comments</td>
+                                        {% if feedCompanies is not empty %}
+                                            {% for index, feedCompany in feedCompanies %}
+                                                <td>
+                                                    <input type="text" name="farmer_remarks" data-input-type="text" data-entity-id="{{ fishLifeCycleDetails[index].id }}"
+                                                           data-meta-key="FarmerRemarks" class="form-control"
+                                                           value="{{ fishLifeCycleDetails[index].farmerRemarks }}">
+                                                </td>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </tr>
+                                    <tr>
+                                        <td>Visitor's Comments</td>
+                                        {% if feedCompanies is not empty %}
+                                            {% for index, feedCompany in feedCompanies %}
+                                                <td>
+                                                    <input type="text" name="employee_remarks" data-input-type="text" data-entity-id="{{ fishLifeCycleDetails[index].id }}"
+                                                           data-meta-key="EmployeeRemarks" class="form-control"
+                                                           value="{{ fishLifeCycleDetails[index].employeeRemarks }}">
+                                                </td>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </tr>
+                                    </tbody>
+                                </table>
+
+
+                            </div>
+                            <div style=" overflow-x: scroll">
+                                <table class="table table-striped table-bordered table-hover fish_life_cycle" id="datatable">
+                                    <thead class="thead-dark">
+                                    <tr>
+                                        <th style="width: 160px" scope="col">Feed Used Type</th>
+                                        <th scope="col">Feed Item Name</th>
+                                        <th style="width: 150px" scope="col">Feed Company</th>
+                                        <th scope="col">{{ 'Farmar Name'|trans }}</th>
+                                        <th scope="col">{{ 'Mobile No.'|trans }}</th>
+                                        <th style="width: 150px" scope="col">MainCulture Species</th>
+                                        <th style="width: 150px" scope="col">Culturearea (m2) or decimal</th>
+                                        <th style="width: 150px" scope="col">Hatchery Name</th>
+                                        <th style="width: 120px" scope="col">StockingDate</th>
+                                        <th scope="col">No.of initial fish (pcs.)</th>
+                                        <th scope="col">Average initial weight (g)</th>
+                                        <th scope="col">Total initial weight (kg)</th>
+
+                                        <th style="width: 100px" scope="col">Previous SamplingDate</th>
+                                        <th style="width: 100px" scope="col">Present SamplingDate</th>
+                                        <th style="width: 100px" scope="col">Culture days (During sampling)</th>
+                                        <th scope="col">Weight gain (g)</th>
+                                        <th scope="col">Weight gain (kg)</th>
+                                        <th scope="col">Current feed consumption (kg)</th>
+                                        <th scope="col">Current FCR</th>
+                                        <th scope="col">Current ADG (g/fish/day)</th>
+                                        <th scope="col">No.of Final fish (pcs.)</th>
+                                        <th scope="col">Final weight (g)</th>
+                                        <th scope="col">Final weight (kg)</th>
+                                        <th scope="col">Total DOC (Day Of Culture)</th>
+                                        <th scope="col">Total feed consumption (kg)</th>
+                                        <th scope="col">Final FCR</th>
+                                        <th scope="col">Final ADG (g/fish/day)</th>
+                                        <th scope="col">SR (%)</th>
+                                        <th style="width: 200px" scope="col">Farmer's Comments</th>
+                                        <th style="width: 200px" scope="col">Visitor's Comments</th>
+                                        <th scope="col"></th>
+
+                                    </tr>
+
+                                    </thead>
+                                    <tbody class="fishLifeCycleDetailsSection">
+                                    {% include '@TerminalbdCrm/fishLifeCycle/partial/fish-life-cycle-after-sale-details-body.html.twig' %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block cssBlock %}
+    <link rel="stylesheet" href="{{ asset('assets/module/css/app.css') }}">
+    <link rel="stylesheet" href="{{ asset('bundles/terminalbdcrm/css/crm.css') }}">
+{% endblock  %}
+{% block javascripts %}
+    {#<script>#}
+    {{ parent() }}
+    <script type="application/javascript" src="{{ asset('bundles/terminalbdcrm/js/crm/fish-life-cycle.js') }}"></script>
+{% endblock  %}

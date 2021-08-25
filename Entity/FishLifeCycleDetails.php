@@ -205,6 +205,79 @@ class FishLifeCycleDetails
     private $srPercentage=0;
 
     /**
+     * @var float
+     * @Orm\Column( type="float")
+     */
+    private $perPcsSeedCost=0;
+
+    /**
+     * @var float
+     * @Orm\Column(name="total_seed_cost", type="float")
+     */
+    private $totalSeedCost=0;
+
+    /**
+     * @var float
+     * @Orm\Column( type="float")
+     */
+    private $perKgFeedRate=0;
+
+    /**
+     * @var float
+     * @Orm\Column( type="float")
+     */
+    private $totalFeedCost=0;
+
+    /**
+     * @var float
+     * @Orm\Column( type="float")
+     */
+    private $feedCostPerKgFish=0;
+
+
+    /**
+     * @var float
+     * @Orm\Column( type="float")
+     */
+    private $totalOtherCost=0;
+
+    /**
+     * @var float
+     * @Orm\Column( type="float")
+     */
+    private $totalCost=0;
+
+    /**
+     * @var float
+     * @Orm\Column( type="float")
+     */
+    private $productionCostPerKgFish=0;
+
+    /**
+     * @var float
+     * @Orm\Column( type="float")
+     */
+    private $salesPricePerKg=0;
+
+    /**
+     * @var float
+     * @Orm\Column( type="float")
+     */
+    private $totalIncome=0;
+
+    /**
+     * @var float
+     * @Orm\Column( type="float")
+     */
+    private $netProfitOrLoss=0;
+
+    /**
+     * @var float
+     * @Orm\Column( type="float")
+     */
+    private $retuneOverInvestment=0;
+
+    /**
      * @var Setting
      * @ORM\ManyToOne(targetEntity="Setting", inversedBy="fishLifeCycleDetails")
      * @ORM\JoinColumn(name="hatchery_id", referencedColumnName="id", onDelete="SET NULL", nullable=true)
@@ -236,8 +309,13 @@ class FishLifeCycleDetails
      * @var \DateTime
      * @ORM\Column(name="stocking_date", type="date", nullable=true)
      */
-
     private $stockingDate;
+
+    /**
+     * @var \DateTime
+     * @ORM\Column(name="harvest_date", type="date", nullable=true)
+     */
+    private $harvestDate;
 
     /**
      * @var \DateTime
@@ -745,6 +823,22 @@ class FishLifeCycleDetails
     /**
      * @return \DateTime
      */
+    public function getHarvestDate()
+    {
+        return $this->harvestDate;
+    }
+
+    /**
+     * @param \DateTime $harvestDate
+     */
+    public function setHarvestDate(\DateTime $harvestDate)
+    {
+        $this->harvestDate = $harvestDate;
+    }
+
+    /**
+     * @return \DateTime
+     */
     public function getPreviousSamplingDate()
     {
         return $this->previousSamplingDate;
@@ -865,6 +959,17 @@ class FishLifeCycleDetails
         return 0;
     }
 
+    public function calculateDayOfCultureForAfterSale(){
+        if($this->getHarvestDate() && $this->getStockingDate() ){
+            $harvestDate = strtotime($this->getHarvestDate()->format('Y-m-d'));
+            $stockingDate = strtotime($this->getStockingDate()->format('Y-m-d'));
+            $dateDiff = $harvestDate - $stockingDate;
+
+            return round($dateDiff / (60 * 60 * 24));
+        }
+        return 0;
+    }
+
     /**
      * @return float
      */
@@ -946,6 +1051,17 @@ class FishLifeCycleDetails
         return $returnResult;
     }
 
+
+    public function calculateFinalFcrForAfterSale(){
+        $returnResult = 0;
+        $finalWeightKg=$this->calculateFinalWeightKg()-$this->calculateTotalInitialWeight();
+        if($finalWeightKg>0){
+            $returnResult = $this->calculateTotalFeedConsumptionKg()/$finalWeightKg;
+        }
+
+        return $returnResult;
+    }
+
     /**
      * @return float
      */
@@ -966,6 +1082,15 @@ class FishLifeCycleDetails
         $returnResult = 0;
         if($this->calculateTotalDayOfCulture()>0){
             $returnResult = ($this->calculateFinalWeightGm()-$this->getAverageInitialWeight())/$this->calculateTotalDayOfCulture();
+        }
+
+        return $returnResult;
+    }
+
+    public function calculateFinalAdgForAfterSale(){
+        $returnResult = 0;
+        if($this->calculateDayOfCultureForAfterSale()>0){
+            $returnResult = ($this->getFinalWeightGm()-$this->getAverageInitialWeight())/$this->calculateDayOfCultureForAfterSale();
         }
 
         return $returnResult;
@@ -993,6 +1118,249 @@ class FishLifeCycleDetails
             $returnResult = ($this->getNoOfFinalFish()*100)/$this->getNoOfInitialFish();
         }
         return $returnResult;
+    }
+
+    /**
+     * @return float
+     */
+    public function getPerPcsSeedCost()
+    {
+        return $this->perPcsSeedCost;
+    }
+
+    /**
+     * @param float $perPcsSeedCost
+     */
+    public function setPerPcsSeedCost(float $perPcsSeedCost): void
+    {
+        $this->perPcsSeedCost = $perPcsSeedCost;
+    }
+
+    /**
+     * @return float
+     */
+    public function getTotalSeedCost()
+    {
+        return $this->totalSeedCost;
+    }
+
+    /**
+     * @param float $totalSeedCost
+     */
+    public function setTotalSeedCost(float $totalSeedCost): void
+    {
+        $this->totalSeedCost = $totalSeedCost;
+    }
+
+    public function calculateTotalSeedCost(){
+        return $this->getNoOfInitialFish()*$this->getPerPcsSeedCost();
+    }
+
+    /**
+     * @return float
+     */
+    public function getPerKgFeedRate()
+    {
+        return $this->perKgFeedRate;
+    }
+
+    /**
+     * @param float $perKgFeedRate
+     */
+    public function setPerKgFeedRate(float $perKgFeedRate): void
+    {
+        $this->perKgFeedRate = $perKgFeedRate;
+    }
+
+    /**
+     * @return float
+     */
+    public function getTotalFeedCost()
+    {
+        return $this->totalFeedCost;
+    }
+
+    /**
+     * @param float $totalFeedCost
+     */
+    public function setTotalFeedCost(float $totalFeedCost): void
+    {
+        $this->totalFeedCost = $totalFeedCost;
+    }
+
+    public function calculateTotalFeedCost()
+    {
+        return $this->getTotalFeedConsumptionKg()*$this->getPerKgFeedRate();
+    }
+
+    /**
+     * @return float
+     */
+    public function getFeedCostPerKgFish()
+    {
+        return $this->feedCostPerKgFish;
+    }
+
+    /**
+     * @param float $feedCostPerKgFish
+     */
+    public function setFeedCostPerKgFish(float $feedCostPerKgFish): void
+    {
+        $this->feedCostPerKgFish = $feedCostPerKgFish;
+    }
+
+    public function calculateFeedCostPerKgFish()
+    {
+        $result=0;
+        if($this->calculateFinalWeightKg()>0){
+            $result = $this->getTotalFeedCost()/$this->calculateFinalWeightKg();
+        }
+        return $result;
+    }
+
+    /**
+     * @return float
+     */
+    public function getTotalOtherCost()
+    {
+        return $this->totalOtherCost;
+    }
+
+    /**
+     * @param float $totalOtherCost
+     */
+    public function setTotalOtherCost(float $totalOtherCost): void
+    {
+        $this->totalOtherCost = $totalOtherCost;
+    }
+
+    /**
+     * @return float
+     */
+    public function getTotalCost()
+    {
+        return $this->totalCost;
+    }
+
+    /**
+     * @param float $totalCost
+     */
+    public function setTotalCost(float $totalCost): void
+    {
+        $this->totalCost = $totalCost;
+    }
+
+    public function calculateTotalCost(){
+        return $this->getTotalFeedCost()+$this->getTotalSeedCost()+$this->getFeedCostPerKgFish()+$this->getTotalOtherCost();
+    }
+
+    /**
+     * @return float
+     */
+    public function getProductionCostPerKgFish()
+    {
+        return $this->productionCostPerKgFish;
+    }
+
+    /**
+     * @param float $productionCostPerKgFish
+     */
+    public function setProductionCostPerKgFish(float $productionCostPerKgFish): void
+    {
+        $this->productionCostPerKgFish = $productionCostPerKgFish;
+    }
+
+
+    public function calculateProductionCostPerKgFish()
+    {
+        $result=0;
+        if($this->calculateFinalWeightKg()>0){
+            $result = $this->calculateTotalCost()/$this->calculateFinalWeightKg();
+        }
+        return $result;
+    }
+
+    /**
+     * @return float
+     */
+    public function getSalesPricePerKg()
+    {
+        return $this->salesPricePerKg;
+    }
+
+    /**
+     * @param float $salesPricePerKg
+     */
+    public function setSalesPricePerKg(float $salesPricePerKg): void
+    {
+        $this->salesPricePerKg = $salesPricePerKg;
+    }
+
+    /**
+     * @return float
+     */
+    public function getTotalIncome()
+    {
+        return $this->totalIncome;
+    }
+
+    /**
+     * @param float $totalIncome
+     */
+    public function setTotalIncome(float $totalIncome): void
+    {
+        $this->totalIncome = $totalIncome;
+    }
+
+    public function calculateTotalIncome()
+    {
+        $result = $this->calculateFinalWeightKg()*$this->getSalesPricePerKg();
+        return $result;
+    }
+
+    /**
+     * @return float
+     */
+    public function getNetProfitOrLoss()
+    {
+        return $this->netProfitOrLoss;
+    }
+
+    /**
+     * @param float $netProfitOrLoss
+     */
+    public function setNetProfitOrLoss(float $netProfitOrLoss): void
+    {
+        $this->netProfitOrLoss = $netProfitOrLoss;
+    }
+
+    public function calculateNetProfitOrLoss()
+    {
+        return $this->calculateTotalIncome()-$this->calculateTotalCost();
+    }
+
+    /**
+     * @return float
+     */
+    public function getRetuneOverInvestment()
+    {
+        return $this->retuneOverInvestment;
+    }
+
+    /**
+     * @param float $retuneOverInvestment
+     */
+    public function setRetuneOverInvestment(float $retuneOverInvestment): void
+    {
+        $this->retuneOverInvestment = $retuneOverInvestment;
+    }
+    
+    public function calculateRetuneOverInvestment(){
+        $result=0;
+        if($this->calculateTotalCost()>0){
+            $result = ($this->calculateNetProfitOrLoss()*100)/$this->calculateTotalCost();
+        }
+        return $result;
     }
 
 }

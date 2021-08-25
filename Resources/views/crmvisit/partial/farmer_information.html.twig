@@ -50,7 +50,10 @@
                      <a class="btn blue-bg btn-sm text-white" data-action='{{ path('layer_performance_new',{'id': details.crmCustomer is not empty?details.crmCustomer.id:'', 'report':details.report.id}) }}' href='?process=postView_{{ details.id }}_{{ details.report.id }}&report={{ details.report.slug }}&check=show#modal' id='postView_{{ details.id }}_{{ details.report.id }}' >{{ 'Report'|trans }}</a>
                 {% endif %}
                 {% if details.report is not empty and details.report.slug in ['fish-life-cycle-report'] %}
-                     <a class="btn blue-bg btn-sm text-white" href='{{ path('fish_new_modal',{'id': details.crmCustomer is not empty?details.crmCustomer.id:'', 'report':details.report.id}) }}' id='postView_{{ details.id }}_{{ details.report.id }}' >{{ 'Report'|trans }}</a>
+                     <a class="btn blue-bg btn-sm text-white" href='{{ path('fish_new_modal',{'id': details.crmCustomer is not empty?details.crmCustomer.id:'', 'report':details.report.id, 'afterBefore':'before'}) }}' id='postView_{{ details.id }}_{{ details.report.id }}' >{{ 'Report'|trans }}</a>
+                {% endif %}
+                {% if details.report is not empty and details.report.slug in ['fish-life-cycle-after-sale-report'] %}
+                     <a class="btn blue-bg btn-sm text-white" href='{{ path('fish_new_modal',{'id': details.crmCustomer is not empty?details.crmCustomer.id:'', 'report':details.report.id, 'afterBefore':'after'}) }}' id='postView_{{ details.id }}_{{ details.report.id }}' >{{ 'Report'|trans }}</a>
                 {% endif %}
                 {% if details.report is not empty and details.report.slug in ['company-species-wise-average-fcr-before'] %}
                      <a class="btn blue-bg btn-sm text-white" href='{{ path('fish_company_species_wise_fcr_modal',{'id': details.crmCustomer is not empty?details.crmCustomer.id:'', 'report':details.report.id}) }}' id='postView_{{ details.id }}_{{ details.report.id }}' >{{ 'Report'|trans }}</a>
