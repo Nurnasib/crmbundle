@@ -18,7 +18,7 @@
         <div class="row">
             <div class="card">
                 <div class="card-header">
-                    <h5>{{ 'Chick Life Cycle'|trans }}</h5>
+                    <h5>{{ breed ~ ' life cycle'|trans }}</h5>
                     {% if entities is not empty %}
                         <div class="btn-group btn-group-sm float-right" role="group" aria-label="Button group with nested dropdown">
                             <a target="_blank" href="{{ path('crm_chick_report_pdf',{'filterBy': filterBy}) }}" class="btn blue-bg white-font btn-sm"><i class="fa fa-file-pdf"></i> PDF</a>
@@ -43,8 +43,8 @@
                             {{ form_widget(searchForm.endDate,{'id':'end-date'}) }}
                         </th>
                         <th>
-                            {{ form_label(searchForm.farmer, 'Farmer Name:') }}
-                            {{ form_widget(searchForm.farmer) }}
+                            {{ form_label(searchForm.employee, 'Employee:') }}
+                            {{ form_widget(searchForm.employee) }}
                         </th>
                         <th rowspan="2">{{ form_widget(searchForm.filter,{'attr': {'style': 'margin-top: 18px'}}) }}</th>
                     </tr>

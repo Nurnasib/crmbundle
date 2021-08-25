@@ -19,31 +19,41 @@ use Terminalbd\CrmBundle\Entity\CrmCustomer;
 use Terminalbd\CrmBundle\Form\SearchFilterFormType;
 
 
+/**
+ * Class ChickLifeCycleReportController
+ * @package Terminalbd\CrmBundle\Controller\Report
+ * @Route("/crm/chick/life-cycle")
+ */
 class ChickLifeCycleReportController extends AbstractController
 {
     /**
-     * @param string $slug
+     * @param string $breed
      * @param Request $request
      * @return Response
-     * @Route("/crm/chick/{slug}", methods={"GET","POST"}, name="crm_chick_report")
+     * @Route("/{breed}", methods={"GET","POST"}, name="chick_life_cycle_report")
      * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_AGM')")
      */
-    public function indexReport( string $slug, Request $request): Response
+    public function indexReport( string $breed, Request $request): Response
     {
         $entities = [];
         $filterBy = [];
-        $searchForm = $this->createForm(SearchFilterFormType::class)->remove('employee')->remove('startDateCreated')->remove('endDateCreated');
+        $searchForm = $this->createForm(SearchFilterFormType::class)->remove('farmer')->remove('startDateCreated')->remove('endDateCreated');
         $searchForm->handleRequest($request);
 
         if ($searchForm->isSubmitted()){
             $filterBy = $searchForm->getData();
-            $filterBy['slug'] = $slug;
-            $filterBy['farmerId'] = $searchForm->get('farmer')->getData()->getId();
+            $filterBy['breed'] = $breed;
+            $filterBy['employeeId'] = $searchForm->get('employee')->getData() ? $searchForm->get('employee')->getData()->getId() : null;
 
 //            dd($filterBy);
             $entities = $this->getDoctrine()->getRepository(ChickLifeCycle::class)->getChickLifeCycleByReportType($filterBy);
         }
-        return $this->render('@TerminalbdCrm/report/chick/report-life-cycle.html.twig',['searchForm' => $searchForm->createView(), 'entities' => $entities, 'filterBy'=>$filterBy]);
+        return $this->render('@TerminalbdCrm/report/chick/report-life-cycle.html.twig',[
+            'searchForm' => $searchForm->createView(),
+            'entities' => $entities,
+            'filterBy'=>$filterBy,
+            'breed' => $breed
+        ]);
     }
 
     /**

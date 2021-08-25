@@ -8,7 +8,7 @@
                     <li><a class="" href="javascript:"><span>{{ 'Sonali'|trans }}</span></a>
                         <ul class="sub-menu">
                             <li><a class=""
-                                   href="{{ path('crm_chick_report',{'slug':'sonali-life-cycle'}) }}"><span>{{ 'Life Cycle'|trans }}</span></a>
+                                   href="{{ path('chick_life_cycle_report',{'breed':'sonali'}) }}"><span>{{ 'Life Cycle'|trans }}</span></a>
                             </li>
                             <li><a class=""
                                    href="{{ path('chick_fcr_report',{'slug':'fcr-before-sale-sonali'}) }}"><span>{{ 'FCR(Before)'|trans }}</span></a>
@@ -21,7 +21,7 @@
                     <li><a class="" href="javascript:"><span>{{ 'Broiler'|trans }}</span></a>
                         <ul class="sub-menu">
                             <li><a class=""
-                                   href="{{ path('crm_chick_report',{'slug':'boiler-life-cycle'}) }}"><span>{{ 'Life Cycle'|trans }}</span></a>
+                                   href="{{ path('chick_life_cycle_report',{'breed':'broiler'}) }}"><span>{{ 'Life Cycle'|trans }}</span></a>
                             </li>
                             <li><a class=""
                                    href="{{ path('chick_fcr_report',{'slug':'fcr-before-sale-boiler'}) }}"><span>{{ 'FCR(Before)'|trans }}</span></a>
@@ -34,7 +34,7 @@
                     <li><a class="" href="javascript:"><span>{{ 'Layer'|trans }}</span></a>
                         <ul class="sub-menu">
                             <li><a class=""
-                                   href="{{ path('layer_life_cycle_report') }}"><span>{{ 'Life Cycle'|trans }}</span></a>
+                                   href="{{ path('chick_life_cycle_report',{'breed':'layer'}) }}"><span>{{ 'Life Cycle'|trans }}</span></a>
                             </li>
                             <li><a class=""
                                    href="{{ path('layer_performance_report') }}"><span>{{ 'Performance'|trans }}</span></a>
