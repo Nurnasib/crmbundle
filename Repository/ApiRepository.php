@@ -815,7 +815,7 @@ class ApiRepository extends BaseRepository
      */
     public function farmSelectReport()
     {
-        $exceptSlug = array('fcr-after-sale-boiler','fcr-after-sale-sonali','company-species-wise-average-fcr-after');
+       // $exceptSlug = array('fcr-after-sale-boiler','fcr-after-sale-sonali','company-species-wise-average-fcr-after');
 
         $em = $this->_em;
         $qb = $em->createQueryBuilder();
@@ -827,7 +827,7 @@ class ApiRepository extends BaseRepository
 
         $qb->where("s.settingType = 'FARMER_REPORT'");
 //        $qb->andWhere($qb->expr()->notIn('s.slug',  $exceptSlug));
-        $qb->andWhere('s.slug NOT IN (:slug)')->setParameter('slug', $exceptSlug);
+    //    $qb->andWhere('s.slug NOT IN (:slug)')->setParameter('slug', $exceptSlug);
 
 
         $qb->orderBy('s.id', 'ASC');
@@ -1336,11 +1336,9 @@ class ApiRepository extends BaseRepository
         $result = $qb->getQuery()->getArrayResult();
         $data = array();
         foreach ($result as $key => $row) {
-
             $data[$key]['id'] = (int)$row['id'];
             $data[$key]['name'] = (string)$row['name'];
             $data[$key]['feedName'] = (string)$row['feedName'];
-
         }
 
         return $data;
@@ -1390,6 +1388,32 @@ class ApiRepository extends BaseRepository
             $data[$key]['name'] = (string)$row['name'];
         }
         return $data;
+    }
+
+    /**
+     * Farm Select Report Fcr After
+     */
+    public function farmSelectReportFcrAfter()
+    {
+        $exceptSlug = ['fcr-after-sale-boiler','fcr-after-sale-sonali','company-species-wise-average-fcr-after'];
+
+        $em = $this->_em;
+        $qb = $em->createQueryBuilder();
+        $qb->from(Setting::class,'s');
+
+        $qb->select("s.id as id","s.name as name");
+        $qb->where("s.settingType = 'FARMER_REPORT'");
+        $qb->andWhere('s.slug IN (:slug)')->setParameter('slug', $exceptSlug);
+        $qb->orderBy('s.id','ASC');
+        $result = $qb->getQuery()->getArrayResult();
+
+        $data = [];
+        foreach ($result as $key => $row){
+            $data[$key]['id'] = (int)$row['id'];
+            $data[$key]['name'] = (string)$row['name'];
+        }
+        return $data;
+
     }
 
 }
