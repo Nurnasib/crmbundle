@@ -119,7 +119,9 @@
                                                         <option value="">Select Company</option>
                                                         {% if feeds is not empty %}
                                                             {% for feed in feeds %}
-                                                                <option value="{{ feed.id }}">{{ feed.name }}</option>
+                                                                {% if feed.name !='Nourish' %}
+                                                                    <option value="{{ feed.id }}">{{ feed.name }}</option>
+                                                                {% endif %}
                                                             {% endfor %}
 
                                                         {% endif %}

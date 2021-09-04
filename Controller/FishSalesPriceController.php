@@ -133,20 +133,5 @@ class FishSalesPriceController extends AbstractController
 
     }
 
-    /**
-     * @param FishLifeCycle $fishLifeCycle
-     * @Route("/{id}/refresh", methods={"GET"}, name="crm_fish_life_cycle_refresh", options={"expose"=true})
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
-     */
-    public function fishLifeCycleReportRefresh(FishLifeCycle $fishLifeCycle): Response
-    {
-        $fishLifeCycleDetailsByReportingMonth = $this->getDoctrine()->getRepository(FishLifeCycleDetails::class)->getFishLifeCycleDetailsByReportingDateAndEmployee($fishLifeCycle->getReport(), $this->getUser());
-
-        return $this->render('@TerminalbdCrm/fishLifeCycle/partial/fish-life-cycle-details-body.html.twig', [
-            'fishLifeCycle' => $fishLifeCycle,
-            'fishLifeCycleDetailsByReportingMonth' => $fishLifeCycleDetailsByReportingMonth,
-        ]);
-    }
-
 
 }

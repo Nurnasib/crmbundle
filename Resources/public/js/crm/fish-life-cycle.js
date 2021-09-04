@@ -62,7 +62,7 @@ function fishLifeCycleDetailDataUpdateUsingAjax(element) {
                 $('.'+response.id+'_totalIncome').text(response.totalIncome);
                 $('.'+response.id+'_netProfitOrLoss').text(response.netProfitOrLoss);
                 $('.'+response.id+'_retuneOverInvestment').text(response.retuneOverInvestment);
-
+console.log(fishLifeCycle_id);
                 var refreshUrl = Routing.generate('crm_fish_life_cycle_refresh',{'id':fishLifeCycle_id});
                 $(".fishLifeCycleDetailsSection").load(refreshUrl);
             }

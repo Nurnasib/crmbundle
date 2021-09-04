@@ -51,7 +51,7 @@ class TilapiaFrySalesController extends AbstractController
     {
         $em = $this->getDoctrine()->getManager();
 
-        $feeds = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('status'=>1, 'settingType'=>'FEED_NAME'));
+        $feeds = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('status'=>1, 'settingType'=>'FEED_NAME'),array('name' => 'ASC'));
         $agents = $this->getDoctrine()->getRepository(Agent::class)->getLocationWise($this->getUser());
 
         $arrayMonth=[];
@@ -217,6 +217,39 @@ class TilapiaFrySalesController extends AbstractController
         return $this->render('@TerminalbdCrm/tilapiaFrySales/_content_table_body.html.twig', [
             'allTilapiaFrySales' => $allTilapiaFrySales,
             'arrayMonth' => $arrayMonth,
+        ]);
+    }
+
+    /**
+     * @param FishLifeCycle $fishLifeCycle
+     * @Route("/competitor/refresh", methods={"GET"}, name="crm_competitor_tilapia_fry_sales_refresh", options={"expose"=true})
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     */
+    public function competitorTilapiaFrySalesRefresh(): Response
+    {
+
+        $arrayMonth=[];
+        $arrayMonthRange=[];
+        $currentYear = date('Y');
+        $yearRange[]=$currentYear;
+
+        for($i=1; $i<=12; $i++){
+            $monthDigit = date('m', mktime(0, 0, 0, $i, 10));
+            $month = date('F', mktime(0, 0, 0, $i, 10));
+            $currentMonth = date('m');
+
+            $arrayMonth[]=$month;
+            if($currentMonth==$monthDigit || $currentMonth-1==$monthDigit){
+                $arrayMonthRange[]=$month;
+            }
+        }
+
+        $competitorTilapiaFrySales = $this->getDoctrine()->getRepository(TilapiaFrySales::class)->getCompetitorsTilapiaFrySalesByEmployeeMonthYear( $this->getUser(), $arrayMonth, $currentYear);
+
+        return $this->render('@TerminalbdCrm/tilapiaFrySales/_competitor_content_table_body.html.twig', [
+            'competitorsTilapiaFrySales' => $competitorTilapiaFrySales,
+            'arrayMonth' => $arrayMonth,
+            'arrayMonthRange' => $arrayMonthRange,
         ]);
     }
 

@@ -283,7 +283,12 @@ class FishLifeCycleController extends AbstractController
     public function fishLifeCycleReportRefresh(FishLifeCycle $fishLifeCycle): Response
     {
         $fishLifeCycleDetailsByReportingMonth = $this->getDoctrine()->getRepository(FishLifeCycleDetails::class)->getFishLifeCycleDetailsByReportingDateAndEmployee($fishLifeCycle->getReport(), $this->getUser());
-
+        if($fishLifeCycle->getReportType()==FishLifeCycle::REPORT_TYPE_AFTER){
+            return $this->render('@TerminalbdCrm/fishLifeCycle/partial/fish-life-cycle-after-sale-details-body.html.twig', [
+                'fishLifeCycle' => $fishLifeCycle,
+                'fishLifeCycleDetailsByReportingMonth' => $fishLifeCycleDetailsByReportingMonth,
+            ]);
+        }
         return $this->render('@TerminalbdCrm/fishLifeCycle/partial/fish-life-cycle-details-body.html.twig', [
             'fishLifeCycle' => $fishLifeCycle,
             'fishLifeCycleDetailsByReportingMonth' => $fishLifeCycleDetailsByReportingMonth,

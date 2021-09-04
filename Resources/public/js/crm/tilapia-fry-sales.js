@@ -66,16 +66,15 @@ function fishSalesPriceCompetitorDataUpdateInsertAjax(element) {
         },
         dataType : 'json',
         success: function(response){
-console.log(response);
             if(response.status===200){
                 closestTr.find('.agent_id').val('');
                 closestTr.find('.feed_id').val('');
                 closestTr.find('.month').val('');
                 closestTr.find('.quantity').val('');
 
-               /* var refreshUrl = Routing.generate('crm_tilapia_fry_sales_refresh');
-                $('.tilapiaFrySales_nourish_table tbody').load(refreshUrl);*/
-
+                var refreshUrl = Routing.generate('crm_competitor_tilapia_fry_sales_refresh');
+                $('.tilapiaFrySales_competitor_table tbody').load(refreshUrl);
+                // console.log(response);
             }
         }
     });
