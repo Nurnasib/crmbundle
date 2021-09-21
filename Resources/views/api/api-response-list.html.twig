@@ -19,13 +19,21 @@
             <div class="card">
                 <div class="card-header">
                     <h5>{{ 'API Response List'|trans }}</h5>
+                    <div class="btn-group btn-group-sm float-right">
+                        {% if countVisit > 0 %}
+                            <a href="{{ path('crm_sync_app_data_crm_visit') }}" class="btn purple-bg white-font"><i class="fa fa-sync"></i> Sync Visit</a>
+                        {% endif %}
+                        {% if countVisitDetails > 0 and countVisit == 0 %}
+                            <a href="{{ path('crm_sync_app_data_crm_visit_details') }}" class="btn blue-bg white-font"><i class="fa fa-sync"></i> Sync Visit Details</a>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
         </div>
         <div class="row">
             <div class="card">
                 <div class="card-block">
-                    <table class="table table-striped table-bordered table-hover" id="datatable">
+                    <table class="table table-striped table-bordered table-hover">
                         <thead class="thead-dark">
                         <tr>
 
@@ -38,16 +46,20 @@
                         </tr>
                         </thead>
                         <tbody>
-                        {% if list is not empty and list is iterable %}
-                            {% for record in list %}
+                        {% if records is not empty and records is iterable %}
+                            {% for record in records %}
                                 <tr>
                                     <td>{{ loop.index }}</td>
-                                    <td>{{ record.process|default('') }}</td>
-                                    <td>{{ record.deviceId|default('') }}</td>
+                                    <td>{{ record.process|replace({'_': ' '})|capitalize|default('') }}</td>
+                                    <td>{{ record.batchNo|default('') }}</td>
                                     <td>{{ record.status == 1 ? 'Yes':'No' }}</td>
-                                    <td>
+                                    <td align="right">
                                         {% if record.status == 0 %}
-                                            <a class="btn btn-mini bg-success white-font" href="{{ path('insert_json_data', {'id': record.id}) }}"><i class="feather icon-upload"></i> Migrate</a>
+                                            <a class="btn btn-mini white-font {% if countVisit == 0 and countVisitDetails == 0 %} green-bg {% else %} bg-secondary {% endif %}"
+                                               href="{{ path('insert_json_data', {'id': record.id}) }}"
+                                                    {% if countVisit > 0 or countVisitDetails > 0 %} style="pointer-events: none; cursor: default;" {% endif %}>
+                                                <i class="feather icon-upload"></i> Migrate
+                                            </a>
                                         {% endif %}
                                     </td>
                                 </tr>
@@ -55,6 +67,16 @@
                         {% endif %}
                         </tbody>
                     </table>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="count">
+                                Total Records: {{ records.getTotalItemCount }}
+                            </div>
+                        </div>
+                        <div class="col-md-9 navigation" style="padding-right: 0;">
+                            {{ knp_pagination_render(records) }}
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -63,6 +85,11 @@
 {% endblock %}
 {% block cssBlock %}
     <link rel="stylesheet" href="{{ asset('assets/module/css/app.css') }}">
+    <style>
+        .pagination{
+            float: right;
+        }
+    </style>
 {% endblock  %}
 {% block javascripts %}
     {{ parent() }}
@@ -70,11 +97,4 @@
 {% endblock  %}
 {% block documentready %}
     {{ parent() }}
-    $('#datatable').DataTable( {
-    "pageLength": 100,
-    'columnDefs': [ {
-    'targets': [-1],
-    'orderable': false
-    }]
-    });
 {% endblock %}

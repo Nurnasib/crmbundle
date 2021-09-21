@@ -227,5 +227,23 @@ class CrmVisit
         $this->location = $location;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getAppId()
+    {
+        return $this->appId;
+    }
+
+    /**
+     * @param mixed $appId
+     */
+    public function setAppId($appId): void
+    {
+        $this->appId = $appId;
+    }
+
+
+
 
 }

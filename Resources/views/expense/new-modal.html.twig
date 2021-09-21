@@ -12,7 +12,7 @@
                         <div class="form-group">
                             {{ form_label(form.purpose, 'Purpose'|trans, {'label_attr': {'class': 'col-md-1'}}) }}
                             <div class="col-md-11">
-                                <span class="not-blank"> {{ 'Required'|trans }}</span>
+                                <span class="not-blank"> *</span>
 
                                 {{ form_widget(form.purpose) }}
                                 {{ form_errors(form.purpose) }}
@@ -24,7 +24,7 @@
                         <div class="form-group">
                             {{ form_label(form.schedule_visit, 'Schedule Visit'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
                             <div class="col-md-8">
-                                <span class="not-blank"> {{ 'Required'|trans }}</span>
+                                <span class="not-blank"> *</span>
 
                                 {{ form_widget(form.schedule_visit) }}
                                 {{ form_errors(form.schedule_visit) }}
@@ -57,7 +57,7 @@
                             <div class="form-group">
                                 {{ form_label(form.conveyance, 'Conveyance '|trans, {'label_attr': {'class': 'col-md-4'}}) }}
                                 <div class="col-md-8">
-                                    {#<span class="not-blank"> {{ 'Required'|trans }}</span>#}
+                                    {#<span class="not-blank"> *</span>#}
                                     {{ form_widget(form.conveyance) }}
                                     {{ form_errors(form.conveyance) }}
                                 </div>
@@ -98,7 +98,7 @@
                             <div class="form-group">
                                 {{ form_label(form.courier, 'Courier '|trans, {'label_attr': {'class': 'col-md-4'}}) }}
                                 <div class="col-md-8">
-                                    {#<span class="not-blank"> {{ 'Required'|trans }}</span>#}
+                                    {#<span class="not-blank"> *</span>#}
 
                                     {{ form_widget(form.courier) }}
                                     {{ form_errors(form.courier) }}

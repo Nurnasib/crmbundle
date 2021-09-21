@@ -50,7 +50,7 @@
                                         <div class="form-group">
                                             {{ form_label(form.cso_id,'CSO ID'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
                                             <div class="col-md-8">
-                                                <span class="not-blank"> {{ 'Required'|trans }}</span>
+                                                <span class="not-blank"> *</span>
                                                 {{ form_widget(form.cso_id) }}
                                                 {{ form_errors(form.cso_id) }}
                                             </div>
@@ -59,7 +59,7 @@
                                         <div class="form-group">
                                             {{ form_label(form.area_name,'Visiting Area'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
                                             <div class="col-md-8">
-                                                <span class="not-blank"> {{ 'Required'|trans }}</span>
+                                                <span class="not-blank"> *</span>
                                                 {{ form_widget(form.area_name) }}
                                                 {{ form_errors(form.area_name) }}
                                             </div>
@@ -68,7 +68,7 @@
                                         <div class="form-group">
                                             {{ form_label(form.working_duration,'Working Duration'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
                                             <div class="col-md-8">
-                                                <span class="not-blank"> {{ 'Required'|trans }}</span>
+                                                <span class="not-blank"> *</span>
                                                 {{ form_widget(form.working_duration) }}
                                                 {{ form_errors(form.working_duration) }}
                                             </div>

@@ -45,7 +45,7 @@
                                         <div class="form-group">
                                             {{ form_label(form.reportingDate, 'Reporting Date'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
                                             <div class="col-md-8">
-                                                <span class="not-blank"> {{ 'Required'|trans }}</span>
+                                                <span class="not-blank"> *</span>
                                                 {{ form_widget(form.reportingDate) }}
                                                 {{ form_errors(form.reportingDate) }}
                                             </div>
@@ -56,7 +56,7 @@
                                             <div class="form-group">
                                                 {{ form_label(form.officer_name, 'Officer Name'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
                                                 <div class="col-md-8">
-                                                    <span class="not-blank"> {{ 'Required'|trans }}</span>
+                                                    <span class="not-blank"> *</span>
                                                     {{ form_widget(form.officer_name) }}
                                                     {{ form_errors(form.officer_name) }}
                                                 </div>
@@ -67,7 +67,7 @@
                                         <div class="form-group">
                                             {{ form_label(form.region, 'Region'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
                                             <div class="col-md-8">
-                                                <span class="not-blank"> {{ 'Required'|trans }}</span>
+                                                <span class="not-blank"> *</span>
                                                 {{ form_widget(form.region) }}
                                                 {{ form_errors(form.region) }}
                                             </div>
@@ -83,7 +83,7 @@
                                         <div class="form-group">
                                             {{ form_label(form.visitingweek, 'Setting Type'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
                                             <div class="col-md-8">
-                                                <span class="not-blank"> {{ 'Required'|trans }}</span>
+                                                <span class="not-blank"> *</span>
                                                 {{ form_widget(form.visitingweek) }}
                                                 {{ form_errors(form.visitingweek) }}
                                             </div>
@@ -94,7 +94,7 @@
                                         <div class="form-group">
                                             {{ form_label(form.totalbirds, 'Total Birds'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
                                             <div class="col-md-8">
-                                                <span class="not-blank"> {{ 'Required'|trans }}</span>
+                                                <span class="not-blank"> *</span>
                                                 {{ form_widget(form.totalbirds) }}
                                                 {{ form_errors(form.totalbirds) }}
                                             </div>
@@ -105,7 +105,7 @@
                                         <div class="form-group">
                                             {{ form_label(form.age_days, 'Age Days'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
                                             <div class="col-md-8">
-                                                <span class="not-blank"> {{ 'Required'|trans }}</span>
+                                                <span class="not-blank"> *</span>
                                                 {{ form_widget(form.age_days) }}
                                                 {{ form_errors(form.age_days) }}
                                             </div>
@@ -119,7 +119,7 @@
                                         <div class="form-group">
                                             {{ form_label(form.mortality_pes, 'Mortality(Pes)'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
                                             <div class="col-md-8">
-                                                <span class="not-blank"> {{ 'Required'|trans }}</span>
+                                                <span class="not-blank"> *</span>
                                                 {{ form_widget(form.mortality_pes) }}
                                                 {{ form_errors(form.mortality_pes) }}
                                             </div>
@@ -129,7 +129,7 @@
                                         <div class="form-group">
                                             {{ form_label(form.weightStandard, 'Weight(Standerd)'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
                                             <div class="col-md-8">
-                                                <span class="not-blank"> {{ 'Required'|trans }}</span>
+                                                <span class="not-blank"> *</span>
                                                 {{ form_widget(form.weightStandard) }}
                                                 {{ form_errors(form.weightStandard) }}
                                             </div>
@@ -139,7 +139,7 @@
                                         <div class="form-group">
                                             {{ form_label(form.weightAchieved, 'Weight(Achieved)'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
                                             <div class="col-md-8">
-                                                <span class="not-blank"> {{ 'Required'|trans }}</span>
+                                                <span class="not-blank"> *</span>
                                                 {{ form_widget(form.weightAchieved) }}
                                                 {{ form_errors(form.weightAchieved) }}
                                             </div>
@@ -160,7 +160,7 @@
                                        <div class="form-group">
                                            {{ form_label(form.feedTotalkg, 'Total(kg)'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
                                            <div class="col-md-8">
-                                               <span class="not-blank"> {{ 'Required'|trans }}</span>
+                                               <span class="not-blank"> *</span>
                                                {{ form_widget(form.feedTotalkg) }}
                                                {{ form_errors(form.feedTotalkg) }}
                                            </div>
@@ -170,7 +170,7 @@
                                        <div class="form-group">
                                            {{ form_label(form.feedBird, 'Per Bird(gm)'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
                                            <div class="col-md-8">
-                                               <span class="not-blank"> {{ 'Required'|trans }}</span>
+                                               <span class="not-blank"> *</span>
                                                {{ form_widget(form.feedBird) }}
                                                {{ form_errors(form.feedBird) }}
                                            </div>
@@ -180,7 +180,7 @@
                                        <div class="form-group">
                                            {{ form_label(form.feedStandard, 'Standard'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
                                            <div class="col-md-8">
-                                               <span class="not-blank"> {{ 'Required'|trans }}</span>
+                                               <span class="not-blank"> *</span>
                                                {{ form_widget(form.feedStandard) }}
                                                {{ form_errors(form.feedStandard) }}
                                            </div>
@@ -200,7 +200,7 @@
                                      <div class="form-group">
                                          {{ form_label(form.fcr_with_mortality, 'With Mortality'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
                                          <div class="col-md-8">
-                                             <span class="not-blank"> {{ 'Required'|trans }}</span>
+                                             <span class="not-blank"> *</span>
                                              {{ form_widget(form.fcr_with_mortality) }}
                                              {{ form_errors(form.fcr_with_mortality) }}
                                          </div>
@@ -211,7 +211,7 @@
                                      <div class="form-group">
                                          {{ form_label(form.fcr_without_mortality, 'Without Mortality'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
                                          <div class="col-md-8">
-                                             <span class="not-blank"> {{ 'Required'|trans }}</span>
+                                             <span class="not-blank"> *</span>
                                              {{ form_widget(form.fcr_without_mortality) }}
                                              {{ form_errors(form.fcr_without_mortality) }}
                                          </div>
@@ -231,7 +231,7 @@
                                        <div class="form-group">
                                            {{ form_label(form.hatchery, 'Hatchery'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
                                            <div class="col-md-8">
-                                               <span class="not-blank"> {{ 'Required'|trans }}</span>
+                                               <span class="not-blank"> *</span>
                                                {{ form_widget(form.hatchery) }}
                                                {{ form_errors(form.hatchery) }}
                                            </div>
@@ -241,7 +241,7 @@
                                        <div class="form-group">
                                            {{ form_label(form.breed, 'Breed'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
                                            <div class="col-md-8">
-                                               <span class="not-blank"> {{ 'Required'|trans }}</span>
+                                               <span class="not-blank"> *</span>
                                                {{ form_widget(form.breed) }}
                                                {{ form_errors(form.breed) }}
                                            </div>
@@ -251,7 +251,7 @@
                                        <div class="form-group">
                                            {{ form_label(form.feed, 'Feed'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
                                            <div class="col-md-8">
-                                               <span class="not-blank"> {{ 'Required'|trans }}</span>
+                                               <span class="not-blank"> *</span>
                                                {{ form_widget(form.feed) }}
                                                {{ form_errors(form.feed) }}
                                            </div>
@@ -265,7 +265,7 @@
                                         <div class="form-group">
                                             {{ form_label(form.feedType, 'Feed Type'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
                                             <div class="col-md-8">
-                                                <span class="not-blank"> {{ 'Required'|trans }}</span>
+                                                <span class="not-blank"> *</span>
                                                 {{ form_widget(form.feedType) }}
                                                 {{ form_errors(form.feedType) }}
                                             </div>
@@ -275,7 +275,7 @@
                                         <div class="form-group">
                                             {{ form_label(form.proDate, 'Production Date'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
                                             <div class="col-md-8">
-                                                <span class="not-blank"> {{ 'Required'|trans }}</span>
+                                                <span class="not-blank"> *</span>
                                                 {{ form_widget(form.proDate) }}
                                                 {{ form_errors(form.proDate) }}
                                             </div>
@@ -285,7 +285,7 @@
                                         <div class="form-group">
                                             {{ form_label(form.batchNo, 'Batch No'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
                                             <div class="col-md-8">
-                                                <span class="not-blank"> {{ 'Required'|trans }}</span>
+                                                <span class="not-blank"> *</span>
                                                 {{ form_widget(form.batchNo) }}
                                                 {{ form_errors(form.batchNo) }}
                                             </div>
@@ -297,7 +297,7 @@
                                     <div class="form-group">
                                         {{ form_label(form.remarks, 'Remarks'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
                                         <div class="col-md-12">
-                                            <span class="not-blank"> {{ 'Required'|trans }}</span>
+                                            <span class="not-blank"> *</span>
                                             {{ form_widget(form.remarks) }}
                                             {{ form_errors(form.remarks) }}
                                         </div>

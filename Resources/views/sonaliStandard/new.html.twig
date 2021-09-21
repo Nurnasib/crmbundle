@@ -48,7 +48,7 @@
                                         <div class="form-group">
                                             {{ form_label(form.age, 'Age (Day)'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
                                             <div class="col-md-8">
-                                                <span class="not-blank"> {{ 'Required'|trans }}</span>
+                                                <span class="not-blank"> *</span>
 
                                                 {{ form_widget(form.age) }}
                                                 {{ form_errors(form.age) }}
@@ -58,7 +58,7 @@
                                         <div class="form-group">
                                             {{ form_label(form.feed_intake_per_day, 'Feed Intake Per Day'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
                                             <div class="col-md-8">
-                                                <span class="not-blank"> {{ 'Required'|trans }}</span>
+                                                <span class="not-blank"> *</span>
                                                 {{ form_widget(form.feed_intake_per_day) }}
                                                 {{ form_errors(form.feed_intake_per_day) }}
                                             </div>
@@ -66,7 +66,7 @@
                                         <div class="form-group">
                                             {{ form_label(form.cumulativeFeedIntake, 'Cumulative Feed Intake (gm)'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
                                             <div class="col-md-8">
-                                                <span class="not-blank"> {{ 'Required'|trans }}</span>
+                                                <span class="not-blank"> *</span>
                                                 {{ form_widget(form.cumulativeFeedIntake,{'type':'number'}) }}
                                                 {{ form_errors(form.cumulativeFeedIntake) }}
                                             </div>
@@ -75,7 +75,7 @@
                                         <div class="form-group">
                                             {{ form_label(form.target_body_weight, 'Target Body Weight'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
                                             <div class="col-md-8">
-                                                <span class="not-blank"> {{ 'Required'|trans }}</span>
+                                                <span class="not-blank"> *</span>
                                                 {{ form_widget(form.target_body_weight) }}
                                                 {{ form_errors(form.target_body_weight) }}
                                             </div>

@@ -43,7 +43,7 @@
                         <div class="form-group">
                             <label class="col-md-4 control-label" for="">{{ 'Reporting Date'|trans }}</label>
                             <div class="col-md-8">
-                                <span class="not-blank"> {{ 'Required'|trans }}</span>
+                                <span class="not-blank"> *</span>
                                 <div class="date_section">
                                     {{ form_widget(form.reporting_date) }}
                                     {#<input autocomplete="off" type="text" name="reporting_date" class="form-control datePicker" value="{{ entity.reportingDate?entity.reportingDate|date("d-m-Y"):'' }}">#}
@@ -55,7 +55,7 @@
                         <div class="form-group">
                             <label class="col-md-4 control-label" for="">{{ 'Breed Type'|trans }}</label>
                             <div class="col-md-8">
-                                <span class="not-blank"> {{ 'Required'|trans }}</span>
+                                <span class="not-blank"> *</span>
                                 {{ form_widget(form.breed_type) }}
                                 {{ form_errors(form.breed_type) }}
                             </div>
@@ -65,7 +65,7 @@
                         <div class="form-group">
                             <label class="col-md-4 control-label" for="">{{ 'Feed Type'|trans }}</label>
                             <div class="col-md-8">
-                                <span class="not-blank"> {{ 'Required'|trans }}</span>
+                                <span class="not-blank"> *</span>
                                 {{ form_widget(form.feed_type) }}
                                 {{ form_errors(form.feed_type) }}
                             </div>

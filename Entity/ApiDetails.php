@@ -3,6 +3,7 @@
 namespace Terminalbd\CrmBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 
 /**
@@ -25,7 +26,7 @@ class ApiDetails
     /**
      * @var $batch
      * @ORM\ManyToOne(targetEntity="Terminalbd\CrmBundle\Entity\Api", inversedBy="apiDetails")
-     * @ORM\JoinColumn(name="batch_id", referencedColumnName="id")
+     * @ORM\JoinColumn(referencedColumnName="id")
      * @ORM\JoinColumn(onDelete="CASCADE")
      */
     private $batch;
@@ -47,6 +48,19 @@ class ApiDetails
      * @ORM\Column(type="boolean")
      */
     private $status = false;
+
+    /**
+     * @var $createdAt
+     * @Gedmo\Timestampable(on="create")
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $createdAt;
+
+    /**
+     * @var $updatedAt
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $updatedAt;
 
     /**
      * @return int
@@ -127,5 +141,39 @@ class ApiDetails
     {
         $this->status = $status;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getCreatedAt()
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * @param mixed $createdAt
+     */
+    public function setCreatedAt($createdAt): void
+    {
+        $this->createdAt = $createdAt;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updatedAt;
+    }
+
+    /**
+     * @param mixed $updatedAt
+     */
+    public function setUpdatedAt($updatedAt): void
+    {
+        $this->updatedAt = $updatedAt;
+    }
+
+
 
 }

@@ -56,7 +56,7 @@ class CrmVisitRepository extends EntityRepository
         return $qb->getQuery()->getArrayResult();
     }
 
-    public function insertDataFromApi(array $data)
+/*    public function insertDataFromApi(array $data)
     {
         $created = new \DateTime($data['created_at']);
         $employee = $this->getEntityManager()->getRepository(User::class)->find($data['employee_id']);
@@ -74,5 +74,5 @@ class CrmVisitRepository extends EntityRepository
             $stmt->bindValue('app_id', $data['id']);
             $stmt->execute();
         }
-    }
+    }*/
 }

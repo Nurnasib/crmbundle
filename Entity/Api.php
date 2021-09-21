@@ -25,15 +25,14 @@ class Api
 
     /**
      * @var $apiDetails
-     * @ORM\OneToMany(targetEntity="Terminalbd\CrmBundle\Entity\ApiDetails", mappedBy="batch", cascade={"persist"})
+     * @ORM\OneToMany(targetEntity="Terminalbd\CrmBundle\Entity\ApiDetails", mappedBy="batch", cascade={"persist", "remove"})
      */
     private $apiDetails;
 
     /**
-     * @var integer
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="string")
      */
-    private $deviceId;
+    private $batchNo;
 
     /**
      * @var integer
@@ -80,21 +79,6 @@ class Api
         $this->id = $id;
     }
 
-    /**
-     * @return int
-     */
-    public function getDeviceId(): int
-    {
-        return $this->deviceId;
-    }
-
-    /**
-     * @param int $deviceId
-     */
-    public function setDeviceId(int $deviceId): void
-    {
-        $this->deviceId = $deviceId;
-    }
 
     /**
      * @return int
@@ -161,7 +145,7 @@ class Api
     }
 
     /**
-     * @return Collection|ApiDetails[]
+     * @return ArrayCollection
      */
     public function getApiDetails()
     {
@@ -177,5 +161,24 @@ class Api
 
         return $this;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getBatchNo()
+    {
+        return $this->batchNo;
+    }
+
+    /**
+     * @param mixed $batchNo
+     */
+    public function setBatchNo($batchNo): void
+    {
+        $this->batchNo = $batchNo;
+    }
+
+
+
 
 }

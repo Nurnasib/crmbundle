@@ -1032,10 +1032,10 @@ class ApiController extends AbstractController
         if ($data){
             $em = $this->getDoctrine()->getManager();
 
-            $findParent = $this->getDoctrine()->getRepository(Api::class)->findOneBy(['deviceId' => $data['device_id'], 'employeeId' => $data['employee_id']]);
+            $findParent = $this->getDoctrine()->getRepository(Api::class)->findOneBy(['batchNo' => $data['batch_id'], 'employeeId' => $data['employee_id']]);
             if (!$findParent){
                 $api = new Api();
-                $api->setDeviceId($data['device_id'] ?: null);
+                $api->setBatchNo($data['batch_id'] ?: null);
                 $api->setEmployeeId($data['employee_id'] ?: null);
                 $api->setStatus(0);
                 $api->setCreatedAt(new \DateTime('now'));
@@ -1135,22 +1135,22 @@ class ApiController extends AbstractController
 
     /**
      * @Route("/{id}/insert-data", name="insert_json_data")
-     * @param Api $api
+     * @param ApiDetails $apiDetails
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function insertDataIntoCorrespondingTable(Api $api)
+    public function insertDataIntoCorrespondingTable(ApiDetails $apiDetails)
     {
-        set_time_limit(0);
+ /*       set_time_limit(0);
         ignore_user_abort(true);
 
-        if ($api->isStatus() == 0){
-            $jsonToArray = json_decode($api->getJsonData(), true);
-            if ($api->getProcess() == 'crm_visit'){
-                foreach( $jsonToArray as $data){
+        if ($apiDetails->isStatus() == 0){
+            $jsonToArray = json_decode($apiDetails->getJsonData(), true);
+            if ($apiDetails->getProcess() == 'crm_visit'){
+                foreach($jsonToArray as $data){
                     $this->getDoctrine()->getRepository(CrmVisit::class)->insertDataFromApi($data);
                 }
-            }elseif ($api->getProcess() == 'farmer_report'){
-                foreach( $jsonToArray as $data){
+            }elseif ($apiDetails->getProcess() == 'farmer_report'){
+                foreach($jsonToArray as $data){
                     if ($data['crm_visit_id'] !== null){
                         $findVisit = $this->getDoctrine()->getRepository(CrmVisit::class)->findOneBy(['appId' => $data['crm_visit_id']]);
                         if ($findVisit){
@@ -1158,31 +1158,24 @@ class ApiController extends AbstractController
                         }
                     }
                 }
-            }elseif ($api->getProcess() == 'layer_performance_report'){
+            }elseif ($apiDetails->getProcess() == 'layer_performance_report'){
                 foreach( $jsonToArray as $data){
                     $this->getDoctrine()->getRepository(LayerPerformanceDetails::class)->insertDataFromApi($data);
                 }
+            }elseif ($apiDetails->getProcess() == 'crm_visit_details'){
+                dd($jsonToArray);
             }
-            $api->setStatus(1);
+            $apiDetails->setStatus(1);
             $em = $this->getDoctrine()->getManager();
-            $em->persist($api);
+            $em->persist($apiDetails);
             $em->flush();
             $this->addFlash('success', 'Data has been migrated!');
             return $this->redirectToRoute('api_response_list');
         }else{
             $this->addFlash('error', 'Somthing Wrong!');
             return $this->redirectToRoute('api_response_list');
-        }
-//        $entities = $this->getDoctrine()->getRepository(Api::class)->getJsonData();
-//        dd($jsonData);
-//        foreach ($entities as $data){
-//            if($data['porcess'] == 'CUSTOMER_VISIT'){
-//
-//                $jsonToArray = json_decode($data['jsonData'], true);
-//                dd($jsonToArray);
-//            }
-//        }
-
+        }*/
+        return new Response(false);
     }
 
     /**

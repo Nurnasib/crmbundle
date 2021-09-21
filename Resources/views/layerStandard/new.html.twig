@@ -48,7 +48,7 @@
                                         <div class="form-group">
                                             {{ form_label(form.age, 'Age'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
                                             <div class="col-md-8">
-                                                <span class="not-blank"> {{ 'Required'|trans }}</span>
+                                                <span class="not-blank"> *</span>
 
                                                 {{ form_widget(form.age) }}
                                                 {{ form_errors(form.age) }}
@@ -58,7 +58,7 @@
                                         <div class="form-group">
                                             {{ form_label(form.target_body_weight, 'Target Body Weight'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
                                             <div class="col-md-8">
-                                                <span class="not-blank"> {{ 'Required'|trans }}</span>
+                                                <span class="not-blank"> *</span>
                                                 {{ form_widget(form.target_body_weight) }}
                                                 {{ form_errors(form.target_body_weight) }}
                                             </div>
@@ -67,7 +67,7 @@
                                         <div class="form-group">
                                             {{ form_label(form.target_feed_consumption, 'Target Feed Consumption(gm)'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
                                             <div class="col-md-8">
-                                                <span class="not-blank"> {{ 'Required'|trans }}</span>
+                                                <span class="not-blank"> *</span>
                                                 {{ form_widget(form.target_feed_consumption) }}
                                                 {{ form_errors(form.target_feed_consumption) }}
                                             </div>

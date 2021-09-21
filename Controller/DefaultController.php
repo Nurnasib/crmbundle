@@ -21,7 +21,7 @@ class DefaultController extends AbstractController
      * @return \Symfony\Component\HttpFoundation\Response
      */
     function index() {
-        return $this->render('@TerminalbdCrm/defult/index.html.twig');
+        return $this->render('@TerminalbdCrm/defult/bank-satement.html.twig');
     }
 
 }

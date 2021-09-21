@@ -22,7 +22,7 @@
                             <div class="form-group">
                                 <label class="col-md-4 control-label" for="">{{ 'Agent'|trans }}</label>
                                 <div class="col-md-8">
-                                    <span class="not-blank"> {{ 'Required'|trans }}</span>
+                                    <span class="not-blank"> *</span>
                                     <p style="text-align: left" class="form-control">{{ crmCustomer.agent.name }}</p>
                                 </div>
                             </div>
@@ -31,7 +31,7 @@
                             <div class="form-group">
                                 <label class="col-md-4 control-label" for="">{{ 'Farmer Name'|trans }}</label>
                                 <div class="col-md-8">
-                                    <span class="not-blank"> {{ 'Required'|trans }}</span>
+                                    <span class="not-blank"> *</span>
                                     <p style="text-align: left" class="form-control">{{ crmCustomer.name }}</p>
                                 </div>
                             </div>
@@ -40,7 +40,7 @@
                             <div class="form-group">
                                 <label class="col-md-4 control-label" for="">{{ 'Reporting Month'|trans }}</label>
                                 <div class="col-md-8">
-                                    <span class="not-blank"> {{ 'Required'|trans }}</span>
+                                    <span class="not-blank"> *</span>
                                     <div class="date_section">
                                         {{ form_widget(form.reporting_month) }}
                                         {{ form_errors(form.reporting_month) }}
