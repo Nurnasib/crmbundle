@@ -47,6 +47,8 @@ class ApiController extends AbstractController
 {
     /**
      * @Route("/login", methods={"POST","GET"}, options={"expose"=true})
+     * @param Request $request
+     * @return Response
      */
     public function login(Request $request)
     {

@@ -815,7 +815,7 @@ class ApiRepository extends BaseRepository
      */
     public function farmSelectReport()
     {
-       // $exceptSlug = array('fcr-after-sale-boiler','fcr-after-sale-sonali','company-species-wise-average-fcr-after');
+        $exceptSlug = array('fcr-after-sale-boiler','fcr-after-sale-sonali');
 
         $em = $this->_em;
         $qb = $em->createQueryBuilder();
@@ -826,7 +826,7 @@ class ApiRepository extends BaseRepository
         $qb->addSelect('p.name as farmType');
 
         $qb->where("s.settingType = 'FARMER_REPORT'");
-//        $qb->andWhere($qb->expr()->notIn('s.slug',  $exceptSlug));
+        $qb->andWhere($qb->expr()->notIn('s.slug',  $exceptSlug));
     //    $qb->andWhere('s.slug NOT IN (:slug)')->setParameter('slug', $exceptSlug);
 
 
