@@ -8,6 +8,7 @@
 
 namespace Terminalbd\CrmBundle\Controller;
 
+use App\Entity\Core\Agent;
 use App\Entity\User;
 use App\Entity\Admin\Location;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -25,6 +26,8 @@ use Terminalbd\CrmBundle\Entity\BroilerStandard;
 use Terminalbd\CrmBundle\Entity\CrmCustomer;
 use Terminalbd\CrmBundle\Entity\CrmVisit;
 use Terminalbd\CrmBundle\Entity\CrmVisitDetails;
+use Terminalbd\CrmBundle\Entity\FarmerComplain;
+use Terminalbd\CrmBundle\Entity\FarmerComplainDetails;
 use Terminalbd\CrmBundle\Entity\FcrDetails;
 use Terminalbd\CrmBundle\Entity\LayerPerformanceDetails;
 use Terminalbd\CrmBundle\Entity\Setting;
@@ -1275,9 +1278,58 @@ class ApiController extends AbstractController
 
         if ($request->getMethod() == 'POST' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')){
             $data = $request->request->all();
-            $image = base64_decode($data['media']);
-            return new JsonResponse($data);
+            $findEmployee = $this->getDoctrine()->getRepository(User::class)->find($data['employee_id']);
+            $findAgent = $this->getDoctrine()->getRepository(Agent::class)->find($data['agent_id']);
+            $findFarmer = $this->getDoctrine()->getRepository(CrmCustomer::class)->find($data['farmer_id']);
+            if ($findEmployee && $findAgent && $findFarmer){
+                $em = $this->getDoctrine()->getManager();
+
+                $complain = new FarmerComplain();
+                $complain->setEmployee($findEmployee);
+                $complain->setAgent($findAgent);
+                $complain->setFarmer($findFarmer);
+
+                $em->persist($complain);
+                $em->flush();
+
+                $comments = json_decode($data['comments'], true);
+                foreach ($comments as $comment) {
+                    $fileName = '';
+                    if (preg_match('/^data:image\/(\w+);base64,/', $comment['attachment'], $type)){
+                        $extension = $type[1];
+                        $attachment = substr($comment['attachment'], strpos($comment['attachment'], ',') + 1);
+                        $attachment = str_replace( ' ', '+', $attachment );
+                        $attachment = base64_decode($attachment);
+                        $fileName = $data['farmer_id'] . '_' . $comment['comment'] . '_' . date('d-m-Y') . '_' . time() . '.' . $extension;
+
+                        file_put_contents($parameterBag->get('uploadDir') . '/public/uploads/crm/visit/complain/' . $fileName, $attachment);
+                    }
+
+                    $details = new FarmerComplainDetails();
+                    $details->setComplain($complain);
+                    $details->setComment($comment['comment']);
+                    $details->setAttachment($fileName);
+                    $em->persist($details);
+                    $em->flush();
+
+                }
+
+                return new JsonResponse([
+                    'status' => 200,
+                    'message' => 'success'
+                ]);
+            }else{
+                return new JsonResponse([
+                    'status' => 404,
+                    'message' => 'failed'
+                ]);
+            }
         }
+
+        return new JsonResponse([
+            'status' => 404,
+            'message' => 'failed'
+        ]);
 
     }
 

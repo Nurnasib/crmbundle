@@ -21,6 +21,6 @@ use Doctrine\ORM\EntityRepository;
  *
  * @author Md Shafiqul islam <shafiqabs@gmail.com>
  */
-class CustomerComplainAttachmentRepository extends EntityRepository
+class FarmerComplainDetailsRepository extends EntityRepository
 {
 }
