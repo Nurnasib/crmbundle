@@ -69,14 +69,14 @@ class SyncAppDataController extends AbstractController
         ignore_user_abort(true);
 
         $feedback = [];
-//        $records = $this->getDoctrine()->getRepository(ApiDetails::class)->findBy(['status' => 0, 'process' => 'crm_visit']);
-        $records = $this->getDoctrine()->getRepository(Api::class)->findBy(['status' => 0]);
-        foreach ($records as $record) {
+        $records = $this->getDoctrine()->getRepository(ApiDetails::class)->findBy(['status' => 0, 'process' => 'crm_visit']);
+//        $records = $this->getDoctrine()->getRepository(Api::class)->findBy(['status' => 0]);
+/*        foreach ($records as $record) {
             foreach ($record->getApiDetails() as $child){
                 dump($child->getId());
             }
         }
-        dd('done');
+        dd('done');*/
 
         foreach ($records as $record) {
             if ($record->getJsonData()){
@@ -99,7 +99,7 @@ class SyncAppDataController extends AbstractController
                         $stmt->bindValue('app_id', $visit['id']);
                         $stmt->execute();
 
-                        $record->setStatus(1);
+                        $record->setStatus(true);
                         $this->getDoctrine()->getManager()->persist($record);
                         $this->getDoctrine()->getManager()->flush();
 
@@ -128,11 +128,12 @@ class SyncAppDataController extends AbstractController
      */
     public function syncCrmVisitDetails()
     {
+        return $this->redirectToRoute('crm_sync_app_data_index');
+
         set_time_limit(0);
         ignore_user_abort(true);
 
         $records = $this->getDoctrine()->getRepository(ApiDetails::class)->findBy(['status' => 0, 'process' => 'crm_visit_details']);
-        dd($records);
         foreach ($records as $record) {
             if ($record->getJsonData()){
                 $jsonToArray = json_decode($record->getJsonData(), true);

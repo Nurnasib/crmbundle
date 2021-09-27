@@ -11,6 +11,7 @@ namespace Terminalbd\CrmBundle\Controller;
 use App\Entity\User;
 use App\Entity\Admin\Location;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
@@ -1259,6 +1260,25 @@ class ApiController extends AbstractController
         $response->setContent(json_encode($entities));
         $response->setStatusCode(Response::HTTP_OK);
         return $response;
+    }
+
+    /**
+     * @Route("/complain", name="complain")
+     * @param Request $request
+     * @param ParameterBagInterface $parameterBag
+     * @return JsonResponse
+     */
+    public function complain(Request $request, ParameterBagInterface $parameterBag)
+    {
+        set_time_limit(0);
+        ignore_user_abort(true);
+
+        if ($request->getMethod() == 'POST' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')){
+            $data = $request->request->all();
+            $image = base64_decode($data['media']);
+            return new JsonResponse($data);
+        }
+
     }
 
 
