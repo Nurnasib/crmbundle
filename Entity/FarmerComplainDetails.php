@@ -34,7 +34,6 @@ class FarmerComplainDetails
 
     /**
      * @var DateTime
-     * @Gedmo\Timestampable(on="create")
      * @ORM\Column(type="datetime", nullable=true)
      */
     private $updatedAt;
