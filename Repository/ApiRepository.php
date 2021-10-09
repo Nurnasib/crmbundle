@@ -97,7 +97,7 @@ class ApiRepository extends BaseRepository
     /**
      *  Customer
      */
-    public function customerApi( $terminal,$locations): array
+    public function customerApi( $terminal,$mode,$locations): array
     {
         $em = $this->_em;
         $qb = $em->createQueryBuilder();
@@ -111,6 +111,7 @@ class ApiRepository extends BaseRepository
         $qb->addSelect('ca.id as agentId','ca.name as agentName');
         $qb->addSelect('l.name as upozila','l.id as upozilaId');
         $qb->addSelect('dis.name as district','dis.id as districtId');
+        $qb->where("cg.slug =:slug")->setParameter('slug', $mode);
         if($locations){
             $locations = explode(',',$locations);
             $qb->where('e.location IN (:upozila)')->setParameter('upozila',$locations);

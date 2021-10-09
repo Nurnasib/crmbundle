@@ -69,6 +69,63 @@ class SyncAppDataController extends AbstractController
         ignore_user_abort(true);
 
         $feedback = [];
+        $batches = $this->getDoctrine()->getRepository(Api::class)->findBy(['status' => 0]);
+        foreach ($batches as $batch) {
+//            dd((object)$batch);
+            $em = $this->getDoctrine()->getManager();
+            $details = $batch->getApiDetails();
+            foreach ($details as $detail) {
+                $jsonToArray = json_decode($detail->getJsonData(), true);
+
+                if ($detail->getProcess() == 'crm_visit'){
+                    foreach ($jsonToArray as $visitKey => $visit) {
+                        $createdAt = new \DateTime($visit['created_at']);
+                        $findEmployee = $this->getDoctrine()->getRepository(User::class)->find($visit['employee_id']);
+                        $findLocation = $this->getDoctrine()->getRepository(Location::class)->find($visit['location_id']);
+
+                        if ($findEmployee && $findLocation){
+                            $newVisit = new CrmVisit();
+                            $newVisit->setEmployee($findEmployee);
+                            $newVisit->setAppId($batch);
+                            $newVisit->setAppBatch($visit['id']);
+                            $newVisit->setLocation($findLocation);
+                            $newVisit->setWorkingDuration($visit['duration_from']);
+                            $newVisit->setWorkingDurationTo($visit['duration_to']);
+                            $newVisit->setCreated($createdAt);
+                            $em->persist($newVisit);
+                            $em->flush();
+
+/*                            $sql = "INSERT INTO `crm_visit`(`created`, `working_duration`, `employee_id`, `location_id`, `working_duration_to`, `app_id`) VALUES (:created_at, :duration_from, :employee_id, :location_id, :duration_to, :app_id)";
+
+                            $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
+                            $stmt->bindValue('created_at', $createdAt->format('Y-m-d H:i:s'));
+                            $stmt->bindValue('duration_from', $visit['duration_from']);
+                            $stmt->bindValue('employee_id', $visit['employee_id']);
+                            $stmt->bindValue('location_id', $visit['location_id']);
+                            $stmt->bindValue('duration_to', $visit['duration_to']);
+                            $stmt->bindValue('app_id', $visit['id']);
+                            $stmt->execute();*/
+
+                            $detail->setStatus(true);
+                            $em->persist($detail);
+                            $em->flush();
+                        }
+                        if ($visitKey == array_key_last($jsonToArray)){
+
+//                            dump($visitKey);
+                        }
+                    }
+                }elseif ($detail->getProcess() == 'crm_visit_details'){
+                    foreach ($jsonToArray as $visitDetails) {
+                        $findVisit = $this->getDoctrine()->getRepository(CrmVisit::class)->findOneBy(['appId' => $visitDetails['crm_visit_id'], 'appBatch' => $detail]);
+//                        dd($findVisit);
+                    }
+                }
+            }
+            $batch->setStatus(true);
+//            $em->persist($batch);
+//            $em->flush();
+        }
         $records = $this->getDoctrine()->getRepository(ApiDetails::class)->findBy(['status' => 0, 'process' => 'crm_visit']);
 //        $records = $this->getDoctrine()->getRepository(Api::class)->findBy(['status' => 0]);
 /*        foreach ($records as $record) {
@@ -79,15 +136,15 @@ class SyncAppDataController extends AbstractController
         dd('done');*/
 
         foreach ($records as $record) {
+            dd($record);
             if ($record->getJsonData()){
                 $jsonToArray = json_decode($record->getJsonData(), true);
                 foreach ($jsonToArray as $visit) {
-
                     $createdAt = new \DateTime($visit['created_at']);
-                    $employee = $this->getDoctrine()->getRepository(User::class)->find($visit['employee_id']);
-                    $location = $this->getDoctrine()->getRepository(Location::class)->find($visit['location_id']);
+                    $findEmployee = $this->getDoctrine()->getRepository(User::class)->find($visit['employee_id']);
+                    $findLocation = $this->getDoctrine()->getRepository(Location::class)->find($visit['location_id']);
 
-                    if ($employee && $location){
+                    if ($findEmployee && $findLocation){
                         $sql = "INSERT INTO `crm_visit`(`created`, `working_duration`, `employee_id`, `location_id`, `working_duration_to`, `app_id`) VALUES (:created_at, :duration_from, :employee_id, :location_id, :duration_to, :app_id)";
 
                         $stmt = $this->getDoctrine()->getConnection()->prepare($sql);

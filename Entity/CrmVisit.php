@@ -43,6 +43,15 @@ class CrmVisit
     private $employee;
 
 
+    /**
+     * @var Api
+     * @ORM\ManyToOne(targetEntity="Terminalbd\CrmBundle\Entity\Api", inversedBy="crmVisits")
+     * @ORM\JoinColumn(referencedColumnName="id")
+     * @ORM\JoinColumn(onDelete="CASCADE")
+     */
+    private $appBatch;
+
+
      /**
      * @var Location
      * @ORM\ManyToOne(targetEntity="App\Entity\Admin\Location", inversedBy="crmVisits")
@@ -210,6 +219,23 @@ class CrmVisit
     {
         $this->employee = $employee;
     }
+
+    /**
+     * @return Api
+     */
+    public function getAppBatch(): Api
+    {
+        return $this->appBatch;
+    }
+
+    /**
+     * @param Api $appBatch
+     */
+    public function setAppBatch($appBatch): void
+    {
+        $this->appBatch = $appBatch;
+    }
+
 
     /**
      * @return Location

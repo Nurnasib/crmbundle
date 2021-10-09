@@ -255,7 +255,24 @@ class ApiController extends AbstractController
         ignore_user_abort(true);
         //$terminal = $this->getUser()->getTerminal()->getId();
         $locations = isset($_REQUEST['locations']) ? $_REQUEST['locations'] : "";
-        $entities = $this->getDoctrine()->getRepository(Api::class)->customerApi(1,$locations);
+        $entities = $this->getDoctrine()->getRepository(Api::class)->customerApi(1,'farmer',$locations);
+        $response = new Response();
+        $response->headers->set('Content-Type', 'application/json');
+        $response->setContent(json_encode($entities));
+        $response->setStatusCode(Response::HTTP_OK);
+        return $response;
+    }
+
+    /**
+     * @Route("/sub-agent", name="sub_agent_api")
+     */
+    public function subAgentApi()
+    {
+        set_time_limit(0);
+        ignore_user_abort(true);
+        //$terminal = $this->getUser()->getTerminal()->getId();
+        $locations = isset($_REQUEST['locations']) ? $_REQUEST['locations'] : "";
+        $entities = $this->getDoctrine()->getRepository(Api::class)->customerApi(1,'sub-agent',$locations);
         $response = new Response();
         $response->headers->set('Content-Type', 'application/json');
         $response->setContent(json_encode($entities));

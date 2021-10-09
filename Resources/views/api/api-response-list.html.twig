@@ -20,12 +20,12 @@
                 <div class="card-header">
                     <h5>{{ 'API Response List'|trans }}</h5>
                     <div class="btn-group btn-group-sm float-right">
-                        {% if countVisit > 0 %}
+{#                        {% if countVisit > 0 %}
                             <a href="{{ path('crm_sync_app_data_crm_visit') }}" class="btn purple-bg white-font"><i class="fa fa-sync"></i> Sync Visit</a>
-                        {% endif %}
-                        {% if countVisitDetails > 0 and countVisit == 0 %}
+                        {% elseif(countVisitDetails > 0 and countVisit == 0) %}
                             <a href="{{ path('crm_sync_app_data_crm_visit_details') }}" class="btn blue-bg white-font"><i class="fa fa-sync"></i> Sync Visit Details</a>
-                        {% endif %}
+
+                        {% endif %}#}
                     </div>
                 </div>
             </div>

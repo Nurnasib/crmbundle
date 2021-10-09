@@ -31,7 +31,7 @@ class ApiDetailsRepository extends BaseRepository
         $qb->join('e.batch', 'batch');
         $qb->select('e.id','e.process', 'e.status', 'batch.batchNo');
         $qb->where('e.status = 0');
-        $qb->andWhere('e.process NOT IN (:process)')->setParameter('process', ['crm_visit', 'crm_visit_details']);
+//        $qb->andWhere('e.process NOT IN (:process)')->setParameter('process', ['crm_visit', 'crm_visit_details']);
 
         return $qb->getQuery()->getArrayResult();
     }
