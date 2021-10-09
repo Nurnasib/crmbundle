@@ -11,6 +11,7 @@ namespace Terminalbd\CrmBundle\Controller;
 use App\Entity\Core\Agent;
 use App\Entity\User;
 use App\Entity\Admin\Location;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -265,19 +266,54 @@ class ApiController extends AbstractController
 
     /**
      * @Route("/sub-agent", name="sub_agent_api")
+     * @param Request $request
+     * @param ParameterBagInterface $parameterBag
+     * @return JsonResponse|Response
      */
-    public function subAgentApi()
+    public function subAgentApi(Request $request, ParameterBagInterface $parameterBag)
     {
         set_time_limit(0);
         ignore_user_abort(true);
-        //$terminal = $this->getUser()->getTerminal()->getId();
-        $locations = isset($_REQUEST['locations']) ? $_REQUEST['locations'] : "";
-        $entities = $this->getDoctrine()->getRepository(Api::class)->customerApi(1,'sub-agent',$locations);
-        $response = new Response();
-        $response->headers->set('Content-Type', 'application/json');
-        $response->setContent(json_encode($entities));
-        $response->setStatusCode(Response::HTTP_OK);
-        return $response;
+        if ($request->getMethod() == 'GET' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')){
+            $locations = isset($_REQUEST['locations']) ? $_REQUEST['locations'] : "";
+            $entities = $this->getDoctrine()->getRepository(Api::class)->customerApi(1,'sub-agent',$locations);
+            $response = new Response();
+            $response->headers->set('Content-Type', 'application/json');
+            $response->setContent(json_encode($entities));
+            $response->setStatusCode(Response::HTTP_OK);
+            return $response;
+        }
+        return new JsonResponse([
+            'status' => 404,
+            'message' => 'Not Found!'
+        ]);
+
+    }
+
+    /**
+     * @Route("/other-agent", name="other_agent_api")
+     * @param Request $request
+     * @param ParameterBagInterface $parameterBag
+     * @return JsonResponse|Response
+     */
+    public function otherAgent(Request $request, ParameterBagInterface $parameterBag)
+    {
+        set_time_limit(0);
+        ignore_user_abort(true);
+        if ($request->getMethod() == 'GET' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')){
+            //$terminal = $this->getUser()->getTerminal()->getId();
+            $locations = isset($_REQUEST['locations']) ? $_REQUEST['locations'] : "";
+            $entities = $this->getDoctrine()->getRepository(Api::class)->customerApi(1,'other-agent',$locations);
+            $response = new Response();
+            $response->headers->set('Content-Type', 'application/json');
+            $response->setContent(json_encode($entities));
+            $response->setStatusCode(Response::HTTP_OK);
+            return $response;
+        }
+        return new JsonResponse([
+            'status' => 404,
+            'message' => 'Not Found!'
+        ]);
     }
 
     /**
@@ -404,6 +440,8 @@ class ApiController extends AbstractController
 
     /**
      * @Route("/report/farmer-introduce-report", methods={"POST"}, name="farmerintroducereport")
+     * @param Request $request
+     * @return Response
      */
     public function farmerIntroduceReport(Request $request)
     {
@@ -424,8 +462,11 @@ class ApiController extends AbstractController
         $response->setStatusCode(Response::HTTP_OK);
         return $response;
     }
+
     /**
      * @Route("/report/farmer-touch-report", methods={"POST"}, name="farmertouchreport")
+     * @param Request $request
+     * @return Response
      */
     public function farmerTouchReport(Request $request)
     {
@@ -451,6 +492,8 @@ class ApiController extends AbstractController
 
     /**
      * @Route("/report/farmer-training-report", methods={"POST"}, name="farmer-training-report")
+     * @param Request $request
+     * @return Response
      */
     public function farmerTrainingReport(Request $request)
     {
@@ -472,9 +515,10 @@ class ApiController extends AbstractController
     }
 
 
-
     /**
      * @Route("/report/poultry", methods={"POST"}, name="reportPoultry")
+     * @param Request $request
+     * @return Response
      */
     public function poultryLifeCylceReport(Request $request)
     {
@@ -501,6 +545,8 @@ class ApiController extends AbstractController
 
     /**
      * @Route("/cattle/crm-visit", methods={"POST"}, name="cattle-crm-visit")
+     * @param Request $request
+     * @return Response
      */
     public function farmCattleVisit(Request $request)
     {
@@ -524,6 +570,8 @@ class ApiController extends AbstractController
 
     /**
      * @Route("/chick/fcr", methods={"POST"}, name="chickfcr")
+     * @param Request $request
+     * @return Response
      */
     public function frcReportPoulty(Request $request)
     {
@@ -550,6 +598,10 @@ class ApiController extends AbstractController
 
     /**
      * @Route("/fcr/before/{type}/new", methods={"GET", "POST"}, name="api_fcr_before_new", options={"expose"=true})
+     * @param Request $request
+     * @param $type
+     * @return Response
+     * @throws Exception
      */
     // type = sonali or boiler
     public function apiFcrBeforeNew(Request $request, $type): Response
@@ -628,6 +680,8 @@ class ApiController extends AbstractController
 
     /**
      * @Route("/crmvisitingarea", methods={"GET","POST"}, name="crmVisitingArea")
+     * @param Request $request
+     * @return Response
      */
     public function crmVisitingArea(Request $request)
     {
@@ -663,6 +717,8 @@ class ApiController extends AbstractController
 
     /**
      * @Route("/crmvisitnew", methods={"GET","POST"}, name="crmVisitNew")
+     * @param Request $request
+     * @return JsonResponse
      */
     public function new(Request $request)
     {
@@ -720,6 +776,8 @@ class ApiController extends AbstractController
 
     /**
      * @Route("/farmerSelectPurpose", methods={"GET","POST"}, name="farmerSelectPurpose")
+     * @param Request $request
+     * @return Response
      */
     public function farmerSelectPurpose(Request $request)
     {
@@ -1283,7 +1341,7 @@ class ApiController extends AbstractController
     }
 
     /**
-     * @Route("/complain", name="complain")
+     * @Route("/complain", name="complain_api")
      * @param Request $request
      * @param ParameterBagInterface $parameterBag
      * @return JsonResponse
@@ -1337,18 +1395,210 @@ class ApiController extends AbstractController
                 ]);
             }else{
                 return new JsonResponse([
-                    'status' => 404,
-                    'message' => 'failed'
+                    'status' => 500,
+                    'message' => 'Server Error!'
                 ]);
             }
         }
 
         return new JsonResponse([
-            'status' => 404,
-            'message' => 'failed'
+            'status' => 500,
+            'message' => 'Server Error!'
         ]);
 
     }
 
+    /**
+     * @Route("/agent-purpose", name="agent_purpose_api")
+     * @param Request $request
+     * @param ParameterBagInterface $parameterBag
+     * @return JsonResponse|Response
+     */
+    public function agentPurposeApi(Request $request, ParameterBagInterface $parameterBag)
+    {
+        set_time_limit(0);
+        ignore_user_abort(true);
+
+        if ($request->getMethod() == 'GET' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')){
+            $records =$this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType'=>'AGENT_PURPOSE'));
+            $data = [];
+            foreach ($records as $key => $record) {
+                $data[$key]['id'] = $record->getId();
+                $data[$key]['name'] = $record->getName();
+            }
+            $response = new Response();
+            $response->headers->set('Content-Type', 'application/json');
+            $response->setContent(json_encode($data));
+            $response->setStatusCode(Response::HTTP_OK);
+            return $response;
+        }
+        return new JsonResponse([
+            'status' => 404,
+            'message' => 'Not Found!'
+        ]);
+
+    }
+
+    /**
+     * @Route("/sub-agent-purpose", name="sub-agent_purpose_api")
+     * @param Request $request
+     * @param ParameterBagInterface $parameterBag
+     * @return JsonResponse|Response
+     */
+    public function subAgentPurposeApi(Request $request, ParameterBagInterface $parameterBag)
+    {
+        set_time_limit(0);
+        ignore_user_abort(true);
+
+        if ($request->getMethod() == 'GET' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')){
+            $records =$this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType'=>'SUB_AGENT_PURPOSE'));
+            $data = [];
+            foreach ($records as $key => $record) {
+                $data[$key]['id'] = $record->getId();
+                $data[$key]['name'] = $record->getName();
+            }
+            $response = new Response();
+            $response->headers->set('Content-Type', 'application/json');
+            $response->setContent(json_encode($data));
+            $response->setStatusCode(Response::HTTP_OK);
+            return $response;
+        }
+        return new JsonResponse([
+            'status' => 404,
+            'message' => 'Not Found!'
+        ]);
+
+    }
+
+    /**
+     * @Route("/other-agent-purpose", name="other-agent_purpose_api")
+     * @param Request $request
+     * @param ParameterBagInterface $parameterBag
+     * @return JsonResponse|Response
+     */
+    public function otherAgentPurposeApi(Request $request, ParameterBagInterface $parameterBag)
+    {
+        set_time_limit(0);
+        ignore_user_abort(true);
+
+        if ($request->getMethod() == 'GET' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')){
+            $records =$this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType'=>'OTHER_AGENT_PURPOSE'));
+            $data = [];
+            foreach ($records as $key => $record) {
+                $data[$key]['id'] = $record->getId();
+                $data[$key]['name'] = $record->getName();
+            }
+            $response = new Response();
+            $response->headers->set('Content-Type', 'application/json');
+            $response->setContent(json_encode($data));
+            $response->setStatusCode(Response::HTTP_OK);
+            return $response;
+        }
+        return new JsonResponse([
+            'status' => 404,
+            'message' => 'Not Found!'
+        ]);
+    }
+
+    /**
+     * @Route("/create-sub-agent", name="create_sub_agent_api")
+     * @param Request $request
+     * @param ParameterBagInterface $parameterBag
+     * @return Response
+     */
+    public function createSubAgent(Request $request, ParameterBagInterface $parameterBag)
+    {
+        set_time_limit(0);
+        ignore_user_abort(true);
+
+        if ($request->getMethod() == 'POST' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')){
+            $entity = new CrmCustomer();
+            $allRequestData = $request->request->all();
+
+            $group = $this->getDoctrine()->getRepository(Setting::class)->findOneBy(array('slug'=>'sub-agent'));
+            $location = $this->getDoctrine()->getRepository(Location::class)->find($allRequestData['location']);
+            $entity->setName($allRequestData['name']);
+            $entity->setAddress($allRequestData['address']);
+            $entity->setMobile($allRequestData['mobile']);
+            $entity->setCustomerGroup($group);
+            $entity->setLocation($location);
+            if($allRequestData['agent']){
+                $agent = $this->getDoctrine()->getRepository(Agent::class)->find($allRequestData['agent']);
+                $entity->setAgent($agent);
+            }
+            $em = $this->getDoctrine()->getManager();
+
+            try {
+                $em->persist($entity);
+                $em->flush();
+
+                $response = new Response();
+                $response->headers->set('Content-Type', 'application/json');
+                $response->setStatusCode(Response::HTTP_OK);
+
+                return $response;
+            }catch (Exception $e){
+                $response = new Response();
+                $response->headers->set('Content-Type', 'application/json');
+                $response->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR);
+                $response->setContent($e->getMessage());
+                return $response;
+            }
+        }
+
+        return new JsonResponse([
+            'status' => 500,
+            'message' => 'Server Error!'
+        ]);
+    }
+
+
+    /**
+     * @Route("/create-other-agent", name="create_other_agent_api")
+     * @param Request $request
+     * @param ParameterBagInterface $parameterBag
+     * @return Response
+     */
+    public function createOtherAgent(Request $request, ParameterBagInterface $parameterBag)
+    {
+        set_time_limit(0);
+        ignore_user_abort(true);
+
+        if ($request->getMethod() == 'POST' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')){
+            $entity = new Agent();
+            $allRequestData = $request->request->all();
+            $group = $this->getDoctrine()->getRepository(\App\Entity\Core\Setting::class)->findOneBy(array('slug'=>'other-agent'));
+            $location = $this->getDoctrine()->getRepository(Location::class)->find($allRequestData['location']);
+            $entity->setName($allRequestData['name']);
+            $entity->setAddress($allRequestData['address']);
+            $entity->setMobile($allRequestData['mobile']);
+            $entity->setAgentGroup($group);
+            $entity->setUpozila($location);
+            $entity->setDistrict($location->getParent());
+            $entity->setCreated(new \DateTime('now'));
+            $em = $this->getDoctrine()->getManager();
+
+            try {
+                $em->persist($entity);
+                $em->flush();
+
+                $response = new Response();
+                $response->headers->set('Content-Type', 'application/json');
+                $response->setStatusCode(Response::HTTP_OK);
+                return $response;
+            }catch (Exception $e){
+                $response = new Response();
+                $response->headers->set('Content-Type', 'application/json');
+                $response->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR);
+                $response->setContent($e->getMessage());
+                return $response;
+            }
+        }
+
+        return new JsonResponse([
+            'status' => 500,
+            'message' => 'Server Error!'
+        ]);
+    }
 
 }
