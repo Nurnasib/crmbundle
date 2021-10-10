@@ -1536,8 +1536,6 @@ class ApiController extends AbstractController
                     'status' => 200,
                     'message' => 'Success'
                 ]);
-
-                return $response;
             }catch (Exception $e){
                 $response = new Response();
                 $response->headers->set('Content-Type', 'application/json');
