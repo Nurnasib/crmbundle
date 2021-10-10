@@ -1532,9 +1532,10 @@ class ApiController extends AbstractController
                 $em->persist($entity);
                 $em->flush();
 
-                $response = new Response();
-                $response->headers->set('Content-Type', 'application/json');
-                $response->setStatusCode(Response::HTTP_OK);
+                return new JsonResponse([
+                    'status' => 200,
+                    'message' => 'Success'
+                ]);
 
                 return $response;
             }catch (Exception $e){
@@ -1582,10 +1583,10 @@ class ApiController extends AbstractController
                 $em->persist($entity);
                 $em->flush();
 
-                $response = new Response();
-                $response->headers->set('Content-Type', 'application/json');
-                $response->setStatusCode(Response::HTTP_OK);
-                return $response;
+                return new JsonResponse([
+                    'status' => 200,
+                    'message' => 'Success'
+                ]);
             }catch (Exception $e){
                 $response = new Response();
                 $response->headers->set('Content-Type', 'application/json');

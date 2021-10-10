@@ -86,8 +86,8 @@ class SyncAppDataController extends AbstractController
                         if ($findEmployee && $findLocation){
                             $newVisit = new CrmVisit();
                             $newVisit->setEmployee($findEmployee);
-                            $newVisit->setAppId($batch);
-                            $newVisit->setAppBatch($visit['id']);
+                            $newVisit->setAppId($visit['id']);
+                            $newVisit->setAppBatch($batch);
                             $newVisit->setLocation($findLocation);
                             $newVisit->setWorkingDuration($visit['duration_from']);
                             $newVisit->setWorkingDurationTo($visit['duration_to']);
@@ -107,8 +107,8 @@ class SyncAppDataController extends AbstractController
                             $stmt->execute();*/
 
                             $detail->setStatus(true);
-                            $em->persist($detail);
-                            $em->flush();
+//                            $em->persist($detail);
+//                            $em->flush();
                         }
                         if ($visitKey == array_key_last($jsonToArray)){
 
@@ -117,8 +117,8 @@ class SyncAppDataController extends AbstractController
                     }
                 }elseif ($detail->getProcess() == 'crm_visit_details'){
                     foreach ($jsonToArray as $visitDetails) {
-                        $findVisit = $this->getDoctrine()->getRepository(CrmVisit::class)->findOneBy(['appId' => $visitDetails['crm_visit_id'], 'appBatch' => $detail]);
-//                        dd($findVisit);
+                        $findVisit = $this->getDoctrine()->getRepository(CrmVisit::class)->findOneBy(['appId' => $visitDetails['crm_visit_id'], 'appBatch' => $batch]);
+                        dd($findVisit, $visitDetails);
                     }
                 }
             }
