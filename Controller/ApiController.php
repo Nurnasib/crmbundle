@@ -23,7 +23,9 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
 use Terminalbd\CrmBundle\Entity\Api;
 use Terminalbd\CrmBundle\Entity\ApiDetails;
+use Terminalbd\CrmBundle\Entity\BroilerLifeCycle;
 use Terminalbd\CrmBundle\Entity\BroilerStandard;
+use Terminalbd\CrmBundle\Entity\ChickLifeCycle;
 use Terminalbd\CrmBundle\Entity\CrmCustomer;
 use Terminalbd\CrmBundle\Entity\CrmVisit;
 use Terminalbd\CrmBundle\Entity\CrmVisitDetails;
@@ -1597,6 +1599,108 @@ class ApiController extends AbstractController
         return new JsonResponse([
             'status' => 500,
             'message' => 'Server Error!'
+        ]);
+    }
+
+    /**
+     * @param Request $request
+     * @param ParameterBagInterface $parameterBag
+     * @Route("/chick-life-cycle", name="chick_life_cycle_api")
+     * @return JsonResponse|Response
+     */
+    public function getChickLifeCycle(Request $request, ParameterBagInterface $parameterBag)
+    {
+        set_time_limit(0);
+        ignore_user_abort(true);
+
+        if ($request->getMethod() == 'POST' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')){
+            $parameters = $request->request->all();
+            $records = $this->getDoctrine()->getRepository(Api::class)->getLifeCycleData($parameters);
+
+            $response = new Response();
+            $response->headers->set('Content-Type', 'application/json');
+            if ($records){
+                $response->setContent(json_encode($records));
+            }else{
+                $response->setContent(json_encode([
+                    'status' => 404,
+                    'message' => 'Not found!'
+                ]));
+            }
+            $response->setStatusCode(Response::HTTP_OK);
+            return $response;
+        }
+        return new JsonResponse([
+            'status' => 404,
+            'message' => 'Not Found!'
+        ]);
+    }
+
+    /**
+     * @param Request $request
+     * @param ParameterBagInterface $parameterBag
+     * @Route("/layer-life-cycle", name="layer_life_cycle_api")
+     * @return JsonResponse|Response
+     */
+    public function getLayerLifeCycle(Request $request, ParameterBagInterface $parameterBag)
+    {
+        set_time_limit(0);
+        ignore_user_abort(true);
+
+        if ($request->getMethod() == 'POST' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')){
+            $parameters = $request->request->all();
+            $records = $this->getDoctrine()->getRepository(Api::class)->getLayerLifeCycleData($parameters);
+
+            $response = new Response();
+            $response->headers->set('Content-Type', 'application/json');
+            if ($records){
+                $response->setContent(json_encode($records));
+            }else{
+                $response->setContent(json_encode([
+                    'status' => 404,
+                    'message' => 'Not found!'
+                ]));
+            }
+            $response->setStatusCode(Response::HTTP_OK);
+            return $response;
+        }
+        return new JsonResponse([
+            'status' => 404,
+            'message' => 'Not Found!'
+        ]);
+    }
+
+    /**
+     * @param Request $request
+     * @param ParameterBagInterface $parameterBag
+     * @Route("/cattle-life-cycle", name="cattle_life_cycle_api")
+     * @return JsonResponse|Response
+     */
+    public function getCattleLifeCycle(Request $request, ParameterBagInterface $parameterBag)
+    {
+        set_time_limit(0);
+        ignore_user_abort(true);
+
+        if ($request->getMethod() == 'POST' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')){
+            $parameters = $request->request->all();
+            $records = $this->getDoctrine()->getRepository(Api::class)->getCattleLifeCycleData($parameters);
+
+            $response = new Response();
+            $response->headers->set('Content-Type', 'application/json');
+            if ($records){
+                $response->setContent(json_encode($records));
+            }else{
+                $response->setContent(json_encode([
+                    'status' => 404,
+                    'message' => 'Not found!'
+                ]));
+            }
+            $response->setStatusCode(Response::HTTP_OK);
+            return $response;
+        }
+        return new JsonResponse([
+            'status' => 404,
+            'message' => 'Not Found!'
         ]);
     }
 

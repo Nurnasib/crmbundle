@@ -16,10 +16,13 @@ use App\Entity\Admin\Location;
 use App\Entity\Core\Agent;
 use App\Entity\User;
 use Doctrine\ORM\Query\Expr\Join;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Terminalbd\CrmBundle\Entity\BroilerStandard;
 use Terminalbd\CrmBundle\Entity\CattleFarmVisit;
 use Terminalbd\CrmBundle\Entity\CattleFarmVisitDetails;
+use Terminalbd\CrmBundle\Entity\CattleLifeCycleDetails;
 use Terminalbd\CrmBundle\Entity\ChickLifeCycle;
+use Terminalbd\CrmBundle\Entity\ChickLifeCycleDetails;
 use Terminalbd\CrmBundle\Entity\CrmCustomer;
 use Terminalbd\CrmBundle\Entity\CrmVisit;
 use Terminalbd\CrmBundle\Entity\FarmerTrainingReport;
@@ -1415,6 +1418,60 @@ class ApiRepository extends BaseRepository
         }
         return $data;
 
+    }
+
+    public function getLifeCycleData($parameters)
+    {
+        $em = $this->_em;
+        $qb = $em->createQueryBuilder();
+        $qb->from(ChickLifeCycleDetails::class, 'clcd');
+        $qb->join('clcd.crmChickLifeCycle', 'clc');
+        $qb->join('clc.customer', 'farmer');
+        $qb->join('clc.employee', 'employee');
+        $qb->join('clc.report', 'report');
+        $qb->select('clcd');
+        $qb->where("clc.lifeCycleState = 'IN_PROGRESS'");
+        $qb->andWhere('farmer.id =:farmer_id')->setParameter('farmer_id', $parameters['farmer_id']);
+        $qb->andWhere('employee.id =:employee_id')->setParameter('employee_id', $parameters['employee_id']);
+        $qb->andWhere('report.id =:report_id')->setParameter('report_id', $parameters['report_id']);
+
+        return $qb->getQuery()->getArrayResult();
+    }
+
+    public function getLayerLifeCycleData($parameters)
+    {
+        $em = $this->_em;
+        $qb = $em->createQueryBuilder();
+        $qb->from(LayerLifeCycleDetails::class, 'lfcd');
+        $qb->join('lfcd.crmLayerLifeCycle', 'lfc');
+        $qb->join('lfc.customer', 'farmer');
+        $qb->join('lfc.employee', 'employee');
+        $qb->join('lfc.report', 'report');
+        $qb->select('lfcd');
+        $qb->where("lfc.lifeCycleState = 'IN_PROGRESS'");
+        $qb->andWhere('farmer.id =:farmer_id')->setParameter('farmer_id', $parameters['farmer_id']);
+        $qb->andWhere('employee.id =:employee_id')->setParameter('employee_id', $parameters['employee_id']);
+        $qb->andWhere('report.id =:report_id')->setParameter('report_id', $parameters['report_id']);
+
+        return $qb->getQuery()->getArrayResult();
+    }
+
+    public function getCattleLifeCycleData($parameters)
+    {
+        $em = $this->_em;
+        $qb = $em->createQueryBuilder();
+        $qb->from(CattleLifeCycleDetails::class, 'clcd');
+        $qb->join('clcd.crmCattleLifeCycle', 'clc');
+        $qb->join('clc.customer', 'farmer');
+        $qb->join('clc.employee', 'employee');
+        $qb->join('clc.report', 'report');
+        $qb->select('clcd');
+        $qb->where("clc.lifeCycleState = 'IN_PROGRESS'");
+        $qb->andWhere('farmer.id =:farmer_id')->setParameter('farmer_id', $parameters['farmer_id']);
+        $qb->andWhere('employee.id =:employee_id')->setParameter('employee_id', $parameters['employee_id']);
+        $qb->andWhere('report.id =:report_id')->setParameter('report_id', $parameters['report_id']);
+
+        return $qb->getQuery()->getArrayResult();
     }
 
 }
