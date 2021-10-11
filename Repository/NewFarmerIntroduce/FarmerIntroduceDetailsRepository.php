@@ -10,23 +10,22 @@ use Terminalbd\CrmBundle\Repository\BaseRepository;
 
 class FarmerIntroduceDetailsRepository extends BaseRepository
 {
-
-
-    public function insertCrmFarmerIntroduceDetails(CrmCustomer $customer, $user , $data)
+    public function insertCrmFarmerIntroduceDetails(CrmCustomer $customer, $user, $feed, $data)
     {
         if ($data['farmer_type']){
             $em = $this->_em;
             $entity = new FarmerIntroduceDetails();
             $entity->setCustomer($customer);
             $entity->setAgent($customer->getAgent());
+            $entity->setOtherAgent($customer->getAgent());
+            $entity->setFeed($feed?$feed:null);
+            $entity->setOtherFeed($feed?$feed:null);
             $entity->setCultureSpeciesItemAndQty(json_encode($data['species_type']));
-            $entity->setPreviousAgentName($data['previous_agent_name']);
+            /*$entity->setPreviousAgentName($data['previous_agent_name']);
             $entity->setPreviousAgentAddress($data['previous_agent_address']);
-            $entity->setPreviousFeedName($data['previous_feed_name']);
+            $entity->setPreviousFeedName($data['previous_feed_name']);*/
 
             $entity->setEmployee($user);
-
-            $entity->setRemarks($data['comments']);
 
             if($data['farmer_type']){
                 $farmerType = $em->getRepository(Setting::class)->find($data['farmer_type']);

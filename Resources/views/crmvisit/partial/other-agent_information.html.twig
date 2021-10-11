@@ -6,13 +6,13 @@
                     {{ details.purpose is not empty?details.purpose.name:'' }}
                 </td>
                 <td>
-                    {{ details.crmCustomer is not empty?details.crmCustomer.name:'' }}
+                    {{ details.agent is not empty?details.agent.name:'' }}
                 </td>
                 <td>
-                    {% if details.crmCustomer is not empty  %} {{ details.crmCustomer.address }} {% endif %}
+                    {% if details.agent is not empty  %} {{ details.agent.address }} {% endif %}
                 </td>
                 <td>
-                    {% if details.crmCustomer is not empty  %} {{ details.crmCustomer.mobile }} {% endif %}
+                    {% if details.agent is not empty  %} {{ details.agent.mobile }} {% endif %}
                 </td>
                 <td>
                     {{ details.comments }}

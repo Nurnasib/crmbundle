@@ -67,6 +67,14 @@ class CrmCustomer
      * @ORM\JoinColumn(onDelete="CASCADE")
      */
     private $agent;
+    
+    /**
+     * @var Agent
+     * @ORM\ManyToOne(targetEntity="App\Entity\Core\Agent", inversedBy="crmVisits")
+     * @ORM\JoinColumn(name="other_agent_id", referencedColumnName="id")
+     * @ORM\JoinColumn(onDelete="CASCADE")
+     */
+    private $otherAgent;
 
 
     /**
@@ -81,6 +89,16 @@ class CrmCustomer
      * @ORM\OneToMany(targetEntity="CrmVisitDetails", mappedBy="crmCustomer")
      */
     private $crmVisitDetails;
+
+    /**
+     * @ORM\OneToOne(targetEntity="Terminalbd\CrmBundle\Entity\NewFarmerTouch\FarmerTouchReport", mappedBy="customer")
+     */
+    private $farmerTouch;
+
+    /**
+     * @ORM\OneToOne(targetEntity="Terminalbd\CrmBundle\Entity\NewFarmerIntroduce\FarmerIntroduceDetails", mappedBy="customer")
+     */
+    private $farmerIntroduce;
 
     /**
      * @return int
@@ -249,6 +267,22 @@ class CrmCustomer
     }
 
     /**
+     * @return Agent
+     */
+    public function getOtherAgent()
+    {
+        return $this->otherAgent;
+    }
+
+    /**
+     * @param Agent $otherAgent
+     */
+    public function setOtherAgent(Agent $otherAgent): void
+    {
+        $this->otherAgent = $otherAgent;
+    }
+
+    /**
      * @return Location
      */
     public function getLocation()
@@ -262,6 +296,22 @@ class CrmCustomer
     public function setLocation($location)
     {
         $this->location = $location;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getFarmerTouch()
+    {
+        return $this->farmerTouch;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getFarmerIntroduce()
+    {
+        return $this->farmerIntroduce;
     }
 
 

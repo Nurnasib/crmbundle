@@ -13,7 +13,7 @@
                     <div class="col-md-12">
                         <h4>NOURISH POULTRY & HATCHERY LTD</h4>
                         <h5>Uttara, Dhaka.</h5>
-                        <h4>New Farmer Touch {{report.parent.parent.name}}</h4>
+                        <h4>New Farm Introduce to Nourish Family {{report.parent.parent.name}}</h4>
                         <input type="hidden" class="farmer_touch_report_id" value="{{ report.id }}">
                     </div>
 
@@ -65,30 +65,27 @@
                             <tr>
                                 <td colspan="2">
                                     {{ crmCustomer.name }}
-                                    {#<div class="date_section">
-                                        {{ form_widget(form.visiting_date) }}
-                                    </div>#}
                                 </td>
                                 {% if fishSpecies is not empty %}
                                     {% for fishSpecie in fishSpecies %}
                                         <td>
-                                            <input type="number" min="0" name="fish_specie[{{ fishSpecie.id }}]" class="form-control fish_specie_{{ fishSpecie.id }}">
+                                            <input type="number" min="0" name="fish_specie[{{ fishSpecie.id }}]" class="form-control fish_specie_{{ fishSpecie.id }}" value="{{ entity.cultureSpeciesQtyByItem[fishSpecie.id] is defined?entity.cultureSpeciesQtyByItem[fishSpecie.id]:0 }}">
                                         </td>
                                     {% endfor %}
 
                                 {% endif %}
 
                                 <td>
-                                    {{ form_widget(form.nourish_item_name) }}
+{#                                    {{ form_widget(form.nourish_item_name) }}#}
                                 </td>
                                 <td>
-                                    {{ form_widget(form.other_culture_species) }}
+{#                                    {{ form_widget(form.other_culture_species) }}#}
                                 </td>
                                 <td>
-                                    {{ form_widget(form.culture_area_decimal,{'type':'number'}) }}
+{#                                    {{ form_widget(form.culture_area_decimal,{'type':'number'}) }}#}
                                 </td>
                                 <td>
-                                    {{ form_widget(form.yearlyFeedUseTon,{'type':'number'}) }}
+{#                                    {{ form_widget(form.yearlyFeedUseTon,{'type':'number'}) }}#}
                                 </td>
                                 <td>
                                     {{ form_widget(form.remarks) }}
@@ -98,9 +95,6 @@
                                 </td>
                             </tr>
                             </thead>
-                            <tbody class="fishFarmerTouchReportBody">
-                            {% include '@TerminalbdCrm/farmerTouchReport/partial/fish-farmer-touch-report-body.html.twig' %}
-                            </tbody>
                         </table>
                         {{ form_widget(form._token) }}
                         {{ form_end(form) }}

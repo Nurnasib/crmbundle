@@ -17,13 +17,8 @@ function formSubmitProcessForFishFarmerTouchReport() {
             $("#process-msg").show();
             $(".alert-success").html(response);
             // $(".form-submit").html("Complete").prop("disabled", false);
-            $('form#fish_farmer_touch_report_form')[0].reset();
-            console.log(response);
-            // location.reload();
-            // setTimeout( explode, 2000);
-                var refreshUrl = Routing.generate('crm_farmer_touch_refresh',{'id':farmer_touch_report_id});
-                $("tbody.fishFarmerTouchReportBody").load(refreshUrl);
-
+            // $('form#fish_farmer_touch_report_form')[0].reset();
+            
         }
     });
 }

@@ -36,16 +36,34 @@ class FarmerIntroduceDetails
     private $farmerType;
 
     /**
+     * @var CrmCustomer
+     * @ORM\OneToOne(targetEntity="Terminalbd\CrmBundle\Entity\CrmCustomer", inversedBy="farmerIntroduce")
+     */
+    private $customer;
+
+    /**
      * @var Agent
      * @ORM\ManyToOne(targetEntity="App\Entity\Core\Agent" , inversedBy="farmerIntroduce")
      */
     private $agent;
 
     /**
-     * @var CrmCustomer
-     * @ORM\ManyToOne(targetEntity="Terminalbd\CrmBundle\Entity\CrmCustomer", inversedBy="farmerIntroduce")
+     * @var Agent
+     * @ORM\ManyToOne(targetEntity="App\Entity\Core\Agent" , inversedBy="farmerIntroduce")
      */
-    private $customer;
+    private $otherAgent;
+
+    /**
+     * @var Setting
+     * @ORM\ManyToOne(targetEntity="Terminalbd\CrmBundle\Entity\Setting" , inversedBy="farmerIntroduce")
+     */
+    private $feed;
+
+    /**
+     * @var Setting
+     * @ORM\ManyToOne(targetEntity="Terminalbd\CrmBundle\Entity\Setting" , inversedBy="farmerIntroduce")
+     */
+    private $otherFeed;
 
     /**
      * @var User
@@ -61,32 +79,13 @@ class FarmerIntroduceDetails
 
     /**
      * @var string
-     * @Orm\Column(name="previousAgentName", type="string", nullable=true)
-     */
-    private $previousAgentName;
-
-    /**
-     * @var string
-     * @Orm\Column(name="previousAgentAddress", type="string", nullable=true)
-     */
-    private $previousAgentAddress;
-
-    /**
-     * @var string
-     * @Orm\Column(name="previousFeedName", type="string", nullable=true)
-     */
-    private $previousFeedName;
-
-    /**
-     * @var string
      * @Orm\Column(name="remarks", type="text", nullable=true)
      */
     private $remarks;
 
     /**
      * @var \DateTime
-     * @Gedmo\Timestampable(on="create")
-     * @ORM\Column(name="created_at", type="datetime")
+     * @ORM\Column(name="created_at", type="datetime", nullable=true)
      */
     private $createdAt;
 
@@ -199,51 +198,35 @@ class FarmerIntroduceDetails
     }
 
     /**
-     * @return string
+     * @return Agent
      */
-    public function getPreviousAgentName()
+    public function getOtherAgent()
     {
-        return $this->previousAgentName;
+        return $this->otherAgent;
     }
 
     /**
-     * @param string $previousAgentName
+     * @param Agent $otherAgent
      */
-    public function setPreviousAgentName(string $previousAgentName): void
+    public function setOtherAgent(Agent $otherAgent): void
     {
-        $this->previousAgentName = $previousAgentName;
+        $this->otherAgent = $otherAgent;
     }
 
     /**
-     * @return string
+     * @return Setting
      */
-    public function getPreviousAgentAddress()
+    public function getFeed()
     {
-        return $this->previousAgentAddress;
+        return $this->feed;
     }
 
     /**
-     * @param string $previousAgentAddress
+     * @param Setting $feed
      */
-    public function setPreviousAgentAddress(string $previousAgentAddress): void
+    public function setFeed(Setting $feed): void
     {
-        $this->previousAgentAddress = $previousAgentAddress;
-    }
-
-    /**
-     * @return string
-     */
-    public function getPreviousFeedName()
-    {
-        return $this->previousFeedName;
-    }
-
-    /**
-     * @param string $previousFeedName
-     */
-    public function setPreviousFeedName(string $previousFeedName): void
-    {
-        $this->previousFeedName = $previousFeedName;
+        $this->feed = $feed;
     }
 
     /**
@@ -276,6 +259,22 @@ class FarmerIntroduceDetails
     public function setCreatedAt(\DateTime $createdAt)
     {
         $this->createdAt = $createdAt;
+    }
+
+    /**
+     * @return Setting
+     */
+    public function getOtherFeed()
+    {
+        return $this->otherFeed;
+    }
+
+    /**
+     * @param Setting $otherFeed
+     */
+    public function setOtherFeed(Setting $otherFeed): void
+    {
+        $this->otherFeed = $otherFeed;
     }
 
 }

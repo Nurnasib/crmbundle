@@ -109,10 +109,11 @@ class CrmVisitController extends AbstractController
         $lifeCycleReport =$this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType'=>'FARMER_REPORT'));
         $firmTypes =$this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType'=>'FARM_TYPE','status'=>1));
         $breedTypes =$this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType'=>'BREED_TYPE','status'=>1));
+        $feedCompanies =$this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType'=>'FEED_NAME','status'=>1),array('name'=>'ASC'));
         $breedNames =$this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType'=>'BREED_NAME','status'=>1));
         $farmers =$this->getDoctrine()->getRepository(CrmCustomer::class)->getLocationWise($entity->getEmployee(),'farmer');
         $subAgents =$this->getDoctrine()->getRepository(CrmCustomer::class)->getLocationWise($entity->getEmployee(),'sub-agent');
-        $otherAgents =$this->getDoctrine()->getRepository(CrmCustomer::class)->getLocationWise($entity->getEmployee(),'other-agent');
+        $otherAgents =$this->getDoctrine()->getRepository(Agent::class)->getLocationAndGroupWise($entity->getEmployee(),'other-agent');
 
         $firmTypesArray=array();
 
@@ -159,6 +160,7 @@ class CrmVisitController extends AbstractController
             'firmTypes'=>$firmTypesArray,
             'breedTypes'=>$breedTypes,
             'breedNames'=>$breedNames,
+            'feedCompanies'=>$feedCompanies,
             'agents'=>$agent,
             'farmers'=>$farmers,
             'subAgents'=>$subAgents,
@@ -204,6 +206,10 @@ class CrmVisitController extends AbstractController
         }
 
         if($request->request->get('process')=='agent' && $request->request->get('agent')!=''){
+            $agent = $this->getDoctrine()->getRepository(Agent::class)->find($request->request->get('agent'));
+            $entity->setAgent($agent?$agent:null);
+        }
+        if($request->request->get('process')=='other-agent' && $request->request->get('agent')!=''){
             $agent = $this->getDoctrine()->getRepository(Agent::class)->find($request->request->get('agent'));
             $entity->setAgent($agent?$agent:null);
         }

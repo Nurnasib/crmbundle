@@ -395,10 +395,10 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="recipient-name" class="col-form-label col-md-4">Agent Name:</label>
+                                    <label for="recipient-name" class="col-form-label col-md-4">Other Agent:</label>
                                     <select required name="agent" class="form-control agent">
-                                        <option value="">Select Agent</option>
-                                        {% for agent in agents %}
+                                        <option value="">Select Other Agent</option>
+                                        {% for agent in otherAgents %}
                                             <option value="{{ agent.id }}">{{ agent.name }}</option>
                                         {% endfor %}
                                     </select>
@@ -422,6 +422,17 @@
                         </div>
                         <div class="row">
                             <div class="col-md-6">
+
+                                <div class="form-group">
+                                    <label for="farmer_type" class="col-form-label col-md-4">{{ 'Feed'|trans }}</label>
+                                    <select name="feed_id" id="feed_id" class="form-control feed_id" required>
+                                        <option value="">Select Feed</option>
+                                        {% for feedCompany in feedCompanies %}
+                                            <option value="{{feedCompany.id}}"> {{feedCompany.name}} </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+
                                 <div class="form-group">
                                     <label for="farmer_type" class="col-form-label col-md-4">{{ 'Farmer Type'|trans }}</label>
                                     <select name="farmer_type" id="farmer_type" class="form-control farmer_type" required>
@@ -435,12 +446,12 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="farmer_address" class="col-form-label col-md-4">{{ 'Address'|trans }}:</label>
-                                    <textarea class="form-control col-md-8" name="address" id="farmer_address"></textarea>
+                                    <textarea rows="4" class="form-control col-md-8" name="address" id="farmer_address"></textarea>
                                 </div>
                             </div>
                         </div>
                         <div class="cultureSpeciesArea"></div>
-                        <h4>{{ 'Previous Information'|trans }}</h4>
+                        {#<h4>{{ 'Previous Information'|trans }}</h4>
                         <div class="row">
 
                             <div class="col-md-4">
@@ -461,8 +472,8 @@
                                     <input type="text" name="previous_feed_name" class="form-control col-md-8 mr-4 previous_feed_name" id="previous_feed_name" autocomplete="off">
                                 </div>
                             </div>
-                        </div>
-                        <h4>{{ 'Report Information'|trans }}</h4>
+                        </div>#}
+                        {#<h4>{{ 'Report Information'|trans }}</h4>
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="form-group">
@@ -516,7 +527,7 @@
                                     <textarea class="form-control col-md-10" name="comments" id="comments"></textarea>
                                 </div>
                             </div>
-                        </div>
+                        </div>#}
                     </div>
 
                     <div class="modal-footer">
@@ -528,11 +539,11 @@
             </div>
         </div>
 
-        <div class="modal fade" id="otherAgentModal" tabindex="-1" aria-labelledby="subAgentModalLabel" aria-hidden="true">
+        <div class="modal fade" id="otherAgentModal" tabindex="-1" aria-labelledby="otherAgentModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content" style="padding: 20px" >
                     <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">New Sub-agent</h5>
+                        <h5 class="modal-title" id="exampleModalLabel">New Other Agent</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>

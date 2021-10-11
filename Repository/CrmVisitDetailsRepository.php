@@ -138,12 +138,12 @@ class CrmVisitDetailsRepository extends EntityRepository
 
     }
 
-    public function insertOtherAgent(CrmCustomer $customer , $id , $data)
+    public function insertOtherAgent(Agent $agent , $id , $data)
     {
         $em = $this->_em;
         $visit = $em->getRepository(CrmVisit::class)->find($id);
         $entity = new CrmVisitDetails();
-        $entity->setCrmCustomer($customer);
+        $entity->setAgent($agent);
         $entity->setCrmVisit($visit);
         if($data['purpose']){
             $purpose = $em->getRepository(Setting::class)->find($data['purpose']);

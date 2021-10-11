@@ -70,20 +70,20 @@
                                 {% if fishSpecies is not empty %}
                                     {% for fishSpecie in fishSpecies %}
                                         <td>
-                                            <input type="number" min="0" name="fish_specie[{{ fishSpecie.id }}]" class="form-control fish_specie_{{ fishSpecie.id }}">
+                                            <input type="number" min="0" name="fish_specie[{{ fishSpecie.id }}]" class="form-control fish_specie_{{ fishSpecie.id }}" value="{{ entity.cultureSpeciesQtyByItem[fishSpecie.id] is defined?entity.cultureSpeciesQtyByItem[fishSpecie.id]:0 }}">
                                         </td>
                                     {% endfor %}
 
                                 {% endif %}
 
                                 <td>
-                                    {{ form_widget(form.nourish_item_name) }}
+{#                                    {{ form_widget(form.nourish_item_name) }}#}
                                 </td>
                                 <td>
-                                    {{ form_widget(form.other_culture_species) }}
+{#                                    {{ form_widget(form.other_culture_species) }}#}
                                 </td>
                                 <td>
-                                    {{ form_widget(form.conventionalFeed) }}
+{#                                    {{ form_widget(form.conventionalFeed) }}#}
                                 </td>
                                 <td>
                                     {{ form_widget(form.remarks) }}
@@ -93,9 +93,6 @@
                                 </td>
                             </tr>
                             </thead>
-                            <tbody class="fishFarmerTouchReportBody">
-                            {% include '@TerminalbdCrm/farmerTouchReport/partial/cattle-farmer-touch-report-body.html.twig' %}
-                            </tbody>
                         </table>
                         {{ form_widget(form._token) }}
                         {{ form_end(form) }}

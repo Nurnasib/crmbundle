@@ -18,6 +18,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Terminalbd\CrmBundle\Entity\CrmCustomer;
 use Terminalbd\CrmBundle\Entity\CrmVisitDetails;
 use Terminalbd\CrmBundle\Entity\NewFarmerIntroduce\FarmerIntroduceDetails;
+use Terminalbd\CrmBundle\Entity\NewFarmerTouch\FarmerTouchReport;
 use Terminalbd\CrmBundle\Entity\Setting;
 use Terminalbd\CrmBundle\Form\CrmCustomerFormType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -115,6 +116,7 @@ class CrmCustomerController extends AbstractController
         $entity=new CrmCustomer();
         $allRequestData = $request->request->all();
         $group = $this->getDoctrine()->getRepository(Setting::class)->findOneBy(array('slug'=>'farmer'));
+        $feed = $this->getDoctrine()->getRepository(Setting::class)->find($allRequestData['feed_id']);
         $location = $this->getDoctrine()->getRepository(Location::class)->find($allRequestData['location']);
         $agent = $this->getDoctrine()->getRepository(Agent::class)->find($allRequestData['agent']);
         $entity->setName($allRequestData['name']);
@@ -123,6 +125,7 @@ class CrmCustomerController extends AbstractController
         $entity->setCustomerGroup($group);
         $entity->setLocation($location);
         $entity->setAgent($agent);
+        $entity->setOtherAgent($agent);
         $em=$this->getDoctrine()->getManager();
         $em->persist($entity);
         $em->flush();
@@ -130,8 +133,9 @@ class CrmCustomerController extends AbstractController
           'id'=>$entity->getId(),
           'name'=>$entity->getName(),
         );
-        $this->getDoctrine()->getRepository(CrmVisitDetails::class)->insertCrmVisitDetailForFarmer($entity, $id, $allRequestData);
-        $this->getDoctrine()->getRepository(FarmerIntroduceDetails::class)->insertCrmFarmerIntroduceDetails($entity, $this->getUser(), $allRequestData);
+//        $this->getDoctrine()->getRepository(CrmVisitDetails::class)->insertCrmVisitDetailForFarmer($entity, $id, $allRequestData);
+        $this->getDoctrine()->getRepository(FarmerTouchReport::class)->insertFarmerTouch($entity, $this->getUser(), $feed, $allRequestData);
+        $this->getDoctrine()->getRepository(FarmerIntroduceDetails::class)->insertCrmFarmerIntroduceDetails($entity, $this->getUser(), $feed, $allRequestData);
         return new JsonResponse(array($returnData));
 
     }
@@ -142,16 +146,22 @@ class CrmCustomerController extends AbstractController
      */
     public function createOtherAgent(Request $request,$id){
 
-        $entity=new CrmCustomer();
+//        $entity=new CrmCustomer();
+        $entity=new Agent();
         $allRequestData = $request->request->all();
-        $group = $this->getDoctrine()->getRepository(Setting::class)->findOneBy(array('slug'=>'other-agent'));
+        $group = $this->getDoctrine()->getRepository(\App\Entity\Core\Setting::class)->findOneBy(array('slug'=>'other-agent'));
         $location = $this->getDoctrine()->getRepository(Location::class)->find($allRequestData['location']);
         $entity->setName($allRequestData['name']);
         $entity->setAddress($allRequestData['address']);
         $entity->setMobile($allRequestData['mobile']);
-        $entity->setCustomerGroup($group);
-        $entity->setLocation($location);
+        $entity->setAgentGroup($group);
+        $entity->setUpozila($location);
+        $entity->setDistrict($location->getParent());
+        $entity->setCreated(new \DateTime());
         $em=$this->getDoctrine()->getManager();
+        $em->persist($entity);
+        $em->flush();
+        $entity->setAgentId($entity->getId());
         $em->persist($entity);
         $em->flush();
         $returnData= array(
@@ -255,10 +265,12 @@ class CrmCustomerController extends AbstractController
 
     public function farmerIntroduceDetails($id): Response
     {
+        $farmerType =$this->getDoctrine()->getRepository(Setting::class)->find($id);
         $speciesTypes =$this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType'=>'SPECIES_TYPE','status'=>1, 'parent'=>$id));
 
         return $this->render('@TerminalbdCrm/crmcustomer/farmer-introduce-details.html.twig', [
             'speciesTypes' => $speciesTypes,
+            'farmerType' => $farmerType,
         ]);
     }
 

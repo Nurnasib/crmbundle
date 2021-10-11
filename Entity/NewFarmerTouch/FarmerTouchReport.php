@@ -36,23 +36,41 @@ class FarmerTouchReport
 
     /**
      * @var Setting
-     * @ORM\ManyToOne(targetEntity="Terminalbd\CrmBundle\Entity\Setting", inversedBy="fishFarmerTouch")
-     * @ORM\JoinColumn(name="report_parent_parent_id", referencedColumnName="id")
+     * @ORM\ManyToOne(targetEntity="Terminalbd\CrmBundle\Entity\Setting", inversedBy="farmerTouch")
+     * @ORM\JoinColumn(name="farmerType", referencedColumnName="id")
      * @ORM\JoinColumn(onDelete="CASCADE")
      */
-    private $reportParentParent;
+    private $farmerType;
+
+    /**
+     * @var CrmCustomer
+     * @ORM\OneToOne(targetEntity="Terminalbd\CrmBundle\Entity\CrmCustomer", inversedBy="farmerTouch")
+     */
+    private $customer;
 
     /**
      * @var Agent
-     * @ORM\ManyToOne(targetEntity="App\Entity\Core\Agent" , inversedBy="fishFarmerTouch")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Core\Agent" , inversedBy="farmerTouch")
      */
     private $agent;
 
     /**
-     * @var CrmCustomer
-     * @ORM\ManyToOne(targetEntity="Terminalbd\CrmBundle\Entity\CrmCustomer", inversedBy="fishFarmerTouch")
+     * @var Agent
+     * @ORM\ManyToOne(targetEntity="App\Entity\Core\Agent" , inversedBy="farmerTouch")
      */
-    private $customer;
+    private $otherAgent;
+
+    /**
+     * @var Setting
+     * @ORM\ManyToOne(targetEntity="Terminalbd\CrmBundle\Entity\Setting" , inversedBy="farmerIntroduce")
+     */
+    private $feed;
+
+    /**
+     * @var Setting
+     * @ORM\ManyToOne(targetEntity="Terminalbd\CrmBundle\Entity\Setting" , inversedBy="farmerIntroduce")
+     */
+    private $otherFeed;
 
     /**
      * @var User
@@ -147,22 +165,6 @@ class FarmerTouchReport
     public function setReport(Setting $report): void
     {
         $this->report = $report;
-    }
-
-    /**
-     * @return Setting
-     */
-    public function getReportParentParent()
-    {
-        return $this->reportParentParent;
-    }
-
-    /**
-     * @param Setting $reportParentParent
-     */
-    public function setReportParentParent(Setting $reportParentParent): void
-    {
-        $this->reportParentParent = $reportParentParent;
     }
 
     /**
@@ -348,7 +350,7 @@ class FarmerTouchReport
     /**
      * @param string $remarks
      */
-    public function setRemarks(string $remarks): void
+    public function setRemarks(string $remarks)
     {
         $this->remarks = $remarks;
     }
@@ -367,6 +369,70 @@ class FarmerTouchReport
     public function setCreatedAt(\DateTime $createdAt)
     {
         $this->createdAt = $createdAt;
+    }
+
+    /**
+     * @return Setting
+     */
+    public function getFarmerType()
+    {
+        return $this->farmerType;
+    }
+
+    /**
+     * @param Setting $farmerType
+     */
+    public function setFarmerType(Setting $farmerType): void
+    {
+        $this->farmerType = $farmerType;
+    }
+
+    /**
+     * @return Agent
+     */
+    public function getOtherAgent()
+    {
+        return $this->otherAgent;
+    }
+
+    /**
+     * @param Agent $otherAgent
+     */
+    public function setOtherAgent(Agent $otherAgent): void
+    {
+        $this->otherAgent = $otherAgent;
+    }
+
+    /**
+     * @return Setting
+     */
+    public function getFeed()
+    {
+        return $this->feed;
+    }
+
+    /**
+     * @param Setting $feed
+     */
+    public function setFeed(Setting $feed): void
+    {
+        $this->feed = $feed;
+    }
+
+    /**
+     * @return Setting
+     */
+    public function getOtherFeed()
+    {
+        return $this->otherFeed;
+    }
+
+    /**
+     * @param Setting $otherFeed
+     */
+    public function setOtherFeed(Setting $otherFeed): void
+    {
+        $this->otherFeed = $otherFeed;
     }
 
 }

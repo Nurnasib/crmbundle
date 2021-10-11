@@ -19,6 +19,32 @@
         </tr>
         </tbody>
     </table>
+        {% if farmerType.slug=='poultry-breed' %}
+        {% elseif farmerType.slug=='cattle-breed' %}
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="conventional_feed" class="col-form-label col-md-4 ">Conventional Feed:</label>
+                        <input type="text" name="conventional_feed" class="form-control col-md-8 mr-4 conventional_feed" id="conventional_feed" autocomplete="off">
+                    </div>
+                </div>
+            </div>
+        {% elseif farmerType.slug=='fish-breed' %}
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="culture_area_decimal" class="col-form-label col-md-4 ">Culture area (decimal):</label>
+                        <input type="number" min="0" step=".01" name="culture_area_decimal" class="form-control col-md-8 mr-4 culture_area_decimal" id="culture_area_decimal" autocomplete="off">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="yearlyFeedUseTon" class="col-form-label col-md-4">Yearly Feed Use (Ton):</label>
+                        <input type="number" min="0" step=".01" name="yearlyFeedUseTon" class="form-control col-md-8 yearlyFeedUseTon" id="yearlyFeedUseTon" value="">
+                    </div>
+                </div>
+            </div>
+        {% endif %}
     {% else %}
     <p></p>
 {% endif %}

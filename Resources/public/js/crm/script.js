@@ -795,7 +795,7 @@ $('.addOtherAgent').click(function(){
         data:{
             'crm_visit_id':crm_visit_id,
             'purpose':agentPurpose,
-            'farmer':agent,
+            'agent':agent,
             'comments':agentComments,
             'process':'other-agent'
         },
@@ -936,10 +936,9 @@ $(document).on('click', '#crm-farmer-btn', function(e) {
         processData : false,
         contentType : false,
         success: function (data) {
-            console.log(data);
             $('form#farmerForm')[0].reset();
-            var refreshUrl = Routing.generate('crm_visit_item_refresh',{'id':crm_visit_id,'process':'farmer'});
-            $(".crm_detail_farmer_section").load(refreshUrl);
+            // var refreshUrl = Routing.generate('crm_visit_item_refresh',{'id':crm_visit_id,'process':'farmer'});
+            // $(".crm_detail_farmer_section").load(refreshUrl);
             // if(data.id){
             $('#farmerModal').find('.cultureSpeciesArea').html('');
             $('#farmerModal').modal('hide');
@@ -1094,10 +1093,10 @@ $(document).on('change', '.other_agent', function(e) {
     if(id==''){
         return false;
     }
-    var url = Routing.generate('get_farmer_ajax',{'id':id});
+    var url = Routing.generate('get_core_agent_find_ajax',{'id':id});
     $.get(url, function(data){
         element.closest('tr').find('.other_agent_address').val(data[0]['address']);
-        element.closest('tr').find('.other_agent_mobile').val(data[0]['phone']);
+        element.closest('tr').find('.other_agent_mobile').val(data[0]['mobile']);
     });
 
 });
