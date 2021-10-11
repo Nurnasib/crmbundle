@@ -58,7 +58,7 @@ class AntibioticFreeFarmController extends AbstractController
 //            dd($allRequest);
             $data = $allRequest['antibiotic_free_farm_form'];
 
-            $medicine_name = $allRequest['medicine_name'];
+            /*$medicine_name = $allRequest['medicine_name'];
             $medicine_duration_age = $allRequest['medicine_duration_age'];
             $medicine_purpose = $allRequest['medicine_purpose'];
             $medicine_dosage = $allRequest['medicine_dosage'];
@@ -70,7 +70,7 @@ class AntibioticFreeFarmController extends AbstractController
             $vaccine_purpose = $allRequest['vaccine_purpose'];
             $vaccine_dosage = $allRequest['vaccine_dosage'];
             $vaccine_quantity = $allRequest['vaccine_quantity'];
-            $vaccine_price = $allRequest['vaccine_price'];
+            $vaccine_price = $allRequest['vaccine_price'];*/
 
             $reporting_month= '01-'.$data['reporting_month'];
 //            return new JsonResponse($medicine_name[0]);
@@ -93,48 +93,6 @@ class AntibioticFreeFarmController extends AbstractController
 
 
             $em->persist($entity);
-//            $em->flush();
-
-            foreach ($medicine_name as $key=>$value){
-                if($value!=''&&$medicine_duration_age[$key]!=''){
-
-                    $medicine = new AntibioticFreeFarmMedicineOrVaccineCost();
-
-                    $medicine->setMedicineOrVaccineName($value);
-
-                    $medicine->setAgeDays((float)$medicine_duration_age[$key]);
-
-                    $medicine->setPurposeOrDisease($medicine_purpose[$key]);
-                    $medicine->setDosage($medicine_dosage[$key]);
-                    $medicine->setQuantity((float)$medicine_quantity[$key]);
-                    $medicine->setPrice((float)$medicine_price[$key]);
-                    $medicine->setCostType(AntibioticFreeFarmMedicineOrVaccineCost::COST_TYPE_MEDICINE);
-
-                    $medicine->setCrmAntibioticFreeFarm($entity);
-
-                    $em->persist($medicine);
-                    $em->flush();
-
-                }
-
-
-            }
-
-            foreach ($vaccine_name as $keyVaccine=>$valueVaccine){
-                if($value!=''&&$vaccine_duration_age[$keyVaccine]!=''){
-                    $vaccine = new AntibioticFreeFarmMedicineOrVaccineCost();
-                    $vaccine->setMedicineOrVaccineName($valueVaccine);
-                    $vaccine->setAgeDays((float)$vaccine_duration_age[$keyVaccine]);
-                    $vaccine->setPurposeOrDisease($vaccine_purpose[$keyVaccine]);
-                    $vaccine->setDosage($vaccine_dosage[$keyVaccine]);
-                    $vaccine->setQuantity((float)$vaccine_quantity[$keyVaccine]);
-                    $vaccine->setPrice((float)$vaccine_price[$keyVaccine]);
-                    $vaccine->setCrmAntibioticFreeFarm($entity);
-                    $vaccine->setCostType(AntibioticFreeFarmMedicineOrVaccineCost::COST_TYPE_VACCINE);
-                    $em->persist($vaccine);
-
-                }
-            }
 
             $em->flush();
             return new JsonResponse(array(

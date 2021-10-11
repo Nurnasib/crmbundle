@@ -137,70 +137,24 @@
                             </table>
                         </div>
                     </div>
-
                     <div class="row">
-
-                        <div class="col-md-12">
-                            <h3>{{ 'Medicine Cost'|trans }}:</h3>
-
-                            <table class="table table-bordered">
-                                <thead>
-                                <tr>
-                                    <th>{{ 'Name of Medicine'|trans }}</th>
-                                    <th>{{ 'Duration of Use (Age)'|trans }}</th>
-                                    <th>{{ 'Purpose'|trans }}</th>
-                                    <th>{{ 'Dosage'|trans }}</th>
-                                    <th>{{ 'Quantity'|trans }}</th>
-                                    <th>{{ 'Price (TK)'|trans }}</th>
-                                    <th><button style="margin-right: 0" type="button" class="btn btn-info btn-sm add-row"><i class="fa fa-plus" aria-hidden="true"></i> Add Row</button></th>
-                                </tr>
-                                </thead>
-                                <tbody class="medicine_cost_section">
-                                <tr>
-                                    <td><input type="text" name="medicine_name[]" class="form-control medicine_name"></td>
-                                    <td><input min="0" value="" type="number" name="medicine_duration_age[]" class="form-control medicine_duration_age"></td>
-                                    <td><input value="" type="text" name="medicine_purpose[]" class="form-control medicine_purpose"></td>
-                                    <td><input value="" type="text" name="medicine_dosage[]" class="form-control medicine_dosage"></td>
-                                    <td><input min="0" value="" type="number" name="medicine_quantity[]" class="form-control medicine_quantity"></td>
-                                    <td><input min="0" value="" type="number" name="medicine_price[]" class="form-control medicine_price"></td>
-                                    <td>
-                                        <button type="button" class="btn btn-danger btn-sm remove_row hide">X</button>
-                                    </td>
-                                </tr>
-                                </tbody>
-                            </table>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                {{ form_label(form.medicineTotalCost, 'Medicine Total Cost'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
+                                <div class="col-md-8">
+                                    {{ form_widget(form.medicineTotalCost,{'type':'number'}) }}
+                                    {{ form_errors(form.medicineTotalCost) }}
+                                </div>
+                            </div>
                         </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-12">
-                            <h3>{{ 'Vaccine Cost'|trans }}:</h3>
-                            <table class="table table-bordered">
-                                <thead>
-                                <tr>
-                                    <th>{{ 'Name of Vaccine'|trans }}</th>
-                                    <th>{{ 'Age'|trans }}</th>
-                                    <th>{{ 'Disease'|trans }}</th>
-                                    <th>{{ 'Dosage'|trans }}</th>
-                                    <th>{{ 'Route'|trans }}</th>
-                                    <th>{{ 'Price (TK)'|trans }}</th>
-                                    <th><button style="margin-right: 0" type="button" class="btn btn-info btn-sm add-row"><i class="fa fa-plus" aria-hidden="true"></i> Add Row</button></th>
-                                </tr>
-                                </thead>
-                                <tbody class="vaccine_cost_section">
-                                <tr>
-                                    <td><input value="" type="text" name="vaccine_name[]" class="form-control vaccine_name"></td>
-                                    <td><input min="0" value="" type="number" name="vaccine_duration_age[]" class="form-control vaccine_duration_age"></td>
-                                    <td><input value="" type="text" name="vaccine_purpose[]" class="form-control vaccine_purpose"></td>
-                                    <td><input value="" type="text" name="vaccine_dosage[]" class="form-control vaccine_dosage"></td>
-                                    <td><input min="0" value="" type="number" name="vaccine_quantity[]" class="form-control vaccine_quantity"></td>
-                                    <td><input min="0" value="" type="number" name="vaccine_price[]" class="form-control vaccine_price"></td>
-                                    <td>
-                                        <button type="button" class="btn btn-danger btn-sm remove_row hide">X</button>
-                                    </td>
-                                </tr>
-                                </tbody>
-                            </table>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                {{ form_label(form.vaccineTotalCost, 'Vaccine Total Cost'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
+                                <div class="col-md-8">
+                                    {{ form_widget(form.vaccineTotalCost,{'type':'number'}) }}
+                                    {{ form_errors(form.vaccineTotalCost) }}
+                                </div>
+                            </div>
                         </div>
                     </div>
 

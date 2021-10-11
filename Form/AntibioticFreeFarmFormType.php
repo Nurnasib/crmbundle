@@ -138,6 +138,16 @@ class AntibioticFreeFarmFormType extends AbstractType
                 'label' => 'label.totalBroilerWeightKg',
                 'required'=>false
             ])
+            ->add('medicineTotalCost', NumberType::class, [
+                'attr' => ['autofocus' => true],
+                'label' => 'label.medicineTotalCost',
+                'required'=>false
+            ])
+            ->add('vaccineTotalCost', NumberType::class, [
+                'attr' => ['autofocus' => true],
+                'label' => 'label.vaccineTotalCost',
+                'required'=>false
+            ])
         ;
     }
 

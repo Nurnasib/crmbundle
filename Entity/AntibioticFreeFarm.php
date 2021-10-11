@@ -28,12 +28,6 @@ class AntibioticFreeFarm
     private $id;
 
     /**
-     * @var AntibioticFreeFarmMedicineOrVaccineCost
-     * @ORM\OneToMany(targetEntity="Terminalbd\CrmBundle\Entity\AntibioticFreeFarmMedicineOrVaccineCost", mappedBy="crmAntibioticFreeFarm")
-     */
-    private $antibioticFreeFarmMedicineOrCost;
-
-    /**
      * @var Setting
      * @ORM\ManyToOne(targetEntity="Terminalbd\CrmBundle\Entity\Setting", inversedBy="antibioticFreeFarm")
      * @ORM\JoinColumn(name="report_id", referencedColumnName="id", onDelete="SET NULL", nullable=true)
@@ -148,6 +142,22 @@ class AntibioticFreeFarm
     private $fcr=0;
 
     /**
+     * @var float
+     *
+     * @ORM\Column(type="float")
+     */
+
+    private $medicineTotalCost=0;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(type="float")
+     */
+
+    private $vaccineTotalCost=0;
+
+    /**
      * @var string
      * @Orm\Column(name="remarks", type="text", nullable=true)
      */
@@ -177,46 +187,47 @@ class AntibioticFreeFarm
     }
 
     /**
-     * @return AntibioticFreeFarmMedicineOrVaccineCost
+     * @return float
      */
-    public function getAntibioticFreeFarmMedicineOrCost()
+    public function getMedicineTotalCost()
     {
-        return $this->antibioticFreeFarmMedicineOrCost;
+        return $this->medicineTotalCost;
     }
 
     /**
-     * @param AntibioticFreeFarmMedicineOrVaccineCost $antibioticFreeFarmMedicineOrCost
+     * @param float $medicineTotalCost
      */
-    public function setAntibioticFreeFarmMedicineOrCost(AntibioticFreeFarmMedicineOrVaccineCost $antibioticFreeFarmMedicineOrCost): void
+    public function setMedicineTotalCost(float $medicineTotalCost): void
     {
-        $this->antibioticFreeFarmMedicineOrCost = $antibioticFreeFarmMedicineOrCost;
+        $this->medicineTotalCost = $medicineTotalCost;
     }
 
     public function calculateMedicineTotalCost()
     {
-        $total = 0;
-        /** @var AntibioticFreeFarmMedicineOrVaccineCost $medicine*/
-        foreach ($this->antibioticFreeFarmMedicineOrCost as $medicine){
-            if($medicine->getCostType()=='MEDICINE'){
-                $total+= $medicine->getPrice();
-
-            }
-        }
-
-        return $total;
+        
+        return $this->medicineTotalCost;
 
     }
 
+    /**
+     * @return float
+     */
+    public function getVaccineTotalCost()
+    {
+        return $this->vaccineTotalCost;
+    }
+
+    /**
+     * @param float $vaccineTotalCost
+     */
+    public function setVaccineTotalCost(float $vaccineTotalCost): void
+    {
+        $this->vaccineTotalCost = $vaccineTotalCost;
+    }
+    
     public function calculateVaccineTotalCost()
     {
-        $total = 0;
-        /** @var AntibioticFreeFarmMedicineOrVaccineCost $vaccine*/
-        foreach ($this->antibioticFreeFarmMedicineOrCost as $vaccine){
-            if($vaccine->getCostType()=='VACCINE'){
-                $total+= $vaccine->getPrice();
-            }
-        }
-        return $total;
+        return $this->vaccineTotalCost;
     }
 
     public function calculateMedicineAndVaccineTotalCost (){
