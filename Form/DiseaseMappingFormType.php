@@ -86,7 +86,7 @@ class DiseaseMappingFormType extends AbstractType
                 'query_builder' => function(EntityRepository $er)use($parentParent){
                     return $er->createQueryBuilder('e')
                         ->where("e.status =1")
-                        ->andWhere("e.settingType ='FARM_TYPE'")
+                        ->andWhere("e.settingType ='SPECIES_TYPE'")
                         ->andWhere("e.parent = :parent")
                         ->andWhere("e.slug NOT LIKE :slug")
                         ->setParameter('parent',$parentParent)
