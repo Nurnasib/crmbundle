@@ -28,7 +28,7 @@ class FarmerTouchReport
 
     /**
      * @var Setting
-     * @ORM\ManyToOne(targetEntity="Terminalbd\CrmBundle\Entity\Setting", inversedBy="fishFarmerTouch")
+     * @ORM\ManyToOne(targetEntity="Terminalbd\CrmBundle\Entity\Setting", inversedBy="farmerTouch")
      * @ORM\JoinColumn(name="report_id", referencedColumnName="id")
      * @ORM\JoinColumn(onDelete="CASCADE")
      */
@@ -37,14 +37,14 @@ class FarmerTouchReport
     /**
      * @var Setting
      * @ORM\ManyToOne(targetEntity="Terminalbd\CrmBundle\Entity\Setting", inversedBy="farmerTouch")
-     * @ORM\JoinColumn(name="farmerType", referencedColumnName="id")
+     * @ORM\JoinColumn(name="report_parent_parent_id", referencedColumnName="id")
      * @ORM\JoinColumn(onDelete="CASCADE")
      */
-    private $farmerType;
+    private $reportParentParent;
 
     /**
      * @var CrmCustomer
-     * @ORM\OneToOne(targetEntity="Terminalbd\CrmBundle\Entity\CrmCustomer", inversedBy="farmerTouch")
+     * @ORM\ManyToOne(targetEntity="Terminalbd\CrmBundle\Entity\CrmCustomer", inversedBy="farmerTouch")
      */
     private $customer;
 
@@ -165,6 +165,22 @@ class FarmerTouchReport
     public function setReport(Setting $report): void
     {
         $this->report = $report;
+    }
+
+    /**
+     * @return Setting
+     */
+    public function getReportParentParent()
+    {
+        return $this->reportParentParent;
+    }
+
+    /**
+     * @param Setting $reportParentParent
+     */
+    public function setReportParentParent(Setting $reportParentParent): void
+    {
+        $this->reportParentParent = $reportParentParent;
     }
 
     /**
@@ -369,22 +385,6 @@ class FarmerTouchReport
     public function setCreatedAt(\DateTime $createdAt)
     {
         $this->createdAt = $createdAt;
-    }
-
-    /**
-     * @return Setting
-     */
-    public function getFarmerType()
-    {
-        return $this->farmerType;
-    }
-
-    /**
-     * @param Setting $farmerType
-     */
-    public function setFarmerType(Setting $farmerType): void
-    {
-        $this->farmerType = $farmerType;
     }
 
     /**

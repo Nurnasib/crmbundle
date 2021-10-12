@@ -119,13 +119,14 @@ class CrmCustomerController extends AbstractController
         $feed = $this->getDoctrine()->getRepository(Setting::class)->find($allRequestData['feed_id']);
         $location = $this->getDoctrine()->getRepository(Location::class)->find($allRequestData['location']);
         $agent = $this->getDoctrine()->getRepository(Agent::class)->find($allRequestData['agent']);
+        $otherAgent = $this->getDoctrine()->getRepository(Agent::class)->find($allRequestData['other_agent']);
         $entity->setName($allRequestData['name']);
         $entity->setAddress($allRequestData['address']);
         $entity->setMobile($allRequestData['mobile']);
         $entity->setCustomerGroup($group);
         $entity->setLocation($location);
-        $entity->setAgent($agent);
-        $entity->setOtherAgent($agent);
+        $entity->setAgent($agent?$agent:$otherAgent);
+        $entity->setOtherAgent($otherAgent?$otherAgent:$agent);
         $em=$this->getDoctrine()->getManager();
         $em->persist($entity);
         $em->flush();
@@ -134,7 +135,7 @@ class CrmCustomerController extends AbstractController
           'name'=>$entity->getName(),
         );
 //        $this->getDoctrine()->getRepository(CrmVisitDetails::class)->insertCrmVisitDetailForFarmer($entity, $id, $allRequestData);
-        $this->getDoctrine()->getRepository(FarmerTouchReport::class)->insertFarmerTouch($entity, $this->getUser(), $feed, $allRequestData);
+//        $this->getDoctrine()->getRepository(FarmerTouchReport::class)->insertFarmerTouch($entity, $this->getUser(), $feed, $allRequestData);
         $this->getDoctrine()->getRepository(FarmerIntroduceDetails::class)->insertCrmFarmerIntroduceDetails($entity, $this->getUser(), $feed, $allRequestData);
         return new JsonResponse(array($returnData));
 

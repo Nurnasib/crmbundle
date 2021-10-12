@@ -91,11 +91,6 @@ class CrmCustomer
     private $crmVisitDetails;
 
     /**
-     * @ORM\OneToOne(targetEntity="Terminalbd\CrmBundle\Entity\NewFarmerTouch\FarmerTouchReport", mappedBy="customer")
-     */
-    private $farmerTouch;
-
-    /**
      * @ORM\OneToOne(targetEntity="Terminalbd\CrmBundle\Entity\NewFarmerIntroduce\FarmerIntroduceDetails", mappedBy="customer")
      */
     private $farmerIntroduce;
@@ -296,14 +291,6 @@ class CrmCustomer
     public function setLocation($location)
     {
         $this->location = $location;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getFarmerTouch()
-    {
-        return $this->farmerTouch;
     }
 
     /**

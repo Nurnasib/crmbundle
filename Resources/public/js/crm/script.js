@@ -905,8 +905,10 @@ $(document).on('click', '#crm-farmer-btn', function(e) {
     var name =$(this).closest("form").find(".name").val();
     var mobile = $(this).closest("form").find(".mobile").val();
     var agent = $(this).closest("form").find(".agent").val();
+    var other_agent = $(this).closest("form").find(".other_agent").val();
     var farmerType = $(this).closest("form").find(".farmer_type").val();
     var location = $(this).closest("form").find(".location").val();
+    var feed_id = $(this).closest("form").find(".feed_id").val();
 
     if (name === "") {
         alert("Name must be filled out");
@@ -916,12 +918,16 @@ $(document).on('click', '#crm-farmer-btn', function(e) {
         alert("Your mobile number is Invalid :" +mobile);
         return false;
     }
-    else if(agent==="" || agent ===null){
-        alert("Agent is required");
+    else if((agent==="" || agent ===null) && (other_agent==="" || other_agent ===null)){
+        alert("Agent Or Other Agent is required");
         return false;
     }
     else if(location==="" || location ===null){
         alert("Location is required");
+        return false;
+    }
+    else if(feed_id==="" || feed_id ===null){
+        alert("Feed is required");
         return false;
     }
     else if(farmerType==="" || farmerType ===null){

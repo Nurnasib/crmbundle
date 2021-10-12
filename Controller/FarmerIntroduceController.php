@@ -64,16 +64,11 @@ class FarmerIntroduceController extends AbstractController
 
             $entity->setCultureSpeciesItemAndQty(json_encode($data['fish_specie']));
             $entity->setCreatedAt(new \DateTime());
-            $farmerTouch = $this->getDoctrine()->getRepository(FarmerTouchReport::class)->findOneBy(array('customer'=>$crmCustomer));
-            $farmerTouch->setRemarks($entity->getRemarks());
-            $farmerTouch->setAgent($entity->getAgent());
-            $farmerTouch->setFeed($entity->getFeed());
 
-            $crmCustomer->setAgent($entity->getAgent());
+//            $crmCustomer->setAgent($entity->getAgent()?$entity->getAgent():null);
 
             $em = $this->getDoctrine()->getManager();
             $em->persist($entity);
-            $em->persist($farmerTouch);
             $em->persist($crmCustomer);
             $em->flush();
             $this->addFlash('success', 'post.created_successfully');

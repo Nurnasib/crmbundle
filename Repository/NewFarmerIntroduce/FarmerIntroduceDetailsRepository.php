@@ -17,7 +17,7 @@ class FarmerIntroduceDetailsRepository extends BaseRepository
             $entity = new FarmerIntroduceDetails();
             $entity->setCustomer($customer);
             $entity->setAgent($customer->getAgent());
-            $entity->setOtherAgent($customer->getAgent());
+            $entity->setOtherAgent($customer->getOtherAgent());
             $entity->setFeed($feed?$feed:null);
             $entity->setOtherFeed($feed?$feed:null);
             $entity->setCultureSpeciesItemAndQty(json_encode($data['species_type']));

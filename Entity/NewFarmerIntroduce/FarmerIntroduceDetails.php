@@ -67,7 +67,7 @@ class FarmerIntroduceDetails
 
     /**
      * @var User
-     * @ORM\ManyToOne(targetEntity="App\Entity\User" , inversedBy="farmerIntroduce")
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="farmerIntroduce")
      */
     private $employee;
 

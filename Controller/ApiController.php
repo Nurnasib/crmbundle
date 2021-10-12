@@ -305,7 +305,7 @@ class ApiController extends AbstractController
         if ($request->getMethod() == 'GET' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')){
             //$terminal = $this->getUser()->getTerminal()->getId();
             $locations = isset($_REQUEST['locations']) ? $_REQUEST['locations'] : "";
-            $entities = $this->getDoctrine()->getRepository(Api::class)->customerApi(1,'other-agent',$locations);
+            $entities = $this->getDoctrine()->getRepository(Api::class)->otherAgentApi(1,'other-agent',$locations);
             $response = new Response();
             $response->headers->set('Content-Type', 'application/json');
             $response->setContent(json_encode($entities));
