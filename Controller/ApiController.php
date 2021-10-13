@@ -1514,19 +1514,20 @@ class ApiController extends AbstractController
         ignore_user_abort(true);
 
         if ($request->getMethod() == 'POST' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')){
-            $entity = new CrmCustomer();
+            $entity = new Agent();
             $allRequestData = $request->request->all();
 
-            $group = $this->getDoctrine()->getRepository(Setting::class)->findOneBy(array('slug'=>'sub-agent'));
+            $group = $this->getDoctrine()->getRepository(\App\Entity\Core\Setting::class)->findOneBy(array('slug'=>'sub-agent'));
             $location = $this->getDoctrine()->getRepository(Location::class)->find($allRequestData['location']);
             $entity->setName($allRequestData['name']);
             $entity->setAddress($allRequestData['address']);
             $entity->setMobile($allRequestData['mobile']);
-            $entity->setCustomerGroup($group);
-            $entity->setLocation($location);
+            $entity->setAgentGroup($group);
+            $entity->setUpozila($location);
+            $entity->setDistrict($location->getParent());
             if($allRequestData['agent']){
                 $agent = $this->getDoctrine()->getRepository(Agent::class)->find($allRequestData['agent']);
-                $entity->setAgent($agent);
+                $entity->setParent($agent);
             }
             $em = $this->getDoctrine()->getManager();
 

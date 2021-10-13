@@ -178,31 +178,42 @@ class CrmCustomerController extends AbstractController
     /**
      * @param Request $request
      * @Route("/{id}/sub-create/ajax" ,name="new_sub_agent_ajax", methods={"POST"}, options={"expose"=true})
+     * @return JsonResponse
      */
-    public function createSubAgent(Request $request,$id){
+    public function createSubAgent(Request $request,$id)
+    {
 
-        $entity=new CrmCustomer();
+        $entity = new Agent();
         $allRequestData = $request->request->all();
-        $group = $this->getDoctrine()->getRepository(Setting::class)->findOneBy(array('slug'=>'sub-agent'));
+
+        $group = $this->getDoctrine()->getRepository(\App\Entity\Core\Setting::class)->findOneBy(array('slug'=>'sub-agent'));
         $location = $this->getDoctrine()->getRepository(Location::class)->find($allRequestData['location']);
+
         $entity->setName($allRequestData['name']);
         $entity->setAddress($allRequestData['address']);
         $entity->setMobile($allRequestData['mobile']);
-        $entity->setCustomerGroup($group);
-        $entity->setLocation($location);
+        $entity->setAgentGroup($group);
+        $entity->setUpozila($location);
+        $entity->setDistrict($location->getParent());
+        $entity->setCreated(new \DateTime('now'));
         if($allRequestData['agent']){
             $agent = $this->getDoctrine()->getRepository(Agent::class)->find($allRequestData['agent']);
-            $entity->setAgent($agent);
+            $entity->setParent($agent);
         }
-        $em=$this->getDoctrine()->getManager();
+
+        $em = $this->getDoctrine()->getManager();
         $em->persist($entity);
         $em->flush();
+
         $returnData= array(
             'status'=>200,
-          'id'=>$entity->getId(),
-          'name'=>$entity->getName(),
+            'id' => $entity->getId(),
+            'name' => $entity->getName(),
         );
-        $this->getDoctrine()->getRepository(CrmVisitDetails::class)->insertSubAgent($entity,$id,$allRequestData);
+        if ($allRequestData['purpose']){
+            $this->getDoctrine()->getRepository(CrmVisitDetails::class)->insertSubAgent($entity, $id, $allRequestData);
+
+        }
         return new JsonResponse(array($returnData));
 
     }

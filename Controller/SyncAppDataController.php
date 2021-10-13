@@ -188,8 +188,8 @@ VALUES (:crm_visit_id, :farmCapacity, :updated, :comments, :created, :customer_i
             $stmt->bindValue('comments', $visitDetail['comments']);
             $stmt->bindValue('created', $createdAt->format('Y-m-d H:i:s'));
             $stmt->bindValue('customer_id', $visitDetail['customer_id']);
-            $stmt->bindValue('process', $visitDetail['process']);
             $stmt->bindValue('agent_id', $visitDetail['agent_id']);
+            $stmt->bindValue('process', $visitDetail['process']);
             $stmt->bindValue('purpose_id', $visitDetail['purpose_id']);
             $stmt->bindValue('firm_type_id', $visitDetail['firm_type_id']);
             $stmt->bindValue('report_id', $visitDetail['report_id']);
@@ -243,7 +243,7 @@ VALUES (:crm_visit_id, :farmCapacity, :updated, :comments, :created, :customer_i
                 $stmt->bindValue('updated', $updatedAt->format('Y-m-d H:i:s'));
                 $stmt->bindValue('visit_id', $findVisit->getId());
 
-                $stmt->execute();
+//                $stmt->execute();
             }
 
         }
@@ -296,7 +296,7 @@ VALUES (:employee_id, :report_id, :agent_id, :customer_id, :breed_type, :feed_ty
                 $stmt->bindValue('updated_at', $updatedAt->format('Y-m-d H:i:s'));
                 $stmt->bindValue('visit_id', $findVisit->getId());
 
-                $stmt->execute();
+//                $stmt->execute();
             }
         }
     }
@@ -343,7 +343,7 @@ VALUES (:report_id, :employee_id, :agent_id, :customer_id, :hatchery_id, :breed_
                 $stmt->bindValue('created_at', $createdAt->format('Y-m-d H:i:s'));
                 $stmt->bindValue('visit_id', $findVisit->getId());
 
-                $stmt->execute();
+//                $stmt->execute();
             }
         }
     }
@@ -392,7 +392,7 @@ VALUES (:customer_id, :report_id, :agent_id, :employee_id, :reporting_date, :bre
                 $stmt->bindValue('feed_type', $report['feed_type']);
                 $stmt->bindValue('app_batch_id', $batch->getId());
 
-                $stmt->execute();
+//                $stmt->execute();
             }
         }
     }
@@ -448,7 +448,7 @@ VALUES (:crm_cattle_life_cycle_id, :visiting_date, :age_of_cattle_month, :previo
                 $stmt->bindValue('created_at', $createdAt->format('Y-m-d H:i:s'));
                 $stmt->bindValue('updated_at', $updatedAt->format('Y-m-d H:i:s'));
 
-                $stmt->execute();
+//                $stmt->execute();
             }
         }
     }
@@ -488,7 +488,7 @@ VALUES (:total_birds, :hatchery_date, :created, :updated, :customer_id, :employe
                 $stmt->bindValue('feed_id', $report['feed_id']);
                 $stmt->bindValue('app_batch_id', $batch->getId());
 
-                $stmt->execute();
+//                $stmt->execute();
             }
         }
     }
@@ -541,7 +541,7 @@ VALUES (:crm_layer_life_cycle_id, :visiting_date, :age_week, :dead_bird, :avg_we
                 $stmt->bindValue('feed_mill_id', $report['feed_mill_id']);
                 $stmt->bindValue('feed_type_id', $report['feed_type_id']);
 
-                $stmt->execute();
+//                $stmt->execute();
             }
         }
     }
