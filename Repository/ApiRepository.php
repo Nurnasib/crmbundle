@@ -132,7 +132,7 @@ class ApiRepository extends BaseRepository
         foreach($result as $key => $row) {
             $data[$key]['id'] = (int)$row['id'];
             $data[$key]['name'] = (string)$row['name'];
-            $data[$key]['mobile'] = (int)$row['mobile'];
+            $data[$key]['mobile'] = (string)$row['mobile'];
             $data[$key]['address'] = (string)$row['address'];
             $data[$key]['customerGroup'] = (string)$row['customerGroup'];
             $data[$key]['agent'] = (string)$row['agentName'];
