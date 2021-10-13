@@ -23,7 +23,7 @@
                 <div class="card-header">
                     <h5>{{ 'API Response List'|trans }}</h5>
                     <div class="btn-group btn-group-sm float-right">
-{#                        <a href="{{ path('crm_sync_app_data_crm_visit') }}" class="btn purple-bg white-font loader"><i class="fa fa-sync"></i> Sync Visit</a>#}
+                        <a href="{{ path('crm_sync_app_data_sync') }}" class="btn purple-bg white-font loader"><i class="fa fa-sync"></i> Sync App Data</a>
                     </div>
                 </div>
             </div>
@@ -35,12 +35,10 @@
                         <thead class="thead-dark">
                         <tr>
 
-                            <th>{{ 'S/N'|trans }}</th>
-                            <th>{{ 'Process'| trans }}</th>
-                            <th>{{ 'Device Id'| trans }}</th>
+                            <th width="50">{{ 'S/N'|trans }}</th>
+                            <th>{{ 'Batch No.'| trans }}</th>
+                            <th>{{ 'Created At'| trans }}</th>
                             <th>{{ 'Status'| trans }}</th>
-                            <th class=" text-center"><i class="feather icon-settings"></i></th>
-
                         </tr>
                         </thead>
                         <tbody>
@@ -48,20 +46,15 @@
                             {% for record in records %}
                                 <tr>
                                     <td>{{ loop.index }}</td>
-                                    <td>{{ record.process|replace({'_': ' '})|capitalize|default('') }}</td>
                                     <td>{{ record.batchNo|default('') }}</td>
+                                    <td>{{ record.createdAt|date('d-m-Y')|default('') }}</td>
                                     <td>{{ record.status == 1 ? 'Yes':'No' }}</td>
-                                    <td align="right">
-                                        {% if record.status == 0 %}
-                                            <a class="btn btn-mini white-font {% if countVisit == 0 and countVisitDetails == 0 %} green-bg {% else %} bg-secondary {% endif %}"
-                                               href="{{ path('insert_json_data', {'id': record.id}) }}"
-                                                    {% if countVisit > 0 or countVisitDetails > 0 %} style="pointer-events: none; cursor: default;" {% endif %}>
-                                                <i class="feather icon-upload"></i> Migrate
-                                            </a>
-                                        {% endif %}
-                                    </td>
                                 </tr>
                             {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="4" align="center"> {{ 'No records Found!'|trans }}</td>
+                            </tr>
                         {% endif %}
                         </tbody>
                     </table>

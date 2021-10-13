@@ -61,6 +61,11 @@ class CattleLifeCycle
     private $employee;
 
     /**
+     * @ORM\ManyToOne(targetEntity="Api" , inversedBy="cattlelifecycle")
+     */
+    private $appBatch;
+
+    /**
      * @var \DateTime
      * @ORM\Column(name="reporting_date", type="date", nullable=true)
      */
@@ -195,6 +200,22 @@ class CattleLifeCycle
     public function setEmployee($employee)
     {
         $this->employee = $employee;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAppBatch()
+    {
+        return $this->appBatch;
+    }
+
+    /**
+     * @param mixed $appBatch
+     */
+    public function setAppBatch($appBatch): void
+    {
+        $this->appBatch = $appBatch;
     }
 
     /**

@@ -42,6 +42,12 @@ class FcrDetails
     private $employee;
 
     /**
+     * @ORM\ManyToOne(targetEntity="Terminalbd\CrmBundle\Entity\CrmVisit" , inversedBy="fcr")
+     * @ORM\JoinColumn(referencedColumnName="id", onDelete="CASCADE")
+     */
+    private $visit;
+
+    /**
      * @var string
      * @ORM\Column(name="fcr_of_feed", type="string",nullable=true)
      */
@@ -270,6 +276,22 @@ class FcrDetails
     public function setEmployee(User $employee): void
     {
         $this->employee = $employee;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getVisit()
+    {
+        return $this->visit;
+    }
+
+    /**
+     * @param mixed $visit
+     */
+    public function setVisit($visit): void
+    {
+        $this->visit = $visit;
     }
 
     /**

@@ -33,6 +33,12 @@ class CattlePerformanceDetails
     private $employee;
 
     /**
+     * @ORM\ManyToOne(targetEntity="Terminalbd\CrmBundle\Entity\CrmVisit" , inversedBy="crmCattlePerformance")
+     * @ORM\JoinColumn(referencedColumnName="id", onDelete="CASCADE")
+     */
+    private $visit;
+
+    /**
      * @var Setting
      * @ORM\ManyToOne(targetEntity="Setting", inversedBy="crmCattlePerformance")
      * @ORM\JoinColumn(name="report_id", referencedColumnName="id", onDelete="SET NULL", nullable=true)
@@ -270,6 +276,23 @@ class CattlePerformanceDetails
     {
         $this->employee = $employee;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getVisit()
+    {
+        return $this->visit;
+    }
+
+    /**
+     * @param mixed $visit
+     */
+    public function setVisit($visit): void
+    {
+        $this->visit = $visit;
+    }
+
 
     /**
      * @return Setting

@@ -41,6 +41,12 @@ class LayerPerformanceDetails
     private $employee;
 
     /**
+     * @ORM\ManyToOne(targetEntity="Terminalbd\CrmBundle\Entity\CrmVisit" , inversedBy="crmLayerPerformanceDetails")
+     * @ORM\JoinColumn(referencedColumnName="id", onDelete="CASCADE")
+     */
+    private $visit;
+
+    /**
      * @var Setting
      * @ORM\ManyToOne(targetEntity="Setting", inversedBy="crmLayerPerformanceDetails")
      * @ORM\JoinColumn(name="report_id", referencedColumnName="id")
@@ -643,6 +649,22 @@ class LayerPerformanceDetails
     public function setEmployee(User $employee): void
     {
         $this->employee = $employee;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getVisit()
+    {
+        return $this->visit;
+    }
+
+    /**
+     * @param mixed $visit
+     */
+    public function setVisit($visit): void
+    {
+        $this->visit = $visit;
     }
 
     /**

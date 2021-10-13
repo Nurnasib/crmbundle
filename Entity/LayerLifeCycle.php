@@ -47,6 +47,12 @@ class LayerLifeCycle
      */
     private $employee;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="Terminalbd\CrmBundle\Entity\Api" , inversedBy="crmLayerLifeCycle")
+     * @ORM\JoinColumn(referencedColumnName="id", onDelete="CASCADE")
+     */
+    private $appBatch;
+
 
     /**
      * @var CrmCustomer
@@ -169,6 +175,22 @@ class LayerLifeCycle
     public function setEmployee(User $employee): void
     {
         $this->employee = $employee;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAppBatch()
+    {
+        return $this->appBatch;
+    }
+
+    /**
+     * @param mixed $appBatch
+     */
+    public function setAppBatch($appBatch): void
+    {
+        $this->appBatch = $appBatch;
     }
 
     /**
