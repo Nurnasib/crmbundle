@@ -60,7 +60,12 @@ class ApiRepository extends BaseRepository
 
     }
 
-    public function apiAgent( $terminal, $locations): array
+    /**
+     * @param $terminal
+     * @param $locations
+     * @return array
+     */
+    public function apiAgent($terminal, $locations): array
     {
         $em = $this->_em;
         $qb = $em->createQueryBuilder();
@@ -147,7 +152,13 @@ class ApiRepository extends BaseRepository
     }
 
 
-    public function otherAgentApi( $terminal,$mode,$locations): array
+    /**
+     * @param $terminal
+     * @param $mode
+     * @param $locations
+     * @return array
+     */
+    public function otherAgentApi($terminal, $mode, $locations): array
     {
         $em = $this->_em;
         $qb = $em->createQueryBuilder();
@@ -188,6 +199,9 @@ class ApiRepository extends BaseRepository
 
     /**
      * CRM Visit Report
+     * @param $terminal
+     * @param $username
+     * @return array
      */
 
     public function crmVisit( $terminal, $username ): array
@@ -227,6 +241,9 @@ class ApiRepository extends BaseRepository
 
     /**
      *  EMPLOYEE
+     * @param $terminal
+     * @param $username
+     * @return array
      */
     public function employeeApi( $terminal, $username ): array
     {
@@ -269,6 +286,9 @@ class ApiRepository extends BaseRepository
 
     /**
      * BROILER STANDARD
+     * @param $terminal
+     * @param array $data
+     * @return array
      */
     public function apiBroiler( $terminal, $data = array() ): array
     {
@@ -291,6 +311,9 @@ class ApiRepository extends BaseRepository
 
     /**
      * SONALI STANDARD
+     * @param $terminal
+     * @param array $data
+     * @return array
      */
     public function apiSonali($terminal, $data = array() ): array
     {
@@ -317,6 +340,9 @@ class ApiRepository extends BaseRepository
 
     /**
      * Setting Life Cycle
+     * @param $terminal
+     * @param array $data
+     * @return array
      */
     public function apiLifeCycleSetting($terminal, $data = array() ): array
     {
@@ -345,6 +371,9 @@ class ApiRepository extends BaseRepository
 
     /**
      * Setting Life Cycle
+     * @param $terminal
+     * @param array $data
+     * @return array
      */
     public function apiSetting($terminal, $data = array() ): array
     {
@@ -373,6 +402,9 @@ class ApiRepository extends BaseRepository
 
     /**
      * Layer Standard
+     * @param $terminal
+     * @param array $data
+     * @return array
      */
     public function apiLayer( $terminal, $data = array() ): array
     {
@@ -399,10 +431,12 @@ class ApiRepository extends BaseRepository
     }
 
 
-
-
     /**
      *  Farmer Introduce Report
+     * @param $terminal
+     * @param $farmerType
+     * @param $employee
+     * @return array
      */
     public function farmerIntroduceReport( $terminal, $farmerType, $employee ): array
     {
@@ -444,8 +478,13 @@ class ApiRepository extends BaseRepository
         }
         return $data;
     }
+
     /**
      *  Farmer Training Report
+     * @param $terminal
+     * @param $breedName
+     * @param $employee
+     * @return array
      */
     public function farmerTrainingReport( $terminal,$breedName, $employee): array
     {
@@ -489,9 +528,14 @@ class ApiRepository extends BaseRepository
     }
 
 
-
     /**
      * Farmer Touch Report
+     * @param $terminal
+     * @param $start
+     * @param $end
+     * @param $report
+     * @param $employee
+     * @return array
      */
     public function farmerTouchReport($terminal,$start, $end, $report, $employee): array
     {
@@ -543,6 +587,12 @@ class ApiRepository extends BaseRepository
 
     /**
      *  Report Poultry
+     * @param $terminal
+     * @param $start
+     * @param $end
+     * @param $report
+     * @param $customer
+     * @return array
      */
     public function poultryLifeCylceReport( $terminal, $start, $end, $report, $customer): array
     {
@@ -621,6 +671,11 @@ class ApiRepository extends BaseRepository
 
     /**
      *  Cattle Farm Visit
+     * @param $terminal
+     * @param $start
+     * @param $end
+     * @param $employee
+     * @return array
      */
     public function farmVisitCattle( $terminal,$start, $end, $employee): array
     {
@@ -756,6 +811,8 @@ class ApiRepository extends BaseRepository
         $qb->select('s.id as id','s.name as name','s.settingType as settingType');
 
         $qb->where("s.settingType = 'PURPOSE'");
+        $qb->andWhere('s.status = 1');
+
         $qb->orderBy('s.id', 'ASC');
         $result = $qb->getQuery()->getArrayResult();
         $data = array();
@@ -786,6 +843,8 @@ class ApiRepository extends BaseRepository
         $qb->select('s.id as id','s.name as name','s.settingType as settingType');
 
         $qb->where("s.settingType = 'VEHICLE'");
+        $qb->andWhere('s.status = 1');
+
         $qb->orderBy('s.id', 'ASC');
         $result = $qb->getQuery()->getArrayResult();
         $data = array();
@@ -842,6 +901,8 @@ class ApiRepository extends BaseRepository
         $qb->addselect('p.name as breedName');
 
         $qb->where("s.settingType = 'FARM_TYPE'");
+        $qb->andWhere('s.status = 1');
+
         $qb->orderBy('s.id', 'ASC');
         $result = $qb->getQuery()->getArrayResult();
         $data = array();
@@ -947,6 +1008,8 @@ class ApiRepository extends BaseRepository
         $qb->addselect('p.name as breedName');
 
         $qb->where("s.settingType = 'BREED_NAME'");
+        $qb->andWhere('s.status = 1');
+
         $qb->orderBy('s.id', 'ASC');
         $result = $qb->getQuery()->getArrayResult();
         $data = array();
@@ -1002,6 +1065,8 @@ class ApiRepository extends BaseRepository
         $qb->addSelect('pp.name as parentName');
 
         $qb->where("s.settingType = 'FEED_TYPE'");
+        $qb->andWhere('s.status = 1');
+
         $qb->orderBy('s.id', 'ASC');
         $result = $qb->getQuery()->getArrayResult();
         $data = array();
@@ -1030,6 +1095,8 @@ class ApiRepository extends BaseRepository
         $qb->select('s.id as id','s.name as hatchery');
 
         $qb->where("s.settingType = 'HATCHERY'");
+        $qb->andWhere('s.status = 1');
+
         $qb->orderBy('s.name', 'ASC');
         $result = $qb->getQuery()->getArrayResult();
         $data = array();
@@ -1056,6 +1123,8 @@ class ApiRepository extends BaseRepository
         $qb->select('s.id as id','s.name as feedMill');
 
         $qb->where("s.settingType = 'FEED_MILL'");
+        $qb->andWhere('s.status = 1');
+
         $qb->orderBy('s.name', 'ASC');
         $result = $qb->getQuery()->getArrayResult();
         $data = array();
@@ -1085,6 +1154,8 @@ class ApiRepository extends BaseRepository
         $qb->addSelect('pp.name as parentName');
 
         $qb->where("s.settingType = 'BREED_TYPE'");
+        $qb->andWhere('s.status = 1');
+
         $qb->orderBy('s.id', 'ASC');
         $result = $qb->getQuery()->getArrayResult();
         $data = array();
@@ -1111,6 +1182,8 @@ class ApiRepository extends BaseRepository
         $qb->select('s.id as id','s.name as color');
 
         $qb->where("s.settingType = 'COLOR'");
+        $qb->andWhere('s.status = 1');
+
         $qb->orderBy('s.name', 'ASC');
         $result = $qb->getQuery()->getArrayResult();
         $data = array();
@@ -1132,6 +1205,8 @@ class ApiRepository extends BaseRepository
         $qb->select('s.id as id','s.name as feedName');
 
         $qb->where("s.settingType = 'FEED_NAME'");
+        $qb->andWhere('s.status = 1');
+
         $qb->orderBy('s.name', 'ASC');
         $result = $qb->getQuery()->getArrayResult();
         $data = array();
@@ -1156,6 +1231,8 @@ class ApiRepository extends BaseRepository
         $qb->addSelect('p.name as breedName');
 
         $qb->where("s.settingType = 'DISEASE_NAME'");
+        $qb->andWhere('s.status = 1');
+
         $qb->orderBy('s.id', 'ASC');
         $result = $qb->getQuery()->getArrayResult();
         $data = array();
@@ -1182,6 +1259,8 @@ class ApiRepository extends BaseRepository
         $qb->addSelect('pp.name as name');
 
         $qb->where("s.settingType = 'PRODUCT_TYPE'");
+        $qb->andWhere('s.status = 1');
+
         $qb->orderBy('s.id', 'ASC');
         $result = $qb->getQuery()->getArrayResult();
         $data = array();
@@ -1210,6 +1289,8 @@ class ApiRepository extends BaseRepository
         $qb->addSelect('p.name as name');
 
         $qb->where("s.settingType = 'SPECIES_TYPE'");
+        $qb->andWhere('s.status = 1');
+
         $qb->orderBy('s.id', 'ASC');
         $result = $qb->getQuery()->getArrayResult();
         $data = array();
@@ -1266,6 +1347,8 @@ class ApiRepository extends BaseRepository
         $qb->addSelect('p.name as breedName');
 
         $qb->where("s.settingType = 'BREED_TYPE'");
+        $qb->andWhere('s.status = 1');
+
         $qb->andWhere("p.name = 'Dairy'");
         $qb->orderBy('s.id', 'ASC');
         $result = $qb->getQuery()->getArrayResult();
@@ -1294,6 +1377,8 @@ class ApiRepository extends BaseRepository
         $qb->addSelect('p.name as breedName');
 
         $qb->where("s.settingType = 'BREED_TYPE'");
+        $qb->andWhere('s.status = 1');
+
         $qb->andWhere("p.name = 'Fattening'");
         $qb->orderBy('s.id', 'ASC');
         $result = $qb->getQuery()->getArrayResult();
@@ -1327,6 +1412,8 @@ class ApiRepository extends BaseRepository
         $qb->addSelect('p.name as fishType');
 
         $qb->where("s.settingType = 'SPECIES_NAME'");
+        $qb->andWhere('s.status = 1');
+
         $qb->andWhere("p.settingType = 'FEED_TYPE'");
         $qb->orderBy('s.id', 'ASC');
         $result = $qb->getQuery()->getArrayResult();
@@ -1354,6 +1441,8 @@ class ApiRepository extends BaseRepository
         $qb->addSelect('p.name as fishName', 'p.id as fishId');
 
         $qb->where("s.settingType = 'FISH_SIZE'");
+        $qb->andWhere('s.status = 1');
+
         $qb->orderBy('s.id','ASC');
         $result = $qb->getQuery()->getArrayResult();
 
@@ -1383,6 +1472,8 @@ class ApiRepository extends BaseRepository
         $qb->addSelect('p.name as feedName');
 
         $qb->where("s.settingType = 'PRODUCT_TYPE'");
+        $qb->andWhere('s.status = 1');
+
         $qb->andWhere("p.name = 'Fish'");
         $qb->orderBy('s.id', 'ASC');
         $result = $qb->getQuery()->getArrayResult();
@@ -1407,6 +1498,8 @@ class ApiRepository extends BaseRepository
 
         $qb->select('s.id as id','s.name as name');
         $qb->where("s.settingType = 'FEED_NAME'");
+        $qb->andWhere('s.status = 1');
+
         $qb->orderBy('s.id', 'ASC');
         $result = $qb->getQuery()->getArrayResult();
 
@@ -1430,6 +1523,8 @@ class ApiRepository extends BaseRepository
         $qb->from(Setting::class,'s');
         $qb->select('s.id as id', 's.name as name');
         $qb->where("s.settingType = 'FEED_NAME'");
+        $qb->andWhere('s.status = 1');
+
         $qb->andWhere('s.name NOT IN (:name)')->setParameter('name', $exceptName);
         $qb->orderBy('s.id','ASC');
         $result = $qb->getQuery()->getArrayResult();
@@ -1455,6 +1550,8 @@ class ApiRepository extends BaseRepository
 
         $qb->select("s.id as id","s.name as name");
         $qb->where("s.settingType = 'FARMER_REPORT'");
+        $qb->andWhere('s.status = 1');
+
         $qb->andWhere('s.slug IN (:slug)')->setParameter('slug', $exceptSlug);
         $qb->orderBy('s.id','ASC');
         $result = $qb->getQuery()->getArrayResult();
