@@ -50,6 +50,11 @@ class Expense
     private $crmVisit;
 
     /**
+     * @ORM\Column(type="string", nullable=true)
+     */
+    private $appId;
+
+    /**
      * @var Setting
      * @ORM\ManyToMany(targetEntity="Setting")
      * @ORM\JoinTable(name="crm_expence_purpose")
@@ -417,6 +422,22 @@ class Expense
     public function setCrmVisit($crmVisit)
     {
         $this->crmVisit = $crmVisit;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAppId()
+    {
+        return $this->appId;
+    }
+
+    /**
+     * @param string $appId
+     */
+    public function setAppId(string $appId): void
+    {
+        $this->appId = $appId;
     }
 
     /**

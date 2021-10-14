@@ -877,6 +877,7 @@ class ApiRepository extends BaseRepository
         $qb->addSelect('p.name as farmType');
 
         $qb->where("s.settingType = 'FARMER_REPORT'");
+        $qb->andWhere('s.status = 1');
         $qb->andWhere($qb->expr()->notIn('s.slug',  $exceptSlug));
     //    $qb->andWhere('s.slug NOT IN (:slug)')->setParameter('slug', $exceptSlug);
 

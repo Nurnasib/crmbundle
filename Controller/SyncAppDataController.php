@@ -20,6 +20,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Terminalbd\CrmBundle\Entity\Api;
 use Terminalbd\CrmBundle\Entity\ApiDetails;
 use Terminalbd\CrmBundle\Entity\CattleLifeCycle;
+use Terminalbd\CrmBundle\Entity\ChickLifeCycle;
 use Terminalbd\CrmBundle\Entity\CrmCustomer;
 use Terminalbd\CrmBundle\Entity\CrmVisit;
 use Terminalbd\CrmBundle\Entity\CrmVisitDetails;
@@ -82,65 +83,71 @@ class SyncAppDataController extends AbstractController
 
                     switch ($detail->getProcess()){
                         case "crm_visit":
-                            $this->processVisit($jsonToArray, $batch);
+//                            $this->processVisit($jsonToArray, $batch);
                             break;
                         case "crm_visit_details":
-                            $this->processVisitDetail($jsonToArray, $batch);
+//                            $this->processVisitDetail($jsonToArray, $batch);
                             break;
                         case "crm_layer_performance_details":
-                            $this->processLayerPerformance($jsonToArray, $batch);
+//                            $this->processLayerPerformance($jsonToArray, $batch);
                             break;
                         case "crm_cattle_performance_details":
-                            $this->processCattlePerformance($jsonToArray, $batch);
+//                            $this->processCattlePerformance($jsonToArray, $batch);
                             break;
                         case "crm_fcr_details":
-                            $this->processFcrDetail($jsonToArray, $batch);
+//                            $this->processFcrDetail($jsonToArray, $batch);
                             break;
                         case "crm_farmer_touch_report":
-                            $this->processTouchReport($jsonToArray, $batch);
+//                            $this->processTouchReport($jsonToArray, $batch);
                             break;
                         case "crm_antibiotic_free_farm":
-                            $this->processAntibioticFreeFarm($jsonToArray, $batch);
-                            break;
-                        case "crm_antibiotic_free_farm_medicine_or_vaccine_cost":
-                            $this->processAntibioticFreeFarmMedicineVaccine($jsonToArray, $batch);
+//                            $this->processAntibioticFreeFarm($jsonToArray, $batch);
                             break;
                         case "crm_cost_benefit_analysis_for_less_costing_farm":
-                            $this->processCostBenefitAnalysis($jsonToArray, $batch);
+//                            $this->processCostBenefitAnalysis($jsonToArray, $batch);
                             break;
                         case "crm_disease_mapping":
-                            $this->processDiseaseMapping($jsonToArray, $batch);
+//                            $this->processDiseaseMapping($jsonToArray, $batch);
                             break;
                         case "crm_complain_different_product":
-                            $this->processComplain($jsonToArray, $batch);
+//                            $this->processComplain($jsonToArray, $batch);
                             break;
                         case "crm_broiler_life_cycle":
-                            $this->processBroilerLifeCycle($jsonToArray, $batch);
+//                            $this->processBroilerLifeCycle($jsonToArray, $batch);
                             break;
                         case "crm_broiler_life_cycle_details":
-                            $this->processBroilerLifeCycleDetail($jsonToArray, $batch);
+//                            $this->processBroilerLifeCycleDetail($jsonToArray, $batch);
                             break;
                         case "crm_cattle_life_cycle":
-                            $this->processCattleLifeCycle($jsonToArray, $batch);
+//                            $this->processCattleLifeCycle($jsonToArray, $batch);
                             break;
                         case "crm_cattle_life_cycle_details":
-                            $this->processCattleLifeCycleDetail($jsonToArray, $batch);
+//                            $this->processCattleLifeCycleDetail($jsonToArray, $batch);
                             break;
                         case "crm_layer_life_cycle":
-                            $this->processLayerLifeCycle($jsonToArray, $batch);
+//                            $this->processLayerLifeCycle($jsonToArray, $batch);
                             break;
                         case "crm_layer_life_cycle_details":
-                            $this->processLayerLifeCycleDetail($jsonToArray, $batch);
+//                            $this->processLayerLifeCycleDetail($jsonToArray, $batch);
+                            break;
+                        case "crm_expense":
+//                            $this->processExpense($jsonToArray, $batch);
+                            break;
+                        case "crm_expense_purpose":
+//                            $this->processExpensePurpose($jsonToArray, $batch);
+                            break;
+                        case "crm_expense_vehicle":
+//                            $this->processExpenseVehicle($jsonToArray, $batch);
                             break;
                     }
                     $detail->setStatus(true);
-                    $em->persist($detail);
-                    $em->flush();
+//                    $em->persist($detail);
+//                    $em->flush();
                 }
             }
             $batch->setStatus(true);
-            $em->persist($batch);
-            $em->flush();
+//            $em->persist($batch);
+//            $em->flush();
         }
         return $this->redirectToRoute('crm_sync_app_data_index');
     }
@@ -169,7 +176,6 @@ class SyncAppDataController extends AbstractController
             }
         }
     }
-
     private function processVisitDetail($visitDetails, Api $batch)
     {
         foreach ($visitDetails as $visitDetail) {
@@ -197,7 +203,6 @@ VALUES (:crm_visit_id, :farmCapacity, :updated, :comments, :created, :customer_i
             $stmt->execute();
         }
     }
-
     private function processLayerPerformance($performances, Api $batch)
     {
         foreach ($performances as $performance) {
@@ -243,12 +248,11 @@ VALUES (:crm_visit_id, :farmCapacity, :updated, :comments, :created, :customer_i
                 $stmt->bindValue('updated', $updatedAt->format('Y-m-d H:i:s'));
                 $stmt->bindValue('visit_id', $findVisit->getId());
 
-//                $stmt->execute();
+                $stmt->execute();
             }
 
         }
     }
-
     private function processCattlePerformance($performances, Api $batch)
     {
         foreach ($performances as $performance) {
@@ -296,11 +300,10 @@ VALUES (:employee_id, :report_id, :agent_id, :customer_id, :breed_type, :feed_ty
                 $stmt->bindValue('updated_at', $updatedAt->format('Y-m-d H:i:s'));
                 $stmt->bindValue('visit_id', $findVisit->getId());
 
-//                $stmt->execute();
+                $stmt->execute();
             }
         }
     }
-
     private function processFcrDetail($frcDetails, Api $batch)
     {
         foreach ($frcDetails as $frcDetail) {
@@ -343,23 +346,241 @@ VALUES (:report_id, :employee_id, :agent_id, :customer_id, :hatchery_id, :breed_
                 $stmt->bindValue('created_at', $createdAt->format('Y-m-d H:i:s'));
                 $stmt->bindValue('visit_id', $findVisit->getId());
 
-//                $stmt->execute();
+                $stmt->execute();
             }
         }
     }
-
     private function processTouchReport($reports, Api $batch)
     {
     }
     private function processAntibioticFreeFarm($reports, Api $batch)
     {
+        foreach ($reports as $report) {
+            dd($report);
+            $sql = "INSERT INTO `crm_antibiotic_free_farm`(`report_id`, `report_parent_parent_id`, `agent_id`, `customer_id`, `employee_id`, `hatchery_id`, `breed_id`, `feed_id`, `hatching_date`, `reporting_month`, `total_stocked_chicks_pcs`, `total_feed_used_kg`, `age_days`, `total_broiler_weight_kg`, `mortality`, `fcr`, `remarks`, `created_at`, `medicine_total_cost`, `vaccine_total_cost`, `app_id`, `app_batch_id`) 
+VALUES (:report_id, :report_parent_parent_id, :agent_id, :customer_id, :employee_id, :hatchery_id, :breed_id, :feed_id, :hatching_date, :reporting_month, :total_stocked_chicks_pcs, :total_feed_used_kg, :age_days, :total_broiler_weight_kg, :mortality, :fcr, :remarks, :created_at, :medicine_total_cost, :vaccine_total_cost, :app_id, :app_batch_id)";
+
+            $hatchingDate = new \DateTime($report['hatching_date']);
+            $reportingMonth = new \DateTime('1-' . $report['reporting_month']);
+            $createdAt = new \DateTime($report['created_at']);
+
+            $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
+            $stmt->bindValue('report_id',$report['report_id']);
+            $stmt->bindValue('report_parent_parent_id',$report['report_parent_parent_id']);
+            $stmt->bindValue('agent_id',$report['agent_id']);
+            $stmt->bindValue('customer_id',$report['customer_id']);
+            $stmt->bindValue('employee_id',$report['employee_id']);
+            $stmt->bindValue('hatchery_id',$report['hatchery_id']);
+            $stmt->bindValue('breed_id',$report['breed_id']);
+            $stmt->bindValue('feed_id',$report['feed_id']);
+            $stmt->bindValue('hatching_date',$hatchingDate->format('Y-m-d'));
+            $stmt->bindValue('reporting_month',$reportingMonth->format('Y-m-d'));
+//            $stmt->bindValue('reporting_month',(new \DateTime('now'))->format('Y-m-d'));
+            $stmt->bindValue('total_stocked_chicks_pcs',$report['total_stocked_chicks_pcs']);
+            $stmt->bindValue('total_feed_used_kg',$report['total_feed_used_kg']);
+            $stmt->bindValue('age_days',$report['age_days']);
+            $stmt->bindValue('total_broiler_weight_kg',$report['total_broiler_weight_kg']);
+            $stmt->bindValue('mortality',$report['mortality']);
+            $stmt->bindValue('fcr',$report['fcr']);
+            $stmt->bindValue('remarks',$report['remarks']);
+            $stmt->bindValue('created_at',$createdAt->format('Y-m-d H:i:s'));
+            $stmt->bindValue('medicine_total_cost',0.00);
+            $stmt->bindValue('vaccine_total_cost',0.00);
+            $stmt->bindValue('app_id',$report['id']);
+            $stmt->bindValue('app_batch_id',$batch->getId());
+
+            $stmt->execute();
+        }
     }
-    private function processAntibioticFreeFarmMedicineVaccine($reports, Api $batch){}
-    private function processCostBenefitAnalysis($reports, Api $batch){}
-    private function processDiseaseMapping($reports, Api $batch){}
-    private function processComplain($reports, Api $batch){}
-    private function processBroilerLifeCycle($reports, Api $batch){}
-    private function processBroilerLifeCycleDetail($reports, Api $batch){}
+    private function processCostBenefitAnalysis($reports, Api $batch)
+    {
+        foreach ($reports as $report) {
+            $sql = "INSERT INTO `crm_cost_benefit_analysis_for_less_costing_farm`(`report_id`, `report_parent_parent_id`, `agent_id`, `customer_id`, `employee_id`, `hatchery_id`, `breed_id`, `feed_id`, `hatching_date`, `total_stocked_chicks_pcs`, `total_feed_used_kg`, `total_broiler_weight_kg`, `mortality`, `remarks`, `created_at`, `species_id`, `reporting_month`, `pond_size`, `fingerling_size`, `harvesting_size`, `age_days`, `fcr`, `item_price_per_pcs`, `feed_price_per_kg`, `broiler_or_fish_price_per_kg`, `total_medicine_cost`, `total_vaccine_cost`, `total_pond_preparation_cost`, `used_bag_price_per_pcs`, `litter_or_pond_rent_cost`, `electricity_and_fuel_cost`, `labour_cost`, `transport_cost`, `other_cost`) 
+
+VALUES (:report_id, :report_parent_parent_id, :agent_id, :customer_id, :employee_id, :hatchery_id, :breed_id, :feed_id, :hatching_date, :total_stocked_chicks_pcs, :total_feed_used_kg, :total_broiler_weight_kg, :mortality, :remarks, :created_at, :species_id, :reporting_month, :pond_size, :fingerling_size, :harvesting_size, :age_days, :fcr, :item_price_per_pcs, :feed_price_per_kg, :broiler_or_fish_price_per_kg, :total_medicine_cost, :total_vaccine_cost, :total_pond_preparation_cost, :used_bag_price_per_pcs, :litter_or_pond_rent_cost, :electricity_and_fuel_cost, :labour_cost, :transport_cost, :other_cost)";
+
+            $hatchingDate = new \DateTime($report['hatching_date']);
+            $createdAt = new \DateTime($report['created_at']);
+            $reportingMonth = new \DateTime('01-' . $report['reporting_month']);
+
+            $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
+            $stmt->bindValue('report_id', $report['report_id']);
+            $stmt->bindValue('report_parent_parent_id', $report['report_parent_parent_id']);
+            $stmt->bindValue('agent_id', $report['agent_id']);
+            $stmt->bindValue('customer_id', $report['customer_id']);
+            $stmt->bindValue('employee_id', $report['employee_id']);
+            $stmt->bindValue('hatchery_id', $report['hatchery_id']);
+            $stmt->bindValue('breed_id', $report['breed_id']);
+            $stmt->bindValue('feed_id', $report['feed_id']);
+            $stmt->bindValue('hatching_date', $hatchingDate->format('Y-m-d'));
+            $stmt->bindValue('total_stocked_chicks_pcs', $report['total_stocked_chicks_pcs']);
+            $stmt->bindValue('total_feed_used_kg', $report['total_feed_used_kg']);
+            $stmt->bindValue('total_broiler_weight_kg', $report['total_broiler_weight_kg']);
+            $stmt->bindValue('mortality', $report['mortality']);
+            $stmt->bindValue('remarks', $report['remarks']);
+            $stmt->bindValue('created_at', $createdAt->format('Y-m-d H:i:s'));
+            $stmt->bindValue('species_id', $report['species_id']);
+            $stmt->bindValue('reporting_month', $reportingMonth->format('Y-m-d'));
+            $stmt->bindValue('pond_size', $report['pond_size']);
+            $stmt->bindValue('fingerling_size', $report['fingerling_size']);
+            $stmt->bindValue('harvesting_size', $report['harvesting_size']);
+            $stmt->bindValue('age_days', $report['age_days']);
+            $stmt->bindValue('fcr', $report['fcr']);
+            $stmt->bindValue('item_price_per_pcs', $report['item_price_per_pcs']);
+            $stmt->bindValue('feed_price_per_kg', $report['feed_price_per_kg']);
+            $stmt->bindValue('broiler_or_fish_price_per_kg', $report['broiler_or_fish_price_per_kg']);
+            $stmt->bindValue('total_medicine_cost', $report['total_medicine_cost']);
+            $stmt->bindValue('total_vaccine_cost', $report['total_vaccine_cost']);
+            $stmt->bindValue('total_pond_preparation_cost', $report['total_pond_preparation_cost']);
+            $stmt->bindValue('used_bag_price_per_pcs', $report['used_bag_price_per_pcs']);
+            $stmt->bindValue('litter_or_pond_rent_cost', $report['litter_or_pond_rent_cost']);
+            $stmt->bindValue('electricity_and_fuel_cost', $report['electricity_and_fuel_cost']);
+            $stmt->bindValue('labour_cost', $report['labour_cost']);
+            $stmt->bindValue('transport_cost', $report['transport_cost']);
+            $stmt->bindValue('other_cost', $report['other_cost']);
+
+            $stmt->execute();
+        }
+    }
+    private function processDiseaseMapping($reports, Api $batch)
+    {
+        foreach ($reports as $report) {
+            $sql = "INSERT INTO `crm_disease_mapping`(`report_id`, `agent_id`, `customer_id`, `employee_id`, `hatchery_id`, `farm_type_id`, `feed_id`, `disease_id`, `visiting_date`, `flock_size_or_capacity`, `age_days`, `remarks`, `created_at`) VALUES (:report_id, :agent_id, :customer_id, :employee_id, :hatchery_id, :farm_type_id, :feed_id, :disease_id, :visiting_date, :flock_size_or_capacity, :age_days, :remarks, :created_at)";
+
+            $visitingDate = new \DateTime($report['visiting_date']);
+            $createdAt = new \DateTime($report['created_at']);
+
+            $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
+            $stmt->bindValue('report_id', $report['report_id']);
+            $stmt->bindValue('agent_id', $report['agent_id']);
+            $stmt->bindValue('customer_id', $report['customer_id']);
+            $stmt->bindValue('employee_id', $report['employee_id']);
+            $stmt->bindValue('hatchery_id', $report['hatchery_id']);
+            $stmt->bindValue('farm_type_id', $report['farm_type_id']);
+            $stmt->bindValue('feed_id', $report['feed_id']);
+            $stmt->bindValue('disease_id', $report['disease_id']);
+            $stmt->bindValue('visiting_date', $visitingDate->format('Y-m-d'));
+            $stmt->bindValue('flock_size_or_capacity', $report['flock_size_or_capacity']);
+            $stmt->bindValue('age_days', $report['age_days']);
+            $stmt->bindValue('remarks', $report['remarks']);
+            $stmt->bindValue('created_at', $createdAt->format('Y-m-d H:i:s'));
+
+            $stmt->execute();
+        }
+    }
+    private function processComplain($reports, Api $batch)
+    {
+        foreach ($reports as $report) {
+            $sql = "INSERT INTO `crm_complain_different_product`(`report_id`, `agent_id`, `customer_id`, `employee_id`, `product_name_id`, `complains`, `created_at`) VALUES (:report_id, :agent_id, :customer_id, :employee_id, :product_name_id, :complains, :created_at)";
+
+            $createdAt = new \DateTime($report['created_at']);
+//            $createdAt = new \DateTime('01-' . $report['created_at']);
+
+            $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
+            $stmt->bindValue('report_id', $report['report_id']);
+            $stmt->bindValue('agent_id', $report['agent_id']);
+            $stmt->bindValue('customer_id', $report['customer_id']);
+            $stmt->bindValue('employee_id', $report['employee_id']);
+            $stmt->bindValue('product_name_id', $report['product_name_id']);
+            $stmt->bindValue('complains', $report['complains']);
+            $stmt->bindValue('created_at', $createdAt->format('Y-m-d H:i:s'));
+            $stmt->bindValue('report_id', $report['report_id']);
+
+            $stmt->execute();
+        }
+    }
+    private function processBroilerLifeCycle($reports, Api $batch)
+    {
+        foreach ($reports as $report) {
+            $findFarmer = $this->getDoctrine()->getRepository(CrmCustomer::class)->find($report['customer_id']);
+            $findEmployee = $this->getDoctrine()->getRepository(User::class)->find($report['employee_id']);
+            $findReport = $this->getDoctrine()->getRepository(Setting::class)->find($report['report_id']);
+
+            $findLifeCycle = $this->getDoctrine()->getRepository(ChickLifeCycle::class)->findOneBy(['customer' => $findFarmer, 'employee' => $findEmployee, 'report' => $findReport]);
+
+            if ($findLifeCycle){
+                $findLifeCycle->setLifeCycleState($report['life_cycle_state']);
+                $this->getDoctrine()->getManager()->persist($findLifeCycle);
+                $this->getDoctrine()->getManager()->flush();
+            }else{
+                $sql = "INSERT INTO `crm_chick_life_cycle`(`hatching_date`, `remarks`, `reporting_date`, `customer_id`, `agent_id`, `employee_id`, `report_id`, `life_cycle_state`, `created_at`, `hatchery_id`, `breed_id`, `feed_id`, `total_birds`, `app_batch_id`) 
+VALUES (:hatching_date, :remarks, :reporting_date, :customer_id, :agent_id, :employee_id, :report_id, :life_cycle_state, :created_at, :hatchery_id, :breed_id, :feed_id, :total_birds, :app_batch_id)";
+
+                $hatchingDate = new \DateTime($report['hatching_date']);
+                $reportingDate = new \DateTime($report['reporting_date']);
+                $createdAt = new \DateTime($report['created_at']);
+
+                $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
+                $stmt->bindValue('hatching_date', $hatchingDate->format('Y-m-d'));
+                $stmt->bindValue('remarks', $report['remarks']);
+                $stmt->bindValue('reporting_date', $reportingDate->format('Y-m-d'));
+                $stmt->bindValue('customer_id', $report['customer_id']);
+                $stmt->bindValue('agent_id', $report['agent_id']);
+                $stmt->bindValue('employee_id', $report['employee_id']);
+                $stmt->bindValue('report_id', $report['report_id']);
+                $stmt->bindValue('life_cycle_state', $report['life_cycle_state']);
+//                $stmt->bindValue('created_at', $createdAt->format('Y-m-d H:i:s'));
+                $stmt->bindValue('created_at', (new \DateTime('now'))->format('Y-m-d H:i:s'));
+                $stmt->bindValue('hatchery_id', $report['hatchery_id']);
+                $stmt->bindValue('breed_id', $report['breed_id']);
+                $stmt->bindValue('feed_id', $report['feed_id']);
+                $stmt->bindValue('total_birds', $report['total_birds']);
+                $stmt->bindValue('app_batch_id', $batch->getId());
+
+                $stmt->execute();
+            }
+        }
+    }
+    private function processBroilerLifeCycleDetail($reports, Api $batch)
+    {
+        foreach ($reports as $report) {
+            $sql = "SELECT id
+FROM `crm_chick_life_cycle`
+WHERE `customer_id` = :customer_id AND `employee_id` = :employee_id AND `report_id` = :report_id";
+            $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
+            $stmt->bindValue('customer_id', $report['customer_id']);
+            $stmt->bindValue('employee_id', $report['employee_id']);
+            $stmt->bindValue('report_id', $report['report_id']);
+
+//            $stmt->bindValue('customer_id', 44);
+//            $stmt->bindValue('employee_id', 23);
+//            $stmt->bindValue('report_id', 39);
+            $stmt->execute();
+            $lifeCycleId = $stmt->fetch()['id'];
+            if ($lifeCycleId) {
+                $sql = "INSERT INTO `crm_chick_life_cycle_details`(`crm_chick_life_cycle_id`, `visiting_week`, `age_days`, `mortality_pes`, `mortality_percent`, `weight_standard`, `weight_achieved`, `feed_total_kg`, `per_bird`, `feed_standard`, `without_mortality`, `with_mortality`, `pro_date`, `batch_no`, `remarks`, `created_at`, `updated_at`, `feed_type_id`, `reporting_date`) 
+VALUES (:crm_chick_life_cycle_id, :visiting_week, :age_days, :mortality_pes, :mortality_percent, :weight_standard, :weight_achieved, :feed_total_kg, :per_bird, :feed_standard, :without_mortality, :with_mortality, :pro_date, :batch_no, :remarks, :created_at, :updated_at, :feed_type_id, :reporting_date)";
+
+                $proDate = new \DateTime($report['pro_date']);
+                $reportingDate = new \DateTime($report['reporting_date']);
+                $createdAt = new \DateTime($report['created_at']);
+                $updatedAt = new \DateTime($report['updated_at']);
+
+                $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
+                $stmt->bindValue('crm_chick_life_cycle_id', $lifeCycleId);
+                $stmt->bindValue('visiting_week', $report['visiting_week']);
+                $stmt->bindValue('age_days', $report['age_days']);
+                $stmt->bindValue('mortality_pes', $report['mortality_pes']);
+                $stmt->bindValue('mortality_percent', $report['mortality_percent']);
+                $stmt->bindValue('weight_standard', $report['weight_standard']);
+                $stmt->bindValue('weight_achieved', $report['weight_achieved']);
+                $stmt->bindValue('feed_total_kg', $report['feed_total_kg']);
+                $stmt->bindValue('per_bird', $report['per_bird']);
+                $stmt->bindValue('feed_standard', $report['feed_standard']);
+                $stmt->bindValue('without_mortality', $report['without_mortality']);
+                $stmt->bindValue('with_mortality', $report['with_mortality']);
+                $stmt->bindValue('pro_date', $proDate->format('Y-m-d H:i:s'));
+                $stmt->bindValue('batch_no', $report['batch_no']);
+                $stmt->bindValue('remarks', $report['remarks']);
+                $stmt->bindValue('created_at', $createdAt->format('Y-m-d H:i:s'));
+                $stmt->bindValue('updated_at', $updatedAt->format('Y-m-d H:i:s'));
+                $stmt->bindValue('feed_type_id', $report['feed_type_id']);
+                $stmt->bindValue('reporting_date', $reportingDate->format('Y-m-d'));
+
+                $stmt->execute();
+            }
+        }
+    }
     private function processCattleLifeCycle($reports, Api $batch)
     {
         foreach ($reports as $report) {
@@ -392,7 +613,7 @@ VALUES (:customer_id, :report_id, :agent_id, :employee_id, :reporting_date, :bre
                 $stmt->bindValue('feed_type', $report['feed_type']);
                 $stmt->bindValue('app_batch_id', $batch->getId());
 
-//                $stmt->execute();
+                $stmt->execute();
             }
         }
     }
@@ -448,7 +669,7 @@ VALUES (:crm_cattle_life_cycle_id, :visiting_date, :age_of_cattle_month, :previo
                 $stmt->bindValue('created_at', $createdAt->format('Y-m-d H:i:s'));
                 $stmt->bindValue('updated_at', $updatedAt->format('Y-m-d H:i:s'));
 
-//                $stmt->execute();
+                $stmt->execute();
             }
         }
     }
@@ -488,7 +709,7 @@ VALUES (:total_birds, :hatchery_date, :created, :updated, :customer_id, :employe
                 $stmt->bindValue('feed_id', $report['feed_id']);
                 $stmt->bindValue('app_batch_id', $batch->getId());
 
-//                $stmt->execute();
+                $stmt->execute();
             }
         }
     }
@@ -541,7 +762,76 @@ VALUES (:crm_layer_life_cycle_id, :visiting_date, :age_week, :dead_bird, :avg_we
                 $stmt->bindValue('feed_mill_id', $report['feed_mill_id']);
                 $stmt->bindValue('feed_type_id', $report['feed_type_id']);
 
-//                $stmt->execute();
+                $stmt->execute();
+            }
+        }
+    }
+    private function processExpense($reports, Api $batch)
+    {
+        foreach ($reports as $report) {
+            $findVisit = $this->getDoctrine()->getRepository(CrmVisit::class)->findOneBy(['appBatch' => $batch, 'appId' => $report['crm_visit_id']]);
+            if ($findVisit){
+                $sql = "INSERT INTO `crm_expense`(`schedule_visit`, `conveyance`, `daily_allowance`, `hotel_rent`, `photostate`, `courier`, `food`, `mobile`, `maintenace`, `toll_bill`, `service_charge`, `others`, `visiting_area_id`, `crm_visit_id`, `status`, `app_id`) 
+VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate, :courier, :food, :mobile, :maintenace, :toll_bill, :service_charge, :others, :visiting_area_id, :crm_visit_id, :status, :app_id)";
+
+                $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
+
+                $stmt->bindValue('schedule_visit', $report['schedule_visit']);
+                $stmt->bindValue('conveyance', $report['conveyance']);
+                $stmt->bindValue('daily_allowance', $report['daily_allowance']);
+                $stmt->bindValue('hotel_rent', $report['hotel_rent']);
+                $stmt->bindValue('photostate', $report['photostate']);
+                $stmt->bindValue('courier', $report['courier']);
+                $stmt->bindValue('food', $report['food']);
+                $stmt->bindValue('mobile', $report['mobile']);
+                $stmt->bindValue('maintenace', $report['maintenace']);
+                $stmt->bindValue('toll_bill', $report['toll_bill']);
+                $stmt->bindValue('service_charge', $report['service_charge']);
+                $stmt->bindValue('others', $report['others']);
+                $stmt->bindValue('visiting_area_id', $report['visiting_area_id']);
+                $stmt->bindValue('crm_visit_id', $findVisit->getId());
+                $stmt->bindValue('status', $report['status']);
+                $stmt->bindValue('app_id', $report['id']);
+
+                $stmt->execute();
+            }
+        }
+    }
+    private function processExpensePurpose($reports, Api $batch)
+    {
+        foreach ($reports as $report) {
+            $sql = "SELECT crm_expense.id FROM `crm_expense` JOIN `crm_visit` ON crm_visit.id = crm_expense.crm_visit_id WHERE crm_visit.app_batch_id = :batchId AND crm_expense.app_id = :appId";
+            $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
+            $stmt->bindValue('batchId', $batch->getId());
+            $stmt->bindValue('appId', $report['expense_id']);
+            $stmt->execute();
+            $expenseId = $stmt->fetch()['id'];
+            if ($expenseId){
+                $sql = "INSERT INTO `crm_expence_purpose`(`expense_id`, `setting_id`) VALUES (:expense_id, :setting_id)";
+                $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
+                $stmt->bindValue('expense_id', $expenseId);
+                $stmt->bindValue('setting_id', $report['setting_id']);
+
+                $stmt->execute();
+            }
+        }
+    }
+    private function processExpenseVehicle($reports, Api $batch)
+    {
+        foreach ($reports as $report) {
+            $sql = "SELECT crm_expense.id FROM `crm_expense` JOIN `crm_visit` ON crm_visit.id = crm_expense.crm_visit_id WHERE crm_visit.app_batch_id = :batchId AND crm_expense.app_id = :appId";
+            $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
+            $stmt->bindValue('batchId', $batch->getId());
+            $stmt->bindValue('appId', $report['expense_id']);
+            $stmt->execute();
+            $expenseId = $stmt->fetch()['id'];
+            if ($expenseId){
+                $sql = "INSERT INTO `crm_expence_vehicle`(`expense_id`, `setting_id`) VALUES (:expense_id, :setting_id)";
+                $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
+                $stmt->bindValue('expense_id', $expenseId);
+                $stmt->bindValue('setting_id', $report['setting_id']);
+
+                $stmt->execute();
             }
         }
     }
