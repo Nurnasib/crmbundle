@@ -83,55 +83,55 @@ class SyncAppDataController extends AbstractController
 
                     switch ($detail->getProcess()){
                         case "crm_visit":
-//                            $this->processVisit($jsonToArray, $batch);
+                            $this->processVisit($jsonToArray, $batch);
                             break;
                         case "crm_visit_details":
-//                            $this->processVisitDetail($jsonToArray, $batch);
+                            $this->processVisitDetail($jsonToArray, $batch);
                             break;
                         case "crm_layer_performance_details":
-//                            $this->processLayerPerformance($jsonToArray, $batch);
+                            $this->processLayerPerformance($jsonToArray, $batch);
                             break;
                         case "crm_cattle_performance_details":
-//                            $this->processCattlePerformance($jsonToArray, $batch);
+                            $this->processCattlePerformance($jsonToArray, $batch);
                             break;
                         case "crm_fcr_details":
-//                            $this->processFcrDetail($jsonToArray, $batch);
+                            $this->processFcrDetail($jsonToArray, $batch);
                             break;
                         case "crm_farmer_touch_report":
-//                            $this->processTouchReport($jsonToArray, $batch);
+                            $this->processTouchReport($jsonToArray, $batch);
                             break;
                         case "crm_antibiotic_free_farm":
-//                            $this->processAntibioticFreeFarm($jsonToArray, $batch);
+                            $this->processAntibioticFreeFarm($jsonToArray, $batch);
                             break;
                         case "crm_cost_benefit_analysis_for_less_costing_farm":
-//                            $this->processCostBenefitAnalysis($jsonToArray, $batch);
+                            $this->processCostBenefitAnalysis($jsonToArray, $batch);
                             break;
                         case "crm_disease_mapping":
-//                            $this->processDiseaseMapping($jsonToArray, $batch);
+                            $this->processDiseaseMapping($jsonToArray, $batch);
                             break;
                         case "crm_complain_different_product":
-//                            $this->processComplain($jsonToArray, $batch);
+                            $this->processComplain($jsonToArray, $batch);
                             break;
                         case "crm_broiler_life_cycle":
-//                            $this->processBroilerLifeCycle($jsonToArray, $batch);
+                            $this->processBroilerLifeCycle($jsonToArray, $batch);
                             break;
                         case "crm_broiler_life_cycle_details":
-//                            $this->processBroilerLifeCycleDetail($jsonToArray, $batch);
+                            $this->processBroilerLifeCycleDetail($jsonToArray, $batch);
                             break;
                         case "crm_cattle_life_cycle":
-//                            $this->processCattleLifeCycle($jsonToArray, $batch);
+                            $this->processCattleLifeCycle($jsonToArray, $batch);
                             break;
                         case "crm_cattle_life_cycle_details":
-//                            $this->processCattleLifeCycleDetail($jsonToArray, $batch);
+                            $this->processCattleLifeCycleDetail($jsonToArray, $batch);
                             break;
                         case "crm_layer_life_cycle":
-//                            $this->processLayerLifeCycle($jsonToArray, $batch);
+                            $this->processLayerLifeCycle($jsonToArray, $batch);
                             break;
                         case "crm_layer_life_cycle_details":
-//                            $this->processLayerLifeCycleDetail($jsonToArray, $batch);
+                            $this->processLayerLifeCycleDetail($jsonToArray, $batch);
                             break;
                         case "crm_expense":
-//                            $this->processExpense($jsonToArray, $batch);
+                            $this->processExpense($jsonToArray, $batch);
                             break;
                         case "crm_expense_purpose":
 //                            $this->processExpensePurpose($jsonToArray, $batch);
@@ -141,14 +141,15 @@ class SyncAppDataController extends AbstractController
                             break;
                     }
                     $detail->setStatus(true);
-//                    $em->persist($detail);
-//                    $em->flush();
+                    $em->persist($detail);
+                    $em->flush();
                 }
             }
             $batch->setStatus(true);
-//            $em->persist($batch);
-//            $em->flush();
+            $em->persist($batch);
+            $em->flush();
         }
+        $this->addFlash('success', 'Synchronization Completed!');
         return $this->redirectToRoute('crm_sync_app_data_index');
     }
 
@@ -356,9 +357,8 @@ VALUES (:report_id, :employee_id, :agent_id, :customer_id, :hatchery_id, :breed_
     private function processAntibioticFreeFarm($reports, Api $batch)
     {
         foreach ($reports as $report) {
-            dd($report);
-            $sql = "INSERT INTO `crm_antibiotic_free_farm`(`report_id`, `report_parent_parent_id`, `agent_id`, `customer_id`, `employee_id`, `hatchery_id`, `breed_id`, `feed_id`, `hatching_date`, `reporting_month`, `total_stocked_chicks_pcs`, `total_feed_used_kg`, `age_days`, `total_broiler_weight_kg`, `mortality`, `fcr`, `remarks`, `created_at`, `medicine_total_cost`, `vaccine_total_cost`, `app_id`, `app_batch_id`) 
-VALUES (:report_id, :report_parent_parent_id, :agent_id, :customer_id, :employee_id, :hatchery_id, :breed_id, :feed_id, :hatching_date, :reporting_month, :total_stocked_chicks_pcs, :total_feed_used_kg, :age_days, :total_broiler_weight_kg, :mortality, :fcr, :remarks, :created_at, :medicine_total_cost, :vaccine_total_cost, :app_id, :app_batch_id)";
+            $sql = "INSERT INTO `crm_antibiotic_free_farm`(`report_id`, `report_parent_parent_id`, `agent_id`, `customer_id`, `employee_id`, `hatchery_id`, `breed_id`, `feed_id`, `hatching_date`, `reporting_month`, `total_stocked_chicks_pcs`, `total_feed_used_kg`, `age_days`, `total_broiler_weight_kg`, `mortality`, `fcr`, `remarks`, `created_at`, `medicine_total_cost`, `vaccine_total_cost`) 
+VALUES (:report_id, :report_parent_parent_id, :agent_id, :customer_id, :employee_id, :hatchery_id, :breed_id, :feed_id, :hatching_date, :reporting_month, :total_stocked_chicks_pcs, :total_feed_used_kg, :age_days, :total_broiler_weight_kg, :mortality, :fcr, :remarks, :created_at, :medicine_total_cost, :vaccine_total_cost)";
 
             $hatchingDate = new \DateTime($report['hatching_date']);
             $reportingMonth = new \DateTime('1-' . $report['reporting_month']);
@@ -386,8 +386,6 @@ VALUES (:report_id, :report_parent_parent_id, :agent_id, :customer_id, :employee
             $stmt->bindValue('created_at',$createdAt->format('Y-m-d H:i:s'));
             $stmt->bindValue('medicine_total_cost',0.00);
             $stmt->bindValue('vaccine_total_cost',0.00);
-            $stmt->bindValue('app_id',$report['id']);
-            $stmt->bindValue('app_batch_id',$batch->getId());
 
             $stmt->execute();
         }
@@ -473,8 +471,8 @@ VALUES (:report_id, :report_parent_parent_id, :agent_id, :customer_id, :employee
         foreach ($reports as $report) {
             $sql = "INSERT INTO `crm_complain_different_product`(`report_id`, `agent_id`, `customer_id`, `employee_id`, `product_name_id`, `complains`, `created_at`) VALUES (:report_id, :agent_id, :customer_id, :employee_id, :product_name_id, :complains, :created_at)";
 
-            $createdAt = new \DateTime($report['created_at']);
-//            $createdAt = new \DateTime('01-' . $report['created_at']);
+//            $createdAt = new \DateTime($report['created_at']);
+            $createdAt = new \DateTime('01-' . $report['created_at']);
 
             $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
             $stmt->bindValue('report_id', $report['report_id']);
