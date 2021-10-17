@@ -423,8 +423,8 @@ class ApiRepository extends BaseRepository
             $data[$key]['name'] = (string)$row['name'];
             $data[$key]['targetFeedConsumption'] = (int)$row['targetFeedConsumption'];
             $data[$key]['targetBodyWeight'] = (int)$row['targetBodyWeight'];
-            $data[$key]['targetEggProduction'] = (int)$row['targetEggProduction'];
-            $data[$key]['targetEggWeight'] = (int)$row['targetEggWeight'];
+            $data[$key]['targetEggProduction'] = (float)$row['targetEggProduction'];
+            $data[$key]['targetEggWeight'] = (float)$row['targetEggWeight'];
 
         }
         return $data;
