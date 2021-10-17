@@ -15,6 +15,7 @@ namespace Terminalbd\CrmBundle\Repository;
 use App\Entity\Admin\Location;
 use App\Entity\Core\Agent;
 use App\Entity\User;
+use App\Entity\Version;
 use Doctrine\ORM\Query\Expr\Join;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Terminalbd\CrmBundle\Entity\BroilerStandard;
@@ -1617,6 +1618,17 @@ class ApiRepository extends BaseRepository
         $qb->andWhere('report.id =:report_id')->setParameter('report_id', $parameters['report_id']);
 
         return $qb->getQuery()->getArrayResult();
+    }
+
+    public function getCurrentVersion()
+    {
+        $em = $this->_em;
+        $qb = $em->createQueryBuilder();
+        $qb->from(Version::class, 'v');
+        $qb->select('v.version', 'v.status');
+        $qb->where('v.status = 1');
+
+        return $qb->getQuery()->getOneOrNullResult();
     }
 
 }

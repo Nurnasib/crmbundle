@@ -1705,4 +1705,33 @@ class ApiController extends AbstractController
         ]);
     }
 
+    /**
+     * @param Request $request
+     * @param ParameterBagInterface $parameterBag
+     * @return Response
+     * @Route("/app/version", name="app_version")
+     */
+    public function appVersion(Request $request, ParameterBagInterface $parameterBag)
+    {
+        set_time_limit(0);
+        ignore_user_abort(true);
+        $response = new Response();
+
+        if ($request->getMethod() == 'GET' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')){
+            $version = $this->getDoctrine()->getRepository(Api::class)->getCurrentVersion();
+            $response->headers->set('Content-Type', 'application/json');
+            if ($version){
+                $response->setContent(json_encode($version));
+                $response->setStatusCode(Response::HTTP_OK);
+                return $response;
+            }
+        }
+        $response->setContent(json_encode([
+            'status' => 404,
+            'message' => 'Not found!'
+        ]));
+        return $response;
+
+    }
+
 }
