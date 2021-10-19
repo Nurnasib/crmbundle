@@ -112,7 +112,7 @@ class CrmVisitController extends AbstractController
         $feedCompanies =$this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType'=>'FEED_NAME','status'=>1),array('name'=>'ASC'));
         $breedNames =$this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType'=>'BREED_NAME','status'=>1));
         $farmers =$this->getDoctrine()->getRepository(CrmCustomer::class)->getLocationWise($entity->getEmployee(),'farmer');
-        $subAgents =$this->getDoctrine()->getRepository(CrmCustomer::class)->getLocationWise($entity->getEmployee(),'sub-agent');
+        $subAgents =$this->getDoctrine()->getRepository(Agent::class)->getLocationAndGroupWise($entity->getEmployee(),'sub-agent');
         $otherAgents =$this->getDoctrine()->getRepository(Agent::class)->getLocationAndGroupWise($entity->getEmployee(),'other-agent');
 
         $firmTypesArray=array();
