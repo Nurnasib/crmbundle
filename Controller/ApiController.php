@@ -72,9 +72,9 @@ class ApiController extends AbstractController
                 $otp = (string)mt_rand(0000, 9999);
                 $message = 'Your OTP is ' . $otp . '.';
                 $smsResponse = $smsSender->sendSmsToAgent($message, $userMobile);
-                $smsResponse = json_decode($smsResponse, true);
+//                $smsResponse = json_decode($smsResponse, true);
 
-                if ($smsResponse['message'] === 'Success'){
+//                if ($smsResponse['message'] === 'Success'){
                     $roles = unserialize(serialize($findUser->getAppRoles()));
                     $rolesSeparated = implode(",", $roles);
                     $upozilas =[];
@@ -100,7 +100,7 @@ class ApiController extends AbstractController
                     $response->setContent(json_encode($data));
                     $response->setStatusCode(Response::HTTP_OK);
                     return $response;
-                }
+//                }
             }else{
                 $response = new Response();
                 $response->headers->set('Content-Type', 'application/json');
@@ -355,6 +355,8 @@ class ApiController extends AbstractController
 
     /**
      * @Route("/employee", methods={"POST"}, name="employeeApi")
+     * @param Request $request
+     * @return Response
      */
     public function employeeApi(Request $request)
     {
@@ -1749,6 +1751,142 @@ class ApiController extends AbstractController
         ]));
         return $response;
 
+    }
+
+    /**
+     * @param Request $request
+     * @param ParameterBagInterface $parameterBag
+     * @return Response
+     * @Route("/complain-doc", name="complain_doc_api")
+     */
+    public function complainDocApi(Request $request, ParameterBagInterface $parameterBag)
+    {
+        set_time_limit(0);
+        ignore_user_abort(true);
+        $response = new Response();
+        $response->headers->set('Content-Type', 'application/json');
+
+        if ($request->getMethod() == 'GET' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')){
+            $complainDoc = $this->getDoctrine()->getRepository(Api::class)->getComplainType('COMPLAIN_DOC');
+            if ($complainDoc){
+                $response->setContent(json_encode($complainDoc));
+                $response->setStatusCode(Response::HTTP_OK);
+                return $response;
+            }
+            $response->setContent(json_encode([
+                'status' => 404,
+                'message' => 'Not found!'
+            ]));
+            return $response;
+
+        }
+        $response->setContent(json_encode([
+            'status' => 401,
+            'message' => 'Invalid Request!'
+        ]));
+        return $response;
+    }
+
+    /**
+     * @param Request $request
+     * @param ParameterBagInterface $parameterBag
+     * @return Response
+     * @Route("/complain-feed", name="complain_feed_api")
+     */
+    public function complainFeedApi(Request $request, ParameterBagInterface $parameterBag)
+    {
+        set_time_limit(0);
+        ignore_user_abort(true);
+        $response = new Response();
+        $response->headers->set('Content-Type', 'application/json');
+
+        if ($request->getMethod() == 'GET' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')){
+            $complainFeed = $this->getDoctrine()->getRepository(Api::class)->getComplainType('COMPLAIN_FEED');
+            if ($complainFeed){
+                $response->setContent(json_encode($complainFeed));
+                $response->setStatusCode(Response::HTTP_OK);
+                return $response;
+            }
+            $response->setContent(json_encode([
+                'status' => 404,
+                'message' => 'Not found!'
+            ]));
+            return $response;
+
+        }
+        $response->setContent(json_encode([
+            'status' => 401,
+            'message' => 'Invalid Request!'
+        ]));
+        return $response;
+    }
+
+    /**
+     * @param Request $request
+     * @param ParameterBagInterface $parameterBag
+     * @return Response
+     * @Route("/transport", name="transport_api")
+     */
+    public function transportApi(Request $request, ParameterBagInterface $parameterBag)
+    {
+        set_time_limit(0);
+        ignore_user_abort(true);
+        $response = new Response();
+        $response->headers->set('Content-Type', 'application/json');
+
+        if ($request->getMethod() == 'GET' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')){
+            $transports = $this->getDoctrine()->getRepository(Api::class)->getTransport('TRANSPORT');
+            if ($transports){
+                $response->setContent(json_encode($transports));
+                $response->setStatusCode(Response::HTTP_OK);
+                return $response;
+            }
+            $response->setContent(json_encode([
+                'status' => 404,
+                'message' => 'Not found!'
+            ]));
+            return $response;
+
+        }
+        $response->setContent(json_encode([
+            'status' => 401,
+            'message' => 'Invalid Request!'
+        ]));
+        return $response;
+    }
+
+    /**
+     * @param Request $request
+     * @param ParameterBagInterface $parameterBag
+     * @return Response
+     * @Route("/hatchery-nourish", name="hatchery_nourish_api")
+     */
+    public function nourishHatcheryApi(Request $request, ParameterBagInterface $parameterBag)
+    {
+        set_time_limit(0);
+        ignore_user_abort(true);
+        $response = new Response();
+        $response->headers->set('Content-Type', 'application/json');
+
+        if ($request->getMethod() == 'GET' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')){
+            $hatcheries = $this->getDoctrine()->getRepository(Api::class)->getNourishHatchery('HATCHERY_NOURISH');
+            if ($hatcheries){
+                $response->setContent(json_encode($hatcheries));
+                $response->setStatusCode(Response::HTTP_OK);
+                return $response;
+            }
+            $response->setContent(json_encode([
+                'status' => 404,
+                'message' => 'Not found!'
+            ]));
+            return $response;
+
+        }
+        $response->setContent(json_encode([
+            'status' => 401,
+            'message' => 'Invalid Request!'
+        ]));
+        return $response;
     }
 
 }

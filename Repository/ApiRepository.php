@@ -1631,4 +1631,40 @@ class ApiRepository extends BaseRepository
         return $qb->getQuery()->getOneOrNullResult();
     }
 
+    public function getComplainType($type)
+    {
+        $em = $this->_em;
+        $qb = $em->createQueryBuilder();
+        $qb->from(Setting::class, 's');
+        $qb->select('s.id','s.settingType', 's.name', 's.slug', 's.status');
+        $qb->where('s.settingType =:type')->setParameter('type', $type);
+        $qb->andWhere('s.status = 1');
+
+        return $qb->getQuery()->getArrayResult();
+    }
+
+    public function getTransport($type)
+    {
+        $em = $this->_em;
+        $qb = $em->createQueryBuilder();
+        $qb->from(Setting::class, 's');
+        $qb->select('s.id','s.settingType', 's.name', 's.slug', 's.status');
+        $qb->where('s.settingType =:type')->setParameter('type', $type);
+        $qb->andWhere('s.status = 1');
+
+        return $qb->getQuery()->getArrayResult();
+    }
+
+    public function getNourishHatchery($type)
+    {
+        $em = $this->_em;
+        $qb = $em->createQueryBuilder();
+        $qb->from(Setting::class, 's');
+        $qb->select('s.id','s.settingType', 's.name', 's.slug', 's.status');
+        $qb->where('s.settingType =:type')->setParameter('type', $type);
+        $qb->andWhere('s.status = 1');
+
+        return $qb->getQuery()->getArrayResult();
+    }
+
 }
