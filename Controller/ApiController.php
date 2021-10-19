@@ -62,12 +62,14 @@ class ApiController extends AbstractController
      */
     public function login(Request $request, SmsSender $smsSender, ParameterBagInterface $parameterBag)
     {
+        set_time_limit(0);
+        ignore_user_abort(true);
         if ($request->getMethod() == 'POST' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')){
             $userMobile = trim($request->request->get('mobile'));
             $findUser = $this->getDoctrine()->getRepository(User::class)->findOneBy(['enabled' => 1, 'mobile' => $userMobile]);
             if ($findUser){
                 $userMobile = str_replace('-', '', $userMobile);
-                $otp = mt_rand(0000, 9999);
+                $otp = (string)mt_rand(0000, 9999);
                 $message = 'Your OTP is ' . $otp . '.';
                 $smsResponse = $smsSender->sendSmsToAgent($message, $userMobile);
                 $smsResponse = json_decode($smsResponse, true);
