@@ -159,7 +159,7 @@ class ApiRepository extends BaseRepository
      * @param $locations
      * @return array
      */
-    public function otherAgentApi($terminal, $mode, $locations): array
+    public function agentApi($terminal, $mode, $locations): array
     {
         $em = $this->_em;
         $qb = $em->createQueryBuilder();
@@ -173,7 +173,7 @@ class ApiRepository extends BaseRepository
         $qb->addSelect('dis.name as district','dis.id as districtId');
 
 //        $qb->where('e.terminal = :terminal')->setParameter('terminal',$terminal);
-        $qb->where('ag.slug = :slug')->setParameter('slug','other-agent');
+        $qb->where('ag.slug = :slug')->setParameter('slug',$mode);
 
         if($locations){
             $locations = explode(',',$locations);

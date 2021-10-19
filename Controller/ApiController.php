@@ -11,6 +11,7 @@ namespace Terminalbd\CrmBundle\Controller;
 use App\Entity\Core\Agent;
 use App\Entity\User;
 use App\Entity\Admin\Location;
+use App\Service\SmsSender;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
@@ -55,55 +56,69 @@ class ApiController extends AbstractController
     /**
      * @Route("/login", methods={"POST","GET"}, options={"expose"=true})
      * @param Request $request
-     * @return Response
+     * @param SmsSender $smsSender
+     * @param ParameterBagInterface $parameterBag
+     * @return JsonResponse|Response
      */
-    public function login(Request $request)
+    public function login(Request $request, SmsSender $smsSender, ParameterBagInterface $parameterBag)
     {
-        // This data is most likely to be retrieven from the Request object (from Form)
-        // But to make it easy to understand ...
-        $terminal = 1;
+        if ($request->getMethod() == 'POST' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')){
+            $userMobile = trim($request->request->get('mobile'));
+            $findUser = $this->getDoctrine()->getRepository(User::class)->findOneBy(['enabled' => 1, 'mobile' => $userMobile]);
+            if ($findUser){
+                $userMobile = str_replace('-', '', $userMobile);
+                $otp = mt_rand(0000, 9999);
+                $message = 'Your OTP is ' . $otp . '.';
+                $smsResponse = $smsSender->sendSmsToAgent($message, $userMobile);
+                $smsResponse = json_decode($smsResponse, true);
 
-        $formData = $_REQUEST;
-        $_username = $formData['username'];
-        $_password = $formData['password'];
-        $user = $this->getDoctrine()->getRepository(User::class)->checkLoginUser($_username,$_password);
-        /// End Retrieve user
-        // Check if the user exists !
-        if(!$user){
-            return new Response(
-                'Username doesnt exists',
-                Response::HTTP_UNAUTHORIZED,
-                array('Content-type' => 'application/json')
-            );
+                if ($smsResponse['message'] === 'Success'){
+                    $roles = unserialize(serialize($findUser->getAppRoles()));
+                    $rolesSeparated = implode(",", $roles);
+                    $upozilas =[];
+                    foreach ($findUser->getUpozila() as $location):
+                        $upozilas[]= $location->getId();
+                    endforeach;
+                    $locations = implode(",", $upozilas);
+                    $data = [
+                        'userId' => $findUser->getId(),
+                        'username' => $findUser->getUsername(),
+                        'name' => $findUser->getName(),
+                        'email' => $findUser->getEmail(),
+                        'roles' => $rolesSeparated,
+                        'designation' => $findUser->getDesignation() ? $findUser->getDesignation()->getName() : '',
+                        'lineManager' => $findUser->getLineManager() ? $findUser->getLineManager()->getId() : '' ,
+                        'locations' => $locations,
+                        'upozilas' => $upozilas,
+                        'status' => '200',
+                        'otp' => $otp,
+                    ];
+                    $response = new Response();
+                    $response->headers->set('Content-Type', 'application/json');
+                    $response->setContent(json_encode($data));
+                    $response->setStatusCode(Response::HTTP_OK);
+                    return $response;
+                }
+            }else{
+                $response = new Response();
+                $response->headers->set('Content-Type', 'application/json');
+                $response->setContent(json_encode([
+                    'message' => 'Unregistered mobile number!',
+                    'status' => 401,
+                ]));
+                $response->setStatusCode(Response::HTTP_UNAUTHORIZED);
+                return $response;
+            }
         }
-        if(!empty($user)){
 
-            /* @var $user User */
-
-            $roles = unserialize(serialize($user->getAppRoles()));
-            $rolesSeparated = implode(",", $roles);
-            $upozilas =[];
-            foreach ($user->getUpozila() as $location):
-                $upozilas[]= $location->getId();
-            endforeach;
-            $locations = implode(",", $upozilas);
-            $data = array(
-                'userid' => $user->getId(),
-                'username' => $user->getUsername(),
-                'name' => $user->getName(),
-                'roles' => $rolesSeparated,
-                'designation' => empty($user->getDesignation()) ? '' : $user->getDesignation()->getName(),
-                'lineManager' => empty($user->getLineManager()) ? '' : $user->getLineManager()->getId(),
-                'locations' => $locations,
-                'upozilas' => $upozilas,
-                'status' => 'success'
-            );
-            $response = new Response();
-            $response->headers->set('Content-Type', 'application/json');
-            $response->setContent(json_encode($data));
-            $response->setStatusCode(Response::HTTP_OK);
-            return $response;
-        }
+        $response = new Response();
+        $response->headers->set('Content-Type', 'application/json');
+        $response->setContent(json_encode([
+            'message' => 'Invalid request!',
+            'status' => 405,
+        ]));
+        $response->setStatusCode(Response::HTTP_UNAUTHORIZED);
+        return $response;
     }
 
     public function checkDuplicateUserAction(Request $request)
@@ -277,8 +292,8 @@ class ApiController extends AbstractController
         set_time_limit(0);
         ignore_user_abort(true);
         if ($request->getMethod() == 'GET' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')){
-            $locations = isset($_REQUEST['locations']) ? $_REQUEST['locations'] : "";
-            $entities = $this->getDoctrine()->getRepository(Api::class)->customerApi(1,'sub-agent',$locations);
+            $locations = $request->query->get('locations');
+            $entities = $this->getDoctrine()->getRepository(Api::class)->agentApi(1,'sub-agent',$locations);
             $response = new Response();
             $response->headers->set('Content-Type', 'application/json');
             $response->setContent(json_encode($entities));
@@ -304,8 +319,8 @@ class ApiController extends AbstractController
         ignore_user_abort(true);
         if ($request->getMethod() == 'GET' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')){
             //$terminal = $this->getUser()->getTerminal()->getId();
-            $locations = isset($_REQUEST['locations']) ? $_REQUEST['locations'] : "";
-            $entities = $this->getDoctrine()->getRepository(Api::class)->otherAgentApi(1,'other-agent',$locations);
+            $locations = $request->query->get('locations');
+            $entities = $this->getDoctrine()->getRepository(Api::class)->agentApi(1,'other-agent',$locations);
             $response = new Response();
             $response->headers->set('Content-Type', 'application/json');
             $response->setContent(json_encode($entities));
