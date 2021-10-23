@@ -272,7 +272,7 @@ class FishLifeCycleController extends AbstractController
                 'productionCostPerKgFish'=>number_format($entity->getProductionCostPerKgFish(),0,'.',''),
                 'totalIncome'=>number_format($entity->getTotalIncome(),0,'.',','),
                 'netProfitOrLoss'=>number_format($entity->getNetProfitOrLoss(),0,'.',','),
-                'retuneOverInvestment'=>$entity->getRetuneOverInvestment(),
+                'retuneOverInvestment'=>number_format($entity->getRetuneOverInvestment(),2,'.',''),
                 'status'=>200,
             )
         );
@@ -386,7 +386,7 @@ class FishLifeCycleController extends AbstractController
                 'productionCostPerKgFish'=>number_format($entity->getProductionCostPerKgFish(),0,'.',''),
                 'totalIncome'=>number_format($entity->getTotalIncome(),0,'.',','),
                 'netProfitOrLoss'=>number_format($entity->getNetProfitOrLoss(),0,'.',','),
-                'retuneOverInvestment'=>$entity->getRetuneOverInvestment(),
+                'retuneOverInvestment'=>number_format($entity->getRetuneOverInvestment(),2,'.',''),
                 'status'=>200,
             )
         );
