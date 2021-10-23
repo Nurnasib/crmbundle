@@ -35,6 +35,12 @@ class FishLifeCycleDetails
     private $fishLifeCycle;
 
     /**
+     * @var FishLifeCycleDetailSpecies
+     * @ORM\OneToMany(targetEntity="Terminalbd\CrmBundle\Entity\FishLifeCycleDetailSpecies", mappedBy="fishLifeCycleDetails", cascade={"persist", "remove"})
+     */
+    private $fishLifeCycleDetailSpecies;
+
+    /**
      * @var Agent
      * @ORM\ManyToOne(targetEntity="App\Entity\Core\Agent" , inversedBy="fishLifeCycleDetails")
      */
@@ -287,23 +293,9 @@ class FishLifeCycleDetails
     /**
      * @var Setting
      * @ORM\ManyToOne(targetEntity="Setting", inversedBy="fishLifeCycleDetails")
-     * @ORM\JoinColumn(name="mainCultureSpecies", referencedColumnName="id", onDelete="SET NULL", nullable=true)
-     */
-    private $mainCultureSpecies;
-
-    /**
-     * @var Setting
-     * @ORM\ManyToOne(targetEntity="Setting", inversedBy="fishLifeCycleDetails")
      * @ORM\JoinColumn(name="feed_id", referencedColumnName="id", onDelete="SET NULL", nullable=true)
      */
     private $feed;
-
-    /**
-     * @var Setting
-     * @ORM\ManyToOne(targetEntity="Setting", inversedBy="fishLifeCycleDetails")
-     * @ORM\JoinColumn(name="feed_type_id", referencedColumnName="id", onDelete="SET NULL", nullable=true)
-     */
-    private $feedType;
 
     /**
      * @var \DateTime
@@ -475,8 +467,6 @@ class FishLifeCycleDetails
     {
         $this->cultureAreaDecimal = $cultureAreaDecimal;
     }
-
-
 
     /**
      * @return float
@@ -652,6 +642,21 @@ class FishLifeCycleDetails
         $this->currentFeedConsumptionKg = $currentFeedConsumptionKg;
     }
 
+    public function getSpeciesFeedConsumptionKg()
+    {
+        $totalFeed=0;
+
+        if($this->fishLifeCycleDetailSpecies){
+           
+            /* @var FishLifeCycleDetailSpecies $fishLifeCycleDetailSpecie*/
+            foreach ($this->fishLifeCycleDetailSpecies as $fishLifeCycleDetailSpecie){
+                $totalFeed+= $fishLifeCycleDetailSpecie->getFeedConsumptionKg();
+               
+            }
+        }
+        return $totalFeed;
+    }
+
     /**
      * @return float
      */
@@ -757,19 +762,33 @@ class FishLifeCycleDetails
     }
 
     /**
-     * @return Setting
+     * @return FishLifeCycleDetailSpecies
      */
-    public function getMainCultureSpecies()
+    public function getFishLifeCycleDetailSpecies()
     {
-        return $this->mainCultureSpecies;
+        return $this->fishLifeCycleDetailSpecies;
     }
 
-    /**
-     * @param Setting $mainCultureSpecies
-     */
-    public function setMainCultureSpecies($mainCultureSpecies)
+
+
+    public function getMainCultureSpecies()
     {
-        $this->mainCultureSpecies = $mainCultureSpecies;
+        $speciesName='';
+
+        if($this->fishLifeCycleDetailSpecies){
+            $x = 1;
+            $length = sizeof($this->fishLifeCycleDetailSpecies);
+            /* @var FishLifeCycleDetailSpecies $fishLifeCycleDetailSpecie*/
+            foreach ($this->fishLifeCycleDetailSpecies as $fishLifeCycleDetailSpecie){
+                $speciesName.= $fishLifeCycleDetailSpecie->getMainCultureSpecies()->getName();
+                if($length!=$x){
+                    $speciesName.=' + ';
+                }
+                $x++;
+            }
+        }
+        
+        return $speciesName;
     }
 
     /**
@@ -788,20 +807,24 @@ class FishLifeCycleDetails
         $this->feed = $feed;
     }
 
-    /**
-     * @return Setting
-     */
     public function getFeedType()
     {
-        return $this->feedType;
-    }
+        $feedTypeName='';
 
-    /**
-     * @param Setting $feedType
-     */
-    public function setFeedType($feedType)
-    {
-        $this->feedType = $feedType;
+        if($this->fishLifeCycleDetailSpecies){
+            $x = 1;
+            $length = sizeof($this->fishLifeCycleDetailSpecies);
+            /* @var FishLifeCycleDetailSpecies $fishLifeCycleDetailSpecie*/
+            foreach ($this->fishLifeCycleDetailSpecies as $fishLifeCycleDetailSpecie){
+                $feedTypeName.= $fishLifeCycleDetailSpecie->getFeedType()->getName();
+                if($length!=$x){
+                    $feedTypeName.=' + ';
+                }
+                $x++;
+            }
+        }
+
+        return $feedTypeName;
     }
 
     /**

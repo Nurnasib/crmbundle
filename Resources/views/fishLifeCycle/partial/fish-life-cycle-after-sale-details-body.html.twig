@@ -2,10 +2,10 @@
 
     {% for index, detail in fishLifeCycleDetailsByReportingMonth %}
         <tr>
-            <td class="feedType">{{ detail.feedType.name|default('') }}</td>
+            <td class="feedType">{{ detail.feedType|default('') }}</td>
             <td class="customer">{{ detail.customer.name|default('') }}</td>
             <td class="mobile">{{ detail.customer.mobile|default('') }}</td>
-            <td class="mainCultureSpecies">{{ detail.mainCultureSpecies.name|default('') }}</td>
+            <td class="mainCultureSpecies">{{ detail.mainCultureSpecies|default('') }}</td>
             <td>{{ detail.feed.name|default('') }}</td>
             <td>{{ detail.hatchery.name|default('') }}</td>
             <td>{{ detail.stockingDate|date("d-m-Y") }}</td>

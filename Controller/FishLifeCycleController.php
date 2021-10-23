@@ -27,6 +27,7 @@ use Terminalbd\CrmBundle\Entity\BroilerStandard;
 use Terminalbd\CrmBundle\Entity\FishLifeCycle;
 use Terminalbd\CrmBundle\Entity\FishLifeCycleDetails;
 use Terminalbd\CrmBundle\Entity\CrmCustomer;
+use Terminalbd\CrmBundle\Entity\FishLifeCycleDetailSpecies;
 use Terminalbd\CrmBundle\Entity\SettingLifeCycle;
 use Terminalbd\CrmBundle\Form\FishLifeCycleDetailsFormType;
 use Terminalbd\CrmBundle\Entity\Setting;
@@ -257,6 +258,119 @@ class FishLifeCycleController extends AbstractController
                 'finalWeightGm'=>$entity->getFinalWeightGm(),
                 'finalWeightKg'=>$entity->getFinalWeightKg(),
                 'totalDayOfCulture'=>$entity->getTotalDayOfCulture(),
+                'currentFeedConsumptionKg'=>$entity->getCurrentFeedConsumptionKg(),
+                'totalFeedConsumptionKg'=>$entity->getTotalFeedConsumptionKg(),
+                'finalFcr'=>$entity->getFinalFcr(),
+                'finalAdg'=>$entity->getFinalAdg(),
+                'srPercentage'=>$entity->getSrPercentage(),
+                'totalSeedCost'=>$entity->getTotalSeedCost(),
+                'totalFeedCost'=>$entity->getTotalFeedCost(),
+                'feedCostPerKgFish'=>$entity->getFeedCostPerKgFish(),
+                'totalCost'=>$entity->getTotalCost(),
+                'productionCostPerKgFish'=>$entity->getProductionCostPerKgFish(),
+                'totalIncome'=>$entity->getTotalIncome(),
+                'netProfitOrLoss'=>$entity->getNetProfitOrLoss(),
+                'retuneOverInvestment'=>$entity->getRetuneOverInvestment(),
+                'status'=>200,
+            )
+        );
+
+    }
+
+    /**
+     * @Route("/detail/{id}/species/insert", methods={"POST"}, name="fish_life_cycle_detail_species_data_insert", options={"expose"=true})
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     */
+
+    public function insertLifeCycleDetailSpecies(Request $request, FishLifeCycleDetails $entity): Response
+    {
+        $data = $request->request->all();
+        $feedTypeId = $data['feedType'];
+        $main_culture_speciesId = $data['main_culture_species'];
+        $feed_consumption_kg = $data['feed_consumption_kg'];
+
+
+        if($feedTypeId!=''&&$main_culture_speciesId!=''&&$feed_consumption_kg!=''){
+
+            $feedType= $this->getDoctrine()->getRepository(Setting::class)->find($feedTypeId);
+            $cultureSpecies= $this->getDoctrine()->getRepository(Setting::class)->find($main_culture_speciesId);
+
+            $existingDetailsSpecies= $this->getDoctrine()->getRepository(FishLifeCycleDetailSpecies::class)->findOneBy(array('feedType'=>$feedType, 'fishLifeCycleDetails'=>$entity));
+
+            $fishLifeCycleDetailSpecies = new FishLifeCycleDetailSpecies();
+
+            if($existingDetailsSpecies){
+                $fishLifeCycleDetailSpecies=$existingDetailsSpecies;
+            }
+
+            $fishLifeCycleDetailSpecies->setMainCultureSpecies($cultureSpecies?$cultureSpecies:null);
+            $fishLifeCycleDetailSpecies->setFeedType($feedType?$feedType:null);
+            $fishLifeCycleDetailSpecies->setFeedConsumptionKg($feed_consumption_kg?$feed_consumption_kg:0);
+            $fishLifeCycleDetailSpecies->setFishLifeCycleDetails($entity);
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($fishLifeCycleDetailSpecies);
+            $em->flush();
+
+        }
+
+        $entity->setCurrentFeedConsumptionKg($entity->getSpeciesFeedConsumptionKg());
+
+        $entity->setTotalInitialWeight($entity->calculateTotalInitialWeight());
+        $entity->setCurrentCultureDays($entity->calculateCurrentCultureDays());
+
+//            $entity->setWeightGainGm($entity->calculateWeightGainGm());
+        $entity->setWeightGainKg($entity->calculateWeightGainKg());
+
+        $entity->setCurrentFcr($entity->calculateCurrentFcr());
+        $entity->setCurrentAdg($entity->calculateCurrentAdg());
+
+
+
+        if(strtoupper($entity->getFishLifeCycle()->getReportType())==FishLifeCycle::REPORT_TYPE_BEFORE){
+            $entity->setFinalWeightGm($entity->calculateFinalWeightGm());
+            $entity->setTotalDayOfCulture($entity->calculateTotalDayOfCulture());
+            $entity->setFinalFcr($entity->calculateFinalFcr());
+            $entity->setFinalAdg($entity->calculateFinalAdg());
+        }
+        if(strtoupper($entity->getFishLifeCycle()->getReportType())==FishLifeCycle::REPORT_TYPE_AFTER){
+            $entity->setTotalDayOfCulture($entity->calculateDayOfCultureForAfterSale());
+            $entity->setFinalFcr($entity->calculateFinalFcrForAfterSale());
+            $entity->setFinalAdg($entity->calculateFinalAdgForAfterSale());
+        }
+        $entity->setFinalWeightKg($entity->calculateFinalWeightKg());
+        $entity->setTotalFeedConsumptionKg($entity->calculateTotalFeedConsumptionKg());
+
+        if(strtoupper($entity->getFishLifeCycle()->getReportType())==FishLifeCycle::REPORT_TYPE_AFTER){
+            $entity->setTotalSeedCost($entity->calculateTotalSeedCost());
+            $entity->setTotalFeedCost($entity->calculateTotalFeedCost());
+            $entity->setFeedCostPerKgFish($entity->calculateFeedCostPerKgFish());
+            $entity->setTotalCost($entity->calculateTotalCost());
+            $entity->setProductionCostPerKgFish($entity->calculateProductionCostPerKgFish());
+            $entity->setTotalIncome($entity->calculateTotalIncome());
+            $entity->setNetProfitOrLoss($entity->calculateNetProfitOrLoss());
+            $entity->setRetuneOverInvestment($entity->calculateRetuneOverInvestment());
+        }
+
+        $entity->setSrPercentage($entity->calculateSrPercentage());
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($entity);
+        $em->flush();
+
+        
+        return new JsonResponse(
+            array(
+                'success'=>'Success',
+                'data'=>$data,
+                'id'=>$entity->getId(),
+                'totalInitialWeight'=>$entity->getTotalInitialWeight(),
+                'currentCultureDays'=>$entity->getCurrentCultureDays(),
+                'weightGainKg'=>$entity->getWeightGainKg(),
+                'currentFcr'=>$entity->getCurrentFcr(),
+                'currentAdg'=>$entity->getCurrentAdg(),
+                'finalWeightGm'=>$entity->getFinalWeightGm(),
+                'finalWeightKg'=>$entity->getFinalWeightKg(),
+                'totalDayOfCulture'=>$entity->getTotalDayOfCulture(),
+                'currentFeedConsumptionKg'=>$entity->getCurrentFeedConsumptionKg(),
                 'totalFeedConsumptionKg'=>$entity->getTotalFeedConsumptionKg(),
                 'finalFcr'=>$entity->getFinalFcr(),
                 'finalAdg'=>$entity->getFinalAdg(),
@@ -332,6 +446,23 @@ class FishLifeCycleController extends AbstractController
     {
 
         return $this->render('@TerminalbdCrm/cattleLifecycle/report/report-details.html.twig',['cattleLifeCycle' => $cattleLifeCycle]);
+    }
+
+    /**
+     * @param FishLifeCycle $cattleLifeCycle
+     * @Route("/species/parent/{id}", methods={"GET"}, name="crm_main_culture_species_name", options={"expose"=true})
+     */
+    public function mainCultureSpecies($id): Response
+    {
+        $mainCultureSpecies = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('status'=>1,'settingType'=>'SPECIES_NAME','parent'=>$id),['name' => 'ASC']);
+        $returnArray=[];
+        if($mainCultureSpecies){
+            foreach ($mainCultureSpecies as $mainCultureSpecie){
+                $returnArray[]= array('id'=>$mainCultureSpecie->getId(), 'name'=>$mainCultureSpecie->getName());
+            }
+        }
+        
+        return new JsonResponse($returnArray);
     }
 
 

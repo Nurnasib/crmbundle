@@ -284,7 +284,7 @@ class CrmVisitController extends AbstractController
      */
     public function getReportByFarmType($id): Response
     {
-        $entities = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType'=>'FARMER_REPORT','parent'=>$id));
+        $entities = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('status'=>1, 'settingType'=>'FARMER_REPORT','parent'=>$id));
         $exceptSlug=['fcr-after-sale-boiler','fcr-after-sale-sonali','company-species-wise-average-fcr-after'];
         $arrayData = array();
         /**@var Setting $entity*/
