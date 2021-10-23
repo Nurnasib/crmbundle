@@ -69,7 +69,7 @@ class ApiController extends AbstractController
             $findUser = $this->getDoctrine()->getRepository(User::class)->findOneBy(['enabled' => 1, 'mobile' => $userMobile]);
             if ($findUser){
                 $userMobile = str_replace('-', '', $userMobile);
-                $otp = (string)mt_rand(0000, 9999);
+                $otp = (string)mt_rand(1000, 9999);
                 $message = 'Your OTP is ' . $otp . '.';
                 $smsResponse = $smsSender->sendSmsToAgent($message, $userMobile);
 //                $smsResponse = json_decode($smsResponse, true);

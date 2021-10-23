@@ -91,7 +91,7 @@
                                         <td>Feed Used Type </td>
                                         {% if feedCompanies is not empty %}
                                             {% for index, feedCompany in feedCompanies %}
-                                                <th>
+                                                <th class="{{ fishLifeCycleDetails[index].id }}_feedType">
                                                     {{ fishLifeCycleDetails[index].feedType is not empty? fishLifeCycleDetails[index].feedType:'' }}
                                                 </th>
                                             {% endfor %}
@@ -113,7 +113,7 @@
                                         <td>Main Culture Species </td>
                                         {% if feedCompanies is not empty %}
                                             {% for index, feedCompany in feedCompanies %}
-                                                <th>
+                                                <th class="{{ fishLifeCycleDetails[index].id }}_mainCultureSpecies">
                                                     {{ fishLifeCycleDetails[index].mainCultureSpecies is not empty? fishLifeCycleDetails[index].mainCultureSpecies:'' }}
                                                 </th>
                                             {% endfor %}

@@ -44,6 +44,8 @@ $('.fishLifeCycleSection').on('click' , '.addFishLifeCycleDetailSpecies', functi
             if(response.status===200){
 
                 console.log(response.currentFeedConsumptionKg);
+                $('.'+response.id+'_feedType').text(response.feedType);
+                $('.'+response.id+'_mainCultureSpecies').text(response.mainCultureSpecieses);
                 $('.'+response.id+'_totalInitialWeight').text(response.totalInitialWeight);
                 $('.'+response.id+'_currentCultureDayst').text(response.currentCultureDays);
                 $('.'+response.id+'_weightGainKg').text(response.weightGainKg);
@@ -126,6 +128,8 @@ function fishLifeCycleDetailDataUpdateUsingAjax(element) {
         success: function(response){
             if(response.status===200){
 
+                $('.'+response.id+'_feedType').text(response.feedType);
+                $('.'+response.id+'_mainCultureSpecies').text(response.mainCultureSpecieses);
                 $('.'+response.id+'_totalInitialWeight').text(response.totalInitialWeight);
                 $('.'+response.id+'_currentCultureDayst').text(response.currentCultureDays);
                 $('.'+response.id+'_weightGainKg').text(response.weightGainKg);
