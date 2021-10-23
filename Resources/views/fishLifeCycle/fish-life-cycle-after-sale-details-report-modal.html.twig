@@ -272,7 +272,7 @@
                                         <td>FCR</td>
                                         {% if feedCompanies is not empty %}
                                             {% for index, feedCompany in feedCompanies %}
-                                                <td class="{{ fishLifeCycleDetails[index].id }}_finalFcr">{{ fishLifeCycleDetails[index].finalFcr }}</td>
+                                                <td class="{{ fishLifeCycleDetails[index].id }}_finalFcr">{{ fishLifeCycleDetails[index].finalFcr|number_format(2,'.',',') }}</td>
                                             {% endfor %}
                                         {% endif %}
                                     </tr>
@@ -280,7 +280,7 @@
                                         <td>SR (%)</td>
                                         {% if feedCompanies is not empty %}
                                             {% for index, feedCompany in feedCompanies %}
-                                                <td class="{{ fishLifeCycleDetails[index].id }}_srPercentage">{{ fishLifeCycleDetails[index].srPercentage }}</td>
+                                                <td class="{{ fishLifeCycleDetails[index].id }}_srPercentage">{{ fishLifeCycleDetails[index].srPercentage|number_format(2,'.',',') }}</td>
                                             {% endfor %}
                                         {% endif %}
                                     </tr>
@@ -301,7 +301,7 @@
                                         <td>Total seed cost (Taka)</td>
                                         {% if feedCompanies is not empty %}
                                             {% for index, feedCompany in feedCompanies %}
-                                                <td class="{{ fishLifeCycleDetails[index].id }}_totalSeedCost">{{ fishLifeCycleDetails[index].totalSeedCost }}</td>
+                                                <td class="{{ fishLifeCycleDetails[index].id }}_totalSeedCost">{{ fishLifeCycleDetails[index].totalSeedCost|number_format(0,'.',',') }}</td>
                                             {% endfor %}
                                         {% endif %}
                                     </tr>
@@ -331,7 +331,7 @@
                                         <td>Feed Cost/kg fish (tk.)</td>
                                         {% if feedCompanies is not empty %}
                                             {% for index, feedCompany in feedCompanies %}
-                                                <td class="{{ fishLifeCycleDetails[index].id }}_feedCostPerKgFish">{{ fishLifeCycleDetails[index].feedCostPerKgFish }}</td>
+                                                <td class="{{ fishLifeCycleDetails[index].id }}_feedCostPerKgFish">{{ fishLifeCycleDetails[index].feedCostPerKgFish|number_format(2,'.',',') }}</td>
                                             {% endfor %}
                                         {% endif %}
                                     </tr>
@@ -351,7 +351,7 @@
                                         <td>Total Cost (tk.)</td>
                                         {% if feedCompanies is not empty %}
                                             {% for index, feedCompany in feedCompanies %}
-                                                <td class="{{ fishLifeCycleDetails[index].id }}_totalCost">{{ fishLifeCycleDetails[index].totalCost }}</td>
+                                                <td class="{{ fishLifeCycleDetails[index].id }}_totalCost">{{ fishLifeCycleDetails[index].totalCost|number_format(0,'.',',') }}</td>
                                             {% endfor %}
                                         {% endif %}
                                     </tr>
@@ -359,7 +359,7 @@
                                         <td>Production Cost/Kg fish (tk.)</td>
                                         {% if feedCompanies is not empty %}
                                             {% for index, feedCompany in feedCompanies %}
-                                                <td class="{{ fishLifeCycleDetails[index].id }}_productionCostPerKgFish">{{ fishLifeCycleDetails[index].productionCostPerKgFish }}</td>
+                                                <td class="{{ fishLifeCycleDetails[index].id }}_productionCostPerKgFish">{{ fishLifeCycleDetails[index].productionCostPerKgFish|number_format(2,'.',',') }}</td>
                                             {% endfor %}
                                         {% endif %}
                                     </tr>
@@ -380,7 +380,7 @@
                                         <td>Total income (tk.)</td>
                                         {% if feedCompanies is not empty %}
                                             {% for index, feedCompany in feedCompanies %}
-                                                <td class="{{ fishLifeCycleDetails[index].id }}_totalIncome">{{ fishLifeCycleDetails[index].totalIncome }}</td>
+                                                <td class="{{ fishLifeCycleDetails[index].id }}_totalIncome">{{ fishLifeCycleDetails[index].totalIncome|number_format(0,'.',',') }}</td>
                                             {% endfor %}
                                         {% endif %}
                                     </tr>
@@ -388,7 +388,7 @@
                                         <td>Profit/Loss (tk.)</td>
                                         {% if feedCompanies is not empty %}
                                             {% for index, feedCompany in feedCompanies %}
-                                                <td class="{{ fishLifeCycleDetails[index].id }}_netProfitOrLoss">{{ fishLifeCycleDetails[index].netProfitOrLoss }}</td>
+                                                <td class="{{ fishLifeCycleDetails[index].id }}_netProfitOrLoss">{{ fishLifeCycleDetails[index].netProfitOrLoss|number_format(0,'.',',') }}</td>
                                             {% endfor %}
                                         {% endif %}
                                     </tr>
@@ -396,7 +396,7 @@
                                         <td>ROI (Retune Over Investment)%</td>
                                         {% if feedCompanies is not empty %}
                                             {% for index, feedCompany in feedCompanies %}
-                                                <td class="{{ fishLifeCycleDetails[index].id }}_retuneOverInvestment">{{ fishLifeCycleDetails[index].retuneOverInvestment }}</td>
+                                                <td class="{{ fishLifeCycleDetails[index].id }}_retuneOverInvestment">{{ fishLifeCycleDetails[index].retuneOverInvestment|number_format(2,'.','') }}</td>
                                             {% endfor %}
                                         {% endif %}
                                     </tr>

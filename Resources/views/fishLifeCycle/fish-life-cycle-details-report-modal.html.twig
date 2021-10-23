@@ -352,7 +352,7 @@
                                         <td>Final FCR</td>
                                         {% if feedCompanies is not empty %}
                                             {% for index, feedCompany in feedCompanies %}
-                                                <td class="{{ fishLifeCycleDetails[index].id }}_finalFcr">{{ fishLifeCycleDetails[index].finalFcr }}</td>
+                                                <td class="{{ fishLifeCycleDetails[index].id }}_finalFcr">{{ fishLifeCycleDetails[index].finalFcr|number_format(2,'.',',') }}</td>
                                             {% endfor %}
                                         {% endif %}
                                     </tr>
@@ -360,7 +360,7 @@
                                         <td>Final ADG (g/fish/day)</td>
                                         {% if feedCompanies is not empty %}
                                             {% for index, feedCompany in feedCompanies %}
-                                                <td class="{{ fishLifeCycleDetails[index].id }}_finalAdg">{{ fishLifeCycleDetails[index].finalAdg }}</td>
+                                                <td class="{{ fishLifeCycleDetails[index].id }}_finalAdg">{{ fishLifeCycleDetails[index].finalAdg|number_format(2,'.',',') }}</td>
                                             {% endfor %}
                                         {% endif %}
                                     </tr>
@@ -368,7 +368,7 @@
                                         <td>SR (%)</td>
                                         {% if feedCompanies is not empty %}
                                             {% for index, feedCompany in feedCompanies %}
-                                                <td class="{{ fishLifeCycleDetails[index].id }}_srPercentage">{{ fishLifeCycleDetails[index].srPercentage }}</td>
+                                                <td class="{{ fishLifeCycleDetails[index].id }}_srPercentage">{{ fishLifeCycleDetails[index].srPercentage|number_format(2,'.',',') }}</td>
                                             {% endfor %}
                                         {% endif %}
                                     </tr>
