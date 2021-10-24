@@ -60,10 +60,87 @@ class ComplainDifferentProduct
     private $productName;
 
     /**
+     * @var Setting
+     * @ORM\ManyToOne(targetEntity="Terminalbd\CrmBundle\Entity\Setting", inversedBy="complainDifferentProduct")
+     * @ORM\JoinColumn(referencedColumnName="id", onDelete="SET NULL", nullable=true)
+     */
+    private $transport;
+
+    /**
+     * @var Setting
+     * @ORM\ManyToOne(targetEntity="Terminalbd\CrmBundle\Entity\Setting", inversedBy="complainDifferentProduct")
+     * @ORM\JoinColumn(referencedColumnName="id", onDelete="SET NULL", nullable=true)
+     */
+    private $breed;
+
+    /**
+     * @var Setting
+     * @ORM\ManyToOne(targetEntity="Terminalbd\CrmBundle\Entity\Setting", inversedBy="complainDifferentProduct")
+     * @ORM\JoinColumn(referencedColumnName="id", onDelete="SET NULL", nullable=true)
+     */
+    private $hatchery;
+
+    /**
      * @var string
      * @Orm\Column(type="text", nullable=true)
      */
     private $complains;
+
+    /**
+     * @var string
+     * @ORM\Column(type="string", nullable=true)
+     */
+    private $ageDays;
+
+    /**
+     * @var string
+     * @ORM\Column(type="string", nullable=true)
+     */
+    private $boxNo;
+
+    /**
+     * @var string
+     * @ORM\Column(type="string", nullable=true)
+     */
+    private $receivedDocQty;
+
+    /**
+     * @var string
+     * @ORM\Column(type="text", nullable=true)
+     */
+    private $observation;
+
+    /**
+     * @var string
+     * @ORM\Column(type="string", nullable=true)
+     */
+    private $serialNo;
+
+    /**
+     * @var string
+     * @ORM\Column(type="string", nullable=true)
+     */
+    private $batchNo;
+
+    /**
+     * @var Setting
+     * @ORM\ManyToOne(targetEntity="Terminalbd\CrmBundle\Entity\Setting", inversedBy="complainDifferentProduct")
+     * @ORM\JoinColumn(referencedColumnName="id", onDelete="SET NULL", nullable=true)
+     */
+    private $feedMill;
+
+    /**
+     * @var Setting
+     * @ORM\ManyToOne(targetEntity="Terminalbd\CrmBundle\Entity\Setting", inversedBy="complainDifferentProduct")
+     * @ORM\JoinColumn(referencedColumnName="id", onDelete="SET NULL", nullable=true)
+     */
+    private $feed;
+
+    /**
+     * @var \DateTime
+     * @ORM\Column(type="date", nullable=true)
+     */
+    private $productionDate;
 
     /**
      * @var \DateTime
@@ -177,11 +254,203 @@ class ComplainDifferentProduct
     }
 
     /**
+     * @return \Terminalbd\CrmBundle\Entity\Setting
+     */
+    public function getTransport(): \Terminalbd\CrmBundle\Entity\Setting
+    {
+        return $this->transport;
+    }
+
+    /**
+     * @param \Terminalbd\CrmBundle\Entity\Setting $transport
+     */
+    public function setTransport(\Terminalbd\CrmBundle\Entity\Setting $transport): void
+    {
+        $this->transport = $transport;
+    }
+
+    /**
+     * @return \Terminalbd\CrmBundle\Entity\Setting
+     */
+    public function getBreed(): \Terminalbd\CrmBundle\Entity\Setting
+    {
+        return $this->breed;
+    }
+
+    /**
+     * @param \Terminalbd\CrmBundle\Entity\Setting $breed
+     */
+    public function setBreed(\Terminalbd\CrmBundle\Entity\Setting $breed): void
+    {
+        $this->breed = $breed;
+    }
+
+    /**
+     * @return \Terminalbd\CrmBundle\Entity\Setting
+     */
+    public function getHatchery(): \Terminalbd\CrmBundle\Entity\Setting
+    {
+        return $this->hatchery;
+    }
+
+    /**
+     * @param \Terminalbd\CrmBundle\Entity\Setting $hatchery
+     */
+    public function setHatchery(\Terminalbd\CrmBundle\Entity\Setting $hatchery): void
+    {
+        $this->hatchery = $hatchery;
+    }
+
+    /**
      * @param string $complains
      */
     public function setComplains(string $complains): void
     {
         $this->complains = $complains;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAgeDays(): string
+    {
+        return $this->ageDays;
+    }
+
+    /**
+     * @param string $ageDays
+     */
+    public function setAgeDays(string $ageDays): void
+    {
+        $this->ageDays = $ageDays;
+    }
+
+    /**
+     * @return string
+     */
+    public function getBoxNo(): string
+    {
+        return $this->boxNo;
+    }
+
+    /**
+     * @param string $boxNo
+     */
+    public function setBoxNo(string $boxNo): void
+    {
+        $this->boxNo = $boxNo;
+    }
+
+    /**
+     * @return string
+     */
+    public function getReceivedDocQty(): string
+    {
+        return $this->receivedDocQty;
+    }
+
+    /**
+     * @param string $receivedDocQty
+     */
+    public function setReceivedDocQty(string $receivedDocQty): void
+    {
+        $this->receivedDocQty = $receivedDocQty;
+    }
+
+    /**
+     * @return string
+     */
+    public function getObservation(): string
+    {
+        return $this->observation;
+    }
+
+    /**
+     * @param string $observation
+     */
+    public function setObservation(string $observation): void
+    {
+        $this->observation = $observation;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSerialNo(): string
+    {
+        return $this->serialNo;
+    }
+
+    /**
+     * @param string $serialNo
+     */
+    public function setSerialNo(string $serialNo): void
+    {
+        $this->serialNo = $serialNo;
+    }
+
+    /**
+     * @return string
+     */
+    public function getBatchNo(): string
+    {
+        return $this->batchNo;
+    }
+
+    /**
+     * @param string $batchNo
+     */
+    public function setBatchNo(string $batchNo): void
+    {
+        $this->batchNo = $batchNo;
+    }
+
+    /**
+     * @return \Terminalbd\CrmBundle\Entity\Setting
+     */
+    public function getFeedMill(): \Terminalbd\CrmBundle\Entity\Setting
+    {
+        return $this->feedMill;
+    }
+
+    /**
+     * @param \Terminalbd\CrmBundle\Entity\Setting $feedMill
+     */
+    public function setFeedMill(\Terminalbd\CrmBundle\Entity\Setting $feedMill): void
+    {
+        $this->feedMill = $feedMill;
+    }
+
+    /**
+     * @return \Terminalbd\CrmBundle\Entity\Setting
+     */
+    public function getFeed(): \Terminalbd\CrmBundle\Entity\Setting
+    {
+        return $this->feed;
+    }
+
+    /**
+     * @param \Terminalbd\CrmBundle\Entity\Setting $feed
+     */
+    public function setFeed(\Terminalbd\CrmBundle\Entity\Setting $feed): void
+    {
+        $this->feed = $feed;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getProductionDate(): \DateTime
+    {
+        return $this->productionDate;
+    }
+
+    /**
+     * @param \DateTime $productionDate
+     */
+    public function setProductionDate(\DateTime $productionDate): void
+    {
+        $this->productionDate = $productionDate;
     }
 
     /**

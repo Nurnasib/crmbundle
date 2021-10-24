@@ -21,6 +21,7 @@ use Terminalbd\CrmBundle\Entity\Api;
 use Terminalbd\CrmBundle\Entity\ApiDetails;
 use Terminalbd\CrmBundle\Entity\CattleLifeCycle;
 use Terminalbd\CrmBundle\Entity\ChickLifeCycle;
+use Terminalbd\CrmBundle\Entity\ComplainDifferentProduct;
 use Terminalbd\CrmBundle\Entity\CrmCustomer;
 use Terminalbd\CrmBundle\Entity\CrmVisit;
 use Terminalbd\CrmBundle\Entity\CrmVisitDetails;
@@ -83,61 +84,67 @@ class SyncAppDataController extends AbstractController
 
                     switch ($detail->getProcess()){
                         case "crm_visit":
-                            $this->processVisit($jsonToArray, $batch);
+//                            $this->processVisit($jsonToArray, $batch);
                             break;
                         case "crm_visit_details":
-                            $this->processVisitDetail($jsonToArray, $batch);
+//                            $this->processVisitDetail($jsonToArray, $batch);
                             break;
                         case "crm_layer_performance_details":
-                            $this->processLayerPerformance($jsonToArray, $batch);
+//                            $this->processLayerPerformance($jsonToArray, $batch);
                             break;
                         case "crm_cattle_performance_details":
-                            $this->processCattlePerformance($jsonToArray, $batch);
+//                            $this->processCattlePerformance($jsonToArray, $batch);
                             break;
                         case "crm_fcr_details":
-                            $this->processFcrDetail($jsonToArray, $batch);
+//                            $this->processFcrDetail($jsonToArray, $batch);
                             break;
                         case "crm_farmer_touch_report":
-                            $this->processTouchReport($jsonToArray, $batch);
+//                            $this->processTouchReport($jsonToArray, $batch);
                             break;
                         case "crm_antibiotic_free_farm":
-                            $this->processAntibioticFreeFarm($jsonToArray, $batch);
+//                            $this->processAntibioticFreeFarm($jsonToArray, $batch);
                             break;
                         case "crm_cost_benefit_analysis_for_less_costing_farm":
-                            $this->processCostBenefitAnalysis($jsonToArray, $batch);
+//                            $this->processCostBenefitAnalysis($jsonToArray, $batch);
                             break;
                         case "crm_disease_mapping":
-                            $this->processDiseaseMapping($jsonToArray, $batch);
+//                            $this->processDiseaseMapping($jsonToArray, $batch);
                             break;
                         case "crm_complain_different_product":
-                            $this->processComplain($jsonToArray, $batch);
+//                            $this->processComplain($jsonToArray, $batch);
                             break;
                         case "crm_broiler_life_cycle":
-                            $this->processBroilerLifeCycle($jsonToArray, $batch);
+//                            $this->processBroilerLifeCycle($jsonToArray, $batch);
                             break;
                         case "crm_broiler_life_cycle_details":
-                            $this->processBroilerLifeCycleDetail($jsonToArray, $batch);
+//                            $this->processBroilerLifeCycleDetail($jsonToArray, $batch);
                             break;
                         case "crm_cattle_life_cycle":
-                            $this->processCattleLifeCycle($jsonToArray, $batch);
+//                            $this->processCattleLifeCycle($jsonToArray, $batch);
                             break;
                         case "crm_cattle_life_cycle_details":
-                            $this->processCattleLifeCycleDetail($jsonToArray, $batch);
+//                            $this->processCattleLifeCycleDetail($jsonToArray, $batch);
                             break;
                         case "crm_layer_life_cycle":
-                            $this->processLayerLifeCycle($jsonToArray, $batch);
+//                            $this->processLayerLifeCycle($jsonToArray, $batch);
                             break;
                         case "crm_layer_life_cycle_details":
-                            $this->processLayerLifeCycleDetail($jsonToArray, $batch);
+//                            $this->processLayerLifeCycleDetail($jsonToArray, $batch);
                             break;
                         case "crm_expense":
-                            $this->processExpense($jsonToArray, $batch);
+//                            $this->processExpense($jsonToArray, $batch);
                             break;
                         case "crm_expense_purpose":
 //                            $this->processExpensePurpose($jsonToArray, $batch);
                             break;
                         case "crm_expense_vehicle":
 //                            $this->processExpenseVehicle($jsonToArray, $batch);
+                            break;
+                        case "crm_doc_complain_details":
+                            $this->processDocComplain($jsonToArray, $batch);
+                            break;
+                        case "crm_feed_complain_details":
+                            $this->processFeedComplain($jsonToArray, $batch);
                             break;
                     }
                     $detail->setStatus(true);
@@ -830,6 +837,91 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
                 $stmt->bindValue('setting_id', $report['setting_id']);
 
                 $stmt->execute();
+            }
+        }
+    }
+    private function processDocComplain($reports, Api $batch)
+    {
+        foreach ($reports as $report) {
+
+            $sql = "INSERT INTO `crm_complain_different_product`(`agent_id`, `employee_id`, `complains`, `created_at`, `transport_id`, `breed_id`, `hatchery_id`, `age_days`, `box_no`, `received_doc_qty`, `observation`) VALUES (:agent_id, :employee_id, :complains, :created_at, :transport_id, :breed_id, :hatchery_id, :age_days, :box_no, :received_doc_qty, :observation)";
+
+            $createdAt = new \DateTime($report['created_at']);
+
+            $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
+            $stmt->bindValue('agent_id', $report['agent_id']);
+            $stmt->bindValue('employee_id', $report['employee_id']);
+            $stmt->bindValue('complains', $report['comments']);
+            $stmt->bindValue('created_at', $createdAt->format('Y-m-d H:i:s'));
+            $stmt->bindValue('transport_id', $report['transport_id']);
+            $stmt->bindValue('breed_id', $report['breed_id']);
+            $stmt->bindValue('hatchery_id', $report['hatchery_id']);
+            $stmt->bindValue('age_days', $report['age_days']);
+            $stmt->bindValue('box_no', $report['box_no']);
+            $stmt->bindValue('received_doc_qty', $report['received_doc_qty']);
+            $stmt->bindValue('observation', $report['observation']);
+
+            if ($stmt->execute()){
+                $compailId = $this->getDoctrine()->getConnection()->lastInsertId();
+                if ($report['complains']){
+                    $complains = json_decode($report['complains'], true);
+
+                    foreach ($complains as $complain) {
+                        $sql = "INSERT INTO `crm_complain_different_product_details`(`complain_id`, `complain_type_id`, `day`, `quantity`, `created_at`) VALUES (:complain_id, :complain_type_id, :day, :quantity, :created_at)";
+
+                        $createdAt = new \DateTime($report['created_at']);
+
+                        $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
+                        $stmt->bindValue('complain_id', $compailId);
+                        $stmt->bindValue('complain_type_id', $complain['complain_id']);
+                        $stmt->bindValue('day', $complain['days']);
+                        $stmt->bindValue('quantity', $complain['qty']);
+                        $stmt->bindValue('created_at', $createdAt->format('Y-m-d H:i:s'));
+                        $stmt->execute();
+                    }
+                }
+
+            }
+
+        }
+    }
+    private function processFeedComplain($reports, Api $batch)
+    {
+        foreach ($reports as $report) {
+            $sql = "INSERT INTO `crm_complain_different_product`(`agent_id`,`employee_id`, `complains`, `created_at`, `observation`, `serial_no`, `batch_no`, `feed_mill_id`, `feed_id`, `production_date`) VALUES (:agent_id, :employee_id, :complains, :created_at, :observation, :serial_no, :batch_no, :feed_mill_id, :feed_id, :production_date)";
+
+
+            $createdAt = new \DateTime($report['created_at']);
+            $productionDate = new \DateTime($report['production_date']);
+
+            $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
+            $stmt->bindValue('agent_id', $report['agent_id']);
+            $stmt->bindValue('employee_id', $report['employee_id']);
+            $stmt->bindValue('complains', $report['comments']);
+            $stmt->bindValue('created_at', $createdAt->format('Y-m-d H:i:s'));
+            $stmt->bindValue('observation', $report['observation']);
+            $stmt->bindValue('serial_no', $report['serial_no']);
+            $stmt->bindValue('batch_no', $report['batch_no']);
+            $stmt->bindValue('feed_mill_id', $report['feed_mill_id']);
+            $stmt->bindValue('feed_id', $report['feed_id']);
+            $stmt->bindValue('production_date', $productionDate->format('Y-m-d'));
+
+            if ($stmt->execute()){
+                $compailId = $this->getDoctrine()->getConnection()->lastInsertId();
+                if ($report['abnormalities']){
+                    $complains = json_decode($report['abnormalities'], true);
+
+                    foreach ($complains as $complain) {
+                        $sql = "INSERT INTO `crm_complain_different_product_details`(`complain_id`, `complain_type_id`) VALUES (:complain_id, :complain_type_id)";
+
+                        $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
+                        $stmt->bindValue('complain_id', $compailId);
+                        $stmt->bindValue('complain_type_id', $complain['id']);
+
+                        $stmt->execute();
+                    }
+                }
+
             }
         }
     }
