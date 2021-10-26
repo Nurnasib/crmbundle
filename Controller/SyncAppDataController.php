@@ -98,9 +98,6 @@ class SyncAppDataController extends AbstractController
                         case "crm_fcr_details":
 //                            $this->processFcrDetail($jsonToArray, $batch);
                             break;
-                        case "crm_farmer_touch_report":
-//                            $this->processTouchReport($jsonToArray, $batch);
-                            break;
                         case "crm_antibiotic_free_farm":
 //                            $this->processAntibioticFreeFarm($jsonToArray, $batch);
                             break;
@@ -144,17 +141,23 @@ class SyncAppDataController extends AbstractController
                             $this->processDocComplain($jsonToArray, $batch);
                             break;
                         case "crm_feed_complain_details":
-                            $this->processFeedComplain($jsonToArray, $batch);
+//                            $this->processFeedComplain($jsonToArray, $batch);
+                            break;
+                        case "new_farmer":
+//                            $this->processFarmer($jsonToArray, $batch);
+                            break;
+                        case "crm_customer_introduce_details":
+//                            $this->processFarmerIntroduce($jsonToArray, $batch);
                             break;
                     }
                     $detail->setStatus(true);
-                    $em->persist($detail);
-                    $em->flush();
+//                    $em->persist($detail);
+//                    $em->flush();
                 }
             }
             $batch->setStatus(true);
-            $em->persist($batch);
-            $em->flush();
+//            $em->persist($batch);
+//            $em->flush();
         }
         $this->addFlash('success', 'Synchronization Completed!');
         return $this->redirectToRoute('crm_sync_app_data_index');
@@ -357,9 +360,6 @@ VALUES (:report_id, :employee_id, :agent_id, :customer_id, :hatchery_id, :breed_
                 $stmt->execute();
             }
         }
-    }
-    private function processTouchReport($reports, Api $batch)
-    {
     }
     private function processAntibioticFreeFarm($reports, Api $batch)
     {
@@ -923,6 +923,27 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
                 }
 
             }
+        }
+    }
+    private function processFarmer($farmers, Api $batch)
+    {
+        foreach ($farmers as $farmer) {
+            $sql = "INSERT INTO `crm_customers`(`name`, `mobile`, `address`, `agent_id`, `created`) VALUES (:name, :mobile, :address, :agent_id, :created)";
+            $created = new \DateTime('now');
+            $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
+            $stmt->bindValue('name', $farmer['name']);
+            $stmt->bindValue('mobile', $farmer['mobile']);
+            $stmt->bindValue('address', $farmer['address']);
+            $stmt->bindValue('agent_id', $farmer['agentId']);
+            $stmt->bindValue('created', $created->format('Y-m-d H:i:s'));
+
+            $stmt->execute();
+        }
+    }
+    private function processFarmerIntroduce($farmers, Api $batch)
+    {
+        foreach ($farmers as $farmer) {
+            dd($farmer);
         }
     }
 }

@@ -23,7 +23,7 @@
                 <div class="card-header">
                     <h5>{{ 'API Response List'|trans }}</h5>
                     <div class="btn-group btn-group-sm float-right">
-                        <a href="{{ path('crm_sync_app_data_sync') }}" class="btn purple-bg white-font loader"><i class="fa fa-sync"></i> Sync App Data</a>
+{#                        <a href="{{ path('crm_sync_app_data_sync') }}" class="btn purple-bg white-font loader"><i class="fa fa-sync"></i> Sync App Data</a>#}
                     </div>
                 </div>
             </div>
@@ -36,16 +36,20 @@
                         <tr>
 
                             <th width="50">{{ 'S/N'|trans }}</th>
+                            <th>{{ 'Employee Id'| trans }}</th>
+                            <th>{{ 'Employee Name'| trans }}</th>
                             <th>{{ 'Batch No.'| trans }}</th>
                             <th>{{ 'Created At'| trans }}</th>
                             <th>{{ 'Status'| trans }}</th>
                         </tr>
                         </thead>
                         <tbody>
-                        {% if records is not empty and records is iterable %}
+                        {% if records is defined and records is not empty %}
                             {% for record in records %}
                                 <tr>
                                     <td>{{ loop.index }}</td>
+                                    <td>{{ record.employee.userId|default('') }}</td>
+                                    <td>{{ record.employee.name|default('') }}</td>
                                     <td>{{ record.batchNo|default('') }}</td>
                                     <td>{{ record.createdAt|date('d-m-Y')|default('') }}</td>
                                     <td>{{ record.status == 1 ? 'Yes':'No' }}</td>

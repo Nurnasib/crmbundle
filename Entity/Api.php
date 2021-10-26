@@ -2,6 +2,7 @@
 
 namespace Terminalbd\CrmBundle\Entity;
 
+use App\Entity\User;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -35,10 +36,11 @@ class Api
     private $batchNo;
 
     /**
-     * @var integer
-     * @ORM\Column(type="integer")
+     * @var User
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="appEntry")
+     * @ORM\JoinColumn(referencedColumnName="id", onDelete="SET NULL")
      */
-    private $employeeId;
+    private $employee;
 
     /**
      * @var boolean
@@ -79,23 +81,22 @@ class Api
         $this->id = $id;
     }
 
-
     /**
-     * @return int
+     * @return User
      */
-    public function getEmployeeId(): int
+    public function getEmployee(): User
     {
-        return $this->employeeId;
+        return $this->employee;
     }
 
     /**
-     * @param int $employeeId
+     * @param User $employee
      */
-    public function setEmployeeId(int $employeeId): void
+    public function setEmployee(User $employee): void
     {
-        $this->employeeId = $employeeId;
+        $this->employee = $employee;
     }
-    
+
     /**
      * @return bool
      */
