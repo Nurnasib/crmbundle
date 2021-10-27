@@ -867,13 +867,14 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
                     $complains = json_decode($report['complains'], true);
 
                     foreach ($complains as $complain) {
-                        $sql = "INSERT INTO `crm_complain_different_product_details`(`complain_id`, `complain_type_id`, `day`, `quantity`, `created_at`) VALUES (:complain_id, :complain_type_id, :day, :quantity, :created_at)";
+                        dd('Have to work',$complain);
+                        $sql = "INSERT INTO `crm_complain_different_product_details`(`complain_id`, `complain_parameter_id`, `day`, `quantity`, `created_at`) VALUES (:complain_id, :complain_parameter_id, :day, :quantity, :created_at)";
 
                         $createdAt = new \DateTime($report['created_at']);
 
                         $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
                         $stmt->bindValue('complain_id', $compailId);
-                        $stmt->bindValue('complain_type_id', $complain['complain_id']);
+                        $stmt->bindValue('complain_parameter_id', $complain['complain_id']);
                         $stmt->bindValue('day', $complain['days']);
                         $stmt->bindValue('quantity', $complain['qty']);
                         $stmt->bindValue('created_at', $createdAt->format('Y-m-d H:i:s'));
@@ -912,11 +913,11 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
                     $complains = json_decode($report['abnormalities'], true);
 
                     foreach ($complains as $complain) {
-                        $sql = "INSERT INTO `crm_complain_different_product_details`(`complain_id`, `complain_type_id`) VALUES (:complain_id, :complain_type_id)";
+                        $sql = "INSERT INTO `crm_complain_different_product_details`(`complain_id`, `complain_parameter_id`) VALUES (:complain_id, :complain_parameter_id)";
 
                         $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
                         $stmt->bindValue('complain_id', $compailId);
-                        $stmt->bindValue('complain_type_id', $complain['id']);
+                        $stmt->bindValue('complain_parameter_id', $complain['id']);
 
                         $stmt->execute();
                     }

@@ -31,11 +31,11 @@ class ComplainDifferentProductDetails
     private $complain;
 
     /**
-     * @var Setting
-     * @ORM\ManyToOne(targetEntity="Terminalbd\CrmBundle\Entity\Setting", inversedBy="complains")
+     * @var ComplainParameter
+     * @ORM\ManyToOne(targetEntity="Terminalbd\CrmBundle\Entity\ComplainParameter", inversedBy="complains")
      * @ORM\JoinColumn(referencedColumnName="id", onDelete="CASCADE")
      */
-    private $complainType;
+    private $ComplainParameter;
 
     /**
      * @var string
@@ -95,20 +95,21 @@ class ComplainDifferentProductDetails
     }
 
     /**
-     * @return Setting
+     * @return ComplainParameter
      */
-    public function getComplainType(): Setting
+    public function getComplainParameter(): ComplainParameter
     {
-        return $this->complainType;
+        return $this->ComplainParameter;
     }
 
     /**
-     * @param Setting $complainType
+     * @param ComplainParameter $ComplainParameter
      */
-    public function setComplainType(Setting $complainType): void
+    public function setComplainParameter(ComplainParameter $ComplainParameter): void
     {
-        $this->complainType = $complainType;
+        $this->ComplainParameter = $ComplainParameter;
     }
+
 
     /**
      * @return string

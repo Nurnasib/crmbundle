@@ -1135,10 +1135,11 @@ class ApiController extends AbstractController
             $em = $this->getDoctrine()->getManager();
 
             $findParent = $this->getDoctrine()->getRepository(Api::class)->findOneBy(['batchNo' => $data['batch_id'], 'employeeId' => $data['employee_id']]);
+            $findEmployee = $this->getDoctrine()->getRepository(User::class)->find($data['employee_id']);
             if (!$findParent){
                 $api = new Api();
                 $api->setBatchNo($data['batch_id'] ?: null);
-                $api->setEmployeeId($data['employee_id'] ?: null);
+                $api->setEmployee($findEmployee);
                 $api->setStatus(0);
                 $api->setCreatedAt(new \DateTime('now'));
 
