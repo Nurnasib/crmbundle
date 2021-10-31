@@ -61,7 +61,7 @@ class EmployeeController extends AbstractController
         $form->handleRequest($request);
         $errors = $this->getErrorsFromForm($form);
         $em = $this->getDoctrine()->getManager();
-        if ($form->isSubmitted() && $form->isValid()) {
+        if ($form->isSubmitted()) {
 
             $this->get('crm_bundle.user_manager')->setUserPassword($user, $form->get('password')->getData());
             $user->setTerminal($terminal);
@@ -89,9 +89,10 @@ class EmployeeController extends AbstractController
         $userRepo = $this->getDoctrine()->getRepository(User::class);
         $form = $this->createForm(EditEmployeeFormType::class, $post, array('terminal' => $terminal,'userRepo' => $userRepo))
             ->add('SaveAndCreate', SubmitType::class);
+        $form->remove('phone');
         $form->handleRequest($request);
         //  $errors = $this->getErrorsFromForm($form);
-        if ($form->isSubmitted() && $form->isValid()) {
+        if ($form->isSubmitted()) {
             $this->getDoctrine()->getManager()->flush();
             return $this->redirectToRoute('crm_employee_edit',array('id'=> $post->getId()));
         }

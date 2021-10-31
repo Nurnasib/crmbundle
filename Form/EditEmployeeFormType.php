@@ -107,12 +107,6 @@ class EditEmployeeFormType extends AbstractType
                     'Motorcycle' => 'Motorcycle',
                 ],
             ])
-
-            ->add('address', TextType::class, [
-                'attr' => ['autofocus' => true,'class'=>'', 'placeholder' => 'Employee address',],
-                'required' => false,
-            ])
-
             ->add('serviceMode', EntityType::class, array(
                 'required'    => true,
                 'class' => Setting::class,

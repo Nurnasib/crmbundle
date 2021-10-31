@@ -70,13 +70,6 @@ class EmployeeFormType extends AbstractType
                 'attr' => ['autofocus' => true,'class'=>'mobileLocal'],
                 'required' => true,
             ])
-
-            ->add('phone', TextType::class, [
-                'attr' => ['autofocus' => true,'class'=>''],
-                'required' => false,
-            ])
-
-
             ->add('joiningDate', TextType::class, [
                 'attr' => ['autofocus' => true,'class'=>'datePicker col-md-6', 'placeholder' => 'Joining date'],
                 'required' => false,
@@ -159,11 +152,6 @@ class EmployeeFormType extends AbstractType
                 'attr' => ['autofocus' => true,'class'=>'col-md-12', 'placeholder' => 'Enter account no'],
                 'required' => false,
 
-            ])
-
-            ->add('address', TextType::class, [
-                'attr' => ['autofocus' => true,'class'=>'', 'placeholder' => 'Employee address',],
-                'required' => false,
             ])
 
             ->add('password', RepeatedType::class, [
@@ -288,7 +276,7 @@ class EmployeeFormType extends AbstractType
                         ->orderBy('e.name', 'ASC');
                 },
             ))*/
-             ->add('district', EntityType::class, [
+             /*->add('district', EntityType::class, [
                  'class' => Location::class,
                  'multiple' => true,
                  'required'    => false,
@@ -302,7 +290,7 @@ class EmployeeFormType extends AbstractType
                          ->where("e.level = 4")
                          ->orderBy('e.parent', 'ASC');
                  },
-             ])
+             ])*/
 
             ->add('upozila', EntityType::class, [
                 'class' => Location::class,
