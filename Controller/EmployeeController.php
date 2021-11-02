@@ -35,10 +35,10 @@ class EmployeeController extends AbstractController
     /**
      * @Route("/", methods={"GET"}, name="crm_employee")
      * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @return Response
      */
-    public function index(Request $request): Response
+    public function index(): Response
     {
-//        dd($this->getUser()->getUserGroup()->getId());
         $entities = $this->getDoctrine()->getRepository(User::class)->findBy(array('userGroup'=>'9'));
         return $this->render('@TerminalbdCrm/employee/index.html.twig',['entities' => $entities]);
     }
@@ -47,6 +47,8 @@ class EmployeeController extends AbstractController
     /**
      * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      * @Route("/register", methods={"GET", "POST"}, name="crm_employee_register")
+     * @param Request $request
+     * @return Response
      */
     public function register(Request $request): Response
     {
@@ -80,20 +82,20 @@ class EmployeeController extends AbstractController
     /**
      * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      * @Route("/{id}/edit", methods={"GET", "POST"}, name="crm_employee_edit")
+     * @param Request $request
+     * @param $id
+     * @return Response
      */
     public function edit(Request $request ,$id): Response
     {
-        $data = $request->request->all();
         $post = $this->getDoctrine()->getRepository(User::class)->findOneBy(['id'=> $id]);
         $terminal = $this->getUser()->getTerminal();
         $userRepo = $this->getDoctrine()->getRepository(User::class);
-        $form = $this->createForm(EditEmployeeFormType::class, $post, array('terminal' => $terminal,'userRepo' => $userRepo))
-            ->add('SaveAndCreate', SubmitType::class);
-        $form->remove('phone');
+        $form = $this->createForm(EditEmployeeFormType::class, $post, array('terminal' => $terminal,'userRepo' => $userRepo));
         $form->handleRequest($request);
-        //  $errors = $this->getErrorsFromForm($form);
         if ($form->isSubmitted()) {
             $this->getDoctrine()->getManager()->flush();
+            $this->addFlash('success', 'Information updated!');
             return $this->redirectToRoute('crm_employee_edit',array('id'=> $post->getId()));
         }
         return $this->render('@TerminalbdCrm/employee/editRegister.html.twig', [
@@ -101,8 +103,6 @@ class EmployeeController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
-
-
 
     private function getErrorsFromForm(FormInterface $form)
     {

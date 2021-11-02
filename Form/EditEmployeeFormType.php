@@ -25,6 +25,7 @@ use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -40,7 +41,24 @@ class EditEmployeeFormType extends AbstractType
 
 
         $builder
-            ->add('enabled',CheckboxType::class,[
+            ->add('upozila', EntityType::class, [
+                'class' => Location::class,
+                'multiple' => true,
+                'required'    => false,
+                'group_by'  => 'parent.name',
+                'choice_label'  => 'name',
+                'attr'=>['class'=>'span12'],
+                'placeholder' => 'Choose a upozila',
+                'choice_translation_domain' => true,
+                'query_builder' => function(EntityRepository $er){
+                    return $er->createQueryBuilder('e')
+                        ->where("e.level = 5")
+                        ->orderBy('e.parent', 'ASC');
+                },
+            ])
+            ->add('SaveAndCreate', SubmitType::class);
+
+            /*->add('enabled',CheckboxType::class,[
                 'required' => false,
                 'attr' => [
                     'class' => 'checkboxToggle',
@@ -189,27 +207,11 @@ class EditEmployeeFormType extends AbstractType
                         ->orderBy('e.name', 'ASC');
                 },
             ))
-
-            ->add('upozila', EntityType::class, [
-                'class' => Location::class,
-                'multiple' => true,
-                'required'    => false,
-                'group_by'  => 'parent.name',
-                'choice_label'  => 'name',
-                'attr'=>['class'=>'span12'],
-                'placeholder' => 'Choose a upozila',
-                'choice_translation_domain' => true,
-                'query_builder' => function(EntityRepository $er){
-                    return $er->createQueryBuilder('e')
-                        ->where("e.level = 5")
-                        ->orderBy('e.parent', 'ASC');
-                },
-            ])
-
             ->add('roles', ChoiceType::class, [
-                'multiple' => true,
-                'choices'   => $options['userRepo']->getAccessRoleGroup($options['terminal'])
-            ]);
+                            'multiple' => true,
+                            'choices'   => $options['userRepo']->getAccessRoleGroup($options['terminal'])
+                        ])
+            */
 
     }
 
