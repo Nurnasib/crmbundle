@@ -1,5 +1,15 @@
 <ul class="sub-menu">
-    <li><a class="" href="{{ path('crm_sync_app_data_index') }}"><span>{{ 'Sync App Data'|trans }}</span></a>
+    <li class="">
+        <a class="" href="javascript:"><span>{{ 'Master Data'|trans }}</span></a>
+        <ul class="sub-menu">
+            <li><a class="dropdown-item" href="{{ path('broiler_standard') }}">Broiler Standard </a></li>
+            <li><a class="dropdown-item" href="{{ path('sonali_standard') }}">Sonali Standard </a></li>
+            <li><a class="dropdown-item" href="{{ path('layer_standard') }}">Layer Standard</a></li>
+            <li><a class="dropdown-item" href="{{ path('crm_setting') }}">Setting</a></li>
+            <li><a class="dropdown-item" href="{{ path('crm_setting_life_cycle') }}">Life Cycle Setting</a></li>
+            <li><a class="dropdown-item" href="{{ path('api_response_list') }}">API Response List</a></li>
+        </ul>
+    </li>
     <li class="">
         <a class="" href="javascript:"><span>{{ 'Report'|trans }}</span></a>
         <ul class="sub-menu">
@@ -110,16 +120,6 @@
             </li>
         </ul>
     </li>
-
-    <li><a class="dropdown-item" href="{{ path('crm_visit') }}">CRM Visit</a></li>
-    <li>
-        <a class="dropdown-item"
-           href='{{ path('fcr_different_company_new_modal',{'breed_name': 'poultry'}) }}'>{{ 'FCR Different Company'|trans }}</a>
-    </li>
-    <li>
-        <a class="dropdown-item"
-           href='{{ path('lab_service_new_modal',{'breed_name': 'poultry'}) }}'>{{ 'Lab Service'|trans }}</a>
-    </li>
     <li>
         <a class="" href="javascript:"><span>{{ 'Company Feed Sale'|trans }}</span></a>
         <ul class="sub-menu">
@@ -131,21 +131,20 @@
             </li>
         </ul>
     </li>
+    <li><a class="" href="{{ path('crm_sync_app_data_index') }}"><span>{{ 'Sync App Data'|trans }}</span></a>
+    <li><a class="dropdown-item" href="{{ path('crm_visit') }}">CRM Visit</a></li>
+    <li>
+        <a class="dropdown-item"
+           href='{{ path('fcr_different_company_new_modal',{'breed_name': 'poultry'}) }}'>{{ 'FCR Different Company'|trans }}</a>
+    </li>
+    <li>
+        <a class="dropdown-item"
+           href='{{ path('lab_service_new_modal',{'breed_name': 'poultry'}) }}'>{{ 'Lab Service'|trans }}</a>
+    </li>
     <li><a class="dropdown-item" href="{{ path('fish_sales_price_add') }}">{{ 'Fish Sales Price'|trans }}</a></li>
     <li><a class="dropdown-item" href="{{ path('tilapia_fry_sales_add') }}">{{ 'Tilapia Fry Sales'|trans }}</a></li>
     <li><a class="dropdown-item" href="{{ path('crm_expense') }}">Expense</a></li>
     <li><a class="dropdown-item" href="{{ path('crm_employee') }}">{{ 'Employee'|trans }}</a></li>
     <li><a class="dropdown-item" href="{{ path('core_agent') }}">Agent</a></li>
     <li><a class="dropdown-item" href="{{ path('crm_customer') }}">Customer</a></li>
-    <li class="">
-        <a class="" href="javascript:"><span>{{ 'Master Data'|trans }}</span></a>
-        <ul class="sub-menu">
-            <li><a class="dropdown-item" href="{{ path('broiler_standard') }}">Broiler Standard </a></li>
-            <li><a class="dropdown-item" href="{{ path('sonali_standard') }}">Sonali Standard </a></li>
-            <li><a class="dropdown-item" href="{{ path('layer_standard') }}">Layer Standard</a></li>
-            <li><a class="dropdown-item" href="{{ path('crm_setting') }}">Setting</a></li>
-            <li><a class="dropdown-item" href="{{ path('crm_setting_life_cycle') }}">Life Cycle Setting</a></li>
-            <li><a class="dropdown-item" href="{{ path('api_response_list') }}">API Response List</a></li>
-        </ul>
-    </li>
 </ul>
