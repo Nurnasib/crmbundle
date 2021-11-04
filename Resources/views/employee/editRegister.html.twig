@@ -42,6 +42,24 @@
                                 <div class="alert alert-success"></div>
                             </div>
                         </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <table class="table">
+                                    <thead class="thead-dark">
+                                    <tr>
+                                        <th>
+                                            ID: {{ post.userId }} <br>
+                                            Name: {{ post.name }}
+                                        </th>
+                                        <th>
+                                            Mobile: {{ post.mobile }} <br>
+                                            Designation: {{ post.designation ? post.designation.name : '' }}
+                                        </th>
+                                    </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
                         <div class="portlet-body form">
                             <form action="{{ path('crm_employee_edit',{'id':post.id}) }}" novalidate="novalidate" method="post" class="form-horizontal" id="postForm">
                                 <div class="row form-body">
