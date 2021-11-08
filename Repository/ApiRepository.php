@@ -120,6 +120,11 @@ class ApiRepository extends BaseRepository
         $qb = $em->createQueryBuilder();
         $qb->from(CrmCustomer::class,'e');
         $qb->Join('e.customerGroup','cg');
+        $qb->leftJoin('e.farmerIntroduce','fi');
+        $qb->leftJoin('fi.otherFeed','otherFeed');
+        $qb->leftJoin('fi.farmerType','farmerTypes');
+        $qb->leftJoin('fi.otherAgent','otherAgent');
+        $qb->leftJoin('fi.subAgent','subAgent');
         $qb->leftJoin('e.agent','ca');
         $qb->Join('e.location','l');
         $qb->Join('l.parent','dis');
@@ -128,6 +133,7 @@ class ApiRepository extends BaseRepository
         $qb->addSelect('ca.id as agentId','ca.name as agentName');
         $qb->addSelect('l.name as upozila','l.id as upozilaId');
         $qb->addSelect('dis.name as district','dis.id as districtId');
+        $qb->addSelect('fi.cultureSpeciesItemAndQty', 'otherAgent.name AS otherAgentName', 'otherAgent.address AS otherAgentAddress', 'subAgent.name AS subAgentName', 'subAgent.address AS subAgentAddress', 'otherFeed.name AS previousFeedName', 'otherFeed.id AS feed_id', 'farmerTypes.id AS farmerType');
         $qb->where("cg.slug =:slug")->setParameter('slug', $mode);
         if($locations){
             $locations = explode(',',$locations);
@@ -135,8 +141,23 @@ class ApiRepository extends BaseRepository
         }
         $qb->orderBy('e.id', 'ASC');
         $result = $qb->getQuery()->getArrayResult();
+//        return $result;
         $data = array();
         foreach($result as $key => $row) {
+            $previousAgentName = '';
+            $previousAgentAddress = '';
+            if($row['otherAgentName']){
+                $previousAgentName = $row['otherAgentName'];
+            }elseif ($row['subAgentName']){
+                $previousAgentName = $row['subAgentName'];
+            }
+
+            if($row['otherAgentAddress']){
+                $previousAgentAddress = $row['otherAgentAddress'];
+            }elseif ($row['subAgentAddress']){
+                $previousAgentAddress = $row['subAgentAddress'];
+            }
+
             $data[$key]['id'] = (int)$row['id'];
             $data[$key]['name'] = (string)$row['name'];
             $data[$key]['mobile'] = (string)$row['mobile'];
@@ -148,6 +169,13 @@ class ApiRepository extends BaseRepository
             $data[$key]['upozilaId'] = (string)$row['upozilaId'];
             $data[$key]['district'] = (string)$row['district'];
             $data[$key]['districtId'] = (string)$row['districtId'];
+            $data[$key]['previousAgentName'] = (string)$previousAgentName;
+            $data[$key]['previousAgentAddress'] = (string)$previousAgentAddress;
+            $data[$key]['feed_id'] = (string)$row['feed_id'];
+            $data[$key]['farmerType'] = (string)$row['farmerType'];
+            $data[$key]['previousFeedName'] = (string)$row['previousFeedName'];
+            $data[$key]['culture_species_item_and_qty'] = (string)$row['cultureSpeciesItemAndQty'];
+
 
         }
         return $data;

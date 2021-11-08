@@ -76,7 +76,6 @@ class CrmCustomer
      */
     private $otherAgent;
 
-
     /**
      * @var Location
      * @ORM\ManyToOne(targetEntity="App\Entity\Admin\Location", inversedBy="crmVisits")

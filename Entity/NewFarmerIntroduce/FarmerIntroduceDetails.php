@@ -54,6 +54,14 @@ class FarmerIntroduceDetails
     private $otherAgent;
 
     /**
+     * @var Agent
+     * @ORM\ManyToOne(targetEntity="App\Entity\Core\Agent", inversedBy="farmerIntroduce")
+     * @ORM\JoinColumn(referencedColumnName="id")
+     * @ORM\JoinColumn(onDelete="CASCADE")
+     */
+    private $subAgent;
+
+    /**
      * @var Setting
      * @ORM\ManyToOne(targetEntity="Terminalbd\CrmBundle\Entity\Setting" , inversedBy="farmerIntroduce")
      */
@@ -88,6 +96,12 @@ class FarmerIntroduceDetails
      * @ORM\Column(name="created_at", type="datetime", nullable=true)
      */
     private $createdAt;
+
+    /**
+     * @var \DateTime
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $introduceDate;
 
     /**
      * @return int
@@ -214,6 +228,22 @@ class FarmerIntroduceDetails
     }
 
     /**
+     * @return Agent
+     */
+    public function getSubAgent(): Agent
+    {
+        return $this->subAgent;
+    }
+
+    /**
+     * @param Agent $subAgent
+     */
+    public function setSubAgent(Agent $subAgent): void
+    {
+        $this->subAgent = $subAgent;
+    }
+
+    /**
      * @return Setting
      */
     public function getFeed()
@@ -260,6 +290,23 @@ class FarmerIntroduceDetails
     {
         $this->createdAt = $createdAt;
     }
+
+    /**
+     * @return \DateTime
+     */
+    public function getIntroduceDate(): \DateTime
+    {
+        return $this->introduceDate;
+    }
+
+    /**
+     * @param \DateTime $introduceDate
+     */
+    public function setIntroduceDate(\DateTime $introduceDate): void
+    {
+        $this->introduceDate = $introduceDate;
+    }
+
 
     /**
      * @return Setting
