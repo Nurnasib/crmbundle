@@ -924,12 +924,13 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
     private function processFarmer($farmers, Api $batch)
     {
         foreach ($farmers as $farmer) {
-            $sql = "INSERT INTO `crm_customers`(`name`, `mobile`, `address`, `agent_id`, `custom_group_id`, `created`) VALUES (:name, :mobile, :address, :agent_id, :custom_group_id, :created)";
+            $sql = "INSERT INTO `crm_customers`(`name`, `mobile`, `address`, `agent_id`, `custom_group_id`, `location_id`, `created`) VALUES (:name, :mobile, :address, :agent_id, :custom_group_id, :location_id :created)";
             $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
             $stmt->bindValue('name', $farmer['name']);
             $stmt->bindValue('mobile', $farmer['mobile']);
             $stmt->bindValue('address', $farmer['address']);
             $stmt->bindValue('custom_group_id', 8);
+            $stmt->bindValue('location_id', $farmer['location_id']);
             if ($farmer['agentId'] == null) {
                 if ($farmer['subAgentId'] != null) {
                     $stmt->bindValue('agent_id', $farmer['subAgentId']);
