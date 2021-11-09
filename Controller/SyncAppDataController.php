@@ -12,20 +12,15 @@
 namespace Terminalbd\CrmBundle\Controller;
 
 use App\Entity\Admin\Location;
-use App\Entity\Core\Agent;
 use App\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Terminalbd\CrmBundle\Entity\Api;
-use Terminalbd\CrmBundle\Entity\ApiDetails;
 use Terminalbd\CrmBundle\Entity\CattleLifeCycle;
 use Terminalbd\CrmBundle\Entity\ChickLifeCycle;
-use Terminalbd\CrmBundle\Entity\ComplainDifferentProduct;
 use Terminalbd\CrmBundle\Entity\CrmCustomer;
 use Terminalbd\CrmBundle\Entity\CrmVisit;
-use Terminalbd\CrmBundle\Entity\CrmVisitDetails;
-use Terminalbd\CrmBundle\Entity\LayerLifeCycle;
 use Terminalbd\CrmBundle\Entity\Setting;
 
 
@@ -138,13 +133,13 @@ class SyncAppDataController extends AbstractController
 //                            $this->processExpenseVehicle($jsonToArray, $batch);
                             break;
                         case "crm_doc_complain_details":
-                            $this->processDocComplain($jsonToArray, $batch);
+//                            $this->processDocComplain($jsonToArray, $batch);
                             break;
                         case "crm_feed_complain_details":
 //                            $this->processFeedComplain($jsonToArray, $batch);
                             break;
-                        case "new_farmer":
-//                            $this->processFarmer($jsonToArray, $batch);
+                        case "crm_customer":
+                            $this->processFarmer($jsonToArray, $batch);
                             break;
                         case "crm_customer_introduce_details":
 //                            $this->processFarmerIntroduce($jsonToArray, $batch);
@@ -930,15 +925,47 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
     {
         foreach ($farmers as $farmer) {
             $sql = "INSERT INTO `crm_customers`(`name`, `mobile`, `address`, `agent_id`, `created`) VALUES (:name, :mobile, :address, :agent_id, :created)";
-            $created = new \DateTime('now');
             $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
             $stmt->bindValue('name', $farmer['name']);
             $stmt->bindValue('mobile', $farmer['mobile']);
             $stmt->bindValue('address', $farmer['address']);
-            $stmt->bindValue('agent_id', $farmer['agentId']);
-            $stmt->bindValue('created', $created->format('Y-m-d H:i:s'));
+            if ($farmer['agentId'] == null) {
+                if ($farmer['subAgentId'] != null) {
+                    $stmt->bindValue('agent_id', $farmer['subAgentId']);
+                }elseif ($farmer['otherAgentId'] != null) {
+                    $stmt->bindValue('agent_id', $farmer['otherAgentId']);
+                }
+            }else{
+                $stmt->bindValue('agent_id', $farmer['agentId']);
+            }
+            $stmt->bindValue('created', ($batch->getCreatedAt())->format('Y-m-d H:i:s'));
 
-            $stmt->execute();
+            if ($stmt->execute()) {
+                $farmerId = $this->getDoctrine()->getConnection()->lastInsertId();
+                $sql = "INSERT INTO `crm_customer_introduce_details`(`agent_id`, `customer_id`, `employee_id`, `culture_species_item_and_qty`, `created_at`, `farmerType`, `other_agent_id`, `other_feed_id`, `sub_agent_id`, `introduce_date`) VALUES (:agent_id, :customer_id, :employee_id, :culture_species_item_and_qty, :created_at, :farmerType, :other_agent_id, :other_feed_id, :sub_agent_id, :introduce_date)";
+
+                $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
+                $stmt->bindValue('customer_id', $farmerId);
+                $stmt->bindValue('employee_id', $batch->getEmployee()->getId());
+                $stmt->bindValue('culture_species_item_and_qty', $farmer['culture_species_item_and_qty']);
+                $stmt->bindValue('created_at', ($batch->getCreatedAt())->format('Y-m-d H:i:s'));
+                $stmt->bindValue('farmerType', $farmer['farmerType']);
+                $stmt->bindValue('other_agent_id', $farmer['otherAgentId']);
+                $stmt->bindValue('other_feed_id', $farmer['other_feed_id']);
+                $stmt->bindValue('sub_agent_id', $farmer['subAgentId']);
+                if ($farmer['agentId'] == null){
+                    if ($farmer['subAgentId'] != null) {
+                        $stmt->bindValue('agent_id', $farmer['subAgentId']);
+                    }elseif ($farmer['otherAgentId'] != null) {
+                        $stmt->bindValue('agent_id', $farmer['otherAgentId']);
+                    }
+                    $stmt->bindValue('introduce_date', null);
+                }else{
+                    $stmt->bindValue('agent_id', $farmer['agentId']);
+                    $stmt->bindValue('introduce_date', ($batch->getCreatedAt())->format('Y-m-d H:i:s'));
+                }
+                $stmt->execute();
+            }
         }
     }
     private function processFarmerIntroduce($farmers, Api $batch)
