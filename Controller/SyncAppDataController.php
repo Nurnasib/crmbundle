@@ -924,7 +924,7 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
     private function processFarmer($farmers, Api $batch)
     {
         foreach ($farmers as $farmer) {
-            $sql = "INSERT INTO `crm_customers`(`name`, `mobile`, `address`, `agent_id`, `custom_group_id`, `location_id`, `created`) VALUES (:name, :mobile, :address, :agent_id, :custom_group_id, :location_id :created)";
+            $sql = "INSERT INTO `crm_customers`(`name`, `mobile`, `address`, `agent_id`, `custom_group_id`, `location_id`, `created`) VALUES (:name, :mobile, :address, :agent_id, :custom_group_id, :location_id, :created)";
             $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
             $stmt->bindValue('name', $farmer['name']);
             $stmt->bindValue('mobile', $farmer['mobile']);
