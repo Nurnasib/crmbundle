@@ -186,27 +186,28 @@ class SyncAppDataController extends AbstractController
     {
         foreach ($visitDetails as $visitDetail) {
             $findVisit = $this->getDoctrine()->getRepository(CrmVisit::class)->findOneBy(['appId' => $visitDetail['crm_visit_id'], 'appBatch' => $batch]);
-
-            $sql = "INSERT INTO `crm_visit_details`(`crm_visit_id`, `farmCapacity`, `updated`, `comments`, `created`, `customer_id`, `process`, `agent_id`, `purpose_id`, `firm_type_id`, `report_id`)
+            if ($findVisit){
+                $sql = "INSERT INTO `crm_visit_details`(`crm_visit_id`, `farmCapacity`, `updated`, `comments`, `created`, `customer_id`, `process`, `agent_id`, `purpose_id`, `firm_type_id`, `report_id`)
 VALUES (:crm_visit_id, :farmCapacity, :updated, :comments, :created, :customer_id, :process, :agent_id, :purpose_id, :firm_type_id, :report_id)";
 
-            $createdAt = new \DateTime($visitDetail['created']);
-            $updatedAt = new \DateTime($visitDetail['updated']);
+                $createdAt = new \DateTime($visitDetail['created']);
+                $updatedAt = new \DateTime($visitDetail['updated']);
 
-            $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
-            $stmt->bindValue('crm_visit_id', $findVisit->getId());
-            $stmt->bindValue('farmCapacity', $visitDetail['farmCapacity']);
-            $stmt->bindValue('updated', $updatedAt->format('Y-m-d H:i:s'));
-            $stmt->bindValue('comments', $visitDetail['comments']);
-            $stmt->bindValue('created', $createdAt->format('Y-m-d H:i:s'));
-            $stmt->bindValue('customer_id', $visitDetail['customer_id']);
-            $stmt->bindValue('agent_id', $visitDetail['agent_id']);
-            $stmt->bindValue('process', $visitDetail['process']);
-            $stmt->bindValue('purpose_id', $visitDetail['purpose_id']);
-            $stmt->bindValue('firm_type_id', $visitDetail['firm_type_id']);
-            $stmt->bindValue('report_id', $visitDetail['report_id']);
+                $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
+                $stmt->bindValue('crm_visit_id', $findVisit->getId());
+                $stmt->bindValue('farmCapacity', $visitDetail['farmCapacity']);
+                $stmt->bindValue('updated', $updatedAt->format('Y-m-d H:i:s'));
+                $stmt->bindValue('comments', $visitDetail['comments']);
+                $stmt->bindValue('created', $createdAt->format('Y-m-d H:i:s'));
+                $stmt->bindValue('customer_id', $visitDetail['customer_id']);
+                $stmt->bindValue('agent_id', $visitDetail['agent_id']);
+                $stmt->bindValue('process', $visitDetail['process']);
+                $stmt->bindValue('purpose_id', $visitDetail['purpose_id']);
+                $stmt->bindValue('firm_type_id', $visitDetail['firm_type_id']);
+                $stmt->bindValue('report_id', $visitDetail['report_id']);
 
-            $stmt->execute();
+                $stmt->execute();
+            }
         }
     }
     private function processLayerPerformance($performances, Api $batch)
@@ -282,16 +283,41 @@ VALUES (:employee_id, :report_id, :agent_id, :customer_id, :breed_type, :feed_ty
                 $stmt->bindValue('repoting_month', $repotingMonth->format('Y-m-d'));
                 $stmt->bindValue('visiting_date', $visitingDate->format('Y-m-d'));
                 $stmt->bindValue('age_of_cattle_month', $performance['age_of_cattle_month']);
-                $stmt->bindValue('previous_body_weight', $performance['previous_body_weight']);
                 $stmt->bindValue('present_body_weight', $performance['present_body_weight']);
-                $stmt->bindValue('body_weight_difference', $performance['body_weight_difference']);
-                $stmt->bindValue('duration_of_bwt_difference', $performance['duration_of_bwt_difference']);
-                $stmt->bindValue('lactation_no', $performance['lactation_no']);
-                $stmt->bindValue('age_of_lactation', $performance['age_of_lactation']);
+                if ($performance['previous_body_weight'] === null){
+                    $stmt->bindValue('previous_body_weight', 0);
+                }else{
+                    $stmt->bindValue('previous_body_weight', $performance['previous_body_weight']);
+                }
+                if ($performance['body_weight_difference'] === null){
+                    $stmt->bindValue('body_weight_difference', 0);
+                }else{
+                    $stmt->bindValue('body_weight_difference', $performance['body_weight_difference']);
+                }
+                if ($performance['duration_of_bwt_difference'] === null){
+                    $stmt->bindValue('duration_of_bwt_difference', 0);
+                }else{
+                    $stmt->bindValue('duration_of_bwt_difference', $performance['duration_of_bwt_difference']);
+
+                }
+                if ($performance['lactation_no'] === null){
+                    $stmt->bindValue('lactation_no', 0);
+                }else{
+                    $stmt->bindValue('lactation_no', $performance['lactation_no']);
+                }
+                if ($performance['age_of_lactation'] === null){
+                    $stmt->bindValue('age_of_lactation', 0);
+                }else{
+                    $stmt->bindValue('age_of_lactation', $performance['age_of_lactation']);
+                }
+                if ($performance['milk_fat_percentage'] === null){
+                    $stmt->bindValue('milk_fat_percentage', 0);
+                }else{
+                    $stmt->bindValue('milk_fat_percentage', $performance['milk_fat_percentage']);
+                }
                 $stmt->bindValue('average_weight_per_day', $performance['average_weight_per_day']);
                 $stmt->bindValue('average_weight_per_kg_consumption_feed', $performance['average_weight_per_kg_consumption_feed']);
                 $stmt->bindValue('average_weight_per_kg_dm', $performance['average_weight_per_kg_dm']);
-                $stmt->bindValue('milk_fat_percentage', $performance['milk_fat_percentage']);
                 $stmt->bindValue('consumption_feed_intake_ready_feed', $performance['consumption_feed_intake_ready_feed']);
                 $stmt->bindValue('consumption_feed_intake_conventional', $performance['consumption_feed_intake_conventional']);
                 $stmt->bindValue('consumption_feed_intake_total', $performance['consumption_feed_intake_total']);
@@ -363,7 +389,7 @@ VALUES (:report_id, :employee_id, :agent_id, :customer_id, :hatchery_id, :breed_
 VALUES (:report_id, :report_parent_parent_id, :agent_id, :customer_id, :employee_id, :hatchery_id, :breed_id, :feed_id, :hatching_date, :reporting_month, :total_stocked_chicks_pcs, :total_feed_used_kg, :age_days, :total_broiler_weight_kg, :mortality, :fcr, :remarks, :created_at, :medicine_total_cost, :vaccine_total_cost)";
 
             $hatchingDate = new \DateTime($report['hatching_date']);
-            $reportingMonth = new \DateTime('1-' . $report['reporting_month']);
+            $reportingMonth = new \DateTime($report['reporting_month']);
             $createdAt = new \DateTime($report['created_at']);
 
             $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
@@ -401,7 +427,7 @@ VALUES (:report_id, :report_parent_parent_id, :agent_id, :customer_id, :employee
 
             $hatchingDate = new \DateTime($report['hatching_date']);
             $createdAt = new \DateTime($report['created_at']);
-            $reportingMonth = new \DateTime('01-' . $report['reporting_month']);
+            $reportingMonth = new \DateTime($report['reporting_month']);
 
             $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
             $stmt->bindValue('report_id', $report['report_id']);
@@ -422,8 +448,17 @@ VALUES (:report_id, :report_parent_parent_id, :agent_id, :customer_id, :employee
             $stmt->bindValue('species_id', $report['species_id']);
             $stmt->bindValue('reporting_month', $reportingMonth->format('Y-m-d'));
             $stmt->bindValue('pond_size', $report['pond_size']);
-            $stmt->bindValue('fingerling_size', $report['fingerling_size']);
-            $stmt->bindValue('harvesting_size', $report['harvesting_size']);
+            if ($report['fingerling_size'] === null){
+                $stmt->bindValue('fingerling_size', 0);
+            }else{
+                $stmt->bindValue('fingerling_size', $report['fingerling_size']);
+            }
+            if ($report['harvesting_size'] === null){
+                $stmt->bindValue('harvesting_size', 0);
+            }else{
+                $stmt->bindValue('harvesting_size', $report['harvesting_size']);
+
+            }
             $stmt->bindValue('age_days', $report['age_days']);
             $stmt->bindValue('fcr', $report['fcr']);
             $stmt->bindValue('item_price_per_pcs', $report['item_price_per_pcs']);
@@ -431,8 +466,16 @@ VALUES (:report_id, :report_parent_parent_id, :agent_id, :customer_id, :employee
             $stmt->bindValue('broiler_or_fish_price_per_kg', $report['broiler_or_fish_price_per_kg']);
             $stmt->bindValue('total_medicine_cost', $report['total_medicine_cost']);
             $stmt->bindValue('total_vaccine_cost', $report['total_vaccine_cost']);
-            $stmt->bindValue('total_pond_preparation_cost', $report['total_pond_preparation_cost']);
-            $stmt->bindValue('used_bag_price_per_pcs', $report['used_bag_price_per_pcs']);
+            if ($report['total_pond_preparation_cost'] === null){
+                $stmt->bindValue('total_pond_preparation_cost', 0);
+            }else{
+                $stmt->bindValue('total_pond_preparation_cost', $report['total_pond_preparation_cost']);
+            }
+            if ($report['used_bag_price_per_pcs']){
+                $stmt->bindValue('used_bag_price_per_pcs', $report['used_bag_price_per_pcs']);
+            }else{
+                $stmt->bindValue('used_bag_price_per_pcs', 0);
+            }
             $stmt->bindValue('litter_or_pond_rent_cost', $report['litter_or_pond_rent_cost']);
             $stmt->bindValue('electricity_and_fuel_cost', $report['electricity_and_fuel_cost']);
             $stmt->bindValue('labour_cost', $report['labour_cost']);
@@ -460,7 +503,11 @@ VALUES (:report_id, :report_parent_parent_id, :agent_id, :customer_id, :employee
             $stmt->bindValue('feed_id', $report['feed_id']);
             $stmt->bindValue('disease_id', $report['disease_id']);
             $stmt->bindValue('visiting_date', $visitingDate->format('Y-m-d'));
-            $stmt->bindValue('flock_size_or_capacity', $report['flock_size_or_capacity']);
+            if ($report['flock_size_or_capacity']){
+                $stmt->bindValue('flock_size_or_capacity', $report['flock_size_or_capacity']);
+            }else{
+                $stmt->bindValue('flock_size_or_capacity', 0);
+            }
             $stmt->bindValue('age_days', $report['age_days']);
             $stmt->bindValue('remarks', $report['remarks']);
             $stmt->bindValue('created_at', $createdAt->format('Y-m-d H:i:s'));
@@ -646,16 +693,40 @@ VALUES (:crm_cattle_life_cycle_id, :visiting_date, :age_of_cattle_month, :previo
                 $stmt->bindValue('crm_cattle_life_cycle_id', $lifeCycleId);
                 $stmt->bindValue('visiting_date', $visitingDate->format('Y-m-d'));
                 $stmt->bindValue('age_of_cattle_month', $report['age_of_cattle_month']);
-                $stmt->bindValue('previous_body_weight', $report['previous_body_weight']);
+                if ($report['previous_body_weight'] === null){
+                    $stmt->bindValue('previous_body_weight', 0);
+                }else{
+                    $stmt->bindValue('previous_body_weight', $report['previous_body_weight']);
+                }
                 $stmt->bindValue('present_body_weight', $report['present_body_weight']);
-                $stmt->bindValue('body_weight_difference', $report['body_weight_difference']);
-                $stmt->bindValue('duration_of_bwt_difference', $report['duration_of_bwt_difference']);
-                $stmt->bindValue('lactation_no', $report['lactation_no']);
-                $stmt->bindValue('age_of_lactation', $report['age_of_lactation']);
+                if ($report['body_weight_difference'] === null){
+                    $stmt->bindValue('body_weight_difference', 0);
+                }else{
+                    $stmt->bindValue('body_weight_difference', $report['body_weight_difference']);
+                }
+                if ($report['duration_of_bwt_difference'] === null){
+                    $stmt->bindValue('duration_of_bwt_difference', 0);
+                }else{
+                    $stmt->bindValue('duration_of_bwt_difference', $report['duration_of_bwt_difference']);
+                }
+                if ($report['lactation_no'] === null){
+                    $stmt->bindValue('lactation_no', 0);
+                }else{
+                    $stmt->bindValue('lactation_no', $report['lactation_no']);
+                }
+                if ($report['age_of_lactation'] === null){
+                    $stmt->bindValue('age_of_lactation', 0);
+                }else{
+                    $stmt->bindValue('age_of_lactation', $report['age_of_lactation']);
+                }
                 $stmt->bindValue('average_weight_per_day', $report['average_weight_per_day']);
                 $stmt->bindValue('average_weight_per_kg_consumption_feed', $report['average_weight_per_kg_consumption_feed']);
                 $stmt->bindValue('average_weight_per_kg_dm', $report['average_weight_per_kg_dm']);
-                $stmt->bindValue('milk_fat_percentage', $report['milk_fat_percentage']);
+                if ($report['milk_fat_percentage'] === null){
+                    $stmt->bindValue('milk_fat_percentage', 0);
+                }else{
+                    $stmt->bindValue('milk_fat_percentage', $report['milk_fat_percentage']);
+                }
                 $stmt->bindValue('consumption_feed_intake_ready_feed', $report['consumption_feed_intake_ready_feed']);
                 $stmt->bindValue('consumption_feed_intake_conventional', $report['consumption_feed_intake_conventional']);
                 $stmt->bindValue('consumption_feed_intake_total', $report['consumption_feed_intake_total']);
@@ -862,7 +933,6 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
                     $complains = json_decode($report['complains'], true);
 
                     foreach ($complains as $complain) {
-                        dd('Have to work',$complain);
                         $sql = "INSERT INTO `crm_complain_different_product_details`(`complain_id`, `complain_parameter_id`, `day`, `quantity`, `created_at`) VALUES (:complain_id, :complain_parameter_id, :day, :quantity, :created_at)";
 
                         $createdAt = new \DateTime($report['created_at']);
