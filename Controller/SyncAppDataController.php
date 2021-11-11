@@ -13,6 +13,7 @@ namespace Terminalbd\CrmBundle\Controller;
 
 use App\Entity\Admin\Location;
 use App\Entity\User;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -47,6 +48,7 @@ class SyncAppDataController extends AbstractController
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
      * @Route("/", name="_index")
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN')")
      */
     public function index(Request $request)
     {
@@ -60,6 +62,7 @@ class SyncAppDataController extends AbstractController
 
     /**
      * @Route("/sync", name="_sync")
+     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN')")
      */
     public function syncAppData()
     {

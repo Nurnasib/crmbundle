@@ -131,7 +131,9 @@
             </li>
         </ul>
     </li>
-    <li><a class="" href="{{ path('crm_sync_app_data_index') }}"><span>{{ 'Sync App Data'|trans }}</span></a>
+    {% if is_granted('ROLE_ADMIN') %}
+        <li><a class="" href="{{ path('crm_sync_app_data_index') }}"><span>{{ 'Sync App Data'|trans }}</span></a>
+    {% endif %}
     <li><a class="dropdown-item" href="{{ path('crm_visit') }}">CRM Visit</a></li>
     <li>
         <a class="dropdown-item"
