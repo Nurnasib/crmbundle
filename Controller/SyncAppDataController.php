@@ -412,8 +412,8 @@ VALUES (:report_id, :report_parent_parent_id, :agent_id, :customer_id, :employee
             $stmt->bindValue('fcr',$report['fcr']);
             $stmt->bindValue('remarks',$report['remarks']);
             $stmt->bindValue('created_at',$createdAt->format('Y-m-d H:i:s'));
-            $stmt->bindValue('medicine_total_cost',0.00);
-            $stmt->bindValue('vaccine_total_cost',0.00);
+            $stmt->bindValue('medicine_total_cost',$report['medicine_total_cost']);
+            $stmt->bindValue('vaccine_total_cost',$report['vaccine_total_cost']);
 
             $stmt->execute();
         }
