@@ -62,7 +62,7 @@ class SyncAppDataController extends AbstractController
 
     /**
      * @Route("/sync", name="_sync")
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN')")
+     * @Security("is_granted('ROLE_DEVELOPER')")
      */
     public function syncAppData()
     {
@@ -82,80 +82,86 @@ class SyncAppDataController extends AbstractController
 
                     switch ($detail->getProcess()){
                         case "crm_visit":
-                            $this->processVisit($jsonToArray, $batch);
+//                            $this->processVisit($jsonToArray, $batch);
                             break;
                         case "crm_visit_details":
-                            $this->processVisitDetail($jsonToArray, $batch);
+//                            $this->processVisitDetail($jsonToArray, $batch);
                             break;
                         case "crm_layer_performance_details":
-                            $this->processLayerPerformance($jsonToArray, $batch);
+//                            $this->processLayerPerformance($jsonToArray, $batch);
                             break;
                         case "crm_cattle_performance_details":
-                            $this->processCattlePerformance($jsonToArray, $batch);
+//                            $this->processCattlePerformance($jsonToArray, $batch);
                             break;
                         case "crm_fcr_details":
-                            $this->processFcrDetail($jsonToArray, $batch);
+//                            $this->processFcrDetail($jsonToArray, $batch);
                             break;
                         case "crm_antibiotic_free_farm":
-                            $this->processAntibioticFreeFarm($jsonToArray, $batch);
+//                            $this->processAntibioticFreeFarm($jsonToArray, $batch);
                             break;
                         case "crm_cost_benefit_analysis_for_less_costing_farm":
-                            $this->processCostBenefitAnalysis($jsonToArray, $batch);
+//                            $this->processCostBenefitAnalysis($jsonToArray, $batch);
                             break;
                         case "crm_disease_mapping":
-                            $this->processDiseaseMapping($jsonToArray, $batch);
+//                            $this->processDiseaseMapping($jsonToArray, $batch);
                             break;
                         case "crm_complain_different_product":
-                            $this->processComplain($jsonToArray, $batch);
+//                            $this->processComplain($jsonToArray, $batch);
                             break;
                         case "crm_broiler_life_cycle":
-                            $this->processBroilerLifeCycle($jsonToArray, $batch);
+//                            $this->processBroilerLifeCycle($jsonToArray, $batch);
                             break;
                         case "crm_broiler_life_cycle_details":
-                            $this->processBroilerLifeCycleDetail($jsonToArray, $batch);
+//                            $this->processBroilerLifeCycleDetail($jsonToArray, $batch);
                             break;
                         case "crm_cattle_life_cycle":
-                            $this->processCattleLifeCycle($jsonToArray, $batch);
+//                            $this->processCattleLifeCycle($jsonToArray, $batch);
                             break;
                         case "crm_cattle_life_cycle_details":
-                            $this->processCattleLifeCycleDetail($jsonToArray, $batch);
+//                            $this->processCattleLifeCycleDetail($jsonToArray, $batch);
                             break;
                         case "crm_layer_life_cycle":
-                            $this->processLayerLifeCycle($jsonToArray, $batch);
+//                            $this->processLayerLifeCycle($jsonToArray, $batch);
                             break;
                         case "crm_layer_life_cycle_details":
-                            $this->processLayerLifeCycleDetail($jsonToArray, $batch);
+//                            $this->processLayerLifeCycleDetail($jsonToArray, $batch);
                             break;
                         case "crm_expense":
-                            $this->processExpense($jsonToArray, $batch);
+//                            $this->processExpense($jsonToArray, $batch);
                             break;
                         case "crm_expense_purpose":
-                            $this->processExpensePurpose($jsonToArray, $batch);
+//                            $this->processExpensePurpose($jsonToArray, $batch);
                             break;
                         case "crm_expense_vehicle":
-                            $this->processExpenseVehicle($jsonToArray, $batch);
+//                            $this->processExpenseVehicle($jsonToArray, $batch);
                             break;
                         case "crm_doc_complain_details":
-                            $this->processDocComplain($jsonToArray, $batch);
+//                            $this->processDocComplain($jsonToArray, $batch);
                             break;
                         case "crm_feed_complain_details":
-                            $this->processFeedComplain($jsonToArray, $batch);
+//                            $this->processFeedComplain($jsonToArray, $batch);
                             break;
                         case "crm_customer":
-                            $this->processFarmer($jsonToArray, $batch);
+//                            $this->processFarmer($jsonToArray, $batch);
                             break;
                         case "crm_customer_introduce_details":
-                            $this->processFarmerIntroduce($jsonToArray, $batch);
+//                            $this->processFarmerIntroduce($jsonToArray, $batch);
+                            break;
+                        case "crm_cattle_farm_visit":
+                            $this->processCattleFarmVisit($jsonToArray, $batch);
+                            break;
+                        case "crm_cattle_farm_visit_details":
+                            $this->processCattleFarmVisitDetails($jsonToArray, $batch);
                             break;
                     }
                     $detail->setStatus(true);
-                    $em->persist($detail);
-                    $em->flush();
+//                    $em->persist($detail);
+//                    $em->flush();
                 }
             }
             $batch->setStatus(true);
-            $em->persist($batch);
-            $em->flush();
+//            $em->persist($batch);
+//            $em->flush();
         }
         $this->addFlash('success', 'Synchronization Completed!');
         return $this->redirectToRoute('crm_sync_app_data_index');
@@ -1069,6 +1075,20 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
                 $stmt->bindValue('feed_id', 55);
             }
             $stmt->execute();
+        }
+    }
+
+    public function processCattleFarmVisit($visits, Api $batch)
+    {
+        foreach ($visits as $visit) {
+            dd($visit);
+        }
+    }
+
+    public function processCattleFarmVisitDetails($reports, Api $batch)
+    {
+        foreach ($reports as $report) {
+            dd($report);
         }
     }
 }
