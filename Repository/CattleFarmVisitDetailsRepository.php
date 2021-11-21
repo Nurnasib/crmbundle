@@ -21,6 +21,47 @@ use Doctrine\ORM\EntityRepository;
  *
  * @author Md Shafiqul islam <shafiqabs@gmail.com>
  */
-class CattleFarmVisitDetailsRepository extends EntityRepository
+class CattleFarmVisitDetailsRepository extends BaseRepository
 {
+    public function getCattleFarmVisitReportByReportingDateCustomerAndEmployee($report, $employee)
+    {
+        if($report&&$employee){
+            $startDate = date('Y-m-01', strtotime("now"));
+            $endDate = date('Y-m-t', strtotime("now"));
+            $query = $this->createQueryBuilder('cp')
+                ->where('cp.reportingMonth >= :startDate')
+                ->andWhere('cp.reportingMonth <= :endDate')
+                ->andWhere('cp.report = :report')
+                ->andWhere('cp.employee = :employee')
+                ->setParameters(array('startDate'=>$startDate, 'endDate'=>$endDate, 'report'=>$report, 'employee'=>$employee));
+
+            return $query->getQuery()->getArrayResult();
+        }
+        return array();
+    }
+    public function getCattleFarmVisitReport($filterBy)
+    {
+        $qb = $this->createQueryBuilder('crmCattleFarmVisitDetails');
+        $qb->select('crmCattleFarmVisitDetails.visitingDate', 'crmCattleFarmVisitDetails.cattlePopulationOx', 'crmCattleFarmVisitDetails.cattlePopulationCow', 'crmCattleFarmVisitDetails.cattlePopulationCalf', 'crmCattleFarmVisitDetails.avgMilkYieldPerDay', 'crmCattleFarmVisitDetails.conceptionRate', 'crmCattleFarmVisitDetails.fodderGreenGrassKg', 'crmCattleFarmVisitDetails.fodderStrawKg','crmCattleFarmVisitDetails.typeOfConcentrateFeed','crmCattleFarmVisitDetails.marketPriceMilkPerLiter','crmCattleFarmVisitDetails.marketPriceMeatPerKg','crmCattleFarmVisitDetails.remarks AS comments');
+
+        $qb->addSelect('customer.name AS customerName', 'customer.mobile AS cusomerMobile', 'customer.address AS customerAddress');
+        $qb->addSelect('location.name AS customerUpazila');
+        $qb->addSelect('locationParent.name AS customerDistrict');
+        $qb->addSelect('employee.name AS employeeName');
+
+
+
+        $qb->leftJoin('crmCattleFarmVisitDetails.customer', 'customer');
+        $qb->leftJoin('customer.location', 'location');
+        $qb->leftJoin('location.parent', 'locationParent');
+        $this->handleSearchFilterBetween($qb, $filterBy);
+
+        $results = $qb->getQuery()->getArrayResult();
+        return $results;
+
+//        dd($results);
+
+
+    }
+
 }

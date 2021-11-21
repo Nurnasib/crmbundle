@@ -27,13 +27,24 @@ class CattleFarmVisitDetails
     private $id;
 
     /**
-     * @var CattleFarmVisit
-     * @ORM\ManyToOne(targetEntity="Terminalbd\CrmBundle\Entity\CattleFarmVisit", inversedBy="crmCattleFarmVisitDetails")
-     * @ORM\JoinColumn(referencedColumnName="id")
-     * @ORM\JoinColumn(onDelete="CASCADE")
+     * @var User
+     * @ORM\ManyToOne(targetEntity="App\Entity\User" , inversedBy="crmCattleFarmVisit")
+     */
+    private $employee;
+
+    /**
+     * @var Setting
+     * @ORM\ManyToOne(targetEntity="Setting", inversedBy="crmCattleFarmVisit")
+     * @ORM\JoinColumn(name="report_id", referencedColumnName="id", onDelete="SET NULL", nullable=true)
+     */
+    private $report;
+
+    /**
+     * @var \DateTime
+     * @ORM\Column(name="repoting_month", type="date", nullable=true)
      */
 
-    private $crmCattleFarmVisit;
+    private $reportingMonth;
 
     /**
      * @var Agent
@@ -145,7 +156,7 @@ class CattleFarmVisitDetails
     /**
      * @return int
      */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
@@ -153,31 +164,63 @@ class CattleFarmVisitDetails
     /**
      * @param int $id
      */
-    public function setId($id)
+    public function setId(int $id): void
     {
         $this->id = $id;
     }
 
     /**
-     * @return CattleFarmVisit
+     * @return User
      */
-    public function getCrmCattleFarmVisit()
+    public function getEmployee(): User
     {
-        return $this->crmCattleFarmVisit;
+        return $this->employee;
     }
 
     /**
-     * @param CattleFarmVisit $crmCattleFarmVisit
+     * @param User $employee
      */
-    public function setCrmCattleFarmVisit($crmCattleFarmVisit)
+    public function setEmployee(User $employee): void
     {
-        $this->crmCattleFarmVisit = $crmCattleFarmVisit;
+        $this->employee = $employee;
+    }
+
+    /**
+     * @return Setting
+     */
+    public function getReport(): Setting
+    {
+        return $this->report;
+    }
+
+    /**
+     * @param Setting $report
+     */
+    public function setReport(Setting $report): void
+    {
+        $this->report = $report;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getReportingMonth(): \DateTime
+    {
+        return $this->reportingMonth;
+    }
+
+    /**
+     * @param \DateTime $reportingMonth
+     */
+    public function setReportingMonth(\DateTime $reportingMonth): void
+    {
+        $this->reportingMonth = $reportingMonth;
     }
 
     /**
      * @return Agent
      */
-    public function getAgent()
+    public function getAgent(): Agent
     {
         return $this->agent;
     }
@@ -185,7 +228,7 @@ class CattleFarmVisitDetails
     /**
      * @param Agent $agent
      */
-    public function setAgent($agent)
+    public function setAgent(Agent $agent): void
     {
         $this->agent = $agent;
     }
@@ -193,7 +236,7 @@ class CattleFarmVisitDetails
     /**
      * @return CrmCustomer
      */
-    public function getCustomer()
+    public function getCustomer(): CrmCustomer
     {
         return $this->customer;
     }
@@ -201,7 +244,7 @@ class CattleFarmVisitDetails
     /**
      * @param CrmCustomer $customer
      */
-    public function setCustomer($customer)
+    public function setCustomer(CrmCustomer $customer): void
     {
         $this->customer = $customer;
     }
@@ -225,7 +268,7 @@ class CattleFarmVisitDetails
     /**
      * @return float
      */
-    public function getCattlePopulationOx()
+    public function getCattlePopulationOx(): float
     {
         return $this->cattlePopulationOx;
     }
@@ -233,7 +276,7 @@ class CattleFarmVisitDetails
     /**
      * @param float $cattlePopulationOx
      */
-    public function setCattlePopulationOx($cattlePopulationOx)
+    public function setCattlePopulationOx(float $cattlePopulationOx): void
     {
         $this->cattlePopulationOx = $cattlePopulationOx;
     }
@@ -241,7 +284,7 @@ class CattleFarmVisitDetails
     /**
      * @return float
      */
-    public function getCattlePopulationCow()
+    public function getCattlePopulationCow(): float
     {
         return $this->cattlePopulationCow;
     }
@@ -249,7 +292,7 @@ class CattleFarmVisitDetails
     /**
      * @param float $cattlePopulationCow
      */
-    public function setCattlePopulationCow($cattlePopulationCow)
+    public function setCattlePopulationCow(float $cattlePopulationCow): void
     {
         $this->cattlePopulationCow = $cattlePopulationCow;
     }
@@ -257,7 +300,7 @@ class CattleFarmVisitDetails
     /**
      * @return float
      */
-    public function getCattlePopulationCalf()
+    public function getCattlePopulationCalf(): float
     {
         return $this->cattlePopulationCalf;
     }
@@ -265,7 +308,7 @@ class CattleFarmVisitDetails
     /**
      * @param float $cattlePopulationCalf
      */
-    public function setCattlePopulationCalf($cattlePopulationCalf)
+    public function setCattlePopulationCalf(float $cattlePopulationCalf): void
     {
         $this->cattlePopulationCalf = $cattlePopulationCalf;
     }
@@ -273,7 +316,7 @@ class CattleFarmVisitDetails
     /**
      * @return float
      */
-    public function getAvgMilkYieldPerDay()
+    public function getAvgMilkYieldPerDay(): float
     {
         return $this->avgMilkYieldPerDay;
     }
@@ -281,7 +324,7 @@ class CattleFarmVisitDetails
     /**
      * @param float $avgMilkYieldPerDay
      */
-    public function setAvgMilkYieldPerDay($avgMilkYieldPerDay)
+    public function setAvgMilkYieldPerDay(float $avgMilkYieldPerDay): void
     {
         $this->avgMilkYieldPerDay = $avgMilkYieldPerDay;
     }
@@ -289,7 +332,7 @@ class CattleFarmVisitDetails
     /**
      * @return float
      */
-    public function getConceptionRate()
+    public function getConceptionRate(): float
     {
         return $this->conceptionRate;
     }
@@ -297,7 +340,7 @@ class CattleFarmVisitDetails
     /**
      * @param float $conceptionRate
      */
-    public function setConceptionRate($conceptionRate)
+    public function setConceptionRate(float $conceptionRate): void
     {
         $this->conceptionRate = $conceptionRate;
     }
@@ -305,7 +348,7 @@ class CattleFarmVisitDetails
     /**
      * @return string
      */
-    public function getFodderGreenGrassKg()
+    public function getFodderGreenGrassKg(): string
     {
         return $this->fodderGreenGrassKg;
     }
@@ -321,7 +364,7 @@ class CattleFarmVisitDetails
     /**
      * @return string
      */
-    public function getFodderStrawKg()
+    public function getFodderStrawKg(): string
     {
         return $this->fodderStrawKg;
     }
@@ -337,7 +380,7 @@ class CattleFarmVisitDetails
     /**
      * @return string
      */
-    public function getTypeOfConcentrateFeed()
+    public function getTypeOfConcentrateFeed(): string
     {
         return $this->typeOfConcentrateFeed;
     }
@@ -345,7 +388,7 @@ class CattleFarmVisitDetails
     /**
      * @param string $typeOfConcentrateFeed
      */
-    public function setTypeOfConcentrateFeed($typeOfConcentrateFeed)
+    public function setTypeOfConcentrateFeed(string $typeOfConcentrateFeed): void
     {
         $this->typeOfConcentrateFeed = $typeOfConcentrateFeed;
     }
@@ -353,7 +396,7 @@ class CattleFarmVisitDetails
     /**
      * @return float
      */
-    public function getMarketPriceMilkPerLiter()
+    public function getMarketPriceMilkPerLiter(): float
     {
         return $this->marketPriceMilkPerLiter;
     }
@@ -361,7 +404,7 @@ class CattleFarmVisitDetails
     /**
      * @param float $marketPriceMilkPerLiter
      */
-    public function setMarketPriceMilkPerLiter($marketPriceMilkPerLiter)
+    public function setMarketPriceMilkPerLiter(float $marketPriceMilkPerLiter): void
     {
         $this->marketPriceMilkPerLiter = $marketPriceMilkPerLiter;
     }
@@ -369,7 +412,7 @@ class CattleFarmVisitDetails
     /**
      * @return float
      */
-    public function getMarketPriceMeatPerKg()
+    public function getMarketPriceMeatPerKg(): float
     {
         return $this->marketPriceMeatPerKg;
     }
@@ -377,7 +420,7 @@ class CattleFarmVisitDetails
     /**
      * @param float $marketPriceMeatPerKg
      */
-    public function setMarketPriceMeatPerKg($marketPriceMeatPerKg)
+    public function setMarketPriceMeatPerKg(float $marketPriceMeatPerKg): void
     {
         $this->marketPriceMeatPerKg = $marketPriceMeatPerKg;
     }
@@ -385,7 +428,7 @@ class CattleFarmVisitDetails
     /**
      * @return string
      */
-    public function getRemarks()
+    public function getRemarks(): string
     {
         return $this->remarks;
     }
@@ -429,6 +472,5 @@ class CattleFarmVisitDetails
     {
         $this->updatedAt = $updatedAt;
     }
-
 
 }

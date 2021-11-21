@@ -1,6 +1,6 @@
 <div class="portlet box ">
     <div class="portlet-title">
-        <div class="caption">{{cattleFarmVisit.report.name}}</div>
+        <div class="caption">{{report.name|default('')}}</div>
     </div>
 {#{{ dump(report) }}#}
 
@@ -13,20 +13,15 @@
                     <div class="col-md-12">
                         <h4>NOURISH POULTRY & HATCHERY LTD</h4>
                         <h5>Uttara, Dhaka.</h5>
-                        <h4>{{cattleFarmVisit.report.name}}</h4>
-                        <input type="hidden" class="cattleFarmVisit_id" value="{{ cattleFarmVisit.id }}">
+                        <h4>{{report.name}}</h4>
+                        <input type="hidden" class="cattleFarmVisit_id" value="{{ report.id }}">
                     </div>
 
-                    <div class="col-md-4">
-                        <p style="color: #000000">{{ 'SEO Name'|trans }}: {{ cattleFarmVisit.employee.name }}</p>
-                    </div>
-                    <div class="col-md-4">
-                        <p style="color: #000000">{{ 'Reporting Month'|trans }}: {{ cattleFarmVisit.reportingMonth?cattleFarmVisit.reportingMonth|date("F, Y"):'' }}</p>
-                    </div>
+
                 </div>
                 <div class="card-body-inner" style="padding: 0 5px; overflow-x: scroll">
                     <div class="cattleFarmVisitSection">
-                        {{ form_start(form, {'attr': {'method':'post','action': path('cattle_farm_visit_details_modal',{'id':cattleFarmVisit.id, 'customer':customer }),'class': 'form-horizontal right','id':'cattle_farm_visit_form'}}) }}
+                        {{ form_start(form, {'attr': {'method':'post','action': path('cattle_farm_visit_details_modal',{'id':report.id, 'customer':customer }),'class': 'form-horizontal right','id':'cattle_farm_visit_form'}}) }}
                         <table class="table table-striped table-bordered table-hover cattle_farm_visit_report" id="datatable">
                             <thead class="thead-dark">
                             <tr>

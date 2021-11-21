@@ -155,9 +155,6 @@ class SyncAppDataController extends AbstractController
                         case "crm_customer_introduce_details":
                             $this->processFarmerIntroduce($jsonToArray, $batch);
                             break;
-                        case "crm_cattle_farm_visit":
-                            $this->processCattleFarmVisit($jsonToArray, $batch);
-                            break;
                         case "crm_cattle_farm_visit_details":
                             $this->processCattleFarmVisitDetails($jsonToArray, $batch);
                             break;
@@ -1086,43 +1083,16 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
         }
     }
 
-    public function processCattleFarmVisit($visits, Api $batch)
-    {
-        foreach ($visits as $visit) {
-            $reportingMonth = $visit['repoting_month'] ? (new \DateTime($visit['repoting_month']))->format('Y-m-d') : null;
-            $created = $visit['created'] ? (new \DateTime($visit['created']))->format('Y-m-d H:i:s') : null;
-
-            $sql = "INSERT INTO `crm_cattle_farm_visit`(`employee_id`, `report_id`, `repoting_month`, `created`, `app_id`, `batch_id`) VALUES (:employee_id, :report_id, :repoting_month, :created, :app_id, :batch_id)";
-            $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
-            $stmt->bindValue('employee_id',$visit['employee_id']);
-            $stmt->bindValue('report_id',$visit['report_id']);
-            $stmt->bindValue('repoting_month',$reportingMonth);
-            $stmt->bindValue('created',$created);
-            $stmt->bindValue('app_id',$visit['id']);
-            $stmt->bindValue('batch_id',$batch->getId());
-
-
-            $stmt->execute();
-        }
-    }
-
     public function processCattleFarmVisitDetails($reports, Api $batch)
     {
         foreach ($reports as $report) {
-            $sql = "SELECT `id` FROM `crm_cattle_farm_visit` WHERE app_id = :app_id AND batch_id = :batch_id";
-            $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
-            $stmt->bindValue('app_id', $report['crm_cattle_performance_id']);
-            $stmt->bindValue('batch_id', $batch->getId());
-            $stmt->execute();
-            $visitId = $stmt->fetch()['id'];
-
+            $reportingMonth = $report['repoting_month'] ? (new \DateTime($report['repoting_month']))->format('Y-m-d') : null;
             $visitingDate = $report['visiting_date'] ? (new \DateTime($report['visiting_date']))->format('Y-m-d') : null;
             $createdAt = $report['created_at'] ? (new \DateTime($report['created_at']))->format('Y-m-d H:i:s') : null;
 
-            $sql = "INSERT INTO `crm_cattle_farm_visit_details`(`crm_cattle_farm_visit_id`, `agent_id`, `customer_id`, `visiting_date`, `cattlePopulationOx`, `cattlePopulationCow`, `cattlePopulationCalf`, `avgMilkYieldPerDay`, `conceptionRate`, `fodder_green_grass_kg`, `fodder_straw_kg`, `typeOfConcentrateFeed`, `marketPriceMilkPerLiter`, `marketPriceMeatPerKg`, `remarks`, `created_at`) VALUES (:crm_cattle_farm_visit_id, :agent_id, :customer_id, :visiting_date, :cattlePopulationOx, :cattlePopulationCow, :cattlePopulationCalf, :avgMilkYieldPerDay, :conceptionRate, :fodder_green_grass_kg, :fodder_straw_kg, :typeOfConcentrateFeed, :marketPriceMilkPerLiter, :marketPriceMeatPerKg, :remarks, :created_at)";
+            $sql = "INSERT INTO `crm_cattle_farm_visit_details`(`agent_id`, `customer_id`, `visiting_date`, `cattlePopulationOx`, `cattlePopulationCow`, `cattlePopulationCalf`, `avgMilkYieldPerDay`, `conceptionRate`, `fodder_green_grass_kg`, `fodder_straw_kg`, `typeOfConcentrateFeed`, `marketPriceMilkPerLiter`, `marketPriceMeatPerKg`, `remarks`, `created_at`, `employee_id`, `repoting_month`, `report_id`) VALUES (:agent_id, :customer_id, :visiting_date, :cattlePopulationOx, :cattlePopulationCow, :cattlePopulationCalf, :avgMilkYieldPerDay, :conceptionRate, :fodder_green_grass_kg, :fodder_straw_kg, :typeOfConcentrateFeed, :marketPriceMilkPerLiter, :marketPriceMeatPerKg, :remarks, :created_at, :employee_id, :repoting_month, :report_id)";
 
             $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
-            $stmt->bindValue('crm_cattle_farm_visit_id', $visitId);
             $stmt->bindValue('agent_id', $report['agent_id']);
             $stmt->bindValue('customer_id', $report['customer_id']);
             $stmt->bindValue('visiting_date', $visitingDate);
@@ -1137,6 +1107,9 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
             $stmt->bindValue('marketPriceMilkPerLiter', $report['marketPriceMilkPerLiter']);
             $stmt->bindValue('marketPriceMeatPerKg', $report['marketPriceMeatPerKg']);
             $stmt->bindValue('remarks', $report['remarks']);
+            $stmt->bindValue('employee_id', $report['employee_id']);
+            $stmt->bindValue('repoting_month', $reportingMonth);
+            $stmt->bindValue('report_id', $report['report_id']);
             $stmt->bindValue('created_at', $createdAt);
 
             $stmt->execute();

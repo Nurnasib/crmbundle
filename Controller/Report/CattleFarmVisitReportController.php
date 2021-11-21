@@ -12,6 +12,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Terminalbd\CrmBundle\Entity\CattleFarmVisit;
+use Terminalbd\CrmBundle\Entity\CattleFarmVisitDetails;
 use Terminalbd\CrmBundle\Entity\FarmerTrainingReport;
 use Terminalbd\CrmBundle\Form\SearchFilterFormType;
 
@@ -33,7 +34,7 @@ class CattleFarmVisitReportController extends AbstractController
             $filterBy = $searchForm->getData();
             $filterBy['employeeId'] = $filterBy['employee']->getId();
 //            dd($filterBy);
-            $entities = $this->getDoctrine()->getRepository(CattleFarmVisit::class)->getCattlefarmVisitReport($filterBy);
+            $entities = $this->getDoctrine()->getRepository(CattleFarmVisitDetails::class)->getCattlefarmVisitReport($filterBy);
         }
         return $this->render('@TerminalbdCrm/report/cattle/report-cattle-farm-visit.html.twig',['searchForm' => $searchForm->createView(), 'entities' =>$entities, 'filterBy'=>$filterBy]);
     }
