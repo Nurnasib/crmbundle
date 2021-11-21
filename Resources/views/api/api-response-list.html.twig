@@ -22,8 +22,8 @@
             <div class="card">
                 <div class="card-header">
                     <h5>{{ 'API Response List'|trans }}</h5>
-                    <div class="btn-group btn-group-sm float-right">
-                        <a href="{{ path('crm_sync_app_data_sync') }}" class="btn purple-bg white-font loader"><i class="fa fa-sync"></i> Sync</a>
+                    <div class="btn-group float-right">
+                        <a href="{{ path('crm_sync_app_data_sync') }}" class="btn btn-mini purple-bg white-font loader"><i class="fa fa-sync"></i> Sync All</a>
                     </div>
                 </div>
             </div>
@@ -41,6 +41,7 @@
                             <th>{{ 'Batch No.'| trans }}</th>
                             <th>{{ 'Created At'| trans }}</th>
                             <th>{{ 'Status'| trans }}</th>
+                            <th class="text-center"><i class="feather icon-settings"></i></th>
                         </tr>
                         </thead>
                         <tbody>
@@ -53,11 +54,16 @@
                                     <td>{{ record.batchNo|default('') }}</td>
                                     <td>{{ record.createdAt|date('d-m-Y')|default('') }}</td>
                                     <td>{{ record.status == 1 ? 'Yes':'No' }}</td>
+                                    <td align="center">
+                                        <div class="btn-group">
+                                            <a href="{{ path('crm_sync_app_data_sync', {id: record.id}) }}" class="btn btn-mini purple-bg white-font loader"><i class="fa fa-sync"></i> Sync</a>
+                                        </div>
+                                    </td>
                                 </tr>
                             {% endfor %}
                         {% else %}
                             <tr>
-                                <td colspan="6" align="center"> {{ 'No records Found!'|trans }}</td>
+                                <td colspan="7" align="center"> {{ 'No records Found!'|trans }}</td>
                             </tr>
                         {% endif %}
                         </tbody>

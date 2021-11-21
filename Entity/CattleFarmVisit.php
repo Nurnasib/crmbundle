@@ -25,10 +25,12 @@ class CattleFarmVisit
 {
 
     /**
+     * @var integer
+     * @ORM\Column(name="id", type="integer")
      * @ORM\Id
-     * @ORM\Column(name="id", type="guid")
-     * @ORM\GeneratedValue(strategy="UUID")
+     * @ORM\GeneratedValue
      */
+
     private $id;
 
     /**
@@ -72,33 +74,37 @@ class CattleFarmVisit
     private $updated;
 
     /**
-     * @return mixed
+     * @var integer
+     * @ORM\Column(type="integer", nullable=true)
      */
-    public function getId()
+    private $appId;
+
+    /**
+     * @ORM\OneToOne(targetEntity="Terminalbd\CrmBundle\Entity\Api", inversedBy="cattleFarmVisit")
+     * @ORM\JoinColumn(referencedColumnName="id", onDelete="CASCADE")
+     */
+    private $batch;
+
+    /**
+     * @return int
+     */
+    public function getId(): int
     {
         return $this->id;
     }
 
     /**
-     * @return User
+     * @param int $id
      */
-    public function getEmployee()
+    public function setId(int $id): void
     {
-        return $this->employee;
-    }
-
-    /**
-     * @param User $employee
-     */
-    public function setEmployee($employee)
-    {
-        $this->employee = $employee;
+        $this->id = $id;
     }
 
     /**
      * @return CattleFarmVisitDetails
      */
-    public function getCrmCattleFarmVisitDetails()
+    public function getCrmCattleFarmVisitDetails(): CattleFarmVisitDetails
     {
         return $this->crmCattleFarmVisitDetails;
     }
@@ -106,15 +112,31 @@ class CattleFarmVisit
     /**
      * @param CattleFarmVisitDetails $crmCattleFarmVisitDetails
      */
-    public function setCrmCattleFarmVisitDetails($crmCattleFarmVisitDetails)
+    public function setCrmCattleFarmVisitDetails(CattleFarmVisitDetails $crmCattleFarmVisitDetails): void
     {
         $this->crmCattleFarmVisitDetails = $crmCattleFarmVisitDetails;
     }
 
     /**
+     * @return User
+     */
+    public function getEmployee(): User
+    {
+        return $this->employee;
+    }
+
+    /**
+     * @param User $employee
+     */
+    public function setEmployee(User $employee): void
+    {
+        $this->employee = $employee;
+    }
+
+    /**
      * @return Setting
      */
-    public function getReport()
+    public function getReport(): Setting
     {
         return $this->report;
     }
@@ -122,7 +144,7 @@ class CattleFarmVisit
     /**
      * @param Setting $report
      */
-    public function setReport($report)
+    public function setReport(Setting $report): void
     {
         $this->report = $report;
     }
@@ -130,7 +152,7 @@ class CattleFarmVisit
     /**
      * @return \DateTime
      */
-    public function getReportingMonth()
+    public function getReportingMonth(): \DateTime
     {
         return $this->reportingMonth;
     }
@@ -146,7 +168,7 @@ class CattleFarmVisit
     /**
      * @return \DateTime
      */
-    public function getCreated()
+    public function getCreated(): \DateTime
     {
         return $this->created;
     }
@@ -162,7 +184,7 @@ class CattleFarmVisit
     /**
      * @return \DateTime
      */
-    public function getUpdated()
+    public function getUpdated(): \DateTime
     {
         return $this->updated;
     }
@@ -175,5 +197,36 @@ class CattleFarmVisit
         $this->updated = $updated;
     }
 
+    /**
+     * @return int
+     */
+    public function getAppId(): int
+    {
+        return $this->appId;
+    }
+
+    /**
+     * @param int $appId
+     */
+    public function setAppId(int $appId): void
+    {
+        $this->appId = $appId;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getBatch()
+    {
+        return $this->batch;
+    }
+
+    /**
+     * @param mixed $batch
+     */
+    public function setBatch($batch): void
+    {
+        $this->batch = $batch;
+    }
 
 }

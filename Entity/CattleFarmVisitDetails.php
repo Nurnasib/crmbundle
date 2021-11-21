@@ -29,7 +29,7 @@ class CattleFarmVisitDetails
     /**
      * @var CattleFarmVisit
      * @ORM\ManyToOne(targetEntity="Terminalbd\CrmBundle\Entity\CattleFarmVisit", inversedBy="crmCattleFarmVisitDetails")
-     * @ORM\JoinColumn(name="crm_cattle_performance_id", referencedColumnName="id")
+     * @ORM\JoinColumn(referencedColumnName="id")
      * @ORM\JoinColumn(onDelete="CASCADE")
      */
 
@@ -56,32 +56,32 @@ class CattleFarmVisitDetails
 
     /**
      * @var float
-     * @Orm\Column(name="cattlePopulationOx", type="float")
+     * @Orm\Column(name="cattlePopulationOx", type="float", nullable=true)
      */
     private $cattlePopulationOx=0;
 
     /**
      * @var float
-     * @Orm\Column(name="cattlePopulationCow", type="float")
+     * @Orm\Column(name="cattlePopulationCow", type="float", nullable=true)
      */
     private $cattlePopulationCow=0;
 
     /**
      * @var float
-     * @Orm\Column(name="cattlePopulationCalf", type="float")
+     * @Orm\Column(name="cattlePopulationCalf", type="float", nullable=true)
      */
     private $cattlePopulationCalf=0;
 
     /**
      * @var float
-     * @Orm\Column(name="avgMilkYieldPerDay", type="float")
+     * @Orm\Column(name="avgMilkYieldPerDay", type="float", nullable=true)
      */
 
     private $avgMilkYieldPerDay=0;
 
     /**
      * @var float
-     * @Orm\Column(name="conceptionRate", type="float")
+     * @Orm\Column(name="conceptionRate", type="float", nullable=true)
      */
 
     private $conceptionRate=0;

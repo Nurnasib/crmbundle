@@ -18,6 +18,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Terminalbd\CrmBundle\Entity\Api;
+use Terminalbd\CrmBundle\Entity\CattleFarmVisit;
 use Terminalbd\CrmBundle\Entity\CattleLifeCycle;
 use Terminalbd\CrmBundle\Entity\ChickLifeCycle;
 use Terminalbd\CrmBundle\Entity\CrmCustomer;
@@ -61,17 +62,24 @@ class SyncAppDataController extends AbstractController
     }
 
     /**
-     * @Route("/sync", name="_sync")
+     * @Route("/sync/{id}", name="_sync", defaults={"id" = null})
      * @Security("is_granted('ROLE_DEVELOPER')")
+     * @param $batchId
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function syncAppData()
+    public function syncAppData($id)
     {
         set_time_limit(0);
         ignore_user_abort(true);
 
         $em = $this->getDoctrine()->getManager();
 
-        $batches = $this->getDoctrine()->getRepository(Api::class)->findBy(['status' => 0]);
+        if ($id){
+            $batches = $this->getDoctrine()->getRepository(Api::class)->findBy(['id' => $id]);
+        }else{
+            $batches = $this->getDoctrine()->getRepository(Api::class)->findBy(['status' => 0]);
+        }
+
         foreach ($batches as $batch) {
             $findVisit = $this->getDoctrine()->getRepository(CrmVisit::class)->findOneBy(['appBatch' => $batch]);
             if (!$findVisit){
@@ -82,70 +90,70 @@ class SyncAppDataController extends AbstractController
 
                     switch ($detail->getProcess()){
                         case "crm_visit":
-//                            $this->processVisit($jsonToArray, $batch);
+                            $this->processVisit($jsonToArray, $batch);
                             break;
                         case "crm_visit_details":
-//                            $this->processVisitDetail($jsonToArray, $batch);
+                            $this->processVisitDetail($jsonToArray, $batch);
                             break;
                         case "crm_layer_performance_details":
-//                            $this->processLayerPerformance($jsonToArray, $batch);
+                            $this->processLayerPerformance($jsonToArray, $batch);
                             break;
                         case "crm_cattle_performance_details":
-//                            $this->processCattlePerformance($jsonToArray, $batch);
+                            $this->processCattlePerformance($jsonToArray, $batch);
                             break;
                         case "crm_fcr_details":
-//                            $this->processFcrDetail($jsonToArray, $batch);
+                            $this->processFcrDetail($jsonToArray, $batch);
                             break;
                         case "crm_antibiotic_free_farm":
-//                            $this->processAntibioticFreeFarm($jsonToArray, $batch);
+                            $this->processAntibioticFreeFarm($jsonToArray, $batch);
                             break;
                         case "crm_cost_benefit_analysis_for_less_costing_farm":
-//                            $this->processCostBenefitAnalysis($jsonToArray, $batch);
+                            $this->processCostBenefitAnalysis($jsonToArray, $batch);
                             break;
                         case "crm_disease_mapping":
-//                            $this->processDiseaseMapping($jsonToArray, $batch);
+                            $this->processDiseaseMapping($jsonToArray, $batch);
                             break;
                         case "crm_complain_different_product":
-//                            $this->processComplain($jsonToArray, $batch);
+                            $this->processComplain($jsonToArray, $batch);
                             break;
                         case "crm_broiler_life_cycle":
-//                            $this->processBroilerLifeCycle($jsonToArray, $batch);
+                            $this->processBroilerLifeCycle($jsonToArray, $batch);
                             break;
                         case "crm_broiler_life_cycle_details":
-//                            $this->processBroilerLifeCycleDetail($jsonToArray, $batch);
+                            $this->processBroilerLifeCycleDetail($jsonToArray, $batch);
                             break;
                         case "crm_cattle_life_cycle":
-//                            $this->processCattleLifeCycle($jsonToArray, $batch);
+                            $this->processCattleLifeCycle($jsonToArray, $batch);
                             break;
                         case "crm_cattle_life_cycle_details":
-//                            $this->processCattleLifeCycleDetail($jsonToArray, $batch);
+                            $this->processCattleLifeCycleDetail($jsonToArray, $batch);
                             break;
                         case "crm_layer_life_cycle":
-//                            $this->processLayerLifeCycle($jsonToArray, $batch);
+                            $this->processLayerLifeCycle($jsonToArray, $batch);
                             break;
                         case "crm_layer_life_cycle_details":
-//                            $this->processLayerLifeCycleDetail($jsonToArray, $batch);
+                            $this->processLayerLifeCycleDetail($jsonToArray, $batch);
                             break;
                         case "crm_expense":
-//                            $this->processExpense($jsonToArray, $batch);
+                            $this->processExpense($jsonToArray, $batch);
                             break;
                         case "crm_expense_purpose":
-//                            $this->processExpensePurpose($jsonToArray, $batch);
+                            $this->processExpensePurpose($jsonToArray, $batch);
                             break;
                         case "crm_expense_vehicle":
-//                            $this->processExpenseVehicle($jsonToArray, $batch);
+                            $this->processExpenseVehicle($jsonToArray, $batch);
                             break;
                         case "crm_doc_complain_details":
-//                            $this->processDocComplain($jsonToArray, $batch);
+                            $this->processDocComplain($jsonToArray, $batch);
                             break;
                         case "crm_feed_complain_details":
-//                            $this->processFeedComplain($jsonToArray, $batch);
+                            $this->processFeedComplain($jsonToArray, $batch);
                             break;
                         case "crm_customer":
-//                            $this->processFarmer($jsonToArray, $batch);
+                            $this->processFarmer($jsonToArray, $batch);
                             break;
                         case "crm_customer_introduce_details":
-//                            $this->processFarmerIntroduce($jsonToArray, $batch);
+                            $this->processFarmerIntroduce($jsonToArray, $batch);
                             break;
                         case "crm_cattle_farm_visit":
                             $this->processCattleFarmVisit($jsonToArray, $batch);
@@ -155,13 +163,13 @@ class SyncAppDataController extends AbstractController
                             break;
                     }
                     $detail->setStatus(true);
-//                    $em->persist($detail);
-//                    $em->flush();
+                    $em->persist($detail);
+                    $em->flush();
                 }
             }
             $batch->setStatus(true);
-//            $em->persist($batch);
-//            $em->flush();
+            $em->persist($batch);
+            $em->flush();
         }
         $this->addFlash('success', 'Synchronization Completed!');
         return $this->redirectToRoute('crm_sync_app_data_index');
@@ -1081,14 +1089,57 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
     public function processCattleFarmVisit($visits, Api $batch)
     {
         foreach ($visits as $visit) {
-            dd($visit);
+            $reportingMonth = $visit['repoting_month'] ? (new \DateTime($visit['repoting_month']))->format('Y-m-d') : null;
+            $created = $visit['created'] ? (new \DateTime($visit['created']))->format('Y-m-d H:i:s') : null;
+
+            $sql = "INSERT INTO `crm_cattle_farm_visit`(`employee_id`, `report_id`, `repoting_month`, `created`, `app_id`, `batch_id`) VALUES (:employee_id, :report_id, :repoting_month, :created, :app_id, :batch_id)";
+            $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
+            $stmt->bindValue('employee_id',$visit['employee_id']);
+            $stmt->bindValue('report_id',$visit['report_id']);
+            $stmt->bindValue('repoting_month',$reportingMonth);
+            $stmt->bindValue('created',$created);
+            $stmt->bindValue('app_id',$visit['id']);
+            $stmt->bindValue('batch_id',$batch->getId());
+
+
+            $stmt->execute();
         }
     }
 
     public function processCattleFarmVisitDetails($reports, Api $batch)
     {
         foreach ($reports as $report) {
-            dd($report);
+            $sql = "SELECT `id` FROM `crm_cattle_farm_visit` WHERE app_id = :app_id AND batch_id = :batch_id";
+            $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
+            $stmt->bindValue('app_id', $report['crm_cattle_performance_id']);
+            $stmt->bindValue('batch_id', $batch->getId());
+            $stmt->execute();
+            $visitId = $stmt->fetch()['id'];
+
+            $visitingDate = $report['visiting_date'] ? (new \DateTime($report['visiting_date']))->format('Y-m-d') : null;
+            $createdAt = $report['created_at'] ? (new \DateTime($report['created_at']))->format('Y-m-d H:i:s') : null;
+
+            $sql = "INSERT INTO `crm_cattle_farm_visit_details`(`crm_cattle_farm_visit_id`, `agent_id`, `customer_id`, `visiting_date`, `cattlePopulationOx`, `cattlePopulationCow`, `cattlePopulationCalf`, `avgMilkYieldPerDay`, `conceptionRate`, `fodder_green_grass_kg`, `fodder_straw_kg`, `typeOfConcentrateFeed`, `marketPriceMilkPerLiter`, `marketPriceMeatPerKg`, `remarks`, `created_at`) VALUES (:crm_cattle_farm_visit_id, :agent_id, :customer_id, :visiting_date, :cattlePopulationOx, :cattlePopulationCow, :cattlePopulationCalf, :avgMilkYieldPerDay, :conceptionRate, :fodder_green_grass_kg, :fodder_straw_kg, :typeOfConcentrateFeed, :marketPriceMilkPerLiter, :marketPriceMeatPerKg, :remarks, :created_at)";
+
+            $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
+            $stmt->bindValue('crm_cattle_farm_visit_id', $visitId);
+            $stmt->bindValue('agent_id', $report['agent_id']);
+            $stmt->bindValue('customer_id', $report['customer_id']);
+            $stmt->bindValue('visiting_date', $visitingDate);
+            $stmt->bindValue('cattlePopulationOx', $report['cattlePopulationOx'] ?: 0);
+            $stmt->bindValue('cattlePopulationCow', $report['cattlePopulationCow'] ?: 0);
+            $stmt->bindValue('cattlePopulationCalf', $report['cattlePopulationCalf'] ?: 0);
+            $stmt->bindValue('avgMilkYieldPerDay', $report['avgMilkYieldPerDay']);
+            $stmt->bindValue('conceptionRate', $report['conceptionRate']);
+            $stmt->bindValue('fodder_green_grass_kg', $report['fodder_green_grass_kg']);
+            $stmt->bindValue('fodder_straw_kg', $report['fodder_straw_kg']);
+            $stmt->bindValue('typeOfConcentrateFeed', $report['typeOfConcentrateFeed']);
+            $stmt->bindValue('marketPriceMilkPerLiter', $report['marketPriceMilkPerLiter']);
+            $stmt->bindValue('marketPriceMeatPerKg', $report['marketPriceMeatPerKg']);
+            $stmt->bindValue('remarks', $report['remarks']);
+            $stmt->bindValue('created_at', $createdAt);
+
+            $stmt->execute();
         }
     }
 }
