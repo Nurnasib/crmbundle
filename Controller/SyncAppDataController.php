@@ -53,7 +53,7 @@ class SyncAppDataController extends AbstractController
      */
     public function index(Request $request)
     {
-        $records = $this->getDoctrine()->getRepository(Api::class)->findBy(['status' => 0], ['id' => 'DESC']);
+        $records = $this->getDoctrine()->getRepository(Api::class)->findBy(['status' => 0], ['createdAt' => 'DESC']);
         $records = $this->pagination($request, $records);
 
         return $this->render('@TerminalbdCrm/api/api-response-list.html.twig',[
