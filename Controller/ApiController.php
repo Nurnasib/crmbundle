@@ -827,7 +827,7 @@ class ApiController extends AbstractController
         set_time_limit(0);
         ignore_user_abort(true);
 
-        $entities = $this->getDoctrine()->getRepository(Api::class)->selectFarmType(1);
+        $entities = $this->getDoctrine()->getRepository(Api::class)->selectFarmType();
         $response = new Response();
         $response->headers->set('Content-Type', 'application/json');
         $response->setContent(json_encode($entities));
@@ -920,6 +920,40 @@ class ApiController extends AbstractController
         ignore_user_abort(true);
 
         $entities = $this->getDoctrine()->getRepository(Api::class)->feedType(1);
+        $response = new Response();
+        $response->headers->set('Content-Type', 'application/json');
+        $response->setContent(json_encode($entities));
+        $response->setStatusCode(Response::HTTP_OK);
+        return $response;
+    }
+
+    /**
+     * @Route("/fishFeedType", methods={"GET"}, name="fishFeedType")
+     */
+    public function fishFeedType()
+    {
+
+        set_time_limit(0);
+        ignore_user_abort(true);
+
+        $entities = $this->getDoctrine()->getRepository(Api::class)->fishFeedType();
+        $response = new Response();
+        $response->headers->set('Content-Type', 'application/json');
+        $response->setContent(json_encode($entities));
+        $response->setStatusCode(Response::HTTP_OK);
+        return $response;
+    }
+    
+    /**
+     * @Route("/fishSpeciesName", methods={"GET"}, name="fishSpeciesName")
+     */
+    public function fishSpeciesName()
+    {
+
+        set_time_limit(0);
+        ignore_user_abort(true);
+
+        $entities = $this->getDoctrine()->getRepository(Api::class)->fishSpeciesName();
         $response = new Response();
         $response->headers->set('Content-Type', 'application/json');
         $response->setContent(json_encode($entities));
@@ -1888,5 +1922,41 @@ class ApiController extends AbstractController
         ]));
         return $response;
     }
+
+
+    /**
+     * @Route("/labName", methods={"GET"}, name="lab_name")
+     */
+    public function labName()
+    {
+
+        set_time_limit(0);
+        ignore_user_abort(true);
+
+        $entities = $this->getDoctrine()->getRepository(Api::class)->labName();
+        $response = new Response();
+        $response->headers->set('Content-Type', 'application/json');
+        $response->setContent(json_encode($entities));
+        $response->setStatusCode(Response::HTTP_OK);
+        return $response;
+    }
+
+    /**
+     * @Route("/labServiceName", methods={"GET"}, name="lab_service_name")
+     */
+    public function labServiceName()
+    {
+
+        set_time_limit(0);
+        ignore_user_abort(true);
+
+        $entities = $this->getDoctrine()->getRepository(Api::class)->labServiceName();
+        $response = new Response();
+        $response->headers->set('Content-Type', 'application/json');
+        $response->setContent(json_encode($entities));
+        $response->setStatusCode(Response::HTTP_OK);
+        return $response;
+    }
+
 
 }

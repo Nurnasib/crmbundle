@@ -1113,6 +1113,71 @@ class ApiRepository extends BaseRepository
     }
 
     /**
+     * Feed Type
+     */
+    public function fishFeedType()
+    {
+        $em = $this->_em;
+        $qb = $em->createQueryBuilder();
+        $qb->from(Setting::class,'s');
+        $qb->leftJoin('s.parent','p');
+        $qb->leftJoin('p.parent','pp');
+
+
+        $qb->select('s.id as id','s.name as feedTypeName');
+        $qb->addSelect('p.name as feedName');
+        $qb->addSelect('pp.name as parentName');
+
+        $qb->where("s.settingType = 'FEED_TYPE'");
+        $qb->andWhere('s.status = 1');
+        $qb->andWhere('pp.name =:parentParentName');
+        $qb->setParameter('parentParentName','Fish');
+
+        $qb->orderBy('s.id', 'ASC');
+        $result = $qb->getQuery()->getArrayResult();
+        $data = array();
+        foreach ($result as $key => $row) {
+            $data[$key]['id'] = (int)$row['id'];
+            $data[$key]['feedTypeName'] = (string)$row['feedTypeName'];
+        }
+
+        return $data;
+    }
+
+    /**
+     * Fish Species Name
+     */
+    public function fishSpeciesName()
+    {
+        $em = $this->_em;
+        $qb = $em->createQueryBuilder();
+        $qb->from(Setting::class,'s');
+        $qb->leftJoin('s.parent','p');
+        $qb->leftJoin('p.parent','pp');
+
+
+        $qb->select('s.id as id','s.name as speciesName');
+        $qb->addSelect('p.name as feedTypeName');
+
+        $qb->where("s.settingType = 'SPECIES_NAME'");
+        $qb->andWhere('s.status = 1');
+        $qb->andWhere('pp.name =:parentParentName');
+        $qb->setParameter('parentParentName','Fish');
+
+        $qb->orderBy('s.id', 'ASC');
+        $result = $qb->getQuery()->getArrayResult();
+        $data = array();
+        foreach ($result as $key => $row) {
+
+            $data[$key]['id'] = (int)$row['id'];
+            $data[$key]['speciesName'] = (string)$row['speciesName'];
+            $data[$key]['feedTypeName'] = (string)$row['feedTypeName'];
+        }
+
+        return $data;
+    }
+
+    /**
      * Hatchery
      */
     public function hatchery()
@@ -1695,6 +1760,54 @@ class ApiRepository extends BaseRepository
         $qb->andWhere('s.status = 1');
 
         return $qb->getQuery()->getArrayResult();
+    }
+
+
+    /**
+     * Lab Name
+     */
+    public function labName()
+    {
+        $em = $this->_em;
+        $qb = $em->createQueryBuilder();
+        $qb->from(Setting::class,'s');
+        $qb->select('s.id as id','s.name as labName');
+        $qb->where("s.settingType = 'LAB_NAME'");
+        $qb->andWhere('s.status = 1');
+
+        $qb->orderBy('s.id', 'ASC');
+        $result = $qb->getQuery()->getArrayResult();
+        $data = array();
+        foreach ($result as $key => $row) {
+            $data[$key]['id'] = (int)$row['id'];
+            $data[$key]['labName'] = (string)$row['labName'];
+        }
+        return $data;
+    }
+
+    /**
+     * Lab Service Name
+     */
+    public function labServiceName()
+    {
+        $em = $this->_em;
+        $qb = $em->createQueryBuilder();
+        $qb->from(Setting::class,'s');
+        $qb->leftJoin('s.parent','p');
+        $qb->select('s.id as id','s.name as labServiceName');
+        $qb->addSelect('p.name as breedName');
+        $qb->where("s.settingType = 'LAB_SERVICE_NAME'");
+        $qb->andWhere('s.status = 1');
+
+        $qb->orderBy('s.id', 'ASC');
+        $result = $qb->getQuery()->getArrayResult();
+        $data = array();
+        foreach ($result as $key => $row) {
+            $data[$key]['id'] = (int)$row['id'];
+            $data[$key]['labServiceName'] = (string)$row['labServiceName'];
+            $data[$key]['breedName'] = (string)$row['breedName'];
+        }
+        return $data;
     }
 
 }
