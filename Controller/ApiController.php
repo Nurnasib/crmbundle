@@ -929,36 +929,53 @@ class ApiController extends AbstractController
 
     /**
      * @Route("/fishFeedType", methods={"GET"}, name="fishFeedType")
+     * @param Request $request
+     * @param ParameterBagInterface $parameterBag
+     * @return Response
      */
-    public function fishFeedType()
+    public function fishFeedType(Request $request, ParameterBagInterface $parameterBag)
     {
-
         set_time_limit(0);
         ignore_user_abort(true);
-
-        $entities = $this->getDoctrine()->getRepository(Api::class)->fishFeedType();
-        $response = new Response();
-        $response->headers->set('Content-Type', 'application/json');
-        $response->setContent(json_encode($entities));
-        $response->setStatusCode(Response::HTTP_OK);
-        return $response;
+        if ($request->getMethod() == 'GET' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')){
+            $entities = $this->getDoctrine()->getRepository(Api::class)->fishFeedType();
+            $response = new Response();
+            $response->headers->set('Content-Type', 'application/json');
+            $response->setContent(json_encode($entities));
+            $response->setStatusCode(Response::HTTP_OK);
+            return $response;
+        }
+        return new JsonResponse([
+            'status' => 404,
+            'message' => 'Not Found!'
+        ]);
     }
-    
+
     /**
      * @Route("/fishSpeciesName", methods={"GET"}, name="fishSpeciesName")
+     * @param Request $request
+     * @param ParameterBagInterface $parameterBag
+     * @return JsonResponse|Response
      */
-    public function fishSpeciesName()
+    public function fishSpeciesName(Request $request, ParameterBagInterface $parameterBag)
     {
 
         set_time_limit(0);
         ignore_user_abort(true);
+        if ($request->getMethod() == 'GET' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')){
+            $entities = $this->getDoctrine()->getRepository(Api::class)->fishSpeciesName();
+            $response = new Response();
+            $response->headers->set('Content-Type', 'application/json');
+            $response->setContent(json_encode($entities));
+            $response->setStatusCode(Response::HTTP_OK);
+            return $response;
+        }
+        return new JsonResponse([
+            'status' => 404,
+            'message' => 'Not Found!'
+        ]);
 
-        $entities = $this->getDoctrine()->getRepository(Api::class)->fishSpeciesName();
-        $response = new Response();
-        $response->headers->set('Content-Type', 'application/json');
-        $response->setContent(json_encode($entities));
-        $response->setStatusCode(Response::HTTP_OK);
-        return $response;
+
     }
 
 
@@ -1050,19 +1067,29 @@ class ApiController extends AbstractController
 
     /**
      * @Route("/disease", methods={"GET"}, name="disease")
+     * @param Request $request
+     * @param ParameterBagInterface $parameterBag
+     * @return JsonResponse|Response
      */
-    public function disease()
+    public function disease(Request $request, ParameterBagInterface $parameterBag)
     {
 
         set_time_limit(0);
         ignore_user_abort(true);
+        if ($request->getMethod() == 'GET' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')){
+            $entities = $this->getDoctrine()->getRepository(Api::class)->disease(1);
+            $response = new Response();
+            $response->headers->set('Content-Type', 'application/json');
+            $response->setContent(json_encode($entities));
+            $response->setStatusCode(Response::HTTP_OK);
+            return $response;
+        }
+        return new JsonResponse([
+            'status' => 404,
+            'message' => 'Not Found!'
+        ]);
 
-        $entities = $this->getDoctrine()->getRepository(Api::class)->disease(1);
-        $response = new Response();
-        $response->headers->set('Content-Type', 'application/json');
-        $response->setContent(json_encode($entities));
-        $response->setStatusCode(Response::HTTP_OK);
-        return $response;
+
     }
 
     /**
@@ -1084,19 +1111,28 @@ class ApiController extends AbstractController
 
     /**
      * @Route("/mainculturespecies", methods={"GET"}, name="mainculturespecies")
+     * @param Request $request
+     * @param ParameterBagInterface $parameterBag
+     * @return Response
      */
-    public function mainculturespecies()
+    public function mainCultureSpecies(Request $request, ParameterBagInterface $parameterBag)
     {
 
         set_time_limit(0);
         ignore_user_abort(true);
+        if ($request->getMethod() == 'GET' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')){
+            $entities = $this->getDoctrine()->getRepository(Api::class)->mainculturespecies();
+            $response = new Response();
+            $response->headers->set('Content-Type', 'application/json');
+            $response->setContent(json_encode($entities));
+            $response->setStatusCode(Response::HTTP_OK);
+            return $response;
+        }
+        return new JsonResponse([
+            'status' => 404,
+            'message' => 'Not Found!'
+        ]);
 
-        $entities = $this->getDoctrine()->getRepository(Api::class)->mainculturespecies(1);
-        $response = new Response();
-        $response->headers->set('Content-Type', 'application/json');
-        $response->setContent(json_encode($entities));
-        $response->setStatusCode(Response::HTTP_OK);
-        return $response;
     }
 
     /**
@@ -1333,18 +1369,28 @@ class ApiController extends AbstractController
 
     /**
      * @Route("/fishSalesPrice", methods={"GET"}, name="fishSalesPrice")
+     * @param Request $request
+     * @param ParameterBagInterface $parameterBag
+     * @return JsonResponse|Response
      */
 
-    public function fishSalesPrice(){
+    public function fishSalesPrice(Request $request, ParameterBagInterface $parameterBag){
         set_time_limit(0);
         ignore_user_abort(true);
+        if ($request->getMethod() == 'GET' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')){
+            $entities = $this->getDoctrine()->getRepository(Api::class)->fishSalesPrice(1);
+            $response = new Response();
+            $response->headers->set('Content-Type', 'application/json');
+            $response->setContent(json_encode($entities));
+            $response->setStatusCode(Response::HTTP_OK);
+            return $response;
+        }
+        return new JsonResponse([
+            'status' => 404,
+            'message' => 'Not Found!'
+        ]);
 
-        $entities = $this->getDoctrine()->getRepository(Api::class)->fishSalesPrice(1);
-        $response = new Response();
-        $response->headers->set('Content-Type', 'application/json');
-        $response->setContent(json_encode($entities));
-        $response->setStatusCode(Response::HTTP_OK);
-        return $response;
+
     }
 
     /**
@@ -1926,36 +1972,53 @@ class ApiController extends AbstractController
 
     /**
      * @Route("/labName", methods={"GET"}, name="lab_name")
+     * @param Request $request
+     * @param ParameterBagInterface $parameterBag
+     * @return JsonResponse|Response
      */
-    public function labName()
+    public function labName(Request $request, ParameterBagInterface $parameterBag)
     {
-
         set_time_limit(0);
         ignore_user_abort(true);
-
-        $entities = $this->getDoctrine()->getRepository(Api::class)->labName();
-        $response = new Response();
-        $response->headers->set('Content-Type', 'application/json');
-        $response->setContent(json_encode($entities));
-        $response->setStatusCode(Response::HTTP_OK);
-        return $response;
+        if ($request->getMethod() == 'GET' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')){
+            $entities = $this->getDoctrine()->getRepository(Api::class)->labName();
+            $response = new Response();
+            $response->headers->set('Content-Type', 'application/json');
+            $response->setContent(json_encode($entities));
+            $response->setStatusCode(Response::HTTP_OK);
+            return $response;
+        }
+        return new JsonResponse([
+            'status' => 404,
+            'message' => 'Not Found!'
+        ]);
     }
 
     /**
      * @Route("/labServiceName", methods={"GET"}, name="lab_service_name")
+     * @param Request $request
+     * @param ParameterBagInterface $parameterBag
+     * @return JsonResponse|Response
      */
-    public function labServiceName()
+    public function labServiceName(Request $request, ParameterBagInterface $parameterBag)
     {
 
         set_time_limit(0);
         ignore_user_abort(true);
+        if ($request->getMethod() == 'GET' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')){
+            $entities = $this->getDoctrine()->getRepository(Api::class)->labServiceName();
+            $response = new Response();
+            $response->headers->set('Content-Type', 'application/json');
+            $response->setContent(json_encode($entities));
+            $response->setStatusCode(Response::HTTP_OK);
+            return $response;
+        }
+        return new JsonResponse([
+            'status' => 404,
+            'message' => 'Not Found!'
+        ]);
 
-        $entities = $this->getDoctrine()->getRepository(Api::class)->labServiceName();
-        $response = new Response();
-        $response->headers->set('Content-Type', 'application/json');
-        $response->setContent(json_encode($entities));
-        $response->setStatusCode(Response::HTTP_OK);
-        return $response;
+
     }
 
 
