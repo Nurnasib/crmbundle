@@ -1076,7 +1076,8 @@ class ApiController extends AbstractController
 
         set_time_limit(0);
         ignore_user_abort(true);
-        if ($request->getMethod() == 'GET' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')){
+//        if ($request->getMethod() == 'GET' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')){
+        if ($request->getMethod() == 'GET'){
             $entities = $this->getDoctrine()->getRepository(Api::class)->disease(1);
             $response = new Response();
             $response->headers->set('Content-Type', 'application/json');
@@ -1120,7 +1121,7 @@ class ApiController extends AbstractController
 
         set_time_limit(0);
         ignore_user_abort(true);
-        if ($request->getMethod() == 'GET' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')){
+        if ($request->getMethod() == 'GET'){
             $entities = $this->getDoctrine()->getRepository(Api::class)->mainculturespecies();
             $response = new Response();
             $response->headers->set('Content-Type', 'application/json');

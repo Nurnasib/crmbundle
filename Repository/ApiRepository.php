@@ -81,7 +81,7 @@ class ApiRepository extends BaseRepository
         $qb->addSelect('dis.name as district','dis.id as districtId');
 
 //        $qb->where('e.terminal = :terminal')->setParameter('terminal',$terminal);
-        $qb->where('ag.slug != :slug')->setParameter('slug','other-agent');
+        $qb->where('ag.slug IN (:slug)')->setParameter('slug',['feed', 'chick']);
 
         if($locations){
             $locations = explode(',',$locations);
