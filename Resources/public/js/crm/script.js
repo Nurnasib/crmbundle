@@ -1117,7 +1117,7 @@ $(document).on('change', '.sub_agent', function(e) {
     var url = Routing.generate('get_core_agent_find_ajax',{'id':id});
     $.get(url, function(data){
         element.closest('tr').find('.sub_agent_address').val(data[0]['address']);
-        element.closest('tr').find('.sub_agent_mobile').val(data[0]['phone']);
+        element.closest('tr').find('.sub_agent_mobile').val(data[0]['mobile']);
     });
 
 });
