@@ -11,34 +11,34 @@
 
                 <div class="row">
                     <div class="col-md-12">
-                        <h4>{{ layerLifeCycle.report.name }}</h4>
+                        <h4>{{ layerLifeCycle.report.name|default('') }}</h4>
                         <input type="hidden" class="layerLifeCycle_id" value="{{ layerLifeCycle.id }}">
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-md-3">
-                        <p class="text-left" style="color: #000000; margin-bottom: 5px"><strong>{{ 'Agent Name'|trans }}:</strong> {{ layerLifeCycle.customer.agent.name }}</p>
+                        <p class="text-left" style="color: #000000; margin-bottom: 5px"><strong>{{ 'Agent Name'|trans }}:</strong> {{ layerLifeCycle.customer.agent.name|default('') }}</p>
                     </div>
                     <div class="col-md-3">
-                        <p class="text-left" style="color: #000000; margin-bottom: 5px">{{ 'Farmer Name'|trans }}: {{ layerLifeCycle.customer.name }}</p>
+                        <p class="text-left" style="color: #000000; margin-bottom: 5px">{{ 'Farmer Name'|trans }}: {{ layerLifeCycle.customer.name|default('') }}</p>
                     </div>
                     <div class="col-md-3">
-                        <p class="text-left" style="color: #000000; margin-bottom: 5px">{{ 'Address'|trans }}: {{ layerLifeCycle.customer.address }}</p>
+                        <p class="text-left" style="color: #000000; margin-bottom: 5px">{{ 'Address'|trans }}: {{ layerLifeCycle.customer.address|default('') }}</p>
                     </div>
                     <div class="col-md-3">
-                        <p class="text-left" style="color: #000000; margin-bottom: 5px">{{ 'Mobile'|trans }}: {{ layerLifeCycle.customer.mobile }}</p>
+                        <p class="text-left" style="color: #000000; margin-bottom: 5px">{{ 'Mobile'|trans }}: {{ layerLifeCycle.customer.mobile|default('') }}</p>
                     </div>
                 </div>
 
                 <div class="row">
                     <div class="col-md-3">
-                        <p class="text-left" style="color: #000000; margin-bottom: 5px">{{ 'Hatchery'|trans }}: {{ layerLifeCycle.hatchery.name }}</p>
+                        <p class="text-left" style="color: #000000; margin-bottom: 5px">{{ 'Hatchery'|trans }}: {{ layerLifeCycle.hatchery.name|default('') }}</p>
                     </div>
                     <div class="col-md-3">
-                        <p class="text-left" style="color: #000000; margin-bottom: 5px">{{ 'Breed'|trans }}: {{ layerLifeCycle.breed.name }}</p>
+                        <p class="text-left" style="color: #000000; margin-bottom: 5px">{{ 'Breed'|trans }}: {{ layerLifeCycle.breed.name|default('') }}</p>
                     </div>
                     <div class="col-md-3">
-                        <p class="text-left" style="color: #000000; margin-bottom: 5px">{{ 'Feed'|trans }}: {{ layerLifeCycle.feed.name }}</p>
+                        <p class="text-left" style="color: #000000; margin-bottom: 5px">{{ 'Feed'|trans }}: {{ layerLifeCycle.feed.name|default('') }}</p>
                     </div>
                     <div class="col-md-3">
                         <p class="text-left" style="color: #000000; margin-bottom: 5px">{{ 'Hatching Date'|trans }}
