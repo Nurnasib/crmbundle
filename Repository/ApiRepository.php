@@ -82,7 +82,7 @@ class ApiRepository extends BaseRepository
 
 //        $qb->where('e.terminal = :terminal')->setParameter('terminal',$terminal);
         $qb->where('ag.slug IN (:slug)')->setParameter('slug',['feed', 'chick']);
-
+        $qb->andWhere('e.status =:status')->setParameter('status', 1);
         if($locations){
             $locations = explode(',',$locations);
             $qb->andWhere('e.upozila IN (:upozila)')->setParameter('upozila',$locations);
@@ -203,7 +203,7 @@ class ApiRepository extends BaseRepository
 
 //        $qb->where('e.terminal = :terminal')->setParameter('terminal',$terminal);
         $qb->where('ag.slug = :slug')->setParameter('slug',$mode);
-
+        $qb->andWhere('e.status =:status')->setParameter('status', 1);
         if($locations){
             $locations = explode(',',$locations);
             $qb->andWhere('e.upozila IN (:upozila)')->setParameter('upozila',$locations);
