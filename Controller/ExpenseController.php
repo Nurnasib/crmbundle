@@ -34,7 +34,7 @@ class ExpenseController extends AbstractController
 {
     /**
      * @Route("/", methods={"GET"}, name="crm_expense")
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      */
     public function index(Request $request): Response
     {
@@ -43,7 +43,7 @@ class ExpenseController extends AbstractController
     }
 
     /**
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      * @Route("/{crmVisit}/{location}/new", methods={"GET", "POST"}, name="crm_expense_new")
      * @param Request $request
      * @param CrmVisit $crmVisit
@@ -74,7 +74,7 @@ class ExpenseController extends AbstractController
      * Displays a form to edit an existing Post entity.
      *
      * @Route("/{id}/edit", methods={"GET", "POST"}, name="crm_expense_edit")
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      * @param Request $request
      * @param Expense $entity
      * @return Response
@@ -107,7 +107,7 @@ class ExpenseController extends AbstractController
     /**
      * Deletes a Expense entity.
      * @Route("/{id}/delete", methods={"GET"}, name="crm_expense_delete")
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      */
     public function delete($id): Response
     {

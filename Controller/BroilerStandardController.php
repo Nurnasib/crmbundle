@@ -30,7 +30,7 @@ class BroilerStandardController extends AbstractController
 {
     /**
      * @Route("/", methods={"GET"}, name="broiler_standard")
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      */
     public function index(Request $request): Response
     {
@@ -39,7 +39,7 @@ class BroilerStandardController extends AbstractController
     }
 
     /**
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      * @Route("/new", methods={"GET", "POST"}, name="broiler_standard_new")
      */
     public function new(Request $request): Response
@@ -71,7 +71,7 @@ class BroilerStandardController extends AbstractController
      * Displays a form to edit an existing BroilerStandard entity.
      *
      * @Route("/{id}/edit", methods={"GET", "POST"}, name="broiler_edit")
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      */
 
     public function edit(Request $request, BroilerStandard $entity): Response
@@ -97,7 +97,7 @@ class BroilerStandardController extends AbstractController
     /**
      * Deletes a BroilerStandard entity.
      * @Route("/{id}/delete", methods={"GET"}, name="broiler_delete")
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      */
     public function delete($id): Response
     {

@@ -22,7 +22,7 @@ class CattleFarmVisitReportController extends AbstractController
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
      * @Route("/crm/cattle/farm-visit", name="cattle_farm_visit_report")
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_AGM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_AGM')")
      */
     public function cattleFarmVisitReport(Request $request)
     {
@@ -41,7 +41,7 @@ class CattleFarmVisitReportController extends AbstractController
 
     /**
      * @Route("/crm/cattle/farm-visit-excel", name="cattle_farm_visit_report_excel")
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_AGM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_AGM')")
      * @param Request $request
      */
     public function cattleFarmVisitReportExcel(Request $request)
@@ -67,7 +67,7 @@ class CattleFarmVisitReportController extends AbstractController
     }
     /**
      * @Route("/crm/cattle/farm-visit-pdf", name="cattle_farm_visit_report_pdf")
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_AGM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_AGM')")
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
      */

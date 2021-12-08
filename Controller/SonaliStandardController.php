@@ -30,7 +30,7 @@ class SonaliStandardController extends AbstractController
 {
     /**
      * @Route("/", methods={"GET"}, name="sonali_standard")
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      */
     public function index(Request $request): Response
     {
@@ -39,7 +39,7 @@ class SonaliStandardController extends AbstractController
     }
 
     /**
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      * @Route("/new", methods={"GET", "POST"}, name="sonali_standard_new")
      */
     public function new(Request $request): Response
@@ -71,7 +71,7 @@ class SonaliStandardController extends AbstractController
      * Displays a form to edit an existing SonaliStandard entity.
      *
      * @Route("/{id}/edit", methods={"GET", "POST"}, name="sonali_edit")
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      */
 
     public function edit(Request $request, SonaliStandard $entity): Response
@@ -97,7 +97,7 @@ class SonaliStandardController extends AbstractController
     /**
      * Deletes a SonaliStandard entity.
      * @Route("/{id}/delete", methods={"GET"}, name="sonali_delete")
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      */
     public function delete($id): Response
     {
@@ -111,7 +111,7 @@ class SonaliStandardController extends AbstractController
 
     /**
      * @Route("/weight/by/age", methods={"POST"}, name="crm_sonali_weight_standard_by_age", options={"expose"=true})
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      */
 
     public function getSonaliWeightStandardByAge(Request $request): Response

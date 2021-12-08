@@ -44,7 +44,7 @@ class FishLifeCycleController extends AbstractController
     /**
      * @param CrmCustomer $crmCustomer
      * @ParamConverter("crmCustomer", class="Terminalbd\CrmBundle\Entity\CrmCustomer")
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      * @Route("/customer/{id}/report/{report}/{afterBefore}/new/modal", methods={"GET", "POST"}, name="fish_new_modal", options={"expose"=true})
      */
     public function newModal(Request $request, CrmCustomer $crmCustomer, Setting $report, $afterBefore): Response
@@ -133,7 +133,7 @@ class FishLifeCycleController extends AbstractController
     }
 
     /**
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      * @Route("/details/{id}/modal", methods={"GET", "POST"}, name="fish_life_cycle_details_modal", options={"expose"=true})
      */
     public function lifeCycleDetailsModal( FishLifeCycle $fishLifeCycle): Response
@@ -171,7 +171,7 @@ class FishLifeCycleController extends AbstractController
 
     /**
      * @Route("/details/{id}/update", methods={"POST"}, name="fish_life_cycle_details_data_update", options={"expose"=true})
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      */
 
     public function editLifeCycleDetails(Request $request, FishLifeCycleDetails $entity): Response
@@ -281,7 +281,7 @@ class FishLifeCycleController extends AbstractController
 
     /**
      * @Route("/detail/{id}/species/insert", methods={"POST"}, name="fish_life_cycle_detail_species_data_insert", options={"expose"=true})
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      */
 
     public function insertLifeCycleDetailSpecies(Request $request, FishLifeCycleDetails $entity): Response
@@ -396,7 +396,7 @@ class FishLifeCycleController extends AbstractController
     /**
      * @param FishLifeCycle $fishLifeCycle
      * @Route("/{id}/refresh", methods={"GET"}, name="crm_fish_life_cycle_refresh", options={"expose"=true})
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      */
     public function fishLifeCycleReportRefresh(FishLifeCycle $fishLifeCycle): Response
     {
@@ -416,7 +416,7 @@ class FishLifeCycleController extends AbstractController
     /**
      * Deletes a Fcr entity.
      * @Route("/details/{id}/delete", methods={"POST"}, name="fish_life_cycle_detail_delete", options={"expose"=true})
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      */
     public function deleteDetails($id): Response
     {
@@ -432,7 +432,7 @@ class FishLifeCycleController extends AbstractController
     /**
      * @param $report
      * @Route("/life/cycle/{report}", methods={"GET"}, name="crm_fish_report")
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_AGM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_AGM')")
      */
     public function indexReport( string $report): Response
     {
@@ -444,7 +444,7 @@ class FishLifeCycleController extends AbstractController
     /**
      * @param FishLifeCycle $cattleLifeCycle
      * @Route("/life/cycle/{id}/report", methods={"GET"}, name="crm_fish_report_detail")
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_AGM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_AGM')")
      */
     public function reportDetails( FishLifeCycle $cattleLifeCycle): Response
     {

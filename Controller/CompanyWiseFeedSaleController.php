@@ -35,7 +35,7 @@ use Terminalbd\CrmBundle\Form\DiseaseMappingFormType;
 class CompanyWiseFeedSaleController extends AbstractController
 {
     /**
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      * @Route("/{breed_name}/new", methods={"GET", "POST"}, name="company_wise_feed_sale_new", options={"expose"=true})
      */
     public function newModal(Request $request, $breed_name): Response
@@ -104,7 +104,7 @@ class CompanyWiseFeedSaleController extends AbstractController
 
     /**
      * @Route("/{id}/edit", methods={"POST"}, name="company_wise_feed_sale_edit", options={"expose"=true})
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      */
 
     public function editCompanyWiseFeedSale(Request $request, CompanyWiseFeedSale $entity): Response

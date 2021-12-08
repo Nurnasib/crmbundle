@@ -44,7 +44,7 @@ class DailyChickPriceController extends AbstractController
     /**
      * @param $report
      * @Route("/", methods={"GET"}, name="crm_chick")
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_AGM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_AGM')")
      */
     public function index( ): Response
     {
@@ -55,7 +55,7 @@ class DailyChickPriceController extends AbstractController
 
     /**
      * @param CrmCustomer $crmCustomer
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      * @Route("/location/{location}/new/modal", methods={"GET", "POST"}, name="daily_chick_price")
      */
     public function newModal(Request $request, Location $location): Response
@@ -87,7 +87,7 @@ class DailyChickPriceController extends AbstractController
 
     /**
      * @param DailyChickPrice $dailyChickPrice
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      * @Route("/details/{id}/modal", methods={"GET", "POST"}, name="daily_chick_price_details_modal")
      */
     public function dailyChickPriceDetailsModal(DailyChickPrice $dailyChickPrice): Response
@@ -134,7 +134,7 @@ class DailyChickPriceController extends AbstractController
     /**
      * Displays a form to edit an existing ChickLifeCycle entity.
      * @Route("/details/{id}/edit", methods={"POST"}, name="crm_daily_chick_price_detail_update", options={"expose"=true})
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      */
 
     public function editDailyChickDetails(Request $request, DailyChickPriceDetails $entity): Response

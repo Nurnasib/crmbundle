@@ -44,7 +44,7 @@ class TilapiaFrySalesController extends AbstractController
 {
 
     /**
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      * @Route("/new", methods={"GET", "POST"}, name="tilapia_fry_sales_add", options={"expose"=true})
      */
     public function newModal(Request $request): Response
@@ -88,7 +88,7 @@ class TilapiaFrySalesController extends AbstractController
 
     /**
      * @Route("/data/insert", methods={"POST"}, name="tilapia_fry_sales_data_insert", options={"expose"=true})
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      */
 
     public function tilapiaFrySalesQuantityUpdate(Request $request): Response
@@ -136,7 +136,7 @@ class TilapiaFrySalesController extends AbstractController
 
     /**
      * @Route("/competitor/data/insert", methods={"POST"}, name="competitor_tilapia_fry_sales_data_insert", options={"expose"=true})
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      */
 
     public function competitorTilapiaFrySalesQuantityInsert(Request $request): Response
@@ -191,7 +191,7 @@ class TilapiaFrySalesController extends AbstractController
     /**
      * @param FishLifeCycle $fishLifeCycle
      * @Route("/refresh", methods={"GET"}, name="crm_tilapia_fry_sales_refresh", options={"expose"=true})
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      */
     public function tilapiaFrySalesRefresh(): Response
     {
@@ -223,7 +223,7 @@ class TilapiaFrySalesController extends AbstractController
     /**
      * @param FishLifeCycle $fishLifeCycle
      * @Route("/competitor/refresh", methods={"GET"}, name="crm_competitor_tilapia_fry_sales_refresh", options={"expose"=true})
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      */
     public function competitorTilapiaFrySalesRefresh(): Response
     {

@@ -37,7 +37,7 @@ class CrmVisitController extends AbstractController
 
     /**
      * @Route("/", methods={"GET"}, name="crm_visit")
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      */
     public function index()
     {
@@ -52,7 +52,7 @@ class CrmVisitController extends AbstractController
 
     /**
      * @param Request $request
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      * @Route("/new" ,name="new_visit")
      */
     public function new(Request $request){
@@ -83,7 +83,7 @@ class CrmVisitController extends AbstractController
     /**
      * Displays a form to edit an existing CrmVisit entity.
      * @Route("/{id}/edit", methods={"GET", "POST"}, name="crm_visit_edit")
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      */
 
     public function edit(Request $request, CrmVisit $entity): Response
@@ -175,7 +175,7 @@ class CrmVisitController extends AbstractController
     /**
      * Deletes a CrmVisit entity.
      * @Route("/{id}/delete", methods={"GET"}, name="crm_visit_delete")
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      */
     public function delete($id): Response
     {
@@ -191,7 +191,7 @@ class CrmVisitController extends AbstractController
     /**
      * Add a CrmVisit entity.
      * @Route("/details/add", methods={"POST"}, name="crm_visit_item_add", options={"expose"=true})
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      */
     public function CRMDetailsAdd(Request $request): Response
     {
@@ -243,7 +243,7 @@ class CrmVisitController extends AbstractController
     /**
      * Displays a form to edit an existing CrmVisit entity.
      * @Route("/{id}/{process}/item/refresh", methods={"GET", "POST"}, name="crm_visit_item_refresh", options={"expose"=true})
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      */
 
     public function CRMDetailsRefresh($id, $process='farmer'): Response
@@ -265,7 +265,7 @@ class CrmVisitController extends AbstractController
     /**
      * Deletes a CrmVisit entity.
      * @Route("/item/{id}/delete", methods={"GET"}, name="crm_visit_item_delete", options={"expose"=true})
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      */
     public function itemDelete($id): Response
     {

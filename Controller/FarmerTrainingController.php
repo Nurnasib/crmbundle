@@ -43,7 +43,7 @@ class FarmerTrainingController extends AbstractController
 {
 
     /**
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      * @Route("/agent/{id}/purpose/{purpose}/new/modal", methods={"GET", "POST"}, name="farmer_training_report_new_modal", options={"expose"=true})
      */
     public function newModal(Request $request, Agent $agent, Setting $purpose): Response

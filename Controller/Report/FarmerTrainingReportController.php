@@ -19,7 +19,7 @@ class FarmerTrainingReportController extends AbstractController
 {
     /**
      * @Route("/crm/farmer/training-report", methods={"GET","POST"}, name="farmer_training_report")
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_AGM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_AGM')")
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
      */
@@ -89,7 +89,7 @@ class FarmerTrainingReportController extends AbstractController
 
     /**
      * @Route("/crm/farmer/training-report-excel", name="farmer_training_report_excel")
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_AGM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_AGM')")
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
      */
@@ -141,7 +141,7 @@ class FarmerTrainingReportController extends AbstractController
 
     /**
      * @Route("/crm/farmer/training-report-pdf", name="farmer_training_report_pdf")
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_AGM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_AGM')")
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
      */

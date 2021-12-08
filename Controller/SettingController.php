@@ -32,7 +32,7 @@ class SettingController extends AbstractController
 {
     /**
      * @Route("/", methods={"GET"}, name="crm_setting")
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN')")
      */
     public function index(Request $request): Response
     {
@@ -41,7 +41,7 @@ class SettingController extends AbstractController
     }
 
     /**
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN')")
      * @Route("/new", methods={"GET", "POST"}, name="crm_setting_new")
      */
     public function new(Request $request): Response
@@ -74,7 +74,7 @@ class SettingController extends AbstractController
      * Displays a form to edit an existing Post entity.
      *
      * @Route("/{id}/edit", methods={"GET", "POST"}, name="crm_setting_edit")
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN')")
      */
 
     public function edit(Request $request, Setting $entity): Response
@@ -101,7 +101,7 @@ class SettingController extends AbstractController
     /**
      * Deletes a Setting entity.
      * @Route("/{id}/delete", methods={"GET"}, name="crm_setting_delete")
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN')")
      */
     public function delete($id): Response
     {
@@ -116,7 +116,7 @@ class SettingController extends AbstractController
 
     /**
      * @Route("/life-cycle", methods={"GET"}, name="crm_setting_life_cycle")
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN')")
      */
     public function indexLifeCycle(Request $request): Response
     {
@@ -125,7 +125,7 @@ class SettingController extends AbstractController
     }
 
     /**
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN')")
      * @Route("/life-cycle/new", methods={"GET", "POST"}, name="crm_setting_life_cycle_new")
      */
     public function newLifeCycle(Request $request): Response
@@ -156,7 +156,7 @@ class SettingController extends AbstractController
      * Displays a form to edit an existing Post entity.
      *
      * @Route("/life-cycle/{id}/edit", methods={"GET", "POST"}, name="crm_setting_life_cycle_edit")
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN')")
      */
 
     public function editLifeCycle(Request $request, SettingLifeCycle $entity): Response

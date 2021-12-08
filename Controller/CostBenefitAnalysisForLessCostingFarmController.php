@@ -40,7 +40,7 @@ class CostBenefitAnalysisForLessCostingFarmController extends AbstractController
      * @ParamConverter("crmCustomer", class="Terminalbd\CrmBundle\Entity\CrmCustomer")
      * @ParamConverter("report", class="Terminalbd\CrmBundle\Entity\Setting")
      * @ParamConverter("parentParent", class="Terminalbd\CrmBundle\Entity\Setting")
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      * @Route("/customer/{id}/report/{report}/parentParent/{parentParent}/new/modal", methods={"GET", "POST"}, name="cost_benefit_analysis_less_costing_farm_new_modal", options={"expose"=true})
      */
     public function newModal(Request $request, CrmCustomer $crmCustomer, Setting $report, Setting $parentParent): Response

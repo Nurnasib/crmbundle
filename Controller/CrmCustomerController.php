@@ -35,7 +35,7 @@ class CrmCustomerController extends AbstractController
 
     /**
      * @Route("/", methods={"GET"}, name="crm_customer")
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      */
     public function index()
     {
@@ -48,7 +48,7 @@ class CrmCustomerController extends AbstractController
     }
 
     /**
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      * @Route("/new", methods={"GET", "POST"}, name="crm_customer_new")
      */
     public function new(Request $request): Response
@@ -82,7 +82,7 @@ class CrmCustomerController extends AbstractController
      * Displays a form to edit an existing Post entity.
      *
      * @Route("/{id}/edit", methods={"GET", "POST"}, name="crm_customer_edit")
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      */
 
     public function edit(Request $request, CrmCustomer $entity): Response
@@ -221,7 +221,7 @@ class CrmCustomerController extends AbstractController
     /**
      * Deletes a CrmCustomer entity.
      * @Route("/{id}/delete", methods={"GET"}, name="customer_delete")
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      */
     public function delete($id): Response
     {
@@ -272,7 +272,7 @@ class CrmCustomerController extends AbstractController
     /**
      * Displays a form to edit an existing CrmVisit entity.
      * @Route("species/name/by/parent/{id}", methods={"GET", "POST"}, name="species_name_by_parent_id_ajax", options={"expose"=true})
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      */
 
     public function farmerIntroduceDetails($id): Response

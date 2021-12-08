@@ -40,7 +40,7 @@ class FishFeedComplainController extends AbstractController
     /**
      * @param CrmCustomer $crmCustomer
      * @ParamConverter("crmCustomer", class="Terminalbd\CrmBundle\Entity\CrmCustomer")
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      * @Route("/customer/{id}/report/{report}/new/modal", methods={"GET", "POST"}, name="fish_feed_complain_new_modal", options={"expose"=true})
      */
     public function newModal(Request $request, CrmCustomer $crmCustomer, Setting $report): Response
@@ -92,7 +92,7 @@ class FishFeedComplainController extends AbstractController
     /**
      * @param FishFeedComplain $fishFeedComplain
      * @Route("/refresh", methods={"GET"}, name="crm_fish_feed_complain_refresh", options={"expose"=true})
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      */
     public function fishFeedComplainRefresh(): Response
     {

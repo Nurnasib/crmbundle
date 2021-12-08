@@ -43,7 +43,7 @@ class ChickLifeCycleController extends AbstractController
     /**
      * @param $report
      * @Route("/", methods={"GET"}, name="crm_chick")
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_AGM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_AGM')")
      */
     public function index( ): Response
     {
@@ -54,7 +54,7 @@ class ChickLifeCycleController extends AbstractController
 
     /**
      * @param CrmCustomer $crmCustomer
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      * @Route("/customer/{id}/report/{report}/new/modal", methods={"GET", "POST"}, name="chick_new_modal")
      */
     public function newModal(Request $request, CrmCustomer $crmCustomer, Setting $report): Response
@@ -103,7 +103,7 @@ class ChickLifeCycleController extends AbstractController
 
     /**
      * @param ChickLifeCycle $chickLifeCycle
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      * @Route("/report/{id}/modal", methods={"GET", "POST"}, name="chick_life_cycle_details_modal")
      */
     public function lifeCycleDetailsModal(ChickLifeCycle $chickLifeCycle): Response
@@ -136,7 +136,7 @@ class ChickLifeCycleController extends AbstractController
     /**
      * Displays a form to edit an existing ChickLifeCycle entity.
      * @Route("/life-cycle/{id}/edit", methods={"POST"}, name="crm_chick_life_cycle_edit", options={"expose"=true})
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      */
 
     public function editLifeCycleDetails(Request $request, ChickLifeCycleDetails $entity): Response
@@ -215,7 +215,7 @@ class ChickLifeCycleController extends AbstractController
     /**
      * Deletes a ChickLifeCycle entity.
      * @Route("/{id}/delete", methods={"GET"}, name="crm_chick_delete")
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      */
     public function delete($id): Response
     {
@@ -230,7 +230,7 @@ class ChickLifeCycleController extends AbstractController
     /**
      * @param ChickLifeCycle $chickLifeCycle
      * @Route("/life-cycle/{id}/complete", methods={"POST"}, name="crm_chick_life_cycle_complete", options={"expose"=true})
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      */
     public function chickLifeCycleReportComplete(ChickLifeCycle $chickLifeCycle): Response
     {
@@ -248,7 +248,7 @@ class ChickLifeCycleController extends AbstractController
     /**
      * @param ChickLifeCycle $chickLifeCycle
      * @Route("/{id}/report", methods={"GET"}, name="crm_chick_report_detail")
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_AGM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_AGM')")
      */
     public function reportDetails( ChickLifeCycle $chickLifeCycle): Response
     {
@@ -259,7 +259,7 @@ class ChickLifeCycleController extends AbstractController
     /**
      * @param ChickLifeCycle $chickLifeCycle
      * @Route("/{id}/report/pdf", methods={"GET"}, name="crm_chick_report_detail_pdf")
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_AGM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_AGM')")
      */
     public function reportPdf( ChickLifeCycle $chickLifeCycle): Response
     {
@@ -292,7 +292,7 @@ class ChickLifeCycleController extends AbstractController
     /**
      * @param ChickLifeCycle $chickLifeCycle
      * @Route("/{id}/report/excel", methods={"GET"}, name="crm_chick_report_detail_excel")
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_AGM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_AGM')")
      */
     public function reportExcel( ChickLifeCycle $chickLifeCycle): Response
     {

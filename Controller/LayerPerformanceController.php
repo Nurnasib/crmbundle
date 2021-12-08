@@ -40,7 +40,7 @@ class LayerPerformanceController extends AbstractController
 {
     /**
      * @Route("/", methods={"GET"}, name="layer_performance")
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      */
     public function index(Request $request): Response
     {
@@ -49,7 +49,7 @@ class LayerPerformanceController extends AbstractController
     }
     
     /**
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      * @Route("/customer/{id}/report/{report}/new", methods={"GET", "POST"}, name="layer_performance_new")
      */
     public function new(Request $request, CrmCustomer $crmCustomer, Setting $report): Response
@@ -80,7 +80,7 @@ class LayerPerformanceController extends AbstractController
 
     /**
      * @Route("/details/{id}/delete", methods={"POST"}, name="layer_parformance_details_delete")
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      */
     public function deleteDetails($id): Response
     {
@@ -95,7 +95,7 @@ class LayerPerformanceController extends AbstractController
 
     /**
      * @Route("/{id}/details/add", methods={"POST"}, name="crm_layer_performance_detail_report_add", options={"expose"=true})
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM') or is_granted('ROLE_CSO')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM') or is_granted('ROLE_CSO')")
      */
 
     public function addLayerPerformanceDetails(Request $request, Setting $report): Response
@@ -181,7 +181,7 @@ class LayerPerformanceController extends AbstractController
 
     /**
      * @param Setting $report
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      * @Route("/{id}/details/refresh", methods={"GET", "POST"}, name="layer_performance_details_refresh", options={"expose"=true})
      */
     public function layerPerformanceDetailsRefresh(Setting $report): Response

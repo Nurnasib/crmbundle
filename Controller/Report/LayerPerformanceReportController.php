@@ -22,7 +22,7 @@ class LayerPerformanceReportController extends AbstractController
 {
     /**
      * @Route("/crm/layer/performance/report", methods={"GET","POST"}, name="layer_performance_report")
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_AGM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_AGM')")
      */
     public function indexReport(Request $request): Response
     {

@@ -30,7 +30,7 @@ class AntibioticFreeFarmController extends AbstractController
     /**
      * @param CrmCustomer $crmCustomer
      * @ParamConverter("crmCustomer", class="Terminalbd\CrmBundle\Entity\CrmCustomer")
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      * @Route("/customer/{id}/report/{report}/new/modal", methods={"GET", "POST"}, name="antibiotic_free_farm_new_modal", options={"expose"=true})
      */
     public function newModal(Request $request, CrmCustomer $crmCustomer, Setting $report): Response

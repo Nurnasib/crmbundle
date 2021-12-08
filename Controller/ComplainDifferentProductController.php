@@ -34,7 +34,7 @@ class ComplainDifferentProductController extends AbstractController
     /**
      * @param CrmCustomer $crmCustomer
      * @ParamConverter("crmCustomer", class="Terminalbd\CrmBundle\Entity\CrmCustomer")
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      * @Route("/customer/{id}/report/{report}/new/modal", methods={"GET", "POST"}, name="complain_different_product_new_modal", options={"expose"=true})
      */
     public function newModal(Request $request, CrmCustomer $crmCustomer, Setting $report): Response
@@ -109,7 +109,7 @@ class ComplainDifferentProductController extends AbstractController
     /**
      * Deletes a Disease Mapping entity.
      * @Route("/{id}/delete", methods={"POST"}, name="complain_different_product_delete")
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      */
     public function deleteDetails($id): Response
     {

@@ -42,7 +42,7 @@ class CattleLifeCycleController extends AbstractController
     /**
      * @param CrmCustomer $crmCustomer
      * @ParamConverter("crmCustomer", class="Terminalbd\CrmBundle\Entity\CrmCustomer")
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      * @Route("/customer/{id}/report/{report}/new/modal", methods={"GET", "POST"}, name="cattle_new_modal", options={"expose"=true})
      */
     public function newModal(Request $request, CrmCustomer $crmCustomer, Setting $report): Response
@@ -92,7 +92,7 @@ class CattleLifeCycleController extends AbstractController
     /**
      * Displays a form to edit an existing CattleLifeCycle entity.
      * @Route("/{id}/edit", methods={"GET", "POST"}, name="crm_cattle_edit")
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      */
 
     public function edit(Request $request, CattleLifeCycle $entity): Response
@@ -118,7 +118,7 @@ class CattleLifeCycleController extends AbstractController
     }
 
     /**
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      * @Route("/report/{id}/modal", methods={"GET", "POST"}, name="cattle_life_cycle_details_modal", options={"expose"=true})
      */
     public function lifeCycleDetailsModal( Request $request, CattleLifeCycle $cattleLifeCycle): Response
@@ -193,7 +193,7 @@ class CattleLifeCycleController extends AbstractController
     /**
      * @param CattleLifeCycle $cattleLifeCycle
      * @Route("/life-cycle/{id}/refresh", methods={"GET"}, name="crm_cattle_life_cycle_refresh", options={"expose"=true})
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      */
     public function cattleLifeCycleReportRefresh(CattleLifeCycle $cattleLifeCycle): Response
     {
@@ -210,7 +210,7 @@ class CattleLifeCycleController extends AbstractController
     /**
      * Deletes a Fcr entity.
      * @Route("/life-cycle/details/{id}/delete", methods={"POST"}, name="cattle_life_cycle_detail_delete", options={"expose"=true})
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      */
     public function deleteDetails($id): Response
     {
@@ -225,7 +225,7 @@ class CattleLifeCycleController extends AbstractController
     /**
      * @param CattleLifeCycle $cattleLifeCycle
      * @Route("/life-cycle/{id}/complete", methods={"POST"}, name="crm_cattle_life_cycle_complete", options={"expose"=true})
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      */
     public function cattleLifeCycleReportComplete(CattleLifeCycle $cattleLifeCycle): Response
     {
@@ -242,7 +242,7 @@ class CattleLifeCycleController extends AbstractController
     /**
      * @param $report
      * @Route("/life/cycle/{report}", methods={"GET"}, name="crm_cattle_report")
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_AGM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_AGM')")
      */
     public function indexReport( string $report): Response
     {
@@ -254,7 +254,7 @@ class CattleLifeCycleController extends AbstractController
     /**
      * @param CattleLifeCycle $cattleLifeCycle
      * @Route("/life/cycle/{id}/report", methods={"GET"}, name="crm_cattle_report_detail")
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_AGM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_AGM')")
      */
     public function reportDetails( CattleLifeCycle $cattleLifeCycle): Response
     {

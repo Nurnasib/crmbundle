@@ -14,7 +14,7 @@ class FishLifeCycleReportController extends AbstractController
 {
     /**
      * @Route("/crm/fish/life-cycle", methods={"GET","POST"}, name="crm_fish_life_cycle")
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_AGM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_AGM')")
      * @param Request $request
      */
 

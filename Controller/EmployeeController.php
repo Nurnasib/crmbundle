@@ -34,7 +34,7 @@ class EmployeeController extends AbstractController
 {
     /**
      * @Route("/", methods={"GET"}, name="crm_employee")
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      * @return Response
      */
     public function index(): Response
@@ -45,7 +45,7 @@ class EmployeeController extends AbstractController
 
 
     /**
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      * @Route("/register", methods={"GET", "POST"}, name="crm_employee_register")
      * @param Request $request
      * @return Response
@@ -80,7 +80,7 @@ class EmployeeController extends AbstractController
     }
 
     /**
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      * @Route("/{id}/edit", methods={"GET", "POST"}, name="crm_employee_edit")
      * @param Request $request
      * @param $id

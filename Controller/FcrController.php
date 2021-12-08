@@ -40,7 +40,7 @@ use Terminalbd\CrmBundle\Repository\FcrRepository;
 class FcrController extends AbstractController
 {
     /**
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      * @Route("/{customer}/{report}/{afterBefore}/new", methods={"GET", "POST"}, name="fcr_new", options={"expose"=true})
      */
     public function new(Request $request, CrmCustomer $customer, Setting $report, $afterBefore): Response
@@ -107,7 +107,7 @@ class FcrController extends AbstractController
 
 
     /**
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      * @Route("/{report}/{afterBefore}/new", methods={"GET", "POST"}, name="fcr_after_new", options={"expose"=true})
      */
     public function newAfter(Request $request, Setting $report, $afterBefore): Response
@@ -179,7 +179,7 @@ class FcrController extends AbstractController
     /**
      * Deletes a Fcr entity.
      * @Route("/details/{id}/delete", methods={"POST"}, name="fcr_detail_delete")
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      */
     public function deleteDetails($id): Response
     {
@@ -193,7 +193,7 @@ class FcrController extends AbstractController
 
     /**
      * @param Setting $report
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      * @Route("/{id}/{afterBefore}/details/refresh", methods={"GET", "POST"}, name="fcr_details_refresh", options={"expose"=true})
      */
     public function fcrDetailsRefresh(Request $request, Setting $report, $afterBefore): Response
@@ -209,7 +209,7 @@ class FcrController extends AbstractController
     /**
      * Displays a form to edit an existing ChickLifeCycle entity.
      * @Route("/{id}/sonali-broiler/standard", methods={"POST"}, name="crm_sonali_and_broiler_standard_by_age", options={"expose"=true})
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      */
 
     public function getSonaliBroilerStandardUsingAjax(Request $request, Setting $report): Response

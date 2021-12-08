@@ -42,7 +42,7 @@ class FishSalesPriceController extends AbstractController
 {
 
     /**
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      * @Route("/new", methods={"GET", "POST"}, name="fish_sales_price_add", options={"expose"=true})
      */
     public function newModal(Request $request): Response
@@ -106,7 +106,7 @@ class FishSalesPriceController extends AbstractController
 
     /**
      * @Route("/{id}/update", methods={"POST"}, name="fish_sales_price_data_update", options={"expose"=true})
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      */
 
     public function fishSalesPriceUpdate(Request $request, FishSalesPrice $entity): Response

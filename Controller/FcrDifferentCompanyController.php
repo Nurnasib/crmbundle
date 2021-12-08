@@ -33,7 +33,7 @@ use Terminalbd\CrmBundle\Form\DiseaseMappingFormType;
 class FcrDifferentCompanyController extends AbstractController
 {
     /**
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      * @Route("/{breed_name}/new/modal", methods={"GET", "POST"}, name="fcr_different_company_new_modal", options={"expose"=true})
      */
     public function newModal(Request $request, $breed_name): Response
@@ -73,7 +73,7 @@ class FcrDifferentCompanyController extends AbstractController
 
     /**
      * @Route("/{id}/edit", methods={"POST"}, name="fcr_different_company_edit", options={"expose"=true})
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      */
 
     public function editLifeCycleDetails(Request $request, FcrDifferentCompanies $entity): Response

@@ -31,7 +31,7 @@ class ChickLifeCycleReportController extends AbstractController
      * @param Request $request
      * @return Response
      * @Route("/{breed}", methods={"GET","POST"}, name="chick_life_cycle_report")
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_AGM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_AGM')")
      */
     public function indexReport( string $breed, Request $request): Response
     {
@@ -85,7 +85,7 @@ class ChickLifeCycleReportController extends AbstractController
 
     /**
      * @Route("/crm/chick/report/pdf", methods={"GET"}, name="crm_chick_report_pdf")
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_AGM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_AGM')")
      */
     public function reportPdf(Request $request): Response
     {

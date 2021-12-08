@@ -41,7 +41,7 @@ class LayerLifeCycleController extends AbstractController
 {
     /**
      * @Route("/", methods={"GET"}, name="layer_life_cycle")
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      */
     public function index(Request $request): Response
     {
@@ -51,7 +51,7 @@ class LayerLifeCycleController extends AbstractController
 
     /**
      * @param CrmCustomer $crmCustomer
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      * @Route("/customer/{id}/report/{report}/new/modal", methods={"GET", "POST"}, name="layer_new_modal")
      */
     public function newModal(Request $request, CrmCustomer $crmCustomer, Setting $report): Response
@@ -102,7 +102,7 @@ class LayerLifeCycleController extends AbstractController
 
     /**
      * @param LayerLifeCycle $layerLifeCycle
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      * @Route("/report/{id}/modal", methods={"GET", "POST"}, name="layer_life_cycle_details_modal")
      */
     public function lifeCycleDetailsModal(LayerLifeCycle $layerLifeCycle): Response
@@ -136,7 +136,7 @@ class LayerLifeCycleController extends AbstractController
 
     /**
      * @Route("/details/{id}/edit", methods={"POST"}, name="crm_layer_life_cycle_details_edit", options={"expose"=true})
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      */
 
     public function editLifeCycleDetails(Request $request, LayerLifeCycleDetails $entity): Response
@@ -210,7 +210,7 @@ class LayerLifeCycleController extends AbstractController
     /**
      * Deletes a LayerPerformance entity.
      * @Route("/{id}/delete", methods={"GET"}, name="layer_life_cycle_delete")
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      */
     public function delete($id): Response
     {
@@ -226,7 +226,7 @@ class LayerLifeCycleController extends AbstractController
     /**
      * @param LayerLifeCycle $layerLifeCycle
      * @Route("/{id}/complete", methods={"POST"}, name="crm_layer_life_cycle_complete", options={"expose"=true})
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      */
     public function layerLifeCycleReportComplete(LayerLifeCycle $layerLifeCycle): Response
     {

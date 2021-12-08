@@ -15,7 +15,7 @@ class CostBenefitAnalysisFishReportController extends AbstractController
 {
     /**
      * @Route("/cost-benefit-analysis", name="cost_benefit_analysis")
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      * @param Request $request
      */
     public function costBenefitAnalysisReport(Request $request)

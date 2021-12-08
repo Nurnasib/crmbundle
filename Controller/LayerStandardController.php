@@ -35,7 +35,7 @@ class LayerStandardController extends AbstractController
 {
     /**
      * @Route("/", methods={"GET","POST"}, name="layer_standard")
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      */
     public function index(Request $request): Response
     {
@@ -76,7 +76,7 @@ class LayerStandardController extends AbstractController
      * Displays a form to edit an existing BroilerStandard entity.
      *
      * @Route("/{id}/edit", methods={"GET", "POST"}, name="layer_standard_edit")
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      */
 
     public function edit(Request $request, LayerStandard $entity): Response
@@ -117,7 +117,7 @@ class LayerStandardController extends AbstractController
     /**
      * Deletes a BroilerStandard entity.
      * @Route("/{id}/delete", methods={"GET"}, name="layer_standard_delete")
-     * @Security("is_granted('ROLE_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      */
     public function delete($id): Response
     {
