@@ -2003,11 +2003,38 @@ class ApiController extends AbstractController
      */
     public function labServiceName(Request $request, ParameterBagInterface $parameterBag)
     {
-
         set_time_limit(0);
         ignore_user_abort(true);
         if ($request->getMethod() == 'GET' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')){
             $entities = $this->getDoctrine()->getRepository(Api::class)->labServiceName();
+            $response = new Response();
+            $response->headers->set('Content-Type', 'application/json');
+            $response->setContent(json_encode($entities));
+            $response->setStatusCode(Response::HTTP_OK);
+            return $response;
+        }
+        return new JsonResponse([
+            'status' => 404,
+            'message' => 'Not Found!'
+        ]);
+
+
+    }
+
+    /**
+     * @Route("/chick-life-cycle-in-progress", name="chick_life_cycle_in_progress")
+     * @param Request $request
+     * @param ParameterBagInterface $parameterBag
+     * @return JsonResponse|Response
+     */
+    public function chickLifeCycleInProgress(Request $request, ParameterBagInterface $parameterBag)
+    {
+        set_time_limit(0);
+        ignore_user_abort(true);
+        if ($request->getMethod() == 'POST' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')){
+            $parameters = $request->request->all();
+
+            $entities = $this->getDoctrine()->getRepository(Api::class)->chickLifeCycleInProgress($parameters);
             $response = new Response();
             $response->headers->set('Content-Type', 'application/json');
             $response->setContent(json_encode($entities));

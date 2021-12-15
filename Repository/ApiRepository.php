@@ -1810,4 +1810,24 @@ class ApiRepository extends BaseRepository
         return $data;
     }
 
+
+    public function chickLifeCycleInProgress($parameters)
+    {
+        $qb = $this->_em->createQueryBuilder();
+        $qb->from(ChickLifeCycleDetails::class, 'chickLifeCycleDetails');
+        $qb->join('chickLifeCycleDetails.crmChickLifeCycle', 'chickLifeCycle');
+        $qb->join('chickLifeCycle.customer', 'customer');
+        $qb->join('chickLifeCycle.employee', 'employee');
+        $qb->join('chickLifeCycle.report', 'report');
+        $qb->select('chickLifeCycleDetails');
+
+        $qb->where("chickLifeCycle.lifeCycleState = 'IN_PROGRESS'");
+        $qb->andWhere('customer.id = :customerId')->setParameter('customerId', $parameters['customer_id']);
+        $qb->andWhere('employee.id = :employeeId')->setParameter('employeeId', $parameters['employee_id']);
+        $qb->andWhere('report.id = :reportId')->setParameter('reportId', $parameters['report_id']);
+
+        return $qb->getQuery()->getArrayResult();
+
+    }
+
 }
