@@ -15,35 +15,20 @@ use App\Service\SmsSender;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
-use Symfony\Component\Security\Core\Encoder\EncoderFactory;
-use Symfony\Component\Security\Core\Encoder\MessageDigestPasswordEncoder;
-use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
-use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
 use Terminalbd\CrmBundle\Entity\Api;
 use Terminalbd\CrmBundle\Entity\ApiDetails;
-use Terminalbd\CrmBundle\Entity\BroilerLifeCycle;
 use Terminalbd\CrmBundle\Entity\BroilerStandard;
-use Terminalbd\CrmBundle\Entity\ChickLifeCycle;
 use Terminalbd\CrmBundle\Entity\CrmCustomer;
 use Terminalbd\CrmBundle\Entity\CrmVisit;
-use Terminalbd\CrmBundle\Entity\CrmVisitDetails;
 use Terminalbd\CrmBundle\Entity\FarmerComplain;
 use Terminalbd\CrmBundle\Entity\FarmerComplainDetails;
 use Terminalbd\CrmBundle\Entity\FcrDetails;
-use Terminalbd\CrmBundle\Entity\LayerPerformanceDetails;
 use Terminalbd\CrmBundle\Entity\Setting;
-use Terminalbd\CrmBundle\Entity\SettingLifeCycle;
 use Terminalbd\CrmBundle\Entity\SonaliStandard;
-use Terminalbd\CrmBundle\Form\CrmVisitFormType;
-use Terminalbd\CrmBundle\Form\FcrDetailsFormType;
-use Terminalbd\KpiBundle\Entity\LocationSalesTarget;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use function Doctrine\Common\Cache\Psr6\set;
 
 /**
  * Class ApiController
@@ -2049,5 +2034,62 @@ class ApiController extends AbstractController
 
     }
 
+    /**
+     * @param Request $request
+     * @param ParameterBagInterface $parameterBag
+     * @return JsonResponse|Response
+     * @Route("/employee-location", name="employee_location")
+     */
+    public function employeeLocation(Request $request, ParameterBagInterface $parameterBag)
+    {
+        set_time_limit(0);
+        ignore_user_abort(true);
+        if ($request->getMethod() == 'POST' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')){
+            $lineManager = $request->request->get('line_manager_id');
 
+            $entities = $this->getDoctrine()->getRepository(Api::class)->getEmployeeLocation($lineManager);
+            $response = new Response();
+            $response->headers->set('Content-Type', 'application/json');
+            $response->setContent(json_encode($entities));
+            $response->setStatusCode(Response::HTTP_OK);
+            return $response;
+        }
+        return new JsonResponse([
+            'status' => 404,
+            'message' => 'Not Found!'
+        ]);
+    }
+
+    /**
+     * @param Request $request
+     * @param ParameterBagInterface $parameterBag
+     * @return JsonResponse|Response
+     * @Route("/employee-location-update", name="employee_location_update")
+     */
+    public function setEmployeeLocation(Request $request, ParameterBagInterface $parameterBag)
+    {
+        set_time_limit(0);
+        ignore_user_abort(true);
+        if ($request->getMethod() == 'POST' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')){
+            $parameters = $request->request->all();
+
+            if ($parameters['employee_id']){
+                $findUser = $this->getDoctrine()->getRepository(User::class)->find($parameters['employee_id']);
+                if ($findUser){
+                    $findUser->setLatitude($parameters['latitude'] ?: null);
+                    $findUser->setLongitude($parameters['longitude'] ?: null);
+                    $this->getDoctrine()->getManager()->flush();
+
+                    return new JsonResponse([
+                        'status' => 200,
+                        'message' => 'success'
+                    ]);
+                }
+            }
+        }
+        return new JsonResponse([
+            'status' => 404,
+            'message' => 'Not Found!'
+        ]);
+    }
 }

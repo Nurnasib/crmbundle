@@ -1830,4 +1830,21 @@ class ApiRepository extends BaseRepository
 
     }
 
+    public function getEmployeeLocation($lineManager)
+    {
+        $qb = $this->_em->createQueryBuilder();
+        $qb->from(User::class, 'u');
+        $qb->select( 'u.id', 'u.name', 'u.mobile', 'u.userId', 'u.latitude', 'u.longitude');
+        $qb->where('u.enabled = 1');
+        $qb->andWhere('u.latitude IS NOT NULL');
+        $qb->andWhere('u.longitude IS NOT NULL');
+
+        if ($lineManager){
+            $qb->andWhere('u.lineManager = :lineManager')->setParameter('lineManager', $lineManager);
+        }
+
+        return $qb->getQuery()->getArrayResult();
+
+    }
+
 }
