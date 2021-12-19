@@ -18,11 +18,17 @@ use Terminalbd\CrmBundle\Entity\LayerLifeCycle;
 use Terminalbd\CrmBundle\Entity\LayerPerformanceDetails;
 use Terminalbd\CrmBundle\Form\SearchFilterFormType;
 
+/**
+ * Class LayerPerformanceReportController
+ * @package Terminalbd\CrmBundle\Controller\Report
+ * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_CRM_REPORT') or is_granted('ROLE_DEVELOPER')")
+ */
 class LayerPerformanceReportController extends AbstractController
 {
     /**
      * @Route("/crm/layer/performance/report", methods={"GET","POST"}, name="layer_performance_report")
-     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_AGM')")
+     * @param Request $request
+     * @return Response
      */
     public function indexReport(Request $request): Response
     {
@@ -64,6 +70,8 @@ class LayerPerformanceReportController extends AbstractController
 
     /**
      * @Route("/crm/layer-performance/report/pdf", methods={"GET"}, name="crm_layer_performance_report_pdf")
+     * @param Request $request
+     * @return Response
      */
     public function reportPdf(Request $request): Response
     {

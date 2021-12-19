@@ -23,6 +23,7 @@ use Terminalbd\CrmBundle\Form\SearchFilterFormType;
  * Class ChickLifeCycleReportController
  * @package Terminalbd\CrmBundle\Controller\Report
  * @Route("/crm/chick/life-cycle")
+ * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_CRM_REPORT') or is_granted('ROLE_DEVELOPER')")
  */
 class ChickLifeCycleReportController extends AbstractController
 {
@@ -31,7 +32,6 @@ class ChickLifeCycleReportController extends AbstractController
      * @param Request $request
      * @return Response
      * @Route("/{breed}", methods={"GET","POST"}, name="chick_life_cycle_report")
-     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_AGM')")
      */
     public function indexReport( string $breed, Request $request): Response
     {
@@ -45,7 +45,6 @@ class ChickLifeCycleReportController extends AbstractController
             $filterBy['breed'] = $breed;
             $filterBy['employeeId'] = $searchForm->get('employee')->getData() ? $searchForm->get('employee')->getData()->getId() : null;
 
-//            dd($filterBy);
             $entities = $this->getDoctrine()->getRepository(ChickLifeCycle::class)->getChickLifeCycleByReportType($filterBy);
         }
         return $this->render('@TerminalbdCrm/report/chick/report-life-cycle.html.twig',[
@@ -85,7 +84,8 @@ class ChickLifeCycleReportController extends AbstractController
 
     /**
      * @Route("/crm/chick/report/pdf", methods={"GET"}, name="crm_chick_report_pdf")
-     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_AGM')")
+     * @param Request $request
+     * @return Response
      */
     public function reportPdf(Request $request): Response
     {

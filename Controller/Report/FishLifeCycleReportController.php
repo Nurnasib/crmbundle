@@ -10,12 +10,17 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Terminalbd\CrmBundle\Form\SearchFilterFormType;
 
+/**
+ * Class FishLifeCycleReportController
+ * @package Terminalbd\CrmBundle\Controller\Report
+ * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_CRM_REPORT') or is_granted('ROLE_DEVELOPER')")
+ */
 class FishLifeCycleReportController extends AbstractController
 {
     /**
      * @Route("/crm/fish/life-cycle", methods={"GET","POST"}, name="crm_fish_life_cycle")
-     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_AGM')")
      * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
 
     public function index(Request $request)

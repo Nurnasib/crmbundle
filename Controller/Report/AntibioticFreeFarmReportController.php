@@ -7,6 +7,7 @@ namespace Terminalbd\CrmBundle\Controller\Report;
 use App\Entity\User;
 use Dompdf\Dompdf;
 use Dompdf\Options;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -17,10 +18,12 @@ use Terminalbd\CrmBundle\Form\SearchFilterFormType;
  * Class AntibioticFreeFarmReportController
  * @package Terminalbd\CrmBundle\Controller\Report
  * @Route("/crm/antibiotic-free-farm-report")
+ * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_CRM_REPORT') or is_granted('ROLE_DEVELOPER')")
  */
 class AntibioticFreeFarmReportController extends AbstractController
 {
     /**
+     * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
      * @Route("/", name="antibiotic_free_farm_report")
      */
@@ -57,7 +60,8 @@ class AntibioticFreeFarmReportController extends AbstractController
     }
 
     /**
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @param Request $request
+     * @return void
      * @Route("/excel", name="antibiotic_free_farm_report_excel")
      */
     public function antibioticFreeFarmExcel(Request $request)
@@ -88,7 +92,8 @@ class AntibioticFreeFarmReportController extends AbstractController
     }
 
     /**
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @param Request $request
+     * @return void
      * @Route("/pdf", name="antibiotic_free_farm_report_pdf")
      */
     public function antibioticFreeFarmPdf(Request $request)

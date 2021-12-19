@@ -7,15 +7,20 @@ namespace Terminalbd\CrmBundle\Controller\Report;
 use App\Entity\User;
 use Dompdf\Dompdf;
 use Dompdf\Options;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Terminalbd\CrmBundle\Entity\CrmCustomer;
-use Terminalbd\CrmBundle\Entity\Fcr;
 use Terminalbd\CrmBundle\Entity\LayerLifeCycle;
 use Terminalbd\CrmBundle\Form\SearchFilterFormType;
 
+/**
+ * Class LayerLifeCycleReportController
+ * @package Terminalbd\CrmBundle\Controller\Report
+ * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_CRM_REPORT') or is_granted('ROLE_DEVELOPER')")
+ */
 class LayerLifeCycleReportController extends AbstractController
 {
     /**
@@ -66,6 +71,8 @@ class LayerLifeCycleReportController extends AbstractController
 
     /**
      * @Route("/crm/layer/report/pdf", methods={"GET"}, name="crm_layer_life_cycle_report_pdf")
+     * @param Request $request
+     * @return Response
      */
     public function reportPdf(Request $request): Response
     {

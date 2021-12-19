@@ -2,6 +2,7 @@
 namespace Terminalbd\CrmBundle\Controller\Report;
 
 use App\Entity\Admin\Location;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -13,11 +14,14 @@ use Terminalbd\CrmBundle\Entity\CrmVisit;
 /**
  * Class CrmDailyActivitiesReportController
  * @package Terminalbd\CrmBundle\Controller\Report
+ * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_CRM_REPORT') or is_granted('ROLE_DEVELOPER')")
  */
 class CrmDailyActivitiesReportController extends AbstractController
 {
     /**
      * @Route("/crm/daily-activities/report", name="daily_activities_report")
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
     public function dailyReport(Request $request)
     {

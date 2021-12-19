@@ -11,12 +11,17 @@ use Symfony\Component\Routing\Annotation\Route;
 use Terminalbd\CrmBundle\Entity\CostBenefitAnalysisForLessCostingFarm;
 use Terminalbd\CrmBundle\Form\SearchFilterFormType;
 
+/**
+ * Class CostBenefitAnalysisPoultryReportController
+ * @package Terminalbd\CrmBundle\Controller\Report
+ * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_CRM_REPORT') or is_granted('ROLE_DEVELOPER')")
+ */
 class CostBenefitAnalysisPoultryReportController extends AbstractController
 {
     /**
      * @Route("/cost-benefit-analysis", name="cost_benefit_analysis")
-     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function costBenefitAnalysisReport(Request $request)
     {

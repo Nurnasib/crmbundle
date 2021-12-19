@@ -7,6 +7,7 @@ namespace Terminalbd\CrmBundle\Controller\Report;
 use App\Entity\User;
 use Dompdf\Dompdf;
 use Dompdf\Options;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -19,6 +20,7 @@ use Terminalbd\CrmBundle\Form\SearchFilterFormType;
 /**
  * Class FcrReportController
  * @package Terminalbd\CrmBundle\Controller\Report
+ * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_CRM_REPORT') or is_granted('ROLE_DEVELOPER')")
  */
 class FcrReportController extends AbstractController
 {
