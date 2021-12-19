@@ -2092,4 +2092,90 @@ class ApiController extends AbstractController
             'message' => 'Not Found!'
         ]);
     }
+
+    /**
+     * @param Request $request
+     * @param ParameterBagInterface $parameterBag
+     * @return JsonResponse
+     * @Route("/regions", name="regions")
+     */
+    public function regions(Request $request, ParameterBagInterface $parameterBag)
+    {
+        set_time_limit(0);
+        ignore_user_abort(true);
+        if ($request->getMethod() == 'GET' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')){
+            $regions = $this->getDoctrine()->getRepository(Location::class)->findBy(['level' => 3]);
+            $data = [];
+            foreach ($regions as $region) {
+                $data[] = [
+                    'id' => $region->getId(),
+                    'name' => $region->getName(),
+                ];
+            }
+            return new JsonResponse($data);
+        }
+        return new JsonResponse([
+            'status' => 404,
+            'message' => 'Not Found!'
+        ]);
+
+    }
+
+    /**
+     * @param Request $request
+     * @param ParameterBagInterface $parameterBag
+     * @return JsonResponse
+     * @Route("/chick-type", name="chick_type")
+     */
+    public function chickType(Request $request, ParameterBagInterface $parameterBag)
+    {
+        set_time_limit(0);
+        ignore_user_abort(true);
+        if ($request->getMethod() == 'GET' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')){
+            $chickTypes = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType'=>'CHICK_TYPE', 'status' => 1));
+
+            $data = [];
+            foreach ($chickTypes as $chickType) {
+                $data[] = [
+                    'id' => $chickType->getId(),
+                    'name' => $chickType->getName(),
+                ];
+            }
+            return new JsonResponse($data);
+        }
+        return new JsonResponse([
+            'status' => 404,
+            'message' => 'Not Found!'
+        ]);
+
+    }
+
+    /**
+     * @param Request $request
+     * @param ParameterBagInterface $parameterBag
+     * @return JsonResponse
+     * @Route("/poultry-meat-egg-type", name="poultry_meat_egg_type")
+     */
+    public function poultryMeatEggType(Request $request, ParameterBagInterface $parameterBag)
+    {
+        set_time_limit(0);
+        ignore_user_abort(true);
+        if ($request->getMethod() == 'GET' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')){
+            $breedTypes = $this->getDoctrine()->getRepository(Setting::class)->findBy(['settingType' => 'MEAT_EGG_TYPE', 'status' => 1]);
+
+            $data = [];
+            foreach ($breedTypes as $breedType) {
+                $data[] = [
+                    'id' => $breedType->getId(),
+                    'name' => $breedType->getName(),
+                ];
+            }
+            return new JsonResponse($data);
+        }
+        return new JsonResponse([
+            'status' => 404,
+            'message' => 'Not Found!'
+        ]);
+
+    }
 }

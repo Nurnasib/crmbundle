@@ -1840,7 +1840,7 @@ class ApiRepository extends BaseRepository
         $qb->andWhere('u.longitude IS NOT NULL');
 
         if ($lineManager){
-            $qb->andWhere('u.lineManager = :lineManager')->setParameter('lineManager', $lineManager);
+            $qb->andWhere('u.lineManager= :lineManagerId')->setParameter('lineManagerId', $lineManager);
         }
 
         return $qb->getQuery()->getArrayResult();
