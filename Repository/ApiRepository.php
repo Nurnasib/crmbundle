@@ -1830,6 +1830,25 @@ class ApiRepository extends BaseRepository
 
     }
 
+    public function layerLifeCycleInProgress($parameters)
+    {
+        $qb = $this->_em->createQueryBuilder();
+        $qb->from(LayerLifeCycleDetails::class, 'layerLifeCycleDetails');
+        $qb->join('layerLifeCycleDetails.crmLayerLifeCycle', 'layerLifeCycle');
+        $qb->join('layerLifeCycle.customer', 'customer');
+        $qb->join('layerLifeCycle.employee', 'employee');
+        $qb->join('layerLifeCycle.report', 'report');
+        $qb->select('layerLifeCycleDetails');
+
+        $qb->where("layerLifeCycle.lifeCycleState = 'IN_PROGRESS'");
+        $qb->andWhere('customer.id = :customerId')->setParameter('customerId', $parameters['customer_id']);
+        $qb->andWhere('employee.id = :employeeId')->setParameter('employeeId', $parameters['employee_id']);
+        $qb->andWhere('report.id = :reportId')->setParameter('reportId', $parameters['report_id']);
+
+        return $qb->getQuery()->getArrayResult();
+
+    }
+
     public function getEmployeeLocation($lineManager)
     {
         $qb = $this->_em->createQueryBuilder();

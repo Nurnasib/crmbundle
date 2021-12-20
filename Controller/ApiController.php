@@ -2035,6 +2035,34 @@ class ApiController extends AbstractController
     }
 
     /**
+     * @Route("/layer-life-cycle-in-progress", name="layer_life_cycle_in_progress")
+     * @param Request $request
+     * @param ParameterBagInterface $parameterBag
+     * @return JsonResponse|Response
+     */
+    public function layerLifeCycleInProgress(Request $request, ParameterBagInterface $parameterBag)
+    {
+        set_time_limit(0);
+        ignore_user_abort(true);
+        if ($request->getMethod() == 'POST' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')){
+            $parameters = $request->request->all();
+
+            $entities = $this->getDoctrine()->getRepository(Api::class)->layerLifeCycleInProgress($parameters);
+            $response = new Response();
+            $response->headers->set('Content-Type', 'application/json');
+            $response->setContent(json_encode($entities));
+            $response->setStatusCode(Response::HTTP_OK);
+            return $response;
+        }
+        return new JsonResponse([
+            'status' => 404,
+            'message' => 'Not Found!'
+        ]);
+
+
+    }
+
+    /**
      * @param Request $request
      * @param ParameterBagInterface $parameterBag
      * @return JsonResponse|Response
