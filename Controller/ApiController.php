@@ -72,7 +72,7 @@ class ApiController extends AbstractController
                         'username' => $findUser->getUsername(),
                         'name' => $findUser->getName(),
                         'email' => $findUser->getEmail(),
-                        'roles' => $findUser->getUserGroup()->getSlug(),
+                        'roles' => $findUser->getUserGroup() ? $findUser->getUserGroup()->getSlug() : '',
                         'designation' => $findUser->getDesignation() ? $findUser->getDesignation()->getName() : '',
                         'lineManager' => $findUser->getLineManager() ? $findUser->getLineManager()->getId() : '' ,
                         'locations' => $locations,
