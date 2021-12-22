@@ -42,9 +42,9 @@ use Terminalbd\CrmBundle\Entity\Setting;
 class DailyChickPriceController extends AbstractController
 {
     /**
-     * @param $report
      * @Route("/", methods={"GET"}, name="crm_chick")
      * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_AGM')")
+     * @return Response
      */
     public function index( ): Response
     {
@@ -54,7 +54,10 @@ class DailyChickPriceController extends AbstractController
     }
 
     /**
-     * @param CrmCustomer $crmCustomer
+     * @param Request $request
+     * @param Location $location
+     * @return Response
+     * @throws \Exception
      * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      * @Route("/location/{location}/new/modal", methods={"GET", "POST"}, name="daily_chick_price")
      */
@@ -89,11 +92,12 @@ class DailyChickPriceController extends AbstractController
      * @param DailyChickPrice $dailyChickPrice
      * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      * @Route("/details/{id}/modal", methods={"GET", "POST"}, name="daily_chick_price_details_modal")
+     * @return Response
      */
     public function dailyChickPriceDetailsModal(DailyChickPrice $dailyChickPrice): Response
     {
-        $feeds = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType'=>'FEED_NAME'));
-        $chickTypes = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType'=>'CHICK_TYPE'));
+        $feeds = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType'=>'FEED_NAME', 'status' => 1));
+        $chickTypes = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType'=>'CHICK_TYPE', 'status' => 1));
 
         $crmChickLifeCycleDetails = $this->getDoctrine()->getRepository(DailyChickPriceDetails::class)->findOneBy(array('crmDailyChickPrice'=>$dailyChickPrice->getId()));
         if (!$crmChickLifeCycleDetails){
@@ -130,11 +134,13 @@ class DailyChickPriceController extends AbstractController
     }
 
 
-
     /**
      * Displays a form to edit an existing ChickLifeCycle entity.
      * @Route("/details/{id}/edit", methods={"POST"}, name="crm_daily_chick_price_detail_update", options={"expose"=true})
      * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @param Request $request
+     * @param DailyChickPriceDetails $entity
+     * @return Response
      */
 
     public function editDailyChickDetails(Request $request, DailyChickPriceDetails $entity): Response

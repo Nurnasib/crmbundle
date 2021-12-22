@@ -54,6 +54,7 @@ class CrmVisitController extends AbstractController
      * @param Request $request
      * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      * @Route("/new" ,name="new_visit")
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
      */
     public function new(Request $request){
 
@@ -84,6 +85,9 @@ class CrmVisitController extends AbstractController
      * Displays a form to edit an existing CrmVisit entity.
      * @Route("/{id}/edit", methods={"GET", "POST"}, name="crm_visit_edit")
      * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @param Request $request
+     * @param CrmVisit $entity
+     * @return Response
      */
 
     public function edit(Request $request, CrmVisit $entity): Response
