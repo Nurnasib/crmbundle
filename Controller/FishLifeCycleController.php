@@ -67,6 +67,7 @@ class FishLifeCycleController extends AbstractController
                 'query_builder' => function(EntityRepository $er){
                     return $er->createQueryBuilder('e')
                         ->where("e.settingType ='FEED_NAME'")
+                        ->andWhere("e.status=1")
                         ->orderBy('e.name', 'ASC');
                 },
             ))->add('Save', SubmitType::class)
