@@ -76,7 +76,7 @@ $('.fishLifeCycleSection').on('click' , '.addFishLifeCycleDetailSpecies', functi
 });
 
 
-$('.fishLifeCycleSection').on('change' , '.feed_type', function (e) {
+/*$('.fishLifeCycleSection').on('change' , '.feed_type', function (e) {
     var element=$(this);
     var feedType = $(element).val();
     
@@ -98,7 +98,7 @@ $('.fishLifeCycleSection').on('change' , '.feed_type', function (e) {
         });
 
     });
-});
+});*/
 
 
 function fishLifeCycleDetailDataUpdateUsingAjax(element) {

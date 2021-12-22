@@ -72,7 +72,11 @@
                                                             <td>
                                                                 <select name="main_culture_species" class="form-control main_culture_species">
                                                                     <option value="">Choose Culture Species</option>
-
+                                                                    {% if mainCultureSpecies is not empty %}
+                                                                        {% for mainCultureSpecie in mainCultureSpecies %}
+                                                                            <option value="{{ mainCultureSpecie.id }}">{{ mainCultureSpecie.name }}</option>
+                                                                        {% endfor %}
+                                                                    {% endif %}
                                                                 </select>
                                                             </td>
                                                             <td>
