@@ -44,6 +44,7 @@ class ChickLifeCycleController extends AbstractController
      * @param $report
      * @Route("/", methods={"GET"}, name="crm_chick")
      * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_AGM')")
+     * @return Response
      */
     public function index( ): Response
     {
@@ -53,7 +54,11 @@ class ChickLifeCycleController extends AbstractController
     }
 
     /**
+     * @param Request $request
      * @param CrmCustomer $crmCustomer
+     * @param Setting $report
+     * @return Response
+     * @throws \Exception
      * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      * @Route("/customer/{id}/report/{report}/new/modal", methods={"GET", "POST"}, name="chick_new_modal")
      */

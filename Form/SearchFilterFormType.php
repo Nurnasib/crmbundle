@@ -83,6 +83,9 @@ class SearchFilterFormType extends AbstractType
                 'class' => User::class,
                 'query_builder' => function(EntityRepository $repository){
                 return $repository->createQueryBuilder('e')
+                    ->join('e.userGroup', 'userGroup')
+                    ->where("userGroup.slug = 'employee'")
+                    ->andWhere("e.enabled = 1")
                     ->orderBy('e.name');
                 },
                 'choice_label' => 'name',

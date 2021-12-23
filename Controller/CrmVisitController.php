@@ -31,7 +31,6 @@ use Terminalbd\CrmBundle\Repository\CrmVisitRepository;
 /**
  * @Route("/crm/visit")
  */
-
 class CrmVisitController extends AbstractController
 {
 

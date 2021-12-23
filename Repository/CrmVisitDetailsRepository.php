@@ -199,4 +199,49 @@ class CrmVisitDetailsRepository extends EntityRepository
             $stmt->execute();
         }
     }
+
+    public function getVisitDetails($begin,$end)
+    {
+        $qb = $this->createQueryBuilder('e');
+        $qb->join('e.crmVisit', 'crmVisit');
+        $qb->join('crmVisit.employee', 'employee');
+        $qb->leftJoin('e.purpose', 'purpose');
+        $qb->leftJoin('e.crmCustomer', 'farmer');
+        $qb->leftJoin('e.agent', 'agent');
+        $qb->leftJoin('agent.parent', 'nourishAgent');
+        $qb->select('e.farmCapacity', 'e.process', 'e.comments');
+        $qb->addSelect('farmer.name AS farmerName', 'farmer.address AS farmerAddress', 'farmer.mobile AS farmerMobile');
+        $qb->addSelect('agent.name AS agentName', 'agent.address AS agentAddress', 'agent.mobile AS agentMobile');
+        $qb->addSelect('employee.userId','employee.name AS employeeName');
+        $qb->addSelect('crmVisit.created AS visitDate');
+        $qb->addSelect('purpose.name AS purposeName');
+        $qb->addSelect('nourishAgent.name AS nourishAgentName');
+        $qb->where('crmVisit.created >=:begin')->setParameter('begin', $begin);
+        $qb->andWhere('crmVisit.created <=:end')->setParameter('end', $end);
+
+        $results = $qb->getQuery()->getArrayResult();
+
+        $data = [];
+        foreach ($results as $result) {
+            if ($result['process'] == 'farmer'){
+                $data['farmer'][] = $result;
+            }elseif ($result['process'] == 'agent'){
+                $data['agent'][] = $result;
+            }elseif ($result['process'] == 'other-agent'){
+                $data['other-agent'][] = $result;
+            }elseif ($result['process'] == 'sub-agent'){
+                $data['sub-agent'][] = $result;
+            }
+            $data['employee'] = [
+                'userId' => $result['userId'],
+                'employeeName' => $result['employeeName'],
+                'visitDate' => [
+                    'begin' => $begin,
+                    'end' => $end,
+                    ]
+            ];
+
+        }
+        return $data;
+    }
 }

@@ -26,8 +26,6 @@ class CrmVisitRepository extends EntityRepository
 {
     public function findDailyReport($filterBy)
     {
-//        dd($filterBy);
-//        die();
         $employeeId = $filterBy['employeeId'];
         $startDate = $filterBy['startDate'];
         $endDate = $filterBy['endDate'];
@@ -56,23 +54,25 @@ class CrmVisitRepository extends EntityRepository
         return $qb->getQuery()->getArrayResult();
     }
 
-/*    public function insertDataFromApi(array $data)
+    public function getVisits($startDate, $endDate, $employee)
     {
-        $created = new \DateTime($data['created_at']);
-        $employee = $this->getEntityManager()->getRepository(User::class)->find($data['employee_id']);
-        $location = $this->getEntityManager()->getRepository(Location::class)->find($data['location_id']);
+        $qb = $this->createQueryBuilder('e');
+        $qb->leftJoin('e.location', 'location');
+        $qb->select('e.id AS visitId','e.created AS visitDate','e.workingDuration AS visitBegin','e.workingDurationTo AS visitEnd', 'location.name AS locationName');
+        $qb->where('e.created >= :startDate')->setParameter('startDate', $startDate);
+        $qb->andWhere('e.created <= :endDate')->setParameter('endDate', $endDate);
+        $qb->andWhere('e.employee = :employee')->setParameter('employee', $employee);
 
-        if ($employee && $location){
-            $sql = "INSERT INTO `crm_visit`(`created`, `working_duration`, `employee_id`, `location_id`, `working_duration_to`, `app_id`) VALUES (:created_at, :duration_from, :employee_id, :location_id, :duration_to, :app_id)";
-            $em = $this->_em;
-            $stmt = $em->getConnection()->prepare($sql);
-            $stmt->bindValue('created_at', $created->format('Y-m-d H:i:s'));
-            $stmt->bindValue('duration_from', $data['duration_from']);
-            $stmt->bindValue('employee_id', $data['employee_id']);
-            $stmt->bindValue('location_id', $data['location_id']);
-            $stmt->bindValue('duration_to', $data['duration_to']);
-            $stmt->bindValue('app_id', $data['id']);
-            $stmt->execute();
+        $results = $qb->getQuery()->getArrayResult();
+
+        $data = [];
+
+        foreach ($results as $result) {
+            $data[$result['visitDate']->format('d-m-Y')][] = $result;
+//            $data['visitDays'][$result['visitDate']->format('d-m-Y')]['visitIds'][] = $result['visitId'];
+//            $data['visitIds'][] = $result['visitId'];
+
         }
-    }*/
+        return $data;
+    }
 }

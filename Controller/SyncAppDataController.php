@@ -23,6 +23,7 @@ use Terminalbd\CrmBundle\Entity\CattleLifeCycle;
 use Terminalbd\CrmBundle\Entity\ChickLifeCycle;
 use Terminalbd\CrmBundle\Entity\CrmCustomer;
 use Terminalbd\CrmBundle\Entity\CrmVisit;
+use Terminalbd\CrmBundle\Entity\LayerLifeCycleDetails;
 use Terminalbd\CrmBundle\Entity\Setting;
 
 
@@ -804,11 +805,12 @@ VALUES (:total_birds, :hatchery_date, :created, :updated, :customer_id, :employe
 
             $sql = "SELECT id
 FROM `crm_layer_life_cycle`
-WHERE `customer_id` = :customer_id AND `employee_id` = :employee_id AND `report_id` = :report_id";
+WHERE `customer_id` = :customer_id AND `employee_id` = :employee_id AND `report_id` = :report_id AND `life_cycle_state` = :life_cycle_state";
             $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
             $stmt->bindValue('customer_id', $report['customer_id']);
             $stmt->bindValue('employee_id', $report['employee_id']);
             $stmt->bindValue('report_id', $report['report_id']);
+            $stmt->bindValue('life_cycle_state', 'IN_PROGRESS');
 
 //            $stmt->bindValue('customer_id', 44);
 //            $stmt->bindValue('employee_id', 23);
@@ -816,38 +818,68 @@ WHERE `customer_id` = :customer_id AND `employee_id` = :employee_id AND `report_
             $stmt->execute();
             $lifeCycleId = $stmt->fetch()['id'];
             if ($lifeCycleId){
-                $sql = "INSERT INTO `crm_layer_life_cycle_details`(`crm_layer_life_cycle_id`, `visiting_date`, `age_week`, `dead_bird`, `avg_weight`, `target_weight`, `uniformity`, `feed_per_bird`, `target_feed_per_bird`, `total_eggs`, `target_egg_production`, `egg_weight_actual`, `egg_weight_standard`, `production_date`, `batch_no`, `medicine`, `remarks`, `created`, `updated`, `feed_mill_id`, `feed_type_id`) 
-VALUES (:crm_layer_life_cycle_id, :visiting_date, :age_week, :dead_bird, :avg_weight, :target_weight, :uniformity, :feed_per_bird, :target_feed_per_bird, :total_eggs, :target_egg_production, :egg_weight_actual, :egg_weight_standard, :production_date, :batch_no, :medicine, :remarks, :created, :updated, :feed_mill_id, :feed_type_id)";
-
                 $visitingDate = new \DateTime($report['visiting_date']);
                 $productionDate = new \DateTime($report['production_date']);
                 $createdAt = new \DateTime($report['created']);
                 $updatedAt = new \DateTime($report['updated']);
 
-                $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
-                $stmt->bindValue('crm_layer_life_cycle_id', $lifeCycleId);
-                $stmt->bindValue('visiting_date', $visitingDate->format('Y-m-d'));
-                $stmt->bindValue('age_week', $report['age_week']);
-                $stmt->bindValue('dead_bird', $report['dead_bird']);
-                $stmt->bindValue('avg_weight', $report['avg_weight']);
-                $stmt->bindValue('target_weight', $report['target_weight']);
-                $stmt->bindValue('uniformity', $report['uniformity']);
-                $stmt->bindValue('feed_per_bird', $report['feed_per_bird']);
-                $stmt->bindValue('target_feed_per_bird', $report['target_feed_per_bird']);
-                $stmt->bindValue('total_eggs', $report['total_eggs']);
-                $stmt->bindValue('target_egg_production', $report['target_egg_production']);
-                $stmt->bindValue('egg_weight_actual', $report['egg_weight_actual']);
-                $stmt->bindValue('egg_weight_standard', $report['egg_weight_standard']);
-                $stmt->bindValue('production_date', $productionDate->format('Y-m-d'));
-                $stmt->bindValue('batch_no', $report['batch_no']);
-                $stmt->bindValue('medicine', $report['medicine']);
-                $stmt->bindValue('remarks', $report['remarks']);
-                $stmt->bindValue('created', $createdAt->format('Y-m-d H:i:s'));
-                $stmt->bindValue('updated', $updatedAt->format('Y-m-d H:i:s'));
-                $stmt->bindValue('feed_mill_id', $report['feed_mill_id']);
-                $stmt->bindValue('feed_type_id', $report['feed_type_id']);
+                /**
+                 * @var LayerLifeCycleDetails $findDetails
+                 */
+                $findDetails = $this->getDoctrine()->getRepository(LayerLifeCycleDetails::class)->findOneBy(['crmLifeCycle' => $lifeCycleId, 'ageWeek' => $report['age_week']]);
+                if ($findDetails){
+                    $findFeedMill = $this->getDoctrine()->getRepository(Setting::class)->find($report['feed_mill_id']);
+                    $findFeedType = $this->getDoctrine()->getRepository(Setting::class)->find($report['feed_type_id']);
+                    $findDetails->setVisitingDate($visitingDate);
+                    $findDetails->setAgeWeek($report['age_week']);
+                    $findDetails->setDeadBird($report['dead_bird']);
+                    $findDetails->setAvgWeight($report['avg_weight']);
+                    $findDetails->setTargetWeight($report['target_weight']);
+                    $findDetails->setUniformity($report['uniformity']);
+                    $findDetails->setFeedPerBird($report['feed_per_bird']);
+                    $findDetails->setTargetFeedPerBird($report['target_feed_per_bird']);
+                    $findDetails->setTotalEggs($report['total_eggs']);
+                    $findDetails->setTargetEggProduction($report['target_egg_production']);
+                    $findDetails->setEggWeightActual($report['egg_weight_actual']);
+                    $findDetails->setEggWeightStandard($report['egg_weight_standard']);
+                    $findDetails->setProductionDate($productionDate);
+                    $findDetails->setBatchNo($report['batch_no']);
+                    $findDetails->setMedicine($report['medicine']);
+                    $findDetails->setRemarks($report['remarks']);
+                    $findDetails->setFeedMill($findFeedMill);
+                    $findDetails->setFeedType($findFeedType);
+                    $findDetails->setUpdated($updatedAt);
+                    $this->getDoctrine()->getManager()->persist($findDetails);
+                    $this->getDoctrine()->getManager()->flush();
+                }else{
+                    $sql = "INSERT INTO `crm_layer_life_cycle_details`(`crm_layer_life_cycle_id`, `visiting_date`, `age_week`, `dead_bird`, `avg_weight`, `target_weight`, `uniformity`, `feed_per_bird`, `target_feed_per_bird`, `total_eggs`, `target_egg_production`, `egg_weight_actual`, `egg_weight_standard`, `production_date`, `batch_no`, `medicine`, `remarks`, `created`, `updated`, `feed_mill_id`, `feed_type_id`) 
+VALUES (:crm_layer_life_cycle_id, :visiting_date, :age_week, :dead_bird, :avg_weight, :target_weight, :uniformity, :feed_per_bird, :target_feed_per_bird, :total_eggs, :target_egg_production, :egg_weight_actual, :egg_weight_standard, :production_date, :batch_no, :medicine, :remarks, :created, :updated, :feed_mill_id, :feed_type_id)";
 
-                $stmt->execute();
+                    $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
+                    $stmt->bindValue('crm_layer_life_cycle_id', $lifeCycleId);
+                    $stmt->bindValue('visiting_date', $visitingDate->format('Y-m-d'));
+                    $stmt->bindValue('age_week', $report['age_week']);
+                    $stmt->bindValue('dead_bird', $report['dead_bird']);
+                    $stmt->bindValue('avg_weight', $report['avg_weight']);
+                    $stmt->bindValue('target_weight', $report['target_weight']);
+                    $stmt->bindValue('uniformity', $report['uniformity']);
+                    $stmt->bindValue('feed_per_bird', $report['feed_per_bird']);
+                    $stmt->bindValue('target_feed_per_bird', $report['target_feed_per_bird']);
+                    $stmt->bindValue('total_eggs', $report['total_eggs']);
+                    $stmt->bindValue('target_egg_production', $report['target_egg_production']);
+                    $stmt->bindValue('egg_weight_actual', $report['egg_weight_actual']);
+                    $stmt->bindValue('egg_weight_standard', $report['egg_weight_standard']);
+                    $stmt->bindValue('production_date', $productionDate->format('Y-m-d'));
+                    $stmt->bindValue('batch_no', $report['batch_no']);
+                    $stmt->bindValue('medicine', $report['medicine']);
+                    $stmt->bindValue('remarks', $report['remarks']);
+                    $stmt->bindValue('created', $createdAt->format('Y-m-d H:i:s'));
+                    $stmt->bindValue('updated', $updatedAt->format('Y-m-d H:i:s'));
+                    $stmt->bindValue('feed_mill_id', $report['feed_mill_id']);
+                    $stmt->bindValue('feed_type_id', $report['feed_type_id']);
+
+                    $stmt->execute();
+                }
             }
         }
     }
