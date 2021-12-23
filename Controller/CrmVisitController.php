@@ -140,6 +140,8 @@ class CrmVisitController extends AbstractController
 //                'firmTypes'=>$firmTypesArray,
 //                'breedTypes'=>$breedTypes,
 //                'breedNames'=>$breedNames,
+                'feedCompanies'=>$feedCompanies,
+                'breedNames'=>$breedNames,
                 'agents'=>$agent,
                 'farmers'=>$farmers,
                 'subAgents'=>$subAgents,

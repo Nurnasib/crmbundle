@@ -401,18 +401,17 @@
 
 
         {#Modal#}
+
         <div class="modal fade" id="farmerModal" tabindex="-1" aria-labelledby="farmerModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg">
-                <div class="modal-content" style="padding: 20px">
+                <div class="modal-content" style="padding: 20px" >
                     <div class="modal-header">
                         <h5 class="modal-title" id="exampleModalLabel">New Farmer</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <form action="{{ path('new_farmer_ajax',{'id':entity.id}) }}" name="farmerForm"
-                          class="form-horizontal right crm-customer-create-form" id="farmerForm"
-                          onsubmit="return validateform()" method="post">
+                    <form action="{{ path('new_farmer_ajax',{'id':entity.id}) }}" name="farmerForm" class="form-horizontal right crm-customer-create-form" id="farmerForm" onsubmit="return validateform()"   method="post">
 
                         <div class="modal-body">
 
@@ -420,26 +419,33 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="recipient-name" class="col-form-label col-md-4 ">Name:</label>
-                                        <input type="text" name="name" class="form-control col-md-8 mr-4 name" id="name"
-                                               autocomplete="off" required>
+                                        <input type="text" name="name" class="form-control col-md-8 mr-4 name" id="name" autocomplete="off" required>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="recipient-name" class="col-form-label col-md-4">Mobile:</label>
-                                        <input type="text" name="mobile" class="form-control col-md-8 mobile"
-                                               id="mobile">
+                                        <input type="text" name="mobile" class="form-control col-md-8 mobile" id="mobile">
                                     </div>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="recipient-name" class="col-form-label col-md-4">Agent Name:</label>
-                                        <select required name="agent" class="form-control agent">
+                                        <label for="agent" class="col-form-label col-md-4">Agent:</label>
+                                        <select name="agent" class="form-control agent">
                                             <option value="">Select Agent</option>
                                             {% for agent in agents %}
                                                 <option value="{{ agent.id }}">{{ agent.name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="other_agent" class="col-form-label col-md-4">Other Agent:</label>
+                                        <select name="other_agent" class="form-control other_agent">
+                                            <option value="">Select Other Agent</option>
+                                            {% for otherAgent in otherAgents %}
+                                                <option value="{{ otherAgent.id }}">{{ otherAgent.name }}</option>
                                             {% endfor %}
                                         </select>
                                     </div>
@@ -447,13 +453,11 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="message-text" class="col-form-label col-md-4">Location:</label>
-                                        {% if entity.location is not empty %}
+                                        {% if entity.location is not empty%}
                                             <p class="form-control">{{ entity.location.name }}</p>
-                                            <input type="hidden" name="location" class="location"
-                                                   value="{{ entity.location.id }}">
+                                            <input type="hidden" name="location" class="location" value="{{ entity.location.id }}">
                                         {% else %}
-                                            <select name="location"
-                                                    class="form-control location" {{ entity.location is not empty and entity.location.id>0?'disabled':'' }}>
+                                            <select name="location" class="form-control location" {{ entity.location is not empty and entity.location.id>0?'disabled':'' }}>
                                                 {% for location in entity.employee.upozila %}
                                                     <option value="{{ location.id }}" {{ entity.location is not empty and location.id==entity.location.id?'selected="selected"':'' }}>{{ location.name }}</option>
                                                 {% endfor %}
@@ -462,39 +466,99 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="row">
+                                <div class="col-md-6">
 
+                                    <div class="form-group">
+                                        <label for="farmer_type" class="col-form-label col-md-4">{{ 'Feed'|trans }}</label>
+                                        <select name="feed_id" id="feed_id" class="form-control feed_id" required>
+                                            <option value="">Select Feed</option>
+                                            {% for feedCompany in feedCompanies %}
+                                                <option value="{{feedCompany.id}}"> {{feedCompany.name}} </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="farmer_type" class="col-form-label col-md-4">{{ 'Farmer Type'|trans }}</label>
+                                        <select name="farmer_type" id="farmer_type" class="form-control farmer_type" required>
+                                            <option value="">Select Farmer Type</option>
+                                            {% for breedName in breedNames %}
+                                                <option value="{{breedName.id}}"> {{breedName.name}} </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="farmer_address" class="col-form-label col-md-4">{{ 'Address'|trans }}:</label>
+                                        <textarea rows="4" class="form-control col-md-8" name="address" id="farmer_address"></textarea>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="cultureSpeciesArea"></div>
-                            <h4>{{ 'Previous Information'|trans }}</h4>
+                            {#<h4>{{ 'Previous Information'|trans }}</h4>
                             <div class="row">
 
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label for="previous_agent_name"
-                                               class="col-form-label col-md-4 ">{{ 'Agent Name'|trans }}:</label>
-                                        <input type="text" name="previous_agent_name"
-                                               class="form-control col-md-8 mr-4 previous_agent_name"
-                                               id="previous_agent_name" autocomplete="off">
+                                        <label for="previous_agent_name" class="col-form-label col-md-4 ">{{ 'Agent Name'|trans }}:</label>
+                                        <input type="text" name="previous_agent_name" class="form-control col-md-8 mr-4 previous_agent_name" id="previous_agent_name" autocomplete="off">
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label for="previous_agent_address" class="col-form-label col-md-4">Agent
-                                            Address:</label>
-                                        <input type="text" class="form-control col-md-8" name="previous_agent_address"
-                                               id="previous_agent_address">
+                                        <label for="previous_agent_address" class="col-form-label col-md-4">Agent Address:</label>
+                                        <input type="text" class="form-control col-md-8" name="previous_agent_address" id="previous_agent_address">
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label for="previous_feed_name" class="col-form-label col-md-4 ">Feed
-                                            Name:</label>
-                                        <input type="text" name="previous_feed_name"
-                                               class="form-control col-md-8 mr-4 previous_feed_name"
-                                               id="previous_feed_name" autocomplete="off">
+                                        <label for="previous_feed_name" class="col-form-label col-md-4 ">Feed Name:</label>
+                                        <input type="text" name="previous_feed_name" class="form-control col-md-8 mr-4 previous_feed_name" id="previous_feed_name" autocomplete="off">
+                                    </div>
+                                </div>
+                            </div>#}
+                            {#<h4>{{ 'Report Information'|trans }}</h4>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="message-text" class="col-form-label col-md-4">Purpose</label>
+                                        <select name="purpose" id="" class="form-control">
+                                            <option value="">Select Purpose</option>
+                                            {% for purpose in purposes %}
+                                                <option value="{{purpose.id}}"> {{purpose.name}} </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="col-form-label col-md-4">{{ 'Report Type'|trans }}</label>
+                                        <select name="farmer_firm_type" class="form-control farmer_firm_type">
+                                            <option value="">Select Farm Type</option>
+                                            {% for index, items in firmTypes %}
+                                                <optgroup label="{{ index }}">
+
+                                                    {% for firmType in items %}
+                                                        <option value="{{firmType.id}}"> {{firmType.name}} </option>
+                                                    {% endfor %}
+                                                </optgroup>
+
+                                            {% endfor %}
+                                        </select>
+
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label class="col-form-label col-md-4">{{ 'Report'|trans }}</label>
+                                        <select name="farmer_report" class="form-control farmer_report">
+                                            <option value="">Select Report</option>
+                                        </select>
                                     </div>
                                 </div>
                             </div>
-
                             <div class="row">
                                 <div class="col-md-4">
                                     <div class="form-group">
@@ -506,43 +570,36 @@
                                 <div class="col-md-8">
                                     <div class="form-group">
                                         <label for="message-text" class="col-form-label col-md-2">Comments</label>
-                                        <textarea class="form-control col-md-10" name="comments"
-                                                  id="comments"></textarea>
+                                        <textarea class="form-control col-md-10" name="comments" id="comments"></textarea>
                                     </div>
                                 </div>
-                            </div>
+                            </div>#}
                         </div>
 
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary btn-sm crm-customer-btn" id="crm-farmer-btn">
-                                Save
-                            </button>
+                            <button type="button" class="btn btn-primary btn-sm crm-customer-btn" id="crm-farmer-btn">Save</button>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
 
-        <div class="modal fade" id="otherAgentModal" tabindex="-1" aria-labelledby="subAgentModalLabel"
-             aria-hidden="true">
+        <div class="modal fade" id="otherAgentModal" tabindex="-1" aria-labelledby="otherAgentModalLabel" aria-hidden="true">
             <div class="modal-dialog">
-                <div class="modal-content" style="padding: 20px">
+                <div class="modal-content" style="padding: 20px" >
                     <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">New Sub-agent</h5>
+                        <h5 class="modal-title" id="exampleModalLabel">New Other Agent</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <form action="{{ path('new_other_agent_ajax',{'id':entity.id}) }}" name="otherAgentForm"
-                          class="form-horizontal right crm-customer-create-form" id="otherAgentForm"
-                          onsubmit="return validateform()" method="post">
+                    <form action="{{ path('new_other_agent_ajax',{'id':entity.id}) }}" name="otherAgentForm" class="form-horizontal right crm-customer-create-form" id="otherAgentForm" onsubmit="return validateform()"   method="post">
 
                         <div class="modal-body">
                             <div class="form-group">
                                 <label for="recipient-name" class="col-form-label col-md-4 ">Name:</label>
-                                <input type="text" name="name" class="form-control col-md-8 mr-4 name" id="name"
-                                       autocomplete="off" required>
+                                <input type="text" name="name" class="form-control col-md-8 mr-4 name" id="name" autocomplete="off" required>
                             </div>
 
                             <div class="form-group">
@@ -551,13 +608,11 @@
                             </div>
                             <div class="form-group">
                                 <label for="message-text" class="col-form-label col-md-4">Location:</label>
-                                {% if entity.location is not empty %}
+                                {% if entity.location is not empty%}
                                     <p class="form-control">{{ entity.location.name }}</p>
-                                    <input type="hidden" name="location" class="location"
-                                           value="{{ entity.location.id }}">
+                                    <input type="hidden" name="location" class="location" value="{{ entity.location.id }}">
                                 {% else %}
-                                    <select name="location"
-                                            class="form-control location" {{ entity.location is not empty and entity.location.id>0?'disabled':'' }}>
+                                    <select name="location" class="form-control location" {{ entity.location is not empty and entity.location.id>0?'disabled':'' }}>
                                         {% for location in entity.employee.upozila %}
                                             <option value="{{ location.id }}" {{ entity.location is not empty and location.id==entity.location.id?'selected="selected"':'' }}>{{ location.name }}</option>
                                         {% endfor %}
@@ -579,7 +634,7 @@
                                     <option value="">Select Purpose</option>
                                     {% if otherAgentPurposes is not empty %}
                                         {% for purpose in otherAgentPurposes %}
-                                            <option value="{{ purpose.id }}"> {{ purpose.name }} </option>
+                                            <option value="{{purpose.id}}"> {{purpose.name}} </option>
                                         {% endfor %}
                                     {% endif %}
                                 </select>
@@ -592,36 +647,30 @@
 
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary btn-sm crm-customer-btn"
-                                    id="crm-other-agent-btn">Save
-                            </button>
+                            <button type="button" class="btn btn-primary btn-sm crm-customer-btn" id="crm-other-agent-btn">Save</button>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
 
-        <div class="modal fade" id="subAgentModal" tabindex="-1" aria-labelledby="subAgentModalLabel"
-             aria-hidden="true">
+        <div class="modal fade" id="subAgentModal" tabindex="-1" aria-labelledby="subAgentModalLabel" aria-hidden="true">
             <div class="modal-dialog">
-                <div class="modal-content" style="padding: 20px">
+                <div class="modal-content" style="padding: 20px" >
                     <div class="modal-header">
                         <h5 class="modal-title" id="exampleModalLabel">New Sub-agent</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <form action="{{ path('new_sub_agent_ajax',{'id':entity.id}) }}" id="subAgentForm"
-                          name="subAgentForm" class="form-horizontal right crm-customer-create-form"
-                          onsubmit="return validateform()" method="post">
+                    <form action="{{ path('new_sub_agent_ajax',{'id':entity.id}) }}" id="subAgentForm" name="subAgentForm" class="form-horizontal right crm-customer-create-form"  onsubmit="return validateform()"   method="post">
 
                         <div class="modal-body">
 
 
                             <div class="form-group">
                                 <label for="recipient-name" class="col-form-label col-md-4 ">Name:</label>
-                                <input type="text" name="name" class="form-control col-md-8 mr-4 name" id="name"
-                                       autocomplete="off" required>
+                                <input type="text" name="name" class="form-control col-md-8 mr-4 name" id="name" autocomplete="off" required>
                             </div>
 
                             <div class="form-group">
@@ -639,13 +688,11 @@
                             </div>
                             <div class="form-group">
                                 <label for="message-text" class="col-form-label col-md-4">Location:</label>
-                                {% if entity.location is not empty %}
+                                {% if entity.location is not empty%}
                                     <p class="form-control">{{ entity.location.name }}</p>
-                                    <input type="hidden" name="location" class="location"
-                                           value="{{ entity.location.id }}">
+                                    <input type="hidden" name="location" class="location" value="{{ entity.location.id }}">
                                 {% else %}
-                                    <select name="location"
-                                            class="form-control location" {{ entity.location is not empty and entity.location.id>0?'disabled':'' }}>
+                                    <select name="location" class="form-control location" {{ entity.location is not empty and entity.location.id>0?'disabled':'' }}>
                                         {% for location in entity.employee.upozila %}
                                             <option value="{{ location.id }}" {{ entity.location is not empty and location.id==entity.location.id?'selected="selected"':'' }}>{{ location.name }}</option>
                                         {% endfor %}
@@ -664,7 +711,7 @@
                                     <option value="">Select Purpose</option>
                                     {% if subAgentPurposes is not empty %}
                                         {% for purpose in subAgentPurposes %}
-                                            <option value="{{ purpose.id }}"> {{ purpose.name }} </option>
+                                            <option value="{{purpose.id}}"> {{purpose.name}} </option>
                                         {% endfor %}
                                     {% endif %}
                                 </select>
@@ -677,15 +724,12 @@
 
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary btn-sm crm-customer-btn"
-                                    id="crm-sub-agent-btn">Save
-                            </button>
+                            <button type="button" class="btn btn-primary btn-sm crm-customer-btn" id="crm-sub-agent-btn">Save</button>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
-
 
         {#EndModal#}
 
