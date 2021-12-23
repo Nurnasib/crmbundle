@@ -803,9 +803,7 @@ VALUES (:total_birds, :hatchery_date, :created, :updated, :customer_id, :employe
     {
         foreach ($reports as $report) {
 
-            $sql = "SELECT id
-FROM `crm_layer_life_cycle`
-WHERE `customer_id` = :customer_id AND `employee_id` = :employee_id AND `report_id` = :report_id AND `life_cycle_state` = :life_cycle_state";
+            $sql = "SELECT id FROM `crm_layer_life_cycle` WHERE `customer_id` = :customer_id AND `employee_id` = :employee_id AND `report_id` = :report_id AND `life_cycle_state` = :life_cycle_state";
             $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
             $stmt->bindValue('customer_id', $report['customer_id']);
             $stmt->bindValue('employee_id', $report['employee_id']);
@@ -826,7 +824,7 @@ WHERE `customer_id` = :customer_id AND `employee_id` = :employee_id AND `report_
                 /**
                  * @var LayerLifeCycleDetails $findDetails
                  */
-                $findDetails = $this->getDoctrine()->getRepository(LayerLifeCycleDetails::class)->findOneBy(['crmLifeCycle' => $lifeCycleId, 'ageWeek' => $report['age_week']]);
+                $findDetails = $this->getDoctrine()->getRepository(LayerLifeCycleDetails::class)->findOneBy(['crmLayerLifeCycle' => $lifeCycleId, 'ageWeek' => $report['age_week']]);
                 if ($findDetails){
                     $findFeedMill = $this->getDoctrine()->getRepository(Setting::class)->find($report['feed_mill_id']);
                     $findFeedType = $this->getDoctrine()->getRepository(Setting::class)->find($report['feed_type_id']);
