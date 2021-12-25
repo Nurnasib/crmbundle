@@ -168,6 +168,9 @@ class SyncAppDataController extends AbstractController
                         case "crm_fcr_different_companies":
                             $this->processFcrDifferentCompanies($jsonToArray, $batch);
                             break;
+                        case "crm_lab_services":
+                            $this->processLabServices($jsonToArray, $batch);
+                            break;
                     }
                     $detail->setStatus(true);
                     $em->persist($detail);
@@ -1231,6 +1234,37 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
         }
     }
 
+    private function processLabServices($reports, Api $batch)
+    {
+        foreach ($reports as $report) {
+            $createdAt = $report['created_at'] ? (new \DateTime($report['created_at']))->format('Y-m-d H:i:s') : null;
+
+            $sql = "INSERT INTO `crm_lab_services` (`employee_id`, `lab_id`, `service_id`, `breed_name`, `january`, `february`, `march`, `april`, `may`, `june`, `july`, `august`, `september`, `october`, `november`, `december`, `created_at`) VALUES (:employee_id, :lab_id, :service_id, :breed_name, :january, :february, :march, :april, :may, :june, :july, :august, :september, :october, :november, :december, :created_at)";
+
+            $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
+
+            $stmt->bindValue('employee_id', $report['employee_id']);
+            $stmt->bindValue('lab_id', $report['lab_id']);
+            $stmt->bindValue('service_id', $report['service_id']);
+            $stmt->bindValue('breed_name', $report['breed_name']);
+            $stmt->bindValue('january', $report['january'] ?: 0);
+            $stmt->bindValue('february', $report['february'] ?: 0);
+            $stmt->bindValue('march', $report['march'] ?: 0);
+            $stmt->bindValue('april', $report['april'] ?: 0);
+            $stmt->bindValue('may', $report['may'] ?: 0);
+            $stmt->bindValue('june', $report['june'] ?: 0);
+            $stmt->bindValue('july', $report['july'] ?: 0);
+            $stmt->bindValue('august', $report['august'] ?: 0);
+            $stmt->bindValue('september', $report['september'] ?: 0);
+            $stmt->bindValue('october', $report['october'] ?: 0);
+            $stmt->bindValue('november', $report['november'] ?: 0);
+            $stmt->bindValue('december', $report['december'] ?: 0);
+            $stmt->bindValue('created_at', $createdAt);
+            
+            $stmt->execute();
+
+        }
+    }
 
 
 
