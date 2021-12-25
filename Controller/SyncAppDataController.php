@@ -23,6 +23,7 @@ use Terminalbd\CrmBundle\Entity\CattleLifeCycle;
 use Terminalbd\CrmBundle\Entity\ChickLifeCycle;
 use Terminalbd\CrmBundle\Entity\CrmCustomer;
 use Terminalbd\CrmBundle\Entity\CrmVisit;
+use Terminalbd\CrmBundle\Entity\FishCompanyAndSpeciesWiseAverageFcr;
 use Terminalbd\CrmBundle\Entity\LayerLifeCycleDetails;
 use Terminalbd\CrmBundle\Entity\Setting;
 
@@ -179,6 +180,9 @@ class SyncAppDataController extends AbstractController
                             break;
                         case "crm_fish_company_species_wise_average_fcr":
                             $this->processFishCompanySpeciesWiseAverageFcr($jsonToArray, $batch);
+                            break;
+                        case "crm_fish_company_species_wise_average_fcr_details":
+                            $this->processFishCompanySpeciesWiseAverageFcrDetails($jsonToArray, $batch);
                             break;
                     }
                     $detail->setStatus(true);
@@ -1343,6 +1347,29 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
             $stmt->bindValue('app_batch_id', $batch->getId());
 
             $stmt->execute();
+        }
+    }
+    
+    private function processFishCompanySpeciesWiseAverageFcrDetails($reports, Api $batch)
+    {
+        foreach ($reports as $report) {
+            $findParent = $this->getDoctrine()->getRepository(FishCompanyAndSpeciesWiseAverageFcr::class)->findOneBy(['appId' => $report['fish_company_and_species_wise_fcr_id'], 'appBatch' => $batch]);
+            if ($findParent){
+                $createdAt = $report['created_at'] ? (new \DateTime($report['created_at']))->format('Y-m-d H:i:s') : null;
+
+                $sql = "INSERT INTO `crm_fish_company_species_wise_average_fcr_details` (`fish_company_and_species_wise_fcr_id`, `species_name_id`, `quantity`,`created_at`) VALUES (:fish_company_and_species_wise_fcr_id, :species_name_id, :quantity, :created_at)";
+
+                $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
+
+                $stmt->bindValue('fish_company_and_species_wise_fcr_id', $findParent->getId());
+                $stmt->bindValue('species_name_id', $report['species_name_id']);
+                $stmt->bindValue('quantity', $report['quantity'] ?: 0);
+                $stmt->bindValue('created_at', $createdAt);
+
+                $stmt->execute();
+
+            }
+
         }
     }
 
