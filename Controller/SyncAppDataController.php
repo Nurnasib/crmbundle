@@ -159,6 +159,15 @@ class SyncAppDataController extends AbstractController
                         case "crm_cattle_farm_visit_details":
                             $this->processCattleFarmVisitDetails($jsonToArray, $batch);
                             break;
+                        case "crm_poultry_meat_egg_price":
+                            $this->processPoulltryMeatEggPrice($jsonToArray, $batch);
+                            break;
+                        case "crm_company_wise_feed_sale":
+                            $this->processCompanyWiseFeedSale($jsonToArray, $batch);
+                            break;
+                        case "crm_fcr_different_companies":
+                            $this->processFcrDifferentCompanies($jsonToArray, $batch);
+                            break;
                     }
                     $detail->setStatus(true);
                     $em->persist($detail);
@@ -1145,4 +1154,84 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
             $stmt->execute();
         }
     }
+
+    private function processPoulltryMeatEggPrice($reports, Api $batch)
+    {
+        foreach ($reports as $report) {
+            $findVisit = $this->getDoctrine()->getRepository(CrmVisit::class)->findOneBy(['appId' => $report['crm_visit_id'], 'appBatch' => $batch]);
+            if ($findVisit){
+                $createdAt = $report['created_at'] ? (new \DateTime($report['created_at']))->format('Y-m-d H:i:s') : null;
+                foreach (json_decode($report['poultry_meat_egg_prices'], true) as $item) {
+                    $sql = "INSERT INTO `crm_poultry_meat_egg_price` (`crm_visit_id`, `region_id`, `status`, `created_at`, `breed_type_id`,`price`) VALUES (:crm_visit_id, :region_id, :status, :created_at, :breed_type_id, :price)";
+
+                    $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
+                    $stmt->bindValue('crm_visit_id', $findVisit);
+                    $stmt->bindValue('region_id', $report['region_id']);
+                    $stmt->bindValue('breed_type_id', $item['id']);
+                    $stmt->bindValue('price', $item['price']);
+                    $stmt->bindValue('created_at', $createdAt);
+                    $stmt->bindValue('status', 1);
+
+                    $stmt->execute();
+
+                }
+
+            }
+        }
+    }
+    
+    private function processCompanyWiseFeedSale($reports, Api $batch){
+        foreach ($reports as $report) {
+            $createdAt = $report['created_at'] ? (new \DateTime($report['created_at']))->format('Y-m-d H:i:s') : null;
+
+            $sql = "INSERT INTO `crm_company_wise_feed_sale` (`employee_id`, `feed_company_id`, `month_name`, `year`, `breed_name`, `product_wise_qty`, `total_qty`, `created_at`) VALUES (:employee_id, :feed_company_id, :month_name, :year, :breed_type_id, :breed_name, :product_wise_qty, :total_qty, :created_at)";
+
+            $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
+
+            $stmt->bindValue('employee_id', $report['employee_id']);
+            $stmt->bindValue('feed_company_id', $report['feed_company_id']);
+            $stmt->bindValue('month_name', $report['month_name']);
+            $stmt->bindValue('year', $report['year']);
+            $stmt->bindValue('breed_name', strtolower($report['breed_name']));
+            $stmt->bindValue('product_wise_qty', $report['product_wise_qty']);
+            $stmt->bindValue('total_qty', $report['total_qty']);
+            $stmt->bindValue('created_at', $createdAt);
+
+            $stmt->execute();
+        }
+    }
+
+    private function processFcrDifferentCompanies($reports, Api $batch)
+    {
+        foreach ($reports as $report) {
+            $createdAt = $report['created_at'] ? (new \DateTime($report['created_at']))->format('Y-m-d H:i:s') : null;
+
+            $sql = "INSERT INTO `crm_fcr_different_companies` (`employee_id`, `hatchery_id`, `breed_name`, `january`, `february`, `march`, `april`, `may`, `june`, `july`, `august`, `september`, `october`, `november`, `december`, `created_at`) VALUES (:employee_id, :hatchery_id, :breed_name, :january, :february, :march, :april, :may, :june, :july, :august, :september, :october, :november, :december, :created_at)";
+
+            $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
+
+            $stmt->bindValue('employee_id', $report['employee_id']);
+            $stmt->bindValue('hatchery_id', $report['hatchery_id']);
+            $stmt->bindValue('breed_name', $report['breed_name']);
+            $stmt->bindValue('january', $report['january'] ?: 0);
+            $stmt->bindValue('february', $report['february'] ?: 0);
+            $stmt->bindValue('march', $report['march'] ?: 0);
+            $stmt->bindValue('april', $report['april'] ?: 0);
+            $stmt->bindValue('may', $report['may'] ?: 0);
+            $stmt->bindValue('june', $report['june'] ?: 0);
+            $stmt->bindValue('july', $report['july'] ?: 0);
+            $stmt->bindValue('august', $report['august'] ?: 0);
+            $stmt->bindValue('september', $report['september'] ?: 0);
+            $stmt->bindValue('october', $report['october'] ?: 0);
+            $stmt->bindValue('november', $report['november'] ?: 0);
+            $stmt->bindValue('december', $report['december'] ?: 0);
+            $stmt->bindValue('created_at', $createdAt);
+
+            $stmt->execute();
+        }
+    }
+
+
+
+
 }
