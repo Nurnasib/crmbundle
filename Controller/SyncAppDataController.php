@@ -1198,9 +1198,20 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
     
     private function processCompanyWiseFeedSale($reports, Api $batch){
         foreach ($reports as $report) {
+            /*
+                 "id": 1,
+    "employee_id": 23,
+    "feed_company_id": 168,
+    "month_name": "November",
+    "year": 2021,
+    "breed_name": "Fish",
+    "product_wise_qty": "{\"396\":\"25\",\"397\":\"5\"}",
+    "total_qty": "30.0",
+    "created_at": "2021-12-22 11:20:35"
+             */
             $createdAt = $report['created_at'] ? (new \DateTime($report['created_at']))->format('Y-m-d H:i:s') : null;
 
-            $sql = "INSERT INTO `crm_company_wise_feed_sale` (`employee_id`, `feed_company_id`, `month_name`, `year`, `breed_name`, `product_wise_qty`, `total_qty`, `created_at`) VALUES (:employee_id, :feed_company_id, :month_name, :year, :breed_type_id, :breed_name, :product_wise_qty, :total_qty, :created_at)";
+            $sql = "INSERT INTO `crm_company_wise_feed_sale` (`employee_id`, `feed_company_id`, `month_name`, `year`, `breed_name`, `product_wise_qty`, `total_qty`, `created_at`) VALUES (:employee_id, :feed_company_id, :month_name, :year, :breed_name, :product_wise_qty, :total_qty, :created_at)";
 
             $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
 
