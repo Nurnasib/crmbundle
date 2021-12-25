@@ -16,12 +16,13 @@ use Gedmo\Mapping\Annotation as Gedmo;
  */
 class FishCompanyAndSpeciesWiseAverageFcr
 {
-
     /**
+     * @var integer
+     * @ORM\Column(name="id", type="integer")
      * @ORM\Id
-     * @ORM\Column(name="id", type="guid")
-     * @ORM\GeneratedValue(strategy="UUID")
+     * @ORM\GeneratedValue
      */
+
     private $id;
 
     /**
@@ -91,9 +92,22 @@ class FishCompanyAndSpeciesWiseAverageFcr
     private $createdAt;
 
     /**
+     * @var $appId
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $appId;
+    /**
+     * @var Api
+     * @ORM\ManyToOne(targetEntity="Api", inversedBy="fishCompanyAndSpeciesWiseAverageFcr")
+     * @ORM\JoinColumn(referencedColumnName="id")
+     * @ORM\JoinColumn(onDelete="SET NULL")
+     */
+    private $appBatch;
+
+    /**
      * @return int
      */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
@@ -101,11 +115,11 @@ class FishCompanyAndSpeciesWiseAverageFcr
     /**
      * @param int $id
      */
-    public function setId($id)
+    public function setId(int $id): void
     {
         $this->id = $id;
     }
-
+    
     /**
      * @return \DateTime
      */
@@ -265,6 +279,38 @@ class FishCompanyAndSpeciesWiseAverageFcr
     public function setFeedType(Setting $feedType): void
     {
         $this->feedType = $feedType;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAppId()
+    {
+        return $this->appId;
+    }
+
+    /**
+     * @param mixed $appId
+     */
+    public function setAppId($appId): void
+    {
+        $this->appId = $appId;
+    }
+
+    /**
+     * @return Api
+     */
+    public function getAppBatch(): Api
+    {
+        return $this->appBatch;
+    }
+
+    /**
+     * @param Api $appBatch
+     */
+    public function setAppBatch(Api $appBatch): void
+    {
+        $this->appBatch = $appBatch;
     }
 
 

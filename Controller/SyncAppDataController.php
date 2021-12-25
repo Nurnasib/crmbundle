@@ -177,6 +177,9 @@ class SyncAppDataController extends AbstractController
                         case "crm_fish_tilapia_fry_sales":
                             $this->processFishTilapiaFrySales($jsonToArray, $batch);
                             break;
+                        case "crm_fish_company_species_wise_average_fcr":
+                            $this->processFishCompanySpeciesWiseAverageFcr($jsonToArray, $batch);
+                            break;
                     }
                     $detail->setStatus(true);
                     $em->persist($detail);
@@ -1317,5 +1320,30 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
         }
     }
 
+    private function processFishCompanySpeciesWiseAverageFcr($reports, Api $batch)
+    {
+        foreach ($reports as $report) {
+            $createdAt = $report['created_at'] ? (new \DateTime($report['created_at']))->format('Y-m-d H:i:s') : null;
+            $reportingMonth = $report['reporting_month'] ? (new \DateTime($report['reporting_month']))->format('Y-m-d') : null;
+
+            $sql = "INSERT INTO `crm_fish_company_species_wise_average_fcr` (`report_id`, `employee_id`, `agent_id`, `customer_id`, `feed_id`, `feed_type_id`, `fcr_of_feed`, `reporting_month`, `created_at`, `app_id`, `app_batch_id`) VALUES (:report_id, :employee_id, :agent_id, :customer_id, :feed_id, :feed_type_id, :fcr_of_feed, :reporting_month, :created_at, :app_id, :app_batch_id)";
+
+            $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
+
+            $stmt->bindValue('report_id', $report['report_id']);
+            $stmt->bindValue('employee_id', $report['employee_id']);
+            $stmt->bindValue('agent_id', $report['agent_id']);
+            $stmt->bindValue('customer_id', $report['customer_id']);
+            $stmt->bindValue('feed_id', $report['feed_id']);
+            $stmt->bindValue('feed_type_id', $report['feed_type_id']);
+            $stmt->bindValue('fcr_of_feed', $report['fcr_of_feed']);
+            $stmt->bindValue('reporting_month', $reportingMonth);
+            $stmt->bindValue('created_at', $createdAt);
+            $stmt->bindValue('app_id', $report['id']);
+            $stmt->bindValue('app_batch_id', $batch->getId());
+
+            $stmt->execute();
+        }
+    }
 
 }
