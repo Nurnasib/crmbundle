@@ -174,6 +174,9 @@ class SyncAppDataController extends AbstractController
                         case "crm_fish_sales_price":
                             $this->processFishSalesPrice($jsonToArray, $batch);
                             break;
+                        case "crm_fish_tilapia_fry_sales":
+                            $this->processFishTilapiaFrySales($jsonToArray, $batch);
+                            break;
                     }
                     $detail->setStatus(true);
                     $em->persist($detail);
@@ -1291,6 +1294,28 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
         }
     }
 
+    private function processFishTilapiaFrySales($reports, Api $batch)
+    {
+        foreach ($reports as $report) {
+            $createdAt = $report['created_at'] ? (new \DateTime($report['created_at']))->format('Y-m-d H:i:s') : null;
+
+            $sql = "INSERT INTO `crm_fish_tilapia_fry_sales` (`employee_id`, `feed_id`, `agent_id`, `other_competitor_agent_name`, `type`, `month_name`, `year`, `quantity`, `created_at`) VALUES (:employee_id, :feed_id, :agent_id, :other_competitor_agent_name, :type, :month_name, :year, :quantity, :created_at)";
+
+            $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
+
+            $stmt->bindValue('employee_id', $report['employee_id']);
+            $stmt->bindValue('feed_id', $report['feed_id']);
+            $stmt->bindValue('agent_id', $report['agent_id']);
+            $stmt->bindValue('other_competitor_agent_name', $report['other_competitor_agent_name']);
+            $stmt->bindValue('type', $report['type']);
+            $stmt->bindValue('month_name', $report['month_name']);
+            $stmt->bindValue('year', $report['year']);
+            $stmt->bindValue('quantity', $report['quantity']);
+            $stmt->bindValue('created_at', $createdAt);
+
+            $stmt->execute();
+        }
+    }
 
 
 }
