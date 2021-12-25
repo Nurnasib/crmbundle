@@ -21,6 +21,7 @@ use Terminalbd\CrmBundle\Entity\Api;
 use Terminalbd\CrmBundle\Entity\CattleFarmVisit;
 use Terminalbd\CrmBundle\Entity\CattleLifeCycle;
 use Terminalbd\CrmBundle\Entity\ChickLifeCycle;
+use Terminalbd\CrmBundle\Entity\CompanyWiseFeedSale;
 use Terminalbd\CrmBundle\Entity\CrmCustomer;
 use Terminalbd\CrmBundle\Entity\CrmVisit;
 use Terminalbd\CrmBundle\Entity\FishCompanyAndSpeciesWiseAverageFcr;
@@ -1198,33 +1199,35 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
     
     private function processCompanyWiseFeedSale($reports, Api $batch){
         foreach ($reports as $report) {
-            /*
-                 "id": 1,
-    "employee_id": 23,
-    "feed_company_id": 168,
-    "month_name": "November",
-    "year": 2021,
-    "breed_name": "Fish",
-    "product_wise_qty": "{\"396\":\"25\",\"397\":\"5\"}",
-    "total_qty": "30.0",
-    "created_at": "2021-12-22 11:20:35"
-             */
-            $createdAt = $report['created_at'] ? (new \DateTime($report['created_at']))->format('Y-m-d H:i:s') : null;
+            $employee = $this->getDoctrine()->getRepository(User::class)->find($report['employee_id']);
+            $feedCompany = $this->getDoctrine()->getRepository(Setting::class)->find($report['feed_company_id']);
 
-            $sql = "INSERT INTO `crm_company_wise_feed_sale` (`employee_id`, `feed_company_id`, `month_name`, `year`, `breed_name`, `product_wise_qty`, `total_qty`, `created_at`) VALUES (:employee_id, :feed_company_id, :month_name, :year, :breed_name, :product_wise_qty, :total_qty, :created_at)";
+            /* @var CompanyWiseFeedSale $exist */
+            $exist = $this->getDoctrine()->getRepository(CompanyWiseFeedSale::class)->findOneBy(['employee' => $employee, 'feedCompany' => $feedCompany, 'monthName' => $report['month_name'], 'year' => $report['year'], 'breedName' => $report['breed_name']]);
 
-            $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
+            if ($exist){
+                $exist->setProductWiseQty($report['product_wise_qty']);
+                $exist->setTotalQty($report['total_qty']);
+                $this->getDoctrine()->getManager()->persist($exist);
+                $this->getDoctrine()->getManager()->flush();
+            }else{
+                $createdAt = $report['created_at'] ? (new \DateTime($report['created_at']))->format('Y-m-d H:i:s') : null;
 
-            $stmt->bindValue('employee_id', $report['employee_id']);
-            $stmt->bindValue('feed_company_id', $report['feed_company_id']);
-            $stmt->bindValue('month_name', $report['month_name']);
-            $stmt->bindValue('year', $report['year']);
-            $stmt->bindValue('breed_name', strtolower($report['breed_name']));
-            $stmt->bindValue('product_wise_qty', $report['product_wise_qty']);
-            $stmt->bindValue('total_qty', $report['total_qty']);
-            $stmt->bindValue('created_at', $createdAt);
+                $sql = "INSERT INTO `crm_company_wise_feed_sale` (`employee_id`, `feed_company_id`, `month_name`, `year`, `breed_name`, `product_wise_qty`, `total_qty`, `created_at`) VALUES (:employee_id, :feed_company_id, :month_name, :year, :breed_name, :product_wise_qty, :total_qty, :created_at)";
 
-            $stmt->execute();
+                $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
+
+                $stmt->bindValue('employee_id', $report['employee_id']);
+                $stmt->bindValue('feed_company_id', $report['feed_company_id']);
+                $stmt->bindValue('month_name', $report['month_name']);
+                $stmt->bindValue('year', $report['year']);
+                $stmt->bindValue('breed_name', strtolower($report['breed_name']));
+                $stmt->bindValue('product_wise_qty', $report['product_wise_qty']);
+                $stmt->bindValue('total_qty', $report['total_qty']);
+                $stmt->bindValue('created_at', $createdAt);
+
+                $stmt->execute();
+            }
         }
     }
 
