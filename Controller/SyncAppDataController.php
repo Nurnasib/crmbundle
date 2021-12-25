@@ -171,6 +171,9 @@ class SyncAppDataController extends AbstractController
                         case "crm_lab_services":
                             $this->processLabServices($jsonToArray, $batch);
                             break;
+                        case "crm_fish_sales_price":
+                            $this->processFishSalesPrice($jsonToArray, $batch);
+                            break;
                     }
                     $detail->setStatus(true);
                     $em->persist($detail);
@@ -1260,9 +1263,31 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
             $stmt->bindValue('november', $report['november'] ?: 0);
             $stmt->bindValue('december', $report['december'] ?: 0);
             $stmt->bindValue('created_at', $createdAt);
-            
+
             $stmt->execute();
 
+        }
+    }
+
+    private function processFishSalesPrice($reports, Api $batch)
+    {
+        foreach ($reports as $report) {
+
+            $createdAt = $report['created_at'] ? (new \DateTime($report['created_at']))->format('Y-m-d H:i:s') : null;
+
+            $sql = "INSERT INTO `crm_fish_sales_price` (`employee_id`, `species_type_id`, `fish_size_id`, `month_name`, `year`, `price`, `created_at`) VALUES (:employee_id, :species_type_id, :fish_size_id, :month_name, :year, :price, :created_at)";
+
+            $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
+
+            $stmt->bindValue('employee_id', $report['employee_id']);
+            $stmt->bindValue('species_type_id', $report['species_type_id']);
+            $stmt->bindValue('fish_size_id', $report['fish_size_id']);
+            $stmt->bindValue('month_name', $report['month_name']);
+            $stmt->bindValue('year', $report['year']);
+            $stmt->bindValue('price', $report['price']);
+            $stmt->bindValue('created_at', $createdAt);
+
+            $stmt->execute();
         }
     }
 
