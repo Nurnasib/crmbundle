@@ -1,29 +1,141 @@
 {% extends 'admin/layout.html.twig' %}
 
 {% block body %}
-    {{ form_start(form) }}
-    <div class="row">
-        <div class="col-md-8 offset-2">
-            <table class="table ">
-                <thead class="thead-dark">
-                <tr>
-                    <th>{{ form_widget(form.month) }}</th>
-                    <th>{{ form_widget(form.lifeCycle) }}</th>
-                    <th>{{ form_widget(form.employee) }}</th>
-                    <th>{{ form_widget(form.Date) }}</th>
-                    <th>{{ form_widget(form.find) }}</th>
-                </tr>
-                </thead>
-            </table>
+    <div class="pcoded-inner-content">
+        <!-- [ breadcrumb ] start -->
+        <div class="page-header">
+            <div class="page-block">
+                <div class="row align-items-center">
+                    <ul class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/"><i class="feather icon-home"></i></a></li>
+                        <li class="breadcrumb-item"> <a href="javascript:void(0)">  {{ 'Life Cycle'|trans }}</a></li>
+                    </ul>
+                </div>
+            </div>
         </div>
-    </div>
-    {% if filterBy is defined %}
+        <!-- [ breadcrumb ] end -->
+        <!-- [ Main Content ] start -->
         <div class="row">
-            <div class="col">
-                {{ dump(filterBy) }}
+            <div class="card">
+                <div class="card-header">
+                    <h5>{{ 'Life Cycle'|trans }}</h5>
+                    {% if entities is not empty %}
+                        <div class="btn-group btn-group-sm float-right" role="group" aria-label="Button group with nested dropdown">
+                            <a target="_blank" href="#" class="btn blue-bg white-font btn-sm"><i class="fa fa-file-pdf"></i> {{ 'PDF'|trans }}</a>
+                            <a target="_blank" href="#" class="btn btn-sm bg-primary white-font"><i class="fa fa-file-excel"></i> {{ 'Excel'|trans }}</a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-8 offset-2">
+                <table class="table ">
+                    <thead class="thead-dark">
+                    {{ form_start(form) }}
+                    <tr>
+                        <th>
+                            {{ form_label(form.lifeCycle, 'Life Cycle:') }}
+                            {{ form_widget(form.lifeCycle) }}
+                        </th>
+                        <th>
+                            {{ form_label(form.employee, 'Employee:') }}
+                            {{ form_widget(form.employee) }}
+                        </th>
+                        <th>
+                            {{ form_label(form.startDate, 'Start Date:') }}
+                            {{ form_widget(form.startDate,{'id':'start-date', 'attr':{'placeholder': 'dd-mm-YYYY'}}) }}
+                        </th>
+                        <th>
+                            {{ form_label(form.endDate, 'End Date:') }}
+                            {{ form_widget(form.endDate,{'id':'end-date', 'attr':{'placeholder': 'dd-mm-YYYY'}}) }}
+                        </th>
+
+                        <th>
+                            <div class="btn-group" style="margin-top: 25px">
+                                <button type="submit" name="search" class="btn btn-primary btn-sm" title="Search" value="search"><i class="fa fa-search" aria-hidden="true"></i></button>
+                                <a href="{{ path('life_cycle_report_index') }}" class="btn purple-bg btn-sm white-font" title="Reset" value="reset"><i class="fa fa-refresh" aria-hidden="true"></i></a>
+                            </div>
+                        </th>
+                    </tr>
+                    </form>
+                    </thead>
+                </table>
             </div>
         </div>
 
-    {% endif %}
+        <div class="row">
+            <div class="card" style="overflow-x: scroll">
+                <div class="card-block">
+                    <h3 class="text-center">NOURISH POULTRY AND HATCHERY LTD</h3>
+                    <h5 class="text-center">UTTARA, DHAKA.</h5>
+                    <h6 class="text-center">LIFE CYCLE REPORT</h6>
+                    <table class="table table-borderd">
+                        <thead class="thead-dark">
+                        <tr>
+                            <th>Officer's Name: {{ filterBy.employee.name }}</th>
+                            <th>Region: {{ filterBy.employee.regional.name }}</th>
+                        </tr>
+                        </thead>
+                    </table>
+                    {% if lifeCycleSlug is same as 'boiler-life-cycle' %}
+                        {% include '@TerminalbdCrm/report/lifeCycle/inc/_broiler.html.twig'%}
+                    {% elseif lifeCycleSlug is same as 'sonali-life-cycle' %}
+                    {% elseif lifeCycleSlug is same as 'layer-life-cycle-brown' %}
+                    {% elseif lifeCycleSlug is same as 'layer-life-cycle-white' %}
+                    {% elseif lifeCycleSlug is same as 'dairy-life-cycle' %}
+                    {% elseif lifeCycleSlug is same as 'fattening-life-cycle' %}
+                    {% elseif lifeCycleSlug is same as 'fish-life-cycle-report' %}
+                    {% elseif lifeCycleSlug is same as 'fish-life-cycle-after-sale-report' %}
+                    {% endif %}
+
+                </div>
+            </div>
+        </div>
+
+
+
+
+
+        <!-- [ Main Content ] end -->
+    </div>
+{% endblock %}
+
+{% block cssBlock %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('assets/module/css/app.css') }}">
+{% endblock  %}
+{% block javascripts %}
+    {{ parent() }}
+    <script type="application/javascript" src="{{ asset('assets/module/js/app.js') }}"></script>
+{% endblock  %}
+{% block documentready %}
+    {{ parent() }}
+{#    <script>#}
+        $('#start-date').datepicker(
+            {
+                changeMonth: true,
+                changeYear: true,
+                dateFormat: 'dd-mm-yy'
+            }
+        );
+        $('#end-date').datepicker(
+            {
+                changeMonth: true,
+                changeYear: true,
+                dateFormat: 'dd-mm-yy'
+            }
+        );
+
+        $('#datatable').DataTable( {
+            "pageLength": 25,
+            "order": [[ 2, "desc" ]],
+            'columnDefs': [ {
+                'targets': [0,4,5,6,12],
+                'orderable': false
+            }],
+            "responsive": false,
+            "scrollX": true
+        });
 
 {% endblock %}

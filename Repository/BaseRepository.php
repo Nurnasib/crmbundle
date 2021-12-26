@@ -12,11 +12,11 @@ class BaseRepository extends EntityRepository
     {
         if (isset($filterBy)){
 
-            $startDate = isset($filterBy['startDate'])? $filterBy['startDate'] . ' 00:00:00': '';
-            $endDate = isset($filterBy['endDate'])? $filterBy['endDate'] . ' 23:59:59': '';
+            $startDate = isset($filterBy['startDate'])? (new \DateTime($filterBy['startDate']))->format('Y-m-d') . ' 00:00:00': '';
+            $endDate = isset($filterBy['endDate'])? (new \DateTime($filterBy['endDate']))->format('Y-m-d') . ' 23:59:59': '';
 
-            $startDateCreated = isset($filterBy['startDateCreated'])? $filterBy['startDateCreated'] . ' 00:00:00': '' ;
-            $endDateCreated = isset($filterBy['endDateCreated'])? $filterBy['endDateCreated'] . ' 23:59:59': '';
+            $startDateCreated = isset($filterBy['startDateCreated'])? (new \DateTime($filterBy['startDateCreated']))->format('Y-m-d') . ' 00:00:00': '' ;
+            $endDateCreated = isset($filterBy['endDateCreated'])? (new \DateTime($filterBy['endDateCreated']))->format('Y-m-d') . ' 23:59:59': '';
 
             $reportingMonth = isset($filterBy['reportingMonth'])? $filterBy['reportingMonth']: '';
 

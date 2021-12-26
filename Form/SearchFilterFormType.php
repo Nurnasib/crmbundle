@@ -23,6 +23,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Terminalbd\CrmBundle\Entity\CrmCustomer;
 use Terminalbd\CrmBundle\Entity\Fcr;
+use Terminalbd\CrmBundle\Entity\Setting;
 
 
 /**
@@ -40,6 +41,22 @@ class SearchFilterFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
+            ->add('lifeCycle', EntityType::class,[
+                'class' => Setting::class,
+                'choice_label' => 'name',
+                'placeholder' => 'Select Life Cycle',
+                'query_builder' => function(EntityRepository $er){
+                    return $er->createQueryBuilder('e')
+                        ->where('e.settingType = :settingType')->setParameter('settingType', 'FARMER_REPORT')
+                        ->andWhere('e.slug IN (:slug)')->setParameter('slug', ['sonali-life-cycle','boiler-life-cycle','layer-life-cycle-brown','layer-life-cycle-white','dairy-life-cycle','fattening-life-cycle','fish-life-cycle-report','fish-life-cycle-after-sale-report'])
+                        ->andWhere('e.status = 1')
+                        ->orderBy('e.name');
+                },
+                'attr' => [
+                    'class' => 'select2'
+                ]
+
+            ])
             ->add('startDate', TextType::class,[
 //                'mapped' => false,
                 'attr'=>[

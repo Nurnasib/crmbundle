@@ -13,7 +13,7 @@ use NumberFormatter;
 
 /**
  * @ORM\Table(name="crm_chick_life_cycle_details")
- * @ORM\Entity(repositoryClass="Terminalbd\CrmBundle\Repository\ChickLifeCycleRepository")
+ * @ORM\Entity(repositoryClass="Terminalbd\CrmBundle\Repository\ChickLifeCycleDetailsRepository")
  */
 class ChickLifeCycleDetails
 {

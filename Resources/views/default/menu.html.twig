@@ -14,7 +14,8 @@
         {% if is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_CRM_REPORT') or is_granted('ROLE_DEVELOPER') %}
             <a class="" href="javascript:"><span>{{ 'Report'|trans }}</span></a>
             <ul class="sub-menu">
-                {#<li><a class="" href="{{ path('daily_activities_report') }}"><span>{{ 'Daily Activities'|trans }}</span></a></li>#}
+{#                <li><a class="" href="{{ path('daily_activities_report') }}"><span>{{ 'Daily Activities'|trans }}</span></a></li>#}
+                <li><a class="" href="{{ path('life_cycle_report_index') }}"><span>{{ 'Life Cycle'|trans }}</span></a></li>
                 <li><a class="" href="javascript:"><span>{{ 'Poultry'|trans }}</span></a>
                     <ul class="sub-menu">
                         <li><a class="" href="javascript:"><span>{{ 'Sonali'|trans }}</span></a>
