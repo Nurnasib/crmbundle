@@ -845,7 +845,7 @@ $('.addSubAgent').click(function(){
         data:{
             'crm_visit_id':crm_visit_id,
             'purpose':agentPurpose,
-            'farmer':agent,
+            'agent':agent,
             'comments':agentComments,
             'process':'sub-agent'
         },

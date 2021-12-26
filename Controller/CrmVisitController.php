@@ -149,6 +149,7 @@ class CrmVisitController extends AbstractController
                 'regions'=>$regions,
                 'breedTypes'=>$breedTypes,
                 'price'=>$price,
+                'user'=>$this->getUser(),
                 'form' => $form->createView(),
 //                'fcr_after_reports' => $reports,
             ]);
@@ -170,6 +171,7 @@ class CrmVisitController extends AbstractController
             'farmers'=>$farmers,
             'subAgents'=>$subAgents,
             'otherAgents'=>$otherAgents,
+            'user'=>$this->getUser(),
             'form' => $form->createView(),
             'fcr_after_reports' => $reports,
         ]);
@@ -215,6 +217,10 @@ class CrmVisitController extends AbstractController
             $entity->setAgent($agent?$agent:null);
         }
         if($request->request->get('process')=='other-agent' && $request->request->get('agent')!=''){
+            $agent = $this->getDoctrine()->getRepository(Agent::class)->find($request->request->get('agent'));
+            $entity->setAgent($agent?$agent:null);
+        }
+        if($request->request->get('process')=='sub-agent' && $request->request->get('agent')!=''){
             $agent = $this->getDoctrine()->getRepository(Agent::class)->find($request->request->get('agent'));
             $entity->setAgent($agent?$agent:null);
         }

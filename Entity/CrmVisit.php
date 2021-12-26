@@ -90,7 +90,7 @@ class CrmVisit
 
     /**
      * @var CrmVisitDetails
-     * @ORM\OneToMany(targetEntity="CrmVisitDetails", mappedBy="crmVisit")
+     * @ORM\OneToMany(targetEntity="CrmVisitDetails", mappedBy="crmVisit",  cascade={"persist", "remove"}, orphanRemoval=true)
      */
     private $crmVisitDetails;
 
@@ -99,6 +99,18 @@ class CrmVisit
      * @ORM\Column(type="integer", nullable=true)
      */
     private $appId;
+
+    /**
+     * @var string
+     * @ORM\Column(name="working_mode" , type="string", nullable=true)
+     */
+    private $workingMode;
+
+    /**
+     * @var string
+     * @ORM\Column(name="remarks" , type="text", nullable=true)
+     */
+    private $remarks;
 
     /**
      * @return int
@@ -170,6 +182,12 @@ class CrmVisit
     public function getCrmVisitDetails()
     {
         return $this->crmVisitDetails;
+    }
+
+    public function removeCrmVisitDetails($crmVisitDetails)
+    {
+        $this->crmVisitDetails->remove($crmVisitDetails);
+        $crmVisitDetails->setCrmVisit(null);
     }
 
     /**
@@ -267,6 +285,38 @@ class CrmVisit
     public function setAppId($appId): void
     {
         $this->appId = $appId;
+    }
+
+    /**
+     * @return string
+     */
+    public function getWorkingMode()
+    {
+        return $this->workingMode;
+    }
+
+    /**
+     * @param string $workingMode
+     */
+    public function setWorkingMode(string $workingMode): void
+    {
+        $this->workingMode = $workingMode;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRemarks()
+    {
+        return $this->remarks;
+    }
+
+    /**
+     * @param string $remarks
+     */
+    public function setRemarks(string $remarks): void
+    {
+        $this->remarks = $remarks;
     }
 
 

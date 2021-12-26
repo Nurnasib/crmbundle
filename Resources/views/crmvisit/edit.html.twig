@@ -73,6 +73,14 @@
                                             <div class="col-md-8">{{ entity.location.name|default('') }}</div>
                                         </div>
 
+                                        <div class="form-group">
+                                            {{ form_label(form.workingMode,'Working Mode'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
+                                            <div class="col-md-8">
+                                                {{ form_widget(form.workingMode) }}
+                                                {{ form_errors(form.workingMode) }}
+                                            </div>
+                                        </div>
+
                                     </div>
                                     <div class="col-md-5 offset-1">
                                         <div class="form-group">
@@ -90,6 +98,13 @@
                                                 <span style="text-align: left;" class=""> {{ 'To'|trans }}</span>
                                                 {{ form_widget(form.working_duration_to) }}
                                                 {{ form_errors(form.working_duration_to) }}
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            {{ form_label(form.remarks,'Comments'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
+                                            <div class="col-md-8">
+                                                {{ form_widget(form.remarks) }}
+                                                {{ form_errors(form.remarks) }}
                                             </div>
                                         </div>
                                     </div>
@@ -157,6 +172,7 @@
                                                 <td>
                                                     <input type="text" name="comments" id="comments" class="form-control form-control-sm farmer_comments" placeholder="Enter your comments">
                                                 </td>
+                                                <td>{{ 'Date'|trans }}</td>
                                                 <td colspan="2">
                                                     <button type="button" id="addrow" class="btn btn-sm  green-bg white-font addmore ml-2"><i class="fas fa-save"></i> {{ 'Save'|trans }}</button>
                                                 </td>

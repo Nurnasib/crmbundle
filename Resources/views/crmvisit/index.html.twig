@@ -39,7 +39,9 @@
                             <th rowspan="2" scope="col">S/N</th>
                             <th rowspan="2" scope="col">{{ 'Created Date'|trans }}</th>
                             <th rowspan="2" scope="col">Area Name</th>
+                            <th rowspan="2" scope="col">Working Mode</th>
                             <th colspan="2" scope="col" class="text-center">Working Duration</th>
+                            <th rowspan="2" scope="col">Comments</th>
                             <th rowspan="2" scope="col" class="text-center" width="12%"><i class="feather icon-settings"></i></th>
                         </tr>
                         <tr>
@@ -53,8 +55,10 @@
                                 <td>{{ loop.index }}</td>
                                 <td>{{ entity.created|date('d-m-Y') }}</td>
                                 <td>{% if entity.location is not empty %}{{ entity.location.name }}{% endif %}</td>
+                                <td>{{ entity.workingMode|capitalize|default('') }}</td>
                                 <td>{{ entity.WorkingDuration }}</td>
                                 <td>{{ entity.WorkingDurationTo }}</td>
+                                <td>{{ entity.remarks|default('') }}</td>
                                 <td>
 {#                                    {% if entity.created|date('d-m-Y') == 'now'|date('d-m-Y') %}#}
                                         <a class="btn btn-mini yellow-bg white-font" href="{{ path('crm_visit_edit',{'id':entity.id}) }}"><i class="feather icon-edit"></i> In Progress</a>

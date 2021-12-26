@@ -18,6 +18,7 @@ use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -45,11 +46,21 @@ class CrmVisitFormType extends AbstractType
         $builder
 
             ->add('working_duration', TextType::class, [
-                'attr' => ['autocomplete' => 'off', 'class'=>'working_duration_from timePicker'],
+                'required'    => false,
+                'attr' => [
+                    'placeholder' => 'From',
+                    'autocomplete' => 'off',
+                    'class'=>'working_duration_from timePicker'
+                ],
                 'label' => 'label.working_duration',
             ])
             ->add('working_duration_to', TextType::class, [
-                'attr' => ['autocomplete' => 'off', 'class'=>'working_duration_to timePicker'],
+                'required'    => false,
+                'attr' => [
+                    'placeholder' => 'To',
+                    'autocomplete' => 'off',
+                    'class'=>'working_duration_to timePicker'
+                ],
                 'label' => 'label.working_duration',
             ])
             ->add('location', EntityType::class, array(
@@ -65,7 +76,17 @@ class CrmVisitFormType extends AbstractType
                         ->orderBy('e.name', 'ASC');
                 },
             ))
-
+            ->add('workingMode', ChoiceType::class, [
+                'required'    => false,
+                'placeholder' => 'Choose an option',
+                'choices'  => [
+                    'Working' => 'working',
+                    'Leave' => 'leave',
+                ],
+            ])
+            ->add('remarks', TextareaType::class,[
+                'required'    => false,
+            ])
         ;
     }
 

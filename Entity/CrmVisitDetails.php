@@ -66,7 +66,7 @@ class CrmVisitDetails
     /**
      * @var CrmCustomer
      * @ORM\ManyToOne(targetEntity="CrmCustomer", inversedBy="crmVisitDetails")
-     * @ORM\JoinColumn(name="customer_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="customer_id", referencedColumnName="id", nullable=true)
      * @ORM\JoinColumn(onDelete="CASCADE")
      */
     private $crmCustomer;

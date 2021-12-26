@@ -34,6 +34,7 @@ class PoultryMeatEggPrice
     /**
      * @var CrmVisit
      * @ORM\ManyToOne(targetEntity="Terminalbd\CrmBundle\Entity\CrmVisit" , inversedBy="poultryMeatEggPrice")
+     * @ORM\JoinColumn(onDelete="CASCADE")
      */
     private $crmVisit;
 
