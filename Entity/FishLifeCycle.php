@@ -20,10 +20,12 @@ class FishLifeCycle
     const REPORT_TYPE_AFTER = 'AFTER';
 
     /**
+     * @var integer
+     * @ORM\Column(name="id", type="integer")
      * @ORM\Id
-     * @ORM\Column(name="id", type="guid")
-     * @ORM\GeneratedValue(strategy="UUID")
+     * @ORM\GeneratedValue
      */
+
     private $id;
 
     /**
@@ -86,7 +88,7 @@ class FishLifeCycle
     /**
      * @return int
      */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
@@ -94,7 +96,7 @@ class FishLifeCycle
     /**
      * @param int $id
      */
-    public function setId($id)
+    public function setId(int $id): void
     {
         $this->id = $id;
     }
