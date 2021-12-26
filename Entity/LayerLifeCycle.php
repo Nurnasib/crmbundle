@@ -49,7 +49,7 @@ class LayerLifeCycle
 
     /**
      * @ORM\ManyToOne(targetEntity="Terminalbd\CrmBundle\Entity\Api" , inversedBy="crmLayerLifeCycle")
-     * @ORM\JoinColumn(referencedColumnName="id", onDelete="CASCADE")
+     * @ORM\JoinColumn(referencedColumnName="id", onDelete="SET NULL")
      */
     private $appBatch;
 

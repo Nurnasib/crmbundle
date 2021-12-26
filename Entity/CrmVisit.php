@@ -47,7 +47,7 @@ class CrmVisit
      * @var Api
      * @ORM\ManyToOne(targetEntity="Terminalbd\CrmBundle\Entity\Api", inversedBy="crmVisits")
      * @ORM\JoinColumn(referencedColumnName="id")
-     * @ORM\JoinColumn(onDelete="CASCADE")
+     * @ORM\JoinColumn(onDelete="SET NULL")
      */
     private $appBatch;
 

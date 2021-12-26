@@ -24,7 +24,11 @@ use Terminalbd\CrmBundle\Entity\ChickLifeCycle;
 use Terminalbd\CrmBundle\Entity\CompanyWiseFeedSale;
 use Terminalbd\CrmBundle\Entity\CrmCustomer;
 use Terminalbd\CrmBundle\Entity\CrmVisit;
+use Terminalbd\CrmBundle\Entity\DailyChickPrice;
+use Terminalbd\CrmBundle\Entity\DailyChickPriceDetails;
 use Terminalbd\CrmBundle\Entity\FishCompanyAndSpeciesWiseAverageFcr;
+use Terminalbd\CrmBundle\Entity\FishLifeCycle;
+use Terminalbd\CrmBundle\Entity\FishLifeCycleDetails;
 use Terminalbd\CrmBundle\Entity\LayerLifeCycleDetails;
 use Terminalbd\CrmBundle\Entity\Setting;
 
@@ -184,6 +188,18 @@ class SyncAppDataController extends AbstractController
                             break;
                         case "crm_fish_company_species_wise_average_fcr_details":
                             $this->processFishCompanySpeciesWiseAverageFcrDetails($jsonToArray, $batch);
+                            break;
+                        case "crm_doc_price":
+                            $this->processDocPrice($jsonToArray, $batch);
+                            break;
+                        case "crm_fish_life_cycle":
+                            $this->processFishLifeCycle($jsonToArray, $batch);
+                            break;
+                        case "crm_fish_life_cycle_details":
+                            $this->processFishLifeCycleDetails($jsonToArray, $batch);
+                            break;
+                        case "crm_fish_life_cycle_detail_species":
+                            $this->processFishLifeCycleDetailsSpecies($jsonToArray, $batch);
                             break;
                     }
                     $detail->setStatus(true);
@@ -1378,6 +1394,188 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
                 $stmt->bindValue('fish_company_and_species_wise_fcr_id', $findParent->getId());
                 $stmt->bindValue('species_name_id', $report['species_name_id']);
                 $stmt->bindValue('quantity', $report['quantity'] ?: 0);
+                $stmt->bindValue('created_at', $createdAt);
+
+                $stmt->execute();
+
+            }
+
+        }
+    }
+
+    private function processDocPrice($reports, Api $batch)
+    {
+        foreach ($reports as $report) {
+
+            $createdAt = $report['created_at'] ? (new \DateTime($report['created_at']))->format('Y-m-d H:i:s') : null;
+            $reportingDate = $report['reporting_date'] ? (new \DateTime($report['reporting_date']))->format('Y-m-d') : null;
+
+            $sql = "INSERT INTO `crm_daily_chick_price` (`employee_id`, `location_id`, `reporting_date`,`created_at`) VALUES (:employee_id, :location_id, :reporting_date, :created_at)";
+
+            $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
+
+            $stmt->bindValue('employee_id', $report['employee_id']);
+            $stmt->bindValue('location_id', $report['location_id']);
+            $stmt->bindValue('reporting_date', $reportingDate);
+            $stmt->bindValue('created_at', $createdAt);
+
+            $stmt->execute();
+            $parentId = $stmt->fetch()['id'];
+            if ($parentId){
+                $parent = $this->getDoctrine()->getRepository(DailyChickPrice::class)->find($parentId);
+                foreach (json_decode($report['chick_prices'], true) as $item) {
+                    $chickType = $this->getDoctrine()->getRepository(Setting::class)->find($item['id']);
+                    $feed = $this->getDoctrine()->getRepository(Setting::class)->find($report['feed_id']);
+
+                    $exist = $this->getDoctrine()->getRepository(DailyChickPriceDetails::class)->findOneBy(['crmDailyChickPrice' => $parent, 'chickType' => $chickType, 'feed' => $feed]);
+                    if($exist){
+                        /* @var DailyChickPriceDetails $exist*/
+                        $exist->setPrice($item['price'] ?: 0);
+                        $exist->setUpdatedAt($createdAt);
+                        $this->getDoctrine()->getManager()->persist($exist);
+                        $this->getDoctrine()->getManager()->flush();
+                    }else{
+                        $sql = "INSERT INTO `crm_daily_chick_price_details`(`crm_daily_chick_price_id`, `chick_type_id`, `feed_id`, `price`, `created_at`) VALUES (:crm_daily_chick_price_id, :chick_type_id, :feed_id, :price, :created_at)";
+
+                        $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
+
+                        $stmt->bindValue('crm_daily_chick_price_id', $parentId);
+                        $stmt->bindValue('chick_type_id', $item['id']);
+                        $stmt->bindValue('feed_id', $report['feed_id']);
+                        $stmt->bindValue('price', $item['price']);
+                        $stmt->bindValue('created_at', $createdAt);
+
+                        $stmt->execute();
+                    }
+
+                }
+            }
+
+        }
+    }
+
+    private function processFishLifeCycle($reports, Api $batch)
+    {
+        foreach ($reports as $report) {
+
+            $createdAt = $report['created_at'] ? (new \DateTime($report['created_at']))->format('Y-m-d H:i:s') : null;
+            $reportingMonth = $report['reporting_month'] ? (new \DateTime($report['reporting_month']))->format('Y-m-d') : null;
+
+            $sql = "INSERT INTO `crm_fish_life_cycle`(`report_id`, `employee_id`, `customer_id`, `report_type`, `reporting_month`, `created_at`, `app_id`, `app_batch_id`) VALUES (:report_id, :employee_id, :customer_id, :report_type, :reporting_month, :created_at, :app_id, :app_batch_id)";
+
+            $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
+
+            $stmt->bindValue('report_id', $report['report_id']);
+            $stmt->bindValue('employee_id', $report['employee_id']);
+            $stmt->bindValue('customer_id', $report['customer_id']);
+            $stmt->bindValue('report_type', $report['report_type']);
+            $stmt->bindValue('reporting_month', $reportingMonth);
+            $stmt->bindValue('created_at', $createdAt);
+            $stmt->bindValue('app_batch_id', $batch->getId());
+            $stmt->bindValue('app_batch_id', $report['id']);
+
+            $stmt->execute();
+        }
+    }
+    
+    private function processFishLifeCycleDetails($reports, Api $batch)
+    {
+        foreach ($reports as $report) {
+
+            $findParent = $this->getDoctrine()->getRepository(FishLifeCycle::class)->findOneBy(['appId' => $report['fish_life_cycle_id'],'appBatch' => $batch]);
+            if ($findParent)
+            {
+                $createdAt = $report['created_at'] ? (new \DateTime($report['created_at']))->format('Y-m-d H:i:s') : null;
+                $reportingDate = $report['reporting_date'] ? (new \DateTime($report['reporting_date']))->format('Y-m-d') : null;
+                $stockingDate = $report['stocking_date'] ? (new \DateTime($report['stocking_date']))->format('Y-m-d') : null;
+                $harvestDate = $report['harvest_date'] ? (new \DateTime($report['harvest_date']))->format('Y-m-d') : null;
+                $previousSamplingDate = $report['previous_sampling_date'] ? (new \DateTime($report['previous_sampling_date']))->format('Y-m-d') : null;
+                $presentSamplingDate = $report['present_sampling_date'] ? (new \DateTime($report['present_sampling_date']))->format('Y-m-d') : null;
+
+                $sql = "INSERT INTO `crm_fish_life_cycle_details`(`fish_life_cycle_id`, `agent_id`, `customer_id`, `hatchery_id`, `feed_id`, `reporting_date`, `feed_item_name`, `other_culture_species`, `culture_area_decimal`, `no_of_initial_fish`, `no_of_final_fish`, `stocking_density`, `average_initial_weight`, `total_initial_weight`, `current_culture_days`, `total_day_of_culture`, `average_present_weight`, `weightGainGm`, `weightGainKg`, `previous_final_weight_gm`, `final_weight_gm`, `final_weight_kg`, `current_feed_consumption_kg`, `previous_total_feed_consumption_kg`, `total_feed_consumption_kg`, `current_fcr`, `current_adg`, `final_fcr`, `final_adg`, `sr_percentage`, `per_pcs_seed_cost`, `total_seed_cost`, `per_kg_feed_rate`, `total_feed_cost`, `feed_cost_per_kg_fish`, `total_other_cost`, `total_cost`, `production_cost_per_kg_fish`, `sales_price_per_kg`, `total_income`, `net_profit_or_loss`, `retune_over_investment`, `stocking_date`, `harvest_date`, `previous_sampling_date`, `present_sampling_date`, `farmer_remarks`, `employee_remarks`, `created_at`, `app_id`, `app_batch_id`) 
+VALUES (
+:fish_life_cycle_id, :agent_id, :customer_id, :hatchery_id, :feed_id, :reporting_date, :feed_item_name, :other_culture_species, :culture_area_decimal, :no_of_initial_fish, :no_of_final_fish, :stocking_density, :average_initial_weight, :total_initial_weight, :current_culture_days, :total_day_of_culture, :average_present_weight, :weightGainGm, :weightGainKg, :previous_final_weight_gm, :final_weight_gm, :final_weight_kg, :current_feed_consumption_kg, :previous_total_feed_consumption_kg, :total_feed_consumption_kg, :current_fcr, :current_adg, :final_fcr, :final_adg, :sr_percentage, :per_pcs_seed_cost, :total_seed_cost, :per_kg_feed_rate, :total_feed_cost, :feed_cost_per_kg_fish, :total_other_cost, :total_cost, :production_cost_per_kg_fish, :sales_price_per_kg, :total_income, :net_profit_or_loss, :retune_over_investment, :stocking_date, :harvest_date, :previous_sampling_date, :present_sampling_date, :farmer_remarks, :employee_remarks, :created_at, :app_id, :app_batch_id
+)";
+                $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
+
+                $stmt->bindValue('report_id', $report['report_id']);
+                $stmt->bindValue('fish_life_cycle_id', $findParent->getId());
+                $stmt->bindValue('agent_id', $report['agent_id']);
+                $stmt->bindValue('customer_id', $report['customer_id']);
+                $stmt->bindValue('hatchery_id', $report['hatchery_id']);
+                $stmt->bindValue('feed_id', $report['feed_id']);
+                $stmt->bindValue('reporting_date', $reportingDate);
+                $stmt->bindValue('feed_item_name', $report['feed_item_name']);
+                $stmt->bindValue('other_culture_species', $report['other_culture_species']);
+                $stmt->bindValue('culture_area_decimal', $report['culture_area_decimal']);
+                $stmt->bindValue('no_of_initial_fish', $report['no_of_initial_fish']);
+                $stmt->bindValue('no_of_final_fish', $report['no_of_final_fish']);
+                $stmt->bindValue('stocking_density', $report['stocking_density']);
+                $stmt->bindValue('average_initial_weight', $report['average_initial_weight']);
+                $stmt->bindValue('total_initial_weight', $report['total_initial_weight']);
+                $stmt->bindValue('current_culture_days', $report['current_culture_days']);
+                $stmt->bindValue('total_day_of_culture', $report['total_day_of_culture']);
+                $stmt->bindValue('average_present_weight', $report['average_present_weight']);
+                $stmt->bindValue('weightGainGm', $report['weightGainGm']);
+                $stmt->bindValue('weightGainKg', $report['weightGainKg']);
+                $stmt->bindValue('previous_final_weight_gm', $report['previous_final_weight_gm']);
+                $stmt->bindValue('final_weight_gm', $report['final_weight_gm']);
+                $stmt->bindValue('final_weight_kg', $report['final_weight_kg']);
+                $stmt->bindValue('current_feed_consumption_kg', $report['current_feed_consumption_kg']);
+                $stmt->bindValue('previous_total_feed_consumption_kg', $report['previous_total_feed_consumption_kg']);
+                $stmt->bindValue('total_feed_consumption_kg', $report['total_feed_consumption_kg']);
+                $stmt->bindValue('current_fcr', $report['current_fcr']);
+                $stmt->bindValue('current_adg', $report['current_adg']);
+                $stmt->bindValue('final_fcr', $report['final_fcr']);
+                $stmt->bindValue('final_adg', $report['final_adg']);
+                $stmt->bindValue('sr_percentage', $report['sr_percentage']);
+                $stmt->bindValue('per_pcs_seed_cost', $report['per_pcs_seed_cost']);
+                $stmt->bindValue('total_seed_cost', $report['total_seed_cost']);
+                $stmt->bindValue('per_kg_feed_rate', $report['per_kg_feed_rate']);
+                $stmt->bindValue('total_feed_cost', $report['total_feed_cost']);
+                $stmt->bindValue('feed_cost_per_kg_fish',$report['feed_cost_per_kg_fish']);
+                $stmt->bindValue('total_other_cost', $report['total_other_cost']);
+                $stmt->bindValue('total_cost', $report['total_cost']);
+                $stmt->bindValue('production_cost_per_kg_fish', $report['production_cost_per_kg_fish']);
+                $stmt->bindValue('sales_price_per_kg', $report['sales_price_per_kg']);
+                $stmt->bindValue('total_income', $report['total_income']);
+                $stmt->bindValue('net_profit_or_loss', $report['net_profit_or_loss']);
+                $stmt->bindValue('retune_over_investment', $report['retune_over_investment']);
+                $stmt->bindValue('stocking_date', $stockingDate);
+                $stmt->bindValue('harvest_date', $harvestDate);
+                $stmt->bindValue('previous_sampling_date', $previousSamplingDate);
+                $stmt->bindValue('present_sampling_date', $presentSamplingDate);
+                $stmt->bindValue('farmer_remarks', $report['farmer_remarks']);
+                $stmt->bindValue('employee_remarks', $report['employee_remarks']);
+                $stmt->bindValue('created_at',$createdAt);
+                $stmt->bindValue('app_id', $report['id']);
+                $stmt->bindValue('app_batch_id', $batch->getId());
+
+                $stmt->execute();
+
+            }
+            
+        }
+    }
+    
+    private function processFishLifeCycleDetailsSpecies($reports, Api $batch)
+    {
+        foreach ($reports as $report) {
+            $findParent = $this->getDoctrine()->getRepository(FishLifeCycleDetails::class)->findOneBy(['appId' => $report['fish_life_cycle_details_id'], 'appBatch' => $batch]);
+            if($findParent){
+                $createdAt = $report['created_at'] ? (new \DateTime($report['created_at']))->format('Y-m-d H:i:s') : null;
+
+
+                $sql = "INSERT INTO `crm_fish_life_cycle_detail_species`(`fish_life_cycle_details_id`, `feed_type_id`, `feed_consumption_kg`, `created_at`, `mainCultureSpecies`) 
+VALUES (
+:fish_life_cycle_details_id, :feed_type_id, :feed_consumption_kg, :created_at, :mainCultureSpecies
+)";
+                $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
+
+                $stmt->bindValue('fish_life_cycle_details_id', $findParent->getId());
+                $stmt->bindValue('feed_type_id', $report['feed_type_id']);
+                $stmt->bindValue('feed_consumption_kg', $report['feed_consumption_kg']);
+                $stmt->bindValue('mainCultureSpecies', $report['mainCultureSpecies']);
                 $stmt->bindValue('created_at', $createdAt);
 
                 $stmt->execute();

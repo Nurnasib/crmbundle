@@ -26,6 +26,17 @@ class FishLifeCycle
      */
     private $id;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="Api" , inversedBy="crmFishLifeCycle")
+     * @ORM\JoinColumn(referencedColumnName="id", onDelete="SET NULL")
+     */
+    private $appBatch;
+
+    /**
+     * @var $appBatch
+     * @ORM\Column(type="integer",nullable=true)
+     */
+    private $appId;
 
     /**
      * @var string
@@ -86,6 +97,38 @@ class FishLifeCycle
     public function setId($id)
     {
         $this->id = $id;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAppBatch()
+    {
+        return $this->appBatch;
+    }
+
+    /**
+     * @param mixed $appBatch
+     */
+    public function setAppBatch($appBatch): void
+    {
+        $this->appBatch = $appBatch;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAppId()
+    {
+        return $this->appId;
+    }
+
+    /**
+     * @param mixed $appId
+     */
+    public function setAppId($appId): void
+    {
+        $this->appId = $appId;
     }
 
     /**
