@@ -81,8 +81,34 @@ class LifeCycleReportController extends AbstractController
      */
     public function pdf(Request $request)
     {
-       $filterBy = $request->query->get('filterBy');
-        dd($filterBy);
+       $filterBy = $request->query->all();
+       dd($filterBy);
+        switch ($filterBy['lifeCycle']){
+            case 'boiler-life-cycle':
+                $entities = $this->getDoctrine()->getRepository(ChickLifeCycleDetails::class)->getChickLifeCycleDetails($filterBy['lifeCycle'],$filterBy);
+                break;
+            case 'sonali-life-cycle':
+                break;
+            case 'layer-life-cycle-brown':
+                break;
+            case 'layer-life-cycle-white':
+                break;
+            case 'dairy-life-cycle':
+                break;
+            case 'fattening-life-cycle':
+                break;
+            case 'fish-life-cycle-report':
+                break;
+            case 'fish-life-cycle-after-sale-report':
+                break;
+            default:
+                $entities = [];
+                break;
+        }
+
+        dd($entities);
+
+
 //        $entities = $this->getDoctrine()->getRepository(ChickLifeCycleDetails::class)->getChickLifeCycleDetails($lifeCycleSlug,$filterBy);
 
     }

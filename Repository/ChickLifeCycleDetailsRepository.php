@@ -56,7 +56,7 @@ class ChickLifeCycleDetailsRepository extends BaseRepository
         $data = [];
 
         foreach ($results as $result) {
-            $month = ($result['details']['createdAt'])->format('m~F-Y');
+            $month = ($result['details']['createdAt'])->format('m-F-Y');
 
             $result['details']['feedTypeName'] = $result['feedTypeName'];
 
