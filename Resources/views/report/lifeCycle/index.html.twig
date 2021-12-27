@@ -19,12 +19,12 @@
             <div class="card">
                 <div class="card-header">
                     <h5>{{ 'Life Cycle'|trans }}</h5>
-                    {% if entities is not empty %}
+{#                    {% if entities is not empty %}
                         <div class="btn-group btn-group-sm float-right" role="group" aria-label="Button group with nested dropdown">
                             <a target="_blank" href="#" class="btn blue-bg white-font btn-sm"><i class="fa fa-file-pdf"></i> {{ 'PDF'|trans }}</a>
                             <a target="_blank" href="#" class="btn btn-sm bg-primary white-font"><i class="fa fa-file-excel"></i> {{ 'Excel'|trans }}</a>
                         </div>
-                    {% endif %}
+                    {% endif %}#}
                 </div>
             </div>
         </div>
@@ -73,8 +73,8 @@
                     <table class="table table-borderd">
                         <thead class="thead-dark">
                         <tr>
-                            <th>Officer's Name: {{ filterBy.employee.name }}</th>
-                            <th>Region: {{ filterBy.employee.regional.name }}</th>
+                            <th>Officer's Name: {{ employee ? employee.name : '' }}</th>
+                            <th>Region: {{ employee and employee.regional ? employee.regional.name : '' }}</th>
                         </tr>
                         </thead>
                     </table>
