@@ -223,9 +223,9 @@ class SyncAppDataController extends AbstractController
         foreach ($visits as $visitKey => $visit) {
             $createdAt = new \DateTime($visit['created_at']);
             $findEmployee = $this->getDoctrine()->getRepository(User::class)->find($visit['employee_id']);
-            $findLocation = $this->getDoctrine()->getRepository(Location::class)->find($visit['location_id']);
+            $findLocation = $visit['location_id'] ? $this->getDoctrine()->getRepository(Location::class)->find($visit['location_id']) : null;
 
-            if ($findEmployee && $findLocation){
+            if ($findEmployee){
                 $newVisit = new CrmVisit();
                 $newVisit->setEmployee($findEmployee);
                 $newVisit->setAppId($visit['id']);
