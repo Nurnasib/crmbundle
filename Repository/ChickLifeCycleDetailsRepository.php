@@ -35,6 +35,7 @@ class ChickLifeCycleDetailsRepository extends BaseRepository
         $qb->leftJoin('crm_chick_life_cycle.hatchery', 'hatchery');
         $qb->leftJoin('crm_chick_life_cycle.feed', 'feed');
         $qb->leftJoin('crm_chick_life_cycle.breed', 'breed');
+        $qb->leftJoin('crm_chick_life_cycle.employee', 'employee');
         $qb->leftJoin('e.feedType', 'feed_type');
 
         $qb->select('e AS details');
@@ -47,8 +48,9 @@ class ChickLifeCycleDetailsRepository extends BaseRepository
         $qb->addSelect('feed_type.name AS feedTypeName');
 
         $qb->where('report.slug = :slug')->setParameter('slug', $lifeCycleSlug);
-        $qb->andWhere('e.createdAt >= :startDate')->setParameter('startDate', $startDate);
-        $qb->andWhere('e.createdAt <= :endDate')->setParameter('endDate', $endDate);
+        $qb->andWhere('e.reportingDate >= :startDate')->setParameter('startDate', $startDate);
+        $qb->andWhere('e.reportingDate <= :endDate')->setParameter('endDate', $endDate);
+        $qb->andWhere('employee.id = :employeeId')->setParameter('employeeId', $filterBy['employeeId']);
 
         $results =  $qb->getQuery()->getArrayResult();
         $data = [];

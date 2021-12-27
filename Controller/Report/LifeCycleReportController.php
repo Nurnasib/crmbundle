@@ -30,6 +30,7 @@ class LifeCycleReportController extends AbstractController
         $filterBy = [];
         $entities = [];
         $lifeCycleSlug = '';
+        $employee = null;
         $form = $this->createForm(SearchFilterFormType::class);
         $form->handleRequest($request);
 
@@ -38,7 +39,8 @@ class LifeCycleReportController extends AbstractController
 
             $filterBy['startDate'] = $form->getData()['startDate'];
             $filterBy['endDate'] = $form->getData()['endDate'];
-            $filterBy['employee'] = $form->getData()['employee'];
+            $filterBy['employeeId'] = $form->getData()['employee'] ? $form->getData()['employee']->getId() : '';
+            $employee = $form->getData()['employee'];
 
             switch ($lifeCycleSlug){
                 case 'boiler-life-cycle':
@@ -69,6 +71,19 @@ class LifeCycleReportController extends AbstractController
             'entities' => $entities,
             'filterBy'=> $filterBy,
             'lifeCycleSlug'=> $lifeCycleSlug,
+            'employee'=> $employee,
         ]);
+    }
+
+    /**
+     * @Route("/pdf", name="life_cycle_pdf")
+     * @param Request $request
+     */
+    public function pdf(Request $request)
+    {
+       $filterBy = $request->query->get('filterBy');
+        dd($filterBy);
+//        $entities = $this->getDoctrine()->getRepository(ChickLifeCycleDetails::class)->getChickLifeCycleDetails($lifeCycleSlug,$filterBy);
+
     }
 }

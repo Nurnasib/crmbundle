@@ -21,6 +21,7 @@ use Terminalbd\CrmBundle\Entity\Api;
 use Terminalbd\CrmBundle\Entity\CattleFarmVisit;
 use Terminalbd\CrmBundle\Entity\CattleLifeCycle;
 use Terminalbd\CrmBundle\Entity\ChickLifeCycle;
+use Terminalbd\CrmBundle\Entity\ChickLifeCycleDetails;
 use Terminalbd\CrmBundle\Entity\CompanyWiseFeedSale;
 use Terminalbd\CrmBundle\Entity\CrmCustomer;
 use Terminalbd\CrmBundle\Entity\CrmVisit;
@@ -233,6 +234,8 @@ class SyncAppDataController extends AbstractController
                 $newVisit->setWorkingDuration($visit['duration_from']);
                 $newVisit->setWorkingDurationTo($visit['duration_to']);
                 $newVisit->setCreated($createdAt);
+                $newVisit->setWorkingMode($visit['mode']);
+                $newVisit->setRemarks($visit['remarks']);
 
                 $em->persist($newVisit);
                 $em->flush();
@@ -652,36 +655,70 @@ WHERE `customer_id` = :customer_id AND `employee_id` = :employee_id AND `report_
             $stmt->execute();
             $lifeCycleId = $stmt->fetch()['id'];
             if ($lifeCycleId) {
-                $sql = "INSERT INTO `crm_chick_life_cycle_details`(`crm_chick_life_cycle_id`, `visiting_week`, `age_days`, `mortality_pes`, `mortality_percent`, `weight_standard`, `weight_achieved`, `feed_total_kg`, `per_bird`, `feed_standard`, `without_mortality`, `with_mortality`, `pro_date`, `batch_no`, `remarks`, `created_at`, `updated_at`, `feed_type_id`, `reporting_date`) 
-VALUES (:crm_chick_life_cycle_id, :visiting_week, :age_days, :mortality_pes, :mortality_percent, :weight_standard, :weight_achieved, :feed_total_kg, :per_bird, :feed_standard, :without_mortality, :with_mortality, :pro_date, :batch_no, :remarks, :created_at, :updated_at, :feed_type_id, :reporting_date)";
 
                 $proDate = new \DateTime($report['pro_date']);
                 $reportingDate = new \DateTime($report['reporting_date']);
                 $createdAt = new \DateTime($report['created_at']);
                 $updatedAt = new \DateTime($report['updated_at']);
 
-                $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
-                $stmt->bindValue('crm_chick_life_cycle_id', $lifeCycleId);
-                $stmt->bindValue('visiting_week', $report['visiting_week']);
-                $stmt->bindValue('age_days', $report['age_days']);
-                $stmt->bindValue('mortality_pes', $report['mortality_pes']);
-                $stmt->bindValue('mortality_percent', $report['mortality_percent']);
-                $stmt->bindValue('weight_standard', $report['weight_standard']);
-                $stmt->bindValue('weight_achieved', $report['weight_achieved']);
-                $stmt->bindValue('feed_total_kg', $report['feed_total_kg']);
-                $stmt->bindValue('per_bird', $report['per_bird']);
-                $stmt->bindValue('feed_standard', $report['feed_standard']);
-                $stmt->bindValue('without_mortality', $report['without_mortality']);
-                $stmt->bindValue('with_mortality', $report['with_mortality']);
-                $stmt->bindValue('pro_date', $proDate->format('Y-m-d H:i:s'));
-                $stmt->bindValue('batch_no', $report['batch_no']);
-                $stmt->bindValue('remarks', $report['remarks']);
-                $stmt->bindValue('created_at', $createdAt->format('Y-m-d H:i:s'));
-                $stmt->bindValue('updated_at', $updatedAt->format('Y-m-d H:i:s'));
-                $stmt->bindValue('feed_type_id', $report['feed_type_id']);
-                $stmt->bindValue('reporting_date', $reportingDate->format('Y-m-d'));
+                /* @var ChickLifeCycleDetails $findDetails*/
+                $findDetails = $this->getDoctrine()->getRepository(ChickLifeCycleDetails::class)->findOneBy(['crmChickLifeCycle' => $lifeCycleId, 'visitingWeek' =>  $report['visiting_week']]);
+                if ($findDetails){
+                    $feedType = $this->getDoctrine()->getRepository(Setting::class)->find($report['feed_type_id']);
 
-                $stmt->execute();
+                    $findDetails->setAgeDays($report['age_days']);
+                    $findDetails->setMortalityPes($report['mortality_pes']);
+                    $findDetails->setMortalityPercent($report['mortality_percent']);
+                    $findDetails->setWeightStandard($report['weight_standard']);
+                    $findDetails->setWeightAchieved($report['weight_achieved']);
+                    $findDetails->setPerBird($report['per_bird']);
+                    $findDetails->setFeedStandard($report['feed_standard']);
+                    $findDetails->setFeedTotalKg($report['feed_total_kg']);
+                    $findDetails->setWithoutMortality($report['without_mortality']);
+                    $findDetails->setWithMortality($report['with_mortality']);
+                    $findDetails->setProDate($proDate);
+                    $findDetails->setBatchNo($report['batch_no']);
+                    $findDetails->setRemarks($report['remarks']);
+                    $findDetails->setCreatedAt($createdAt);
+                    $findDetails->setUpdatedAt($updatedAt);
+                    $findDetails->setFeedType($feedType);
+                    $findDetails->setReportingDate($reportingDate);
+
+                    $this->getDoctrine()->getManager()->persist($findDetails);
+                    $this->getDoctrine()->getManager()->flush();
+
+                }else{
+                    $sql = "INSERT INTO `crm_chick_life_cycle_details`(`crm_chick_life_cycle_id`, `visiting_week`, `age_days`, `mortality_pes`, `mortality_percent`, `weight_standard`, `weight_achieved`, `feed_total_kg`, `per_bird`, `feed_standard`, `without_mortality`, `with_mortality`, `pro_date`, `batch_no`, `remarks`, `created_at`, `updated_at`, `feed_type_id`, `reporting_date`) 
+VALUES (:crm_chick_life_cycle_id, :visiting_week, :age_days, :mortality_pes, :mortality_percent, :weight_standard, :weight_achieved, :feed_total_kg, :per_bird, :feed_standard, :without_mortality, :with_mortality, :pro_date, :batch_no, :remarks, :created_at, :updated_at, :feed_type_id, :reporting_date)";
+
+/*                    $proDate = new \DateTime($report['pro_date']);
+                    $reportingDate = new \DateTime($report['reporting_date']);
+                    $createdAt = new \DateTime($report['created_at']);
+                    $updatedAt = new \DateTime($report['updated_at']);*/
+
+                    $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
+                    $stmt->bindValue('crm_chick_life_cycle_id', $lifeCycleId);
+                    $stmt->bindValue('visiting_week', $report['visiting_week']);
+                    $stmt->bindValue('age_days', $report['age_days']);
+                    $stmt->bindValue('mortality_pes', $report['mortality_pes']);
+                    $stmt->bindValue('mortality_percent', $report['mortality_percent']);
+                    $stmt->bindValue('weight_standard', $report['weight_standard']);
+                    $stmt->bindValue('weight_achieved', $report['weight_achieved']);
+                    $stmt->bindValue('feed_total_kg', $report['feed_total_kg']);
+                    $stmt->bindValue('per_bird', $report['per_bird']);
+                    $stmt->bindValue('feed_standard', $report['feed_standard']);
+                    $stmt->bindValue('without_mortality', $report['without_mortality']);
+                    $stmt->bindValue('with_mortality', $report['with_mortality']);
+                    $stmt->bindValue('pro_date', $proDate->format('Y-m-d H:i:s'));
+                    $stmt->bindValue('batch_no', $report['batch_no']);
+                    $stmt->bindValue('remarks', $report['remarks']);
+                    $stmt->bindValue('created_at', $createdAt->format('Y-m-d H:i:s'));
+                    $stmt->bindValue('updated_at', $updatedAt->format('Y-m-d H:i:s'));
+                    $stmt->bindValue('feed_type_id', $report['feed_type_id']);
+                    $stmt->bindValue('reporting_date', $reportingDate->format('Y-m-d'));
+
+                    $stmt->execute();
+                }
             }
         }
     }
