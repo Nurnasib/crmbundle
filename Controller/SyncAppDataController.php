@@ -230,7 +230,9 @@ class SyncAppDataController extends AbstractController
                 $newVisit->setEmployee($findEmployee);
                 $newVisit->setAppId($visit['id']);
                 $newVisit->setAppBatch($batch);
-                $newVisit->setLocation($findLocation);
+                if ($findLocation){
+                    $newVisit->setLocation($findLocation);
+                }
                 $newVisit->setWorkingDuration($visit['duration_from']);
                 $newVisit->setWorkingDurationTo($visit['duration_to']);
                 $newVisit->setCreated($createdAt);
