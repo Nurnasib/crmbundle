@@ -129,9 +129,31 @@
      <link rel="stylesheet" href="{{ asset('assets/module/css/app.css') }}">
  {% endblock  %}
  {% block javascriptBlock %}
+{#     <script>#}
      {{ parent() }}
      $(".timePicker").timepicker({
      timeFormat: 'hh:mm TT'
      }
      );
+
+     $('#crm_visit_form_workingMode').on('change', function () {
+         var workingModeValue= $(this).val();
+
+         if(workingModeValue=="leave"){
+             $('#crm_visit_form_location').removeAttr('required').attr('disabled', 'disabled');
+             $('#crm_visit_form_working_duration').removeAttr('required').attr('disabled', 'disabled');
+             $('#crm_visit_form_working_duration_to').removeAttr('required').attr('disabled', 'disabled');
+             $('#crm_visit_form_remarks').attr('required', 'required');
+         }else{
+             $('#crm_visit_form_location').removeAttr('disabled').attr('required', 'required');
+             $('#crm_visit_form_working_duration').removeAttr('disabled');
+             $('#crm_visit_form_working_duration_to').removeAttr('disabled');
+             $('#crm_visit_form_remarks').removeAttr('required');
+        }
+
+         console.log(workingModeValue)
+
+     }).change();
+
+
  {% endblock %}

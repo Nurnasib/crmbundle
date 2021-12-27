@@ -77,8 +77,7 @@ class CrmVisitFormType extends AbstractType
                 },
             ))
             ->add('workingMode', ChoiceType::class, [
-                'required'    => false,
-                'placeholder' => 'Choose an option',
+                'required'    => true,
                 'choices'  => [
                     'Working' => 'working',
                     'Leave' => 'leave',

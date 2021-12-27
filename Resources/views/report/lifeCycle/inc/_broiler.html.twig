@@ -1,13 +1,6 @@
-{% set filterBy = filterBy|merge({"employeeId" : filterBy.employeeId, "lifeCycle" : lifeCycleSlug}) %}
-
 {% for month, entity in entities %}
-    {% set monthYear = month|split('-') %}
-    <h4 class="bg-secondary text-center p-1">{{ monthYear[1]~'-'~monthYear[2] }}
-        <div class="btn-group btn-group-mini float-right" role="group" aria-label="Button group with nested dropdown">
-            <a target="_blank" href="{{ path('life_cycle_pdf', {employeeId: filterBy.employeeId, month: monthYear[0], year: monthYear[2], lifeCycleSlug: lifeCycleSlug}) }}" class="btn blue-bg white-font btn-mini"><i class="fa fa-file-pdf"></i> {{ 'PDF'|trans }}</a>
-            <a target="_blank" href="#" class="btn btn-mini bg-primary white-font"><i class="fa fa-file-excel"></i> {{ 'Excel'|trans }}</a>
-        </div>
-    </h4>
+    {% set monthYear = month|split('~') %}
+    <h4 class="bg-secondary text-center p-1">{{ monthYear[1] }}</h4>
         <table class="table table-striped table-bordered table-hover">
             <thead class="thead-dark">
             <tr>
