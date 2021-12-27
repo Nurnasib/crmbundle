@@ -203,14 +203,14 @@ class SyncAppDataController extends AbstractController
                             $this->processFishLifeCycleDetailsSpecies($jsonToArray, $batch);
                             break;
                     }
-                    $detail->setStatus(true);
-                    $em->persist($detail);
-                    $em->flush();
+//                    $detail->setStatus(true);
+//                    $em->persist($detail);
+//                    $em->flush();
                 }
             }
-            $batch->setStatus(true);
-            $em->persist($batch);
-            $em->flush();
+//            $batch->setStatus(true);
+//            $em->persist($batch);
+//            $em->flush();
         }
         $this->addFlash('success', 'Synchronization Completed!');
         return $this->redirectToRoute('crm_sync_app_data_index');
@@ -527,7 +527,7 @@ VALUES (:report_id, :report_parent_parent_id, :agent_id, :customer_id, :employee
             $stmt->bindValue('feed_price_per_kg', $report['feed_price_per_kg']);
             $stmt->bindValue('broiler_or_fish_price_per_kg', $report['broiler_or_fish_price_per_kg']);
             $stmt->bindValue('total_medicine_cost', $report['total_medicine_cost']);
-            $stmt->bindValue('total_vaccine_cost', $report['total_vaccine_cost']);
+            $stmt->bindValue('total_vaccine_cost', $report['total_vaccine_cost'] ?: 0);
             if ($report['total_pond_preparation_cost'] === null){
                 $stmt->bindValue('total_pond_preparation_cost', 0);
             }else{
@@ -1510,8 +1510,8 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
             $stmt->bindValue('report_type', $report['report_type']);
             $stmt->bindValue('reporting_month', $reportingMonth);
             $stmt->bindValue('created_at', $createdAt);
+            $stmt->bindValue('app_id', $report['id']);
             $stmt->bindValue('app_batch_id', $batch->getId());
-            $stmt->bindValue('app_batch_id', $report['id']);
 
             $stmt->execute();
         }
