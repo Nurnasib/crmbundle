@@ -96,6 +96,14 @@ class SearchFilterFormType extends AbstractType
                 'choice_label' => 'name',
                 'placeholder' => 'Select Farmer'
             ])
+            ->add('employeeWiseFarmer', ChoiceType::class,[
+                'choices' => [],
+                'attr' => [
+                    'class' => 'select2'
+                ],
+                'placeholder' => 'Select Farmer',
+                'required' => false
+            ])
             ->add('employee', EntityType::class,[
                 'class' => User::class,
                 'query_builder' => function(EntityRepository $repository){
@@ -134,6 +142,12 @@ class SearchFilterFormType extends AbstractType
                 'choices' => $this->getYears(2021),
                 'placeholder' => 'Select year',
                 'required' => false
+            ])
+            ->add('reportStatus', ChoiceType::class,[
+                'choices' => [
+                    'In Progress' => 'IN_PROGRESS',
+                    'Complete' => 'COMPLETE',
+                ],
             ])
             ->add('filter', SubmitType::class,[
                 'attr'=>[

@@ -501,10 +501,10 @@ VALUES (:report_id, :report_parent_parent_id, :agent_id, :customer_id, :employee
             $stmt->bindValue('breed_id', $report['breed_id']);
             $stmt->bindValue('feed_id', $report['feed_id']);
             $stmt->bindValue('hatching_date', $hatchingDate->format('Y-m-d'));
-            $stmt->bindValue('total_stocked_chicks_pcs', $report['total_stocked_chicks_pcs']);
-            $stmt->bindValue('total_feed_used_kg', $report['total_feed_used_kg']);
-            $stmt->bindValue('total_broiler_weight_kg', $report['total_broiler_weight_kg']);
-            $stmt->bindValue('mortality', $report['mortality']);
+            $stmt->bindValue('total_stocked_chicks_pcs', $report['total_stocked_chicks_pcs'] ?: 0);
+            $stmt->bindValue('total_feed_used_kg', $report['total_feed_used_kg'] ?: 0);
+            $stmt->bindValue('total_broiler_weight_kg', $report['total_broiler_weight_kg'] ?: 0);
+            $stmt->bindValue('mortality', $report['mortality'] ?: 0);
             $stmt->bindValue('remarks', $report['remarks']);
             $stmt->bindValue('created_at', $createdAt->format('Y-m-d H:i:s'));
             $stmt->bindValue('species_id', $report['species_id']);
@@ -523,10 +523,10 @@ VALUES (:report_id, :report_parent_parent_id, :agent_id, :customer_id, :employee
             }
             $stmt->bindValue('age_days', $report['age_days']);
             $stmt->bindValue('fcr', $report['fcr']);
-            $stmt->bindValue('item_price_per_pcs', $report['item_price_per_pcs']);
-            $stmt->bindValue('feed_price_per_kg', $report['feed_price_per_kg']);
-            $stmt->bindValue('broiler_or_fish_price_per_kg', $report['broiler_or_fish_price_per_kg']);
-            $stmt->bindValue('total_medicine_cost', $report['total_medicine_cost']);
+            $stmt->bindValue('item_price_per_pcs', $report['item_price_per_pcs'] ?: 0);
+            $stmt->bindValue('feed_price_per_kg', $report['feed_price_per_kg'] ?: 0);
+            $stmt->bindValue('broiler_or_fish_price_per_kg', $report['broiler_or_fish_price_per_kg'] ?: 0);
+            $stmt->bindValue('total_medicine_cost', $report['total_medicine_cost'] ?: 0);
             $stmt->bindValue('total_vaccine_cost', $report['total_vaccine_cost'] ?: 0);
             if ($report['total_pond_preparation_cost'] === null){
                 $stmt->bindValue('total_pond_preparation_cost', 0);
@@ -538,11 +538,11 @@ VALUES (:report_id, :report_parent_parent_id, :agent_id, :customer_id, :employee
             }else{
                 $stmt->bindValue('used_bag_price_per_pcs', 0);
             }
-            $stmt->bindValue('litter_or_pond_rent_cost', $report['litter_or_pond_rent_cost']);
-            $stmt->bindValue('electricity_and_fuel_cost', $report['electricity_and_fuel_cost']);
-            $stmt->bindValue('labour_cost', $report['labour_cost']);
-            $stmt->bindValue('transport_cost', $report['transport_cost']);
-            $stmt->bindValue('other_cost', $report['other_cost']);
+            $stmt->bindValue('litter_or_pond_rent_cost', $report['litter_or_pond_rent_cost'] ?: 0);
+            $stmt->bindValue('electricity_and_fuel_cost', $report['electricity_and_fuel_cost'] ?: 0);
+            $stmt->bindValue('labour_cost', $report['labour_cost'] ?: 0);
+            $stmt->bindValue('transport_cost', $report['transport_cost'] ?: 0);
+            $stmt->bindValue('other_cost', $report['other_cost'] ?: 0);
 
             $stmt->execute();
         }
@@ -1520,11 +1520,10 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
     private function processFishLifeCycleDetails($reports, Api $batch)
     {
         foreach ($reports as $report) {
-
             $findParent = $this->getDoctrine()->getRepository(FishLifeCycle::class)->findOneBy(['appId' => $report['fish_life_cycle_id'],'appBatch' => $batch]);
             if ($findParent)
             {
-                $createdAt = $report['created_at'] ? (new \DateTime($report['created_at']))->format('Y-m-d H:i:s') : null;
+                $createdAt = (new \DateTime($report['created_at']))->format('Y-m-d H:i:s');
                 $reportingDate = $report['reporting_date'] ? (new \DateTime($report['reporting_date']))->format('Y-m-d') : null;
                 $stockingDate = $report['stocking_date'] ? (new \DateTime($report['stocking_date']))->format('Y-m-d') : null;
                 $harvestDate = $report['harvest_date'] ? (new \DateTime($report['harvest_date']))->format('Y-m-d') : null;
@@ -1537,7 +1536,6 @@ VALUES (
 )";
                 $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
 
-                $stmt->bindValue('report_id', $report['report_id']);
                 $stmt->bindValue('fish_life_cycle_id', $findParent->getId());
                 $stmt->bindValue('agent_id', $report['agent_id']);
                 $stmt->bindValue('customer_id', $report['customer_id']);
@@ -1547,39 +1545,39 @@ VALUES (
                 $stmt->bindValue('feed_item_name', $report['feed_item_name']);
                 $stmt->bindValue('other_culture_species', $report['other_culture_species']);
                 $stmt->bindValue('culture_area_decimal', $report['culture_area_decimal']);
-                $stmt->bindValue('no_of_initial_fish', $report['no_of_initial_fish']);
-                $stmt->bindValue('no_of_final_fish', $report['no_of_final_fish']);
-                $stmt->bindValue('stocking_density', $report['stocking_density']);
-                $stmt->bindValue('average_initial_weight', $report['average_initial_weight']);
-                $stmt->bindValue('total_initial_weight', $report['total_initial_weight']);
-                $stmt->bindValue('current_culture_days', $report['current_culture_days']);
-                $stmt->bindValue('total_day_of_culture', $report['total_day_of_culture']);
-                $stmt->bindValue('average_present_weight', $report['average_present_weight']);
-                $stmt->bindValue('weightGainGm', $report['weightGainGm']);
-                $stmt->bindValue('weightGainKg', $report['weightGainKg']);
-                $stmt->bindValue('previous_final_weight_gm', $report['previous_final_weight_gm']);
-                $stmt->bindValue('final_weight_gm', $report['final_weight_gm']);
-                $stmt->bindValue('final_weight_kg', $report['final_weight_kg']);
-                $stmt->bindValue('current_feed_consumption_kg', $report['current_feed_consumption_kg']);
-                $stmt->bindValue('previous_total_feed_consumption_kg', $report['previous_total_feed_consumption_kg']);
-                $stmt->bindValue('total_feed_consumption_kg', $report['total_feed_consumption_kg']);
-                $stmt->bindValue('current_fcr', $report['current_fcr']);
-                $stmt->bindValue('current_adg', $report['current_adg']);
-                $stmt->bindValue('final_fcr', $report['final_fcr']);
-                $stmt->bindValue('final_adg', $report['final_adg']);
-                $stmt->bindValue('sr_percentage', $report['sr_percentage']);
-                $stmt->bindValue('per_pcs_seed_cost', $report['per_pcs_seed_cost']);
-                $stmt->bindValue('total_seed_cost', $report['total_seed_cost']);
-                $stmt->bindValue('per_kg_feed_rate', $report['per_kg_feed_rate']);
-                $stmt->bindValue('total_feed_cost', $report['total_feed_cost']);
-                $stmt->bindValue('feed_cost_per_kg_fish',$report['feed_cost_per_kg_fish']);
-                $stmt->bindValue('total_other_cost', $report['total_other_cost']);
-                $stmt->bindValue('total_cost', $report['total_cost']);
-                $stmt->bindValue('production_cost_per_kg_fish', $report['production_cost_per_kg_fish']);
-                $stmt->bindValue('sales_price_per_kg', $report['sales_price_per_kg']);
-                $stmt->bindValue('total_income', $report['total_income']);
-                $stmt->bindValue('net_profit_or_loss', $report['net_profit_or_loss']);
-                $stmt->bindValue('retune_over_investment', $report['retune_over_investment']);
+                $stmt->bindValue('no_of_initial_fish', $report['no_of_initial_fish'] ?: 0);
+                $stmt->bindValue('no_of_final_fish', $report['no_of_final_fish'] ?: 0);
+                $stmt->bindValue('stocking_density', $report['stocking_density'] ?: 0);
+                $stmt->bindValue('average_initial_weight', $report['average_initial_weight'] ?: 0);
+                $stmt->bindValue('total_initial_weight', $report['total_initial_weight'] ?: 0);
+                $stmt->bindValue('current_culture_days', $report['current_culture_days'] ?: 0);
+                $stmt->bindValue('total_day_of_culture', $report['total_day_of_culture'] ?: 0);
+                $stmt->bindValue('average_present_weight', $report['average_present_weight'] ?: 0);
+                $stmt->bindValue('weightGainGm', $report['weightGainGm'] ?: 0);
+                $stmt->bindValue('weightGainKg', $report['weightGainKg'] ?: 0);
+                $stmt->bindValue('previous_final_weight_gm', $report['previous_final_weight_gm'] ?: 0);
+                $stmt->bindValue('final_weight_gm', $report['final_weight_gm'] ?: 0);
+                $stmt->bindValue('final_weight_kg', $report['final_weight_kg'] ?: 0);
+                $stmt->bindValue('current_feed_consumption_kg', $report['current_feed_consumption_kg'] ?: 0);
+                $stmt->bindValue('previous_total_feed_consumption_kg', $report['previous_total_feed_consumption_kg'] ?: 0);
+                $stmt->bindValue('total_feed_consumption_kg', $report['total_feed_consumption_kg'] ?: 0);
+                $stmt->bindValue('current_fcr', $report['current_fcr'] ?: 0);
+                $stmt->bindValue('current_adg', $report['current_adg'] ?: 0);
+                $stmt->bindValue('final_fcr', $report['final_fcr'] ?: 0);
+                $stmt->bindValue('final_adg', $report['final_adg'] ?: 0);
+                $stmt->bindValue('sr_percentage', $report['sr_percentage'] ?: 0);
+                $stmt->bindValue('per_pcs_seed_cost', $report['per_pcs_seed_cost'] ?: 0);
+                $stmt->bindValue('total_seed_cost', $report['total_seed_cost'] ?: 0);
+                $stmt->bindValue('per_kg_feed_rate', $report['per_kg_feed_rate'] ?: 0);
+                $stmt->bindValue('total_feed_cost', $report['total_feed_cost'] ?: 0);
+                $stmt->bindValue('feed_cost_per_kg_fish',$report['feed_cost_per_kg_fish'] ?: 0);
+                $stmt->bindValue('total_other_cost', $report['total_other_cost'] ?: 0);
+                $stmt->bindValue('total_cost', $report['total_cost'] ?: 0);
+                $stmt->bindValue('production_cost_per_kg_fish', $report['production_cost_per_kg_fish'] ?: 0);
+                $stmt->bindValue('sales_price_per_kg', $report['sales_price_per_kg'] ?: 0);
+                $stmt->bindValue('total_income', $report['total_income'] ?: 0);
+                $stmt->bindValue('net_profit_or_loss', $report['net_profit_or_loss'] ?: 0);
+                $stmt->bindValue('retune_over_investment', $report['retune_over_investment'] ?: 0);
                 $stmt->bindValue('stocking_date', $stockingDate);
                 $stmt->bindValue('harvest_date', $harvestDate);
                 $stmt->bindValue('previous_sampling_date', $previousSamplingDate);

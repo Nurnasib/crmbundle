@@ -51,12 +51,16 @@ class ChickLifeCycleDetailsRepository extends BaseRepository
         $qb->andWhere('e.reportingDate >= :startDate')->setParameter('startDate', $startDate);
         $qb->andWhere('e.reportingDate <= :endDate')->setParameter('endDate', $endDate);
         $qb->andWhere('employee.id = :employeeId')->setParameter('employeeId', $filterBy['employeeId']);
+        $qb->andWhere('crm_chick_life_cycle.lifeCycleState = :reportStatus')->setParameter('reportStatus', $filterBy['reportStatus']);
+        if ($filterBy['farmerId']){
+            $qb->andWhere('customer.id = :farmerId')->setParameter('farmerId', $filterBy['farmerId']);
+        }
 
         $results =  $qb->getQuery()->getArrayResult();
         $data = [];
 
         foreach ($results as $result) {
-            $month = ($result['details']['createdAt'])->format('m-F-Y');
+            $month = ($result['details']['reportingDate'])->format('m-F-Y');
 
             $result['details']['feedTypeName'] = $result['feedTypeName'];
 

@@ -4,12 +4,17 @@
 namespace Terminalbd\CrmBundle\Controller\Report;
 
 
+use App\Entity\User;
+use Dompdf\Dompdf;
+use Dompdf\Options;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Terminalbd\CrmBundle\Entity\ChickLifeCycle;
 use Terminalbd\CrmBundle\Entity\ChickLifeCycleDetails;
+use Terminalbd\CrmBundle\Entity\CrmCustomer;
 use Terminalbd\CrmBundle\Form\SearchFilterFormType;
 
 /**
@@ -39,7 +44,10 @@ class LifeCycleReportController extends AbstractController
 
             $filterBy['startDate'] = $form->getData()['startDate'];
             $filterBy['endDate'] = $form->getData()['endDate'];
+            $filterBy['reportStatus'] = $form->getData()['reportStatus'];
             $filterBy['employeeId'] = $form->getData()['employee'] ? $form->getData()['employee']->getId() : '';
+            $filterBy['farmerId'] = $request->request->get('search_filter_form')['employeeWiseFarmer'];
+
             $employee = $form->getData()['employee'];
 
             switch ($lifeCycleSlug){
@@ -81,8 +89,70 @@ class LifeCycleReportController extends AbstractController
      */
     public function pdf(Request $request)
     {
-       $filterBy = $request->query->all();
-       dd($filterBy);
+       $filterBy = $request->query->get('filterBy');
+       $employee = $filterBy['employeeId'] ? $this->getDoctrine()->getRepository(User::class)->find($filterBy['employeeId']) : '';
+
+        switch ($filterBy['lifeCycle']){
+            case 'boiler-life-cycle':
+                $entities = $this->getDoctrine()->getRepository(ChickLifeCycleDetails::class)->getChickLifeCycleDetails($filterBy['lifeCycle'],$filterBy);
+                break;
+            case 'sonali-life-cycle':
+                break;
+            case 'layer-life-cycle-brown':
+                break;
+            case 'layer-life-cycle-white':
+                break;
+            case 'dairy-life-cycle':
+                break;
+            case 'fattening-life-cycle':
+                break;
+            case 'fish-life-cycle-report':
+                break;
+            case 'fish-life-cycle-after-sale-report':
+                break;
+            default:
+                $entities = [];
+                break;
+        }
+        // Configure Dompdf according to your needs
+        $pdfOptions = new Options();
+        $pdfOptions->set('defaultFont', 'Arial');
+
+        // Instantiate Dompdf with our options
+        $dompdf = new Dompdf($pdfOptions);
+
+        // Retrieve the HTML generated in our twig file
+        $html = $this->renderView('@TerminalbdCrm/report/lifeCycle/pdf.html.twig',[
+            'lifeCycleSlug' => $filterBy['lifeCycle'],
+            'employee' => $employee,
+            'entities' => $entities
+        ]);
+
+        // Load HTML to Dompdf
+        $dompdf->loadHtml($html);
+
+        // (Optional) Setup the paper size and orientation 'portrait' or 'landscape'
+        $dompdf->setPaper('legal', 'landscape');
+
+        // Render the HTML as PDF
+        $dompdf->render();
+
+        // Output the generated PDF to Browser (force download)
+        $dompdf->stream($filterBy['lifeCycle'] . '_'.time() . ".pdf", [
+            "Attachment" => false
+        ]);
+        die();
+    }
+    /**
+     * @Route("/excel", name="life_cycle_excel")
+     * @param Request $request
+     */
+    public function excel(Request $request)
+    {
+
+        $filterBy = $request->query->get('filterBy');
+        $employee = $filterBy['employeeId'] ? $this->getDoctrine()->getRepository(User::class)->find($filterBy['employeeId']) : '';
+
         switch ($filterBy['lifeCycle']){
             case 'boiler-life-cycle':
                 $entities = $this->getDoctrine()->getRepository(ChickLifeCycleDetails::class)->getChickLifeCycleDetails($filterBy['lifeCycle'],$filterBy);
@@ -106,10 +176,40 @@ class LifeCycleReportController extends AbstractController
                 break;
         }
 
-        dd($entities);
+        $html = $this->renderView('@TerminalbdCrm/report/lifeCycle/excel.html.twig',[
+            'lifeCycleSlug' => $filterBy['lifeCycle'],
+            'employee' => $employee,
+            'entities' => $entities
+        ]);
+
+        $fileName = $filterBy['lifeCycle'].'_'.time().".xls";
+
+        header("Content-Type:   application/vnd.ms-excel; charset=utf-8");
+//        header("Content-type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        header("Content-Disposition: attachment; filename=$fileName");
+
+        echo $html;
+        die;
+    }
 
 
-//        $entities = $this->getDoctrine()->getRepository(ChickLifeCycleDetails::class)->getChickLifeCycleDetails($lifeCycleSlug,$filterBy);
+    /**
+     * @Route("/ajax/farmer-by-employee-location/{id}", name="get_farmer_by_employee_location", options={"expose" = true})
+     * @param $id
+     * @return JsonResponse
+     */
+    public function getFarmerByEmployee($id)
+    {
+        $employee = $this->getDoctrine()->getRepository(User::class)->find($id);
+        $farmers =$this->getDoctrine()->getRepository(CrmCustomer::class)->getLocationWise($employee,'farmer');
+
+        $data = [];
+
+        foreach ($farmers as $farmer) {
+            $data[$farmer['id']] = $farmer['name'];
+        }
+
+        return new JsonResponse($data);
 
     }
 }
