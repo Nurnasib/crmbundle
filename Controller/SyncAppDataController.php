@@ -1511,6 +1511,7 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
     private function processFishLifeCycleDetails($reports, Api $batch)
     {
         foreach ($reports as $report) {
+            /* @var FishLifeCycle $findParent */
             $findParent = $this->getDoctrine()->getRepository(FishLifeCycle::class)->findOneBy(['appId' => $report['fish_life_cycle_id'],'appBatch' => $batch]);
             if ($findParent)
             {
@@ -1528,8 +1529,8 @@ VALUES (
                 $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
 
                 $stmt->bindValue('fish_life_cycle_id', $findParent->getId());
-                $stmt->bindValue('agent_id', $report['agent_id']);
-                $stmt->bindValue('customer_id', $report['customer_id']);
+                $stmt->bindValue('agent_id', $findParent->getCustomer()->getAgent()->getId());
+                $stmt->bindValue('customer_id', $findParent->getCustomer()->getId());
                 $stmt->bindValue('hatchery_id', $report['hatchery_id']);
                 $stmt->bindValue('feed_id', $report['feed_id']);
                 $stmt->bindValue('reporting_date', $reportingDate);
