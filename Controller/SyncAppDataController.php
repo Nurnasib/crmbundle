@@ -1159,29 +1159,35 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
     private function processFarmerIntroduce($farmers, Api $batch)
     {
         foreach ($farmers as $farmer) {
-            $updateFarmer = "UPDATE `crm_customers` SET `updated`= :updated,`agent_id`= :agent_id WHERE id = :id";
-            $updateFarmerStmt = $this->getDoctrine()->getConnection()->prepare($updateFarmer);
-            $updateFarmerStmt->bindValue('agent_id', $farmer['agent_id']);
-            $updateFarmerStmt->bindValue('id', $farmer['customer_id']);
-
-            if ($farmer['created_at']){
-                $updateFarmerStmt->bindValue('updated', (new \DateTime($farmer['created_at']))->format('Y-m-d H:i:s'));
-            }
-            $updateFarmerStmt->execute();
-
-            $sql = "UPDATE `crm_customer_introduce_details` SET `agent_id`= :agentId,`culture_species_item_and_qty`=:culture_species_item_and_qty,`remarks`=:remarks,`feed_id`= :feed_id,`introduce_date`= :introduce_date WHERE customer_id = :farmerId";
-            $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
-            $stmt->bindValue('farmerId', $farmer['customer_id']);
-            $stmt->bindValue('agentId', $farmer['agent_id']);
-            $stmt->bindValue('culture_species_item_and_qty', $farmer['culture_species_item_and_qty']);
-            $stmt->bindValue('remarks', $farmer['remarks']);
-            if ($farmer['created_at']){
-                $stmt->bindValue('introduce_date', (new \DateTime($farmer['created_at']))->format('Y-m-d H:i:s'));
-            }
             if ($farmer['feed_id'] == 1){
+                $updateFarmer = "UPDATE `crm_customers` SET `updated`= :updated,`agent_id`= :agent_id WHERE id = :id";
+                $updateFarmerStmt = $this->getDoctrine()->getConnection()->prepare($updateFarmer);
+                $updateFarmerStmt->bindValue('agent_id', $farmer['agent_id']);
+                $updateFarmerStmt->bindValue('id', $farmer['customer_id']);
+
+                if ($farmer['created_at']){
+                    $updateFarmerStmt->bindValue('updated', (new \DateTime($farmer['created_at']))->format('Y-m-d H:i:s'));
+                }else{
+                    $updateFarmerStmt->bindValue('updated', null);
+                }
+                $updateFarmerStmt->execute();
+
+                $sql = "UPDATE `crm_customer_introduce_details` SET `agent_id`= :agentId,`culture_species_item_and_qty`=:culture_species_item_and_qty,`remarks`=:remarks,`feed_id`= :feed_id,`introduce_date`= :introduce_date WHERE customer_id = :farmerId";
+                $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
+                $stmt->bindValue('farmerId', $farmer['customer_id']);
+                $stmt->bindValue('agentId', $farmer['agent_id']);
+                $stmt->bindValue('culture_species_item_and_qty', $farmer['culture_species_item_and_qty']);
+                $stmt->bindValue('remarks', $farmer['remarks']);
+                if ($farmer['created_at']){
+                    $stmt->bindValue('introduce_date', (new \DateTime($farmer['created_at']))->format('Y-m-d H:i:s'));
+                }else{
+                    $stmt->bindValue('introduce_date', null);
+                }
+
                 $stmt->bindValue('feed_id', 55);
+
+                $stmt->execute();
             }
-            $stmt->execute();
         }
     }
 
