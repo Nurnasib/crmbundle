@@ -52,7 +52,7 @@
                                     <td>{{ record.employee.userId|default('') }}</td>
                                     <td>{{ record.employee.name|default('') }}</td>
                                     <td>{{ record.batchNo|default('') }}</td>
-                                    <td>{{ record.createdAt|date('d-m-Y')|default('') }}</td>
+                                    <td>{{ record.createdAt ? record.createdAt|date('d-m-Y h:i A') : '' }}</td>
                                     <td>{{ record.status == 1 ? 'Yes':'No' }}</td>
                                     <td align="center">
                                         <div class="btn-group">

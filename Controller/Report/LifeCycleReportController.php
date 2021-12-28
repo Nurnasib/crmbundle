@@ -15,6 +15,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Terminalbd\CrmBundle\Entity\ChickLifeCycle;
 use Terminalbd\CrmBundle\Entity\ChickLifeCycleDetails;
 use Terminalbd\CrmBundle\Entity\CrmCustomer;
+use Terminalbd\CrmBundle\Entity\LayerLifeCycleDetails;
 use Terminalbd\CrmBundle\Form\SearchFilterFormType;
 
 /**
@@ -52,13 +53,13 @@ class LifeCycleReportController extends AbstractController
 
             switch ($lifeCycleSlug){
                 case 'boiler-life-cycle':
+                case 'sonali-life-cycle':
                     $entities = $this->getDoctrine()->getRepository(ChickLifeCycleDetails::class)->getChickLifeCycleDetails($lifeCycleSlug,$filterBy);
                     break;
-                case 'sonali-life-cycle':
-                    break;
                 case 'layer-life-cycle-brown':
-                    break;
                 case 'layer-life-cycle-white':
+                    $entities = $this->getDoctrine()->getRepository(LayerLifeCycleDetails::class)->getLayerBrownLifeCycleDetails($lifeCycleSlug,$filterBy);
+
                     break;
                 case 'dairy-life-cycle':
                     break;
@@ -94,14 +95,14 @@ class LifeCycleReportController extends AbstractController
 
         switch ($filterBy['lifeCycle']){
             case 'boiler-life-cycle':
+            case 'sonali-life-cycle':
                 $entities = $this->getDoctrine()->getRepository(ChickLifeCycleDetails::class)->getChickLifeCycleDetails($filterBy['lifeCycle'],$filterBy);
                 break;
-            case 'sonali-life-cycle':
-                break;
             case 'layer-life-cycle-brown':
-                break;
             case 'layer-life-cycle-white':
-                break;
+            $entities = $this->getDoctrine()->getRepository(LayerLifeCycleDetails::class)->getLayerBrownLifeCycleDetails($filterBy['lifeCycle'],$filterBy);
+
+            break;
             case 'dairy-life-cycle':
                 break;
             case 'fattening-life-cycle':
@@ -155,14 +156,13 @@ class LifeCycleReportController extends AbstractController
 
         switch ($filterBy['lifeCycle']){
             case 'boiler-life-cycle':
+            case 'sonali-life-cycle':
                 $entities = $this->getDoctrine()->getRepository(ChickLifeCycleDetails::class)->getChickLifeCycleDetails($filterBy['lifeCycle'],$filterBy);
                 break;
-            case 'sonali-life-cycle':
-                break;
             case 'layer-life-cycle-brown':
-                break;
             case 'layer-life-cycle-white':
-                break;
+            $entities = $this->getDoctrine()->getRepository(LayerLifeCycleDetails::class)->getLayerBrownLifeCycleDetails($filterBy['lifeCycle'],$filterBy);
+            break;
             case 'dairy-life-cycle':
                 break;
             case 'fattening-life-cycle':

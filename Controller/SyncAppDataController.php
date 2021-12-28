@@ -18,7 +18,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Terminalbd\CrmBundle\Entity\Api;
-use Terminalbd\CrmBundle\Entity\CattleFarmVisit;
 use Terminalbd\CrmBundle\Entity\CattleLifeCycle;
 use Terminalbd\CrmBundle\Entity\ChickLifeCycle;
 use Terminalbd\CrmBundle\Entity\ChickLifeCycleDetails;
@@ -203,14 +202,14 @@ class SyncAppDataController extends AbstractController
                             $this->processFishLifeCycleDetailsSpecies($jsonToArray, $batch);
                             break;
                     }
-//                    $detail->setStatus(true);
-//                    $em->persist($detail);
-//                    $em->flush();
+                    $detail->setStatus(true);
+                    $em->persist($detail);
+                    $em->flush();
                 }
             }
-//            $batch->setStatus(true);
-//            $em->persist($batch);
-//            $em->flush();
+            $batch->setStatus(true);
+            $em->persist($batch);
+            $em->flush();
         }
         $this->addFlash('success', 'Synchronization Completed!');
         return $this->redirectToRoute('crm_sync_app_data_index');
@@ -528,16 +527,8 @@ VALUES (:report_id, :report_parent_parent_id, :agent_id, :customer_id, :employee
             $stmt->bindValue('broiler_or_fish_price_per_kg', $report['broiler_or_fish_price_per_kg'] ?: 0);
             $stmt->bindValue('total_medicine_cost', $report['total_medicine_cost'] ?: 0);
             $stmt->bindValue('total_vaccine_cost', $report['total_vaccine_cost'] ?: 0);
-            if ($report['total_pond_preparation_cost'] === null){
-                $stmt->bindValue('total_pond_preparation_cost', 0);
-            }else{
-                $stmt->bindValue('total_pond_preparation_cost', $report['total_pond_preparation_cost']);
-            }
-            if ($report['used_bag_price_per_pcs']){
-                $stmt->bindValue('used_bag_price_per_pcs', $report['used_bag_price_per_pcs']);
-            }else{
-                $stmt->bindValue('used_bag_price_per_pcs', 0);
-            }
+            $stmt->bindValue('total_pond_preparation_cost', $report['total_pond_preparation_cost'] ?: 0);
+            $stmt->bindValue('used_bag_price_per_pcs', $report['used_bag_price_per_pcs'] ?: 0);
             $stmt->bindValue('litter_or_pond_rent_cost', $report['litter_or_pond_rent_cost'] ?: 0);
             $stmt->bindValue('electricity_and_fuel_cost', $report['electricity_and_fuel_cost'] ?: 0);
             $stmt->bindValue('labour_cost', $report['labour_cost'] ?: 0);
@@ -1237,7 +1228,7 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
                     $sql = "INSERT INTO `crm_poultry_meat_egg_price` (`crm_visit_id`, `region_id`, `status`, `created_at`, `breed_type_id`,`price`) VALUES (:crm_visit_id, :region_id, :status, :created_at, :breed_type_id, :price)";
 
                     $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
-                    $stmt->bindValue('crm_visit_id', $findVisit);
+                    $stmt->bindValue('crm_visit_id', $findVisit->getId());
                     $stmt->bindValue('region_id', $report['region_id']);
                     $stmt->bindValue('breed_type_id', $item['id']);
                     $stmt->bindValue('price', $item['price']);
@@ -1459,7 +1450,7 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
             $stmt->bindValue('created_at', $createdAt);
 
             $stmt->execute();
-            $parentId = $stmt->fetch()['id'];
+            $parentId = $this->getDoctrine()->getConnection()->lastInsertId();
             if ($parentId){
                 $parent = $this->getDoctrine()->getRepository(DailyChickPrice::class)->find($parentId);
                 foreach (json_decode($report['chick_prices'], true) as $item) {

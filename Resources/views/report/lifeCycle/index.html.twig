@@ -34,7 +34,7 @@
                     <thead class="thead-dark">
                     {{ form_start(form) }}
                     <tr>
-                        <th>
+                        <th style="min-width: 200px">
                             {{ form_label(form.lifeCycle, 'Life Cycle:') }}
                             {{ form_widget(form.lifeCycle) }}
                         </th>
@@ -78,36 +78,21 @@
             </div>
         </div>
         {% if entities is defined and entities is not empty %}
-            <div class="row">
-                <div class="card" style="overflow-x: scroll">
-                    <div class="card-block">
-                        <h3 class="text-center">NOURISH POULTRY AND HATCHERY LTD</h3>
-                        <h5 class="text-center">UTTARA, DHAKA.</h5>
-                        <h6 class="text-center">{{ lifeCycleSlug|replace({'-': ' '})|upper }}</h6>
-                        <table class="table table-borderd">
-                            <thead class="thead-dark">
-                            <tr>
-                                <th>Officer's ID: {{ employee ? employee.userId : '' }}</th>
-                                <th>Officer's Name: {{ employee ? employee.name : '' }}</th>
-                                <th>Designation: {{ employee and employee.designation ? employee.designation.name : '' }}</th>
-                                <th>Region: {{ employee and employee.regional ? employee.regional.name : '' }}</th>
-                            </tr>
-                            </thead>
-                        </table>
-                        {% if lifeCycleSlug is same as 'boiler-life-cycle' %}
-                            {% include '@TerminalbdCrm/report/lifeCycle/inc/_broiler.html.twig'%}
-                        {% elseif lifeCycleSlug is same as 'sonali-life-cycle' %}
-                        {% elseif lifeCycleSlug is same as 'layer-life-cycle-brown' %}
-                        {% elseif lifeCycleSlug is same as 'layer-life-cycle-white' %}
-                        {% elseif lifeCycleSlug is same as 'dairy-life-cycle' %}
-                        {% elseif lifeCycleSlug is same as 'fattening-life-cycle' %}
-                        {% elseif lifeCycleSlug is same as 'fish-life-cycle-report' %}
-                        {% elseif lifeCycleSlug is same as 'fish-life-cycle-after-sale-report' %}
-                        {% endif %}
 
-                    </div>
-                </div>
-            </div>
+            {% if lifeCycleSlug is same as 'boiler-life-cycle' %}
+                {% include '@TerminalbdCrm/report/lifeCycle/inc/_broiler.html.twig'%}
+            {% elseif lifeCycleSlug is same as 'sonali-life-cycle' %}
+                {% include '@TerminalbdCrm/report/lifeCycle/inc/_sonali.html.twig'%}
+            {% elseif lifeCycleSlug is same as 'layer-life-cycle-brown' %}
+                {% include '@TerminalbdCrm/report/lifeCycle/inc/_layer-brown.html.twig'%}
+
+            {% elseif lifeCycleSlug is same as 'layer-life-cycle-white' %}
+            {% elseif lifeCycleSlug is same as 'dairy-life-cycle' %}
+            {% elseif lifeCycleSlug is same as 'fattening-life-cycle' %}
+            {% elseif lifeCycleSlug is same as 'fish-life-cycle-report' %}
+            {% elseif lifeCycleSlug is same as 'fish-life-cycle-after-sale-report' %}
+            {% endif %}
+
         {% endif %}
 
 

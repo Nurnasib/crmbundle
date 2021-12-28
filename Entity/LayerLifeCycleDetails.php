@@ -17,7 +17,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 use NumberFormatter;
 
 /**
- * @ORM\Entity(repositoryClass="Terminalbd\CrmBundle\Repository\LayerLifeCycleRepository")
+ * @ORM\Entity(repositoryClass="Terminalbd\CrmBundle\Repository\LayerLifeCycleDetailsRepository")
  * @ORM\Table(name="crm_layer_life_cycle_details")
  * @author Md Shafiqul Islam <shafiqabs@gmail.com>
  */
