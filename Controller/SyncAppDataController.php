@@ -30,6 +30,7 @@ use Terminalbd\CrmBundle\Entity\FishCompanyAndSpeciesWiseAverageFcr;
 use Terminalbd\CrmBundle\Entity\FishLifeCycle;
 use Terminalbd\CrmBundle\Entity\FishLifeCycleDetails;
 use Terminalbd\CrmBundle\Entity\LayerLifeCycleDetails;
+use Terminalbd\CrmBundle\Entity\NewFarmerIntroduce\FarmerIntroduceDetails;
 use Terminalbd\CrmBundle\Entity\Setting;
 
 
@@ -1159,7 +1160,10 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
     private function processFarmerIntroduce($farmers, Api $batch)
     {
         foreach ($farmers as $farmer) {
-            if ($farmer['feed_id'] == 1){
+            $farmer = $this->getDoctrine()->getRepository(CrmCustomer::class)->find($farmer['customer_id']);
+            $findFarmer = $this->getDoctrine()->getRepository(FarmerIntroduceDetails::class)->findBy(['customer' => $farmer]);
+
+            if (!$findFarmer && $farmer['feed_id'] == 1){
                 $updateFarmer = "UPDATE `crm_customers` SET `updated`= :updated,`agent_id`= :agent_id WHERE id = :id";
                 $updateFarmerStmt = $this->getDoctrine()->getConnection()->prepare($updateFarmer);
                 $updateFarmerStmt->bindValue('agent_id', $farmer['agent_id']);
@@ -1194,7 +1198,7 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
     public function processCattleFarmVisitDetails($reports, Api $batch)
     {
         foreach ($reports as $report) {
-            $reportingMonth = $report['repoting_month'] ? (new \DateTime($report['repoting_month']))->format('Y-m-d') : null;
+//            $reportingMonth = $report['repoting_month'] ? (new \DateTime($report['repoting_month']))->format('Y-m-d') : null;
             $visitingDate = $report['visiting_date'] ? (new \DateTime($report['visiting_date']))->format('Y-m-d') : null;
             $createdAt = $report['created_at'] ? (new \DateTime($report['created_at']))->format('Y-m-d H:i:s') : null;
 
@@ -1216,7 +1220,7 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
             $stmt->bindValue('marketPriceMeatPerKg', $report['marketPriceMeatPerKg']);
             $stmt->bindValue('remarks', $report['remarks']);
             $stmt->bindValue('employee_id', $report['employee_id']);
-            $stmt->bindValue('repoting_month', $reportingMonth);
+            $stmt->bindValue('repoting_month', $visitingDate);
             $stmt->bindValue('report_id', $report['report_id']);
             $stmt->bindValue('created_at', $createdAt);
 

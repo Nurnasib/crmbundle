@@ -23,7 +23,7 @@ namespace Terminalbd\CrmBundle\Repository;
  */
 class LayerLifeCycleDetailsRepository extends BaseRepository
 {
-    public function getLayerBrownLifeCycleDetails($lifeCycleSlug, $filterBy)
+    public function getLayerLifeCycleDetails($lifeCycleSlug, $filterBy)
     {
 //        $startDate = $filterBy['startDate'] ? (new \DateTime($filterBy['startDate']))->format('Y-m-d') : '';
 //        $endDate = $filterBy['endDate'] ? (new \DateTime($filterBy['endDate']))->format('Y-m-d') : '';
