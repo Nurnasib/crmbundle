@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>LIFE CYCLE</title>
+    <style>
+        body{
+            font-size: 12px;
+        }
+        table{
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table thead{
+            background-color: #dbdee3;
+        }
+        table thead tr th, table tbody tr td{
+            border: 1px solid #000000;
+        }
+    </style>
+</head>
+<body>
+{% if entities is defined and entities is not empty %}
+    <div class="row" style="text-align: center">
+        <div class="card">
+            <div class="card-block">
+                <h3 style="margin: 0;">NOURISH POULTRY AND HATCHERY LTD</h3>
+                <h5 style="margin: 0;">UTTARA, DHAKA.</h5>
+                <h6 style="margin: 0 0 10px;">{{ lifeCycleSlug|replace({'-': ' '})|upper }}</h6>
+                <table class="table table-borderd">
+                    <thead class="thead-dark">
+                    <tr>
+                        <th>Officer's ID: {{ employee ? employee.userId : '' }}</th>
+                        <th>Officer's Name: {{ employee ? employee.name : '' }}</th>
+                        <th>Designation: {{ employee and employee.designation ? employee.designation.name : '' }}</th>
+                        <th>Region: {{ employee and employee.regional ? employee.regional.name : '' }}</th>
+                    </tr>
+                    </thead>
+                </table>
+                {% if lifeCycleSlug is same as 'boiler-life-cycle' %}
+                    {% include '@TerminalbdCrm/report/lifeCycle/inc/_broiler.html.twig'%}
+                {% elseif lifeCycleSlug is same as 'sonali-life-cycle' %}
+                {% elseif lifeCycleSlug is same as 'layer-life-cycle-brown' %}
+                {% elseif lifeCycleSlug is same as 'layer-life-cycle-white' %}
+                {% elseif lifeCycleSlug is same as 'dairy-life-cycle' %}
+                {% elseif lifeCycleSlug is same as 'fattening-life-cycle' %}
+                {% elseif lifeCycleSlug is same as 'fish-life-cycle-report' %}
+                {% elseif lifeCycleSlug is same as 'fish-life-cycle-after-sale-report' %}
+                {% endif %}
+
+            </div>
+        </div>
+    </div>
+{% endif %}
+</body>
+</html>

@@ -41,6 +41,22 @@ class SearchFilterFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
+            ->add('monthlyReport', EntityType::class,[
+                'class' => Setting::class,
+                'group_by'  => 'parent.parent.name',
+                'choice_label' => 'name',
+                'placeholder' => 'Select Report',
+                'query_builder' => function(EntityRepository $er){
+                    return $er->createQueryBuilder('e')
+                        ->where('e.settingType = :settingType')->setParameter('settingType', 'FARMER_REPORT')
+                        ->andWhere('e.slug NOT IN (:slug)')->setParameter('slug', ['sonali-life-cycle','boiler-life-cycle','layer-life-cycle-brown','layer-life-cycle-white','dairy-life-cycle','fattening-life-cycle','fish-life-cycle-report','fish-life-cycle-after-sale-report'])
+                        ->andWhere('e.status = 1');
+                },
+                'attr' => [
+                    'class' => 'select2'
+                ]
+
+            ])
             ->add('lifeCycle', EntityType::class,[
                 'class' => Setting::class,
                 'choice_label' => 'name',
