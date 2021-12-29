@@ -102,26 +102,30 @@ class FcrDetailsRepository extends BaseRepository
 
     public function getFcrDetailsByEmployee($report, $filterBy)
     {
-        $results=null;
+        $returnArray=[];
         if(!empty($report)){
             $qb = $this->createQueryBuilder('e');
 
-            $qb->select('e.fcrOfFeed', 'e.reportingMonth', 'e.hatchingDate AS hatching_date', 'e.totalBirds AS total_birds', 'e.ageDay AS age', 'e.mortalityPes AS mortality_pes', 'e.mortalityPercent AS mortality_percent', 'e.weight', 'e.feedConsumptionTotalKg AS total_feed_cons', 'e.feedConsumptionPerBird AS feed_cons_per_bird', 'e.fcrWithoutMortality AS without_mortality', 'e.fcrWithMortality AS with_mortality', 'e.proDate AS pro_date', 'e.batchNo AS batch_no', 'e.remarks');
+            $qb->select('e.fcrOfFeed', 'e.reportingMonth', 'e.hatchingDate', 'e.totalBirds', 'e.ageDay', 'e.mortalityPes', 'e.mortalityPercent', 'e.weight', 'e.weightStandard', 'e.feedConsumptionTotalKg', 'e.feedConsumptionPerBird', 'e.feedConsumptionStandard', 'e.fcrWithoutMortality', 'e.fcrWithMortality', 'e.proDate', 'e.batchNo', 'e.remarks', 'e.createdAt');
 
-            $qb->addSelect('agent.name AS agent_name', 'agent.address AS agent_address');
+            $qb->addSelect('agent.name AS agentName', 'agent.address AS agentAddress');
 
-            $qb->addSelect('employee.name AS employee_name');
+            $qb->addSelect('employee.id AS employeeId');
+            $qb->addSelect('employee.name AS employeeName');
+            $qb->addSelect('customer.name AS customerName');
+            $qb->addSelect('customer.id AS customerId');
 
-            $qb->addSelect( 'district.name AS agent_district');
+            $qb->addSelect( 'district.name AS agentDistrictName');
 
-            $qb->addSelect('hatchery.name AS hatchery_name');
+            $qb->addSelect('hatchery.name AS hatcheryName');
 
-            $qb->addSelect('breed.name AS breed_name');
-            $qb->addSelect('feed.name AS feed_name');
-            $qb->addSelect('feed_mill.name AS feed_mill_name');
-            $qb->addSelect('feed_type.name AS feed_type_name');
+            $qb->addSelect('breed.name AS breedBame');
+            $qb->addSelect('feed.name AS feedName');
+            $qb->addSelect('feed_mill.name AS feedMillName');
+            $qb->addSelect('feed_type.name AS feedTypeName');
 
             $qb->leftJoin('e.employee','employee');
+            $qb->leftJoin('e.customer','customer');
             $qb->leftJoin('e.agent', 'agent');
             $qb->leftJoin('agent.district', 'district');
             $qb->leftJoin('e.hatchery', 'hatchery');
@@ -129,6 +133,7 @@ class FcrDetailsRepository extends BaseRepository
             $qb->leftJoin('e.feed', 'feed');
             $qb->leftJoin('e.feedMill', 'feed_mill');
             $qb->leftJoin('e.feedType', 'feed_type');
+            $qb->where('e.report =:report')->setParameter('report',$report);
 
             $startDate = isset($filterBy['startDate'])? (new \DateTime($filterBy['startDate']))->format('Y-m-d') . ' 00:00:00': '';
             $endDate = isset($filterBy['endDate'])? (new \DateTime($filterBy['endDate']))->format('Y-m-d') . ' 23:59:59': '';
@@ -143,11 +148,19 @@ class FcrDetailsRepository extends BaseRepository
                 $qb->andWhere('e.reportingMonth <= :reportingMonthEnd')->setParameter('reportingMonthEnd', $endDate);
             }
 
+
             $results = $qb->getQuery()->getArrayResult();
+            if($results){
+                foreach ($results as $result){
+                    $monthYear = $result['createdAt']->format('F-Y');
+                    $returnArray[$monthYear][$result['employeeId']]['name']=$result['employeeName'];
+                    $returnArray[$monthYear][$result['employeeId']]['details'][]=$result;
+                }
+            }
         }
 
-        dd($results);
-        return($results);
+//        dd($returnArray);
+        return $returnArray;
 
 
     }

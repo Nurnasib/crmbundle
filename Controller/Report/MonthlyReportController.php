@@ -41,6 +41,7 @@ class MonthlyReportController extends AbstractController
         $form->handleRequest($request);
 
         if($form->isSubmitted()){
+            $isExcel= $request->request->get('excel');
             $report = $form->getData()['monthlyReport'];
             $lifeCycleSlug = $form->getData()['monthlyReport']->getSlug();
 
@@ -56,11 +57,14 @@ class MonthlyReportController extends AbstractController
                 case 'fcr-before-sale-boiler':
                     $entities = $this->getDoctrine()->getRepository(FcrDetails::class)->getFcrDetailsByEmployee($report,$filterBy);
                     break;
-                case 'sonali-life-cycle':
+                case 'fcr-after-sale-boiler':
+                    $entities = $this->getDoctrine()->getRepository(FcrDetails::class)->getFcrDetailsByEmployee($report,$filterBy);
                     break;
-                case 'layer-life-cycle-brown':
+                case 'fcr-before-sale-sonali':
+                    $entities = $this->getDoctrine()->getRepository(FcrDetails::class)->getFcrDetailsByEmployee($report,$filterBy);
                     break;
-                case 'layer-life-cycle-white':
+                case 'fcr-after-sale-sonali':
+                    $entities = $this->getDoctrine()->getRepository(FcrDetails::class)->getFcrDetailsByEmployee($report,$filterBy);
                     break;
                 case 'dairy-life-cycle':
                     break;
@@ -76,6 +80,26 @@ class MonthlyReportController extends AbstractController
             }
 
         }
+
+        if(isset($isExcel) && !empty($isExcel)){
+            $html = $this->renderView('@TerminalbdCrm/report/monthlyReport/excel.html.twig',[
+                'entities' => $entities,
+                'filterBy'=> $filterBy,
+                'lifeCycleSlug'=> $lifeCycleSlug,
+                'employee'=> $employee,
+            ]);
+
+            $fileName = $lifeCycleSlug.'_'.time().".xls";
+
+            header("Content-Type:   application/vnd.ms-excel; charset=utf-8");
+//        header("Content-type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+            header("Content-Disposition: attachment; filename=$fileName");
+
+            echo $html;
+            die;
+
+        }
+
         return $this->render('@TerminalbdCrm/report/monthlyReport/index.html.twig',[
             'form' => $form->createView(),
             'entities' => $entities,
@@ -86,7 +110,7 @@ class MonthlyReportController extends AbstractController
     }
 
     /**
-     * @Route("/pdf", name="life_cycle_pdf")
+     * @Route("/pdf", name="monthly_report_pdf")
      * @param Request $request
      */
     public function pdf(Request $request)
@@ -95,8 +119,8 @@ class MonthlyReportController extends AbstractController
        $employee = $filterBy['employeeId'] ? $this->getDoctrine()->getRepository(User::class)->find($filterBy['employeeId']) : '';
 
         switch ($filterBy['lifeCycle']){
-            case 'boiler-life-cycle':
-                $entities = $this->getDoctrine()->getRepository(ChickLifeCycleDetails::class)->getChickLifeCycleDetails($filterBy['lifeCycle'],$filterBy);
+            case 'fcr-before-sale-boiler':
+                $entities = $this->getDoctrine()->getRepository(FcrDetails::class)->getFcrDetailsByEmployee($report,$filterBy);
                 break;
             case 'sonali-life-cycle':
                 break;
@@ -146,18 +170,17 @@ class MonthlyReportController extends AbstractController
         die();
     }
     /**
-     * @Route("/excel", name="life_cycle_excel")
+     * @Route("/excel", name="monthly_report_excel")
      * @param Request $request
      */
     public function excel(Request $request)
     {
-
         $filterBy = $request->query->get('filterBy');
         $employee = $filterBy['employeeId'] ? $this->getDoctrine()->getRepository(User::class)->find($filterBy['employeeId']) : '';
 
         switch ($filterBy['lifeCycle']){
-            case 'boiler-life-cycle':
-                $entities = $this->getDoctrine()->getRepository(ChickLifeCycleDetails::class)->getChickLifeCycleDetails($filterBy['lifeCycle'],$filterBy);
+            case 'fcr-before-sale-boiler':
+                $entities = $this->getDoctrine()->getRepository(FcrDetails::class)->getFcrDetailsByEmployee($report,$filterBy);
                 break;
             case 'sonali-life-cycle':
                 break;

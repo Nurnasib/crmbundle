@@ -56,9 +56,9 @@
                                 <a href="{{ path('life_cycle_report_index') }}" class="btn purple-bg btn-sm white-font" title="Reset" value="reset"><i class="fa fa-refresh" aria-hidden="true"></i></a>
                                 {% if entities is defined and entities is not empty %}
                                     {% set filterBy = filterBy|merge({"lifeCycle" : lifeCycleSlug}) %}
-
+                                    <button type="submit" name="excel" class="btn blue-bg btn-sm white-font" title="Excel" value="excel"><i class="fa fa-file-excel" aria-hidden="true"></i> {{ 'Excel'|trans }}</button>
 {#                                    <a target="_blank" href="{{ path('life_cycle_pdf', {filterBy: filterBy}) }}" class="btn blue-bg btn-sm white-font"><i class="fa fa-download" aria-hidden="true"></i> {{ 'PDF'|trans }}</a>#}
-                                    <a target="_blank" href="{{ path('life_cycle_excel', {filterBy: filterBy}) }}" class="btn blue-bg btn-sm white-font"><i class="fa fa-file-excel" aria-hidden="true"></i> {{ 'Excel'|trans }}</a>
+{#                                    <a target="_blank" href="{{ path('life_cycle_excel', {filterBy: filterBy}) }}" class="btn blue-bg btn-sm white-font"><i class="fa fa-file-excel" aria-hidden="true"></i> {{ 'Excel'|trans }}</a>#}
                                 {% endif %}
                             </div>
                         </th>
@@ -72,24 +72,18 @@
             <div class="row">
                 <div class="card" style="overflow-x: scroll">
                     <div class="card-block">
-                        <h3 class="text-center">NOURISH POULTRY AND HATCHERY LTD</h3>
+                        {#<h3 class="text-center">NOURISH POULTRY AND HATCHERY LTD</h3>
                         <h5 class="text-center">UTTARA, DHAKA.</h5>
                         <h6 class="text-center">{{ lifeCycleSlug|replace({'-': ' '})|upper }}</h6>
-                        <table class="table table-borderd">
-                            <thead class="thead-dark">
-                            <tr>
-                                <th>Officer's ID: {{ employee ? employee.userId : '' }}</th>
-                                <th>Officer's Name: {{ employee ? employee.name : '' }}</th>
-                                <th>Designation: {{ employee and employee.designation ? employee.designation.name : '' }}</th>
-                                <th>Region: {{ employee and employee.regional ? employee.regional.name : '' }}</th>
-                            </tr>
-                            </thead>
-                        </table>
-                        {% if lifeCycleSlug is same as 'boiler-life-cycle' %}
-                            {% include '@TerminalbdCrm/report/lifeCycle/inc/_broiler.html.twig'%}
-                        {% elseif lifeCycleSlug is same as 'sonali-life-cycle' %}
-                        {% elseif lifeCycleSlug is same as 'layer-life-cycle-brown' %}
-                        {% elseif lifeCycleSlug is same as 'layer-life-cycle-white' %}
+                        #}
+                        {% if lifeCycleSlug is same as 'fcr-before-sale-boiler' %}
+                            {% include '@TerminalbdCrm/report/monthlyReport/inc/_fcr_broiler_before.html.twig'%}
+                        {% elseif lifeCycleSlug is same as 'fcr-after-sale-boiler' %}
+                            {% include '@TerminalbdCrm/report/monthlyReport/inc/_fcr_broiler_after.html.twig'%}
+                        {% elseif lifeCycleSlug is same as 'fcr-before-sale-sonali' %}
+                            {% include '@TerminalbdCrm/report/monthlyReport/inc/_fcr_sonali_before.html.twig'%}
+                        {% elseif lifeCycleSlug is same as 'fcr-after-sale-sonali' %}
+                            {% include '@TerminalbdCrm/report/monthlyReport/inc/_fcr_sonali_after.html.twig'%}
                         {% elseif lifeCycleSlug is same as 'dairy-life-cycle' %}
                         {% elseif lifeCycleSlug is same as 'fattening-life-cycle' %}
                         {% elseif lifeCycleSlug is same as 'fish-life-cycle-report' %}

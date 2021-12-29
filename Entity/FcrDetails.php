@@ -418,7 +418,7 @@ class FcrDetails
     /**
      * @return float
      */
-    public function getFcrWithoutMortality(): float
+    public function getFcrWithoutMortality()
     {
         return $this->fcrWithoutMortality;
     }
