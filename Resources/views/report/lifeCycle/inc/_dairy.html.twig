@@ -1,0 +1,108 @@
+<table width="100%" style="border: 0">
+    <tbody>
+    <tr>
+        <td colspan="26" align="center"><h3>NOURISH POULTRY AND HATCHERY LTD</h3></td>
+    </tr>
+    <tr>
+        <td colspan="26" align="center"><h5>UTTARA, DHAKA.</h5></td>
+    </tr>
+    <tr>
+        <td colspan="26" align="center"><h6>{{ lifeCycleSlug|replace({'-': ' '})|upper }}</h6></td>
+    </tr>
+    </tbody>
+</table>
+<div class="row">
+    <div class="card" style="height: 550px; overflow: scroll">
+        <table width="100" class="table table-bordered">
+            <thead class="thead-dark">
+            <tr>
+                <th>Officer's ID: {{ employee ? employee.userId : '' }}</th>
+                <th>Officer's Name: {{ employee ? employee.name : '' }}</th>
+                <th>Designation: {{ employee and employee.designation ? employee.designation.name : '' }}</th>
+                <th>Region: {{ employee and employee.regional ? employee.regional.name : '' }}</th>
+            </tr>
+            </thead>
+        </table>
+            {#    <h4 class="bg-secondary text-center p-1">{{ monthYear[1]~'-'~monthYear[2] }}</h4>#}
+            <table class="table table-striped table-bordered table-hover filter-result" width="100%">
+                <thead class="thead-dark">
+                <tr>
+                    <th scope="col" colspan="3" style="text-align: center">Farmer</th>
+                    <th scope="col" rowspan="2">Visiting Date</th>
+                    <th scope="col" rowspan="2">Age of Cow(Month)</th>
+                    <th scope="col" rowspan="2">Present Body Weight(Kg)</th>
+                    <th scope="col" rowspan="2">Lactation No</th>
+                    <th scope="col" rowspan="2">Age of Lactation</th>
+                    <th scope="col" rowspan="2">Av. Milk Yield Per Day (L)</th>
+                    <th scope="col" rowspan="2">Av. Milk Yield Per Kg Con. Feed (L)</th>
+                    <th scope="col" rowspan="2">Av. Milk Yield Per Kg DM (L)</th>
+                    <th scope="col" rowspan="2">Milk Fat %</th>
+                    <th scope="col" colspan="3" style="text-align: center">Con. Feed Intake (Kg)</th>
+                    <th scope="col" colspan="2" style="text-align: center">Fodder (Kg)</th>
+                    <th scope="col" colspan="2" style="text-align: center">DM of Fodder (Kg)</th>
+                    <th scope="col" rowspan="2">Total DM (Kg)</th>
+                    <th scope="col" rowspan="2">DM Requirement (Kg)</th>
+                    <th scope="col" rowspan="2">Name of Ready Feed</th>
+                    <th scope="col" rowspan="2">Remarks</th>
+                </tr>
+
+                <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">Mobile</th>
+                    <th scope="col">Address</th>
+                    <th scope="col">Ready Feed</th>
+                    <th scope="col">Conventional</th>
+                    <th scope="col">Total</th>
+                    <th scope="col">Gr. Grass</th>
+                    <th scope="col">Straw</th>
+                    <th scope="col">Gr. Grass</th>
+                    <th scope="col">Straw</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                {% for entity in entities %}
+                    {% for details in entity.details %}
+                        {% set avgMilkYieldConsumptionFeed = details.consumptionFeedIntakeTotal > 0 ? (details.averageWeightPerDay / details.consumptionFeedIntakeTotal) : 0 %}
+                        {% set avgMilkYieldDm = details.totalDmKg > 0 ? (details.averageWeightPerDay / details.totalDmKg) : 0 %}
+                        <tr>
+                            {% if loop.first %}
+                                <td valign="middle"
+                                    rowspan="{{ entity.details|length }}">{{ entity.parent.customerName }}</td>
+                            {% endif %}
+                            {% if loop.first %}
+                                <td valign="middle"
+                                    rowspan="{{ entity.details|length }}">{{ entity.parent.customerMobile }}</td>
+                            {% endif %}
+                            {% if loop.first %}
+                                <td valign="middle"
+                                    rowspan="{{ entity.details|length }}">{{ entity.parent.customerAddress }}</td>
+                            {% endif %}
+
+                            <td>{{ details.visitingDate ? details.visitingDate|date('d-m-Y') : '' }}</td>
+                            <td>{{ details.ageOfCattleMonth }}</td>
+                            <td>{{ details.presentBodyWeight|number_format(2) }}</td>
+                            <td>{{ details.lactationNo|number_format(2) }}</td>
+                            <td>{{ details.ageOfLactation|number_format(2) }}</td>
+                            <td>{{ details.averageWeightPerDay|number_format(2) }}</td>
+                            <td>{{ avgMilkYieldConsumptionFeed|number_format(2) }}</td>
+                            <td>{{ avgMilkYieldDm|number_format(2) }}</td>
+                            <td>{{ details.milkFatPercentage|number_format(2) }}</td>
+                            <td>{{ details.consumptionFeedIntakeReadyFeed|number_format(2) }}</td>
+                            <td>{{ details.consumptionFeedIntakeConventional|number_format(2) }}</td>
+                            <td>{{ details.consumptionFeedIntakeTotal|number_format(2) }}</td>
+                            <td>{{ details.fodderGreenGrassKg|number_format(2) }}</td>
+                            <td>{{ details.fodderStrawKg|number_format(2) }}</td>
+                            <td>{{ details.dmOfFodderGreenGrassKg|number_format(2) }}</td>
+                            <td>{{ details.dmOfFodderStrawKg|number_format(2) }}</td>
+                            <td>{{ details.totalDmKg|number_format(2) }}</td>
+                            <td>{{ details.dmRequirementByBwtKg|number_format(2) }}</td>
+                            <td>{{ details.feedName }}</td>
+                            <td>{{ details.remarks }}</td>
+                        </tr>
+                    {% endfor %}
+                {% endfor %}
+                </tbody>
+            </table>
+    </div>
+</div>

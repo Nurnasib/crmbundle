@@ -12,6 +12,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Terminalbd\CrmBundle\Entity\CattleLifeCycleDetails;
 use Terminalbd\CrmBundle\Entity\ChickLifeCycle;
 use Terminalbd\CrmBundle\Entity\ChickLifeCycleDetails;
 use Terminalbd\CrmBundle\Entity\CrmCustomer;
@@ -58,13 +59,14 @@ class LifeCycleReportController extends AbstractController
                     break;
                 case 'layer-life-cycle-brown':
                 case 'layer-life-cycle-white':
-                    $entities = $this->getDoctrine()->getRepository(LayerLifeCycleDetails::class)->getLayerBrownLifeCycleDetails($lifeCycleSlug,$filterBy);
+                    $entities = $this->getDoctrine()->getRepository(LayerLifeCycleDetails::class)->getLayerLifeCycleDetails($lifeCycleSlug,$filterBy);
 
                     break;
                 case 'dairy-life-cycle':
-                    break;
                 case 'fattening-life-cycle':
-                    break;
+                $entities = $this->getDoctrine()->getRepository(CattleLifeCycleDetails::class)->getCattleLifeCycleDetails($lifeCycleSlug,$filterBy);
+
+                break;
                 case 'fish-life-cycle-report':
                     break;
                 case 'fish-life-cycle-after-sale-report':
@@ -100,13 +102,14 @@ class LifeCycleReportController extends AbstractController
                 break;
             case 'layer-life-cycle-brown':
             case 'layer-life-cycle-white':
-            $entities = $this->getDoctrine()->getRepository(LayerLifeCycleDetails::class)->getLayerBrownLifeCycleDetails($filterBy['lifeCycle'],$filterBy);
+            $entities = $this->getDoctrine()->getRepository(LayerLifeCycleDetails::class)->getLayerLifeCycleDetails($filterBy['lifeCycle'],$filterBy);
 
             break;
             case 'dairy-life-cycle':
-                break;
             case 'fattening-life-cycle':
-                break;
+                $entities = $this->getDoctrine()->getRepository(CattleLifeCycleDetails::class)->getCattleLifeCycleDetails($filterBy['lifeCycle'],$filterBy);
+
+            break;
             case 'fish-life-cycle-report':
                 break;
             case 'fish-life-cycle-after-sale-report':
@@ -161,12 +164,13 @@ class LifeCycleReportController extends AbstractController
                 break;
             case 'layer-life-cycle-brown':
             case 'layer-life-cycle-white':
-            $entities = $this->getDoctrine()->getRepository(LayerLifeCycleDetails::class)->getLayerBrownLifeCycleDetails($filterBy['lifeCycle'],$filterBy);
+            $entities = $this->getDoctrine()->getRepository(LayerLifeCycleDetails::class)->getLayerLifeCycleDetails($filterBy['lifeCycle'],$filterBy);
             break;
             case 'dairy-life-cycle':
-                break;
             case 'fattening-life-cycle':
-                break;
+                $entities = $this->getDoctrine()->getRepository(CattleLifeCycleDetails::class)->getCattleLifeCycleDetails($filterBy['lifeCycle'],$filterBy);
+
+            break;
             case 'fish-life-cycle-report':
                 break;
             case 'fish-life-cycle-after-sale-report':

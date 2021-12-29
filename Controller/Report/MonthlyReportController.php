@@ -86,7 +86,7 @@ class MonthlyReportController extends AbstractController
     }
 
     /**
-     * @Route("/pdf", name="life_cycle_pdf")
+     * @Route("/pdf", name="monthly_report_pdf")
      * @param Request $request
      */
     public function pdf(Request $request)
@@ -146,7 +146,7 @@ class MonthlyReportController extends AbstractController
         die();
     }
     /**
-     * @Route("/excel", name="life_cycle_excel")
+     * @Route("/excel", name="monthly_report_excel")
      * @param Request $request
      */
     public function excel(Request $request)
