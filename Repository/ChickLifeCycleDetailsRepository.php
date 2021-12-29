@@ -24,8 +24,8 @@ class ChickLifeCycleDetailsRepository extends BaseRepository
 {
     public function getChickLifeCycleDetails($lifeCycleSlug, $filterBy)
     {
-        $startDate = $filterBy['startDate'] ? (new \DateTime($filterBy['startDate']))->format('Y-m-d') . ' 00:00:00' : '';
-        $endDate = $filterBy['endDate'] ? (new \DateTime($filterBy['endDate']))->format('Y-m-d') . ' 23:59:59' : '';
+        $startDate = isset($filterBy['startDate']) ? (new \DateTime($filterBy['startDate']))->format('Y-m-d') . ' 00:00:00' : null;
+        $endDate = isset($filterBy['endDate']) ? (new \DateTime($filterBy['endDate']))->format('Y-m-d') . ' 23:59:59' : null;
 
         $qb = $this->createQueryBuilder('e');
         $qb->join('e.crmChickLifeCycle', 'crm_chick_life_cycle');

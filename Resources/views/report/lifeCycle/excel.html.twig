@@ -1,5 +1,5 @@
 {% if entities is defined and entities is not empty %}
-    <table>
+{#    <table>
         <thead>
         <tr>
             <th colspan="26">NOURISH POULTRY AND HATCHERY LTD</th>
@@ -17,13 +17,17 @@
             <th colspan="5">Region: {{ employee and employee.regional ? employee.regional.name : '' }}</th>
         </tr>
         </thead>
-    </table>
+    </table>#}
 
 {% if lifeCycleSlug is same as 'boiler-life-cycle' %}
     {% include '@TerminalbdCrm/report/lifeCycle/inc/_broiler.html.twig'%}
 
 {% elseif lifeCycleSlug is same as 'sonali-life-cycle' %}
+    {% include '@TerminalbdCrm/report/lifeCycle/inc/_sonali.html.twig'%}
+
 {% elseif lifeCycleSlug is same as 'layer-life-cycle-brown' %}
+    {% include '@TerminalbdCrm/report/lifeCycle/inc/_layer-brown.html.twig'%}
+
 {% elseif lifeCycleSlug is same as 'layer-life-cycle-white' %}
 {% elseif lifeCycleSlug is same as 'dairy-life-cycle' %}
 {% elseif lifeCycleSlug is same as 'fattening-life-cycle' %}
