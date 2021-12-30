@@ -6,7 +6,7 @@
             <div class="card">
                 <div class="portlet box ">
             <div class="portlet-title">
-                <div class="caption">{{companySpeciesWiseFcrs[0].report.name}} </div>
+                <div class="caption">{{(companySpeciesWiseFcrs is defined and companySpeciesWiseFcrs is not empty)? companySpeciesWiseFcrs[0].report.name:''}} </div>
             </div>
         {#{{ dump(report) }}#}
 
