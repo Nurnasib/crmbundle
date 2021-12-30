@@ -2206,4 +2206,33 @@ class ApiController extends AbstractController
         ]);
 
     }
+
+    /**
+     * @param Request $request
+     * @param ParameterBagInterface $parameterBag
+     * @return JsonResponse
+     * @Route("/complain-type", name="complain_type")
+     */
+    public function complainType(Request $request, ParameterBagInterface $parameterBag)
+    {
+        set_time_limit(0);
+        ignore_user_abort(true);
+        if ($request->getMethod() == 'GET' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')){
+            $types = $this->getDoctrine()->getRepository(Setting::class)->findBy(['settingType' => 'COMPLAIN_TYPE', 'status' => 1]);
+
+            $data = [];
+            foreach ($types as $type) {
+                $data[] = [
+                    'id' => $type->getId(),
+                    'name' => $type->getName(),
+                ];
+            }
+            return new JsonResponse($data);
+        }
+        return new JsonResponse([
+            'status' => 404,
+            'message' => 'Not Found!'
+        ]);
+
+    }
 }
