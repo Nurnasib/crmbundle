@@ -48,11 +48,11 @@
                         </th>
                         <th>
                             {{ form_label(form.startDate, 'Start Date:') }}
-                            {{ form_widget(form.startDate,{'id':'start-date', 'attr':{'placeholder': 'dd-mm-YYYY'}}) }}
+                            {{ form_widget(form.startDate) }}
                         </th>
                         <th>
                             {{ form_label(form.endDate, 'End Date:') }}
-                            {{ form_widget(form.endDate,{'id':'end-date', 'attr':{'placeholder': 'dd-mm-YYYY'}}) }}
+                            {{ form_widget(form.endDate) }}
                         </th>
                         <th>
                             {{ form_label(form.reportStatus, 'Report Status:') }}
@@ -72,7 +72,7 @@
                             </div>
                         </th>
                     </tr>
-                    </form>
+{#                    </form>#}
                     </thead>
                 </table>
             </div>
@@ -85,11 +85,11 @@
             {% elseif lifeCycleSlug is same as 'sonali-life-cycle' %}
                 {% include '@TerminalbdCrm/report/lifeCycle/inc/_sonali.html.twig'%}
 
-            {% elseif lifeCycleSlug is same as 'layer-life-cycle-brown' %}
+            {% elseif lifeCycleSlug in ['layer-life-cycle-brown','layer-life-cycle-white'] %}
                 {% include '@TerminalbdCrm/report/lifeCycle/inc/_layer.html.twig'%}
 
-            {% elseif lifeCycleSlug is same as 'layer-life-cycle-white' %}
-                {% include '@TerminalbdCrm/report/lifeCycle/inc/_layer.html.twig'%}
+{#            {% elseif lifeCycleSlug is same as 'layer-life-cycle-white' %}
+                {% include '@TerminalbdCrm/report/lifeCycle/inc/_layer.html.twig'%}#}
 
             {% elseif lifeCycleSlug is same as 'dairy-life-cycle' %}
                 {% include '@TerminalbdCrm/report/lifeCycle/inc/_dairy.html.twig'%}
@@ -98,6 +98,8 @@
                 {% include '@TerminalbdCrm/report/lifeCycle/inc/_fattening.html.twig'%}
 
             {% elseif lifeCycleSlug is same as 'fish-life-cycle-report' %}
+                {% include '@TerminalbdCrm/report/lifeCycle/inc/_fish_before.html.twig'%}
+
             {% elseif lifeCycleSlug is same as 'fish-life-cycle-after-sale-report' %}
             {% endif %}
 
@@ -144,7 +146,7 @@
             })
         })
 
-        $('#start-date, #end-date').datepicker(
+        $('.datepicker').datepicker(
             {
                 changeMonth: true,
                 changeYear: true,

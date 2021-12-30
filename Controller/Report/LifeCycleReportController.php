@@ -13,9 +13,9 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Terminalbd\CrmBundle\Entity\CattleLifeCycleDetails;
-use Terminalbd\CrmBundle\Entity\ChickLifeCycle;
 use Terminalbd\CrmBundle\Entity\ChickLifeCycleDetails;
 use Terminalbd\CrmBundle\Entity\CrmCustomer;
+use Terminalbd\CrmBundle\Entity\FishLifeCycleDetails;
 use Terminalbd\CrmBundle\Entity\LayerLifeCycleDetails;
 use Terminalbd\CrmBundle\Form\SearchFilterFormType;
 
@@ -68,9 +68,9 @@ class LifeCycleReportController extends AbstractController
 
                 break;
                 case 'fish-life-cycle-report':
-                    break;
                 case 'fish-life-cycle-after-sale-report':
-                    break;
+                $entities = $this->getDoctrine()->getRepository(FishLifeCycleDetails::class)->getFishLifeCycleDetails($lifeCycleSlug,$filterBy);
+                break;
                 default:
                     $entities = [];
                     break;
@@ -111,9 +111,9 @@ class LifeCycleReportController extends AbstractController
 
             break;
             case 'fish-life-cycle-report':
-                break;
             case 'fish-life-cycle-after-sale-report':
-                break;
+            $entities = $this->getDoctrine()->getRepository(FishLifeCycleDetails::class)->getFishLifeCycleDetails($filterBy['lifeCycle'],$filterBy);
+            break;
             default:
                 $entities = [];
                 break;
@@ -172,9 +172,9 @@ class LifeCycleReportController extends AbstractController
 
             break;
             case 'fish-life-cycle-report':
-                break;
             case 'fish-life-cycle-after-sale-report':
-                break;
+                $entities = $this->getDoctrine()->getRepository(FishLifeCycleDetails::class)->getFishLifeCycleDetails($filterBy['lifeCycle'],$filterBy);
+            break;
             default:
                 $entities = [];
                 break;

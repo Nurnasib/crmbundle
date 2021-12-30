@@ -75,27 +75,30 @@ class SearchFilterFormType extends AbstractType
             ])
             ->add('startDate', TextType::class,[
                 'attr'=>[
-                    'placeholder' => 'Start Date (YYYY-mm-dd)',
-                    'autocomplete' => 'off'
+                    'placeholder' => 'dd-mm-YYYY',
+                    'autocomplete' => 'off',
+                    'class' => 'datepicker'
                 ],
                 'required' => false
             ])
             ->add('endDate', TextType::class,[
                 'attr'=>[
-                    'placeholder' => 'End Date (YYYY-mm-dd)',
-                    'autocomplete' => 'off'
+                    'placeholder' => 'dd-mm-YYYY',
+                    'autocomplete' => 'off',
+                    'class' => 'datepicker'
+
                 ],
                 'required' => false
             ])
             ->add('startDateCreated', TextType::class,[
                 'attr'=>[
-                    'placeholder' => 'Start Date (YYYY-mm-dd)',
+                    'placeholder' => 'dd-mm-YYYY',
                     'autocomplete' => 'off'
                 ]
             ])
             ->add('endDateCreated', TextType::class,[
                 'attr'=>[
-                    'placeholder' => 'End Date (YYYY-mm-dd)',
+                    'placeholder' => 'dd-mm-YYYY',
                     'autocomplete' => 'off'
                 ]
             ])

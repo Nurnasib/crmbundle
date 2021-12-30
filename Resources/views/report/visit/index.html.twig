@@ -127,12 +127,7 @@
 {% block documentready %}
     {{ parent() }}
 {#    <script>#}
-        $('#start-date').datepicker(
-            {
-                dateFormat: 'dd-mm-yy'
-            }
-        );
-        $('#end-date').datepicker(
+        $('#start-date, #end-date').datepicker(
             {
                 dateFormat: 'dd-mm-yy'
             }
