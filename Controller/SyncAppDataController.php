@@ -1220,7 +1220,7 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
             $stmt->bindValue('marketPriceMeatPerKg', $report['marketPriceMeatPerKg']);
             $stmt->bindValue('remarks', $report['remarks']);
             $stmt->bindValue('employee_id', $report['employee_id']);
-            $stmt->bindValue('repoting_month', $visitingDate);
+            $stmt->bindValue('repoting_month', $report['reporting_month']);
             $stmt->bindValue('report_id', $report['report_id']);
             $stmt->bindValue('created_at', $createdAt);
 
