@@ -96,7 +96,8 @@ class DailyChickPriceController extends AbstractController
      */
     public function dailyChickPriceDetailsModal(DailyChickPrice $dailyChickPrice): Response
     {
-        $feeds = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType'=>'FEED_NAME', 'status' => 1));
+//        $feeds = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType'=>'FEED_NAME', 'status' => 1));
+        $feeds = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType'=>'HATCHERY', 'status' => 1));
         $chickTypes = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType'=>'CHICK_TYPE', 'status' => 1));
 
         $crmChickLifeCycleDetails = $this->getDoctrine()->getRepository(DailyChickPriceDetails::class)->findOneBy(array('crmDailyChickPrice'=>$dailyChickPrice->getId()));

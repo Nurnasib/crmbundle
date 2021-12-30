@@ -12,11 +12,14 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Terminalbd\CrmBundle\Entity\AntibioticFreeFarm;
 use Terminalbd\CrmBundle\Entity\ChickLifeCycle;
 use Terminalbd\CrmBundle\Entity\ChickLifeCycleDetails;
 use Terminalbd\CrmBundle\Entity\CrmCustomer;
 use Terminalbd\CrmBundle\Entity\FcrDetails;
+use Terminalbd\CrmBundle\Entity\LayerPerformanceDetails;
 use Terminalbd\CrmBundle\Form\SearchFilterFormType;
+use Terminalbd\CrmBundle\Repository\AntibioticFreeFarmRepository;
 
 /**
  * Class MonthlyReportController
@@ -37,6 +40,7 @@ class MonthlyReportController extends AbstractController
         $entities = [];
         $lifeCycleSlug = '';
         $employee = null;
+        $report = null;
         $form = $this->createForm(SearchFilterFormType::class);
         $form->handleRequest($request);
 
@@ -66,9 +70,14 @@ class MonthlyReportController extends AbstractController
                 case 'fcr-after-sale-sonali':
                     $entities = $this->getDoctrine()->getRepository(FcrDetails::class)->getFcrDetailsByEmployee($report,$filterBy);
                     break;
-                case 'dairy-life-cycle':
+                case 'layer-performance-brown':
+                    $entities = $this->getDoctrine()->getRepository(LayerPerformanceDetails::class)->getLayerPerformanceReportByEmployeeAndDate($report, $filterBy);
                     break;
-                case 'fattening-life-cycle':
+                case 'layer-performance-white':
+                    $entities = $this->getDoctrine()->getRepository(LayerPerformanceDetails::class)->getLayerPerformanceReportByEmployeeAndDate($report, $filterBy);
+                    break;
+                case 'antibiotic-free-farm-poultry':
+                    $entities = $this->getDoctrine()->getRepository(AntibioticFreeFarm::class)->getAntibioticFreeFarmByEmployeeAndDate($report, $filterBy);
                     break;
                 case 'fish-life-cycle-report':
                     break;
@@ -87,6 +96,7 @@ class MonthlyReportController extends AbstractController
                 'filterBy'=> $filterBy,
                 'lifeCycleSlug'=> $lifeCycleSlug,
                 'employee'=> $employee,
+                'report'=> $report,
             ]);
 
             $fileName = $lifeCycleSlug.'_'.time().".xls";
@@ -106,6 +116,7 @@ class MonthlyReportController extends AbstractController
             'filterBy'=> $filterBy,
             'lifeCycleSlug'=> $lifeCycleSlug,
             'employee'=> $employee,
+            'report'=> $report,
         ]);
     }
 

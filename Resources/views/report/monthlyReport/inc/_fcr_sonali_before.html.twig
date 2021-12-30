@@ -8,7 +8,7 @@
     </tr>
 
     <tr>
-        <td colspan="25" align="center"><h6>{{ lifeCycleSlug|replace({'-': ' '})|upper }}</h6></td>
+        <td colspan="25" align="center"><h6>{{ report.name|default('') }}</h6></td>
     </tr>
 </table>
 <table class="table table-striped table-bordered table-hover fcrReportDetails" id="fcrReportDetails">

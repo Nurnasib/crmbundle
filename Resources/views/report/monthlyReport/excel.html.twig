@@ -8,9 +8,18 @@
 
 {% elseif lifeCycleSlug is same as 'fcr-before-sale-sonali' %}
     {% include '@TerminalbdCrm/report/monthlyReport/inc/_fcr_sonali_before.html.twig'%}
+
 {% elseif lifeCycleSlug is same as 'fcr-after-sale-sonali' %}
     {% include '@TerminalbdCrm/report/monthlyReport/inc/_fcr_sonali_after.html.twig'%}
-{% elseif lifeCycleSlug is same as 'dairy-life-cycle' %}
+
+{% elseif lifeCycleSlug is same as 'layer-performance-brown' %}
+    {% include '@TerminalbdCrm/report/monthlyReport/inc/poultry/_layer_performance.html.twig'%}
+
+{% elseif lifeCycleSlug is same as 'layer-performance-white' %}
+    {% include '@TerminalbdCrm/report/monthlyReport/inc/poultry/_layer_performance.html.twig'%}
+
+{% elseif lifeCycleSlug is same as 'antibiotic-free-farm-poultry' %}
+    {% include '@TerminalbdCrm/report/monthlyReport/inc/poultry/_antibiotic_free_farm.html.twig'%}
 {% elseif lifeCycleSlug is same as 'fattening-life-cycle' %}
 {% elseif lifeCycleSlug is same as 'fish-life-cycle-report' %}
 {% elseif lifeCycleSlug is same as 'fish-life-cycle-after-sale-report' %}
