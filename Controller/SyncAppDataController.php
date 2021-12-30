@@ -1198,7 +1198,7 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
     public function processCattleFarmVisitDetails($reports, Api $batch)
     {
         foreach ($reports as $report) {
-//            $reportingMonth = $report['repoting_month'] ? (new \DateTime($report['repoting_month']))->format('Y-m-d') : null;
+            $reportingMonth = $report['reporting_month'] ? (new \DateTime($report['reporting_month']))->format('Y-m-d') : null;
             $visitingDate = $report['visiting_date'] ? (new \DateTime($report['visiting_date']))->format('Y-m-d') : null;
             $createdAt = $report['created_at'] ? (new \DateTime($report['created_at']))->format('Y-m-d H:i:s') : null;
 
@@ -1220,7 +1220,7 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
             $stmt->bindValue('marketPriceMeatPerKg', $report['marketPriceMeatPerKg']);
             $stmt->bindValue('remarks', $report['remarks']);
             $stmt->bindValue('employee_id', $report['employee_id']);
-            $stmt->bindValue('repoting_month', $report['reporting_month']);
+            $stmt->bindValue('repoting_month', $reportingMonth);
             $stmt->bindValue('report_id', $report['report_id']);
             $stmt->bindValue('created_at', $createdAt);
 
