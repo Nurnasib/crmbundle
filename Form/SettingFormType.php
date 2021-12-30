@@ -58,10 +58,10 @@ class SettingFormType extends AbstractType
             ))
             ->add('settingType', ChoiceType::class, [
                 'choices'  => [
+                    'Agent Purpose' => 'AGENT_PURPOSE',
                     'Vehicle' => 'VEHICLE',
                     'Meat & Egg Type' => 'MEAT_EGG_TYPE',
                     'Farmer Purpose' => 'PURPOSE',
-                    'Agent Purpose' => 'AGENT_PURPOSE',
                     'Other Agent Purpose' => 'OTHER_AGENT_PURPOSE',
                     'Sub Agent Purpose' => 'SUB_AGENT_PURPOSE',
                     'Farm Type' => 'FARM_TYPE',
@@ -90,8 +90,13 @@ class SettingFormType extends AbstractType
                     'Transport'=>'TRANSPORT',
                     'Complain Feed'=>'COMPLAIN_FEED',
                     'Nourish Hatchery'=>'HATCHERY_NOURISH',
+                    'Complain Type'=>'COMPLAIN_TYPE',
 
                 ],
+                'attr' => [
+                    'class' => 'select2'
+                ],
+                'placeholder' => 'Select Type'
             ])
 
             ->add('status',CheckboxType::class,[
