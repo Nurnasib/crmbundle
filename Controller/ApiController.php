@@ -1443,6 +1443,10 @@ class ApiController extends AbstractController
             $findEmployee = $this->getDoctrine()->getRepository(User::class)->find($data['employee_id']);
             $findAgent = $this->getDoctrine()->getRepository(Agent::class)->find($data['agent_id']);
             $findFarmer = $this->getDoctrine()->getRepository(CrmCustomer::class)->find($data['farmer_id']);
+            $complainType=null;
+            if(isset($data['complain_type_id'])&&$data['complain_type_id']!=''){
+                $complainType = $this->getDoctrine()->getRepository(Setting::class)->find($data['complain_type_id']);
+            }
             if ($findEmployee && $findAgent && $findFarmer){
                 $em = $this->getDoctrine()->getManager();
 
@@ -1471,6 +1475,9 @@ class ApiController extends AbstractController
                     $details->setComplain($complain);
                     $details->setComment($comment['comment']);
                     $details->setAttachment($fileName);
+                    if($complainType){
+                        $details->setComplainType($complainType);
+                    }
                     $em->persist($details);
                     $em->flush();
 

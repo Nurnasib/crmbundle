@@ -44,6 +44,11 @@ class FarmerComplainDetails
     private $complain;
 
     /**
+     * @ORM\ManyToOne(targetEntity="Terminalbd\CrmBundle\Entity\Setting", inversedBy="complaindetails")
+     */
+    private $complainType;
+
+    /**
      * @var string
      * @ORM\Column(type="string", nullable=true)
      */
@@ -149,6 +154,22 @@ class FarmerComplainDetails
     public function setAttachment(string $attachment): void
     {
         $this->attachment = $attachment;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getComplainType()
+    {
+        return $this->complainType;
+    }
+
+    /**
+     * @param mixed $complainType
+     */
+    public function setComplainType($complainType): void
+    {
+        $this->complainType = $complainType;
     }
 
 }
