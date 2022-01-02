@@ -1185,7 +1185,7 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
                 if ($farmer['created_at']){
                     $stmt->bindValue('introduce_date', (new \DateTime($farmer['created_at']))->format('Y-m-d H:i:s'));
                 }else{
-                    $stmt->bindValue('introduce_date', null);
+                    $stmt->bindValue('introduce_date', (new \DateTime('now'))->format('Y-m-d H:i:s'));
                 }
 
                 $stmt->bindValue('feed_id', 55);
