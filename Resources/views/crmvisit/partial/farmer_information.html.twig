@@ -1,7 +1,7 @@
 
 {% if entity.crmVisitDetails is not empty %}
     {% for details in entity.crmVisitDetails|reverse  %}
-        {% if details.process == "farmer" %}
+        {% if details.process == "farmer" and (details.report.slug is not same as 'company-species-wise-average-fcr-after') %}
             <tr>
                 <td>
                     {{ details.purpose is not empty?details.purpose.name:'' }}
