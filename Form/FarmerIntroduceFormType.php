@@ -53,7 +53,7 @@ class FarmerIntroduceFormType extends AbstractType
             ->add('agent', EntityType::class, [
                 'class' => Agent::class,
                 'attr'=>['class'=>'span12'],
-                'required'    => false,
+                'required'    => true,
                 'choice_label' => 'name',
                 'placeholder' => 'Choose a agent',
                 'choices'   => $options['agentRepo']->getLocationWiseAgentWithoutOtherAgentForm($options['user'])

@@ -83,4 +83,72 @@ class CostBenefitAnalysisForLessCostingFarmRepository extends BaseRepository
         return $results['totalReport'];
     }
 
+    public function getLessCostingFarmByEmployeeAndDate($report, $filterBy)
+    {
+        $returnArray=[];
+        if(!empty($report)){
+            $qb = $this->createQueryBuilder('e');
+            $qb->select('e.id as eId', 'e.ageDays', 'e.hatchingDate', 'e.reportingMonth', 'e.pondSize', 'e.fingerlingSize');
+            $qb->addSelect('e.totalStockedChicksPcs', 'e.totalFeedUsedKg', 'e.totalBroilerWeightKg', 'e.mortality', 'e.fcr');
+            $qb->addSelect('e.itemPricePerPcs', 'e.feedPricePerKg', 'e.broilerOrFishPricePerKg', 'e.totalMedicineCost', 'e.totalVaccineCost');
+            $qb->addSelect('e.usedBagPricePerPcs', 'e.litterOrPondRentCost', 'e.electricityAndFuelCost', 'e.labourCost', 'e.transportCost', 'e.otherCost');
+            $qb->addSelect('e.totalPondPreparationCost', 'e.electricityAndFuelCost', 'e.labourCost', 'e.transportCost', 'e.otherCost');
+
+            $qb->addSelect('agent.name AS agentName', 'agent.address AS agentAddress', 'agent.mobile AS agentMobile');
+
+            $qb->addSelect('employee.id AS employeeId', 'employee.name AS employeeName');
+            $qb->addSelect('designation.name AS employeeDesignationName');
+            $qb->addSelect('customer.id AS customerId', 'customer.name AS customerName', 'customer.mobile AS customerMobile', 'customer.address AS customerAddress');
+
+            $qb->addSelect( 'district.name AS agentDistrictName');
+
+            $qb->addSelect('hatchery.name AS hatcheryName');
+            $qb->addSelect('breed.name AS breedBame');
+            $qb->addSelect('feed.name AS feedName');
+
+            $qb->join('e.employee', 'employee');
+            $qb->leftJoin('employee.designation', 'designation');
+            $qb->leftJoin('e.customer','customer');
+            $qb->leftJoin('e.agent', 'agent');
+            $qb->leftJoin('agent.district', 'district');
+            $qb->leftJoin('e.hatchery', 'hatchery');
+            $qb->leftJoin('e.breed', 'breed');
+            $qb->leftJoin('e.feed', 'feed');
+            $qb->where('e.report =:report')->setParameter('report',$report);
+
+            $startDate = isset($filterBy['startDate'])&&$filterBy['startDate']!=''? (new \DateTime($filterBy['startDate']))->format('Y-m-d') . ' 00:00:00': '';
+            $endDate = isset($filterBy['endDate']) && $filterBy['endDate']!=''? (new \DateTime($filterBy['endDate']))->format('Y-m-d') . ' 23:59:59': '';
+
+            $employee = isset($filterBy['employeeId'])&&$filterBy['employeeId']!=''? $filterBy['employeeId']: '';
+            if (!empty($employee)){
+                $qb->andWhere('employee.id = :employee')->setParameter('employee', $employee);
+            }
+
+            if (!empty($startDate) && !empty($endDate)){
+                $qb->andWhere('e.reportingMonth >= :reportingMonthStart')->setParameter('reportingMonthStart', $startDate);
+                $qb->andWhere('e.reportingMonth <= :reportingMonthEnd')->setParameter('reportingMonthEnd', $endDate);
+            }
+            $qb->orderBy('e.reportingMonth','ASC');
+
+
+            /*$qb->where('employee.id = :employeeId')->setParameter('employeeId', $filterBy['employeeId']);
+            $qb->andWhere('e.reportingMonth >= :monthStart')->setParameter('monthStart', $filterBy['monthStart']);
+            $qb->andWhere('e.reportingMonth <= :monthEnd')->setParameter('monthEnd', $filterBy['monthEnd']);
+            $qb->andWhere('report.settingType = :settingType')->setParameter('settingType', 'FARMER_REPORT');
+            $qb->andWhere('report.slug = :slug')->setParameter('slug', 'less-costing-farm-poultry');*/
+
+            $results = $qb->getQuery()->getArrayResult();
+            if($results){
+                foreach ($results as $result){
+                    $monthYear = $result['reportingMonth']->format('F-Y');
+                    $returnArray[$result['employeeId']]['name']=$result['employeeName'];
+                    $returnArray[$result['employeeId']]['employeeDesignationName']=$result['employeeDesignationName'];
+                    $returnArray[$result['employeeId']]['details'][$monthYear][]=$result;
+                }
+            }
+        }
+//        dd($returnArray);
+        return $returnArray;
+    }
+
 }

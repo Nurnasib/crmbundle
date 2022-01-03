@@ -42,7 +42,7 @@ class FcrDifferentCompanyController extends AbstractController
 
 //        $entity = new FcrDifferentCompanies();
 
-        $hatcheries = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('status'=>1,'settingType'=>'HATCHERY'));
+        $hatcheries = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('status'=>1,'settingType'=>'HATCHERY', 'slug'=>['nourish','cp','ag','new-hope','kazi','aftab','aci-godrej','paragon','provita','quality','aman','rrp']));
 
         foreach ($hatcheries as $hatchery){
 

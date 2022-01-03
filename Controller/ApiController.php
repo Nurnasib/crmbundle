@@ -2242,4 +2242,34 @@ class ApiController extends AbstractController
         ]);
 
     }
+
+
+    /**
+     * @param Request $request
+     * @param ParameterBagInterface $parameterBag
+     * @return JsonResponse
+     * @Route("/fcr-hatchery-company", name="fcr_hatchery_company")
+     */
+    public function fcrHatcheryCompany(Request $request, ParameterBagInterface $parameterBag)
+    {
+        set_time_limit(0);
+        ignore_user_abort(true);
+        if ($request->getMethod() == 'GET' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')){
+            $fcrCompanies = $this->getDoctrine()->getRepository(Api::class)->fcrHatcheryCompany();
+
+            $data = [];
+            foreach ($fcrCompanies as $company) {
+                $data[] = [
+                    'id' => $company['id'],
+                    'name' => $company['name'],
+                ];
+            }
+            return new JsonResponse($data);
+        }
+        return new JsonResponse([
+            'status' => 404,
+            'message' => 'Not Found!'
+        ]);
+
+    }
 }

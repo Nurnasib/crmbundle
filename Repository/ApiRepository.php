@@ -1206,6 +1206,27 @@ class ApiRepository extends BaseRepository
     }
 
     /**
+     * Hatchery
+     */
+    public function fcrHatcheryCompany()
+    {
+        $em = $this->_em;
+        $qb = $em->createQueryBuilder();
+        $qb->from(Setting::class,'s');
+
+
+        $qb->select('s.id','s.name');
+
+        $qb->where("s.settingType = 'HATCHERY'");
+        $qb->andWhere('s.status = 1');
+        $qb->andWhere('s.slug IN (:slug)')->setParameter('slug',['nourish','cp','ag','new-hope','kazi','aftab','aci-godrej','paragon','provita','quality','aman','rrp']);
+
+        $qb->orderBy('s.name', 'ASC');
+        return $qb->getQuery()->getArrayResult();
+        
+    }
+
+    /**
      * FEED MILL
      */
     public function feedMill()

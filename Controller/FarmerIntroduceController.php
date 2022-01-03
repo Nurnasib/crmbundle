@@ -64,8 +64,9 @@ class FarmerIntroduceController extends AbstractController
 
             $entity->setCultureSpeciesItemAndQty(json_encode($data['fish_specie']));
             $entity->setCreatedAt(new \DateTime());
+            $entity->setIntroduceDate(new \DateTime());
 
-//            $crmCustomer->setAgent($entity->getAgent()?$entity->getAgent():null);
+            $crmCustomer->setAgent($entity->getAgent()?$entity->getAgent():null);
 
             $em = $this->getDoctrine()->getManager();
             $em->persist($entity);

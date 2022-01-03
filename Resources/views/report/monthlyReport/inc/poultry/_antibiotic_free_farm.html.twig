@@ -17,7 +17,7 @@
                 <th colspan="13"><h5>{{ 'Name Of CSO' }}: {{ entities[employeeId]['name'] }}</h5></th>
                 <th colspan="13" class="text-center"><h5>{{ 'Designation' }}
                         : {{ entities[employeeId]['employeeDesignationName'] }}</h5></th>
-{#                <th colspan="8" class="text-right"><h5>{{ 'Month' }}: {{ monthYear }}</h5></th>#}
+                {#                <th colspan="8" class="text-right"><h5>{{ 'Month' }}: {{ monthYear }}</h5></th>#}
             </tr>
         </table>
 
@@ -88,7 +88,7 @@
                             <td valign="middle"
                                 rowspan="{{ details|length }}">{{ monthYear }}</td>
                         {% endif %}
-{#                        <td>{{ monthYear }}</td>#}
+                        {#                        <td>{{ monthYear }}</td>#}
                         <td>{{ loop.index }}</td>
                         <td>{{ detail['agentName']|default('') }}</td>
                         <td>{{ detail['agentAddress']|default('') }}</td>
