@@ -222,6 +222,8 @@ class CrmCustomerController extends AbstractController
      * Deletes a CrmCustomer entity.
      * @Route("/{id}/delete", methods={"GET"}, name="customer_delete")
      * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @param $id
+     * @return Response
      */
     public function delete($id): Response
     {

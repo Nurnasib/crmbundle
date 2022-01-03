@@ -39,7 +39,7 @@ class EmployeeController extends AbstractController
      */
     public function index(): Response
     {
-        $entities = $this->getDoctrine()->getRepository(User::class)->findBy(array('userGroup'=>'9'));
+        $entities = $this->getDoctrine()->getRepository(User::class)->findBy(array('userGroup'=>'9', 'enabled' => 1, 'isDelete' => 0));
         return $this->render('@TerminalbdCrm/employee/index.html.twig',['entities' => $entities]);
     }
 
@@ -118,6 +118,21 @@ class EmployeeController extends AbstractController
             }
         }
         return $errors;
+    }
+
+    /**
+     * @Route("/{id}/delete", methods={"GET"}, name="employee_delete")
+     * @param $id
+     * @return Response
+     */
+    public function delete($id): Response
+    {
+        $entity = $this->getDoctrine()->getRepository(User::class)->find($id);
+        $em = $this->getDoctrine()->getManager();
+        $entity->setEnabled(0);
+        $entity->setIsDelete(1);
+        $em->flush();
+        return new Response('Success');
     }
 
 
