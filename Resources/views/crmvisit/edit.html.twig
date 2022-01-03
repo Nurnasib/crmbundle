@@ -428,12 +428,13 @@
                                         {% endfor %}
                                     </select>
                                 </div>
+
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="message-text" class="col-form-label col-md-4">Location:</label>
                                     {% if entity.location is not empty%}
-                                        <p class="form-control">{{ entity.location.name }}</p>
+                                        <span class="form-control">{{ entity.location.name }}</span>
                                         <input type="hidden" name="location" class="location" value="{{ entity.location.id }}">
                                     {% else %}
                                         <select name="location" class="form-control location" {{ entity.location is not empty and entity.location.id>0?'disabled':'' }}>
@@ -442,6 +443,15 @@
                                             {% endfor %}
                                         </select>
                                     {% endif %}
+                                </div>
+                                <div class="form-group">
+                                    <label for="sub_agent" class="col-form-label col-md-4">Sub Agent:</label>
+                                    <select name="sub_agent" class="form-control sub_agent">
+                                        <option value="">Select Sub Agent</option>
+                                        {% for subAgent in subAgents %}
+                                            <option value="{{ subAgent.id }}">{{ subAgent.name }}</option>
+                                        {% endfor %}
+                                    </select>
                                 </div>
                             </div>
                         </div>
@@ -602,6 +612,19 @@
                                         <option value="{{ location.id }}">{{ location.name }}</option>
                                     {% endfor %}
                                 </select>#}
+                            </div>
+                            <div class="form-group">
+                                <label for="message-text" class="col-form-label col-md-4">Feed Company:</label>
+                                {% if feedCompanies is not empty%}
+                                    <select name="feedCompany" class="form-control feedCompany">
+                                        <option value="">Select Feed Company</option>
+                                        {% for feedCompany in feedCompanies %}
+                                            {% if feedCompany.name!='Nourish' and feedCompany.settingType=='FEED_NAME' %}
+                                            <option value="{{ feedCompany.id }}">{{ feedCompany.name }}</option>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </select>
+                                {% endif %}
                             </div>
                             <div class="form-group">
                                 <label for="message-text" class="col-form-label col-md-4">Address:</label>

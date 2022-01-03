@@ -118,21 +118,36 @@ class CrmCustomerController extends AbstractController
         $group = $this->getDoctrine()->getRepository(Setting::class)->findOneBy(array('slug'=>'farmer'));
         $feed = $this->getDoctrine()->getRepository(Setting::class)->find($allRequestData['feed_id']);
         $location = $this->getDoctrine()->getRepository(Location::class)->find($allRequestData['location']);
-        $agent = $this->getDoctrine()->getRepository(Agent::class)->find($allRequestData['agent']);
         $otherAgent = $this->getDoctrine()->getRepository(Agent::class)->find($allRequestData['other_agent']);
+        $subAgent = $this->getDoctrine()->getRepository(Agent::class)->find($allRequestData['sub_agent']);
+        if($allRequestData['agent']==''){
+            if($allRequestData['sub_agent']!=''){
+                $entity->setAgent($subAgent);
+            }elseif ($allRequestData['other_agent']!=''){
+                $entity->setAgent($otherAgent);
+            }
+        }else{
+            $agent = $this->getDoctrine()->getRepository(Agent::class)->find($allRequestData['agent']);
+
+            $entity->setAgent($agent);
+        }
+
         $entity->setName($allRequestData['name']);
         $entity->setAddress($allRequestData['address']);
         $entity->setMobile($allRequestData['mobile']);
         $entity->setCustomerGroup($group);
         $entity->setLocation($location);
-        $entity->setAgent($agent?$agent:$otherAgent);
-        $entity->setOtherAgent($otherAgent?$otherAgent:$agent);
+
+        if($otherAgent){
+            $entity->setOtherAgent($otherAgent);
+        }
         $em=$this->getDoctrine()->getManager();
         $em->persist($entity);
         $em->flush();
         $returnData= array(
           'id'=>$entity->getId(),
           'name'=>$entity->getName(),
+          'subAgent'=>$allRequestData['sub_agent'],
         );
 //        $this->getDoctrine()->getRepository(CrmVisitDetails::class)->insertCrmVisitDetailForFarmer($entity, $id, $allRequestData);
 //        $this->getDoctrine()->getRepository(FarmerTouchReport::class)->insertFarmerTouch($entity, $this->getUser(), $feed, $allRequestData);
@@ -152,6 +167,10 @@ class CrmCustomerController extends AbstractController
         $allRequestData = $request->request->all();
         $group = $this->getDoctrine()->getRepository(\App\Entity\Core\Setting::class)->findOneBy(array('slug'=>'other-agent'));
         $location = $this->getDoctrine()->getRepository(Location::class)->find($allRequestData['location']);
+        if(isset($allRequestData['feedCompany'])&&$allRequestData['feedCompany']!=''){
+            $feedCompany = $this->getDoctrine()->getRepository(Setting::class)->find($allRequestData['feedCompany']);
+            $entity->setOtherAgentFeedCompany($feedCompany);
+        }
         $entity->setName($allRequestData['name']);
         $entity->setAddress($allRequestData['address']);
         $entity->setMobile($allRequestData['mobile']);

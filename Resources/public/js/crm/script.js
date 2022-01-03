@@ -906,6 +906,7 @@ $(document).on('click', '#crm-farmer-btn', function(e) {
     var mobile = $(this).closest("form").find(".mobile").val();
     var agent = $(this).closest("form").find(".agent").val();
     var other_agent = $(this).closest("form").find(".other_agent").val();
+    var sub_agent = $(this).closest("form").find(".sub_agent").val();
     var farmerType = $(this).closest("form").find(".farmer_type").val();
     var location = $(this).closest("form").find(".location").val();
     var feed_id = $(this).closest("form").find(".feed_id").val();
@@ -915,11 +916,11 @@ $(document).on('click', '#crm-farmer-btn', function(e) {
         return false;
     }
     else if(mobile==="" || mobile ===null){
-        alert("Your mobile number is Invalid :" +mobile);
+        alert("Your mobile number is Invalid " +mobile);
         return false;
     }
-    else if((agent==="" || agent ===null) && (other_agent==="" || other_agent ===null)){
-        alert("Agent Or Other Agent is required");
+    else if((agent==="" || agent ===null) && (other_agent==="" || other_agent ===null) && (sub_agent==="" || sub_agent ===null)){
+        alert("Agent Or Other Agent Or Sub Agent is required");
         return false;
     }
     else if(location==="" || location ===null){
@@ -942,6 +943,7 @@ $(document).on('click', '#crm-farmer-btn', function(e) {
         processData : false,
         contentType : false,
         success: function (data) {
+            console.log(data)
             $('form#farmerForm')[0].reset();
             // var refreshUrl = Routing.generate('crm_visit_item_refresh',{'id':crm_visit_id,'process':'farmer'});
             // $(".crm_detail_farmer_section").load(refreshUrl);

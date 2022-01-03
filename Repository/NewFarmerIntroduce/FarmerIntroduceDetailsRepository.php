@@ -2,6 +2,7 @@
 
 namespace Terminalbd\CrmBundle\Repository\NewFarmerIntroduce;
 
+use App\Entity\Core\Agent;
 use Doctrine\ORM\EntityRepository;
 use Terminalbd\CrmBundle\Entity\CrmCustomer;
 use Terminalbd\CrmBundle\Entity\NewFarmerIntroduce\FarmerIntroduceDetails;
@@ -12,12 +13,23 @@ class FarmerIntroduceDetailsRepository extends BaseRepository
 {
     public function insertCrmFarmerIntroduceDetails(CrmCustomer $customer, $user, $feed, $data)
     {
+        $subAgent=null;
+
+
         if ($data['farmer_type']){
             $em = $this->_em;
             $entity = new FarmerIntroduceDetails();
             $entity->setCustomer($customer);
             $entity->setAgent($customer->getAgent());
-            $entity->setOtherAgent($customer->getOtherAgent());
+            if($customer->getOtherAgent()){
+                $entity->setOtherAgent($customer->getOtherAgent());
+            }
+            if(isset($data['sub_agent'])&&$data['sub_agent']!=''){
+                $subAgent = $em->getRepository(Agent::class)->find($data['sub_agent']);
+            }
+            if($subAgent){
+                $entity->setSubAgent($subAgent);
+            }
             $entity->setFeed($feed?$feed:null);
             $entity->setOtherFeed($feed?$feed:null);
             $entity->setCultureSpeciesItemAndQty(json_encode($data['species_type']));
