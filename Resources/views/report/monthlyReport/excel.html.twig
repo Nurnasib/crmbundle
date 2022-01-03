@@ -24,6 +24,18 @@
 {% elseif lifeCycleSlug is same as 'less-costing-farm-poultry' %}
     {% include '@TerminalbdCrm/report/monthlyReport/inc/poultry/_less_costing_farm.html.twig'%}
 
+{% elseif lifeCycleSlug is same as 'less-costing-farm-fish' %}
+    {% include '@TerminalbdCrm/report/monthlyReport/inc/fish/_less_costing_farm.html.twig'%}
+
+{% elseif lifeCycleSlug is same as 'disease-mapping-report-poultry' %}
+    {% include '@TerminalbdCrm/report/monthlyReport/inc/poultry/_disease_mapping.html.twig'%}
+
+{% elseif lifeCycleSlug is same as 'disease-mapping-report-cattle' %}
+    {% include '@TerminalbdCrm/report/monthlyReport/inc/cattle/_disease_mapping.html.twig'%}
+
+{% elseif lifeCycleSlug is same as 'disease-mapping-report-fish' %}
+    {% include '@TerminalbdCrm/report/monthlyReport/inc/fish/_disease_mapping.html.twig'%}
+
 {% elseif lifeCycleSlug is same as 'fattening-life-cycle' %}
 {% elseif lifeCycleSlug is same as 'fish-life-cycle-report' %}
 {% elseif lifeCycleSlug is same as 'fish-life-cycle-after-sale-report' %}

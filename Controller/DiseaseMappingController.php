@@ -44,6 +44,9 @@ class DiseaseMappingController extends AbstractController
         $entity = new DiseaseMapping();
 
         $form = $this->createForm(DiseaseMappingFormType::class, $entity,array('report' => $report));
+        if($report->getSlug()=='disease-mapping-report-cattle'){
+            $form->remove('hatchery');
+        }
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
 
@@ -69,14 +72,15 @@ class DiseaseMappingController extends AbstractController
 
 
     /**
-     * @param AntibioticFreeFarm $antibioticFreeFarm
+     * @param DiseaseMapping $entity
      * @Route("/details/{id}/modal", methods={"GET", "POST"}, name="disease_mapping_detail_modal", options={"expose"=true})
      */
-    public function diseaseMappingDetailsModal(DiseaseMapping $diseaseMapping): Response
+    public function diseaseMappingDetailsModal(DiseaseMapping $entity): Response
     {
-        $diseasesMapping = $this->getDoctrine()->getRepository(DiseaseMapping::class)->getDiseaseMappingByCreatedDateEmployeeReport($diseaseMapping->getReport(), $this->getUser());
+        $diseasesMapping = $this->getDoctrine()->getRepository(DiseaseMapping::class)->getDiseaseMappingByCreatedDateEmployeeReport($entity->getReport(), $this->getUser());
         return $this->render('@TerminalbdCrm/diseaseMapping/details-modal.html.twig', [
             'diseasesMapping' => $diseasesMapping,
+            'report' => $entity->getReport(),
         ]);
     }
 

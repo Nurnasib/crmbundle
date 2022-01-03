@@ -22,7 +22,9 @@
                             <th>{{ 'Agent Name'|trans }}</th>
                             <th>{{ 'Farmer Name'|trans }}</th>
                             <th style="width: 120px">{{ 'Visting Date'|trans }}</th>
+                            {% if report.slug!='disease-mapping-report-cattle' %}
                             <th style="width: 150px">{{ 'Hatchery'|trans }}</th>
+                            {% endif %}
                             <th style="width: 150px">{{ 'Feed'|trans }}</th>
                             <th style="width: 150px">{{ 'Type of Species'|trans }}</th>
                             <th>{{ 'Capacity'|trans }}</th>
@@ -38,7 +40,9 @@
                                     {{ form_widget(form.visitingDate) }}
                                 </div>
                             </td>
+                            {% if report.slug!='disease-mapping-report-cattle' %}
                             <td>{{ form_widget(form.hatchery) }}</td>
+                            {% endif %}
                             <td>{{ form_widget(form.feed) }}</td>
                             <td>{{ form_widget(form.farmType) }}</td>
                             <td>{{ form_widget(form.flockSizeOrCapacity,{'type':'number'}) }}</td>

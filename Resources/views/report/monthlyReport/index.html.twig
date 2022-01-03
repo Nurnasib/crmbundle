@@ -8,7 +8,7 @@
                 <div class="row align-items-center">
                     <ul class="breadcrumb">
                         <li class="breadcrumb-item"><a href="/"><i class="feather icon-home"></i></a></li>
-                        <li class="breadcrumb-item"> <a href="javascript:void(0)">  {{ 'Life Cycle'|trans }}</a></li>
+                        <li class="breadcrumb-item"> <a href="javascript:void(0)">  {{ 'Monthly Report'|trans }}</a></li>
                     </ul>
                 </div>
             </div>
@@ -18,13 +18,7 @@
         <div class="row">
             <div class="card">
                 <div class="card-header">
-                    <h5>{{ 'Life Cycle'|trans }}</h5>
-{#                    {% if entities is not empty %}
-                        <div class="btn-group btn-group-sm float-right" role="group" aria-label="Button group with nested dropdown">
-                            <a target="_blank" href="#" class="btn blue-bg white-font btn-sm"><i class="fa fa-file-pdf"></i> {{ 'PDF'|trans }}</a>
-                            <a target="_blank" href="#" class="btn btn-sm bg-primary white-font"><i class="fa fa-file-excel"></i> {{ 'Excel'|trans }}</a>
-                        </div>
-                    {% endif %}#}
+                    <h5>{{ 'Monthly Report'|trans }}</h5>
                 </div>
             </div>
         </div>
@@ -92,6 +86,14 @@
                             {% include '@TerminalbdCrm/report/monthlyReport/inc/poultry/_antibiotic_free_farm.html.twig'%}
                         {% elseif lifeCycleSlug is same as 'less-costing-farm-poultry' %}
                             {% include '@TerminalbdCrm/report/monthlyReport/inc/poultry/_less_costing_farm.html.twig'%}
+                        {% elseif lifeCycleSlug is same as 'less-costing-farm-fish' %}
+                            {% include '@TerminalbdCrm/report/monthlyReport/inc/fish/_less_costing_farm.html.twig'%}
+                        {% elseif lifeCycleSlug is same as 'disease-mapping-report-poultry' %}
+                            {% include '@TerminalbdCrm/report/monthlyReport/inc/poultry/_disease_mapping.html.twig'%}
+                        {% elseif lifeCycleSlug is same as 'disease-mapping-report-cattle' %}
+                            {% include '@TerminalbdCrm/report/monthlyReport/inc/cattle/_disease_mapping.html.twig'%}
+                        {% elseif lifeCycleSlug is same as 'disease-mapping-report-fish' %}
+                            {% include '@TerminalbdCrm/report/monthlyReport/inc/fish/_disease_mapping.html.twig'%}
                         {% elseif lifeCycleSlug is same as 'dairy-life-cycle' %}
                         {% elseif lifeCycleSlug is same as 'fattening-life-cycle' %}
                         {% elseif lifeCycleSlug is same as 'fish-life-cycle-report' %}

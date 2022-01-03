@@ -4,7 +4,9 @@
         <td>{{ diseaseMapping.agent.name|default('') }}</td>
         <td>{{ diseaseMapping.customer.name|default('') }}</td>
         <td>{{ diseaseMapping.visitingDate|date('d-m-Y') }}</td>
+        {% if report.slug!='disease-mapping-report-cattle' %}
         <td>{{ diseaseMapping.hatchery.name|default('') }}</td>
+        {% endif %}
         <td>{{ diseaseMapping.feed.name|default('') }}</td>
         <td>{{ diseaseMapping.farmType.name|default('') }}</td>
         <td>{{ diseaseMapping.flockSizeOrCapacity|default('') }}</td>

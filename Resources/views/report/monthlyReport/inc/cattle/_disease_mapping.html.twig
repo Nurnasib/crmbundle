@@ -1,0 +1,65 @@
+{% if entities is not empty %}
+    {% for monthYear, employeesDetails in entities %}
+        {% for employeeId, details in employeesDetails %}
+
+            <table width="100%">
+                <tr>
+                    <th colspan="11"><h3 class="text-center">NOURISH POULTRY AND HATCHERY LTD</h3></th>
+                </tr>
+                <tr>
+                    <th colspan="11"><h5 class="text-center">UTTARA, DHAKA.</h5></th>
+                </tr>
+                <tr>
+                    <td colspan="11" align="center"><h6>{{ report.name|default('') }}</h6></td>
+                </tr>
+            </table>
+            <table width="100%">
+                <tr>
+                    <th colspan="4"><h5>{{ 'Name Of CSO' }}: {{ entities[monthYear][employeeId]['name'] }}</h5></th>
+                    <th colspan="4" class="text-center"><h5>{{ 'Designation' }}: {{ entities[monthYear][employeeId]['employeeDesignationName'] }}</h5></th>
+                    <th colspan="3" class="text-right"><h5>{{ 'Month' }}: {{ monthYear }}</h5></th>
+                </tr>
+            </table>
+
+            <table class="table table-striped table-bordered table-hover" id="datatable">
+                <thead class="thead-dark">
+
+                <tr>
+                    <th>{{ 'SL'|trans }}</th>
+                    <th>{{ 'Visting Date'|trans }}</th>
+                    <th>{{ 'Name of Farmer'|trans }}</th>
+                    <th>{{ 'Address'|trans }}</th>
+                    <th>{{ 'Mobile No.'|trans }}</th>
+{#                    <th>{{ 'Hatchery'|trans }}</th>#}
+                    <th>{{ 'Feed'|trans }}</th>
+                    <th>{{ 'Type'|trans }}</th>
+                    <th>{{ 'Farm Capacity'|trans }}</th>
+                    <th>{{ 'Age'|trans }}</th>
+                    <th>{{ 'Presumptive Diagnosis'|trans }}</th>
+                </tr>
+
+                </thead>
+                <tbody>
+                {% for detail in details['details'] %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td>{{ detail['visitingDate']|date('d-m-Y') }}</td>
+                        <td>{{ detail['customerName']|default('') }}</td>
+                        <td>{{ detail['customerAddress']|default('') }}</td>
+                        <td>{{ detail['customerMobile']|default('') }}</td>
+{#                        <td>{{ detail['hatcheryName']|default('') }}</td>#}
+                        <td>{{ detail['feedName']|default('') }}</td>
+                        <td>{{ detail['feedTypeName']|default('') }}</td>
+                        <td>{{ detail['flockSizeOrCapacity']|default('') }}</td>
+                        <td>{{ detail['ageDays']|default('') }}</td>
+                        <td>{{ detail['diseaseName']|default('') }}</td>
+{#                        <td>{{ detail['remarks']|default('') }}</td>#}
+                    </tr>
+                {% endfor %}
+
+                </tbody>
+            </table>
+
+        {% endfor %}
+    {% endfor %}
+{% endif %}

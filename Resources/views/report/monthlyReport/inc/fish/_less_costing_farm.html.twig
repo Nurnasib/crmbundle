@@ -1,0 +1,186 @@
+{% if entities is not empty %}
+    {% for employeeId, employeesDetails in entities %}
+
+        <table width="100%">
+            <tr>
+                <th colspan="38"><h3 class="text-center">NOURISH POULTRY AND HATCHERY LTD</h3></th>
+            </tr>
+            <tr>
+                <th colspan="38"><h5 class="text-center">UTTARA, DHAKA.</h5></th>
+            </tr>
+            <tr>
+                <td colspan="38" align="center"><h6>{{ report.name|default('') }}</h6></td>
+            </tr>
+        </table>
+        <table width="100%">
+            <tr>
+                <th colspan="19"><h5>{{ 'Name Of CSO' }}: {{ entities[employeeId]['name'] }}</h5></th>
+                <th colspan="19" class="text-center"><h5>{{ 'Designation' }}
+                        : {{ entities[employeeId]['employeeDesignationName'] }}</h5></th>
+                {#                <th colspan="8" class="text-right"><h5>{{ 'Month' }}: {{ monthYear }}</h5></th>#}
+            </tr>
+        </table>
+
+        <table class="table table-striped table-bordered table-hover" id="datatable">
+            <thead class="thead-dark">
+            <tr>
+                <th scope="col" rowspan="2" class="text-center">Month</th>
+                <th scope="col" rowspan="2" class="text-center">SL No.</th>
+                <th scope="col" colspan="3" class="text-center">Agent Information</th>
+                <th scope="col" colspan="3" class="text-center">Farmer Information</th>
+                <th scope="col" colspan="6" class="text-center">Fish Information</th>
+                <th scope="col" colspan="6" class="text-center">Fry Details</th>
+                <th scope="col" colspan="3" class="text-center">Price Details</th>
+                <th scope="col" colspan="9" class="text-center">Cost Details</th>
+                <th scope="col" colspan="3" class="text-center">Production Cost</th>
+                <th scope="col" colspan="3" class="text-center">Selling Price</th>
+                <th scope="col" colspan="3" class="text-center">Net Profit</th>
+            </tr>
+            <tr>
+                <th scope="col">Agent Name</th>
+                <th scope="col">Address</th>
+                <th scope="col">Mobile</th>
+
+                <th scope="col">Farmer Name</th>
+                <th scope="col">Address</th>
+                <th scope="col">Mobile</th>
+
+                <th scope="col">Fish Species</th>
+                <th scope="col">Fry Source</th>
+                <th scope="col">Feed</th>
+                <th scope="col">Fingerling Size (gm)</th>
+                <th scope="col">Harvesting Size (gm)</th>
+                <th scope="col">Pond Size</th>
+
+                <th scope="col">Total Stocked Fingerling (Pcs)</th>
+                <th scope="col">Total Feed Used (Kg)</th>
+                <th scope="col">Total Fish Weight (Kg)</th>
+                <th scope="col">Mortality (Pcs)</th>
+                <th scope="col">Culture Days</th>
+                <th scope="col">FCR</th>
+
+                <th scope="col">Average Fingerling Price (Pcs)</th>
+                <th scope="col">Average Feed Price (Kg)</th>
+                <th scope="col">Selling Fish Price (Kg)</th>
+
+                <th scope="col">Fingerling Cost (Total)</th>
+                <th scope="col">Feed Cost (Total)</th>
+                <th scope="col">Medicine Cost (Total)</th>
+                <th scope="col">Pond Preparation Cost (Total)</th>
+                <th scope="col">Pond Rent</th>
+                <th scope="col">Electricity & Fuel Cost</th>
+                <th scope="col">Labour Cost</th>
+                <th scope="col">Transport Cost</th>
+                <th scope="col">Other Cost</th>
+
+                <th scope="col">Total Costing</th>
+                <th scope="col">Costing/Unit</th>
+                <th scope="col">Costing/Kg</th>
+
+                <th scope="col">Total Broiler Price</th>
+                <th scope="col">Broiler Price/Unit</th>
+                <th scope="col">Broiler Price/Kg</th>
+
+                <th scope="col">Total Profit</th>
+                <th scope="col">Profit/Unit</th>
+                <th scope="col">Profit/Kg</th>
+            </tr>
+
+            </thead>
+            <tbody>
+            {% for monthYear,details in employeesDetails['details'] %}
+                {% for detail in details %}
+                    {% set totalStockedChicksPcs = detail['totalStockedChicksPcs']|default(0) %}
+                    {% set totalFeedUsedKg = detail['totalFeedUsedKg']|default(0) %}
+                    {% set totalBroilerWeightKg = detail['totalBroilerWeightKg']|default(0) %}
+
+                    {% set itemPricePerPcs = detail['itemPricePerPcs']|default(0) %}
+                    {% set feedPricePerKg = detail['feedPricePerKg']|default(0) %}
+                    {% set broilerOrFishPricePerKg = detail['broilerOrFishPricePerKg']|default(0) %}
+
+                    {% set totalChickCost = totalStockedChicksPcs*itemPricePerPcs %}
+                    {% set totalFeedCost = totalStockedChicksPcs*feedPricePerKg %}
+                    {% set totalMedicineCost = detail['totalMedicineCost']|default(0) %}
+                    {% set totalPondPreparationCost = detail['totalPondPreparationCost']|default(0) %}
+                    {% set litterOrPondRentCost = detail['litterOrPondRentCost']|default(0) %}
+                    {% set electricityAndFuelCost = detail['electricityAndFuelCost']|default(0) %}
+                    {% set labourCost = detail['labourCost']|default(0) %}
+                    {% set transportCost = detail['transportCost']|default(0) %}
+                    {% set otherCost = detail['otherCost']|default(0) %}
+
+                    {% set totalCosting= totalChickCost+totalFeedCost+totalMedicineCost+totalPondPreparationCost+litterOrPondRentCost+electricityAndFuelCost+labourCost+transportCost+otherCost %}
+                    {% set totalCostingUnit = totalStockedChicksPcs>0?(totalCosting/totalStockedChicksPcs):0 %}
+                    {% set totalCostingKg = totalBroilerWeightKg>0?(totalCosting/totalBroilerWeightKg):0 %}
+
+                    {% set totalBroilerPrice = totalBroilerWeightKg*broilerOrFishPricePerKg %}
+                    {% set broilerPricePerUnit = totalStockedChicksPcs>0?(totalBroilerPrice/totalStockedChicksPcs):0 %}
+                    {% set broilerPricePerKg = totalBroilerWeightKg>0?(totalBroilerPrice/totalBroilerWeightKg):0 %}
+
+
+                    {% set totalProfit = totalBroilerPrice-totalCosting %}
+                    {% set totalProfitPerUnit = totalStockedChicksPcs>0?(totalProfit/totalStockedChicksPcs):0 %}
+                    {% set totalProfitPerKg = totalBroilerWeightKg>0?(totalProfit/totalBroilerWeightKg):0 %}
+
+                    <tr>
+                        {% if loop.first %}
+                            <td valign="middle"
+                                rowspan="{{ details|length }}">{{ monthYear }}</td>
+                        {% endif %}
+                        {#                        <td>{{ monthYear }}</td>#}
+                        <td>{{ loop.index }}</td>
+                        <td>{{ detail['agentName']|default('') }}</td>
+                        <td>{{ detail['agentAddress']|default('') }}</td>
+                        <td>{{ detail['agentMobile']|default('') }}</td>
+
+                        <td>{{ detail['customerName']|default('') }}</td>
+                        <td>{{ detail['customerAddress']|default('') }}</td>
+                        <td>{{ detail['customerMobile']|default('') }}</td>
+
+                        <td>{{ detail['speciesName']|default('') }}</td>
+                        <td>{{ detail['hatcheryName']|default('') }}</td>
+                        <td>{{ detail['feedBame']|default('') }}</td>
+                        <td>{{ detail['fingerlingSize']|default('') }}</td>
+                        <td>{{ detail['harvestingSize']|default('') }}</td>
+                        <td>{{ detail['pondSize']|default('') }}</td>
+
+                        <td>{{ totalStockedChicksPcs|number_format(2,'.','') }}</td>
+                        <td>{{ totalFeedUsedKg|number_format(2,'.','') }}</td>
+                        <td>{{ totalBroilerWeightKg|number_format(2,'.','') }}</td>
+                        <td>{{ detail['mortality']|default(0) }}</td>
+                        <td>{{ detail['ageDays']|default(0) }}</td>
+                        <td>{{ detail['fcr']|default(0)|number_format(2,'.','') }}</td>
+
+                        <td>{{ itemPricePerPcs|number_format(2,'.','') }}</td>
+                        <td>{{ feedPricePerKg|number_format(2,'.','') }}</td>
+                        <td>{{ broilerOrFishPricePerKg|number_format(2,'.','') }}</td>
+
+                        <td>{{ totalChickCost|number_format(2,'.','') }}</td>
+                        <td>{{ totalFeedCost|number_format(2,'.','') }}</td>
+                        <td>{{ totalMedicineCost|number_format(2,'.','') }}</td>
+                        <td>{{ totalPondPreparationCost|number_format(2,'.','') }}</td>
+                        <td>{{ litterOrPondRentCost|number_format(2,'.','') }}</td>
+                        <td>{{ electricityAndFuelCost|number_format(2,'.','') }}</td>
+                        <td>{{ labourCost|number_format(2,'.','') }}</td>
+                        <td>{{ transportCost|number_format(2,'.','') }}</td>
+                        <td>{{ otherCost|number_format(2,'.','') }}</td>
+
+                        <td>{{ totalCosting|number_format(2,'.','') }}</td>
+                        <td>{{ totalCostingUnit|number_format(2,'.','') }}</td>
+                        <td>{{ totalCostingKg|number_format(2,'.','') }}</td>
+
+                        <td>{{ totalBroilerPrice|number_format(2,'.','') }}</td>
+                        <td>{{ broilerPricePerUnit|number_format(2,'.','') }}</td>
+                        <td>{{ broilerPricePerKg|number_format(2,'.','') }}</td>
+
+                        <td>{{ totalProfit|number_format(2,'.','') }}</td>
+                        <td>{{ totalProfitPerUnit|number_format(2,'.','') }}</td>
+                        <td>{{ totalProfitPerKg|number_format(2,'.','') }}</td>
+                    </tr>
+                {% endfor %}
+
+            {% endfor %}
+            </tbody>
+        </table>
+
+    {% endfor %}
+{% endif %}

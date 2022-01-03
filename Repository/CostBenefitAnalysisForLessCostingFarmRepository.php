@@ -88,7 +88,7 @@ class CostBenefitAnalysisForLessCostingFarmRepository extends BaseRepository
         $returnArray=[];
         if(!empty($report)){
             $qb = $this->createQueryBuilder('e');
-            $qb->select('e.id as eId', 'e.ageDays', 'e.hatchingDate', 'e.reportingMonth', 'e.pondSize', 'e.fingerlingSize');
+            $qb->select('e.id as eId', 'e.ageDays', 'e.hatchingDate', 'e.reportingMonth', 'e.pondSize', 'e.fingerlingSize', 'e.harvestingSize');
             $qb->addSelect('e.totalStockedChicksPcs', 'e.totalFeedUsedKg', 'e.totalBroilerWeightKg', 'e.mortality', 'e.fcr');
             $qb->addSelect('e.itemPricePerPcs', 'e.feedPricePerKg', 'e.broilerOrFishPricePerKg', 'e.totalMedicineCost', 'e.totalVaccineCost');
             $qb->addSelect('e.usedBagPricePerPcs', 'e.litterOrPondRentCost', 'e.electricityAndFuelCost', 'e.labourCost', 'e.transportCost', 'e.otherCost');
@@ -105,6 +105,7 @@ class CostBenefitAnalysisForLessCostingFarmRepository extends BaseRepository
             $qb->addSelect('hatchery.name AS hatcheryName');
             $qb->addSelect('breed.name AS breedBame');
             $qb->addSelect('feed.name AS feedName');
+            $qb->addSelect('species.name AS speciesName');
 
             $qb->join('e.employee', 'employee');
             $qb->leftJoin('employee.designation', 'designation');
@@ -114,6 +115,7 @@ class CostBenefitAnalysisForLessCostingFarmRepository extends BaseRepository
             $qb->leftJoin('e.hatchery', 'hatchery');
             $qb->leftJoin('e.breed', 'breed');
             $qb->leftJoin('e.feed', 'feed');
+            $qb->leftJoin('e.species', 'species');
             $qb->where('e.report =:report')->setParameter('report',$report);
 
             $startDate = isset($filterBy['startDate'])&&$filterBy['startDate']!=''? (new \DateTime($filterBy['startDate']))->format('Y-m-d') . ' 00:00:00': '';

@@ -53,4 +53,61 @@ class DiseaseMappingRepository extends EntityRepository
         return $results['totalReport'];
     }
 
+    public function getDiseasesMappingReportByEmployeeDate($report, $filterBy)
+    {
+        $returnArray=[];
+        if(!empty($report)){
+            $qb = $this->createQueryBuilder('e');
+            $qb->select('e.id eId', 'e.visitingDate', 'e.flockSizeOrCapacity', 'e.ageDays', 'e.remarks');
+
+            $qb->addSelect('agent.name AS agentName', 'agent.address AS agentAddress', 'agent.mobile AS agentMobile');
+
+            $qb->addSelect('employee.id AS employeeId', 'employee.name AS employeeName');
+            $qb->addSelect('designation.name AS employeeDesignationName');
+            $qb->addSelect('customer.id AS customerId', 'customer.name AS customerName', 'customer.mobile AS customerMobile', 'customer.address AS customerAddress');
+
+            $qb->addSelect( 'district.name AS agentDistrictName');
+
+            $qb->addSelect('hatchery.name AS hatcheryName');
+            $qb->addSelect('feed.name AS feedName');
+            $qb->addSelect('farmType.name AS feedTypeName');
+            $qb->addSelect('disease.name AS diseaseName');
+
+            $qb->join('e.employee', 'employee');
+            $qb->leftJoin('employee.designation', 'designation');
+            $qb->leftJoin('e.customer','customer');
+            $qb->leftJoin('e.agent', 'agent');
+            $qb->leftJoin('agent.district', 'district');
+            $qb->leftJoin('e.hatchery', 'hatchery');
+            $qb->leftJoin('e.feed', 'feed');
+            $qb->leftJoin('e.farmType', 'farmType');
+            $qb->leftJoin('e.disease', 'disease');
+            $qb->where('e.report =:report')->setParameter('report',$report);
+
+            $startDate = isset($filterBy['startDate'])&&$filterBy['startDate']!=''? (new \DateTime($filterBy['startDate']))->format('Y-m-d') . ' 00:00:00': '';
+            $endDate = isset($filterBy['endDate']) && $filterBy['endDate']!=''? (new \DateTime($filterBy['endDate']))->format('Y-m-d') . ' 23:59:59': '';
+
+            $employee = isset($filterBy['employeeId'])&&$filterBy['employeeId']!=''? $filterBy['employeeId']: '';
+            if (!empty($employee)){
+                $qb->andWhere('employee.id = :employee')->setParameter('employee', $employee);
+            }
+
+            if (!empty($startDate) && !empty($endDate)){
+                $qb->andWhere('e.visitingDate >= :visitingDateStart')->setParameter('visitingDateStart', $startDate);
+                $qb->andWhere('e.visitingDate <= :visitingDateEnd')->setParameter('visitingDateEnd', $endDate);
+            }
+            $qb->orderBy('e.visitingDate','ASC');
+            $results = $qb->getQuery()->getArrayResult();
+            if($results){
+                foreach ($results as $result){
+                    $monthYear = $result['visitingDate']->format('F-Y');
+                    $returnArray[$monthYear][$result['employeeId']]['name']=$result['employeeName'];
+                    $returnArray[$monthYear][$result['employeeId']]['employeeDesignationName']=$result['employeeDesignationName'];
+                    $returnArray[$monthYear][$result['employeeId']]['details'][]=$result;
+                }
+            }
+        }
+        return $returnArray;
+    }
+
 }
