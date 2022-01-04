@@ -58,15 +58,15 @@ class FishCompanyAndSpeciesWiseAverageFcrController extends AbstractController
         $em = $this->getDoctrine()->getManager();
 
         $form = $this->createForm(CompanySpeciesWiseFcrFormType::class, null, array('report' => $report));
-
+        $returnIds=[];
         $form->handleRequest($request);
         if ($form->isSubmitted()){
             $data = $request->request->get('company_species_wise_fcr_form');
 //            dd($data);
             $reportingDate = isset($data['reporting_date'])? $data['reporting_date'] : date('Y-m-d',strtotime('now'));
             $date=new \DateTime($reportingDate);
-            if(isset($data['feed'])){
-                $returnIds=[];
+            if(isset($data['feed'])&&$data['feed']!=''){
+
                 $feedType = isset($data['feed_type'])?$this->getDoctrine()->getRepository(Setting::class)->find($data['feed_type']):null;
                 foreach ($data['feed'] as $feedId){
 
@@ -108,10 +108,12 @@ class FishCompanyAndSpeciesWiseAverageFcrController extends AbstractController
                             $em->persist($fishCompanySpeciesWiseFcrDetails);
                         }
                     }
+                    $em->flush();
+
                     $returnIds[]=$entity->getId();
                 }
 
-                $em->flush();
+
             }
 
             $this->addFlash('success', 'post.created_successfully');
@@ -232,7 +234,7 @@ class FishCompanyAndSpeciesWiseAverageFcrController extends AbstractController
         $agentRepo = $this->getDoctrine()->getRepository(Agent::class);
 
         $form = $this->createForm(CompanySpeciesWiseFcrAfterFormType::class, null, array('report' => $report, 'user' => $this->getUser(),'agentRepo' => $agentRepo));
-
+        $returnIds=[];
         $form->handleRequest($request);
         if ($form->isSubmitted()){
             $data = $request->request->get('company_species_wise_fcr_after_form');
@@ -240,7 +242,7 @@ class FishCompanyAndSpeciesWiseAverageFcrController extends AbstractController
             $reportingDate = isset($data['reporting_date'])? $data['reporting_date'] : date('Y-m-d',strtotime('now'));
             $date=new \DateTime($reportingDate);
             if(isset($data['feed'])){
-                $returnIds=[];
+
                 $feedType = isset($data['feed_type'])?$this->getDoctrine()->getRepository(Setting::class)->find($data['feed_type']):null;
                 $agent = isset($data['agent'])?$agentRepo->find($data['agent']):null;
                 foreach ($data['feed'] as $feedId){
@@ -282,10 +284,11 @@ class FishCompanyAndSpeciesWiseAverageFcrController extends AbstractController
                             $em->persist($fishCompanySpeciesWiseFcrDetails);
                         }
                     }
+                    $em->flush();
                     $returnIds[]=$entity->getId();
                 }
 
-                $em->flush();
+
             }
 
             $this->addFlash('success', 'post.created_successfully');

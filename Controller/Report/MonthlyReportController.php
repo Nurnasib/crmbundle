@@ -20,6 +20,7 @@ use Terminalbd\CrmBundle\Entity\CrmCustomer;
 use Terminalbd\CrmBundle\Entity\DiseaseMapping;
 use Terminalbd\CrmBundle\Entity\FcrDetails;
 use Terminalbd\CrmBundle\Entity\LayerPerformanceDetails;
+use Terminalbd\CrmBundle\Entity\NewFarmerIntroduce\FarmerIntroduceDetails;
 use Terminalbd\CrmBundle\Form\SearchFilterFormType;
 use Terminalbd\CrmBundle\Repository\AntibioticFreeFarmRepository;
 
@@ -95,6 +96,15 @@ class MonthlyReportController extends AbstractController
                     break;
                 case 'disease-mapping-report-fish':
                     $entities = $this->getDoctrine()->getRepository(DiseaseMapping::class)->getDiseasesMappingReportByEmployeeDate($report, $filterBy);
+                    break;
+                case 'farmer-touch-report-poultry':
+                    $entities = $this->getDoctrine()->getRepository(FarmerIntroduceDetails::class)->getFarmerIntroduceReportByEmployeeDate('poultry-breed', $filterBy);
+                    break;
+                case 'farmer-touch-report-fish':
+                    $entities = $this->getDoctrine()->getRepository(FarmerIntroduceDetails::class)->getFarmerIntroduceReportByEmployeeDate('fish-breed', $filterBy);
+                    break;
+                case 'farmer-touch-report-cattle':
+                    $entities = $this->getDoctrine()->getRepository(FarmerIntroduceDetails::class)->getFarmerIntroduceReportByEmployeeDate('cattle-breed', $filterBy);
                     break;
                 case 'fish-life-cycle-report':
                     break;
