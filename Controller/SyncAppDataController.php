@@ -1533,7 +1533,7 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
             if ($findParent)
             {
                 $createdAt = (new \DateTime($report['created_at']))->format('Y-m-d H:i:s');
-                $reportingDate = $report['visiting_date'] ? (new \DateTime($report['visiting_date']))->format('Y-m-d') : null;
+                $reportingDate = $report['reporting_date'] ? (new \DateTime($report['reporting_date']))->format('Y-m-d') : null;
                 $stockingDate = $report['stocking_date'] ? (new \DateTime($report['stocking_date']))->format('Y-m-d') : null;
                 $harvestDate = $report['harvest_date'] ? (new \DateTime($report['harvest_date']))->format('Y-m-d') : null;
                 $previousSamplingDate = $report['previous_sampling_date'] ? (new \DateTime($report['previous_sampling_date']))->format('Y-m-d') : null;
