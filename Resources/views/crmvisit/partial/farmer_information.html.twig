@@ -14,7 +14,7 @@
                 </td>
                 {% if details.firmType is not empty %}
                 <td>
-                    {{ details.firmType is not empty?details.firmType.name:'' }} ({{ details.firmType is not empty? details.firmType.parent.name:'' }})
+                    {{ details.firmType is not empty?details.firmType.name:'' }}
                 </td>
                 {% endif %}
                 {% if(details.report is not empty) %}

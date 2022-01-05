@@ -78,9 +78,8 @@ class FarmerIntroduceDetailsRepository extends BaseRepository
 
     public function getFarmerIntroduceReportByEmployeeDate($report, $filterBy)
     {
-
         $returnArray = [];
-        $breed= $this->getEntityManager()->getRepository(Setting::class)->findOneBy(array('status'=>1,'settingType'=>'BREED_NAME','slug'=>$report));
+        $breed= $report->getParent()->getParent();
         $species = $this->getEntityManager()->getRepository(Setting::class)->findBy(array('status'=>1,'settingType'=>'SPECIES_TYPE','parent'=>$breed));
 //dd($species);
         if($report){
@@ -155,6 +154,47 @@ class FarmerIntroduceDetailsRepository extends BaseRepository
 
         $results = $qb->getQuery()->getSingleResult();
         return $results['totalReport'];
+    }
+
+    public function getFarmerSurveyReport($filterBy)
+    {
+
+        $start = isset($filterBy['startDate']) ? (new \DateTime($filterBy['startDate']))->format('Y-m-d') . ' 00:00:00' : null;
+        $end = isset($filterBy['endDate']) ? (new \DateTime($filterBy['endDate']))->format('Y-m-d') . ' 23:59:59' : null;
+
+        $qb = $this->createQueryBuilder('e');
+
+        $qb->join('e.employee', 'employee');
+        $qb->join('e.customer', 'farmer');
+        $qb->join('e.agent', 'agent');
+        $qb->leftJoin('e.feed', 'feed');
+        $qb->leftJoin('e.otherFeed', 'other_feed');
+        $qb->leftJoin('agent.district', 'agentDistrict');
+        $qb->leftJoin('agent.upozila', 'agentUpozila');
+
+        $qb->select('e.cultureSpeciesItemAndQty', 'e.remarks');
+        $qb->addSelect('farmer.id AS farmerId', 'farmer.name AS farmerName', 'farmer.address AS farmerAddress', 'farmer.mobile AS farmerMobile');
+        $qb->addSelect('agent.agentId', 'agent.name AS agentName', 'agentDistrict.name AS agentDistrictName', 'agentUpozila.name AS agentUpozilaName');
+        $qb->addSelect('other_feed.name AS otherFeedName');
+        $qb->addSelect('feed.name AS feedName');
+
+        $qb->where('employee.id = :employeeId')->setParameter('employeeId', $filterBy['employeeId']);
+        $qb->andWhere('e.createdAt >= :start')->setParameter('start', $start);
+        $qb->andWhere('e.createdAt <= :end')->setParameter('end', $end);
+
+        $results = $qb->getQuery()->getArrayResult();
+
+        $data = [];
+        foreach ($results as $result) {
+            $data[$result['agentId']]['agent'] = [
+                'agentId' => $result['agentId'],
+                'agentName' => $result['agentName'],
+                'agentDistrictName' => $result['agentDistrictName'],
+                'agentUpozilaName' => $result['agentUpozilaName'],
+            ];
+            $data[$result['agentId']]['farmers'][$result['farmerId']] = $result;
+        }
+        return $data;
     }
 
 }

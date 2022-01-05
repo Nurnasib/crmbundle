@@ -16,9 +16,10 @@
             <ul class="sub-menu">
 {#                <li><a class="" href="{{ path('daily_activities_report') }}"><span>{{ 'Daily Activities'|trans }}</span></a></li>#}
                 <li><a class="dropdown-item" href="{{ path('visit_report') }}">{{ 'Visit Report'|trans }}</a></li>
-                <li><a class="" href="{{ path('life_cycle_report_index') }}"><span>{{ 'Life Cycle'|trans }}</span></a></li>
+                <li><a class="" href="{{ path('life_cycle_report_index') }}"><span>{{ 'Life Cycle Report'|trans }}</span></a></li>
                 <li><a class="" href="{{ path('monthly_report_index') }}"><span>{{ 'Monthly Report'|trans }}</span></a></li>
-                <li><a class="" href="javascript:"><span>{{ 'Poultry'|trans }}</span></a>
+                <li><a class="" href="{{ path('others_report_index') }}"><span>{{ 'Farmer Survey Report'|trans }}</span></a></li>
+                {#<li><a class="" href="javascript:"><span>{{ 'Poultry'|trans }}</span></a>
                     <ul class="sub-menu">
                         <li><a class="" href="javascript:"><span>{{ 'Sonali'|trans }}</span></a>
                             <ul class="sub-menu">
@@ -49,11 +50,11 @@
                             </ul>
                         </li>
                     </ul>
-                </li>
-                <li><a class="" href="javascript:"><span>{{ 'Cattle'|trans }}</span></a>
+                </li>#}
+                {#<li><a class="" href="javascript:"><span>{{ 'Cattle'|trans }}</span></a>
                     <ul class="sub-menu">
                         <li><a class="" href="{{ path('cattle_farm_visit_report') }}"><span>{{ 'Farm Visit'|trans }}</span></a></li>
-                        {#<li><a class="" href="javascript:"><span>{{ 'Fattening'|trans }}</span></a>
+                        <li><a class="" href="javascript:"><span>{{ 'Fattening'|trans }}</span></a>
                             <ul class="sub-menu">
                                 <li><a class="" href="javascript:"><span>{{ 'Life Cycle'|trans }}</span></a></li>
                                 <li><a class="" href="javascript:"><span>{{ 'Performance'|trans }}</span></a></li>
@@ -64,17 +65,17 @@
                                 <li><a class="" href="javascript:"><span>{{ 'Life Cycle'|trans }}</span></a></li>
                                 <li><a class="" href="javascript:"><span>{{ 'Performance'|trans }}</span></a></li>
                             </ul>
-                        </li>#}
+                        </li>
                     </ul>
-                </li>
-                <li><a class="" href="javascript:"><span>{{ 'Fish'|trans }}</span></a>
+                </li>#}
+                {#<li><a class="" href="javascript:"><span>{{ 'Fish'|trans }}</span></a>
                     <ul class="sub-menu">
                         <li><a class="" href="{{ path('crm_fish_life_cycle') }}"><span>{{ 'Life Cycle'|trans }}</span></a>
                         </li>
-{#                        <li><a class="" href="javascript:"><span>{{ 'Performance'|trans }}</span></a></li>#}
+                        <li><a class="" href="javascript:"><span>{{ 'Performance'|trans }}</span></a></li>
                     </ul>
-                </li>
-                <li><a class="" href="javascript:"><span>{{ 'Farmer Touch'|trans }}</span></a>
+                </li>#}
+                {#<li><a class="" href="javascript:"><span>{{ 'Farmer Touch'|trans }}</span></a>
                     <ul class="sub-menu">
                         <li><a class="" href="{{ path('farmer-touch-report',{'type': 'poultry-breed','slug':'farmer-touch-report-poultry'}) }}"><span>{{ 'Poultry'|trans }}</span></a>
                         </li>
@@ -83,8 +84,8 @@
                         <li><a class="" href="{{ path('farmer-touch-report',{'type': 'cattle-breed','slug':'farmer-touch-report-cattle'}) }}"><span>{{ 'Cattle'|trans }}</span></a>
                         </li>
                     </ul>
-                </li>
-                <li><a class="" href="javascript:"><span>{{ 'Farmer Introduce'|trans }}</span></a>
+                </li>#}
+                {#<li><a class="" href="javascript:"><span>{{ 'Farmer Introduce'|trans }}</span></a>
                     <ul class="sub-menu">
                         <li><a class="" href="{{ path('farmer_introduce_report',{'breedType': 'poultry-breed'}) }}"><span>{{ 'Poultry'|trans }}</span></a>
                         </li>
@@ -93,8 +94,8 @@
                         <li><a class="" href="{{ path('farmer_introduce_report',{'breedType': 'cattle-breed'}) }}"><span>{{ 'Cattle'|trans }}</span></a>
                         </li>
                     </ul>
-                </li>
-                <li><a class="" href="javascript:"><span>{{ 'Farmer Training'|trans }}</span></a>
+                </li>#}
+                {#<li><a class="" href="javascript:"><span>{{ 'Farmer Training'|trans }}</span></a>
                     <ul class="sub-menu">
                         <li><a class="" href="{{ path('farmer_training_report',{'breedType': 'poultry-breed'}) }}"><span>{{ 'Poultry'|trans }}</span></a>
                         </li>
@@ -103,7 +104,7 @@
                         <li><a class="" href="{{ path('farmer_training_report',{'breedType': 'cattle-breed'}) }}"><span>{{ 'Cattle'|trans }}</span></a>
                         </li>
                     </ul>
-                </li>
+                </li>#}
 
             </ul>
         {% endif %}

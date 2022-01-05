@@ -1,0 +1,8 @@
+{% if entities is defined and entities is not empty %}
+    {% if filterBy['report'] is same as 'farmer-survey-poultry' %}
+        {% include '@TerminalbdCrm/report/others/inc/_farmer_survey.html.twig' %}
+
+    {% elseif report is same as 'fcr-after-sale-boiler' %}
+
+    {% endif %}
+{% endif %}

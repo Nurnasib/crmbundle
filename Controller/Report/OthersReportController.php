@@ -21,6 +21,7 @@ use Terminalbd\CrmBundle\Entity\DiseaseMapping;
 use Terminalbd\CrmBundle\Entity\FcrDetails;
 use Terminalbd\CrmBundle\Entity\LayerPerformanceDetails;
 use Terminalbd\CrmBundle\Entity\NewFarmerIntroduce\FarmerIntroduceDetails;
+use Terminalbd\CrmBundle\Entity\Setting;
 use Terminalbd\CrmBundle\Form\SearchFilterFormType;
 use Terminalbd\CrmBundle\Repository\AntibioticFreeFarmRepository;
 
@@ -28,12 +29,12 @@ use Terminalbd\CrmBundle\Repository\AntibioticFreeFarmRepository;
  * Class MonthlyReportController
  * @package Terminalbd\CrmBundle\Controller\Report
  * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_CRM_REPORT') or is_granted('ROLE_DEVELOPER')")
- * @Route("/crm/report/monthly", name="")
+ * @Route("/crm/report/others", name="")
  */
-class MonthlyReportController extends AbstractController
+class OthersReportController extends AbstractController
 {
     /**
-     * @Route("/", name="monthly_report_index")
+     * @Route("/", name="others_report_index")
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
      */
@@ -41,50 +42,29 @@ class MonthlyReportController extends AbstractController
     {
         $filterBy = [];
         $entities = [];
+        $species = [];
+
         $employee = null;
         $report = null;
         $form = $this->createForm(SearchFilterFormType::class);
         $form->handleRequest($request);
 
         if($form->isSubmitted()){
+
             $isExcel= $request->request->get('excel');
-            $report = $form->getData()['monthlyReport'];
 
             $filterBy['startDate'] = $form->getData()['startDate'];
             $filterBy['endDate'] = $form->getData()['endDate'];
             $filterBy['employeeId'] = $form->getData()['employee'] ? $form->getData()['employee']->getId() : '';
+            $filterBy['report'] = $form->getData()['otherReport'];
 
             $employee = $form->getData()['employee'];
 
-//            dd($report,$filterBy);
-
-            switch ($report->getSlug()){
-                case 'fcr-before-sale-boiler':
-                case 'fcr-after-sale-boiler':
-                case 'fcr-before-sale-sonali':
-                case 'fcr-after-sale-sonali':
-                    $entities = $this->getDoctrine()->getRepository(FcrDetails::class)->getFcrDetailsByEmployee($report,$filterBy);
-                    break;
-                case 'layer-performance-brown':
-                case 'layer-performance-white':
-                    $entities = $this->getDoctrine()->getRepository(LayerPerformanceDetails::class)->getLayerPerformanceReportByEmployeeAndDate($report, $filterBy);
-                    break;
-                case 'antibiotic-free-farm-poultry':
-                    $entities = $this->getDoctrine()->getRepository(AntibioticFreeFarm::class)->getAntibioticFreeFarmByEmployeeAndDate($report, $filterBy);
-                    break;
-                case 'less-costing-farm-poultry':
-                case 'less-costing-farm-fish':
-                    $entities = $this->getDoctrine()->getRepository(CostBenefitAnalysisForLessCostingFarm::class)->getLessCostingFarmByEmployeeAndDate($report, $filterBy);
-                    break;
-                case 'disease-mapping-report-poultry':
-                case 'disease-mapping-report-cattle':
-                case 'disease-mapping-report-fish':
-                    $entities = $this->getDoctrine()->getRepository(DiseaseMapping::class)->getDiseasesMappingReportByEmployeeDate($report, $filterBy);
-                    break;
-                case 'farmer-touch-report-poultry':
-                case 'farmer-touch-report-fish':
-                case 'farmer-touch-report-cattle':
-                    $entities = $this->getDoctrine()->getRepository(FarmerIntroduceDetails::class)->getFarmerIntroduceReportByEmployeeDate($report, $filterBy);
+            switch ($filterBy['report']){
+                case 'farmer-survey-poultry':
+                    $breed = $this->getDoctrine()->getRepository(Setting::class)->findBy(['status' => 1, 'slug' => 'poultry-breed', 'settingType' => 'BREED_NAME']);
+                    $species = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('status'=>1,'settingType'=>'SPECIES_TYPE','parent'=>$breed));
+                    $entities = $this->getDoctrine()->getRepository(FarmerIntroduceDetails::class)->getFarmerSurveyReport($filterBy);
                     break;
                 default:
                     $entities = [];
@@ -93,33 +73,31 @@ class MonthlyReportController extends AbstractController
 
         }
 
-        if(isset($isExcel) && !empty($isExcel)){
-            $html = $this->renderView('@TerminalbdCrm/report/monthlyReport/excel.html.twig',[
+        if($request->request->get('excel')){
+            $html = $this->renderView('@TerminalbdCrm/report/others/excel.html.twig',[
                 'entities' => $entities,
                 'filterBy'=> $filterBy,
-                'lifeCycleSlug'=> $report->getSlug(),
+                'species'=> $species,
                 'employee'=> $employee,
-                'report'=> $report,
             ]);
 
-            $fileName = $report->getSlug().'_'.time().".xls";
+            $fileName = $filterBy['report'] .'_'.time().".xls";
 
             header("Content-Type:  application/vnd.ms-excel; charset=utf-8");
 //        header("Content-type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
             header("Content-Disposition: attachment; filename=$fileName");
 
             echo $html;
-            die;
+            die();
 
         }
 
-        return $this->render('@TerminalbdCrm/report/monthlyReport/index.html.twig',[
+        return $this->render('@TerminalbdCrm/report/others/index.html.twig',[
             'form' => $form->createView(),
             'entities' => $entities,
             'filterBy'=> $filterBy,
-            'lifeCycleSlug'=> $report ? $report->getSlug() : null,
+            'species'=> $species,
             'employee'=> $employee,
-            'report'=> $report,
         ]);
     }
 

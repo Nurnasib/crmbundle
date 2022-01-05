@@ -41,11 +41,29 @@ class SearchFilterFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
+            ->add('otherReport', ChoiceType::class,[
+                'choices' => [
+                    'Poultry' => [
+                        'Farmer Survey' => 'farmer-survey-poultry',
+                    ],
+                    'Cattle' => [
+                        'Farmer Survey' => 'farmer-survey-cattle',
+                    ],
+                    'Fish' => [
+                        'Farmer Survey' => 'farmer-survey-fish',
+                    ],
+
+                ],
+                'placeholder' => '- Select Report -',
+                'attr' => [
+                    'class' => 'select2'
+                ]
+            ])
             ->add('monthlyReport', EntityType::class,[
                 'class' => Setting::class,
                 'group_by'  => 'parent.parent.name',
                 'choice_label' => 'name',
-                'placeholder' => 'Select Report',
+                'placeholder' => '- Select Report -',
                 'query_builder' => function(EntityRepository $er){
                     return $er->createQueryBuilder('e')
                         ->where('e.settingType = :settingType')->setParameter('settingType', 'FARMER_REPORT')
@@ -60,7 +78,7 @@ class SearchFilterFormType extends AbstractType
             ->add('lifeCycle', EntityType::class,[
                 'class' => Setting::class,
                 'choice_label' => 'name',
-                'placeholder' => 'Select Life Cycle',
+                'placeholder' => '- Select Life Cycle -',
                 'query_builder' => function(EntityRepository $er){
                     return $er->createQueryBuilder('e')
                         ->where('e.settingType = :settingType')->setParameter('settingType', 'FARMER_REPORT')
@@ -111,14 +129,14 @@ class SearchFilterFormType extends AbstractType
                     ->orderBy('e.name');
                 },
                 'choice_label' => 'name',
-                'placeholder' => 'Select Farmer'
+                'placeholder' => '- Select Farmer -'
             ])
             ->add('employeeWiseFarmer', ChoiceType::class,[
                 'choices' => [],
                 'attr' => [
                     'class' => 'select2'
                 ],
-                'placeholder' => 'Select Farmer',
+                'placeholder' => '- Select Farmer -',
                 'required' => false
             ])
             ->add('employee', EntityType::class,[
@@ -131,7 +149,7 @@ class SearchFilterFormType extends AbstractType
                     ->orderBy('e.name');
                 },
                 'choice_label' => 'name',
-                'placeholder' => 'Select Employee',
+                'placeholder' => '- Select Employee -',
                 'required' => false,
                 'attr' => [
                     'class' => 'select2'
@@ -152,12 +170,12 @@ class SearchFilterFormType extends AbstractType
                     'November' => '11',
                     'December' => '12',
                 ],
-                'placeholder' => 'Select month',
+                'placeholder' => '- Select month -',
                 'required' => false
             ])
             ->add('year', ChoiceType::class,[
                 'choices' => $this->getYears(2021),
-                'placeholder' => 'Select year',
+                'placeholder' => '- Select year -',
                 'required' => false
             ])
             ->add('reportStatus', ChoiceType::class,[
