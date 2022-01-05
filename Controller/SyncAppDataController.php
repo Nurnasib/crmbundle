@@ -679,7 +679,7 @@ WHERE `customer_id` = :customer_id AND `employee_id` = :employee_id AND `report_
                 /* @var ChickLifeCycleDetails $findDetails*/
                 $findDetails = $this->getDoctrine()->getRepository(ChickLifeCycleDetails::class)->findOneBy(['crmChickLifeCycle' => $lifeCycleId, 'visitingWeek' =>  $report['visiting_week']]);
                 if ($findDetails){
-                    $feedType = $this->getDoctrine()->getRepository(Setting::class)->find($report['feed_type_id']);
+                    $feedType = $report['feed_type_id'] ? $this->getDoctrine()->getRepository(Setting::class)->find($report['feed_type_id']) : null;
 
                     $findDetails->setAgeDays($report['age_days']);
                     $findDetails->setMortalityPes($report['mortality_pes']);
