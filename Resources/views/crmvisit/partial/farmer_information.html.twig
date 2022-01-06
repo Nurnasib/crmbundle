@@ -1,7 +1,7 @@
 
 {% if entity.crmVisitDetails is not empty %}
     {% for details in entity.crmVisitDetails|reverse  %}
-        {% if details.process == "farmer" and (details.report.slug is not same as 'company-species-wise-average-fcr-after') %}
+        {% if details.process == "farmer" and (details.report is not empty and details.report.slug is not same as 'company-species-wise-average-fcr-after') %}
             <tr>
                 <td>
                     {{ details.purpose is not empty?details.purpose.name:'' }}
@@ -13,15 +13,15 @@
                     {% if details.crmCustomer is not empty  %} {{ details.crmCustomer.mobile }} {% endif %}
                 </td>
                 {% if details.firmType is not empty %}
-                <td>
-                    {{ details.firmType is not empty?details.firmType.name:'' }}
-                </td>
+                    <td>
+                        {{ details.firmType is not empty?details.firmType.name:'' }}
+                    </td>
                 {% endif %}
                 {% if(details.report is not empty) %}
-                <td>
-                    {{ details.report.name|default('') }}
-                </td>
-                    {% endif %}
+                    <td>
+                        {{ details.report.name|default('') }}
+                    </td>
+                {% endif %}
                 <td>
                     {{ details.farmCapacity }}
                 </td>
@@ -32,57 +32,57 @@
                     {{ details.created|date('d-m-Y') }}
                 </td>
                 <td>
-                {% if details.report is not empty and details.report.slug in ['boiler-life-cycle','sonali-life-cycle'] %}
-                    <a class="btn blue-bg btn-sm text-white" data-action='{{ path('chick_new_modal',{'id': details.crmCustomer is not empty?details.crmCustomer.id:'', 'report':details.report is not empty? details.report.id:''}) }}' href='?process=postView_{{ details.id }}_{{ details.report is not empty? details.report.id:'' }}&report={{ details.report is not empty? details.report.slug:'' }}&check=show#modal' id='postView_{{ details.id }}_{{ details.report is not empty? details.report.id:'' }}' >{{ 'Report'|trans }}</a>
-                {% endif %}
-                {% if details.report is not empty and details.report.slug in ['fcr-before-sale-boiler','fcr-before-sale-sonali'] %}
-                    <a class="btn blue-bg btn-sm text-white" data-action='{{ path('fcr_new',{'customer': details.crmCustomer is not empty?details.crmCustomer.id:'','report':details.report is not empty? details.report.id:'','afterBefore':'before'}) }}' href='?process=postView_{{ details.id }}_{{ details.report is not empty? details.report.id:'' }}&report={{ details.report is not empty? details.report.slug:'' }}&check=show#modal' id='postView_{{ details.id }}_{{ details.report is not empty? details.report.id:'' }}' >{{ 'Report'|trans }}</a>
+                    {% if details.report is not empty and details.report.slug in ['boiler-life-cycle','sonali-life-cycle'] %}
+                        <a class="btn blue-bg btn-sm text-white" data-action='{{ path('chick_new_modal',{'id': details.crmCustomer is not empty?details.crmCustomer.id:'', 'report':details.report is not empty? details.report.id:''}) }}' href='?process=postView_{{ details.id }}_{{ details.report is not empty? details.report.id:'' }}&report={{ details.report is not empty? details.report.slug:'' }}&check=show#modal' id='postView_{{ details.id }}_{{ details.report is not empty? details.report.id:'' }}' >{{ 'Report'|trans }}</a>
+                    {% endif %}
+                    {% if details.report is not empty and details.report.slug in ['fcr-before-sale-boiler','fcr-before-sale-sonali'] %}
+                        <a class="btn blue-bg btn-sm text-white" data-action='{{ path('fcr_new',{'customer': details.crmCustomer is not empty?details.crmCustomer.id:'','report':details.report is not empty? details.report.id:'','afterBefore':'before'}) }}' href='?process=postView_{{ details.id }}_{{ details.report is not empty? details.report.id:'' }}&report={{ details.report is not empty? details.report.slug:'' }}&check=show#modal' id='postView_{{ details.id }}_{{ details.report is not empty? details.report.id:'' }}' >{{ 'Report'|trans }}</a>
 
-                    {#<a data-action='{{ path('chick_new_modal',{'id': details.crmCustomer is not empty?details.crmCustomer.id:'', 'report':details.report is not empty? details.report.id:''}) }}' href='?process=postView_{{ details.id }}_{{ details.report is not empty? details.report.id:'' }}&report={{ details.report is not empty? details.report.slug:'' }}&check=show#modal' id='postView_{{ details.id }}_{{ details.report is not empty? details.report.id:'' }}' >{{ details.report is not empty? details.report.name:'...' }}</a>#}
-                {% endif %}
+                        {#<a data-action='{{ path('chick_new_modal',{'id': details.crmCustomer is not empty?details.crmCustomer.id:'', 'report':details.report is not empty? details.report.id:''}) }}' href='?process=postView_{{ details.id }}_{{ details.report is not empty? details.report.id:'' }}&report={{ details.report is not empty? details.report.slug:'' }}&check=show#modal' id='postView_{{ details.id }}_{{ details.report is not empty? details.report.id:'' }}' >{{ details.report is not empty? details.report.name:'...' }}</a>#}
+                    {% endif %}
 
-                {% if details.report is not empty and details.report.slug in ['fattening-life-cycle','dairy-life-cycle'] %}
-                     <a class="btn blue-bg btn-sm text-white" data-action='{{ path('cattle_new_modal',{'id': details.crmCustomer is not empty?details.crmCustomer.id:'', 'report':details.report.id}) }}' href='?process=postView_{{ details.id }}_{{ details.report.id }}&report={{ details.report.slug }}&check=show#modal' id='postView_{{ details.id }}_{{ details.report.id }}' >{{ 'Report'|trans }}</a>
-                {% endif %}
-                {% if details.report is not empty and details.report.slug in ['fattening-performance-report','dairy-performance-report'] %}
-                     <a class="btn blue-bg btn-sm text-white" data-action='{{ path('cattle_performance_new_modal',{'id': details.crmCustomer is not empty?details.crmCustomer.id:'', 'report':details.report.id}) }}' href='?process=postView_{{ details.id }}_{{ details.report.id }}&report={{ details.report.slug }}&check=show#modal' id='postView_{{ details.id }}_{{ details.report.id }}' >{{ 'Report'|trans }}</a>
-                {% endif %}
-                {% if details.report is not empty and details.report.slug in ['layer-life-cycle-brown','layer-life-cycle-white'] %}
-                     <a class="btn blue-bg btn-sm text-white" data-action='{{ path('layer_new_modal',{'id': details.crmCustomer is not empty?details.crmCustomer.id:'', 'report':details.report.id}) }}' href='?process=postView_{{ details.id }}_{{ details.report.id }}&report={{ details.report.slug }}&check=show#modal' id='postView_{{ details.id }}_{{ details.report.id }}' >{{ 'Report'|trans }}</a>
-                {% endif %}
-                {% if details.report is not empty and details.report.slug in ['layer-performance-brown','layer-performance-white'] %}
-                     <a class="btn blue-bg btn-sm text-white" data-action='{{ path('layer_performance_new',{'id': details.crmCustomer is not empty?details.crmCustomer.id:'', 'report':details.report.id}) }}' href='?process=postView_{{ details.id }}_{{ details.report.id }}&report={{ details.report.slug }}&check=show#modal' id='postView_{{ details.id }}_{{ details.report.id }}' >{{ 'Report'|trans }}</a>
-                {% endif %}
-                {% if details.report is not empty and details.report.slug in ['fish-life-cycle-report'] %}
-                     <a class="btn blue-bg btn-sm text-white" href='{{ path('fish_new_modal',{'id': details.crmCustomer is not empty?details.crmCustomer.id:'', 'report':details.report.id, 'afterBefore':'before'}) }}' id='postView_{{ details.id }}_{{ details.report.id }}' >{{ 'Report'|trans }}</a>
-                {% endif %}
-                {% if details.report is not empty and details.report.slug in ['fish-life-cycle-after-sale-report'] %}
-                     <a class="btn blue-bg btn-sm text-white" href='{{ path('fish_new_modal',{'id': details.crmCustomer is not empty?details.crmCustomer.id:'', 'report':details.report.id, 'afterBefore':'after'}) }}' id='postView_{{ details.id }}_{{ details.report.id }}' >{{ 'Report'|trans }}</a>
-                {% endif %}
-                {% if details.report is not empty and details.report.slug in ['company-species-wise-average-fcr-before'] %}
-                     <a class="btn blue-bg btn-sm text-white" href='{{ path('fish_company_species_wise_fcr_modal',{'id': details.crmCustomer is not empty?details.crmCustomer.id:'', 'report':details.report.id}) }}' id='postView_{{ details.id }}_{{ details.report.id }}' >{{ 'Report'|trans }}</a>
-                {% endif %}
-                {% if details.report is not empty and details.report.slug in ['cattle-farm-visit-report'] %}
-                     <a class="btn blue-bg btn-sm text-white" data-action='{{ path('cattle_farm_visit_new_modal',{'id': details.crmCustomer is not empty?details.crmCustomer.id:'', 'report':details.report.id}) }}' href='?process=postView_{{ details.id }}_{{ details.report.id }}&report={{ details.report.slug }}&check=show#modal' id='postView_{{ details.id }}_{{ details.report.id }}' >{{ 'Report'|trans }}</a>
-                {% endif %}
-                {% if details.report is not empty and details.crmCustomer.farmerIntroduce is not empty and details.report.slug in ['farmer-touch-report-fish','farmer-touch-report-poultry','farmer-touch-report-cattle'] %}
-                     <a class="btn blue-bg btn-sm text-white" data-action='{{ path('farmer_introduce_new_modal',{'id': details.crmCustomer is not empty?details.crmCustomer.id:'', 'report':details.report.id}) }}' href='?process=postView_{{ details.id }}_{{ details.report.id }}&report={{ details.report.slug }}&check=show#modal' id='postView_{{ details.id }}_{{ details.report.id }}' >{{ 'Report'|trans }}</a>
-                {% endif %}
-                {% if details.report is not empty and details.report.slug in ['antibiotic-free-farm-poultry','antibiotic-free-farm-fish','antibiotic-free-farm-cattle'] %}
-                     <a class="btn blue-bg btn-sm text-white" data-action='{{ path('antibiotic_free_farm_new_modal',{'id': details.crmCustomer is not empty?details.crmCustomer.id:'', 'report':details.report.id}) }}' href='?process=postView_{{ details.id }}_{{ details.report.id }}&report={{ details.report.slug }}&check=show#modal' id='postView_{{ details.id }}_{{ details.report.id }}' >{{ 'Report'|trans }}</a>
-                {% endif %}
-                {% if details.report is not empty and details.report.slug in ['less-costing-farm-poultry','less-costing-farm-fish'] %}
-                     <a class="btn blue-bg btn-sm text-white" data-action='{{ path('cost_benefit_analysis_less_costing_farm_new_modal',{'id': details.crmCustomer is not empty?details.crmCustomer.id:'', 'report':details.report.id, 'parentParent':details.report.parent.parent.id}) }}' href='?process=postView_{{ details.id }}_{{ details.report.id }}&report={{ details.report.slug }}&check=show#modal' id='postView_{{ details.id }}_{{ details.report.id }}' >{{ 'Report'|trans }}</a>
-                {% endif %}
-                {% if details.report is not empty and details.report.slug in ['disease-mapping-report-poultry','disease-mapping-report-cattle','disease-mapping-report-fish'] %}
-                     <a class="btn blue-bg btn-sm text-white" data-action='{{ path('disease_mapping_new_modal',{'id': details.crmCustomer is not empty?details.crmCustomer.id:'', 'report':details.report.id}) }}' href='?process=postView_{{ details.id }}_{{ details.report.id }}&report={{ details.report.slug }}&check=show#modal' id='postView_{{ details.id }}_{{ details.report.id }}' >{{ 'Report'|trans }}</a>
-                {% endif %}
-                {% if details.report is not empty and details.report.slug in ['complain-different-products-poultry','complain-different-products-cattle','complain-different-products-fish'] %}
-                     <a class="btn blue-bg btn-sm text-white" data-action='{{ path('complain_different_product_new_modal',{'id': details.crmCustomer is not empty?details.crmCustomer.id:'', 'report':details.report.id}) }}' href='?process=postView_{{ details.id }}_{{ details.report.id }}&report={{ details.report.slug }}&check=show#modal' id='postView_{{ details.id }}_{{ details.report.id }}' >{{ 'Report'|trans }}</a>
-                {% endif %}
-                {% if details.report is not empty and details.report.slug in ['fish-feed-complain'] %}
-                     <a class="btn blue-bg btn-sm text-white" data-action='{{ path('fish_feed_complain_new_modal',{'id': details.crmCustomer is not empty?details.crmCustomer.id:'', 'report':details.report.id}) }}' href='?process=postView_{{ details.id }}_{{ details.report.id }}&report={{ details.report.slug }}&check=show#modal' id='postView_{{ details.id }}_{{ details.report.id }}' >{{ 'Report'|trans }}</a>
-                {% endif %}
+                    {% if details.report is not empty and details.report.slug in ['fattening-life-cycle','dairy-life-cycle'] %}
+                        <a class="btn blue-bg btn-sm text-white" data-action='{{ path('cattle_new_modal',{'id': details.crmCustomer is not empty?details.crmCustomer.id:'', 'report':details.report.id}) }}' href='?process=postView_{{ details.id }}_{{ details.report.id }}&report={{ details.report.slug }}&check=show#modal' id='postView_{{ details.id }}_{{ details.report.id }}' >{{ 'Report'|trans }}</a>
+                    {% endif %}
+                    {% if details.report is not empty and details.report.slug in ['fattening-performance-report','dairy-performance-report'] %}
+                        <a class="btn blue-bg btn-sm text-white" data-action='{{ path('cattle_performance_new_modal',{'id': details.crmCustomer is not empty?details.crmCustomer.id:'', 'report':details.report.id}) }}' href='?process=postView_{{ details.id }}_{{ details.report.id }}&report={{ details.report.slug }}&check=show#modal' id='postView_{{ details.id }}_{{ details.report.id }}' >{{ 'Report'|trans }}</a>
+                    {% endif %}
+                    {% if details.report is not empty and details.report.slug in ['layer-life-cycle-brown','layer-life-cycle-white'] %}
+                        <a class="btn blue-bg btn-sm text-white" data-action='{{ path('layer_new_modal',{'id': details.crmCustomer is not empty?details.crmCustomer.id:'', 'report':details.report.id}) }}' href='?process=postView_{{ details.id }}_{{ details.report.id }}&report={{ details.report.slug }}&check=show#modal' id='postView_{{ details.id }}_{{ details.report.id }}' >{{ 'Report'|trans }}</a>
+                    {% endif %}
+                    {% if details.report is not empty and details.report.slug in ['layer-performance-brown','layer-performance-white'] %}
+                        <a class="btn blue-bg btn-sm text-white" data-action='{{ path('layer_performance_new',{'id': details.crmCustomer is not empty?details.crmCustomer.id:'', 'report':details.report.id}) }}' href='?process=postView_{{ details.id }}_{{ details.report.id }}&report={{ details.report.slug }}&check=show#modal' id='postView_{{ details.id }}_{{ details.report.id }}' >{{ 'Report'|trans }}</a>
+                    {% endif %}
+                    {% if details.report is not empty and details.report.slug in ['fish-life-cycle-report'] %}
+                        <a class="btn blue-bg btn-sm text-white" href='{{ path('fish_new_modal',{'id': details.crmCustomer is not empty?details.crmCustomer.id:'', 'report':details.report.id, 'afterBefore':'before'}) }}' id='postView_{{ details.id }}_{{ details.report.id }}' >{{ 'Report'|trans }}</a>
+                    {% endif %}
+                    {% if details.report is not empty and details.report.slug in ['fish-life-cycle-after-sale-report'] %}
+                        <a class="btn blue-bg btn-sm text-white" href='{{ path('fish_new_modal',{'id': details.crmCustomer is not empty?details.crmCustomer.id:'', 'report':details.report.id, 'afterBefore':'after'}) }}' id='postView_{{ details.id }}_{{ details.report.id }}' >{{ 'Report'|trans }}</a>
+                    {% endif %}
+                    {% if details.report is not empty and details.report.slug in ['company-species-wise-average-fcr-before'] %}
+                        <a class="btn blue-bg btn-sm text-white" href='{{ path('fish_company_species_wise_fcr_modal',{'id': details.crmCustomer is not empty?details.crmCustomer.id:'', 'report':details.report.id}) }}' id='postView_{{ details.id }}_{{ details.report.id }}' >{{ 'Report'|trans }}</a>
+                    {% endif %}
+                    {% if details.report is not empty and details.report.slug in ['cattle-farm-visit-report'] %}
+                        <a class="btn blue-bg btn-sm text-white" data-action='{{ path('cattle_farm_visit_new_modal',{'id': details.crmCustomer is not empty?details.crmCustomer.id:'', 'report':details.report.id}) }}' href='?process=postView_{{ details.id }}_{{ details.report.id }}&report={{ details.report.slug }}&check=show#modal' id='postView_{{ details.id }}_{{ details.report.id }}' >{{ 'Report'|trans }}</a>
+                    {% endif %}
+                    {% if details.report is not empty and details.crmCustomer.farmerIntroduce is not empty and details.report.slug in ['farmer-touch-report-fish','farmer-touch-report-poultry','farmer-touch-report-cattle'] %}
+                        <a class="btn blue-bg btn-sm text-white" data-action='{{ path('farmer_introduce_new_modal',{'id': details.crmCustomer is not empty?details.crmCustomer.id:'', 'report':details.report.id}) }}' href='?process=postView_{{ details.id }}_{{ details.report.id }}&report={{ details.report.slug }}&check=show#modal' id='postView_{{ details.id }}_{{ details.report.id }}' >{{ 'Report'|trans }}</a>
+                    {% endif %}
+                    {% if details.report is not empty and details.report.slug in ['antibiotic-free-farm-poultry','antibiotic-free-farm-fish','antibiotic-free-farm-cattle'] %}
+                        <a class="btn blue-bg btn-sm text-white" data-action='{{ path('antibiotic_free_farm_new_modal',{'id': details.crmCustomer is not empty?details.crmCustomer.id:'', 'report':details.report.id}) }}' href='?process=postView_{{ details.id }}_{{ details.report.id }}&report={{ details.report.slug }}&check=show#modal' id='postView_{{ details.id }}_{{ details.report.id }}' >{{ 'Report'|trans }}</a>
+                    {% endif %}
+                    {% if details.report is not empty and details.report.slug in ['less-costing-farm-poultry','less-costing-farm-fish'] %}
+                        <a class="btn blue-bg btn-sm text-white" data-action='{{ path('cost_benefit_analysis_less_costing_farm_new_modal',{'id': details.crmCustomer is not empty?details.crmCustomer.id:'', 'report':details.report.id, 'parentParent':details.report.parent.parent.id}) }}' href='?process=postView_{{ details.id }}_{{ details.report.id }}&report={{ details.report.slug }}&check=show#modal' id='postView_{{ details.id }}_{{ details.report.id }}' >{{ 'Report'|trans }}</a>
+                    {% endif %}
+                    {% if details.report is not empty and details.report.slug in ['disease-mapping-report-poultry','disease-mapping-report-cattle','disease-mapping-report-fish'] %}
+                        <a class="btn blue-bg btn-sm text-white" data-action='{{ path('disease_mapping_new_modal',{'id': details.crmCustomer is not empty?details.crmCustomer.id:'', 'report':details.report.id}) }}' href='?process=postView_{{ details.id }}_{{ details.report.id }}&report={{ details.report.slug }}&check=show#modal' id='postView_{{ details.id }}_{{ details.report.id }}' >{{ 'Report'|trans }}</a>
+                    {% endif %}
+                    {% if details.report is not empty and details.report.slug in ['complain-different-products-poultry','complain-different-products-cattle','complain-different-products-fish'] %}
+                        <a class="btn blue-bg btn-sm text-white" data-action='{{ path('complain_different_product_new_modal',{'id': details.crmCustomer is not empty?details.crmCustomer.id:'', 'report':details.report.id}) }}' href='?process=postView_{{ details.id }}_{{ details.report.id }}&report={{ details.report.slug }}&check=show#modal' id='postView_{{ details.id }}_{{ details.report.id }}' >{{ 'Report'|trans }}</a>
+                    {% endif %}
+                    {% if details.report is not empty and details.report.slug in ['fish-feed-complain'] %}
+                        <a class="btn blue-bg btn-sm text-white" data-action='{{ path('fish_feed_complain_new_modal',{'id': details.crmCustomer is not empty?details.crmCustomer.id:'', 'report':details.report.id}) }}' href='?process=postView_{{ details.id }}_{{ details.report.id }}&report={{ details.report.slug }}&check=show#modal' id='postView_{{ details.id }}_{{ details.report.id }}' >{{ 'Report'|trans }}</a>
+                    {% endif %}
                 </td>
                 <td>
                     <a data-id="{{ details.id }}" class="btn btn-sm btn-transparent red-font row-remove">
