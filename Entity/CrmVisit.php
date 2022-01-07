@@ -100,9 +100,11 @@ class CrmVisit
      */
     private $appId;
 
+
     /**
-     * @var string
-     * @ORM\Column(name="working_mode" , type="string", nullable=true)
+     * @var Setting
+     * @ORM\ManyToOne(targetEntity="Setting", inversedBy="crmVisits")
+     * @ORM\JoinColumn(name="working_mode_id", referencedColumnName="id", onDelete="SET NULL", nullable=true)
      */
     private $workingMode;
 
@@ -288,7 +290,7 @@ class CrmVisit
     }
 
     /**
-     * @return string
+     * @return Setting
      */
     public function getWorkingMode()
     {
@@ -296,12 +298,13 @@ class CrmVisit
     }
 
     /**
-     * @param string $workingMode
+     * @param Setting $workingMode
      */
-    public function setWorkingMode(string $workingMode): void
+    public function setWorkingMode(Setting $workingMode): void
     {
         $this->workingMode = $workingMode;
     }
+
 
     /**
      * @return string

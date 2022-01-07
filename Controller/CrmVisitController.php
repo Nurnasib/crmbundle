@@ -68,7 +68,7 @@ class CrmVisitController extends AbstractController
             $em = $this->getDoctrine()->getManager();
             $em->persist($entity);
             $em->flush();
-            if($entity->getWorkingMode()=='leave'){
+            if($entity->getWorkingMode() && $entity->getWorkingMode()->getSlug()!='working'){
                 return $this->redirectToRoute('crm_visit');
             }
             return $this->redirectToRoute('crm_visit_edit',array('id'=>$entity->getId()));

@@ -2272,4 +2272,33 @@ class ApiController extends AbstractController
         ]);
 
     }
+
+    /**
+     * @param Request $request
+     * @param ParameterBagInterface $parameterBag
+     * @return JsonResponse
+     * @Route("/visit-working-mode", name="visit_working_mode")
+     */
+    public function visitWorkingMode(Request $request, ParameterBagInterface $parameterBag)
+    {
+        set_time_limit(0);
+        ignore_user_abort(true);
+        if ($request->getMethod() == 'GET' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')){
+            $workingModes = $this->getDoctrine()->getRepository(Setting::class)->findBy(['status'=>1, 'settingType'=>'WORKING_MODE']);
+
+            $data = [];
+            foreach ($workingModes as $workingMode) {
+                $data[] = [
+                    'id' => $workingMode->getId(),
+                    'name' => $workingMode->getName(),
+                ];
+            }
+            return new JsonResponse($data);
+        }
+        return new JsonResponse([
+            'status' => 404,
+            'message' => 'Not Found!'
+        ]);
+
+    }
 }

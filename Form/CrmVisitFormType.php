@@ -26,6 +26,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Terminalbd\CrmBundle\Entity\CrmVisit;
+use Terminalbd\CrmBundle\Entity\Setting;
 
 
 /**
@@ -76,13 +77,26 @@ class CrmVisitFormType extends AbstractType
                         ->orderBy('e.name', 'ASC');
                 },
             ))
-            ->add('workingMode', ChoiceType::class, [
+            ->add('workingMode', EntityType::class, array(
+                'required'    => true,
+                'class' => Setting::class,
+                'placeholder' => 'Choose Working Mode',
+                'choice_label' => 'name',
+                'attr'=>array('class'=>'span12 m-wrap workingMode'),
+                'query_builder' => function(EntityRepository $er){
+                    return $er->createQueryBuilder('e')
+                        ->where("e.status =1")
+                        ->andWhere("e.settingType ='WORKING_MODE'")
+                        ->orderBy('e.id', 'ASC');
+                },
+            ))
+            /*->add('workingMode', ChoiceType::class, [
                 'required'    => true,
                 'choices'  => [
                     'Working' => 'working',
                     'Leave' => 'leave',
                 ],
-            ])
+            ])*/
             ->add('remarks', TextareaType::class,[
                 'required'    => false,
             ])

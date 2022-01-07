@@ -226,6 +226,7 @@ class SyncAppDataController extends AbstractController
             $createdAt = new \DateTime($visit['created_at']);
             $findEmployee = $this->getDoctrine()->getRepository(User::class)->find($visit['employee_id']);
             $findLocation = $visit['location_id'] ? $this->getDoctrine()->getRepository(Location::class)->find($visit['location_id']) : null;
+            $mode = $visit['mode'] ? $this->getDoctrine()->getRepository(Setting::class)->find($visit['mode']) : null;
 
             if ($findEmployee){
                 $newVisit = new CrmVisit();
@@ -238,7 +239,9 @@ class SyncAppDataController extends AbstractController
                 $newVisit->setWorkingDuration($visit['duration_from']);
                 $newVisit->setWorkingDurationTo($visit['duration_to']);
                 $newVisit->setCreated($createdAt);
-                $newVisit->setWorkingMode($visit['mode']);
+                if($mode){
+                    $newVisit->setWorkingMode($visit['mode']);
+                }
                 $newVisit->setRemarks($visit['remarks']);
 
                 $em->persist($newVisit);
