@@ -48,9 +48,11 @@ class SearchFilterFormType extends AbstractType
                     ],
                     'Cattle' => [
                         'Farmer Survey' => 'farmer-survey-cattle',
+
                     ],
                     'Fish' => [
                         'Farmer Survey' => 'farmer-survey-fish',
+
                     ],
 
                 ],
@@ -83,6 +85,21 @@ class SearchFilterFormType extends AbstractType
                     return $er->createQueryBuilder('e')
                         ->where('e.settingType = :settingType')->setParameter('settingType', 'FARMER_REPORT')
                         ->andWhere('e.slug IN (:slug)')->setParameter('slug', ['sonali-life-cycle','boiler-life-cycle','layer-life-cycle-brown','layer-life-cycle-white','dairy-life-cycle','fattening-life-cycle','fish-life-cycle-report','fish-life-cycle-after-sale-report'])
+                        ->andWhere('e.status = 1')
+                        ->orderBy('e.name');
+                },
+                'attr' => [
+                    'class' => 'select2'
+                ]
+
+            ])
+            ->add('lab', EntityType::class,[
+                'class' => Setting::class,
+                'choice_label' => 'name',
+                'placeholder' => '- Select Lab -',
+                'query_builder' => function(EntityRepository $er){
+                    return $er->createQueryBuilder('e')
+                        ->where('e.settingType = :settingType')->setParameter('settingType', 'LAB_NAME')
                         ->andWhere('e.status = 1')
                         ->orderBy('e.name');
                 },
@@ -174,9 +191,12 @@ class SearchFilterFormType extends AbstractType
                 'required' => false
             ])
             ->add('year', ChoiceType::class,[
-                'choices' => $this->getYears(2021),
+                'choices' => $this->getYears(2020),
                 'placeholder' => '- Select year -',
-                'required' => false
+                'required' => false,
+                'attr' => [
+                    'class' => 'select2'
+                ]
             ])
             ->add('reportStatus', ChoiceType::class,[
                 'choices' => [

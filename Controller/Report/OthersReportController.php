@@ -51,8 +51,6 @@ class OthersReportController extends AbstractController
 
         if($form->isSubmitted()){
 
-            $isExcel= $request->request->get('excel');
-
             $filterBy['startDate'] = $form->getData()['startDate'];
             $filterBy['endDate'] = $form->getData()['endDate'];
             $filterBy['employeeId'] = $form->getData()['employee'] ? $form->getData()['employee']->getId() : '';
@@ -98,6 +96,30 @@ class OthersReportController extends AbstractController
             'filterBy'=> $filterBy,
             'species'=> $species,
             'employee'=> $employee,
+        ]);
+    }
+
+    /**
+     * @param Request $request
+     * @Route("/lab-service", name="lab_service_report")
+     */
+    public function labSummary(Request $request)
+    {
+        $filterBy = [];
+
+        $form = $this->createForm(SearchFilterFormType::class);
+        $form->handleRequest($request);
+
+        if($form->isSubmitted()){
+            $filterBy['employeeId'] = $form->getData()['employee'] ? $form->getData()['employee']->getId() : '';
+            $filterBy['lab'] = $form->getData()['lab'] ? $form->getData()['lab']->getSlug() : null;
+
+            $employee = $form->getData()['employee'];
+//            dd($filterBy);
+
+        }
+        return $this->render('@TerminalbdCrm/report/others/lab-service/index.html.twig',[
+            'form' => $form->createView(),
         ]);
     }
 
