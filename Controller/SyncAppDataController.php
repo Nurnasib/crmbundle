@@ -226,7 +226,7 @@ class SyncAppDataController extends AbstractController
             $createdAt = new \DateTime($visit['created_at']);
             $findEmployee = $this->getDoctrine()->getRepository(User::class)->find($visit['employee_id']);
             $findLocation = $visit['location_id'] ? $this->getDoctrine()->getRepository(Location::class)->find($visit['location_id']) : null;
-            $mode = $visit['modeId'] ? $this->getDoctrine()->getRepository(Setting::class)->find($visit['modeId']) : null;
+            $mode = $visit['modeId'] ? $this->getDoctrine()->getRepository(Setting::class)->find((int)$visit['modeId']) : null;
 
             if ($findEmployee){
                 $newVisit = new CrmVisit();
