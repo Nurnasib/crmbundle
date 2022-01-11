@@ -161,6 +161,7 @@ class FarmerIntroduceDetailsRepository extends BaseRepository
 
         $start = isset($filterBy['startDate']) ? (new \DateTime($filterBy['startDate']))->format('Y-m-d') . ' 00:00:00' : null;
         $end = isset($filterBy['endDate']) ? (new \DateTime($filterBy['endDate']))->format('Y-m-d') . ' 23:59:59' : null;
+        $employee = isset($filterBy['employee']) ? $filterBy['employee']->getId() : null;
 
         $qb = $this->createQueryBuilder('e');
 
@@ -178,7 +179,7 @@ class FarmerIntroduceDetailsRepository extends BaseRepository
         $qb->addSelect('other_feed.name AS otherFeedName');
         $qb->addSelect('feed.name AS feedName');
 
-        $qb->where('employee.id = :employeeId')->setParameter('employeeId', $filterBy['employeeId']);
+        $qb->where('employee.id = :employeeId')->setParameter('employeeId', $employee);
         $qb->andWhere('e.createdAt >= :start')->setParameter('start', $start);
         $qb->andWhere('e.createdAt <= :end')->setParameter('end', $end);
 

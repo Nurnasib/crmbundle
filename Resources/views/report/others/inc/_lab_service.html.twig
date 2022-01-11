@@ -1,0 +1,77 @@
+<table width="100%">
+    <tr>
+        <th colspan="14"><h3 class="text-center">NOURISH POULTRY AND HATCHERY LTD</h3></th>
+    </tr>
+    <tr>
+        <th colspan="14"><h5 class="text-center">UTTARA, DHAKA.</h5></th>
+    </tr>
+
+    <tr>
+        <td colspan="14" align="center"><h6>{{ 'Lab Service Report (Poultry)'|upper }}</h6></td>
+    </tr>
+</table>
+<table width="100%" class="table table-bordered">
+    <thead class="thead-dark">
+    <tr>
+        <th>Officer's ID: {{ employee ? employee.userId : '' }}</th>
+        <th>Officer's Name: {{ employee ? employee.name : '' }}</th>
+        <th>Designation: {{ employee and employee.designation ? employee.designation.name : '' }}</th>
+        <th>Region: {{ employee and employee.regional ? employee.regional.name : '' }}</th>
+        <th>Name of Lab: {{ filterBy.lab.name|default() }}</th>
+    </tr>
+    </thead>
+</table>
+<table class="table table-striped table-bordered table-hover">
+    <thead class="thead-dark">
+    <tr>
+        <th scope="col">Services</th>
+        {% for month in 1..12 %}
+            {% set date = '01-' ~ month ~ '-2021' %}
+            <th scope="col" style="text-align: center">{{ date|date('F') }}</th>
+        {% endfor %}
+        <th scope="col" style="text-align: center">Total</th>
+
+    </tr>
+    </thead>
+    <tbody>
+    {% set monthTotal = [] %}
+
+    {% for entity in entities %}
+        {% set yearTotal = 0 %}
+        <tr>
+            <td>{{ entity.serviceName }}</td>
+            {% for month in 1..12 %}
+                {% set date = '01-' ~ month ~ '-2021' %}
+                {% set monthName = date|date('F')|lower %}
+                {% set value = entity[monthName]|default(0) %}
+                {% set yearTotal = yearTotal + value %}
+
+                {% if monthTotal[monthName] is defined %}
+                    {% set monthTotal = monthTotal|merge({(monthName): (monthTotal[monthName] + value)}) %}
+                {% else %}
+                    {% set monthTotal = monthTotal|merge({(monthName): (value)}) %}
+                {% endif %}
+                <td align="center">{{ value }}</td>
+            {% endfor %}
+            <td align="right">{{ yearTotal }}</td>
+        </tr>
+
+    {% endfor %}
+
+    <tr>
+        <th style="text-align: center">Total</th>
+
+        {% set total = 0 %}
+        {% for month in 1..12 %}
+            {% set date = '01-' ~ month ~ '-2021' %}
+            {% set monthName = date|date('F')|lower %}
+            {% set total = total + monthTotal[monthName] %}
+
+            <th style="text-align: center">{{ monthTotal[monthName]|default() }}</th>
+        {% endfor %}
+
+        <th style="text-align: center">{{ total }}</th>
+    </tr>
+    </tbody>
+
+</table>

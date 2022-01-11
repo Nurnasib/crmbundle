@@ -82,4 +82,30 @@ class LabServiceRepository extends EntityRepository
         return array();
     }
 
+    public function getLabServiceSummaryReport($filterBy)
+    {
+        $start = isset($filterBy['startDate']) ? (new \DateTime($filterBy['startDate']))->format('Y-m-d') . ' 00:00:00' : null;
+        $end = isset($filterBy['endDate']) ? (new \DateTime($filterBy['endDate']))->format('Y-m-d') . ' 23:59:59' : null;
+
+        $qb = $this->createQueryBuilder('e');
+        $qb->join('e.service', 'service');
+        $qb->select('e AS details');
+        $qb->addSelect('service.id AS serviceId', 'service.name AS serviceName');
+
+        $qb->where('e.employee = :employee')->setParameter('employee', $filterBy['employee']);
+        $qb->andWhere('e.lab = :lab')->setParameter('lab', $filterBy['lab']);
+        $qb->andWhere('e.createdAt >= :start')->setParameter('start', $start);
+        $qb->andWhere('e.createdAt <= :end')->setParameter('end', $end);
+
+        $results = $qb->getQuery()->getArrayResult();
+
+        $data = [];
+
+        foreach ($results as $result) {
+            $result['details']['serviceId'] = $result['serviceId'];
+            $result['details']['serviceName'] = $result['serviceName'];
+            $data[$result['serviceId']] = $result['details'];
+        }
+        return $data;
+    }
 }

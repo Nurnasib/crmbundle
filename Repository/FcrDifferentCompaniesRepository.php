@@ -80,4 +80,33 @@ class FcrDifferentCompaniesRepository extends EntityRepository
         return array();
     }
 
+    public function getFcrDifferentCompaniesReport($filterBy)
+    {
+        $start = isset($filterBy['startDate']) ? (new \DateTime($filterBy['startDate']))->format('Y-m-d') . ' 00:00:00' : null;
+        $end = isset($filterBy['endDate']) ? (new \DateTime($filterBy['endDate']))->format('Y-m-d') . ' 23:59:59' : null;
+
+        $qb = $this->createQueryBuilder('e');
+
+        $qb->join('e.hatchery', 'hatchery');
+
+        $qb->select('e AS details');
+        $qb->addSelect('hatchery.id AS companyId', 'hatchery.name AS companyName');
+
+        $qb->where('e.employee = :employee')->setParameter('employee', $filterBy['employee']);
+        $qb->andWhere('e.createdAt >= :start')->setParameter('start', $start);
+        $qb->andWhere('e.createdAt <= :end')->setParameter('end', $end);
+
+        $results = $qb->getQuery()->getArrayResult();
+
+        $data = [];
+
+        foreach ($results as $result) {
+            $result['details']['companyId'] = $result['companyId'];
+            $result['details']['companyName'] = $result['companyName'];
+            $data[] = $result['details'];
+        }
+
+        return $data;
+    }
+
 }

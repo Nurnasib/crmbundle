@@ -12,6 +12,7 @@
 namespace Terminalbd\CrmBundle\Form;
 
 
+use App\Entity\Admin\Location;
 use App\Entity\User;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -45,6 +46,8 @@ class SearchFilterFormType extends AbstractType
                 'choices' => [
                     'Poultry' => [
                         'Farmer Survey' => 'farmer-survey-poultry',
+                        'Lab Service' => 'lab-service-poultry',
+                        'FCR Different Companies' => 'fcr-different-companies-poultry',
                     ],
                     'Cattle' => [
                         'Farmer Survey' => 'farmer-survey-cattle',
@@ -105,7 +108,72 @@ class SearchFilterFormType extends AbstractType
                 },
                 'attr' => [
                     'class' => 'select2'
-                ]
+                ],
+                'required' => false
+
+            ])
+            ->add('feedMill', EntityType::class,[
+                'class' => Setting::class,
+                'choice_label' => 'name',
+                'placeholder' => '- Select Feed Mill -',
+                'query_builder' => function(EntityRepository $er){
+                    return $er->createQueryBuilder('e')
+                        ->where('e.settingType = :settingType')->setParameter('settingType', 'FEED_MILL')
+                        ->andWhere('e.status = 1')
+                        ->orderBy('e.name');
+                },
+                'attr' => [
+                    'class' => 'select2'
+                ],
+                'required' => false
+
+            ])
+            ->add('breed', EntityType::class,[
+                'class' => Setting::class,
+                'choice_label' => 'name',
+                'placeholder' => '- Select Breed -',
+                'query_builder' => function(EntityRepository $er){
+                    return $er->createQueryBuilder('e')
+                        ->where('e.settingType = :settingType')->setParameter('settingType', 'BREED_TYPE')
+                        ->andWhere('e.status = 1')
+                        ->orderBy('e.name');
+                },
+                'attr' => [
+                    'class' => 'select2'
+                ],
+                'required' => false
+
+            ])
+            ->add('region', EntityType::class,[
+                'class' => Location::class,
+                'choice_label' => 'name',
+                'placeholder' => '- Select Region -',
+                'query_builder' => function(EntityRepository $er){
+                    return $er->createQueryBuilder('e')
+                        ->where('e.level = :level')->setParameter('level', 3)
+                        ->andWhere('e.parent IS NOT NULL')
+                        ->orderBy('e.name');
+                },
+                'attr' => [
+                    'class' => 'select2'
+                ],
+                'required' => false
+
+            ])
+            ->add('zone', EntityType::class,[
+                'class' => Location::class,
+                'choice_label' => 'name',
+                'placeholder' => '- Select Region -',
+                'query_builder' => function(EntityRepository $er){
+                    return $er->createQueryBuilder('e')
+                        ->where('e.level = :level')->setParameter('level', 2)
+                        ->andWhere('e.parent IS NOT NULL')
+                        ->orderBy('e.name');
+                },
+                'attr' => [
+                    'class' => 'select2'
+                ],
+                'required' => false
 
             ])
             ->add('startDate', TextType::class,[

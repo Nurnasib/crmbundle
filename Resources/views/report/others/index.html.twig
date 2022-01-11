@@ -45,6 +45,28 @@
                             {{ form_widget(form.endDate,{'id':'end-date', 'attr':{'placeholder': 'dd-mm-YYYY'}}) }}
                         </th>
                         <th>
+                            {{ form_label(form.lab, 'Lab:') }}
+                            {{ form_widget(form.lab) }}
+                        </th>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ form_label(form.region, 'Region:') }}
+                            {{ form_widget(form.region) }}
+                        </th>
+                        <th>
+                            {{ form_label(form.zone, 'Zone:') }}
+                            {{ form_widget(form.zone) }}
+                        </th>
+                        <th>
+                            {{ form_label(form.feedMill, 'Mill:') }}
+                            {{ form_widget(form.feedMill) }}
+                        </th>
+                        <th>
+                            {{ form_label(form.breed, 'Breed:') }}
+                            {{ form_widget(form.breed) }}
+                        </th>
+                        <th style="text-align: right">
                             <div class="btn-group" style="margin-top: 25px">
                                 <button type="submit" name="search" class="btn btn-primary btn-sm" title="Search" value="search"><i class="fa fa-search" aria-hidden="true"></i></button>
                                 <a href="{{ path('others_report_index') }}" class="btn purple-bg btn-sm white-font" title="Reset" value="reset"><i class="fa fa-refresh" aria-hidden="true"></i></a>
@@ -65,13 +87,14 @@
             <div class="row">
                 <div class="card" style="overflow-x: scroll">
                     <div class="card-block">
-                        {#<h3 class="text-center">NOURISH POULTRY AND HATCHERY LTD</h3>
-                        <h5 class="text-center">UTTARA, DHAKA.</h5>
-                        <h6 class="text-center">{{ lifeCycleSlug|replace({'-': ' '})|upper }}</h6>
-                        #}
-                        {% if filterBy['report'] is same as 'farmer-survey-poultry' %}
+                        {% if filterBy['otherReport'] is same as 'farmer-survey-poultry' %}
                             {% include '@TerminalbdCrm/report/others/inc/_farmer_survey.html.twig'%}
-                        {% elseif report is same as 'fcr-after-sale-boiler' %}
+
+                        {% elseif filterBy['otherReport'] is same as 'lab-service-poultry' %}
+                            {% include '@TerminalbdCrm/report/others/inc/_lab_service.html.twig'%}
+
+                        {% elseif filterBy['otherReport'] is same as 'fcr-different-companies-poultry' %}
+                            {% include '@TerminalbdCrm/report/others/inc/_fcr_different_companies.html.twig'%}
 
                         {% endif %}
 

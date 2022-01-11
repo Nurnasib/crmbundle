@@ -19,6 +19,8 @@ use Terminalbd\CrmBundle\Entity\CostBenefitAnalysisForLessCostingFarm;
 use Terminalbd\CrmBundle\Entity\CrmCustomer;
 use Terminalbd\CrmBundle\Entity\DiseaseMapping;
 use Terminalbd\CrmBundle\Entity\FcrDetails;
+use Terminalbd\CrmBundle\Entity\FcrDifferentCompanies;
+use Terminalbd\CrmBundle\Entity\LabService;
 use Terminalbd\CrmBundle\Entity\LayerPerformanceDetails;
 use Terminalbd\CrmBundle\Entity\NewFarmerIntroduce\FarmerIntroduceDetails;
 use Terminalbd\CrmBundle\Entity\Setting;
@@ -43,26 +45,27 @@ class OthersReportController extends AbstractController
         $filterBy = [];
         $entities = [];
         $species = [];
-
         $employee = null;
-        $report = null;
+
         $form = $this->createForm(SearchFilterFormType::class);
         $form->handleRequest($request);
 
         if($form->isSubmitted()){
-
-            $filterBy['startDate'] = $form->getData()['startDate'];
-            $filterBy['endDate'] = $form->getData()['endDate'];
-            $filterBy['employeeId'] = $form->getData()['employee'] ? $form->getData()['employee']->getId() : '';
-            $filterBy['report'] = $form->getData()['otherReport'];
+            $filterBy = $form->getData();
 
             $employee = $form->getData()['employee'];
 
-            switch ($filterBy['report']){
+            switch ($filterBy['otherReport']){
                 case 'farmer-survey-poultry':
                     $breed = $this->getDoctrine()->getRepository(Setting::class)->findBy(['status' => 1, 'slug' => 'poultry-breed', 'settingType' => 'BREED_NAME']);
                     $species = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('status'=>1,'settingType'=>'SPECIES_TYPE','parent'=>$breed));
                     $entities = $this->getDoctrine()->getRepository(FarmerIntroduceDetails::class)->getFarmerSurveyReport($filterBy);
+                    break;
+                case 'lab-service-poultry':
+                    $entities = $this->getDoctrine()->getRepository(LabService::class)->getLabServiceSummaryReport($filterBy);
+                    break;
+                case 'fcr-different-companies-poultry':
+                    $entities = $this->getDoctrine()->getRepository(FcrDifferentCompanies::class)->getFcrDifferentCompaniesReport($filterBy);
                     break;
                 default:
                     $entities = [];
@@ -79,7 +82,7 @@ class OthersReportController extends AbstractController
                 'employee'=> $employee,
             ]);
 
-            $fileName = $filterBy['report'] .'_'.time().".xls";
+            $fileName = $filterBy['otherReport'] .'_'.time().".xls";
 
             header("Content-Type:  application/vnd.ms-excel; charset=utf-8");
 //        header("Content-type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
@@ -96,30 +99,6 @@ class OthersReportController extends AbstractController
             'filterBy'=> $filterBy,
             'species'=> $species,
             'employee'=> $employee,
-        ]);
-    }
-
-    /**
-     * @param Request $request
-     * @Route("/lab-service", name="lab_service_report")
-     */
-    public function labSummary(Request $request)
-    {
-        $filterBy = [];
-
-        $form = $this->createForm(SearchFilterFormType::class);
-        $form->handleRequest($request);
-
-        if($form->isSubmitted()){
-            $filterBy['employeeId'] = $form->getData()['employee'] ? $form->getData()['employee']->getId() : '';
-            $filterBy['lab'] = $form->getData()['lab'] ? $form->getData()['lab']->getSlug() : null;
-
-            $employee = $form->getData()['employee'];
-//            dd($filterBy);
-
-        }
-        return $this->render('@TerminalbdCrm/report/others/lab-service/index.html.twig',[
-            'form' => $form->createView(),
         ]);
     }
 
