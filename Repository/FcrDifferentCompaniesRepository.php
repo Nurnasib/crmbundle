@@ -101,11 +101,13 @@ class FcrDifferentCompaniesRepository extends EntityRepository
         $data = [];
 
         foreach ($results as $result) {
+            $month = $result['details']['createdAt']->format('Y-m-F');
+
             $result['details']['companyId'] = $result['companyId'];
             $result['details']['companyName'] = $result['companyName'];
-            $data[] = $result['details'];
+            $data[$month][] = $result['details'];
         }
-
+        ksort($data);
         return $data;
     }
 

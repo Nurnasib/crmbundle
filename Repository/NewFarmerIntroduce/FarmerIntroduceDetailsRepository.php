@@ -173,7 +173,7 @@ class FarmerIntroduceDetailsRepository extends BaseRepository
         $qb->leftJoin('agent.district', 'agentDistrict');
         $qb->leftJoin('agent.upozila', 'agentUpozila');
 
-        $qb->select('e.cultureSpeciesItemAndQty', 'e.remarks');
+        $qb->select('e.cultureSpeciesItemAndQty', 'e.remarks', 'e.createdAt');
         $qb->addSelect('farmer.id AS farmerId', 'farmer.name AS farmerName', 'farmer.address AS farmerAddress', 'farmer.mobile AS farmerMobile');
         $qb->addSelect('agent.agentId', 'agent.name AS agentName', 'agentDistrict.name AS agentDistrictName', 'agentUpozila.name AS agentUpozilaName');
         $qb->addSelect('other_feed.name AS otherFeedName');
@@ -187,14 +187,16 @@ class FarmerIntroduceDetailsRepository extends BaseRepository
 
         $data = [];
         foreach ($results as $result) {
-            $data[$result['agentId']]['agent'] = [
+            $month = $result['createdAt']->format('Y-m-F');
+            $data[$month][$result['agentId']]['agent'] = [
                 'agentId' => $result['agentId'],
                 'agentName' => $result['agentName'],
                 'agentDistrictName' => $result['agentDistrictName'],
                 'agentUpozilaName' => $result['agentUpozilaName'],
             ];
-            $data[$result['agentId']]['farmers'][$result['farmerId']] = $result;
+            $data[$month][$result['agentId']]['farmers'][$result['farmerId']] = $result;
         }
+        ksort($data);
         return $data;
     }
 

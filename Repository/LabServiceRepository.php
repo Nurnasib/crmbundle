@@ -98,14 +98,16 @@ class LabServiceRepository extends EntityRepository
         $qb->andWhere('e.createdAt <= :end')->setParameter('end', $end);
 
         $results = $qb->getQuery()->getArrayResult();
-
         $data = [];
 
         foreach ($results as $result) {
+            $month = $result['details']['createdAt']->format('Y-m-F');
+
             $result['details']['serviceId'] = $result['serviceId'];
             $result['details']['serviceName'] = $result['serviceName'];
-            $data[$result['serviceId']] = $result['details'];
+            $data[$month][$result['serviceId']] = $result['details'];
         }
+        ksort($data);
         return $data;
     }
 }

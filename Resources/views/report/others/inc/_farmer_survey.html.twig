@@ -1,80 +1,88 @@
-<table width="100%">
-    <tr>
-        <th colspan="20"><h3 class="text-center">NOURISH POULTRY AND HATCHERY LTD</h3></th>
-    </tr>
-    <tr>
-        <th colspan="20"><h5 class="text-center">UTTARA, DHAKA.</h5></th>
-    </tr>
-
-    <tr>
-        <td colspan="20" align="center"><h6>{{ 'Farmer Survey Report Poultry'|upper }}</h6></td>
-    </tr>
-</table>
-<table width="100%" class="table table-bordered">
-    <thead class="thead-dark">
-    <tr>
-        <th>Officer's ID: {{ employee ? employee.userId : '' }}</th>
-        <th>Officer's Name: {{ employee ? employee.name : '' }}</th>
-        <th>Designation: {{ employee and employee.designation ? employee.designation.name : '' }}</th>
-        <th>Region: {{ employee and employee.regional ? employee.regional.name : '' }}</th>
-    </tr>
-    </thead>
-</table>
-<table class="table table-striped table-bordered table-hover">
-    <thead class="thead-dark">
-    <tr>
-        <th scope="col" colspan="4" style="text-align: center">Agent</th>
-        <th scope="col" colspan="4" style="text-align: center">Farmer</th>
-        <th scope="col" colspan="{{ species ? species|length : 0 }}" style="text-align: center">Capacity</th>
-        <th scope="col" colspan="2" style="text-align: center">Feed</th>
-        <th scope="col" rowspan="2">Remarks</th>
-    </tr>
-    <tr>
-        <th scope="col">Agent ID</th>
-        <th scope="col">Name</th>
-        <th scope="col">District</th>
-        <th scope="col">Thana</th>
-        <th scope="col">S/N</th>
-        <th scope="col">Name</th>
-        <th scope="col">Address</th>
-        <th scope="col">Mobile</th>
-        {% if species is defined and species is not empty %}
-            {% for item in species %}
-                <th scope="col">{{ item.name }}</th>
-            {% endfor %}
-        {% endif %}
-        <th scope="col">Nourish</th>
-        <th scope="col">Ohters</th>
-    </tr>
-    </thead>
-    <tbody>
+{% for monthYear, entity in entities %}
     {% set count = 0 %}
 
-    {% for entity in entities %}
-        {% for farmer in entity.farmers %}
-            {% set count = count + 1 %}
-            {% set capacity = farmer.cultureSpeciesItemAndQty|json_decode %}
-            <tr>
-                {% if loop.first %}
-                    <td rowspan="{{ entity.farmers|length }}">{{ entity.agent.agentId }}</td>
-                    <td rowspan="{{ entity.farmers|length }}">{{ entity.agent.agentName }}</td>
-                    <td rowspan="{{ entity.farmers|length }}">{{ entity.agent.agentDistrictName }}</td>
-                    <td rowspan="{{ entity.farmers|length }}">{{ entity.agent.agentUpozilaName }}</td>
-                {% endif %}
-                <td align="center">{{ count }}</td>
-                <td>{{ farmer.farmerName }}</td>
-                <td>{{ farmer.farmerAddress }}</td>
-                <td>{{ farmer.farmerMobile }}</td>
-                {% if species is defined and species is not empty %}
-                    {% for item in species %}
-                        <td>{{ capacity[item.id]|default(0) }}</td>
-                    {% endfor %}
-                {% endif %}
-                <td>{{ farmer.feedName }}</td>
-                <td>{{ farmer.otherFeedName }}</td>
-                <td>{{ farmer.remarks }}</td>
-            </tr>
+    <table width="100%">
+        <tr>
+            <th colspan="14"><h3 class="text-center">NOURISH POULTRY AND HATCHERY LTD</h3></th>
+        </tr>
+        <tr>
+            <th colspan="14"><h5 class="text-center">UTTARA, DHAKA.</h5></th>
+        </tr>
+
+        <tr>
+            <td colspan="14" align="center"><h6>{{ 'Farmer Survey Report (Poultry)'|upper }}</h6></td>
+        </tr>
+    </table>
+    <table width="100%" class="table table-bordered">
+        <thead class="thead-dark">
+        <tr>
+            <th>Officer's ID: {{ employee ? employee.userId : '' }}</th>
+            <th>Officer's Name: {{ employee ? employee.name : '' }}</th>
+            <th>Designation: {{ employee and employee.designation ? employee.designation.name : '' }}</th>
+            <th>Region: {{ employee and employee.regional ? employee.regional.name : '' }}</th>
+            <th>Month: {{ monthYear|split('-')[2] ~ '-' ~ monthYear|split('-')[0] }}</th>
+        </tr>
+        </thead>
+    </table>
+    <table class="table table-striped table-bordered table-hover">
+        <thead class="thead-dark">
+        <tr>
+            <th scope="col" colspan="4" style="text-align: center">Agent</th>
+            <th scope="col" colspan="4" style="text-align: center">Farmer</th>
+            <th scope="col" colspan="{{ species ? species|length : 0 }}" style="text-align: center">Capacity</th>
+            <th scope="col" colspan="2" style="text-align: center">Feed</th>
+            <th scope="col" rowspan="2">Remarks</th>
+        </tr>
+        <tr>
+            <th scope="col">Agent ID</th>
+            <th scope="col">Name</th>
+            <th scope="col">District</th>
+            <th scope="col">Thana</th>
+            <th scope="col">S/N</th>
+            <th scope="col">Name</th>
+            <th scope="col">Address</th>
+            <th scope="col">Mobile</th>
+            {% if species is defined and species is not empty %}
+                {% for item in species %}
+                    <th scope="col">{{ item.name }}</th>
+                {% endfor %}
+            {% endif %}
+            <th scope="col">Nourish</th>
+            <th scope="col">Ohters</th>
+        </tr>
+        </thead>
+        <tbody>
+        {#    {% set count = 0 %}#}
+
+        {% for data in entity %}
+            {% for farmer in data.farmers %}
+                {% set count = count + 1 %}
+                {% set capacity = farmer.cultureSpeciesItemAndQty|json_decode %}
+                <tr>
+                    {% if loop.first %}
+                        <td rowspan="{{ data.farmers|length }}">{{ data.agent.agentId }}</td>
+                        <td rowspan="{{ data.farmers|length }}">{{ data.agent.agentName }}</td>
+                        <td rowspan="{{ data.farmers|length }}">{{ data.agent.agentDistrictName }}</td>
+                        <td rowspan="{{ data.farmers|length }}">{{ data.agent.agentUpozilaName }}</td>
+                    {% endif %}
+                    <td align="center">{{ count }}</td>
+                    <td>{{ farmer.farmerName }}</td>
+                    <td>{{ farmer.farmerAddress }}</td>
+                    <td>{{ farmer.farmerMobile }}</td>
+                    {% if species is defined and species is not empty %}
+                        {% for item in species %}
+                            <td>{{ capacity[item.id]|default(0) }}</td>
+                        {% endfor %}
+                    {% endif %}
+                    <td>{{ farmer.feedName }}</td>
+                    <td>{{ farmer.otherFeedName }}</td>
+                    <td>{{ farmer.remarks }}</td>
+                </tr>
+            {% endfor %}
         {% endfor %}
-    {% endfor %}
-    </tbody>
-</table>
+        <tr>
+            <td colspan="14"></td>
+        </tr>
+        </tbody>
+    </table>
+{% endfor %}
