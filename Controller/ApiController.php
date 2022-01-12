@@ -50,10 +50,21 @@ class ApiController extends AbstractController
         set_time_limit(0);
         ignore_user_abort(true);
         if ($request->getMethod() == 'POST' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')){
-            $userMobile = trim($request->request->get('mobile'));
-            $findUser = $this->getDoctrine()->getRepository(User::class)->findOneBy(['enabled' => 1, 'mobile' => $userMobile]);
+            $userId = trim($request->request->get('user_id'));
+            $findUser = $this->getDoctrine()->getRepository(User::class)->findOneBy(['enabled' => 1, 'userId' => $userId]);
             if ($findUser){
-                $userMobile = str_replace('-', '', $userMobile);
+                if (!$findUser->getMobile()){
+                    $response = new Response();
+                    $response->headers->set('Content-Type', 'application/json');
+                    $response->setContent(json_encode([
+                        'message' => 'Mobile number does not found!',
+                        'status' => 404,
+                    ]));
+                    $response->setStatusCode(Response::HTTP_NOT_FOUND);
+                    return $response;
+                }
+                $userMobile = str_replace('-', '', $findUser->getMobile());
+
                 $otp = (string)mt_rand(1000, 9999);
                 $message = 'Your OTP is ' . $otp . '.';
                 $smsResponse = $smsSender->sendSmsToAgent($message, $userMobile);
@@ -90,7 +101,7 @@ class ApiController extends AbstractController
                 $response = new Response();
                 $response->headers->set('Content-Type', 'application/json');
                 $response->setContent(json_encode([
-                    'message' => 'Unregistered mobile number!',
+                    'message' => 'Unregistered employee!',
                     'status' => 401,
                 ]));
                 $response->setStatusCode(Response::HTTP_UNAUTHORIZED);
