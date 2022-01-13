@@ -35,7 +35,6 @@ use Symfony\Component\HttpFoundation\Response;
  * @package Terminalbd\CrmBundle\Controller
  * @Route("/crm/api")
  */
-
 class ApiController extends AbstractController
 {
     /**
@@ -49,11 +48,11 @@ class ApiController extends AbstractController
     {
         set_time_limit(0);
         ignore_user_abort(true);
-        if ($request->getMethod() == 'POST' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')){
+        if ($request->getMethod() == 'POST' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')) {
             $userId = trim($request->request->get('user_id'));
             $findUser = $this->getDoctrine()->getRepository(User::class)->findOneBy(['enabled' => 1, 'userId' => $userId]);
-            if ($findUser){
-                if (!$findUser->getMobile()){
+            if ($findUser) {
+                if (!$findUser->getMobile()) {
                     $response = new Response();
                     $response->headers->set('Content-Type', 'application/json');
                     $response->setContent(json_encode([
@@ -68,36 +67,42 @@ class ApiController extends AbstractController
                 $otp = (string)mt_rand(1000, 9999);
                 $message = 'Your OTP is ' . $otp . '.';
                 $smsResponse = $smsSender->sendSmsToAgent($message, $userMobile);
+
 //                $smsResponse = json_decode($smsResponse, true);
 
 //                if ($smsResponse['message'] === 'Success'){
-                    $roles = unserialize(serialize($findUser->getAppRoles()));
-                    $rolesSeparated = implode(",", $roles);
-                    $upozilas =[];
-                    foreach ($findUser->getUpozila() as $location):
-                        $upozilas[]= $location->getId();
-                    endforeach;
-                    $locations = implode(",", $upozilas);
-                    $data = [
-                        'userId' => $findUser->getId(),
-                        'username' => $findUser->getUsername(),
-                        'name' => $findUser->getName(),
-                        'email' => $findUser->getEmail(),
-                        'roles' => $findUser->getUserGroup() ? $findUser->getUserGroup()->getSlug() : '',
-                        'designation' => $findUser->getDesignation() ? $findUser->getDesignation()->getName() : '',
-                        'lineManager' => $findUser->getLineManager() ? $findUser->getLineManager()->getId() : '' ,
-                        'locations' => $locations,
-                        'upozilas' => $upozilas,
-                        'status' => '200',
-                        'otp' => $otp,
-                    ];
-                    $response = new Response();
-                    $response->headers->set('Content-Type', 'application/json');
-                    $response->setContent(json_encode($data));
-                    $response->setStatusCode(Response::HTTP_OK);
-                    return $response;
+                if ($findUser->getUserGroup()->getSlug() == 'administrator') {
+                    $roles = $findUser->getUserGroup()->getSlug();
+                } else {
+                    $roles = $findUser->getServiceMode() ? $findUser->getServiceMode()->getSlug() : '';
+                }
+//                    $rolesSeparated = implode(",", $roles);
+                $upozilas = [];
+                foreach ($findUser->getUpozila() as $location) {
+                    $upozilas[] = $location->getId();
+                }
+
+                $locations = implode(",", $upozilas);
+                $data = [
+                    'userId' => $findUser->getId(),
+                    'username' => $findUser->getUsername(),
+                    'name' => $findUser->getName(),
+                    'email' => $findUser->getEmail(),
+                    'roles' => $roles,
+                    'designation' => $findUser->getDesignation() ? $findUser->getDesignation()->getName() : '',
+                    'lineManager' => $findUser->getLineManager() ? $findUser->getLineManager()->getId() : '',
+                    'locations' => $locations,
+                    'upozilas' => $upozilas,
+                    'status' => '200',
+                    'otp' => $otp,
+                ];
+                $response = new Response();
+                $response->headers->set('Content-Type', 'application/json');
+                $response->setContent(json_encode($data));
+                $response->setStatusCode(Response::HTTP_OK);
+                return $response;
 //                }
-            }else{
+            } else {
                 $response = new Response();
                 $response->headers->set('Content-Type', 'application/json');
                 $response->setContent(json_encode([
@@ -128,7 +133,7 @@ class ApiController extends AbstractController
             $data = array(
                 'status' => 'valid'
             );
-        }else {
+        } else {
             $data = array(
                 'status' => 'invalid'
             );
@@ -166,13 +171,13 @@ class ApiController extends AbstractController
         $formData = $request->request->all();
         $username = $formData['user_id'];
         $userExist = $this->getDoctrine()->getRepository('UserBundle:User')->find($username);
-        if( $this->checkApiValidation($request) == 'invalid') {
+        if ($this->checkApiValidation($request) == 'invalid') {
 
             return new Response('Unauthorized access.', 401);
 
-        }elseif($userExist){
+        } elseif ($userExist) {
 
-            $this->getDoctrine()->getRepository('UserBundle:User')->androidUserUpdate($userExist,$formData);
+            $this->getDoctrine()->getRepository('UserBundle:User')->androidUserUpdate($userExist, $formData);
             $data = array('status' => 'success');
             $response = new Response();
             $response->headers->set('Content-Type', 'application/json');
@@ -180,7 +185,7 @@ class ApiController extends AbstractController
             $response->setStatusCode(Response::HTTP_OK);
             return $response;
 
-        }else{
+        } else {
 
             return new Response('Unauthorized access.', 401);
         }
@@ -194,7 +199,7 @@ class ApiController extends AbstractController
             ->checkLoginUser($username);
         if (empty($user)) {
             return new Response('Unauthorized access.', 401);
-        }else{
+        } else {
             $data = array(
                 'licenseKey' => $user->getGlobalOption()->getUniqueCode(),
                 'username' => $user->getUsername(),
@@ -213,17 +218,17 @@ class ApiController extends AbstractController
     public function resetPasswordAction(Request $request)
     {
 
-        if( $this->checkApiValidation($request) == 'invalid') {
+        if ($this->checkApiValidation($request) == 'invalid') {
 
             return new Response('Unauthorized access.', 401);
 
-        }else{
+        } else {
             $entity = $this->checkApiValidation($request);
             $username = $request->request->get('username');
             $password = $request->request->get('password');
             $user = $this->getDoctrine()->getManager()->getRepository("UserBundle:User")
-                ->findOneBy(array('username' => $username,'enabled' => 1));
-            if(empty($user)){
+                ->findOneBy(array('username' => $username, 'enabled' => 1));
+            if (empty($user)) {
                 return new Response('Unauthorized access.', 401);
             }
 
@@ -243,7 +248,6 @@ class ApiController extends AbstractController
     }
 
 
-
     /**
      * @Route("/agent", name="crm_api_agent" , methods={"POST","GET"}, options={"expose"=true})
      */
@@ -253,7 +257,7 @@ class ApiController extends AbstractController
         ignore_user_abort(true);
         $locations = isset($_REQUEST['locations']) ? $_REQUEST['locations'] : "";
         //$terminal = $this->getUser()->getTerminal()->getId();
-        $entities = $this->getDoctrine()->getRepository(Api::class)->apiAgent(1,$locations);
+        $entities = $this->getDoctrine()->getRepository(Api::class)->apiAgent(1, $locations);
 
         $response = new Response();
         $response->headers->set('Content-Type', 'application/json');
@@ -271,7 +275,7 @@ class ApiController extends AbstractController
         ignore_user_abort(true);
         //$terminal = $this->getUser()->getTerminal()->getId();
         $locations = isset($_REQUEST['locations']) ? $_REQUEST['locations'] : "";
-        $entities = $this->getDoctrine()->getRepository(Api::class)->customerApi(1,'farmer',$locations);
+        $entities = $this->getDoctrine()->getRepository(Api::class)->customerApi(1, 'farmer', $locations);
         $response = new Response();
         $response->headers->set('Content-Type', 'application/json');
         $response->setContent(json_encode($entities));
@@ -289,9 +293,9 @@ class ApiController extends AbstractController
     {
         set_time_limit(0);
         ignore_user_abort(true);
-        if ($request->getMethod() == 'GET' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')){
+        if ($request->getMethod() == 'GET' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')) {
             $locations = $request->query->get('locations');
-            $entities = $this->getDoctrine()->getRepository(Api::class)->agentApi(1,'sub-agent',$locations);
+            $entities = $this->getDoctrine()->getRepository(Api::class)->agentApi(1, 'sub-agent', $locations);
             $response = new Response();
             $response->headers->set('Content-Type', 'application/json');
             $response->setContent(json_encode($entities));
@@ -315,10 +319,10 @@ class ApiController extends AbstractController
     {
         set_time_limit(0);
         ignore_user_abort(true);
-        if ($request->getMethod() == 'GET' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')){
+        if ($request->getMethod() == 'GET' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')) {
             //$terminal = $this->getUser()->getTerminal()->getId();
             $locations = $request->query->get('locations');
-            $entities = $this->getDoctrine()->getRepository(Api::class)->agentApi(1,'other-agent',$locations);
+            $entities = $this->getDoctrine()->getRepository(Api::class)->agentApi(1, 'other-agent', $locations);
             $response = new Response();
             $response->headers->set('Content-Type', 'application/json');
             $response->setContent(json_encode($entities));
@@ -340,7 +344,7 @@ class ApiController extends AbstractController
         ignore_user_abort(true);
         $username = isset($_REQUEST['username']) ? $_REQUEST['username'] : "";
         //$terminal = $this->getUser()->getTerminal()->getId();
-        $entities = $this->getDoctrine()->getRepository(Api::class)->crmVisit(1,$username);
+        $entities = $this->getDoctrine()->getRepository(Api::class)->crmVisit(1, $username);
 
         $response = new Response();
         $response->headers->set('Content-Type', 'application/json');
@@ -471,7 +475,7 @@ class ApiController extends AbstractController
         set_time_limit(0);
         ignore_user_abort(true);
         // $terminal = $this->getUser()->getTerminal()->getId();
-        $entities = $this->getDoctrine()->getRepository(Api::class)->farmerIntroduceReport(1,$breedName,$employee);
+        $entities = $this->getDoctrine()->getRepository(Api::class)->farmerIntroduceReport(1, $breedName, $employee);
 
         $response = new Response();
         $response->headers->set('Content-Type', 'application/json');
@@ -498,7 +502,7 @@ class ApiController extends AbstractController
 
         set_time_limit(0);
         ignore_user_abort(true);
-        $entities = $this->getDoctrine()->getRepository(Api::class)->farmerTouchReport(1,$startDate, $endDate, $report, $employee);
+        $entities = $this->getDoctrine()->getRepository(Api::class)->farmerTouchReport(1, $startDate, $endDate, $report, $employee);
 
         $response = new Response();
         $response->headers->set('Content-Type', 'application/json');
@@ -522,7 +526,7 @@ class ApiController extends AbstractController
         set_time_limit(0);
         ignore_user_abort(true);
         // $terminal = $this->getUser()->getTerminal()->getId();
-        $entities = $this->getDoctrine()->getRepository(Api::class)->farmerTrainingReport(1,$breedName, $employee);
+        $entities = $this->getDoctrine()->getRepository(Api::class)->farmerTrainingReport(1, $breedName, $employee);
 
         $response = new Response();
         $response->headers->set('Content-Type', 'application/json');
@@ -552,7 +556,7 @@ class ApiController extends AbstractController
 
 
         //$terminal = $this->getUser()->getTerminal()->getId();
-        $entities = $this->getDoctrine()->getRepository(Api::class)->poultryLifeCylceReport(1, $startDate, $endDate,$reportSlug, $customerName);
+        $entities = $this->getDoctrine()->getRepository(Api::class)->poultryLifeCylceReport(1, $startDate, $endDate, $reportSlug, $customerName);
         $response = new Response();
         $response->headers->set('Content-Type', 'application/json');
         $response->setContent(json_encode($entities));
@@ -576,7 +580,7 @@ class ApiController extends AbstractController
 
         $employee = $this->getDoctrine()->getRepository(User::class)->findOneBy(array('name' => $employeeName));
 
-        $entities = $this->getDoctrine()->getRepository(Api::class)->farmVisitCattle(1,$startDate,$endDate,$employee);
+        $entities = $this->getDoctrine()->getRepository(Api::class)->farmVisitCattle(1, $startDate, $endDate, $employee);
 
         $response = new Response();
         $response->headers->set('Content-Type', 'application/json');
@@ -604,7 +608,7 @@ class ApiController extends AbstractController
 
         $employee = $this->getDoctrine()->getRepository(User::class)->findOneBy(array('name' => $employeeName));
 
-        $entities = $this->getDoctrine()->getRepository(Api::class)->frcReportPoulty(1, $startDate, $endDate, $reportSlug,$employeeName);
+        $entities = $this->getDoctrine()->getRepository(Api::class)->frcReportPoulty(1, $startDate, $endDate, $reportSlug, $employeeName);
 
         $response = new Response();
         $response->headers->set('Content-Type', 'application/json');
@@ -624,27 +628,27 @@ class ApiController extends AbstractController
     public function apiFcrBeforeNew(Request $request, $type): Response
     {
         $data = $request->request->all();
-        $slug = 'fcr-before-sale-'.$type;
-        $report = $this->getDoctrine()->getRepository(Setting::class)->findOneBy(['slug'=>$slug, 'settingType'=>'FARMER_REPORT', 'status'=>1]);
+        $slug = 'fcr-before-sale-' . $type;
+        $report = $this->getDoctrine()->getRepository(Setting::class)->findOneBy(['slug' => $slug, 'settingType' => 'FARMER_REPORT', 'status' => 1]);
 
-        $hatchery = $this->getDoctrine()->getRepository(Setting::class)->findOneBy(['id'=>$data['hatchery_id'], 'status'=>1]);
+        $hatchery = $this->getDoctrine()->getRepository(Setting::class)->findOneBy(['id' => $data['hatchery_id'], 'status' => 1]);
 
-        $breed = $this->getDoctrine()->getRepository(Setting::class)->findOneBy(['id'=>$data['breed_id'], 'status'=>1]);
+        $breed = $this->getDoctrine()->getRepository(Setting::class)->findOneBy(['id' => $data['breed_id'], 'status' => 1]);
 
-        $feed = $this->getDoctrine()->getRepository(Setting::class)->findOneBy(['id'=>$data['feed_id'], 'status'=>1]);
+        $feed = $this->getDoctrine()->getRepository(Setting::class)->findOneBy(['id' => $data['feed_id'], 'status' => 1]);
 
-        $feedMill = $this->getDoctrine()->getRepository(Setting::class)->findOneBy(['id'=>$data['feed_Mill'], 'status'=>1]);
+        $feedMill = $this->getDoctrine()->getRepository(Setting::class)->findOneBy(['id' => $data['feed_Mill'], 'status' => 1]);
 
-        $feedType = $this->getDoctrine()->getRepository(Setting::class)->findOneBy(['id'=>$data['feedType'], 'status'=>1]);
+        $feedType = $this->getDoctrine()->getRepository(Setting::class)->findOneBy(['id' => $data['feedType'], 'status' => 1]);
 
         $employee = $this->getDoctrine()->getRepository(User::class)->find($data['user_id']);
 
         $customer = $this->getDoctrine()->getRepository(CrmCustomer::class)->find($data['customer_id']);
 
         $entity = new FcrDetails();
-        $reportingDate = date('Y-m-d',strtotime('now'));
-        $hatchingDate = date('Y-m-d',strtotime('now'));
-        $proDate = date('Y-m-d',strtotime('now'));
+        $reportingDate = date('Y-m-d', strtotime('now'));
+        $hatchingDate = date('Y-m-d', strtotime('now'));
+        $proDate = date('Y-m-d', strtotime('now'));
         $entity->setReportingMonth(new \DateTime($reportingDate));
         $entity->setHatchingDate(new \DateTime($hatchingDate));
         $entity->setProDate(new \DateTime($proDate));
@@ -656,28 +660,28 @@ class ApiController extends AbstractController
         $entity->setTotalBirds($data['totalBirds']);
         $entity->setAgeDay($data['age']);
         $entity->setMortalityPes($data['mortality_pcs']);
-        $entity->setHatchery($hatchery?$hatchery:null);
-        $entity->setBreed($breed?$breed:null);
-        $entity->setFeed($feed?$feed:null);
-        $entity->setFeedMill($feedMill?$feedMill:null);
-        $entity->setFeedType($feedType?$feedType:null);
+        $entity->setHatchery($hatchery ? $hatchery : null);
+        $entity->setBreed($breed ? $breed : null);
+        $entity->setFeed($feed ? $feed : null);
+        $entity->setFeedMill($feedMill ? $feedMill : null);
+        $entity->setFeedType($feedType ? $feedType : null);
         $entity->setBatchNo($data['batch_no']);
         $entity->setRemarks($data['remarks']);
 
-        if($report->getSlug()=='fcr-before-sale-sonali'){
+        if ($report->getSlug() == 'fcr-before-sale-sonali') {
 
-            /* @var SonaliStandard $sonaliStandard*/
-            $sonaliStandard= $this->getDoctrine()->getRepository(SonaliStandard::class)->findOneBy(array('age'=>$entity->getAgeDay()));
-            if($sonaliStandard){
+            /* @var SonaliStandard $sonaliStandard */
+            $sonaliStandard = $this->getDoctrine()->getRepository(SonaliStandard::class)->findOneBy(array('age' => $entity->getAgeDay()));
+            if ($sonaliStandard) {
                 $entity->setWeightStandard($sonaliStandard->getTargetBodyWeight());
                 $entity->setFeedConsumptionStandard($sonaliStandard->getCumulativeFeedIntake());
             }
         }
-        if($report->getSlug()=='fcr-before-sale-boiler'){
+        if ($report->getSlug() == 'fcr-before-sale-boiler') {
 
-            /* @var BroilerStandard $broilerStandard*/
-            $broilerStandard= $this->getDoctrine()->getRepository(BroilerStandard::class)->findOneBy(array('age'=>$entity->getAgeDay()));
-            if($broilerStandard){
+            /* @var BroilerStandard $broilerStandard */
+            $broilerStandard = $this->getDoctrine()->getRepository(BroilerStandard::class)->findOneBy(array('age' => $entity->getAgeDay()));
+            if ($broilerStandard) {
                 $entity->setWeightStandard($broilerStandard->getTargetBodyWeight());
                 $entity->setFeedConsumptionStandard($broilerStandard->getTargetFeedConsumption());
             }
@@ -832,7 +836,6 @@ class ApiController extends AbstractController
     }
 
 
-
     /**
      * @Route("/farmSelectReport", methods={"GET"}, name="farmSelectReport")
      */
@@ -933,7 +936,7 @@ class ApiController extends AbstractController
     {
         set_time_limit(0);
         ignore_user_abort(true);
-        if ($request->getMethod() == 'GET' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')){
+        if ($request->getMethod() == 'GET' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')) {
             $entities = $this->getDoctrine()->getRepository(Api::class)->fishFeedType();
             $response = new Response();
             $response->headers->set('Content-Type', 'application/json');
@@ -958,7 +961,7 @@ class ApiController extends AbstractController
 
         set_time_limit(0);
         ignore_user_abort(true);
-        if ($request->getMethod() == 'GET' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')){
+        if ($request->getMethod() == 'GET' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')) {
             $entities = $this->getDoctrine()->getRepository(Api::class)->fishSpeciesName();
             $response = new Response();
             $response->headers->set('Content-Type', 'application/json');
@@ -973,7 +976,6 @@ class ApiController extends AbstractController
 
 
     }
-
 
 
     /**
@@ -1073,7 +1075,7 @@ class ApiController extends AbstractController
         set_time_limit(0);
         ignore_user_abort(true);
 //        if ($request->getMethod() == 'GET' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')){
-        if ($request->getMethod() == 'GET'){
+        if ($request->getMethod() == 'GET') {
             $entities = $this->getDoctrine()->getRepository(Api::class)->disease(1);
             $response = new Response();
             $response->headers->set('Content-Type', 'application/json');
@@ -1117,7 +1119,7 @@ class ApiController extends AbstractController
 
         set_time_limit(0);
         ignore_user_abort(true);
-        if ($request->getMethod() == 'GET'){
+        if ($request->getMethod() == 'GET') {
             $entities = $this->getDoctrine()->getRepository(Api::class)->mainculturespecies();
             $response = new Response();
             $response->headers->set('Content-Type', 'application/json');
@@ -1198,11 +1200,11 @@ class ApiController extends AbstractController
 
         $data = $request->request->all();
 
-        if ($data){
+        if ($data) {
             $em = $this->getDoctrine()->getManager();
             $findEmployee = $this->getDoctrine()->getRepository(User::class)->find($data['employee_id']);
             $findParent = $this->getDoctrine()->getRepository(Api::class)->findOneBy(['batchNo' => $data['batch_id'], 'employee' => $findEmployee]);
-            if (!$findParent){
+            if (!$findParent) {
                 $api = new Api();
                 $api->setBatchNo($data['batch_id'] ?: null);
                 $api->setEmployee($findEmployee);
@@ -1297,7 +1299,7 @@ class ApiController extends AbstractController
                 die();*/
 
         $list = $this->getDoctrine()->getRepository(Api::class)->getData();
-        return $this->render('@TerminalbdCrm/api/api-response-list.html.twig',[
+        return $this->render('@TerminalbdCrm/api/api-response-list.html.twig', [
             'list' => $list,
         ]);
     }
@@ -1309,41 +1311,41 @@ class ApiController extends AbstractController
      */
     public function insertDataIntoCorrespondingTable(ApiDetails $apiDetails)
     {
- /*       set_time_limit(0);
-        ignore_user_abort(true);
+        /*       set_time_limit(0);
+               ignore_user_abort(true);
 
-        if ($apiDetails->isStatus() == 0){
-            $jsonToArray = json_decode($apiDetails->getJsonData(), true);
-            if ($apiDetails->getProcess() == 'crm_visit'){
-                foreach($jsonToArray as $data){
-                    $this->getDoctrine()->getRepository(CrmVisit::class)->insertDataFromApi($data);
-                }
-            }elseif ($apiDetails->getProcess() == 'farmer_report'){
-                foreach($jsonToArray as $data){
-                    if ($data['crm_visit_id'] !== null){
-                        $findVisit = $this->getDoctrine()->getRepository(CrmVisit::class)->findOneBy(['appId' => $data['crm_visit_id']]);
-                        if ($findVisit){
-                            $this->getDoctrine()->getRepository(CrmVisitDetails::class)->insertDataFromApi($data, $findVisit->getId());
-                        }
-                    }
-                }
-            }elseif ($apiDetails->getProcess() == 'layer_performance_report'){
-                foreach( $jsonToArray as $data){
-                    $this->getDoctrine()->getRepository(LayerPerformanceDetails::class)->insertDataFromApi($data);
-                }
-            }elseif ($apiDetails->getProcess() == 'crm_visit_details'){
-                dd($jsonToArray);
-            }
-            $apiDetails->setStatus(1);
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($apiDetails);
-            $em->flush();
-            $this->addFlash('success', 'Data has been migrated!');
-            return $this->redirectToRoute('api_response_list');
-        }else{
-            $this->addFlash('error', 'Somthing Wrong!');
-            return $this->redirectToRoute('api_response_list');
-        }*/
+               if ($apiDetails->isStatus() == 0){
+                   $jsonToArray = json_decode($apiDetails->getJsonData(), true);
+                   if ($apiDetails->getProcess() == 'crm_visit'){
+                       foreach($jsonToArray as $data){
+                           $this->getDoctrine()->getRepository(CrmVisit::class)->insertDataFromApi($data);
+                       }
+                   }elseif ($apiDetails->getProcess() == 'farmer_report'){
+                       foreach($jsonToArray as $data){
+                           if ($data['crm_visit_id'] !== null){
+                               $findVisit = $this->getDoctrine()->getRepository(CrmVisit::class)->findOneBy(['appId' => $data['crm_visit_id']]);
+                               if ($findVisit){
+                                   $this->getDoctrine()->getRepository(CrmVisitDetails::class)->insertDataFromApi($data, $findVisit->getId());
+                               }
+                           }
+                       }
+                   }elseif ($apiDetails->getProcess() == 'layer_performance_report'){
+                       foreach( $jsonToArray as $data){
+                           $this->getDoctrine()->getRepository(LayerPerformanceDetails::class)->insertDataFromApi($data);
+                       }
+                   }elseif ($apiDetails->getProcess() == 'crm_visit_details'){
+                       dd($jsonToArray);
+                   }
+                   $apiDetails->setStatus(1);
+                   $em = $this->getDoctrine()->getManager();
+                   $em->persist($apiDetails);
+                   $em->flush();
+                   $this->addFlash('success', 'Data has been migrated!');
+                   return $this->redirectToRoute('api_response_list');
+               }else{
+                   $this->addFlash('error', 'Somthing Wrong!');
+                   return $this->redirectToRoute('api_response_list');
+               }*/
         return new Response(false);
     }
 
@@ -1351,7 +1353,8 @@ class ApiController extends AbstractController
      * @Route("/companySpeciesWiseAvarageFCRBefore", methods={"GET"}, name="companySpeciesWiseAvarageFCRBefore")
      */
 
-    public function companySpeciesWiseAvarageFCRBefore(){
+    public function companySpeciesWiseAvarageFCRBefore()
+    {
         set_time_limit(0);
         ignore_user_abort(true);
 
@@ -1371,10 +1374,11 @@ class ApiController extends AbstractController
      * @return JsonResponse|Response
      */
 
-    public function fishSalesPrice(Request $request, ParameterBagInterface $parameterBag){
+    public function fishSalesPrice(Request $request, ParameterBagInterface $parameterBag)
+    {
         set_time_limit(0);
         ignore_user_abort(true);
-        if ($request->getMethod() == 'GET' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')){
+        if ($request->getMethod() == 'GET' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')) {
             $entities = $this->getDoctrine()->getRepository(Api::class)->fishSalesPrice(1);
             $response = new Response();
             $response->headers->set('Content-Type', 'application/json');
@@ -1394,7 +1398,8 @@ class ApiController extends AbstractController
      * @Route("/companyWiseFeedSaleFish", methods={"GET"}, name="companyWiseFeedSaleFish")
      */
 
-    public function companyWiseFeedSaleFish(){
+    public function companyWiseFeedSaleFish()
+    {
         set_time_limit(0);
         ignore_user_abort(true);
 
@@ -1415,8 +1420,8 @@ class ApiController extends AbstractController
         ignore_user_abort(true);
 
         $entities = $this->getDoctrine()->getRepository(Api::class)->company(1);
-        $response = New Response();
-        $response->headers->set("Content-Type","application/json");
+        $response = new Response();
+        $response->headers->set("Content-Type", "application/json");
         $response->setContent(json_encode($entities));
         $response->setStatusCode(Response::HTTP_OK);
         return $response;
@@ -1431,8 +1436,8 @@ class ApiController extends AbstractController
         ignore_user_abort(true);
 
         $entities = $this->getDoctrine()->getRepository(Api::class)->competitorsCompany(1);
-        $response = New Response();
-        $response->headers->set("Content-Type","application/json");
+        $response = new Response();
+        $response->headers->set("Content-Type", "application/json");
         $response->setContent(json_encode($entities));
         $response->setStatusCode(Response::HTTP_OK);
         return $response;
@@ -1449,16 +1454,16 @@ class ApiController extends AbstractController
         set_time_limit(0);
         ignore_user_abort(true);
 
-        if ($request->getMethod() == 'POST' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')){
+        if ($request->getMethod() == 'POST' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')) {
             $data = $request->request->all();
             $findEmployee = $this->getDoctrine()->getRepository(User::class)->find($data['employee_id']);
             $findAgent = $this->getDoctrine()->getRepository(Agent::class)->find($data['agent_id']);
             $findFarmer = $this->getDoctrine()->getRepository(CrmCustomer::class)->find($data['farmer_id']);
-            $complainType=null;
-            if(isset($data['complain_type_id'])&&$data['complain_type_id']!=''){
+            $complainType = null;
+            if (isset($data['complain_type_id']) && $data['complain_type_id'] != '') {
                 $complainType = $this->getDoctrine()->getRepository(Setting::class)->find($data['complain_type_id']);
             }
-            if ($findEmployee && $findAgent && $findFarmer){
+            if ($findEmployee && $findAgent && $findFarmer) {
                 $em = $this->getDoctrine()->getManager();
 
                 $complain = new FarmerComplain();
@@ -1472,10 +1477,10 @@ class ApiController extends AbstractController
                 $comments = json_decode($data['comments'], true);
                 foreach ($comments as $comment) {
                     $fileName = '';
-                    if (preg_match('/^data:image\/(\w+);base64,/', $comment['attachment'], $type)){
+                    if (preg_match('/^data:image\/(\w+);base64,/', $comment['attachment'], $type)) {
                         $extension = $type[1];
                         $attachment = substr($comment['attachment'], strpos($comment['attachment'], ',') + 1);
-                        $attachment = str_replace( ' ', '+', $attachment );
+                        $attachment = str_replace(' ', '+', $attachment);
                         $attachment = base64_decode($attachment);
                         $fileName = $data['farmer_id'] . '_' . $comment['comment'] . '_' . date('d-m-Y') . '_' . time() . '.' . $extension;
 
@@ -1486,7 +1491,7 @@ class ApiController extends AbstractController
                     $details->setComplain($complain);
                     $details->setComment($comment['comment']);
                     $details->setAttachment($fileName);
-                    if($complainType){
+                    if ($complainType) {
                         $details->setComplainType($complainType);
                     }
                     $em->persist($details);
@@ -1498,7 +1503,7 @@ class ApiController extends AbstractController
                     'status' => 200,
                     'message' => 'success'
                 ]);
-            }else{
+            } else {
                 return new JsonResponse([
                     'status' => 500,
                     'message' => 'Server Error!'
@@ -1524,8 +1529,8 @@ class ApiController extends AbstractController
         set_time_limit(0);
         ignore_user_abort(true);
 
-        if ($request->getMethod() == 'GET' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')){
-            $records =$this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType'=>'AGENT_PURPOSE'));
+        if ($request->getMethod() == 'GET' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')) {
+            $records = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType' => 'AGENT_PURPOSE'));
             $data = [];
             foreach ($records as $key => $record) {
                 $data[$key]['id'] = $record->getId();
@@ -1555,8 +1560,8 @@ class ApiController extends AbstractController
         set_time_limit(0);
         ignore_user_abort(true);
 
-        if ($request->getMethod() == 'GET' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')){
-            $records =$this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType'=>'SUB_AGENT_PURPOSE'));
+        if ($request->getMethod() == 'GET' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')) {
+            $records = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType' => 'SUB_AGENT_PURPOSE'));
             $data = [];
             foreach ($records as $key => $record) {
                 $data[$key]['id'] = $record->getId();
@@ -1586,8 +1591,8 @@ class ApiController extends AbstractController
         set_time_limit(0);
         ignore_user_abort(true);
 
-        if ($request->getMethod() == 'GET' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')){
-            $records =$this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType'=>'OTHER_AGENT_PURPOSE'));
+        if ($request->getMethod() == 'GET' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')) {
+            $records = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType' => 'OTHER_AGENT_PURPOSE'));
             $data = [];
             foreach ($records as $key => $record) {
                 $data[$key]['id'] = $record->getId();
@@ -1616,11 +1621,11 @@ class ApiController extends AbstractController
         set_time_limit(0);
         ignore_user_abort(true);
 
-        if ($request->getMethod() == 'POST' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')){
+        if ($request->getMethod() == 'POST' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')) {
             $entity = new Agent();
             $allRequestData = $request->request->all();
 
-            $group = $this->getDoctrine()->getRepository(\App\Entity\Core\Setting::class)->findOneBy(array('slug'=>'sub-agent'));
+            $group = $this->getDoctrine()->getRepository(\App\Entity\Core\Setting::class)->findOneBy(array('slug' => 'sub-agent'));
             $location = $this->getDoctrine()->getRepository(Location::class)->find($allRequestData['location']);
             $entity->setName($allRequestData['name']);
             $entity->setAddress($allRequestData['address']);
@@ -1628,7 +1633,7 @@ class ApiController extends AbstractController
             $entity->setAgentGroup($group);
             $entity->setUpozila($location);
             $entity->setDistrict($location->getParent());
-            if($allRequestData['agent']){
+            if ($allRequestData['agent']) {
                 $agent = $this->getDoctrine()->getRepository(Agent::class)->find($allRequestData['agent']);
                 $entity->setParent($agent);
             }
@@ -1642,7 +1647,7 @@ class ApiController extends AbstractController
                     'status' => 200,
                     'message' => 'Success'
                 ]);
-            }catch (Exception $e){
+            } catch (Exception $e) {
                 $response = new Response();
                 $response->headers->set('Content-Type', 'application/json');
                 $response->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -1669,10 +1674,10 @@ class ApiController extends AbstractController
         set_time_limit(0);
         ignore_user_abort(true);
 
-        if ($request->getMethod() == 'POST' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')){
+        if ($request->getMethod() == 'POST' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')) {
             $entity = new Agent();
             $allRequestData = $request->request->all();
-            $group = $this->getDoctrine()->getRepository(\App\Entity\Core\Setting::class)->findOneBy(array('slug'=>'other-agent'));
+            $group = $this->getDoctrine()->getRepository(\App\Entity\Core\Setting::class)->findOneBy(array('slug' => 'other-agent'));
             $location = $this->getDoctrine()->getRepository(Location::class)->find($allRequestData['location']);
             $entity->setName($allRequestData['name']);
             $entity->setAddress($allRequestData['address']);
@@ -1691,7 +1696,7 @@ class ApiController extends AbstractController
                     'status' => 200,
                     'message' => 'Success'
                 ]);
-            }catch (Exception $e){
+            } catch (Exception $e) {
                 $response = new Response();
                 $response->headers->set('Content-Type', 'application/json');
                 $response->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -1717,15 +1722,15 @@ class ApiController extends AbstractController
         set_time_limit(0);
         ignore_user_abort(true);
 
-        if ($request->getMethod() == 'POST' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')){
+        if ($request->getMethod() == 'POST' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')) {
             $parameters = $request->request->all();
             $records = $this->getDoctrine()->getRepository(Api::class)->getLifeCycleData($parameters);
 
             $response = new Response();
             $response->headers->set('Content-Type', 'application/json');
-            if ($records){
+            if ($records) {
                 $response->setContent(json_encode($records));
-            }else{
+            } else {
                 $response->setContent(json_encode([
                     'status' => 404,
                     'message' => 'Not found!'
@@ -1751,15 +1756,15 @@ class ApiController extends AbstractController
         set_time_limit(0);
         ignore_user_abort(true);
 
-        if ($request->getMethod() == 'POST' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')){
+        if ($request->getMethod() == 'POST' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')) {
             $parameters = $request->request->all();
             $records = $this->getDoctrine()->getRepository(Api::class)->getLayerLifeCycleData($parameters);
 
             $response = new Response();
             $response->headers->set('Content-Type', 'application/json');
-            if ($records){
+            if ($records) {
                 $response->setContent(json_encode($records));
-            }else{
+            } else {
                 $response->setContent(json_encode([
                     'status' => 404,
                     'message' => 'Not found!'
@@ -1785,15 +1790,15 @@ class ApiController extends AbstractController
         set_time_limit(0);
         ignore_user_abort(true);
 
-        if ($request->getMethod() == 'POST' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')){
+        if ($request->getMethod() == 'POST' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')) {
             $parameters = $request->request->all();
             $records = $this->getDoctrine()->getRepository(Api::class)->getCattleLifeCycleData($parameters);
 
             $response = new Response();
             $response->headers->set('Content-Type', 'application/json');
-            if ($records){
+            if ($records) {
                 $response->setContent(json_encode($records));
-            }else{
+            } else {
                 $response->setContent(json_encode([
                     'status' => 404,
                     'message' => 'Not found!'
@@ -1820,10 +1825,10 @@ class ApiController extends AbstractController
         ignore_user_abort(true);
         $response = new Response();
 
-        if ($request->getMethod() == 'GET' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')){
+        if ($request->getMethod() == 'GET' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')) {
             $version = $this->getDoctrine()->getRepository(Api::class)->getCurrentVersion();
             $response->headers->set('Content-Type', 'application/json');
-            if ($version){
+            if ($version) {
                 $response->setContent(json_encode($version));
                 $response->setStatusCode(Response::HTTP_OK);
                 return $response;
@@ -1850,9 +1855,9 @@ class ApiController extends AbstractController
         $response = new Response();
         $response->headers->set('Content-Type', 'application/json');
 
-        if ($request->getMethod() == 'GET' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')){
+        if ($request->getMethod() == 'GET' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')) {
             $complainDoc = $this->getDoctrine()->getRepository(Api::class)->getComplainType('COMPLAIN_DOC');
-            if ($complainDoc){
+            if ($complainDoc) {
                 $response->setContent(json_encode($complainDoc));
                 $response->setStatusCode(Response::HTTP_OK);
                 return $response;
@@ -1884,9 +1889,9 @@ class ApiController extends AbstractController
         $response = new Response();
         $response->headers->set('Content-Type', 'application/json');
 
-        if ($request->getMethod() == 'GET' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')){
+        if ($request->getMethod() == 'GET' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')) {
             $complainFeed = $this->getDoctrine()->getRepository(Api::class)->getComplainType('COMPLAIN_FEED');
-            if ($complainFeed){
+            if ($complainFeed) {
                 $response->setContent(json_encode($complainFeed));
                 $response->setStatusCode(Response::HTTP_OK);
                 return $response;
@@ -1918,9 +1923,9 @@ class ApiController extends AbstractController
         $response = new Response();
         $response->headers->set('Content-Type', 'application/json');
 
-        if ($request->getMethod() == 'GET' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')){
+        if ($request->getMethod() == 'GET' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')) {
             $transports = $this->getDoctrine()->getRepository(Api::class)->getTransport('TRANSPORT');
-            if ($transports){
+            if ($transports) {
                 $response->setContent(json_encode($transports));
                 $response->setStatusCode(Response::HTTP_OK);
                 return $response;
@@ -1952,9 +1957,9 @@ class ApiController extends AbstractController
         $response = new Response();
         $response->headers->set('Content-Type', 'application/json');
 
-        if ($request->getMethod() == 'GET' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')){
+        if ($request->getMethod() == 'GET' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')) {
             $hatcheries = $this->getDoctrine()->getRepository(Api::class)->getNourishHatchery('HATCHERY_NOURISH');
-            if ($hatcheries){
+            if ($hatcheries) {
                 $response->setContent(json_encode($hatcheries));
                 $response->setStatusCode(Response::HTTP_OK);
                 return $response;
@@ -1984,7 +1989,7 @@ class ApiController extends AbstractController
     {
         set_time_limit(0);
         ignore_user_abort(true);
-        if ($request->getMethod() == 'GET' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')){
+        if ($request->getMethod() == 'GET' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')) {
             $entities = $this->getDoctrine()->getRepository(Api::class)->labName();
             $response = new Response();
             $response->headers->set('Content-Type', 'application/json');
@@ -2008,7 +2013,7 @@ class ApiController extends AbstractController
     {
         set_time_limit(0);
         ignore_user_abort(true);
-        if ($request->getMethod() == 'GET' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')){
+        if ($request->getMethod() == 'GET' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')) {
             $entities = $this->getDoctrine()->getRepository(Api::class)->labServiceName();
             $response = new Response();
             $response->headers->set('Content-Type', 'application/json');
@@ -2034,7 +2039,7 @@ class ApiController extends AbstractController
     {
         set_time_limit(0);
         ignore_user_abort(true);
-        if ($request->getMethod() == 'POST' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')){
+        if ($request->getMethod() == 'POST' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')) {
             $parameters = $request->request->all();
 
             $entities = $this->getDoctrine()->getRepository(Api::class)->chickLifeCycleInProgress($parameters);
@@ -2062,7 +2067,7 @@ class ApiController extends AbstractController
     {
         set_time_limit(0);
         ignore_user_abort(true);
-        if ($request->getMethod() == 'POST' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')){
+        if ($request->getMethod() == 'POST' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')) {
             $parameters = $request->request->all();
 
             $entities = $this->getDoctrine()->getRepository(Api::class)->layerLifeCycleInProgress($parameters);
@@ -2090,7 +2095,7 @@ class ApiController extends AbstractController
     {
         set_time_limit(0);
         ignore_user_abort(true);
-        if ($request->getMethod() == 'POST' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')){
+        if ($request->getMethod() == 'POST' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')) {
             $lineManager = $request->request->get('line_manager_id');
 
             $entities = $this->getDoctrine()->getRepository(Api::class)->getEmployeeLocation($lineManager);
@@ -2116,12 +2121,12 @@ class ApiController extends AbstractController
     {
         set_time_limit(0);
         ignore_user_abort(true);
-        if ($request->getMethod() == 'POST' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')){
+        if ($request->getMethod() == 'POST' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')) {
             $parameters = $request->request->all();
 
-            if ($parameters['employee_id']){
+            if ($parameters['employee_id']) {
                 $findUser = $this->getDoctrine()->getRepository(User::class)->find($parameters['employee_id']);
-                if ($findUser){
+                if ($findUser) {
                     $findUser->setLatitude($parameters['latitude'] ?: null);
                     $findUser->setLongitude($parameters['longitude'] ?: null);
                     $this->getDoctrine()->getManager()->flush();
@@ -2149,7 +2154,7 @@ class ApiController extends AbstractController
     {
         set_time_limit(0);
         ignore_user_abort(true);
-        if ($request->getMethod() == 'GET' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')){
+        if ($request->getMethod() == 'GET' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')) {
             $regions = $this->getDoctrine()->getRepository(Location::class)->findBy(['level' => 3]);
             $data = [];
             foreach ($regions as $region) {
@@ -2177,8 +2182,8 @@ class ApiController extends AbstractController
     {
         set_time_limit(0);
         ignore_user_abort(true);
-        if ($request->getMethod() == 'GET' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')){
-            $chickTypes = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType'=>'CHICK_TYPE', 'status' => 1));
+        if ($request->getMethod() == 'GET' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')) {
+            $chickTypes = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType' => 'CHICK_TYPE', 'status' => 1));
 
             $data = [];
             foreach ($chickTypes as $chickType) {
@@ -2206,7 +2211,7 @@ class ApiController extends AbstractController
     {
         set_time_limit(0);
         ignore_user_abort(true);
-        if ($request->getMethod() == 'GET' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')){
+        if ($request->getMethod() == 'GET' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')) {
             $breedTypes = $this->getDoctrine()->getRepository(Setting::class)->findBy(['settingType' => 'MEAT_EGG_TYPE', 'status' => 1]);
 
             $data = [];
@@ -2235,7 +2240,7 @@ class ApiController extends AbstractController
     {
         set_time_limit(0);
         ignore_user_abort(true);
-        if ($request->getMethod() == 'GET' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')){
+        if ($request->getMethod() == 'GET' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')) {
             $types = $this->getDoctrine()->getRepository(Setting::class)->findBy(['settingType' => 'COMPLAIN_TYPE', 'status' => 1]);
 
             $data = [];
@@ -2265,7 +2270,7 @@ class ApiController extends AbstractController
     {
         set_time_limit(0);
         ignore_user_abort(true);
-        if ($request->getMethod() == 'GET' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')){
+        if ($request->getMethod() == 'GET' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')) {
             $fcrCompanies = $this->getDoctrine()->getRepository(Api::class)->fcrHatcheryCompany();
 
             $data = [];
@@ -2294,8 +2299,8 @@ class ApiController extends AbstractController
     {
         set_time_limit(0);
         ignore_user_abort(true);
-        if ($request->getMethod() == 'GET' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')){
-            $workingModes = $this->getDoctrine()->getRepository(Setting::class)->findBy(['status'=>1, 'settingType'=>'WORKING_MODE']);
+        if ($request->getMethod() == 'GET' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')) {
+            $workingModes = $this->getDoctrine()->getRepository(Setting::class)->findBy(['status' => 1, 'settingType' => 'WORKING_MODE']);
 
             $data = [];
             foreach ($workingModes as $workingMode) {
