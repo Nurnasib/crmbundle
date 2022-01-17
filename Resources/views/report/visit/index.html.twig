@@ -8,7 +8,7 @@
                 <div class="row align-items-center">
                     <ul class="breadcrumb">
                         <li class="breadcrumb-item"><a href="/"><i class="feather icon-home"></i></a></li>
-                        <li class="breadcrumb-item"> <a href="javascript:">  {{ 'Visit Report'|trans }}</a></li>
+                        <li class="breadcrumb-item"><a href="javascript:">  {{ 'Visit Report'|trans }}</a></li>
                     </ul>
                 </div>
             </div>
@@ -44,10 +44,15 @@
                         </th>
                         <th rowspan="2">
                             <div class="btn-group" style="margin-top: 25px">
-                                <button type="submit" name="search" class="btn btn-primary btn-sm" title="Search" value="search"><i class="fa fa-search" aria-hidden="true"></i></button>
-                                <a href="{{ path('visit_report') }}" class="btn purple-bg btn-sm white-font" title="Reset" value="reset"><i class="fa fa-refresh" aria-hidden="true"></i></a>
+                                <button type="submit" name="search" class="btn btn-primary btn-sm" title="Search"
+                                        value="search"><i class="fa fa-search" aria-hidden="true"></i></button>
+                                <a href="{{ path('visit_report') }}" class="btn purple-bg btn-sm white-font"
+                                   title="Reset" value="reset"><i class="fa fa-refresh" aria-hidden="true"></i></a>
                                 {% if entities is defined and entities is not empty %}
-                                    <a href="{{ path('visit_details_report',{mode:'pdf', startDate: startDate, endDate: endDate}) }}" target="_blank" class="btn blue-bg btn-sm white-font"><i class="fa fa-download" aria-hidden="true"></i> {{ 'All Details' }}</a>
+                                    <a href="{{ path('visit_details_report',{mode:'pdf', startDate: startDate, endDate: endDate}) }}"
+                                       target="_blank" class="btn blue-bg btn-sm white-font"><i class="fa fa-download"
+                                                                                                aria-hidden="true"></i> {{ 'All Details' }}
+                                    </a>
                                 {% endif %}
                             </div>
                         </th>
@@ -69,6 +74,7 @@
                                 <thead class="thead-dark">
                                 <tr>
                                     <th>{{ 'Visit Date'|trans }}</th>
+                                    <th>{{ 'Working Mode'|trans }}</th>
                                     <th>{{ 'Location'|trans }}</th>
                                     <th>{{ 'Visit Begin'|trans }}</th>
                                     <th>{{ 'Visit End'|trans }}</th>
@@ -82,14 +88,21 @@
                                             {% if loop.first %}
                                                 <td rowspan="{{ entity|length }}">{{ visitDate|date('d-m-Y') }}</td>
                                             {% endif %}
+
+                                            <td>{{ data.workingModeName }}</td>
                                             <td>{{ data.locationName }}</td>
                                             <td>{{ data.visitBegin }}</td>
                                             <td>{{ data.visitEnd }}</td>
+
                                             {% if loop.first %}
                                                 <td rowspan="{{ entity|length }}">
                                                     <div class="btn-group">
-                                                        <a href="{{ path('visit_details_report',{mode:'pdf', visitDate:visitDate}) }}" target="_blank" class="btn purple-bg white-font btn-mini"><i class="fa fa-file-pdf"></i> {{ 'PDF'|trans }}</a>
-                                                        <a href="{{ path('visit_details_report',{mode:'excel', visitDate:visitDate}) }}" class="btn blue-bg white-font btn-mini"><i class="fa fa-file-excel"></i>{{ 'Excel'|trans }}</a>
+                                                        <a href="{{ path('visit_details_report',{mode:'pdf', visitDate:visitDate}) }}"
+                                                           target="_blank" class="btn purple-bg white-font btn-mini"><i
+                                                                    class="fa fa-file-pdf"></i> {{ 'PDF'|trans }}</a>
+                                                        <a href="{{ path('visit_details_report',{mode:'excel', visitDate:visitDate}) }}"
+                                                           class="btn blue-bg white-font btn-mini"><i
+                                                                    class="fa fa-file-excel"></i>{{ 'Excel'|trans }}</a>
 
                                                     </div>
                                                 </td>
@@ -116,20 +129,20 @@
             position: sticky;
             top: -1px;
             background-color: #dbdee3 !important;
-            border-bottom-color: #4C9EE7!important;
+            border-bottom-color: #4C9EE7 !important;
         }
     </style>
-{% endblock  %}
+{% endblock %}
 {% block javascripts %}
     {{ parent() }}
     <script type="application/javascript" src="{{ asset('assets/module/js/app.js') }}"></script>
-{% endblock  %}
+{% endblock %}
 {% block documentready %}
     {{ parent() }}
-{#    <script>#}
-        $('#start-date, #end-date').datepicker(
-            {
-                dateFormat: 'dd-mm-yy'
-            }
-        );
+    {#    <script>#}
+    $('#start-date, #end-date').datepicker(
+    {
+    dateFormat: 'dd-mm-yy'
+    }
+    );
 {% endblock %}

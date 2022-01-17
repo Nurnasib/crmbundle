@@ -205,14 +205,14 @@ class SyncAppDataController extends AbstractController
                             $this->processFishLifeCycleDetailsSpecies($jsonToArray, $batch);
                             break;
                     }
-                    $detail->setStatus(true);
-                    $em->persist($detail);
-                    $em->flush();
+//                    $detail->setStatus(true);
+//                    $em->persist($detail);
+//                    $em->flush();
                 }
             }
-            $batch->setStatus(true);
-            $em->persist($batch);
-            $em->flush();
+//            $batch->setStatus(true);
+//            $em->persist($batch);
+//            $em->flush();
         }
         $this->addFlash('success', 'Synchronization Completed!');
         return $this->redirectToRoute('crm_sync_app_data_index');

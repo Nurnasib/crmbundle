@@ -25,18 +25,19 @@ class PoultryMeatEggPriceRepository extends EntityRepository
 {
     public function processPrice($regions, $breedTypes, $visitId)
     {
-        $exist = $this->findBy(['crmVisit' => $visitId]);
-        if (empty($exist)){
-            foreach ($breedTypes as $type){
-                $breedTypeId=$type->getId();
 
-                foreach ($regions as $region ){
-                    $regionId = $region->getId();
-                        $sql ="INSERT INTO 
-                                crm_poultry_meat_egg_price (`crm_visit_id`, `region_id`,`breed_type_id`,`created_at`,`price`,`status`) 
-                                VALUE ($visitId , $regionId , $breedTypeId , now() , 0, 1)";
-                        $qb = $this->_em->getConnection()->prepare($sql);
-                        $qb->execute();
+        foreach ($breedTypes as $type){
+            $breedTypeId=$type->getId();
+
+            foreach ($regions as $region ){
+                $regionId = $region->getId();
+                $exist = $this->checkExistRecord($visitId, $regionId, $breedTypeId);
+                if(!$exist){
+                    $sql ="INSERT INTO 
+                            crm_poultry_meat_egg_price (`crm_visit_id`, `region_id`,`breed_type_id`,`created_at`,`price`,`status`) 
+                            VALUE ($visitId , $regionId , $breedTypeId , now() , 0, 1)";
+                    $qb = $this->_em->getConnection()->prepare($sql);
+                    $qb->execute();
                 }
             }
         }
@@ -60,6 +61,19 @@ class PoultryMeatEggPriceRepository extends EntityRepository
             endforeach;
         }
         return $array;
+    }
+
+    private function checkExistRecord($visitId, $regionId, $breedTypeId){
+        $qb = $this->createQueryBuilder('e');
+        $qb->join('e.crmVisit','crmVisit');
+        $qb->join('e.region','region');
+        $qb->join('e.breedType','breedType');
+        $qb->select('e.id AS recordId');
+        $qb->where('crmVisit.id = :crmVisitId')->setParameter('crmVisitId', $visitId);
+        $qb->andWhere('region.id = :regionId')->setParameter('regionId', $regionId);
+        $qb->andWhere('breedType.id = :breedTypeId')->setParameter('breedTypeId', $breedTypeId);
+
+        return $qb->getQuery()->getResult();
     }
 
 }

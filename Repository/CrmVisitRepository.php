@@ -58,7 +58,9 @@ class CrmVisitRepository extends EntityRepository
     {
         $qb = $this->createQueryBuilder('e');
         $qb->leftJoin('e.location', 'location');
+        $qb->leftJoin('e.workingMode', 'workingMode');
         $qb->select('e.id AS visitId','e.created AS visitDate','e.workingDuration AS visitBegin','e.workingDurationTo AS visitEnd', 'location.name AS locationName');
+        $qb->addSelect('workingMode.id AS workingModeId', 'workingMode.name AS workingModeName', 'workingMode.slug AS workingModeSlug');
         $qb->where('e.created >= :startDate')->setParameter('startDate', $startDate);
         $qb->andWhere('e.created <= :endDate')->setParameter('endDate', $endDate);
         $qb->andWhere('e.employee = :employee')->setParameter('employee', $employee);

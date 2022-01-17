@@ -2097,8 +2097,14 @@ class ApiController extends AbstractController
         ignore_user_abort(true);
         if ($request->getMethod() == 'POST' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')) {
             $lineManager = $request->request->get('line_manager_id');
+            $user = $this->getDoctrine()->getRepository(User::class)->find($lineManager);
+            if ($user){
+                $entities = $this->getDoctrine()->getRepository(Api::class)->getEmployeeLocation($user);
 
-            $entities = $this->getDoctrine()->getRepository(Api::class)->getEmployeeLocation($lineManager);
+            }else{
+                $entities = [];
+            }
+
             $response = new Response();
             $response->headers->set('Content-Type', 'application/json');
             $response->setContent(json_encode($entities));
