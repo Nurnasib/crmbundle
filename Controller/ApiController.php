@@ -2096,14 +2096,37 @@ class ApiController extends AbstractController
         set_time_limit(0);
         ignore_user_abort(true);
         if ($request->getMethod() == 'POST' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')) {
-            $lineManager = $request->request->get('line_manager_id');
-            $user = $this->getDoctrine()->getRepository(User::class)->find($lineManager);
-            if ($user){
-                $entities = $this->getDoctrine()->getRepository(Api::class)->getEmployeeLocation($user);
+            $lineManager = (int)$request->request->get('line_manager_id');
+            $lineManager = $this->getDoctrine()->getRepository(User::class)->find($lineManager);
 
-            }else{
-                $entities = [];
+            $allUser = $this->getDoctrine()->getRepository(User::class)->findAll();
+            $users = [];
+            foreach ($allUser as $user) {
+                if ($user->getLineManager() && $user->isEnabled()) {
+                    $users[] = [
+                        'id' => $user->getId(),
+                        'lineManager' => $user->getLineManager()->getId()
+                    ];
+                }
             }
+
+            $members = $this->getMemberTree($users, $lineManager->getId());
+            $ids = [];
+            foreach ($members as $key => $item) {
+                if (isset($item['ids'])) {
+                    array_push($members[$key]['ids'], $item['id']);
+                } else {
+                    $members[$key]['ids'][] = $item['id'];
+
+                }
+                foreach ($members[$key]['ids'] as $id) {
+                    if (!in_array($id, $ids)) {
+                        $ids[] = $id;
+                    }
+                }
+            }
+
+            $entities = $this->getDoctrine()->getRepository(Api::class)->getEmployeeLocation($lineManager, $ids);
 
             $response = new Response();
             $response->headers->set('Content-Type', 'application/json');
@@ -2116,6 +2139,45 @@ class ApiController extends AbstractController
             'message' => 'Not Found!'
         ]);
     }
+
+    private function getMemberTree(array $allEmployee, $lineManagerId)
+    {
+        $members = array();
+
+        foreach ($allEmployee as $employee) {
+
+            if ($employee['lineManager']) {
+                if ($employee['lineManager'] == $lineManagerId) {
+
+                    $member = $this->getMemberTree($allEmployee, $employee['id']);
+                    if ($member) {
+                        foreach ($member as $child) {
+                            $employee['ids'][] = $child['id'];
+                        }
+                    }
+                    $members[] = $employee;
+                }
+            }
+        }
+        return $members;
+
+    }
+    /*    private function getMemberTree($membersId, $lineManager)
+        {
+            $members = $this->getDoctrine()->getRepository(Api::class)->getMembers($lineManager);
+            if ($members){
+                foreach ($members as $member) {
+                    array_push($membersId, $member['id']);
+                    $child = $this->getMemberTree($membersId, $member['id']);
+                    if ($child){
+                        $membersId[] = $child;
+                    }
+
+                }
+            }
+            return $membersId;
+
+        }*/
 
     /**
      * @param Request $request

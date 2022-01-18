@@ -1870,7 +1870,7 @@ class ApiRepository extends BaseRepository
 
     }
 
-    public function getEmployeeLocation(User $user)
+    public function getEmployeeLocation(User $lineManager, $ids)
     {
 
         $qb = $this->_em->createQueryBuilder();
@@ -1882,8 +1882,8 @@ class ApiRepository extends BaseRepository
         $qb->andWhere('u.longitude IS NOT NULL');
         $qb->andWhere('userGroup.slug = :groupSlug')->setParameter('groupSlug', 'employee');
 
-        if (!in_array('ROLE_CRM_ADMIN', $user->getRoles())){
-            $qb->andWhere('u.lineManager= :lineManagerId')->setParameter('lineManagerId', $user->getId());
+        if (!in_array('ROLE_CRM_ADMIN', $lineManager->getRoles())){
+            $qb->andWhere('u.id IN (:ids)')->setParameter('ids', $ids);
         }
 
         return $qb->getQuery()->getArrayResult();
