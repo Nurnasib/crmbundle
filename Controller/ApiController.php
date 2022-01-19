@@ -24,6 +24,7 @@ use Terminalbd\CrmBundle\Entity\CrmVisit;
 use Terminalbd\CrmBundle\Entity\FarmerComplain;
 use Terminalbd\CrmBundle\Entity\FarmerComplainDetails;
 use Terminalbd\CrmBundle\Entity\FcrDetails;
+use Terminalbd\CrmBundle\Entity\NewFarmerIntroduce\FarmerIntroduceDetails;
 use Terminalbd\CrmBundle\Entity\Setting;
 use Terminalbd\CrmBundle\Entity\SonaliStandard;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -2382,6 +2383,94 @@ class ApiController extends AbstractController
         return new JsonResponse([
             'status' => 404,
             'message' => 'Not Found!'
+        ]);
+
+    }
+
+    /**
+     * @param Request $request
+     * @param ParameterBagInterface $parameterBag
+     * @return JsonResponse
+     * @Route("/create-farmer", name="create_farmer")
+     */
+    public function createFarmer(Request $request, ParameterBagInterface $parameterBag)
+    {
+        set_time_limit(0);
+        ignore_user_abort(true);
+        if ($request->getMethod() == 'POST' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')) {
+            $parameters = $request->request->all();
+            if (
+                (isset($parameters['name']) && $parameters['name'] !== null) &&
+                (isset($parameters['mobile']) && $parameters['mobile'] !== null) &&
+                ((isset($parameters['agentId']) && $parameters['agentId'] !== null) ||
+                    (isset($parameters['subAgentId']) && $parameters['subAgentId'] !== null) ||
+                    (isset($parameters['otherAgentId']) && $parameters['otherAgentId'] !== null)) &&
+                (isset($parameters['feedId']) && $parameters['feedId'] !== null) &&
+                (isset($parameters['farmerType']) && $parameters['farmerType'] !== null) &&
+                (isset($parameters['employeeId']) && $parameters['employeeId'] !== null)
+            ) {
+
+                $location = null;
+                $farmerType = $this->getDoctrine()->getRepository(Setting::class)->find($parameters['farmerType']);
+                $feed = $this->getDoctrine()->getRepository(Setting::class)->find($parameters['feedId']);
+                $agent = $this->getDoctrine()->getRepository(Agent::class)->find($parameters['agentId']);
+                $subAgent = $this->getDoctrine()->getRepository(Agent::class)->find($parameters['subAgentId']);
+                $otherAgent = $this->getDoctrine()->getRepository(Agent::class)->find($parameters['otherAgentId']);
+                $employee = $this->getDoctrine()->getRepository(User::class)->find($parameters['employeeId']);
+                $farmerGroup = $this->getDoctrine()->getRepository(Setting::class)->findOneBy(['slug' => 'farmer']);
+
+                if (isset($parameters['locationId']) && $parameters['locationId'] !== null) {
+                    $location = $this->getDoctrine()->getRepository(Location::class)->find($parameters['locationId']);
+                }
+
+                // Add new Farmer
+                $newFarmer = new CrmCustomer();
+                $newFarmer->setName($parameters['name']);
+                $newFarmer->setMobile($parameters['mobile']);
+                $newFarmer->setAddress(isset($parameters['address']) ? $parameters['address'] : null);
+                $newFarmer->setAgent($agent ?: ($subAgent ?: ($otherAgent ?: null)));
+                $newFarmer->setOtherAgent($otherAgent);
+                $newFarmer->setLocation($location);
+                $newFarmer->setCustomerGroup($farmerGroup);
+                $newFarmer->setCreated(new \DateTime('now'));
+                $this->getDoctrine()->getManager()->persist($newFarmer);
+                $this->getDoctrine()->getManager()->flush();
+
+                // Introduce new Farmer
+                $introduceFarmer = new FarmerIntroduceDetails();
+                $introduceFarmer->setAgent($agent ?: ($subAgent ?: ($otherAgent ?: null)));
+                $introduceFarmer->setCustomer($newFarmer);
+                $introduceFarmer->setSubAgent($subAgent);
+                $introduceFarmer->setEmployee($employee);
+                $introduceFarmer->setOtherAgent($otherAgent);
+                $introduceFarmer->setFarmerType($farmerType);
+                $introduceFarmer->setFeed($feed);
+                $introduceFarmer->setCultureSpeciesItemAndQty(isset($parameters['cultureSpeciesItemAndQty']) ? $parameters['cultureSpeciesItemAndQty'] : null);
+                $introduceFarmer->setCreatedAt(new \DateTime('now'));
+
+                if ((isset($parameters['agentId']) && $parameters['agentId'] !== null) && ($feed && $feed->getName() == 'Nourish')){
+                    $introduceFarmer->setIntroduceDate(new \DateTime('now'));
+                }else{
+                    $introduceFarmer->setIntroduceDate(null);
+                }
+
+                $this->getDoctrine()->getManager()->persist($introduceFarmer);
+                $this->getDoctrine()->getManager()->flush();
+
+                return new JsonResponse([
+                    'statusCode' => 201,
+                    'message' => 'success'
+                ]);
+            }else{
+                return new JsonResponse([
+                    'statusCode' => 422,
+                    'message' => 'invalid data format'
+                ]);
+            }
+        }
+        return new JsonResponse([
+            'status' => 500,
+            'message' => 'Server Error!'
         ]);
 
     }

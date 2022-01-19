@@ -404,7 +404,7 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="recipient-name" class="col-form-label col-md-4">Mobile:</label>
-                                    <input type="text" name="mobile" class="form-control col-md-8 mobile" id="mobile">
+                                    <input type="text" name="mobile" class="form-control col-md-8 mobile mobileLocal" id="mobile">
                                 </div>
                             </div>
                         </div>
@@ -766,4 +766,8 @@
     <script type="application/javascript" src="{{ asset('bundles/terminalbdcrm/js/crm/complain-different-product.js') }}"></script>
     <script type="application/javascript" src="{{ asset('bundles/terminalbdcrm/js/crm/agent-upgradation-report.js') }}"></script>
     <script type="application/javascript" src="{{ asset('bundles/terminalbdcrm/js/crm/fish-feed-complain.js') }}"></script>
+    <script>
+        $('.mobileLocal').mask("00000-000000", {placeholder: "_____-______"});
+        $('.phoneLocal').mask("0-00000000", {placeholder: "_____-______"});
+    </script>
 {% endblock  %}
