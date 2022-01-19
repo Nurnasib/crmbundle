@@ -129,8 +129,10 @@
     <li>
         <a class="dropdown-item" href='{{ path('lab_service_new_modal',{'breed_name': 'poultry'}) }}'>{{ 'Lab Service'|trans }}</a>
     </li>
+    {% if(app.user.serviceMode is defined and app.user.serviceMode.slug=='sales-service-fish') %}
     <li><a class="dropdown-item" href="{{ path('fish_sales_price_add') }}">{{ 'Fish Sales Price'|trans }}</a></li>
     <li><a class="dropdown-item" href="{{ path('tilapia_fry_sales_add') }}">{{ 'Tilapia Fry Sales'|trans }}</a></li>
+    {% endif %}
     <li><a class="dropdown-item" href="{{ path('crm_expense') }}">{{ 'Expense'|trans }}</a></li>
 {#    <li><a class="dropdown-item" href="{{ path('crm_employee') }}">{{ 'Employee'|trans }}</a></li>#}
     <li><a class="dropdown-item" href="{{ path('core_agent') }}">{{ 'Agent'|trans }}</a></li>

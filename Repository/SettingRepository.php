@@ -75,4 +75,18 @@ class SettingRepository extends EntityRepository
         return $results;
     }
 
+    public function getFarmerPurposeByServiceMode($serviceMode){
+        $qb = $this->createQueryBuilder('e');
+        $qb->where("e.status =1");
+        $qb->andWhere("e.settingType ='PURPOSE'");
+        if($serviceMode=='sales-marketing'||$serviceMode=='sales-service-marketing'){
+          $qb->andWhere("e.slug IN (:slug)")->setParameter('slug',['pond-included','cattle-farm-included','layer-shed-included','broiler-shed-included']);
+        }else{
+            $qb->andWhere("e.slug NOT IN (:slug) OR e.slug IS NULL")->setParameter('slug',['pond-included','cattle-farm-included','layer-shed-included','broiler-shed-included']);
+        }
+        $qb->orderBy('e.name', 'ASC');
+        $results = $qb->getQuery()->getResult();
+        return $results;
+    }
+
 }

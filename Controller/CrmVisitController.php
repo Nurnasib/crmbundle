@@ -107,8 +107,13 @@ class CrmVisitController extends AbstractController
 
             return $this->redirectToRoute('crm_visit');
         }
+
+        $serviceMode= $this->getUser()->getServiceMode()->getSlug();
+        $serviceModeExplode=explode('-', $serviceMode);
+        $lastElement = end($serviceModeExplode);
+
         $agent=$this->getDoctrine()->getRepository(Agent::class)->getLocationWise($entity->getEmployee());
-        $purpose =$this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType'=>'PURPOSE'));
+        $purpose =$this->getDoctrine()->getRepository(Setting::class)->getFarmerPurposeByServiceMode($serviceMode);
         $agentPurpose =$this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType'=>'AGENT_PURPOSE'));
         $otherAgentPurpose =$this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType'=>'OTHER_AGENT_PURPOSE'));
         $subAgentPurpose =$this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType'=>'SUB_AGENT_PURPOSE'));
@@ -124,10 +129,12 @@ class CrmVisitController extends AbstractController
         $firmTypesArray=array();
 
         foreach ($firmTypes as $firmType){
-            $firmTypesArray[$firmType->getParent()->getName()][]=$firmType;
+            if($firmType->getParent()->getSlug()==$lastElement.'-breed'){
+                $firmTypesArray[$firmType->getParent()->getName()][]=$firmType;
+            }
         }
 
-        if($this->getUser()->getServiceMode() && $this->getUser()->getServiceMode()->getSlug()=='sales-marketing'){
+        if($this->getUser()->getServiceMode() && ($this->getUser()->getServiceMode()->getSlug()=='sales-marketing'||$this->getUser()->getServiceMode()->getSlug()=='sales-service-marketing')){
             $visitId = $entity->getId();
             $regions = $this->getDoctrine()->getRepository(Location::class)->findBy(['level' => 3]);
             $breedTypes = $this->getDoctrine()->getRepository(Setting::class)->findBy(['settingType' => 'MEAT_EGG_TYPE']);
@@ -268,6 +275,14 @@ class CrmVisitController extends AbstractController
         $lifeCycleReport =$this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType'=>'FARMER_REPORT'));
         $breedTypes =$this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType'=>'BREED_TYPE','status'=>1));
 
+        if($process=='farmer' && $this->getUser()->getServiceMode() && ($this->getUser()->getServiceMode()->getSlug()=='sales-marketing'||$this->getUser()->getServiceMode()->getSlug()=='sales-service-marketing')){
+            return $this->render('@TerminalbdCrm/crmvisit/partial/farmer_information_sales_marketing.html.twig', [
+                'entity' => $entity,
+                'lifeCycleReport' => $lifeCycleReport,
+                'breedTypes' => $breedTypes,
+                'fcr_after_reports' => $reports,
+            ]);
+        }
         return $this->render('@TerminalbdCrm/crmvisit/partial/'.$process.'_information.html.twig', [
             'entity' => $entity,
             'lifeCycleReport' => $lifeCycleReport,

@@ -80,7 +80,7 @@ class DiseaseMappingFormType extends AbstractType
             ->add('farmType', EntityType::class, array(
                 'required'    => false,
                 'class' => Setting::class,
-                'placeholder' => 'Choose Breed',
+                'placeholder' => 'Choose Species',
                 'choice_label' => 'name',
                 'attr'=>array('class'=>'span12 m-wrap breed'),
                 'query_builder' => function(EntityRepository $er)use($parentParent){
