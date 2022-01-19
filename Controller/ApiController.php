@@ -2402,12 +2402,12 @@ class ApiController extends AbstractController
             if (
                 (isset($parameters['name']) && $parameters['name'] !== null) &&
                 (isset($parameters['mobile']) && $parameters['mobile'] !== null) &&
-                ((isset($parameters['agentId']) && $parameters['agentId'] !== null && is_integer($parameters['agentId'])) ||
-                    (isset($parameters['subAgentId']) && $parameters['subAgentId'] !== null && is_integer($parameters['subAgentId'])) ||
-                    (isset($parameters['otherAgentId']) && $parameters['otherAgentId'] !== null && is_integer($parameters['otherAgentId']))) &&
-                (isset($parameters['feedId']) && $parameters['feedId'] !== null && is_integer($parameters['feedId'])) &&
-                (isset($parameters['farmerType']) && $parameters['farmerType'] !== null && is_integer($parameters['farmerType'])) &&
-                (isset($parameters['employeeId']) && $parameters['employeeId'] !== null && is_integer($parameters['employeeId']))
+                ((isset($parameters['agentId']) && $parameters['agentId'] !== null) ||
+                    (isset($parameters['subAgentId']) && $parameters['subAgentId'] !== null) ||
+                    (isset($parameters['otherAgentId']) && $parameters['otherAgentId'] !== null)) &&
+                (isset($parameters['feedId']) && $parameters['feedId'] !== null) &&
+                (isset($parameters['farmerType']) && $parameters['farmerType'] !== null) &&
+                (isset($parameters['employeeId']) && $parameters['employeeId'] !== null)
             ) {
 
                 $location = null;
