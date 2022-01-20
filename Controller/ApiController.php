@@ -2399,29 +2399,37 @@ class ApiController extends AbstractController
         ignore_user_abort(true);
         if ($request->getMethod() == 'POST' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')) {
             $parameters = $request->request->all();
+
+            $agent = null;
+            $subAgent = null;
+            $otherAgent = null;
+            $location = null;
+
+            if (isset($parameters['agentId']) && $parameters['agentId'] !== null){
+                $agent = $this->getDoctrine()->getRepository(Agent::class)->find($parameters['agentId']);
+            }
+            if (isset($parameters['subAgentId']) && $parameters['subAgentId'] !== null){
+                $subAgent = $this->getDoctrine()->getRepository(Agent::class)->find($parameters['subAgentId']);
+            }
+            if (isset($parameters['otherAgentId']) && $parameters['otherAgentId'] !== null){
+                $otherAgent = $this->getDoctrine()->getRepository(Agent::class)->find($parameters['otherAgentId']);
+            }
+            if (isset($parameters['locationId']) && $parameters['locationId'] !== null) {
+                $location = $this->getDoctrine()->getRepository(Location::class)->find($parameters['locationId']);
+            }
             if (
                 (isset($parameters['name']) && $parameters['name'] !== null) &&
                 (isset($parameters['mobile']) && $parameters['mobile'] !== null) &&
-                ((isset($parameters['agentId']) && $parameters['agentId'] !== null) ||
-                    (isset($parameters['subAgentId']) && $parameters['subAgentId'] !== null) ||
-                    (isset($parameters['otherAgentId']) && $parameters['otherAgentId'] !== null)) &&
+                ($agent || $subAgent || $otherAgent) &&
                 (isset($parameters['feedId']) && $parameters['feedId'] !== null) &&
                 (isset($parameters['farmerType']) && $parameters['farmerType'] !== null) &&
                 (isset($parameters['employeeId']) && $parameters['employeeId'] !== null)
             ) {
 
-                $location = null;
                 $farmerType = $this->getDoctrine()->getRepository(Setting::class)->find($parameters['farmerType']);
                 $feed = $this->getDoctrine()->getRepository(Setting::class)->find($parameters['feedId']);
-                $agent = $this->getDoctrine()->getRepository(Agent::class)->find($parameters['agentId']);
-                $subAgent = $this->getDoctrine()->getRepository(Agent::class)->find($parameters['subAgentId']);
-                $otherAgent = $this->getDoctrine()->getRepository(Agent::class)->find($parameters['otherAgentId']);
                 $employee = $this->getDoctrine()->getRepository(User::class)->find($parameters['employeeId']);
                 $farmerGroup = $this->getDoctrine()->getRepository(Setting::class)->findOneBy(['slug' => 'farmer']);
-
-                if (isset($parameters['locationId']) && $parameters['locationId'] !== null) {
-                    $location = $this->getDoctrine()->getRepository(Location::class)->find($parameters['locationId']);
-                }
 
                 // Add new Farmer
                 $newFarmer = new CrmCustomer();
