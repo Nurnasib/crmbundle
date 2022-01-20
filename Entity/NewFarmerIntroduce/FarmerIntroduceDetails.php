@@ -128,9 +128,9 @@ class FarmerIntroduceDetails
     }
 
     /**
-     * @param Agent $agent
+     * @param $agent
      */
-    public function setAgent(Agent $agent): void
+    public function setAgent($agent): void
     {
         $this->agent = $agent;
     }
@@ -220,9 +220,9 @@ class FarmerIntroduceDetails
     }
 
     /**
-     * @param Agent $otherAgent
+     * @param $otherAgent
      */
-    public function setOtherAgent(Agent $otherAgent): void
+    public function setOtherAgent($otherAgent): void
     {
         $this->otherAgent = $otherAgent;
     }
@@ -236,9 +236,9 @@ class FarmerIntroduceDetails
     }
 
     /**
-     * @param Agent $subAgent
+     * @param $subAgent
      */
-    public function setSubAgent(Agent $subAgent): void
+    public function setSubAgent($subAgent): void
     {
         $this->subAgent = $subAgent;
     }
