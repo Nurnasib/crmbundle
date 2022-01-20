@@ -268,9 +268,9 @@ class FarmerIntroduceDetails
     }
 
     /**
-     * @param string $remarks
+     * @param $remarks
      */
-    public function setRemarks(string $remarks): void
+    public function setRemarks($remarks): void
     {
         $this->remarks = $remarks;
     }
@@ -294,15 +294,15 @@ class FarmerIntroduceDetails
     /**
      * @return \DateTime
      */
-    public function getIntroduceDate(): \DateTime
+    public function getIntroduceDate()
     {
         return $this->introduceDate;
     }
 
     /**
-     * @param \DateTime $introduceDate
+     * @param $introduceDate
      */
-    public function setIntroduceDate(\DateTime $introduceDate): void
+    public function setIntroduceDate($introduceDate): void
     {
         $this->introduceDate = $introduceDate;
     }
