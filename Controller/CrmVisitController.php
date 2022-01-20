@@ -112,7 +112,7 @@ class CrmVisitController extends AbstractController
         $serviceModeExplode=explode('-', $serviceMode);
         $lastElement = end($serviceModeExplode);
 
-        $agent=$this->getDoctrine()->getRepository(Agent::class)->getLocationWise($entity->getEmployee());
+        $agent=$this->getDoctrine()->getRepository(Agent::class)->getVisitingLocationWise($entity->getEmployee(), $entity);
         $purpose =$this->getDoctrine()->getRepository(Setting::class)->getFarmerPurposeByServiceMode($serviceMode);
         $agentPurpose =$this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType'=>'AGENT_PURPOSE'));
         $otherAgentPurpose =$this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType'=>'OTHER_AGENT_PURPOSE'));

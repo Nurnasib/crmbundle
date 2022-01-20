@@ -52,6 +52,14 @@ class FarmerTrainingController extends AbstractController
         $entity = new FarmerTrainingReport();
 
         $data = $request->request->all();
+        $breedName=null;
+        $serviceMode = $this->getUser()->getServiceMode() && $this->getUser()->getServiceMode()->getSlug()!=''?$this->getUser()->getServiceMode()->getSlug():'null';
+        if($serviceMode && $serviceMode!='sales-marketing' ){
+            $serviceModeExplode=explode('-', $serviceMode);
+            $lastElement = end($serviceModeExplode);
+            $breedName= $this->getDoctrine()->getRepository(Setting::class)->findOneBy(['settingType'=>'BREED_NAME','slug'=>$lastElement.'-breed','status'=>1]);
+        }
+        
 
         $requestFarmers = isset($data['farmers'])?$data['farmers']:null;
         $training_materials = isset($data['training_material'])?$data['training_material']:[];
@@ -66,23 +74,22 @@ class FarmerTrainingController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
 
+            if(sizeof($requestFarmers)<=0){
+                return false;
+            }
+
             $existReport = $this->getDoctrine()->getRepository(FarmerTrainingReport::class)->findOneBy(array('employee'=>$this->getUser(), 'agent'=>$agent, 'agentPurpose'=>$purpose, 'trainingDate'=>new \DateTime($trainingDate)));
             if ($existReport){
                 $entity= $existReport;
-            }
-
-            if($existReport){
-                return new JsonResponse(array(
-                    'status'=>'old',
-                    'id'=>$entity->getId()
-                )
-                );
             }
 
             $entity->setTrainingDate(new \DateTime($trainingDate));
             $entity->setAgentPurpose($purpose);
             $entity->setAgent($agent);
             $entity->setTrainingMaterial(json_encode($training_materials));
+            if($breedName){
+                $entity->setBreedName($breedName);
+            }
             $entity->setEmployee($this->getUser());
             $em = $this->getDoctrine()->getManager();
             $em->persist($entity);
@@ -91,18 +98,30 @@ class FarmerTrainingController extends AbstractController
             foreach ($requestFarmers as $requestFarmer){
                 $farmer = $this->getDoctrine()->getRepository(CrmCustomer::class)->find($requestFarmer);
 
+                $existingFarmerTrainingDetails = $this->getDoctrine()->getRepository(FarmerTrainingReportDetails::class)->findOneBy(['farmerTrainingReport'=>$entity,'customer'=>$farmer]);
+
                 $farmerTrainingDetails = new FarmerTrainingReportDetails();
+
+                if($existingFarmerTrainingDetails){
+                    $farmerTrainingDetails=$existingFarmerTrainingDetails;
+                }
 
                 $farmerTrainingDetails->setCustomer($farmer);
                 $farmerTrainingDetails->setFarmerTrainingReport($entity);
-                $farmerTrainingDetails->setFarmerCapacity(json_encode($species_capacity));
+                $farmerTrainingDetails->setFarmerCapacity(json_encode($species_capacity[$requestFarmer]));
                 $farmerTrainingDetails->setTrainingMaterialQty(json_encode($selectedMaterialQty));
                 $em = $this->getDoctrine()->getManager();
                 $em->persist($farmerTrainingDetails);
 
             }
             $em->flush();
-
+            if($existReport){
+                return new JsonResponse(array(
+                        'status'=>'old',
+                        'id'=>$entity->getId()
+                    )
+                );
+            }
             return new JsonResponse(array(
                     'status'=>'new',
                     'id'=>$entity->getId()
@@ -111,12 +130,15 @@ class FarmerTrainingController extends AbstractController
               //  return $this->redirectToRoute('cattle_new_modal', ['id'=>$crmCustomer->getId(),'report'=>$report->getId()]);
 //            return $this->redirectToRoute('cattle_new_modal');
         }
-        $farmers = $this->getDoctrine()->getRepository(CrmCustomer::class)->getAgentWise($agent);
+        $farmers = $this->getDoctrine()->getRepository(CrmCustomer::class)->getAgentWise($agent, $this->getUser());
+        $trainingMaterials = $this->getTrainingMaterialAndSpeciesByBreedName();
         return $this->render('@TerminalbdCrm/farmerTraining/new-modal.html.twig', [
             'agent' => $agent,
             'purpose' => $purpose,
             'farmers' => $farmers,
             'entity' => $entity,
+            'trainingMaterials' => $trainingMaterials,
+            'breedName' => $breedName,
             'form' => $form->createView(),
         ]);
 
@@ -135,6 +157,32 @@ class FarmerTrainingController extends AbstractController
             'farmerTrainingReport' => $farmerTrainingReport,
             'species' => $species,
         ]);
+    }
+
+    private function getTrainingMaterialAndSpeciesByBreedName(){
+
+        $arrayData = array();
+        $serviceMode = $this->getUser()->getServiceMode() && $this->getUser()->getServiceMode()->getSlug()!=''?$this->getUser()->getServiceMode()->getSlug():'null';
+       if($serviceMode && $serviceMode!='sales-marketing' ){
+           $serviceModeExplode=explode('-', $serviceMode);
+           $lastElement = end($serviceModeExplode);
+           $breedName= $this->getDoctrine()->getRepository(Setting::class)->findOneBy(['settingType'=>'BREED_NAME','slug'=>$lastElement.'-breed','status'=>1]);
+           $entities = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType'=>'TRAINING_MATERIAL','parent'=>$breedName));
+           $species = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('status'=>1,'settingType'=>'SPECIES_TYPE','parent'=>$breedName));
+
+
+           /**@var Setting $entity*/
+           foreach ($entities as $entity){
+               $arrayData['materials'][]=array('id'=>$entity->getId(),'text'=>$entity->getName());
+
+           }
+           /**@var Setting $specie*/
+           foreach ($species as $specie){
+               $arrayData['species'][]=array('id'=>$specie->getId(),'text'=>$specie->getName());
+           }
+       }
+
+        return $arrayData;
     }
 
     /**

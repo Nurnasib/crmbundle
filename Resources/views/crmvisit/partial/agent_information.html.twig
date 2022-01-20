@@ -18,7 +18,7 @@
                     {{ details.comments }}
                 </td>
                 <td>
-                    {% if details.process=='agent' and details.purpose is not empty and details.purpose.slug in ['farmer-training'] %}
+                    {% if app.user.serviceMode is not empty and app.user.serviceMode.slug!='sales-marketing' and details.process=='agent' and details.purpose is not empty and details.purpose.slug in ['farmer-training'] %}
                         <a class="btn blue-bg btn-sm text-white" data-action='{{ path('farmer_training_report_new_modal',{'id': details.agent is not empty?details.agent.id:'', 'purpose':details.purpose is not empty? details.purpose.id:''}) }}' href='?process=postView_{{ details.id }}_{{ details.purpose is not empty? details.purpose.id:'' }}&report={{ details.purpose is not empty? details.purpose.slug:'' }}&check=show#modal' id='postView_{{ details.id }}_{{ details.purpose is not empty? details.purpose.id:'' }}' >{{ 'Report'|trans }}</a>
                     {% endif %}
                     {% if details.process=='agent' and details.purpose is not empty and details.purpose.slug in ['agent-upgradation'] %}

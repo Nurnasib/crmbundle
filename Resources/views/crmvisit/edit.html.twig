@@ -215,7 +215,7 @@
                                                         <select name="agent" id="agent" class="form-control agent">
                                                             <option value="">Select Agent</option>
                                                             {% for agent in agents %}
-                                                                <option value="{{agent.id}}"> {{agent.name}} </option>
+                                                                <option value="{{agent.id}}"> ({{agent.agentId }}) {{ agent.name }} ({{agent.groupName }}) </option>
                                                             {% endfor %}
                                                         </select>
                                                     </td>
@@ -415,7 +415,7 @@
                                     <select name="agent" class="form-control agent">
                                         <option value="">Select Agent</option>
                                         {% for agent in agents %}
-                                            <option value="{{ agent.id }}">{{ agent.name }}</option>
+                                            <option value="{{ agent.id }}">({{agent.agentId }}) {{ agent.name }} ({{agent.groupName }}) </option>
                                         {% endfor %}
                                     </select>
                                 </div>

@@ -196,9 +196,9 @@ class FarmerTrainingReport
     }
 
     /**
-     * @param Setting $breedName
+     * @param $breedName
      */
-    public function setBreedName(Setting $breedName): void
+    public function setBreedName( $breedName)
     {
         $this->breedName = $breedName;
     }

@@ -44,17 +44,25 @@ class CrmCustomerRepository extends EntityRepository
 
     }
 
-    public function getAgentWise(Agent $agent,$pram='farmer')
+    public function getAgentWise(Agent $agent, User $user, $pram='farmer')
     {
-
+        $serviceMode= $user->getServiceMode()->getSlug();
+        $serviceModeExplode=explode('-', $serviceMode);
+        $lastElement = end($serviceModeExplode);
+//dd($lastElement);
         $qb = $this->createQueryBuilder('e');
+        $qb->join('e.farmerIntroduce','farmerIntroduce');
+        $qb->join('farmerIntroduce.farmerType','farmerType');
         $qb->join('e.customerGroup','s');
         $qb->join('e.agent','a');
-        $qb->join('e.location','l');
+        $qb->join('a.upozila','l');
         $qb->select('e.id as id','e.name as name','e.address as address','e.mobile as mobile');
-        $qb->addSelect('l.name as locationName');
+        $qb->addSelect('l.id as locationId', 'l.name as locationName');
+        $qb->addSelect('a.name as agentName', 'a.agentId as agentId');
+        $qb->addSelect('farmerIntroduce.cultureSpeciesItemAndQty');
         $qb->where('s.slug = :slug')->setParameter('slug',$pram);
-        $qb->andWhere('a.id = :agent')->setParameter('agent',$agent);
+        $qb->andWhere('l.id = :locationId')->setParameter('locationId',$agent->getUpozila()->getId());
+        $qb->andWhere('farmerType.slug = :farmerTypeSlug')->setParameter('farmerTypeSlug',$lastElement.'-breed');
         $results = $qb->getQuery()->getArrayResult();
 
         $returnArray = [];
@@ -62,7 +70,6 @@ class CrmCustomerRepository extends EntityRepository
         foreach ($results as $result){
             $returnArray[$result['locationName']][]= $result;
         }
-
         return $returnArray;
 
     }

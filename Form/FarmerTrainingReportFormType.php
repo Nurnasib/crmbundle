@@ -41,7 +41,7 @@ class FarmerTrainingReportFormType extends AbstractType
     {
 
         $builder
-            ->add('breed_name', EntityType::class, array(
+            /*->add('breed_name', EntityType::class, array(
                 'class' => Setting::class,
                 'placeholder' => 'Choose Breed Name',
                 'choice_label' => 'name',
@@ -52,7 +52,7 @@ class FarmerTrainingReportFormType extends AbstractType
                         ->where("e.settingType ='BREED_NAME'")
                         ->orderBy('e.name', 'ASC');
                 },
-            ))
+            ))*/
             ->add($builder->create('training_date', TextType::class, array(
                 'label' => 'Training Date',
                 'attr' => array(

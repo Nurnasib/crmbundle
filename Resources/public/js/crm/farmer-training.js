@@ -53,13 +53,6 @@ function formSubmitProcessForFarmerTrainingReport(element) {
        return false;
     }
 
-    var farmer_training_report_form_breed_name = parentElement.find('#farmer_training_report_form_breed_name').val();
-
-    if (farmer_training_report_form_breed_name=='' || typeof farmer_training_report_form_breed_name === "undefined"){
-       parentElement.find('#farmer_training_report_form_breed_name').addClass('is-invalid');
-       return false;
-    }
-
     $.ajax({
         url         : $('form#farmer_training_report_form').attr( 'action' ),
         type        : $('form#farmer_training_report_form').attr( 'method' ),

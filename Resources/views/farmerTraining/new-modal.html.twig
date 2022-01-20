@@ -6,13 +6,16 @@
 
     <div class="portlet-body form farmer_training_report_section">
         {{ form_start(form, {'attr': {'method':'post', 'action': path('farmer_training_report_new_modal',{'id':agent.id,'purpose':purpose.id }),'class': 'form-horizontal right','id':'farmer_training_report_form'}}) }}
+
         <div class="row form-body ">
             <div class="form-inner-no-space">
 
                 <div class="row">
                     <div class="col-md-12">
-                        <h4>{{purpose.name}}</h4>
+                        <h4>{{purpose.name}} ({{ breedName.name|default() }})</h4>
                         <h4>{{ 'Agent'|trans }}: {{ agent.name }}</h4>
+                        <input type="hidden" class="agent_id" value="{{ agent.id }}">
+
                     </div>
                 </div>
                 <div class="row">
@@ -32,9 +35,7 @@
                         <div class="form-group">
                             <label class="col-md-4 control-label" for="">{{ 'Report Type'|trans }}</label>
                             <div class="col-md-8">
-                                <span class="not-blank"> *</span>
-                                {{ form_widget(form.breed_name) }}
-                                {{ form_errors(form.breed_name) }}
+                                <span class="form-control text-left">{{ breedName.name|default() }}</span>
                             </div>
                         </div>
                     </div>
@@ -42,28 +43,7 @@
 
                 <div class="row">
                     <div class="col-md-6">
-                        <div class="form-group">
-                            <label class="col-form-label col-md-4">{{ 'Farmers'|trans }}</label>
-                            <div class="col-md-8">
-                                <select name="farmers[]" class="form-control multi-select2-farmer" required multiple>
 
-                                    {#<option value="">Select Farmer</option>#}
-                                    {% for index, items in farmers %}
-                                        <optgroup label="{{ index }}">
-
-                                            {% for farmer in items %}
-                                                <option value="{{farmer['id']}}"> {{farmer['name']}} </option>
-                                            {% endfor %}
-                                        </optgroup>
-
-                                    {% endfor %}
-                                </select>
-                            </div>
-
-                        </div>
-                    </div>
-
-                    <div class="col-md-6">
                         <div class="form-group">
                             {{ form_label(form.training_topics, 'Topics'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
                             <div class="col-md-8">
@@ -71,6 +51,10 @@
                                 {{ form_errors(form.training_topics) }}
                             </div>
                         </div>
+                    </div>
+
+                    <div class="col-md-6">
+
                         <div class="form-group">
                             {{ form_label(form.remarks, 'Remarks'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
                             <div class="col-md-8">
@@ -82,43 +66,85 @@
                 </div>
 
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-12">
+                        <h5>{{ 'Farmers List'|trans }}</h5>
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <td rowspan="2">#</td>
+                                <td rowspan="2">Farmer Name</td>
+                                <td rowspan="2">Mobile</td>
+                                <td rowspan="2">Address</td>
+                                <td rowspan="2">Agent</td>
+                                <td colspan="{{ trainingMaterials is not empty and trainingMaterials['species'] is defined?trainingMaterials['species']|length:'' }}">Capacity</td>
+                            </tr>
+                            <tr>
+                                {% if(trainingMaterials is not empty and trainingMaterials['species'] is defined) %}
+                                    {% for specie in trainingMaterials['species'] %}
+                                        <td>{{ specie['text'] }}</td>
+                                    {% endfor %}
+                                {% endif %}
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% if farmers is not empty %}
+                                {% for index, items in farmers %}
+                                    {% for farmer in items %}
+                                        {% set cultureSpeciesItemAndQty= farmer['cultureSpeciesItemAndQty']|json_decode %}
+                                        <tr>
+                                            <td class="text-center"><input type="checkbox" name="farmers[]" value="{{farmer['id']}}"></td>
+                                            <td class="text-left">{{farmer['name']}}</td>
+                                            <td class="text-left">{{farmer['mobile']}}</td>
+                                            <td class="text-left">{{farmer['address']}}</td>
+                                            <td class="text-left">{{farmer['agentName']}}</td>
+                                            {% if(trainingMaterials is not empty and trainingMaterials['species'] is defined) %}
+                                                {% for specie in trainingMaterials['species'] %}
+                                                    <td><input name="species_capacity[{{farmer['id']}}][{{ specie['id'] }}]" class="form-control" type="number" min="0" value="{{ cultureSpeciesItemAndQty[specie['id']]|default(0)}}"></td>
+                                                {% endfor %}
+                                            {% endif %}
+                                        </tr>
+                                    {% endfor %}
+                                {% endfor %}
+                            {% endif %}
+                            </tbody>
 
-                        <div class="form-group">
-                            <label class="col-form-label col-md-4">{{ 'Training Materials'|trans }}</label>
-                            <div style="text-align: left; line-height: 30px;" id="" class="col-md-8 training_materials">
-                                <table class="table table-bordered">
-                                    <thead>
-                                    <tr>
-                                        <th>#</th>
-                                        <th>Material Name</th>
-                                        <th>Quantity</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody id="training_materials"></tbody>
-                                </table>
-
-                            </div>
-
-                        </div>
+                        </table>
 
                     </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label class="col-form-label col-md-4">{{ 'Capacity'|trans }}</label>
-                            <div style="text-align: left; line-height: 30px;" id="" class="col-md-8">
-                                <table class="table table-bordered">
-                                    <thead>
-                                    <tr>
-                                        <th>{{ 'Name'|trans }}</th>
-                                        <th>{{ 'Capacity'|trans }}</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody id="species_capacity"></tbody>
-                                </table>
-                            </div>
-                        </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <h5>{{ 'Training Materials'|trans }}</h5>
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th>Material Name</th>
+                                {% if(trainingMaterials is not empty and trainingMaterials['materials'] is defined) %}
+                                    {% for material in trainingMaterials['materials'] %}
+                                        <td>{{ material['text'] }}</td>
+                                    {% endfor %}
+                                {% endif %}
+
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <th>Quantity</th>
+                                {% if(trainingMaterials is not empty and trainingMaterials['materials'] is defined) %}
+                                    {% for material in trainingMaterials['materials'] %}
+                                        <td>
+                                            <input name="training_material[{{ material['id'] }}]" type="hidden" id="{{ material['id'] }}" value="{{ material['text'] }}">
+                                            <input name="training_material_qty[{{ material['id'] }}]" class="form-control" type="number" min="0" value="">
+                                        </td>
+                                    {% endfor %}
+                                {% endif %}
+                            </tr>
+
+                            </tbody>
+                        </table>
                     </div>
+
                 </div>
 
                 <div class="form-actions">
