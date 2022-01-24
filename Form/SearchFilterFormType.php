@@ -48,13 +48,18 @@ class SearchFilterFormType extends AbstractType
                         'Farmer Survey' => 'farmer-survey-poultry',
                         'Lab Service' => 'lab-service-poultry',
                         'FCR Different Companies' => 'fcr-different-companies-poultry',
+                        'Company Wise Feed Sale' => 'company-wise-feed-sale-poultry',
+
                     ],
                     'Cattle' => [
                         'Farmer Survey' => 'farmer-survey-cattle',
+                        'Company Wise Feed Sale' => 'company-wise-feed-sale-cattle',
 
                     ],
                     'Fish' => [
                         'Farmer Survey' => 'farmer-survey-fish',
+                        'Company Wise Feed Sale' => 'company-wise-feed-sale-fish',
+
 
                     ],
 

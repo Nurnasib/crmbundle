@@ -89,4 +89,32 @@ class SettingRepository extends EntityRepository
         return $results;
     }
 
+
+    public function getProductType($breed)
+    {
+        $qb = $this->createQueryBuilder('e');
+        $qb->join('e.parent', 'parent');
+
+        $qb->select('e.id', 'e.name');
+        $qb->addSelect('parent.name AS parentName');
+
+        $qb->where("e.settingType = 'PRODUCT_TYPE'");
+        $qb->andWhere('parent.parent = :breed')->setParameter('breed', $breed);
+        $qb->andWhere('e.status = 1');
+
+        $results = $qb->getQuery()->getArrayResult();
+
+        $data = [];
+
+        foreach ($results as $result) {
+            $data[$result['parentName']][] = [
+                'id' => $result['id'],
+                'name' => $result['name'],
+                'parent' => $result['parentName'],
+            ];
+        }
+
+        return $data;
+    }
+
 }

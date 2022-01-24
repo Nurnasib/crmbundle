@@ -1,0 +1,115 @@
+{% for monthYear, entity in entities %}
+    {% set breedWiseTotalQty = [] %}
+
+    <table width="100%">
+        <tr>
+            <th colspan="14"><h3 class="text-center">NOURISH POULTRY AND HATCHERY LTD</h3></th>
+        </tr>
+        <tr>
+            <th colspan="14"><h5 class="text-center">UTTARA, DHAKA.</h5></th>
+        </tr>
+
+        <tr>
+            <td colspan="14" align="center"><h6>{{ filterBy['otherReport']|replace({'-': ' '}) |upper }}</h6></td>
+        </tr>
+    </table>
+    <table width="100%" class="table table-bordered">
+        <thead class="thead-dark">
+        <tr>
+            <th>Officer's ID: {{ employee ? employee.userId : '' }}</th>
+            <th>Officer's Name: {{ employee ? employee.name : '' }}</th>
+            <th>Designation: {{ employee and employee.designation ? employee.designation.name : '' }}</th>
+            <th>Region: {{ employee and employee.regional ? employee.regional.name : '' }}</th>
+            <th>Month: {{ monthYear|replace({'-': ', '}) }}</th>
+
+        </tr>
+        </thead>
+    </table>
+    <table class="table table-striped table-bordered table-hover">
+        <thead class="thead-dark">
+
+        <tr>
+            <th scope="col" rowspan="2" width="50">S/N</th>
+            <th scope="col" rowspan="2">Company</th>
+            {% if species is defined %}
+                {% for key, item in species %}
+                    <th scope="col" colspan="{{ (item|length) + 1 }}" style="text-align: center">{{ key }}</th>
+                {% endfor %}
+            {% endif %}
+            <th scope="col" rowspan="2" style="text-align: center">Total</th>
+            <th scope="col" rowspan="2" width="100">Market Share by Nourish (%)</th>
+
+        </tr>
+        <tr>
+            {% if species is defined %}
+                {% for item in species %}
+                    {% for child in item %}
+                        <th scope="col" style="text-align: center">{{ child.name }}</th>
+                    {% endfor %}
+                    <th scope="col" style="text-align: center">Total</th>
+                {% endfor %}
+            {% endif %}
+        </tr>
+        </thead>
+        <tbody>
+        {% set fullTotal = 0 %}
+
+        {% for details in entity.details %}
+            {% set fullTotal = fullTotal + details.totalQty %}
+
+            {% set productWiseQty = details.productWiseQty is not empty ? details.productWiseQty|json_decode : [] %}
+            <tr>
+                <td align="center">{{ loop.index }}</td>
+                <td>{{ details.feedCompanyName }}</td>
+
+                {% if species is defined %}
+                    {% for item in species %}
+                        {% set total = 0 %}
+                        {% for child in item %}
+                            {% if productWiseQty[child.id] is defined %}
+                                {% set total = total + productWiseQty[child.id] %}
+
+                                <td align="right">{{ productWiseQty[child.id] }}</td>
+                                {% if breedWiseTotalQty['#' ~ child.id] is defined %}
+                                    {% set breedWiseTotalQty = breedWiseTotalQty|merge({ ('#' ~ (child.id)) : (breedWiseTotalQty['#' ~ child.id] + productWiseQty[child.id]) }) %}
+                                    {% else %}
+                                        {% set breedWiseTotalQty = breedWiseTotalQty|merge({ ('#' ~ (child.id)): (productWiseQty[child.id]) }) %} {# chile.id is not copatible as key. To make string add '#' before that is#}
+
+                                {% endif %}
+
+                            {% else %}
+                                <td align="right">0</td>
+                            {% endif %}
+                        {% endfor %}
+                        <td align="right">{{ total }}</td>
+
+                    {% endfor %}
+                {% endif %}
+
+                <td align="right">{{ details.totalQty }}</td>
+                <td align="right">{{ entity.companyTotalQty > 0 ? ((details.totalQty * 100) / entity.companyTotalQty)|number_format(2) : 0 }}</td>
+            </tr>
+        {% endfor %}
+        <tr>
+            <th colspan="2" style="text-align: center">Total</th>
+
+
+            {% if species is defined %}
+                {% for item in species %}
+                    {% set total = 0 %}
+                    {% for child in item %}
+                        {% if breedWiseTotalQty['#' ~ child.id] is defined %}
+                            <th align="right" style="text-align: right">{{ breedWiseTotalQty['#' ~ child.id] }}</th>
+                        {% else %}
+                            <th align="right" style="text-align: right">0</th>
+                        {% endif %}
+                    {% endfor %}
+                    <th align="right" style="text-align: right"> </th>
+
+                {% endfor %}
+            {% endif %}
+            <th align="right" style="text-align: right">{{ fullTotal }}</th>
+        </tr>
+        </tbody>
+    </table>
+{% endfor %}

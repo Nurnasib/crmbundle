@@ -39,8 +39,6 @@
         </tr>
         </thead>
         <tbody>
-        {#    {% set monthTotal = [] %}#}
-
         {% for data in entity %}
             {% set yearTotal = 0 %}
             <tr>
@@ -76,9 +74,6 @@
             {% endfor %}
 
             <th style="text-align: center">{{ total }}</th>
-        </tr>
-        <tr>
-            <td colspan="14"></td>
         </tr>
         </tbody>
 
