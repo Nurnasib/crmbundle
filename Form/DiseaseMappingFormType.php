@@ -129,7 +129,15 @@ class DiseaseMappingFormType extends AbstractType
             ->add('ageDays', NumberType::class, [
                 'attr' => ['min'=>0, 'autofocus' => true],
                 'label' => 'label.ageDays',
-                'required'=>false
+                'required'=>false,
+            ])
+            ->add('ageUnitType', ChoiceType::class, [
+                'label' => 'label.ageUnitType',
+                'required'=>false,
+                'choices'  => [
+                    'Day' => 'Day',
+                    'Month' => 'Month',],
+                'placeholder' => false,
             ])
         ;
     }

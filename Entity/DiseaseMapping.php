@@ -104,6 +104,12 @@ class DiseaseMapping
 
     /**
      * @var string
+     * @Orm\Column(name="age_unit_type", type="string", nullable=true)
+     */
+    private $ageUnitType;
+
+    /**
+     * @var string
      * @Orm\Column(name="remarks", type="text", nullable=true)
      */
     private $remarks;
@@ -306,6 +312,24 @@ class DiseaseMapping
     {
         $this->ageDays = $ageDays;
     }
+
+    /**
+     * @return string
+     */
+    public function getAgeUnitType()
+    {
+        return $this->ageUnitType;
+    }
+
+    /**
+     * @param string $ageUnitType
+     */
+    public function setAgeUnitType(string $ageUnitType): void
+    {
+        $this->ageUnitType = $ageUnitType;
+    }
+    
+    
 
     /**
      * @return string

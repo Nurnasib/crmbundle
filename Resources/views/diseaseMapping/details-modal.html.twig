@@ -11,6 +11,7 @@
         <td>{{ diseaseMapping.farmType.name|default('') }}</td>
         <td>{{ diseaseMapping.flockSizeOrCapacity|default('') }}</td>
         <td>{{ diseaseMapping.ageDays|default('') }}</td>
+        <td>{{ diseaseMapping.ageUnitType|default('Day') }}</td>
         <td>{{ diseaseMapping.disease.name|default('') }}</td>
         <td>
             <a data-action="{{ path('disease_mapping_delete',{id:diseaseMapping.id}) }}" class="btn btn-danger btn-sm remove">x</a>

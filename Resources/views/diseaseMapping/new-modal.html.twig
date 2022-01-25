@@ -29,6 +29,7 @@
                             <th style="width: 150px">{{ 'Type of Species'|trans }}</th>
                             <th>{{ 'Capacity'|trans }}</th>
                             <th>{{ 'Age'|trans }}</th>
+                            <th style="width: 75px">{{ 'Unit'|trans }}</th>
                             <th style="width: 200px">{{ 'Presumptive Diagnosis'|trans }}</th>
                             <th>{{ 'Action'|trans }}</th>
                         </tr>
@@ -47,6 +48,7 @@
                             <td>{{ form_widget(form.farmType) }}</td>
                             <td>{{ form_widget(form.flockSizeOrCapacity,{'type':'number'}) }}</td>
                             <td>{{ form_widget(form.ageDays,{'type':'number'}) }}</td>
+                            <td>{{ form_widget(form.ageUnitType) }}</td>
                             <td>{{ form_widget(form.disease) }}</td>
                             <td>
                                 <button title="Save" type="button" class="btn btn-primary btn-sm disease_mapping_button"><i class="fa fa-save"></i></button>
