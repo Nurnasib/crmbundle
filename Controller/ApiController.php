@@ -2482,4 +2482,82 @@ class ApiController extends AbstractController
         ]);
 
     }
+
+
+    /**
+     * @param Request $request
+     * @param ParameterBagInterface $parameterBag
+     * @return JsonResponse
+     * @Route("/training-material", name="training_material")
+     */
+    public function trainingMaterial(Request $request, ParameterBagInterface $parameterBag)
+    {
+        set_time_limit(0);
+        ignore_user_abort(true);
+        if ($request->getMethod() == 'POST' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')) {
+
+            $user = $this->getDoctrine()->getRepository(User::class)->find($request->request->get('user_id'));
+
+            if ($user){
+                if($user->getServiceMode() && $user->getServiceMode()->getSlug() != 'sales-marketing' ) {
+                    $serviceModeExplode = explode('-', $user->getServiceMode()->getSlug());
+                    $lastElement = end($serviceModeExplode);
+                    $breedName = $this->getDoctrine()->getRepository(Setting::class)->findOneBy(['settingType' => 'BREED_NAME', 'slug' => $lastElement . '-breed', 'status' => 1]);
+                    $materials = $this->getDoctrine()->getRepository(Setting::class)->findBy(['settingType' => 'TRAINING_MATERIAL', 'parent' => $breedName]);
+                    $data = [];
+                    foreach ($materials as $material) {
+                        $data[] = [
+                            'id' => $material->getId(),
+                            'name' => $material->getName(),
+                        ];
+                    }
+                    return new JsonResponse($data);
+                }else{
+                    return new JsonResponse([
+                        'status' => 404,
+                        'message' => 'Not Found!'
+                    ]);
+                }
+
+            }else{
+                return new JsonResponse([
+                    'status' => 404,
+                    'message' => 'Not Found!'
+                ]);
+            }
+        }
+        return new JsonResponse([
+            'status' => 404,
+            'message' => 'Not Found!'
+        ]);
+
+    }
+    /**
+     * @param Request $request
+     * @param ParameterBagInterface $parameterBag
+     * @return JsonResponse
+     * @Route("/breed-name", name="breed_name")
+     */
+    public function breedName(Request $request, ParameterBagInterface $parameterBag)
+    {
+        set_time_limit(0);
+        ignore_user_abort(true);
+        if ($request->getMethod() == 'GET' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')) {
+            $breedNames = $this->getDoctrine()->getRepository(Setting::class)->findBy(['settingType' => 'BREED_NAME', 'status' => 1]);
+
+            $data = [];
+            foreach ($breedNames as $breedName) {
+                $data[] = [
+                    'id' => $breedName->getId(),
+                    'name' => $breedName->getName(),
+                ];
+            }
+            return new JsonResponse($data);
+        }
+        return new JsonResponse([
+            'status' => 404,
+            'message' => 'Not Found!'
+        ]);
+
+    }
 }
