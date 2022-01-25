@@ -77,4 +77,37 @@ class CompanyWiseFeedSaleRepository extends BaseRepository
         return array();
     }
 
+
+    public function getCompanyWiseFeedSale($breedName, $filterBy)
+    {
+        $start = isset($filterBy['startDate']) ? (new \DateTime($filterBy['startDate']))->format('Y-m-d') . ' 00:00:00' : null;
+        $end = isset($filterBy['endDate']) ? (new \DateTime($filterBy['endDate']))->format('Y-m-d') . ' 23:59:59' : null;
+
+        $qb = $this->createQueryBuilder('e');
+        $qb->join('e.feedCompany', 'feedCompany');
+
+        $qb->select('e.monthName', 'e.year', 'e.breedName', 'e.productWiseQty', 'e.totalQty', 'e.createdAt');
+        $qb->addSelect('feedCompany.id AS feedCompanyId', 'feedCompany.name AS feedCompanyName');
+
+        $qb->where('e.employee = :employee')->setParameter('employee', $filterBy['employee']);
+        $qb->andWhere('e.createdAt >= :start')->setParameter('start', $start);
+        $qb->andWhere('e.createdAt <= :end')->setParameter('end', $end);
+        $qb->andWhere('e.breedName = :breedName')->setParameter('breedName', $breedName);
+
+        $results = $qb->getQuery()->getArrayResult();
+
+        $data = [];
+
+        foreach ($results as $result) {
+            $data[$result['monthName'] . '-' . $result['year']]['details'][] = $result;
+            if (array_key_exists('companyTotalQty', $data[$result['monthName'] . '-' . $result['year']])){
+                $data[$result['monthName'] . '-' . $result['year']]['companyTotalQty'] += $result['totalQty'];
+            }else{
+                $data[$result['monthName'] . '-' . $result['year']]['companyTotalQty'] = $result['totalQty'];
+
+            }
+        }
+        return $data;
+    }
+
 }

@@ -96,6 +96,9 @@
                         {% elseif filterBy['otherReport'] is same as 'fcr-different-companies-poultry' %}
                             {% include '@TerminalbdCrm/report/others/inc/_fcr_different_companies.html.twig'%}
 
+                        {% elseif filterBy['otherReport'] in ['company-wise-feed-sale-poultry','company-wise-feed-sale-cattle','company-wise-feed-sale-fish'] %}
+                            {% include '@TerminalbdCrm/report/others/inc/_company_wise_feed_sale.html.twig'%}
+
                         {% endif %}
 
                     </div>

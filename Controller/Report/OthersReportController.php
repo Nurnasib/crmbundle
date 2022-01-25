@@ -15,6 +15,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Terminalbd\CrmBundle\Entity\AntibioticFreeFarm;
 use Terminalbd\CrmBundle\Entity\ChickLifeCycle;
 use Terminalbd\CrmBundle\Entity\ChickLifeCycleDetails;
+use Terminalbd\CrmBundle\Entity\CompanyWiseFeedSale;
 use Terminalbd\CrmBundle\Entity\CostBenefitAnalysisForLessCostingFarm;
 use Terminalbd\CrmBundle\Entity\CrmCustomer;
 use Terminalbd\CrmBundle\Entity\DiseaseMapping;
@@ -66,6 +67,22 @@ class OthersReportController extends AbstractController
                     break;
                 case 'fcr-different-companies-poultry':
                     $entities = $this->getDoctrine()->getRepository(FcrDifferentCompanies::class)->getFcrDifferentCompaniesReport($filterBy);
+                    break;
+                case 'company-wise-feed-sale-poultry':
+                case 'company-wise-feed-sale-cattle':
+                case 'company-wise-feed-sale-fish':
+                    if ($filterBy['otherReport'] === 'company-wise-feed-sale-poultry'){
+                        $breedName = 'poultry';
+                    }elseif ($filterBy['otherReport'] === 'company-wise-feed-sale-cattle'){
+                        $breedName = 'cattle';
+                    }else{
+                        $breedName = 'fish';
+                    }
+                    $breed = $this->getDoctrine()->getRepository(Setting::class)->findBy(['status' => 1, 'slug' => $breedName . '-breed', 'settingType' => 'BREED_NAME']);
+
+                    $species = $this->getDoctrine()->getRepository(Setting::class)->getProductType($breed);
+
+                    $entities = $this->getDoctrine()->getRepository(CompanyWiseFeedSale::class)->getCompanyWiseFeedSale($breedName, $filterBy);
                     break;
                 default:
                     $entities = [];
