@@ -49,18 +49,17 @@ class SearchFilterFormType extends AbstractType
                         'Lab Service' => 'lab-service-poultry',
                         'FCR Different Companies' => 'fcr-different-companies-poultry',
                         'Company Wise Feed Sale' => 'company-wise-feed-sale-poultry',
-
+                        'Farmer Training' => 'farmer-training-poultry',
                     ],
                     'Cattle' => [
                         'Farmer Survey' => 'farmer-survey-cattle',
                         'Company Wise Feed Sale' => 'company-wise-feed-sale-cattle',
-
+                        'Farmer Training' => 'farmer-training-cattle',
                     ],
                     'Fish' => [
                         'Farmer Survey' => 'farmer-survey-fish',
                         'Company Wise Feed Sale' => 'company-wise-feed-sale-fish',
-
-
+                        'Farmer Training' => 'farmer-training-fish',
                     ],
 
                 ],

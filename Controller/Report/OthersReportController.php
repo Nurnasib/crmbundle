@@ -19,6 +19,7 @@ use Terminalbd\CrmBundle\Entity\CompanyWiseFeedSale;
 use Terminalbd\CrmBundle\Entity\CostBenefitAnalysisForLessCostingFarm;
 use Terminalbd\CrmBundle\Entity\CrmCustomer;
 use Terminalbd\CrmBundle\Entity\DiseaseMapping;
+use Terminalbd\CrmBundle\Entity\FarmerTrainingReportDetails;
 use Terminalbd\CrmBundle\Entity\FcrDetails;
 use Terminalbd\CrmBundle\Entity\FcrDifferentCompanies;
 use Terminalbd\CrmBundle\Entity\LabService;
@@ -46,6 +47,7 @@ class OthersReportController extends AbstractController
         $filterBy = [];
         $entities = [];
         $species = [];
+        $trainingMaterials = [];
         $employee = null;
 
         $form = $this->createForm(SearchFilterFormType::class);
@@ -69,34 +71,51 @@ class OthersReportController extends AbstractController
                     $entities = $this->getDoctrine()->getRepository(FcrDifferentCompanies::class)->getFcrDifferentCompaniesReport($filterBy);
                     break;
                 case 'company-wise-feed-sale-poultry':
-                case 'company-wise-feed-sale-cattle':
-                case 'company-wise-feed-sale-fish':
-                    if ($filterBy['otherReport'] === 'company-wise-feed-sale-poultry'){
-                        $breedName = 'poultry';
-                    }elseif ($filterBy['otherReport'] === 'company-wise-feed-sale-cattle'){
-                        $breedName = 'cattle';
-                    }else{
-                        $breedName = 'fish';
-                    }
-                    $breed = $this->getDoctrine()->getRepository(Setting::class)->findBy(['status' => 1, 'slug' => $breedName . '-breed', 'settingType' => 'BREED_NAME']);
-
+                    $breed = $this->getDoctrine()->getRepository(Setting::class)->findBy(['status' => 1, 'slug' => 'poultry-breed', 'settingType' => 'BREED_NAME']);
                     $species = $this->getDoctrine()->getRepository(Setting::class)->getProductType($breed);
-
-                    $entities = $this->getDoctrine()->getRepository(CompanyWiseFeedSale::class)->getCompanyWiseFeedSale($breedName, $filterBy);
+                    $entities = $this->getDoctrine()->getRepository(CompanyWiseFeedSale::class)->getCompanyWiseFeedSale('poultry', $filterBy);
+                    break;
+                case 'company-wise-feed-sale-cattle':
+                    $breed = $this->getDoctrine()->getRepository(Setting::class)->findBy(['status' => 1, 'slug' => 'cattle-breed', 'settingType' => 'BREED_NAME']);
+                    $species = $this->getDoctrine()->getRepository(Setting::class)->getProductType($breed);
+                    $entities = $this->getDoctrine()->getRepository(CompanyWiseFeedSale::class)->getCompanyWiseFeedSale('cattle', $filterBy);
+                    break;
+                case 'company-wise-feed-sale-fish':
+                    $breed = $this->getDoctrine()->getRepository(Setting::class)->findBy(['status' => 1, 'slug' => 'fish-breed', 'settingType' => 'BREED_NAME']);
+                    $species = $this->getDoctrine()->getRepository(Setting::class)->getProductType($breed);
+                    $entities = $this->getDoctrine()->getRepository(CompanyWiseFeedSale::class)->getCompanyWiseFeedSale('fish', $filterBy);
+                    break;
+                case 'farmer-training-poultry':
+                    $breed = $this->getDoctrine()->getRepository(Setting::class)->findBy(['status' => 1, 'slug' => 'poultry-breed', 'settingType' => 'BREED_NAME']);
+                    $species = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('status' => 1,'settingType' => 'SPECIES_TYPE','parent' => $breed));
+                    $trainingMaterials = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('status' => 1,'settingType' => 'TRAINING_MATERIAL','parent' => $breed));
+                    $entities = $this->getDoctrine()->getRepository(FarmerTrainingReportDetails::class)->getFarmerTrainingReport('poultry-breed', $filterBy);
+                    break;
+                case 'farmer-training-cattle':
+                    $breed = $this->getDoctrine()->getRepository(Setting::class)->findBy(['status' => 1, 'slug' => 'cattle-breed', 'settingType' => 'BREED_NAME']);
+                    $species = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('status' => 1,'settingType' => 'SPECIES_TYPE','parent' => $breed));
+                    $trainingMaterials = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('status' => 1,'settingType' => 'TRAINING_MATERIAL','parent' => $breed));
+                    $entities = $this->getDoctrine()->getRepository(FarmerTrainingReportDetails::class)->getFarmerTrainingReport('cattle-breed', $filterBy);
+                    break;
+                case 'farmer-training-fish':
+                    $breed = $this->getDoctrine()->getRepository(Setting::class)->findBy(['status' => 1, 'slug' => 'fish-breed', 'settingType' => 'BREED_NAME']);
+                    $species = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('status' => 1,'settingType' => 'SPECIES_TYPE','parent' => $breed));
+                    $trainingMaterials = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('status' => 1,'settingType' => 'TRAINING_MATERIAL','parent' => $breed));
+                    $entities = $this->getDoctrine()->getRepository(FarmerTrainingReportDetails::class)->getFarmerTrainingReport('fish-breed', $filterBy);
                     break;
                 default:
                     $entities = [];
                     break;
             }
-
         }
 
         if($request->request->get('excel')){
             $html = $this->renderView('@TerminalbdCrm/report/others/excel.html.twig',[
                 'entities' => $entities,
-                'filterBy'=> $filterBy,
-                'species'=> $species,
-                'employee'=> $employee,
+                'filterBy' => $filterBy,
+                'species' => $species,
+                'trainingMaterials' => $trainingMaterials,
+                'employee' => $employee,
             ]);
 
             $fileName = $filterBy['otherReport'] .'_'.time().".xls";
@@ -113,8 +132,9 @@ class OthersReportController extends AbstractController
         return $this->render('@TerminalbdCrm/report/others/index.html.twig',[
             'form' => $form->createView(),
             'entities' => $entities,
-            'filterBy'=> $filterBy,
-            'species'=> $species,
+            'filterBy' => $filterBy,
+            'species' => $species,
+            'trainingMaterials' => $trainingMaterials,
             'employee'=> $employee,
         ]);
     }

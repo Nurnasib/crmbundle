@@ -1,0 +1,126 @@
+ <table width="100%">
+        <tr>
+            <th colspan="14"><h3 class="text-center">NOURISH POULTRY AND HATCHERY LTD</h3></th>
+        </tr>
+        <tr>
+            <th colspan="14"><h5 class="text-center">UTTARA, DHAKA.</h5></th>
+        </tr>
+
+        <tr>
+            <td colspan="14" align="center"><h6>{{ filterBy['otherReport']|replace({'-': ' '}) |upper }}</h6></td>
+        </tr>
+    </table>
+    <table width="100%" class="table table-bordered">
+        <thead class="thead-dark">
+        <tr>
+            <th>Officer's ID: {{ employee ? employee.userId : '' }}</th>
+            <th>Officer's Name: {{ employee ? employee.name : '' }}</th>
+            <th>Designation: {{ employee and employee.designation ? employee.designation.name : '' }}</th>
+            <th>Region: {{ employee and employee.regional ? employee.regional.name : '' }}</th>
+        </tr>
+        </thead>
+    </table>
+    <table class="table table-striped table-bordered table-hover">
+        <thead class="thead-dark">
+
+        <tr>
+{#            <th scope="col" width="50" rowspan="2">S/N</th>#}
+{#            <th scope="col" rowspan="2">Month</th>#}
+            <th scope="col" rowspan="2" width="100" style="text-align: center">Date of Training</th>
+            <th scope="col" colspan="3" style="text-align: center">Agent</th>
+            <th scope="col" colspan="4" style="text-align: center">Participants Information</th>
+            <th scope="col" colspan="{{ species ? ((species|length) + 1) : '' }}" style="text-align: center">Capacity</th>
+            <th scope="col" colspan="{{ trainingMaterials ? (trainingMaterials|length) : '' }}" style="text-align: center">Training Materials</th>
+            <th scope="col" rowspan="2" style="text-align: center">Training Topics</th>
+            <th scope="col" rowspan="2" style="text-align: center">Remarks</th>
+
+        </tr>
+        <tr>
+            <th style="text-align: center">Name</th>
+            <th style="text-align: center">Address</th>
+            <th style="text-align: center">Mobile No</th>
+
+            <th style="text-align: center">S/N</th>
+            <th style="text-align: center">Name</th>
+            <th style="text-align: center">Address</th>
+            <th style="text-align: center">Mobile No</th>
+            {% if species is defined %}
+                {% for item in species %}
+                    <th style="text-align: center">{{ item.name }}</th>
+                {% endfor %}
+            {% endif %}
+            <th>Total</th>
+            {% if trainingMaterials is defined %}
+                {% for material in trainingMaterials %}
+                    <th style="text-align: center">{{ material.name }}</th>
+                {% endfor %}
+            {% endif %}
+        </tr>
+        </thead>
+        <tbody>
+{#        {{ dump(entities) }}#}
+
+        {% for monthYear, entity in entities %}
+            {% set count = 1 %}
+
+            <tr>
+                <td align="center" colspan="{{ (species ? ((species|length) +1) : 0) + (trainingMaterials ? trainingMaterials|length : 0) + 10 }}" style="background-color: #CCCCCC">{{ monthYear|split('-')[2] }}, {{ monthYear|split('-')[0] }}</td>
+            </tr>
+            {% for training in entity %}
+                {% for key, agent in training %}
+{#                    {{ dump(training['trainingDetails']) }}#}
+                    {% if key is not same as 'trainingDetails' %}
+                        {% for farmer in agent.farmerDetails %}
+                            <tr>
+                                {% if loop.first %}
+{#                                    <td rowspan="{{ agent.farmerDetails|length }}">{{ monthYear|split('-')[2] }}, {{ monthYear|split('-')[0] }}</td>#}
+                                    <td rowspan="{{ agent.farmerDetails|length }}">{{ training['trainingDetails']['trainingDate']|date('d-m-Y') }}</td>
+                                    <td rowspan="{{ agent.farmerDetails|length }}">{{ agent['agentDetails']['name'] }}</td>
+                                    <td rowspan="{{ agent.farmerDetails|length }}">{{ agent['agentDetails']['address'] }}</td>
+                                    <td rowspan="{{ agent.farmerDetails|length }}">{{ agent['agentDetails']['mobile'] }}</td>
+                                {% endif %}
+
+                                <td align="center">{{ count }}</td>
+                                <td>{{ farmer.name }}</td>
+                                <td>{{ farmer.address }}</td>
+                                <td>{{ farmer.mobile }}</td>
+                                {% set capacity = farmer.capacity is not empty ? farmer.capacity|json_decode : [] %}
+                                {% set capacityTotal = 0 %}
+                                {% if species is defined %}
+                                    {% for item in species %}
+                                        {% if capacity[item.id] is defined %}
+                                            <td align="right">{{ capacity[item.id] }}</td>
+                                            {% if capacity[item.id] is not empty %}
+                                                {% set capacityTotal = capacityTotal + capacity[item.id] %}
+                                            {% endif %}
+                                        {% else %}
+                                            <td></td>
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endif %}
+                                <td align="right">{{ capacityTotal }}</td>
+
+
+                                {% set materials = training['trainingDetails']['trainingMaterialQty'] is not empty ? training['trainingDetails']['trainingMaterialQty']|json_decode : [] %}
+
+                                {% if trainingMaterials is defined %}
+                                    {% for item in trainingMaterials %}
+                                        <td align="right">{{ materials[item.id] is defined ? materials[item.id] : '' }}</td>
+                                    {% endfor %}
+                                {% endif %}
+
+                                {% if loop.first %}
+                                    <td rowspan="{{ agent.farmerDetails|length }}">{{ training['trainingDetails']['trainingTopics'] }}</td>
+                                    <td rowspan="{{ agent.farmerDetails|length }}">{{ training['trainingDetails']['remarks'] }}</td>
+                                {% endif %}
+                            </tr>
+                            {% set count = count + 1 %}
+
+                        {% endfor %}
+
+                    {% endif %}
+                {% endfor %}
+            {% endfor %}
+        {% endfor %}
+        </tbody>
+    </table>

@@ -1240,14 +1240,14 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
     private function processPoulltryMeatEggPrice($reports, Api $batch)
     {
         foreach ($reports as $report) {
-            $findVisit = $this->getDoctrine()->getRepository(CrmVisit::class)->findOneBy(['appId' => $report['crm_visit_id'], 'appBatch' => $batch]);
-            if ($findVisit){
+//            $findVisit = $this->getDoctrine()->getRepository(CrmVisit::class)->findOneBy(['appId' => $report['crm_visit_id'], 'appBatch' => $batch]);
+//            if ($findVisit){
                 $createdAt = $report['created_at'] ? (new \DateTime($report['created_at']))->format('Y-m-d H:i:s') : null;
                 foreach (json_decode($report['poultry_meat_egg_prices'], true) as $item) {
-                    $sql = "INSERT INTO `crm_poultry_meat_egg_price` (`crm_visit_id`, `region_id`, `status`, `created_at`, `breed_type_id`,`price`) VALUES (:crm_visit_id, :region_id, :status, :created_at, :breed_type_id, :price)";
+                    $sql = "INSERT INTO `crm_poultry_meat_egg_price` (`region_id`, `status`, `created_at`, `breed_type_id`,`price`) VALUES (:region_id, :status, :created_at, :breed_type_id, :price)";
 
                     $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
-                    $stmt->bindValue('crm_visit_id', $findVisit->getId());
+//                    $stmt->bindValue('crm_visit_id', $findVisit->getId());
                     $stmt->bindValue('region_id', $report['region_id']);
                     $stmt->bindValue('breed_type_id', $item['id']);
                     $stmt->bindValue('price', $item['price']);
@@ -1258,7 +1258,7 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
 
                 }
 
-            }
+//            }
         }
     }
     
@@ -1459,12 +1459,12 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
             $createdAt = $report['created_at'] ? (new \DateTime($report['created_at']))->format('Y-m-d H:i:s') : null;
             $reportingDate = $report['reporting_date'] ? (new \DateTime($report['reporting_date']))->format('Y-m-d') : null;
 
-            $sql = "INSERT INTO `crm_daily_chick_price` (`employee_id`, `location_id`, `reporting_date`,`created_at`) VALUES (:employee_id, :location_id, :reporting_date, :created_at)";
+            $sql = "INSERT INTO `crm_daily_chick_price` (`employee_id`, `reporting_date`,`created_at`) VALUES (:employee_id, :reporting_date, :created_at)";
 
             $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
 
             $stmt->bindValue('employee_id', $report['employee_id']);
-            $stmt->bindValue('location_id', $report['location_id']);
+//            $stmt->bindValue('location_id', $report['location_id']);
             $stmt->bindValue('reporting_date', $reportingDate);
             $stmt->bindValue('created_at', $createdAt);
 

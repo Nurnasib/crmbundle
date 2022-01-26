@@ -23,34 +23,60 @@ use Doctrine\ORM\EntityRepository;
  */
 class FarmerTrainingReportRepository extends BaseRepository
 {
-    public function getFarmerTrainingReport($filterBy)
+    public function getFarmerTrainingReport($breedSlug, $filterBy)
     {
+        $start = isset($filterBy['startDate']) ? (new \DateTime($filterBy['startDate']))->format('Y-m-d') : null;
+        $end = isset($filterBy['endDate']) ? (new \DateTime($filterBy['endDate']))->format('Y-m-d') : null;
+
         $qb = $this->createQueryBuilder('e');
-        $qb->select('e.trainingTopics','e.trainingDate', 'e.remarks', 'e.trainingMaterial');
-        $qb->addSelect('agent.name AS agentName','agent.address AS agentAddress', 'agent.mobile AS agentMobile');
-        $qb->addSelect('farmer.name AS farmerName', 'farmer.address AS farmerAddress', 'farmer.mobile AS farmerMobile');
-        $qb->addSelect('farmerTrainingReportDetails.farmerCapacity','farmerTrainingReportDetails.trainingMaterialQty');
+        $qb->join('e.farmerTrainingReport', 'farmer_training_report');
+        $qb->join('e.customer', 'farmer');
+        $qb->join('farmer_training_report.employee', 'employee');
+        $qb->join('farmer_training_report.breedName', 'breed_name');
+        $qb->join('farmer_training_report.agent', 'agent');
 
-        $qb->where('breedName.slug = :breedTypeSlug')->setParameter('breedTypeSlug', $filterBy['breedTypeSlug']);
-        $qb->andWhere('e.trainingDate >= :bOfYear')->setParameter('bOfYear', $filterBy['bOfYear']);
-        $qb->andWhere('e.trainingDate <= :eOfYear')->setParameter('eOfYear', $filterBy['eOfYear']);
+        $qb->select('e.farmerCapacity', 'e.trainingMaterialQty');
+        $qb->addSelect('farmer.id AS farmerId', 'farmer.name AS farmerName', 'farmer.address AS farmerAddress', 'farmer.mobile AS farmerMobile');
+        $qb->addSelect('agent.id AS agentId', 'agent.name AS agentName', 'agent.address AS agentAddress', 'agent.mobile AS agentMobile');
+        $qb->addSelect('farmer_training_report.id AS trainingId','farmer_training_report.trainingTopics', 'farmer_training_report.remarks', 'farmer_training_report.trainingDate');
 
-        $qb->leftJoin('e.agent', 'agent');
-        $qb->leftJoin('e.farmerTrainingReportDetails','farmerTrainingReportDetails');
-        $qb->leftJoin('farmerTrainingReportDetails.customer','farmer');
-        $qb->leftJoin('e.breedName', 'breedName');
-        $this->handleSearchFilterBetween($qb, $filterBy);
+        $qb->where('breed_name.slug = :slug')->setParameter('slug', $breedSlug);
+        $qb->andWhere('farmer_training_report.trainingDate >= :start')->setParameter('start', $start);
+        $qb->andWhere('farmer_training_report.trainingDate <= :end')->setParameter('end', $end);
 
+        $qb->orderBy('farmer_training_report.trainingDate', 'ASC');
 
-        /** @var TYPE_NAME $results */
         $results = $qb->getQuery()->getArrayResult();
+
         $data = [];
+
         foreach ($results as $result) {
-            $month = $result['trainingDate']->format('F-Y');
+            $month = $result['trainingDate']->format('Y-m-F');
 
-            $data[$month][] = $result;
+            $data[$month][$result['trainingId']]['trainingDetails'] = [
+                'id' => $result['trainingId'],
+                'trainingTopics' => $result['trainingTopics'],
+                'remarks' => $result['remarks'],
+                'trainingDate' => $result['trainingDate'],
+                'trainingMaterialQty' => $result['trainingMaterialQty'],
+            ];
+            $data[$month][$result['trainingId']][$result['agentId']]['agentDetails'] = [
+                'id' => $result['agentId'],
+                'name' => $result['agentName'],
+                'address' => $result['agentAddress'],
+                'mobile' => $result['agentMobile'],
+            ];
+            $data[$month][$result['trainingId']][$result['agentId']]['farmerDetails'][] = [
+                "id" => $result['farmerId'],
+                "name" => $result['farmerName'],
+                "address" => $result['farmerAddress'],
+                "mobile" => $result['farmerMobile'],
+                "capacity" => $result['farmerCapacity'],
+                "trainingId" => $result['trainingId'],
+                "agentId" => $result['agentId'],
+            ];
         }
-
+        ksort($data);
         return $data;
     }
 
