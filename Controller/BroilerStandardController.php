@@ -11,42 +11,41 @@
 
 namespace Terminalbd\CrmBundle\Controller;
 
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Terminalbd\CrmBundle\Entity\BroilerStandard;
 use Terminalbd\CrmBundle\Form\BroilerStandardFormType;
 
 /**
  * @Route("/crm/broiler/standard")
+ * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DEVELOPER')")
  */
 class BroilerStandardController extends AbstractController
 {
     /**
      * @Route("/", methods={"GET"}, name="broiler_standard")
-     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @param Request $request
+     * @return Response
      */
     public function index(Request $request): Response
     {
-        $entitys = $this->getDoctrine()->getRepository(BroilerStandard::class)->findAll();
-        return $this->render('@TerminalbdCrm/broilerStandard/index.html.twig',['entities' => $entitys]);
+        $entities = $this->getDoctrine()->getRepository(BroilerStandard::class)->findAll();
+        return $this->render('@TerminalbdCrm/broilerStandard/index.html.twig',['entities' => $entities]);
     }
 
     /**
-     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      * @Route("/new", methods={"GET", "POST"}, name="broiler_standard_new")
+     * @param Request $request
+     * @return Response
      */
     public function new(Request $request): Response
     {
 
         $entity = new BroilerStandard();
-        $data = $request->request->all();
         $form = $this->createForm(BroilerStandardFormType::class , $entity)
             ->add('SaveAndCreate', SubmitType::class);
         $form->handleRequest($request);
@@ -71,12 +70,13 @@ class BroilerStandardController extends AbstractController
      * Displays a form to edit an existing BroilerStandard entity.
      *
      * @Route("/{id}/edit", methods={"GET", "POST"}, name="broiler_edit")
-     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @param Request $request
+     * @param BroilerStandard $entity
+     * @return Response
      */
 
     public function edit(Request $request, BroilerStandard $entity): Response
     {
-        $data = $request->request->all();
         $form = $this->createForm(BroilerStandardFormType::class, $entity)
             ->add('SaveAndCreate', SubmitType::class);
         $form->handleRequest($request);
@@ -97,7 +97,8 @@ class BroilerStandardController extends AbstractController
     /**
      * Deletes a BroilerStandard entity.
      * @Route("/{id}/delete", methods={"GET"}, name="broiler_delete")
-     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @param $id
+     * @return Response
      */
     public function delete($id): Response
     {

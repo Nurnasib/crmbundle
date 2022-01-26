@@ -1243,67 +1243,13 @@ class ApiController extends AbstractController
     /**
      * @Route("/list", name="api_response_list")
      */
-    public function apiResponseList()
+/*    public function apiResponseList()
     {
-        /*        $array = [
-                    'crm_visit' => [
-                        'id' => 1,
-                        'duration_to' => null,
-                        'duration_from' => '1:47 PM',
-                        'employee_id' => 23,
-                        'location_id' => 340,
-                        'visitAreaName' => 'SARISHABARI UPAZILA',
-                        'created_at' => '05-05-2021',
-                    ],
-                    'farmer_report' => [
-                        [
-                          "id" => 4,
-                          "crm_visit_id" => 1,
-                          "farmCapacity" => "5",
-                          "updated" => null,
-                          "comments" => "gvb",
-                          "created" => "05-05-2021",
-                          "customer_id" => 23,
-                          "process" => null,
-                          "agent_id" => 1742,
-                          "purpose_id" => 16,
-                          "firm_type_id" => 223,
-                          "report_id" => 239,
-                          "purposeName" => "Market Promotion",
-                          "farmerName" => "Md Rakibul Hasan",
-                          "phoneNumber" => "7000804",
-                          "farmTypeName" => "Others (Poultry)",
-                          "reportTypeName" => "Antibiotic Free Farm Poultry"
-                        ],
-                        [
-                            "id" => 3,
-                            "crm_visit_id" => 1,
-                            "farmCapacity" => "5",
-                            "updated" => null,
-                            "comments" => "g",
-                            "created" => "05-05-2021",
-                            "customer_id" => 23,
-                            "process" => null,
-                            "agent_id" => 1742,
-                            "purpose_id" => 13,
-                            "firm_type_id" => 224,
-                            "report_id" => 219,
-                            "purposeName" => "Problem Farm Visit",
-                            "farmerName" => "Tanveer",
-                            "phoneNumber" => "4512",
-                            "farmTypeName" => "Others (Fish)",
-                            "reportTypeName" => "Farmer Touch Report"
-                        ]
-                    ],
-                ];
-                echo json_encode($array);
-                die();*/
-
         $list = $this->getDoctrine()->getRepository(Api::class)->getData();
         return $this->render('@TerminalbdCrm/api/api-response-list.html.twig', [
             'list' => $list,
         ]);
-    }
+    }*/
 
     /**
      * @Route("/{id}/insert-data", name="insert_json_data")

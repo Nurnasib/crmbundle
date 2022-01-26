@@ -24,29 +24,32 @@ use Terminalbd\CrmBundle\Entity\SonaliStandard;
 use Terminalbd\CrmBundle\Form\SonaliStandardFormType;
 
 /**
+ * Class SonaliStandardController
+ * @package Terminalbd\CrmBundle\Controller
  * @Route("/crm/sonali/standard")
+ * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DEVELOPER')")
  */
 class SonaliStandardController extends AbstractController
 {
     /**
      * @Route("/", methods={"GET"}, name="sonali_standard")
-     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @return Response
      */
-    public function index(Request $request): Response
+    public function index(): Response
     {
-        $entitys = $this->getDoctrine()->getRepository(SonaliStandard::class)->findAll();
-        return $this->render('@TerminalbdCrm/sonaliStandard/index.html.twig',['entities' => $entitys]);
+        $entities = $this->getDoctrine()->getRepository(SonaliStandard::class)->findAll();
+        return $this->render('@TerminalbdCrm/sonaliStandard/index.html.twig',['entities' => $entities]);
     }
 
     /**
-     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      * @Route("/new", methods={"GET", "POST"}, name="sonali_standard_new")
+     * @param Request $request
+     * @return Response
      */
     public function new(Request $request): Response
     {
 
         $entity = new SonaliStandard();
-        $data = $request->request->all();
         $form = $this->createForm(SonaliStandardFormType::class , $entity)
             ->add('SaveAndCreate', SubmitType::class);
         $form->handleRequest($request);
@@ -71,12 +74,13 @@ class SonaliStandardController extends AbstractController
      * Displays a form to edit an existing SonaliStandard entity.
      *
      * @Route("/{id}/edit", methods={"GET", "POST"}, name="sonali_edit")
-     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @param Request $request
+     * @param SonaliStandard $entity
+     * @return Response
      */
 
     public function edit(Request $request, SonaliStandard $entity): Response
     {
-        $data = $request->request->all();
         $form = $this->createForm(SonaliStandardFormType::class, $entity)
             ->add('SaveAndCreate', SubmitType::class);
         $form->handleRequest($request);
@@ -97,7 +101,8 @@ class SonaliStandardController extends AbstractController
     /**
      * Deletes a SonaliStandard entity.
      * @Route("/{id}/delete", methods={"GET"}, name="sonali_delete")
-     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @param $id
+     * @return Response
      */
     public function delete($id): Response
     {
@@ -111,7 +116,8 @@ class SonaliStandardController extends AbstractController
 
     /**
      * @Route("/weight/by/age", methods={"POST"}, name="crm_sonali_weight_standard_by_age", options={"expose"=true})
-     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @param Request $request
+     * @return Response
      */
 
     public function getSonaliWeightStandardByAge(Request $request): Response

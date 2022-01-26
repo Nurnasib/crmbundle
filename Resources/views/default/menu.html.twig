@@ -1,15 +1,18 @@
 <ul class="sub-menu">
-    <li class="">
-        <a class="" href="javascript:"><span>{{ 'Master Data'|trans }}</span></a>
-        <ul class="sub-menu">
-            <li><a class="dropdown-item" href="{{ path('broiler_standard') }}">{{ 'Broiler Standard'|trans }}</a></li>
-            <li><a class="dropdown-item" href="{{ path('sonali_standard') }}">{{ 'Sonali Standard'|trans }}</a></li>
-            <li><a class="dropdown-item" href="{{ path('layer_standard') }}">{{ 'Layer Standard'|trans }}</a></li>
-            <li><a class="dropdown-item" href="{{ path('crm_setting') }}">{{ 'Setting'|trans }}</a></li>
-            <li><a class="dropdown-item" href="{{ path('crm_setting_life_cycle') }}">{{ 'Life Cycle Setting'|trans }}</a></li>
-            <li><a class="dropdown-item" href="{{ path('api_response_list') }}">{{ 'API Response List'|trans }}</a></li>
-        </ul>
-    </li>
+    {% if is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DEVELOPER') %}
+        <li class="">
+            <a class="" href="javascript:"><span>{{ 'Master Data'|trans }}</span></a>
+            <ul class="sub-menu">
+                <li><a class="dropdown-item" href="{{ path('broiler_standard') }}">{{ 'Broiler Standard'|trans }}</a></li>
+                <li><a class="dropdown-item" href="{{ path('sonali_standard') }}">{{ 'Sonali Standard'|trans }}</a></li>
+                <li><a class="dropdown-item" href="{{ path('layer_standard') }}">{{ 'Layer Standard'|trans }}</a></li>
+                <li><a class="dropdown-item" href="{{ path('crm_setting') }}">{{ 'Setting'|trans }}</a></li>
+                <li><a class="dropdown-item" href="{{ path('crm_setting_life_cycle') }}">{{ 'Life Cycle Setting'|trans }}</a></li>
+{#                <li><a class="dropdown-item" href="{{ path('api_response_list') }}">{{ 'API Response List'|trans }}</a></li>#}
+            </ul>
+        </li>
+    {% endif %}
+
     <li class="">
         {% if is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_CRM_REPORT') or is_granted('ROLE_DEVELOPER') %}
             <a class="" href="javascript:"><span>{{ 'Report'|trans }}</span></a>

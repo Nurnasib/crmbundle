@@ -1511,7 +1511,9 @@ class ApiRepository extends BaseRepository
     public function getData()
     {
         $qb = $this->createQueryBuilder('e');
-        $qb->select('e.id','e.process', 'e.deviceId', 'e.status');
+        $qb->join('e.employee', 'employee');
+        $qb->select('e.id', 'e.batchNo', 'e.status', 'e.createdAt');
+        $qb->addSelect('employee.userId', 'employee.name AS employeeName');
         return $qb->getQuery()->getArrayResult();
     }
 

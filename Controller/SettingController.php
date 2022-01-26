@@ -26,13 +26,17 @@ use Terminalbd\CrmBundle\Form\SettingFormType;
 use Terminalbd\CrmBundle\Form\SettingLifeCycleFormType;
 
 /**
+ * Class SettingController
+ * @package Terminalbd\CrmBundle\Controller
  * @Route("/crm/setting")
+ * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DEVELOPER')")
  */
 class SettingController extends AbstractController
 {
     /**
      * @Route("/", methods={"GET"}, name="crm_setting")
-     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN')")
+     * @param Request $request
+     * @return Response
      */
     public function index(Request $request): Response
     {
@@ -41,14 +45,14 @@ class SettingController extends AbstractController
     }
 
     /**
-     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN')")
      * @Route("/new", methods={"GET", "POST"}, name="crm_setting_new")
+     * @param Request $request
+     * @return Response
      */
     public function new(Request $request): Response
     {
 
         $entity = new Setting();
-        $data = $request->request->all();
 
         $form = $this->createForm(SettingFormType::class , $entity)
             ->add('SaveAndCreate', SubmitType::class);
@@ -74,12 +78,13 @@ class SettingController extends AbstractController
      * Displays a form to edit an existing Post entity.
      *
      * @Route("/{id}/edit", methods={"GET", "POST"}, name="crm_setting_edit")
-     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN')")
+     * @param Request $request
+     * @param Setting $entity
+     * @return Response
      */
 
     public function edit(Request $request, Setting $entity): Response
     {
-        $data = $request->request->all();
         $form = $this->createForm(SettingFormType::class, $entity)
             ->add('SaveAndCreate', SubmitType::class);
         $form->handleRequest($request);
@@ -101,7 +106,8 @@ class SettingController extends AbstractController
     /**
      * Deletes a Setting entity.
      * @Route("/{id}/delete", methods={"GET"}, name="crm_setting_delete")
-     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN')")
+     * @param $id
+     * @return Response
      */
     public function delete($id): Response
     {
@@ -116,17 +122,18 @@ class SettingController extends AbstractController
 
     /**
      * @Route("/life-cycle", methods={"GET"}, name="crm_setting_life_cycle")
-     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN')")
+     * @return Response
      */
-    public function indexLifeCycle(Request $request): Response
+    public function indexLifeCycle(): Response
     {
         $entities = $this->getDoctrine()->getRepository(SettingLifeCycle::class)->findAll();
         return $this->render('@TerminalbdCrm/setting/life-cycle/index.html.twig',['entities' => $entities]);
     }
 
     /**
-     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN')")
      * @Route("/life-cycle/new", methods={"GET", "POST"}, name="crm_setting_life_cycle_new")
+     * @param Request $request
+     * @return Response
      */
     public function newLifeCycle(Request $request): Response
     {
@@ -156,12 +163,13 @@ class SettingController extends AbstractController
      * Displays a form to edit an existing Post entity.
      *
      * @Route("/life-cycle/{id}/edit", methods={"GET", "POST"}, name="crm_setting_life_cycle_edit")
-     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN')")
+     * @param Request $request
+     * @param SettingLifeCycle $entity
+     * @return Response
      */
 
     public function editLifeCycle(Request $request, SettingLifeCycle $entity): Response
     {
-        $data = $request->request->all();
         $form = $this->createForm(SettingLifeCycleFormType::class, $entity)
             ->add('SaveAndCreate', SubmitType::class);
         $form->handleRequest($request);

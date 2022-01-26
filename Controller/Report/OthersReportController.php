@@ -50,7 +50,7 @@ class OthersReportController extends AbstractController
         $trainingMaterials = [];
         $employee = null;
 
-        $form = $this->createForm(SearchFilterFormType::class);
+        $form = $this->createForm(SearchFilterFormType::class, null, ['loggedUser' => $this->getUser()]);
         $form->handleRequest($request);
 
         if($form->isSubmitted()){

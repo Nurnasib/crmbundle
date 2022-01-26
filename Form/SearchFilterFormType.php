@@ -35,12 +35,12 @@ use Terminalbd\CrmBundle\Entity\Setting;
 class SearchFilterFormType extends AbstractType
 {
 
-
     /**
      * {@inheritdoc}
      */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        $user = $options['loggedUser'];
         $builder
             ->add('otherReport', ChoiceType::class,[
                 'choices' => [
@@ -230,12 +230,16 @@ class SearchFilterFormType extends AbstractType
             ])
             ->add('employee', EntityType::class,[
                 'class' => User::class,
-                'query_builder' => function(EntityRepository $repository){
-                return $repository->createQueryBuilder('e')
-                    ->join('e.userGroup', 'userGroup')
-                    ->where("userGroup.slug = 'employee'")
-                    ->andWhere("e.enabled = 1")
-                    ->orderBy('e.name');
+                'query_builder' => function(EntityRepository $repository) use($user){
+                    $qb = $repository->createQueryBuilder('e');
+                    $qb->join('e.userGroup', 'userGroup');
+                    $qb->where("userGroup.slug = 'employee'");
+                    $qb->andWhere("e.enabled = 1");
+                    if (!in_array('ROLE_CRM_ADMIN', $user->getRoles())){
+                        $qb->andWhere("e.lineManager = :lineManager")->setParameter('lineManager', $user);
+                    }
+                    $qb->orderBy('e.name');
+                    return $qb;
                 },
                 'choice_label' => 'name',
                 'placeholder' => '- Select Employee -',
@@ -295,10 +299,11 @@ class SearchFilterFormType extends AbstractType
     /**
      * {@inheritdoc}
      */
-//    public function configureOptions(OptionsResolver $resolver): void
-//    {
-//        $resolver->setDefaults([
-//            'data_class' => BroilerLifeCycle::class,
-//        ]);
-//    }
+    public function configureOptions(OptionsResolver $resolver): void
+    {
+        $resolver->setDefaults([
+            'data_class' => null,
+            'loggedUser' => User::class,
+        ]);
+    }
 }

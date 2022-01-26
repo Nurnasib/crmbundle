@@ -29,13 +29,17 @@ use Terminalbd\CrmBundle\Form\BroilerStandardFormType;
 use Terminalbd\CrmBundle\Form\LayerStandardFormType;
 
 /**
+ * Class LayerStandardController
+ * @package Terminalbd\CrmBundle\Controller
  * @Route("/crm/layer/standard")
+ * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DEVELOPER')")
  */
 class LayerStandardController extends AbstractController
 {
     /**
      * @Route("/", methods={"GET","POST"}, name="layer_standard")
-     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @param Request $request
+     * @return Response
      */
     public function index(Request $request): Response
     {
@@ -76,12 +80,13 @@ class LayerStandardController extends AbstractController
      * Displays a form to edit an existing BroilerStandard entity.
      *
      * @Route("/{id}/edit", methods={"GET", "POST"}, name="layer_standard_edit")
-     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @param Request $request
+     * @param LayerStandard $entity
+     * @return Response
      */
 
     public function edit(Request $request, LayerStandard $entity): Response
     {
-        $data = $request->request->all();
         $noOfWeek = $this->getDoctrine()->getRepository(SettingLifeCycle::class)->getLifeCycleWeekByLifeCycle('layer');
         $reports = $this->getDoctrine()->getRepository(Setting::class)->getReportByParentSlug('layer');
 
@@ -117,7 +122,8 @@ class LayerStandardController extends AbstractController
     /**
      * Deletes a BroilerStandard entity.
      * @Route("/{id}/delete", methods={"GET"}, name="layer_standard_delete")
-     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @param $id
+     * @return Response
      */
     public function delete($id): Response
     {
