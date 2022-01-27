@@ -43,7 +43,7 @@ class MonthlyReportController extends AbstractController
         $entities = [];
         $employee = null;
         $report = null;
-        $form = $this->createForm(SearchFilterFormType::class);
+        $form = $this->createForm(SearchFilterFormType::class, null, ['loggedUser' => $this->getUser()]);
         $form->handleRequest($request);
 
         if($form->isSubmitted()){

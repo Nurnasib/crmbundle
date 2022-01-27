@@ -27,7 +27,7 @@ class VisitReportController extends AbstractController
         $entities = [];
         $startDate = null;
         $endDate = null;
-        $form = $this->createForm(SearchFilterFormType::class);
+        $form = $this->createForm(SearchFilterFormType::class, null, ['loggedUser' => $this->getUser()]);
         $form->handleRequest($request);
         if ($form->isSubmitted()){
             $startDate = $form->getData()['startDate'] ? new \DateTime($form->getData()['startDate']) : new \DateTime('now');
