@@ -30,13 +30,13 @@ use Terminalbd\CrmBundle\Repository\CrmVisitRepository;
 
 /**
  * @Route("/crm/visit")
+ * @Security("is_granted('ROLE_CRM_POULTRY') or is_granted('ROLE_CRM_CATTLE') or is_granted('ROLE_CRM_AQUA') or is_granted('ROLE_CRM_SALES_MARKETING') or is_granted('ROLE_DEVELOPER')")
  */
 class CrmVisitController extends AbstractController
 {
 
     /**
      * @Route("/", methods={"GET"}, name="crm_visit")
-     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      */
     public function index()
     {
@@ -51,7 +51,6 @@ class CrmVisitController extends AbstractController
 
     /**
      * @param Request $request
-     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      * @Route("/new" ,name="new_visit")
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
      */
@@ -86,7 +85,6 @@ class CrmVisitController extends AbstractController
     /**
      * Displays a form to edit an existing CrmVisit entity.
      * @Route("/{id}/edit", methods={"GET", "POST"}, name="crm_visit_edit")
-     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      * @param Request $request
      * @param CrmVisit $entity
      * @return Response
@@ -94,7 +92,6 @@ class CrmVisitController extends AbstractController
 
     public function edit(Request $request, CrmVisit $entity): Response
     {
-        $data = $request->request->all();
         $reports = $this->getDoctrine()->getRepository(Setting::class)->findBy(['settingType'=>'FARMER_REPORT','slug'=>['fcr-after-sale-boiler','fcr-after-sale-sonali','company-species-wise-average-fcr-after']]);
 
         $form = $this->createForm(CrmVisitFormType::class, $entity,array('user' => $this->getUser()))
@@ -129,12 +126,12 @@ class CrmVisitController extends AbstractController
         $firmTypesArray=array();
 
         foreach ($firmTypes as $firmType){
-            if($firmType->getParent()->getSlug()==$lastElement.'-breed'){
+            if($firmType->getParent()->getSlug() == $lastElement.'-breed'){
                 $firmTypesArray[$firmType->getParent()->getName()][]=$firmType;
             }
         }
 
-        if($this->getUser()->getServiceMode() && ($this->getUser()->getServiceMode()->getSlug()=='sales-marketing'||$this->getUser()->getServiceMode()->getSlug()=='sales-service-marketing')){
+        if(in_array('ROLE_CRM_SALES_MARKETING', $this->getUser()->getRoles())){
             $visitId = $entity->getId();
             $regions = $this->getDoctrine()->getRepository(Location::class)->findBy(['level' => 3]);
             $breedTypes = $this->getDoctrine()->getRepository(Setting::class)->findBy(['settingType' => 'MEAT_EGG_TYPE']);
@@ -188,11 +185,11 @@ class CrmVisitController extends AbstractController
     }
 
 
-
     /**
      * Deletes a CrmVisit entity.
      * @Route("/{id}/delete", methods={"GET"}, name="crm_visit_delete")
-     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @param $id
+     * @return Response
      */
     public function delete($id): Response
     {
@@ -208,7 +205,8 @@ class CrmVisitController extends AbstractController
     /**
      * Add a CrmVisit entity.
      * @Route("/details/add", methods={"POST"}, name="crm_visit_item_add", options={"expose"=true})
-     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @param Request $request
+     * @return Response
      */
     public function CRMDetailsAdd(Request $request): Response
     {
@@ -261,10 +259,13 @@ class CrmVisitController extends AbstractController
             'status'=>200
         ));
     }
+
     /**
      * Displays a form to edit an existing CrmVisit entity.
      * @Route("/{id}/{process}/item/refresh", methods={"GET", "POST"}, name="crm_visit_item_refresh", options={"expose"=true})
-     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @param $id
+     * @param string $process
+     * @return Response
      */
 
     public function CRMDetailsRefresh($id, $process='farmer'): Response
@@ -294,7 +295,8 @@ class CrmVisitController extends AbstractController
     /**
      * Deletes a CrmVisit entity.
      * @Route("/item/{id}/delete", methods={"GET"}, name="crm_visit_item_delete", options={"expose"=true})
-     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @param $id
+     * @return Response
      */
     public function itemDelete($id): Response
     {
@@ -329,8 +331,9 @@ class CrmVisitController extends AbstractController
 
     /**
      * @Route("/update/{id}/meat-egg-price", name="crm_visit_meat_egg_price_update", options={"expose"=true})
+     * @return JsonResponse
      */
-    public function updateMeatAndEggPrice(Request $request)
+    public function updateMeatAndEggPrice()
     {
         $visitId = $_REQUEST['visitId'];
         $regionId = $_REQUEST['regionId'];

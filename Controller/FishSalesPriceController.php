@@ -37,15 +37,16 @@ use Terminalbd\CrmBundle\Form\DairyLifeCycleDetailsFormType;
 
 /**
  * @Route("/crm/fish/sales/price")
+ * @Security("is_granted('ROLE_CRM_AQUA') or is_granted('ROLE_DEVELOPER')")
  */
 class FishSalesPriceController extends AbstractController
 {
 
     /**
-     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      * @Route("/new", methods={"GET", "POST"}, name="fish_sales_price_add", options={"expose"=true})
+     * @return Response
      */
-    public function newModal(Request $request): Response
+    public function newModal(): Response
     {
         $em = $this->getDoctrine()->getManager();
 
@@ -106,7 +107,9 @@ class FishSalesPriceController extends AbstractController
 
     /**
      * @Route("/{id}/update", methods={"POST"}, name="fish_sales_price_data_update", options={"expose"=true})
-     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @param Request $request
+     * @param FishSalesPrice $entity
+     * @return Response
      */
 
     public function fishSalesPriceUpdate(Request $request, FishSalesPrice $entity): Response

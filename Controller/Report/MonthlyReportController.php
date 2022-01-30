@@ -56,8 +56,6 @@ class MonthlyReportController extends AbstractController
 
             $employee = $form->getData()['employee'];
 
-//            dd($report,$filterBy);
-
             switch ($report->getSlug()){
                 case 'fcr-before-sale-boiler':
                 case 'fcr-after-sale-boiler':

@@ -28,34 +28,31 @@ use Terminalbd\CrmBundle\Repository\CrmCustomerRepository;
 
 /**
  * @Route("/crm/customer")
+ * @Security("is_granted('ROLE_CRM_POULTRY') or is_granted('ROLE_CRM_CATTLE') or is_granted('ROLE_CRM_AQUA') or is_granted('ROLE_DEVELOPER')")
  */
 
 class CrmCustomerController extends AbstractController
 {
-
     /**
      * @Route("/", methods={"GET"}, name="crm_customer")
-     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      */
     public function index()
     {
         $entities=$this->getDoctrine()->getRepository(CrmCustomer::class)->findAll();
-        $webPath = $this->get('kernel')->getProjectDir();
-//        var_dump($webPath);die;
         return $this->render('@TerminalbdCrm/crmcustomer/index.html.twig', [
             'entities' =>$entities
         ]);
     }
 
     /**
-     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      * @Route("/new", methods={"GET", "POST"}, name="crm_customer_new")
+     * @param Request $request
+     * @return Response
      */
     public function new(Request $request): Response
     {
 
         $entity = new CrmCustomer();
-        $data = $request->request->all();
 
         $agentRepo = $this->getDoctrine()->getRepository(Agent::class);
         $form = $this->createForm(CrmCustomerFormType::class, $entity,array('user' => $this->getUser(),'agentRepo' => $agentRepo))
@@ -82,12 +79,13 @@ class CrmCustomerController extends AbstractController
      * Displays a form to edit an existing Post entity.
      *
      * @Route("/{id}/edit", methods={"GET", "POST"}, name="crm_customer_edit")
-     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @param Request $request
+     * @param CrmCustomer $entity
+     * @return Response
      */
 
     public function edit(Request $request, CrmCustomer $entity): Response
     {
-        $data = $request->request->all();
         $agentRepo = $this->getDoctrine()->getRepository(Agent::class);
         $form = $this->createForm(CrmCustomerFormType::class, $entity,array('user' => $this->getUser(),'agentRepo' => $agentRepo))
             ->add('SaveAndCreate', SubmitType::class);
@@ -110,6 +108,7 @@ class CrmCustomerController extends AbstractController
     /**
      * @param Request $request
      * @Route("/{id}/farmer-create/ajax" ,name="new_farmer_ajax", methods={"POST"}, options={"expose"=true})
+     * @return JsonResponse
      */
     public function createFarmer(Request $request,$id){
 
@@ -159,10 +158,10 @@ class CrmCustomerController extends AbstractController
     /**
      * @param Request $request
      * @Route("/{id}/other-create/ajax" ,name="new_other_agent_ajax", methods={"POST"}, options={"expose"=true})
+     * @return JsonResponse
      */
     public function createOtherAgent(Request $request,$id){
 
-//        $entity=new CrmCustomer();
         $entity=new Agent();
         $allRequestData = $request->request->all();
         $group = $this->getDoctrine()->getRepository(\App\Entity\Core\Setting::class)->findOneBy(array('slug'=>'other-agent'));
@@ -240,7 +239,6 @@ class CrmCustomerController extends AbstractController
     /**
      * Deletes a CrmCustomer entity.
      * @Route("/{id}/delete", methods={"GET"}, name="customer_delete")
-     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      * @param $id
      * @return Response
      */
@@ -258,6 +256,7 @@ class CrmCustomerController extends AbstractController
     /**
      * @param CrmCustomer $crmCustomer
      * @Route("/{id}/ajax" ,name="get_farmer_ajax", methods={"GET"}, options={"expose"=true})
+     * @return JsonResponse
      */
     public function getCustomerById(CrmCustomer $crmCustomer){
 
@@ -275,6 +274,7 @@ class CrmCustomerController extends AbstractController
      * Deletes a Setting entity.
      * @param Agent $agent
      * @Route("/{id}/find/ajax", methods={"GET"}, name="get_core_agent_find_ajax", options={"expose"=true})
+     * @return Response
      */
     public function getAgentByIdUsingAjax(Agent $agent): Response
     {
@@ -293,7 +293,8 @@ class CrmCustomerController extends AbstractController
     /**
      * Displays a form to edit an existing CrmVisit entity.
      * @Route("species/name/by/parent/{id}", methods={"GET", "POST"}, name="species_name_by_parent_id_ajax", options={"expose"=true})
-     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @param $id
+     * @return Response
      */
 
     public function farmerIntroduceDetails($id): Response

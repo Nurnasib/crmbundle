@@ -2,41 +2,28 @@
 
 namespace Terminalbd\CrmBundle\Controller;
 
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Form\Extension\Core\Type\ButtonType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
-use Terminalbd\CrmBundle\Entity\AntibioticFreeFarm;
 use Terminalbd\CrmBundle\Entity\AntibioticFreeFarmMedicineOrVaccineCost;
-use Terminalbd\CrmBundle\Entity\BroilerLifeCycle;
 use Terminalbd\CrmBundle\Entity\CompanyWiseFeedSale;
-use Terminalbd\CrmBundle\Entity\ComplainDifferentProduct;
-use Terminalbd\CrmBundle\Entity\CrmCustomer;
-use Terminalbd\CrmBundle\Entity\DiseaseMapping;
-use Terminalbd\CrmBundle\Entity\FcrDifferentCompanies;
-use Terminalbd\CrmBundle\Entity\LabService;
-use Terminalbd\CrmBundle\Form\AntibioticFreeFarmFormType;
-use Terminalbd\CrmBundle\Form\BroilerLifeCycleFormType;
 use Terminalbd\CrmBundle\Entity\Setting;
-use Terminalbd\CrmBundle\Form\ComplainDifferentProductFormType;
-use Terminalbd\CrmBundle\Form\DiseaseMappingFormType;
 
 
 /**
  * @Route("/crm/company/wise/feed/sale")
+ * @Security("is_granted('ROLE_CRM_POULTRY') or is_granted('ROLE_CRM_CATTLE') or is_granted('ROLE_CRM_AQUA') or is_granted('ROLE_CRM_DEVELOPER')")
  */
 class CompanyWiseFeedSaleController extends AbstractController
 {
     /**
-     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      * @Route("/{breed_name}/new", methods={"GET", "POST"}, name="company_wise_feed_sale_new", options={"expose"=true})
+     * @param Request $request
+     * @param $breed_name
+     * @return Response
      */
     public function newModal(Request $request, $breed_name): Response
     {
@@ -104,7 +91,6 @@ class CompanyWiseFeedSaleController extends AbstractController
 
     /**
      * @Route("/{id}/edit", methods={"POST"}, name="company_wise_feed_sale_edit", options={"expose"=true})
-     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      */
 
     public function editCompanyWiseFeedSale(Request $request, CompanyWiseFeedSale $entity): Response

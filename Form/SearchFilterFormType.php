@@ -43,26 +43,7 @@ class SearchFilterFormType extends AbstractType
         $user = $options['loggedUser'];
         $builder
             ->add('otherReport', ChoiceType::class,[
-                'choices' => [
-                    'Poultry' => [
-                        'Farmer Survey' => 'farmer-survey-poultry',
-                        'Lab Service' => 'lab-service-poultry',
-                        'FCR Different Companies' => 'fcr-different-companies-poultry',
-                        'Company Wise Feed Sale' => 'company-wise-feed-sale-poultry',
-                        'Farmer Training' => 'farmer-training-poultry',
-                    ],
-                    'Cattle' => [
-                        'Farmer Survey' => 'farmer-survey-cattle',
-                        'Company Wise Feed Sale' => 'company-wise-feed-sale-cattle',
-                        'Farmer Training' => 'farmer-training-cattle',
-                    ],
-                    'Fish' => [
-                        'Farmer Survey' => 'farmer-survey-fish',
-                        'Company Wise Feed Sale' => 'company-wise-feed-sale-fish',
-                        'Farmer Training' => 'farmer-training-fish',
-                    ],
-
-                ],
+                'choices' => $this->otherReportUserWise($user),
                 'placeholder' => '- Select Report -',
                 'attr' => [
                     'class' => 'select2'
@@ -73,11 +54,30 @@ class SearchFilterFormType extends AbstractType
                 'group_by'  => 'parent.parent.name',
                 'choice_label' => 'name',
                 'placeholder' => '- Select Report -',
-                'query_builder' => function(EntityRepository $er){
-                    return $er->createQueryBuilder('e')
-                        ->where('e.settingType = :settingType')->setParameter('settingType', 'FARMER_REPORT')
-                        ->andWhere('e.slug NOT IN (:slug)')->setParameter('slug', ['sonali-life-cycle','boiler-life-cycle','layer-life-cycle-brown','layer-life-cycle-white','dairy-life-cycle','fattening-life-cycle','fish-life-cycle-report','fish-life-cycle-after-sale-report'])
-                        ->andWhere('e.status = 1');
+                'query_builder' => function(EntityRepository $er) use($user){
+                    $qb =  $er->createQueryBuilder('e');
+                    $qb->join('e.parent', 'parent');
+                    $qb->join('parent.parent', 'grand_parent');
+
+                    $qb->where('e.settingType = :settingType')->setParameter('settingType', 'FARMER_REPORT');
+                    $qb->andWhere('e.slug NOT IN (:lifeCycleSlug)')->setParameter('lifeCycleSlug', ['sonali-life-cycle','boiler-life-cycle','layer-life-cycle-brown','layer-life-cycle-white','dairy-life-cycle','fattening-life-cycle','fish-life-cycle-report','fish-life-cycle-after-sale-report']);
+                    $qb->andWhere('e.status = 1');
+
+
+                    $grandParentSlug = [];
+
+                    if (in_array('ROLE_CRM_POULTRY', $user->getRoles()) || in_array('ROLE_CRM_ADMIN_POULTRY', $user->getRoles())){
+                        array_push($grandParentSlug, 'poultry-breed');
+                    }
+                    if (in_array('ROLE_CRM_CATTLE', $user->getRoles()) || in_array('ROLE_CRM_ADMIN_CATTLE', $user->getRoles())){
+                        array_push($grandParentSlug, 'cattle-breed');
+                    }
+                    if (in_array('ROLE_CRM_AQUA', $user->getRoles()) || in_array('ROLE_CRM_ADMIN_AQUA', $user->getRoles())){
+                        array_push($grandParentSlug, 'fish-breed');
+                    }
+
+                    $qb->andWhere('grand_parent.slug IN (:grandParentSlug)')->setParameter('grandParentSlug', $grandParentSlug);
+                    return $qb;
                 },
                 'attr' => [
                     'class' => 'select2'
@@ -87,11 +87,26 @@ class SearchFilterFormType extends AbstractType
             ->add('lifeCycle', EntityType::class,[
                 'class' => Setting::class,
                 'choice_label' => 'name',
+                'group_by' => 'parent.parent.name',
                 'placeholder' => '- Select Life Cycle -',
-                'query_builder' => function(EntityRepository $er){
+                'query_builder' => function(EntityRepository $er) use($user){
+                    $slug = [];
+
+                    if (in_array('ROLE_CRM_POULTRY', $user->getRoles()) || in_array('ROLE_CRM_ADMIN_POULTRY', $user->getRoles())){
+                        $slug = array_merge($slug, ['sonali-life-cycle','boiler-life-cycle','layer-life-cycle-brown','layer-life-cycle-white']);
+                    }
+
+                    if (in_array('ROLE_CRM_CATTLE', $user->getRoles()) || in_array('ROLE_CRM_ADMIN_CATTLE', $user->getRoles())){
+                        $slug = array_merge(['dairy-life-cycle','fattening-life-cycle'], $slug);
+                    }
+
+                    if (in_array('ROLE_CRM_AQUA', $user->getRoles()) || in_array('ROLE_CRM_ADMIN_AQUA', $user->getRoles())) {
+                        $slug = array_merge(['fish-life-cycle-report', 'fish-life-cycle-after-sale-report'], $slug);
+                    }
+
                     return $er->createQueryBuilder('e')
                         ->where('e.settingType = :settingType')->setParameter('settingType', 'FARMER_REPORT')
-                        ->andWhere('e.slug IN (:slug)')->setParameter('slug', ['sonali-life-cycle','boiler-life-cycle','layer-life-cycle-brown','layer-life-cycle-white','dairy-life-cycle','fattening-life-cycle','fish-life-cycle-report','fish-life-cycle-after-sale-report'])
+                        ->andWhere('e.slug IN (:slug)')->setParameter('slug', $slug)
                         ->andWhere('e.status = 1')
                         ->orderBy('e.name');
                 },
@@ -294,6 +309,49 @@ class SearchFilterFormType extends AbstractType
     {
         $years = range($min, ($max === 'current' ? date('Y') : $max));
         return array_combine($years, $years);
+    }
+
+    private function otherReportUserWise($user)
+    {
+        $otherReport = [];
+
+        if (in_array('ROLE_CRM_POULTRY', $user->getRoles()) || in_array('ROLE_CRM_ADMIN_POULTRY', $user->getRoles())) {
+            $otherReport = array_merge(
+                $otherReport,
+                ['Poultry' => [
+                    'Farmer Survey' => 'farmer-survey-poultry',
+                    'Lab Service' => 'lab-service-poultry',
+                    'FCR Different Companies' => 'fcr-different-companies-poultry',
+                    'Company Wise Feed Sale' => 'company-wise-feed-sale-poultry',
+                    'Farmer Training' => 'farmer-training-poultry'
+                    ]
+                ]
+            );
+        }
+        if (in_array('ROLE_CRM_CATTLE', $user->getRoles()) || in_array('ROLE_CRM_ADMIN_CATTLE', $user->getRoles())) {
+            $otherReport = array_merge(
+                $otherReport,
+                ['Cattle' => [
+                    'Farmer Survey' => 'farmer-survey-cattle',
+                    'Company Wise Feed Sale' => 'company-wise-feed-sale-cattle',
+                    'Farmer Training' => 'farmer-training-cattle',
+                    ]
+                ]
+            );
+        }
+        if (in_array('ROLE_CRM_AQUA', $user->getRoles()) || in_array('ROLE_CRM_ADMIN_AQUA', $user->getRoles())) {
+            $otherReport = array_merge(
+                $otherReport,
+                ['Fish' => [
+                    'Farmer Survey' => 'farmer-survey-fish',
+                    'Company Wise Feed Sale' => 'company-wise-feed-sale-fish',
+                    'Farmer Training' => 'farmer-training-fish',
+                    ]
+                ]
+            );
+        }
+
+        return $otherReport;
     }
 
     /**

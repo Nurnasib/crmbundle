@@ -29,12 +29,15 @@ use Terminalbd\CrmBundle\Form\DiseaseMappingFormType;
 
 /**
  * @Route("/crm/fcr/differnt/company")
+ * @Security("is_granted('ROLE_CRM_POULTRY') or is_granted('ROLE_DEVELOPER')")
  */
 class FcrDifferentCompanyController extends AbstractController
 {
     /**
-     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      * @Route("/{breed_name}/new/modal", methods={"GET", "POST"}, name="fcr_different_company_new_modal", options={"expose"=true})
+     * @param Request $request
+     * @param $breed_name
+     * @return Response
      */
     public function newModal(Request $request, $breed_name): Response
     {
@@ -73,7 +76,9 @@ class FcrDifferentCompanyController extends AbstractController
 
     /**
      * @Route("/{id}/edit", methods={"POST"}, name="fcr_different_company_edit", options={"expose"=true})
-     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @param Request $request
+     * @param FcrDifferentCompanies $entity
+     * @return Response
      */
 
     public function editLifeCycleDetails(Request $request, FcrDifferentCompanies $entity): Response

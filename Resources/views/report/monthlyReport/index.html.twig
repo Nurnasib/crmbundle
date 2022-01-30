@@ -44,6 +44,25 @@
                             {{ form_label(form.endDate, 'End Date:') }}
                             {{ form_widget(form.endDate,{'id':'end-date', 'attr':{'placeholder': 'dd-mm-YYYY'}}) }}
                         </th>
+                        <th></th>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ form_label(form.region, 'Region:') }}
+                            {{ form_widget(form.region) }}
+                        </th>
+                        <th>
+                            {{ form_label(form.zone, 'Zone:') }}
+                            {{ form_widget(form.zone) }}
+                        </th>
+                        <th>
+                            {{ form_label(form.feedMill, 'Mill:') }}
+                            {{ form_widget(form.feedMill) }}
+                        </th>
+                        <th>
+                            {{ form_label(form.breed, 'Breed:') }}
+                            {{ form_widget(form.breed) }}
+                        </th>
                         <th>
                             <div class="btn-group" style="margin-top: 25px">
                                 <button type="submit" name="search" class="btn btn-primary btn-sm" title="Search" value="search"><i class="fa fa-search" aria-hidden="true"></i></button>
@@ -122,6 +141,7 @@
 {% block cssBlock %}
     {{ parent() }}
     <link rel="stylesheet" href="{{ asset('assets/module/css/app.css') }}">
+
 {% endblock  %}
 {% block javascripts %}
     {{ parent() }}

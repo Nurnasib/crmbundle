@@ -54,14 +54,13 @@ class DailyChickPriceController extends AbstractController
     }
 
     /**
-     * @param Request $request
      * @param Location $location
      * @return Response
      * @throws \Exception
-     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @Security("is_granted('ROLE_CRM_SALES_MARKETING') or is_granted('ROLE_DEVELOPER')")
      * @Route("/location/{location}/new/modal", methods={"GET", "POST"}, name="daily_chick_price")
      */
-    public function newModal(Request $request, Location $location): Response
+    public function newModal(Location $location): Response
     {
 
         $entity = new DailyChickPrice();

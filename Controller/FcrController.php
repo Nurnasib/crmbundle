@@ -107,8 +107,13 @@ class FcrController extends AbstractController
 
 
     /**
-     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @Security("is_granted('ROLE_CRM_POULTRY') or is_granted('ROLE_DEVELOPER')")
      * @Route("/{report}/{afterBefore}/new", methods={"GET", "POST"}, name="fcr_after_new", options={"expose"=true})
+     * @param Request $request
+     * @param Setting $report
+     * @param $afterBefore
+     * @return Response
+     * @throws \Exception
      */
     public function newAfter(Request $request, Setting $report, $afterBefore): Response
     {

@@ -40,6 +40,7 @@ use Terminalbd\CrmBundle\Entity\SettingLifeCycle;
  * Class SyncAppDataController
  * @package Terminalbd\CrmBundle\Controller
  * @Route("/crm/sync-app-data", name="crm_sync_app_data")
+ * @Security("is_granted('ROLE_DEVELOPER')")
  */
 class SyncAppDataController extends AbstractController
 {
@@ -59,7 +60,6 @@ class SyncAppDataController extends AbstractController
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
      * @Route("/", name="_index")
-     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN')")
      */
     public function index(Request $request)
     {
@@ -73,8 +73,7 @@ class SyncAppDataController extends AbstractController
 
     /**
      * @Route("/sync/{id}", name="_sync", defaults={"id" = null})
-     * @Security("is_granted('ROLE_DEVELOPER')")
-     * @param $batchId
+     * @param $id
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
     public function syncAppData($id)

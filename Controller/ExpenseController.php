@@ -29,35 +29,35 @@ use Terminalbd\CrmBundle\Form\SettingFormType;
 
 /**
  * @Route("/crm/expense")
+ * @Security("is_granted('ROLE_CRM_POULTRY') or is_granted('ROLE_CRM_CATTLE') or is_granted('ROLE_CRM_AQUA') or is_granted('ROLE_DEVELOPER')")
  */
 class ExpenseController extends AbstractController
 {
     /**
      * @Route("/", methods={"GET"}, name="crm_expense")
-     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @return Response
      */
-    public function index(Request $request): Response
+    public function index(): Response
     {
-        $entitys = $this->getDoctrine()->getRepository(Expense::class)->findBy(array('status'=>1));
-        return $this->render('@TerminalbdCrm/expense/index.html.twig',['entities' => $entitys]);
+        $entities = $this->getDoctrine()->getRepository(Expense::class)->getExpense($this->getUser());
+        return $this->render('@TerminalbdCrm/expense/index.html.twig',[
+            'entities' => $entities
+        ]);
     }
 
     /**
-     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      * @Route("/{crmVisit}/{location}/new", methods={"GET", "POST"}, name="crm_expense_new")
-     * @param Request $request
      * @param CrmVisit $crmVisit
      * @param Location $location
      * @return Response
      */
-    public function new(Request $request,  CrmVisit $crmVisit,  Location $location): Response
+    public function new(CrmVisit $crmVisit, Location $location): Response
     {
 
         $entity = new Expense();
 
         $exitingExpense = $this->getDoctrine()->getRepository(Expense::class)->findOneBy(array('crmVisit'=>$crmVisit));
         if($exitingExpense){
-//            $entity = $exitingExpense;
             return $this->redirectToRoute('crm_expense_edit', ['id'=>$exitingExpense->getId()]);
         }
 
@@ -74,7 +74,6 @@ class ExpenseController extends AbstractController
      * Displays a form to edit an existing Post entity.
      *
      * @Route("/{id}/edit", methods={"GET", "POST"}, name="crm_expense_edit")
-     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      * @param Request $request
      * @param Expense $entity
      * @return Response
@@ -82,7 +81,6 @@ class ExpenseController extends AbstractController
 
     public function edit(Request $request, Expense $entity): Response
     {
-        $data = $request->request->all();
         $form = $this->createForm(ExpenseFormType::class, $entity)
             ->add('SaveAndCreate', SubmitType::class);
         $form->handleRequest($request);
@@ -107,7 +105,8 @@ class ExpenseController extends AbstractController
     /**
      * Deletes a Expense entity.
      * @Route("/{id}/delete", methods={"GET"}, name="crm_expense_delete")
-     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @param $id
+     * @return Response
      */
     public function delete($id): Response
     {
@@ -118,9 +117,4 @@ class ExpenseController extends AbstractController
         $this->addFlash('success', 'post.deleted_successfully');
         return new Response('Success');
     }
-
-    
-
-
-
 }

@@ -27,7 +27,7 @@ use Terminalbd\CrmBundle\Form\SonaliStandardFormType;
  * Class SonaliStandardController
  * @package Terminalbd\CrmBundle\Controller
  * @Route("/crm/sonali/standard")
- * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DEVELOPER')")
+ * @Security("is_granted('ROLE_DEVELOPER')")
  */
 class SonaliStandardController extends AbstractController
 {
