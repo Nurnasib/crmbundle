@@ -2408,8 +2408,8 @@ class ApiController extends AbstractController
                     $introduceFarmer->setIntroduceDate(null);
                 }
 
-//                $this->getDoctrine()->getManager()->persist($introduceFarmer);
-//                $this->getDoctrine()->getManager()->flush();
+                $this->getDoctrine()->getManager()->persist($introduceFarmer);
+                $this->getDoctrine()->getManager()->flush();
 
                 return new JsonResponse([
                     'statusCode' => 201,
