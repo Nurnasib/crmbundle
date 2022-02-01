@@ -37,7 +37,7 @@ use Terminalbd\CrmBundle\Form\DairyLifeCycleDetailsFormType;
 
 /**
  * @Route("/crm/fish/sales/price")
- * @Security("is_granted('ROLE_CRM_AQUA') or is_granted('ROLE_DEVELOPER')")
+ * @Security("is_granted('ROLE_CRM_AQUA_USER') or is_granted('ROLE_DEVELOPER')")
  */
 class FishSalesPriceController extends AbstractController
 {

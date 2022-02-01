@@ -66,13 +66,13 @@ class SearchFilterFormType extends AbstractType
 
                     $grandParentSlug = [];
 
-                    if (in_array('ROLE_CRM_POULTRY', $user->getRoles()) || in_array('ROLE_CRM_ADMIN_POULTRY', $user->getRoles())){
+                    if (in_array('ROLE_CRM_POULTRY_USER', $user->getRoles()) || in_array('ROLE_CRM_POULTRY_ADMIN', $user->getRoles())){
                         array_push($grandParentSlug, 'poultry-breed');
                     }
-                    if (in_array('ROLE_CRM_CATTLE', $user->getRoles()) || in_array('ROLE_CRM_ADMIN_CATTLE', $user->getRoles())){
+                    if (in_array('ROLE_CRM_CATTLE_USER', $user->getRoles()) || in_array('ROLE_CRM_CATTLE_ADMIN', $user->getRoles())){
                         array_push($grandParentSlug, 'cattle-breed');
                     }
-                    if (in_array('ROLE_CRM_AQUA', $user->getRoles()) || in_array('ROLE_CRM_ADMIN_AQUA', $user->getRoles())){
+                    if (in_array('ROLE_CRM_AQUA_USER', $user->getRoles()) || in_array('ROLE_CRM_AQUA_ADMIN', $user->getRoles())){
                         array_push($grandParentSlug, 'fish-breed');
                     }
 
@@ -92,15 +92,15 @@ class SearchFilterFormType extends AbstractType
                 'query_builder' => function(EntityRepository $er) use($user){
                     $slug = [];
 
-                    if (in_array('ROLE_CRM_POULTRY', $user->getRoles()) || in_array('ROLE_CRM_ADMIN_POULTRY', $user->getRoles())){
+                    if (in_array('ROLE_CRM_POULTRY_USER', $user->getRoles()) || in_array('ROLE_CRM_POULTRY_ADMIN', $user->getRoles())){
                         $slug = array_merge($slug, ['sonali-life-cycle','boiler-life-cycle','layer-life-cycle-brown','layer-life-cycle-white']);
                     }
 
-                    if (in_array('ROLE_CRM_CATTLE', $user->getRoles()) || in_array('ROLE_CRM_ADMIN_CATTLE', $user->getRoles())){
+                    if (in_array('ROLE_CRM_CATTLE_USER', $user->getRoles()) || in_array('ROLE_CRM_CATTLE_ADMIN', $user->getRoles())){
                         $slug = array_merge(['dairy-life-cycle','fattening-life-cycle'], $slug);
                     }
 
-                    if (in_array('ROLE_CRM_AQUA', $user->getRoles()) || in_array('ROLE_CRM_ADMIN_AQUA', $user->getRoles())) {
+                    if (in_array('ROLE_CRM_AQUA_USER', $user->getRoles()) || in_array('ROLE_CRM_AQUA_ADMIN', $user->getRoles())) {
                         $slug = array_merge(['fish-life-cycle-report', 'fish-life-cycle-after-sale-report'], $slug);
                     }
 
@@ -315,7 +315,7 @@ class SearchFilterFormType extends AbstractType
     {
         $otherReport = [];
 
-        if (in_array('ROLE_CRM_POULTRY', $user->getRoles()) || in_array('ROLE_CRM_ADMIN_POULTRY', $user->getRoles())) {
+        if (in_array('ROLE_CRM_POULTRY_USER', $user->getRoles()) || in_array('ROLE_CRM_POULTRY_ADMIN', $user->getRoles())) {
             $otherReport = array_merge(
                 $otherReport,
                 ['Poultry' => [
@@ -328,7 +328,7 @@ class SearchFilterFormType extends AbstractType
                 ]
             );
         }
-        if (in_array('ROLE_CRM_CATTLE', $user->getRoles()) || in_array('ROLE_CRM_ADMIN_CATTLE', $user->getRoles())) {
+        if (in_array('ROLE_CRM_CATTLE_USER', $user->getRoles()) || in_array('ROLE_CRM_CATTLE_ADMIN', $user->getRoles())) {
             $otherReport = array_merge(
                 $otherReport,
                 ['Cattle' => [
@@ -339,7 +339,7 @@ class SearchFilterFormType extends AbstractType
                 ]
             );
         }
-        if (in_array('ROLE_CRM_AQUA', $user->getRoles()) || in_array('ROLE_CRM_ADMIN_AQUA', $user->getRoles())) {
+        if (in_array('ROLE_CRM_AQUA_USER', $user->getRoles()) || in_array('ROLE_CRM_AQUA_ADMIN', $user->getRoles())) {
             $otherReport = array_merge(
                 $otherReport,
                 ['Fish' => [

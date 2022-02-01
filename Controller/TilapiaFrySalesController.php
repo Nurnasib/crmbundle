@@ -44,7 +44,7 @@ class TilapiaFrySalesController extends AbstractController
 {
 
     /**
-     * @Security("is_granted('ROLE_CRM_AQUA') or is_granted('ROLE_DEVELOPER')")
+     * @Security("is_granted('ROLE_CRM_AQUA_USER') or is_granted('ROLE_DEVELOPER')")
      * @Route("/new", methods={"GET", "POST"}, name="tilapia_fry_sales_add", options={"expose"=true})
      */
     public function newModal(Request $request): Response

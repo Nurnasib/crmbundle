@@ -1,5 +1,5 @@
 <ul class="sub-menu">
-    {% if is_granted('ROLE_CRM_POULTRY') or is_granted('ROLE_CRM_CATTLE') or is_granted('ROLE_CRM_AQUA') or is_granted('ROLE_CRM_SALES_MARKETING') or is_granted('ROLE_DEVELOPER') %}
+    {% if is_granted('ROLE_CRM_POULTRY_USER') or is_granted('ROLE_CRM_CATTLE_USER') or is_granted('ROLE_CRM_AQUA_USER') or is_granted('ROLE_CRM_SALES_MARKETING_USER') or is_granted('ROLE_DEVELOPER') %}
         <li><a class="dropdown-item" href="{{ path('crm_visit') }}"><i class="feather icon-edit"></i>{{ 'CRM Visit'|trans }}</a></li>
     {% endif %}
 
@@ -18,7 +18,7 @@
     {% endif %}
 
     <li class="">
-        {% if is_granted('ROLE_CRM_ADMIN_POULTRY') or is_granted('ROLE_CRM_ADMIN_CATTLE') or is_granted('ROLE_CRM_ADMIN_AQUA') or is_granted('ROLE_CRM_SALES_MARKETING') or is_granted('ROLE_CRM_REPORT') or is_granted('ROLE_DEVELOPER') %}
+        {% if is_granted('ROLE_CRM_POULTRY_ADMIN') or is_granted('ROLE_CRM_CATTLE_ADMIN') or is_granted('ROLE_CRM_AQUA_ADMIN') or is_granted('ROLE_CRM_SALES_MARKETING_USER') or is_granted('ROLE_CRM_REPORT') or is_granted('ROLE_DEVELOPER') %}
             <a class="" href="javascript:"><i class="feather icon-file-text"></i>{{ 'Report'|trans }}</a>
             <ul class="sub-menu">
                 {#                <li><a class="" href="{{ path('daily_activities_report') }}"><span>{{ 'Daily Activities'|trans }}</span></a></li>#}
@@ -123,28 +123,28 @@
     <li>
         <a class="" href="javascript:"><i class="fa fa-building-o"></i>{{ 'Company Feed Sale'|trans }}</a>
         <ul class="sub-menu">
-            {% if is_granted('ROLE_CRM_POULTRY') or is_granted('ROLE_DEVELOPER') %}
+            {% if is_granted('ROLE_CRM_POULTRY_USER') or is_granted('ROLE_DEVELOPER') %}
                 <li><a class="dropdown-item" href="{{ path('company_wise_feed_sale_new',{'breed_name': 'poultry'}) }}">{{ 'Poultry'|trans }}</a></li>
             {% endif %}
-            {% if is_granted('ROLE_CRM_CATTLE') or is_granted('ROLE_DEVELOPER') %}
+            {% if is_granted('ROLE_CRM_CATTLE_USER') or is_granted('ROLE_DEVELOPER') %}
                 <li><a class="dropdown-item" href="{{ path('company_wise_feed_sale_new',{'breed_name': 'cattle'}) }}">{{ 'Cattle'|trans }}</a> </li>
             {% endif %}
-            {% if is_granted('ROLE_CRM_AQUA') or is_granted('ROLE_DEVELOPER') %}
+            {% if is_granted('ROLE_CRM_AQUA_USER') or is_granted('ROLE_DEVELOPER') %}
                 <li><a class="dropdown-item" href="{{ path('company_wise_feed_sale_new',{'breed_name': 'fish'}) }}">{{ 'Fish'|trans }}</a></li>
             {% endif %}
         </ul>
     </li>
 
-    {% if is_granted('ROLE_CRM_POULTRY') or is_granted('ROLE_DEVELOPER') %}
+    {% if is_granted('ROLE_CRM_POULTRY_USER') or is_granted('ROLE_DEVELOPER') %}
         <li><a class="dropdown-item" href='{{ path('fcr_different_company_new_modal',{'breed_name': 'poultry'}) }}'><i class="feather icon-percent"></i>{{ 'FCR Different Company'|trans }}</a> </li>
         <li><a class="dropdown-item" href='{{ path('lab_service_new_modal',{'breed_name': 'poultry'}) }}'><i class="feather icon-filter"></i>{{ 'Lab Service'|trans }}</a></li>
     {% endif %}
 
-    {% if is_granted('ROLE_CRM_AQUA') or is_granted('ROLE_DEVELOPER') %}
+    {% if is_granted('ROLE_CRM_AQUA_USER') or is_granted('ROLE_DEVELOPER') %}
         <li><a class="dropdown-item" href="{{ path('fish_sales_price_add') }}"><i class="feather icon-activity"></i>{{ 'Fish Sales Price'|trans }}</a></li>
         <li><a class="dropdown-item" href="{{ path('tilapia_fry_sales_add') }}"><i class="feather icon-activity"></i>{{ 'Tilapia Fry Sales'|trans }}</a></li>
     {% endif %}
-    {% if is_granted('ROLE_CRM_POULTRY') or is_granted('ROLE_CRM_CATTLE') or is_granted('ROLE_CRM_AQUA') or is_granted('ROLE_DEVELOPER') %}
+    {% if is_granted('ROLE_CRM_POULTRY_USER') or is_granted('ROLE_CRM_CATTLE_USER') or is_granted('ROLE_CRM_AQUA_USER') or is_granted('ROLE_DEVELOPER') %}
         <li><a class="dropdown-item" href="{{ path('crm_expense') }}"><i class="feather icon-credit-card"></i>{{ 'Expense'|trans }}</a></li>
         {#    <li><a class="dropdown-item" href="{{ path('crm_employee') }}">{{ 'Employee'|trans }}</a></li>#}
         <li><a class="dropdown-item" href="{{ path('crm_customer') }}"><i class="feather icon-users"></i>{{ 'Farmer'|trans }}</a></li>

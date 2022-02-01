@@ -32,16 +32,16 @@ class ExpenseRepository extends EntityRepository
         $qb->join('crm_visit.employee', 'employee');
         $qb->select('e');
 
-        if (in_array('ROLE_CRM_ADMIN_POULTRY', $user->getRoles())){
-            $qb->andWhere($qb->expr()->like('employee.roles', '%ROLE_CRM_POULTRY%'));
+        if (in_array('ROLE_CRM_POULTRY_ADMIN', $user->getRoles())){
+            $qb->andWhere($qb->expr()->like('employee.roles', '%ROLE_CRM_POULTRY_USER%'));
         }
-        if (in_array('ROLE_CRM_ADMIN_CATTLE', $user->getRoles())){
-            $qb->andWhere($qb->expr()->like('employee.roles', '%ROLE_CRM_CATTLE%'));
+        if (in_array('ROLE_CRM_CATTLE_ADMIN', $user->getRoles())){
+            $qb->andWhere($qb->expr()->like('employee.roles', '%ROLE_CRM_CATTLE_USER%'));
         }
-        if (in_array('ROLE_CRM_ADMIN_AQUA', $user->getRoles())){
-            $qb->andWhere($qb->expr()->like('employee.roles', '%ROLE_CRM_AQUA%'));
+        if (in_array('ROLE_CRM_AQUA_ADMIN', $user->getRoles())){
+            $qb->andWhere($qb->expr()->like('employee.roles', '%ROLE_CRM_AQUA_USER%'));
         }
-        if (!array_intersect(['ROLE_CRM_ADMIN_POULTRY','ROLE_CRM_ADMIN_CATTLE','ROLE_CRM_ADMIN_AQUA'], $user->getRoles())){
+        if (!array_intersect(['ROLE_CRM_POULTRY_ADMIN','ROLE_CRM_CATTLE_ADMIN','ROLE_CRM_AQUA_ADMIN'], $user->getRoles())){
             $qb->andWhere('employee.id = :employeeId')->setParameter('employeeId', $user->getId());
         }
 

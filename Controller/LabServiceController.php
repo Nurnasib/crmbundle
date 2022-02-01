@@ -30,7 +30,7 @@ use Terminalbd\CrmBundle\Form\DiseaseMappingFormType;
 
 /**
  * @Route("/crm/lab/service")
- * @Security("is_granted('ROLE_CRM_POULTRY') or is_granted('ROLE_DEVELOPER')")
+ * @Security("is_granted('ROLE_CRM_POULTRY_USER') or is_granted('ROLE_DEVELOPER')")
  */
 class LabServiceController extends AbstractController
 {

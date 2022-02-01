@@ -30,7 +30,7 @@ use Terminalbd\CrmBundle\Repository\CrmVisitRepository;
 
 /**
  * @Route("/crm/visit")
- * @Security("is_granted('ROLE_CRM_POULTRY') or is_granted('ROLE_CRM_CATTLE') or is_granted('ROLE_CRM_AQUA') or is_granted('ROLE_CRM_SALES_MARKETING') or is_granted('ROLE_DEVELOPER')")
+ * @Security("is_granted('ROLE_CRM_POULTRY_USER') or is_granted('ROLE_CRM_CATTLE_USER') or is_granted('ROLE_CRM_AQUA_USER') or is_granted('ROLE_CRM_SALES_MARKETING_USER') or is_granted('ROLE_DEVELOPER')")
  */
 class CrmVisitController extends AbstractController
 {
@@ -131,7 +131,7 @@ class CrmVisitController extends AbstractController
             }
         }
 
-        if(in_array('ROLE_CRM_SALES_MARKETING', $this->getUser()->getRoles())){
+        if(in_array('ROLE_CRM_SALES_MARKETING_USER', $this->getUser()->getRoles())){
             $visitId = $entity->getId();
             $regions = $this->getDoctrine()->getRepository(Location::class)->findBy(['level' => 3]);
             $breedTypes = $this->getDoctrine()->getRepository(Setting::class)->findBy(['settingType' => 'MEAT_EGG_TYPE']);
