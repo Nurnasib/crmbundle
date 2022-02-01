@@ -2351,25 +2351,25 @@ class ApiController extends AbstractController
             $otherAgent = null;
             $location = null;
 
-            if (isset($parameters['agentId']) && $parameters['agentId'] !== null){
+            if (isset($parameters['agentId']) && !empty($parameters['agentId'])){
                 $agent = $this->getDoctrine()->getRepository(Agent::class)->find($parameters['agentId']);
             }
-            if (isset($parameters['subAgentId']) && $parameters['subAgentId'] !== null){
+            if (isset($parameters['subAgentId']) && !empty($parameters['subAgentId'])){
                 $subAgent = $this->getDoctrine()->getRepository(Agent::class)->find($parameters['subAgentId']);
             }
-            if (isset($parameters['otherAgentId']) && $parameters['otherAgentId'] !== null){
+            if (isset($parameters['otherAgentId']) && !empty($parameters['otherAgentId'])){
                 $otherAgent = $this->getDoctrine()->getRepository(Agent::class)->find($parameters['otherAgentId']);
             }
-            if (isset($parameters['locationId']) && $parameters['locationId'] !== null) {
+            if (isset($parameters['locationId']) && !empty($parameters['locationId'])) {
                 $location = $this->getDoctrine()->getRepository(Location::class)->find($parameters['locationId']);
             }
             if (
-                (isset($parameters['name']) && $parameters['name'] !== null) &&
-                (isset($parameters['mobile']) && $parameters['mobile'] !== null) &&
+                (isset($parameters['name']) && !empty($parameters['name'])) &&
+                (isset($parameters['mobile']) && !empty($parameters['mobile'])) &&
                 ($agent || $subAgent || $otherAgent) &&
-                (isset($parameters['feedId']) && $parameters['feedId'] !== null) &&
-                (isset($parameters['farmerType']) && $parameters['farmerType'] !== null) &&
-                (isset($parameters['employeeId']) && $parameters['employeeId'] !== null)
+                (isset($parameters['feedId']) && !empty($parameters['feedId'])) &&
+                (isset($parameters['farmerType']) && !empty($parameters['farmerType'])) &&
+                (isset($parameters['employeeId']) && !empty($parameters['employeeId']))
             ) {
 
                 $farmerType = $this->getDoctrine()->getRepository(Setting::class)->find($parameters['farmerType']);
@@ -2402,14 +2402,14 @@ class ApiController extends AbstractController
                 $introduceFarmer->setCultureSpeciesItemAndQty(isset($parameters['cultureSpeciesItemAndQty']) ? $parameters['cultureSpeciesItemAndQty'] : null);
                 $introduceFarmer->setCreatedAt(new \DateTime('now'));
 
-                if ((isset($parameters['agentId']) && $parameters['agentId'] !== null) && ($feed && $feed->getName() == 'Nourish')){
+                if ((isset($parameters['agentId']) && !empty($parameters['agentId'])) && ($feed && $feed->getName() == 'Nourish')){
                     $introduceFarmer->setIntroduceDate(new \DateTime('now'));
                 }else{
                     $introduceFarmer->setIntroduceDate(null);
                 }
 
-                $this->getDoctrine()->getManager()->persist($introduceFarmer);
-                $this->getDoctrine()->getManager()->flush();
+//                $this->getDoctrine()->getManager()->persist($introduceFarmer);
+//                $this->getDoctrine()->getManager()->flush();
 
                 return new JsonResponse([
                     'statusCode' => 201,
