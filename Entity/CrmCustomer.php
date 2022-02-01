@@ -269,9 +269,9 @@ class CrmCustomer
     }
 
     /**
-     * @param Agent $otherAgent
+     * @param $otherAgent
      */
-    public function setOtherAgent(Agent $otherAgent): void
+    public function setOtherAgent($otherAgent): void
     {
         $this->otherAgent = $otherAgent;
     }
