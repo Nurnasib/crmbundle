@@ -354,39 +354,6 @@
                                     <div class="clearfix"></div>
                                 </div>
                                 <div class="clearfix"></div>
-                                <div class="card-header grey-bg inner-header">
-                                    <h5>Poultry Meat And Egg Price</h5>
-                                </div>
-                                {#agent-addmore#}
-                                <div class="card-body card-body-inner">
-                                    <table class="table table-bordered" id="datatable">
-                                        <thead class="thead-dark">
-                                        <tr>
-                                            <td style="text-align: center">{{ 'Rigion'|default('') }}</td>
-                                            {% for breedType in breedTypes %}
-                                                <td style="text-align: center">{{ breedType.name|default('') }} {{ breedType.slug == 'white-layer-egg' or breedType.slug == 'brown-layer-egg' ? '(Egg 100 Pcs)':'(kg)' }}</td>
-                                            {% endfor %}
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                            {% for region in regions %}
-                                                <tr>
-                                                    <td>{{ region.name }}</td>
-                                                    {% for breedType in breedTypes %}
-
-                                                        {% set key = region.id~'-'~breedType.id %}
-
-                                                        <td><input class="form-control meat-egg-price" type="number" data-action="{{ path('crm_visit_meat_egg_price_update',{'id': price[key].recordId}) }}" data-record-id="{{ price[key].recordId }}" data-visit-id="{{ entity.id }}" data-region-id="{{ region.id }}" data-breed-type-id="{{ breedType.id }}" value={{ price[key].price }}>
-                                                        </td>
-                                                    {% endfor %}
-                                                </tr>
-                                            {% endfor %}
-                                        </tbody>
-                                    </table>
-                                    <div class="clearfix"></div>
-                                </div>
-
-                                {#end#}
                                 <div class="form-actions">
                                     <div class="col-md-6 "></div>
                                     <div class="col-md-6 text-right">

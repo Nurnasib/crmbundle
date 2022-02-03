@@ -23,20 +23,26 @@ use Doctrine\ORM\EntityRepository;
  */
 class PoultryMeatEggPriceRepository extends EntityRepository
 {
-    public function processPrice($regions, $breedTypes, $visitId)
+    public function processPrice($regions, $breedTypes, $employee)
     {
 
         foreach ($breedTypes as $type){
-            $breedTypeId=$type->getId();
+            $breedTypeId = $type->getId();
 
             foreach ($regions as $region ){
                 $regionId = $region->getId();
-                $exist = $this->checkExistRecord($visitId, $regionId, $breedTypeId);
+                $exist = $this->checkExistRecord($regionId, $breedTypeId, $employee);
                 if(!$exist){
-                    $sql ="INSERT INTO 
-                            crm_poultry_meat_egg_price (`crm_visit_id`, `region_id`,`breed_type_id`,`created_at`,`price`,`status`) 
-                            VALUE ($visitId , $regionId , $breedTypeId , now() , 0, 1)";
+                    $sql = "INSERT INTO `crm_poultry_meat_egg_price`(`region_id`, `status`, `created_at`, `breed_type_id`, `price`, `employee_id`, `reporting_date`) VALUES (:regionId , :status, :createdAt, :breedTypeId , :price,  :employeeId, :reportingDate)";
+
                     $qb = $this->_em->getConnection()->prepare($sql);
+                    $qb->bindValue('createdAt', (new \DateTime("now"))->format('Y-m-d H:s:i'));
+                    $qb->bindValue('reportingDate', (new \DateTime("now"))->format('Y-m-d'));
+                    $qb->bindValue('status', 1);
+                    $qb->bindValue('price', 0);
+                    $qb->bindValue('regionId', $regionId);
+                    $qb->bindValue('breedTypeId', $breedTypeId);
+                    $qb->bindValue('employeeId', $employee->getId());
                     $qb->execute();
                 }
             }
@@ -44,14 +50,15 @@ class PoultryMeatEggPriceRepository extends EntityRepository
 
 
         $qb = $this->createQueryBuilder('e');
-        $qb->join('e.crmVisit','crmVisit');
         $qb->join('e.region','region');
         $qb->join('e.breedType','breedType');
         $qb->select('e.price','e.id AS recordId');
-        $qb->addSelect('crmVisit.id AS visitId');
         $qb->addSelect('region.id AS regionId');
         $qb->addSelect('breedType.id AS breedTypeId');
-        $qb->where('crmVisit.id = :crmVisitId')->setParameter('crmVisitId', $visitId);
+
+        $qb->where('e.employee = :employee')->setParameter('employee', $employee);
+        $qb->andWhere('e.reportingDate = :reportingDate')->setParameter('reportingDate', (new \DateTime("now"))->format('Y-m-d'));
+
         $results = $qb->getQuery()->getArrayResult();
         $array = [];
         if($results){
@@ -63,15 +70,16 @@ class PoultryMeatEggPriceRepository extends EntityRepository
         return $array;
     }
 
-    private function checkExistRecord($visitId, $regionId, $breedTypeId){
+    private function checkExistRecord($regionId, $breedTypeId, $employee){
         $qb = $this->createQueryBuilder('e');
-        $qb->join('e.crmVisit','crmVisit');
         $qb->join('e.region','region');
         $qb->join('e.breedType','breedType');
         $qb->select('e.id AS recordId');
-        $qb->where('crmVisit.id = :crmVisitId')->setParameter('crmVisitId', $visitId);
+        $qb->where('e.employee = :employee')->setParameter('employee', $employee);
         $qb->andWhere('region.id = :regionId')->setParameter('regionId', $regionId);
         $qb->andWhere('breedType.id = :breedTypeId')->setParameter('breedTypeId', $breedTypeId);
+        $qb->andWhere('e.reportingDate = :reportingDate')->setParameter('reportingDate', (new \DateTime("now"))->format('Y-m-d'));
+
 
         return $qb->getQuery()->getResult();
     }

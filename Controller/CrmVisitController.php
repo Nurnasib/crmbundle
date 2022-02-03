@@ -8,25 +8,19 @@
 namespace Terminalbd\CrmBundle\Controller;
 
 
-use App\Entity\Admin\Location;
 use App\Entity\Core\Agent;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Terminalbd\CrmBundle\Entity\ChickLifeCycle;
 use Terminalbd\CrmBundle\Entity\CrmCustomer;
 use Terminalbd\CrmBundle\Entity\CrmVisit;
 use Terminalbd\CrmBundle\Entity\CrmVisitDetails;
-use Terminalbd\CrmBundle\Entity\PoultryMeatEggPrice;
 use Terminalbd\CrmBundle\Entity\Setting;
-use Terminalbd\CrmBundle\Form\CrmCustomerFormType;
 use Terminalbd\CrmBundle\Form\CrmVisitFormType;
-use Terminalbd\CrmBundle\Repository\CrmVisitRepository;
 
 /**
  * @Route("/crm/visit")
@@ -132,10 +126,10 @@ class CrmVisitController extends AbstractController
         }
 
         if(in_array('ROLE_CRM_SALES_MARKETING_USER', $this->getUser()->getRoles())){
-            $visitId = $entity->getId();
-            $regions = $this->getDoctrine()->getRepository(Location::class)->findBy(['level' => 3]);
-            $breedTypes = $this->getDoctrine()->getRepository(Setting::class)->findBy(['settingType' => 'MEAT_EGG_TYPE']);
-            $price = $this->getDoctrine()->getRepository(PoultryMeatEggPrice::class)->processPrice($regions,$breedTypes, $visitId);
+//            $visitId = $entity->getId();
+//            $regions = $this->getDoctrine()->getRepository(Location::class)->findBy(['level' => 3]);
+//            $breedTypes = $this->getDoctrine()->getRepository(Setting::class)->findBy(['settingType' => 'MEAT_EGG_TYPE']);
+//            $price = $this->getDoctrine()->getRepository(PoultryMeatEggPrice::class)->processPrice($regions,$breedTypes, $visitId);
             return $this->render('@TerminalbdCrm/crmvisit/edit-sales-marketing.html.twig', [
                 'entity' => $entity,
                 'purposes'=>$purpose,
@@ -152,9 +146,9 @@ class CrmVisitController extends AbstractController
                 'farmers'=>$farmers,
                 'subAgents'=>$subAgents,
                 'otherAgents'=>$otherAgents,
-                'regions'=>$regions,
-                'breedTypes'=>$breedTypes,
-                'price'=>$price,
+//                'regions'=>$regions,
+//                'breedTypes'=>$breedTypes,
+//                'price'=>$price,
                 'user'=>$this->getUser(),
                 'form' => $form->createView(),
 //                'fcr_after_reports' => $reports,
@@ -311,6 +305,8 @@ class CrmVisitController extends AbstractController
 
     /**
      * @Route("/report/{id}/ajax", methods={"GET"}, name="crm_report_farm_type_ajax", options={"expose"=true})
+     * @param $id
+     * @return Response
      */
     public function getReportByFarmType($id): Response
     {
@@ -328,28 +324,5 @@ class CrmVisitController extends AbstractController
         return new JsonResponse($arrayData);
     }
 
-    /**
-     * @Route("/update/{id}/meat-egg-price", name="crm_visit_meat_egg_price_update", options={"expose"=true})
-     * @return JsonResponse
-     */
-    public function updateMeatAndEggPrice()
-    {
-        $visitId = $_REQUEST['visitId'];
-        $regionId = $_REQUEST['regionId'];
-        $breedTypeId = $_REQUEST['breedTypeId'];
-        $price = $_REQUEST['price'];
-
-        $entity = $this->getDoctrine()->getRepository(PoultryMeatEggPrice::class)->findOneBy(['crmVisit' => $visitId, 'region' => $regionId, 'breedType' => $breedTypeId]);
-
-        if($entity){
-            $em = $this->getDoctrine()->getManager();
-            $entity->setPrice($price);
-            $em->persist($entity);
-            $em->flush();
-            return new JsonResponse('Success');
-        }
-        return new JsonResponse('Failed');
-
-    }
 
 }

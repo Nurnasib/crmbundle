@@ -17,7 +17,9 @@ use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\Entity(repositoryClass="Terminalbd\CrmBundle\Repository\PoultryMeatEggPriceRepository")
- * @ORM\Table(name="crm_poultry_meat_egg_price")
+ * @ORM\Table(name="crm_poultry_meat_egg_price",
+ *     uniqueConstraints={@ORM\UniqueConstraint(columns={"employee_id", "reporting_date", "region_id", "breed_type_id"})}
+ *     )
  * @author Md Shafiqul Islam <shafiqabs@gmail.com>
  */
 class PoultryMeatEggPrice
@@ -32,11 +34,11 @@ class PoultryMeatEggPrice
     private $id;
 
     /**
-     * @var CrmVisit
-     * @ORM\ManyToOne(targetEntity="Terminalbd\CrmBundle\Entity\CrmVisit" , inversedBy="poultryMeatEggPrice")
-     * @ORM\JoinColumn(onDelete="CASCADE")
+     * @var $employee
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="meatEggPrice")
      */
-    private $crmVisit;
+    private $employee;
+
 
     /**
      * @var Location
@@ -61,6 +63,12 @@ class PoultryMeatEggPrice
      * @ORM\Column(type="boolean", nullable=true)
      */
     private $status = true;
+
+    /**
+     * @var \DateTime
+     * @ORM\Column(type="date")
+     */
+    private $reportingDate;
 
     /**
      * @var \DateTime
@@ -91,20 +99,21 @@ class PoultryMeatEggPrice
     }
 
     /**
-     * @return CrmVisit
+     * @return mixed
      */
-    public function getCrmVisit()
+    public function getEmployee()
     {
-        return $this->crmVisit;
+        return $this->employee;
     }
 
     /**
-     * @param CrmVisit $crmVisit
+     * @param mixed $employee
      */
-    public function setCrmVisit($crmVisit)
+    public function setEmployee($employee): void
     {
-        $this->crmVisit = $crmVisit;
+        $this->employee = $employee;
     }
+
 
     /**
      * @return Location
@@ -168,6 +177,22 @@ class PoultryMeatEggPrice
     public function setStatus($status)
     {
         $this->status = $status;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getReportingDate(): \DateTime
+    {
+        return $this->reportingDate;
+    }
+
+    /**
+     * @param \DateTime $reportingDate
+     */
+    public function setReportingDate(\DateTime $reportingDate): void
+    {
+        $this->reportingDate = $reportingDate;
     }
 
     /**

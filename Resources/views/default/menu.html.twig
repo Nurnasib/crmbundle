@@ -59,7 +59,7 @@
     {% endif %}
     {% if is_granted('ROLE_CRM_SALES_MARKETING_USER') %}
         <li><a class="dropdown-item" href="{{ path('day_old_chick_price') }}"><i class="feather icon-credit-card"></i>{{ 'DOC Price'|trans }}</a></li>
-        <li><a class="dropdown-item" href="#"><i class="feather icon-credit-card"></i>{{ 'Meat and Egg Price'|trans }}</a></li>
+        <li><a class="dropdown-item" href="{{ path('meat_egg_price_new') }}"><i class="feather icon-credit-card"></i>{{ 'Meat and Egg Price'|trans }}</a></li>
     {% endif %}
     {% if is_granted('ROLE_CRM_POULTRY_USER') or is_granted('ROLE_CRM_CATTLE_USER') or is_granted('ROLE_CRM_AQUA_USER') or is_granted('ROLE_CRM_SALES_MARKETING_USER') or is_granted('ROLE_DEVELOPER') %}
         <li><a class="dropdown-item" href="{{ path('crm_expense') }}"><i class="feather icon-credit-card"></i>{{ 'Expense'|trans }}</a></li>
