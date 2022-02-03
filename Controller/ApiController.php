@@ -1567,7 +1567,7 @@ class ApiController extends AbstractController
         $allRequestData = $request->request->all();
         $sql = "INSERT INTO `core_agent`(`agent_group_id`, `upozila_id`, `district_id`, `name`, `agentId`, `mobile`, `email`, `address`, `oldId`,  `created`) VALUES (:agent_group_id, :upozila_id, :district_id, :name, :agentId, :mobile, :email, :address, :oldId,  :created)";
         $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
-        $createdAt = new \DateTime($allRequestData['created_at']);
+        $createdAt = new \DateTime('now');
         $stmt->bindValue('name', $allRequestData['name']);
         $stmt->bindValue('mobile', $allRequestData['mobile']);
         $stmt->bindValue('email', $allRequestData['email']);
