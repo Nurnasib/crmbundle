@@ -1558,7 +1558,7 @@ class ApiController extends AbstractController
     }
 
     /**
-     * @Route("/create/core/agent", methods={POST} name="create_core_agent_api")
+     * @Route("/create-core-agent", methods={"POST"}, name="create_core_agent_api")
      * @param Request $request
      * @return JsonResponse|Response
      */
