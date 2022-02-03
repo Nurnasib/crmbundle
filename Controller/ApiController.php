@@ -1243,13 +1243,13 @@ class ApiController extends AbstractController
     /**
      * @Route("/list", name="api_response_list")
      */
-/*    public function apiResponseList()
-    {
-        $list = $this->getDoctrine()->getRepository(Api::class)->getData();
-        return $this->render('@TerminalbdCrm/api/api-response-list.html.twig', [
-            'list' => $list,
-        ]);
-    }*/
+    /*    public function apiResponseList()
+        {
+            $list = $this->getDoctrine()->getRepository(Api::class)->getData();
+            return $this->render('@TerminalbdCrm/api/api-response-list.html.twig', [
+                'list' => $list,
+            ]);
+        }*/
 
     /**
      * @Route("/{id}/insert-data", name="insert_json_data")
@@ -1558,18 +1558,18 @@ class ApiController extends AbstractController
     }
 
     /**
-     * @Route("/create-core-agent", methods={"POST"}, name="create_core_agent_api")
+     * @Route("/create-core-agent", methods={"POST", "GET"}, name="create_core_agent_api")
      * @param Request $request
      * @return JsonResponse|Response
      */
     public function createCoreAgentFromSales(Request $request){
 
         $allRequestData = $request->query->all();
-
         $district= $this->getDoctrine()->getRepository(Location::class)->findOneBy(['oldId'=>$allRequestData['district_id']]);
         $upozila= $this->getDoctrine()->getRepository(Location::class)->findOneBy(['oldId'=>$allRequestData['upozila_id']]);
 
         $sql = "INSERT INTO `core_agent` (`agent_group_id`, `upozila_id`, `district_id`, `name`, `agentId`, `mobile`, `email`, `address`, `oldId`, `created`) VALUES (:agent_group_id, :upozila_id, :district_id, :name, :agentId, :mobile, :email, :address, :oldId,  :created)";
+
         $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
         $createdAt = new \DateTime('now');
         $stmt->bindValue('name', $allRequestData['name']);
