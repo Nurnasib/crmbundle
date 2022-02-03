@@ -1564,8 +1564,12 @@ class ApiController extends AbstractController
      */
     public function createCoreAgentFromSales(Request $request){
 
-        $allRequestData = $request->request->all();
-        $sql = "INSERT INTO `core_agent`(`agent_group_id`, `upozila_id`, `district_id`, `name`, `agentId`, `mobile`, `email`, `address`, `oldId`,  `created`) VALUES (:agent_group_id, :upozila_id, :district_id, :name, :agentId, :mobile, :email, :address, :oldId,  :created)";
+        $allRequestData = $request->query->all();
+
+        $district= $this->getDoctrine()->getRepository(Location::class)->findOneBy(['oldId'=>$allRequestData['district_id']]);
+        $upozila= $this->getDoctrine()->getRepository(Location::class)->findOneBy(['oldId'=>$allRequestData['upozila_id']]);
+
+        $sql = "INSERT INTO `core_agent` (`agent_group_id`, `upozila_id`, `district_id`, `name`, `agentId`, `mobile`, `email`, `address`, `oldId`, `created`) VALUES (:agent_group_id, :upozila_id, :district_id, :name, :agentId, :mobile, :email, :address, :oldId,  :created)";
         $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
         $createdAt = new \DateTime('now');
         $stmt->bindValue('name', $allRequestData['name']);
@@ -1573,17 +1577,27 @@ class ApiController extends AbstractController
         $stmt->bindValue('email', $allRequestData['email']);
         $stmt->bindValue('address', $allRequestData['address']);
         $stmt->bindValue('agent_group_id', $allRequestData['agentType']=='FEED'?10:11);
-        $stmt->bindValue('upozila_id', $allRequestData['upozila_id']);
-        $stmt->bindValue('district_id', $allRequestData['district_id']);
+        $stmt->bindValue('upozila_id', $upozila?$upozila->getId():null);
+        $stmt->bindValue('district_id', $district?$district->getId():null);
         $stmt->bindValue('agentId', $allRequestData['agentId']);
         $stmt->bindValue('oldId', $allRequestData['oldId']);
         $stmt->bindValue('created', $createdAt->format('Y-m-d'));
 
-        $stmt->execute();
+        try {
+            $stmt->execute();
+        }catch (\Exception $e){
+            return new JsonResponse([
+                'status' => 500,
+                'message' => $e->getMessage(),
+                'data'=>$allRequestData
+            ]);
+        }
+
         return new JsonResponse([
-            'status' => 200,
-            'message' => 'Success'
+            'status' => 201,
+            'message' => 'success'
         ]);
+
     }
 
     /**
