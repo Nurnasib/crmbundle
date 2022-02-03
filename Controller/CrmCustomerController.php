@@ -112,13 +112,21 @@ class CrmCustomerController extends AbstractController
      */
     public function createFarmer(Request $request,$id){
 
-        $entity=new CrmCustomer();
+
         $allRequestData = $request->request->all();
         $group = $this->getDoctrine()->getRepository(Setting::class)->findOneBy(array('slug'=>'farmer'));
         $feed = $this->getDoctrine()->getRepository(Setting::class)->find($allRequestData['feed_id']);
         $location = $this->getDoctrine()->getRepository(Location::class)->find($allRequestData['location']);
         $otherAgent = $this->getDoctrine()->getRepository(Agent::class)->find($allRequestData['other_agent']);
         $subAgent = $this->getDoctrine()->getRepository(Agent::class)->find($allRequestData['sub_agent']);
+
+        $existingFarmerCheck= $this->getDoctrine()->getRepository(CrmCustomer::class)->duplicateCustomerCheckByMobileAndType($allRequestData['mobile'], $allRequestData['farmer_type']);
+
+        if($existingFarmerCheck){
+            return new JsonResponse(['status'=>'409','message'=>'This Farmar Already Exist.']);
+        }
+
+        $entity=new CrmCustomer();
         if($allRequestData['agent']==''){
             if($allRequestData['sub_agent']!=''){
                 $entity->setAgent($subAgent);
@@ -144,14 +152,16 @@ class CrmCustomerController extends AbstractController
         $em->persist($entity);
         $em->flush();
         $returnData= array(
-          'id'=>$entity->getId(),
-          'name'=>$entity->getName(),
-          'subAgent'=>$allRequestData['sub_agent'],
+            'id'=>$entity->getId(),
+            'name'=>$entity->getName(),
+            'subAgent'=>$allRequestData['sub_agent'],            
+            'status'=>'200',
+            'message'=>'Farmer has been successfully added.'
         );
 //        $this->getDoctrine()->getRepository(CrmVisitDetails::class)->insertCrmVisitDetailForFarmer($entity, $id, $allRequestData);
 //        $this->getDoctrine()->getRepository(FarmerTouchReport::class)->insertFarmerTouch($entity, $this->getUser(), $feed, $allRequestData);
         $this->getDoctrine()->getRepository(FarmerIntroduceDetails::class)->insertCrmFarmerIntroduceDetails($entity, $this->getUser(), $feed, $allRequestData);
-        return new JsonResponse(array($returnData));
+        return new JsonResponse($returnData);
 
     }
 

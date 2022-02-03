@@ -898,6 +898,10 @@ $('#farmerModal').on('hidden.bs.modal', function(event) {
     $('#farmerModal').find('.cultureSpeciesArea').html('');
 });
 
+$(document).on('click','.farmerModalButton', function () {
+    $('#farmerModal').modal('show');
+});
+
 $(document).on('click', '#crm-farmer-btn', function(e) {
 
     var crm_visit_id = $('body').find('.crm_visit_id').val();
@@ -943,18 +947,48 @@ $(document).on('click', '#crm-farmer-btn', function(e) {
         processData : false,
         contentType : false,
         success: function (data) {
-            console.log(data)
+            
             $('form#farmerForm')[0].reset();
-            // var refreshUrl = Routing.generate('crm_visit_item_refresh',{'id':crm_visit_id,'process':'farmer'});
-            // $(".crm_detail_farmer_section").load(refreshUrl);
+            
             // if(data.id){
+
             $('#farmerModal').find('.cultureSpeciesArea').html('');
             $('#farmerModal').modal('hide');
+            $('#farmerModal').on('hidden.bs.modal', function () {
+                $('#farmerModal').removeClass('show').removeClass('in');
+                $('#farmerModal').attr("aria-hidden","true");
+                $("#farmerModal").removeAttr("style");
+                $('.modal-backdrop').remove();
+                $('body').removeClass('modal-open');
+            });
+            console.log(data);
+            $('.alert').remove();
+            if(data.status==200){
+                jQuery('body').find('.messages').append('<div class="alert alert-dismissible alert-success fade in show" role="alert">\n' +
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">\n' +
+                    '<span aria-hidden="true">×</span>\n' +
+                    '</button>\n' +data.message +
+                    '</div>');
+
+            }
+
+            if(data.status==409){
+                jQuery('body').find('.messages').append('<div class="alert alert-dismissible alert-danger fade in show" role="alert">\n' +
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">\n' +
+                    '<span aria-hidden="true">×</span>\n' +
+                    '</button>\n' +data.message +
+                    '</div>');
+            }
 
             // }
         }
     });
 
+});
+
+
+$(document).on('click','.otherAgentModalButton', function () {
+    $('#otherAgentModal').modal('show');
 });
 
 $(document).on('click', '#crm-other-agent-btn', function(e) {
@@ -982,15 +1016,31 @@ $(document).on('click', '#crm-other-agent-btn', function(e) {
         success: function (data) {
             console.log(data);
             $('form#otherAgentForm')[0].reset();
+            $('#otherAgentModal').modal('hide');
+            $('#otherAgentModal').on('hidden.bs.modal', function () {
+                $('#otherAgentModal').removeClass('show').removeClass('in');
+                $('#otherAgentModal').attr("aria-hidden","true");
+                $("#otherAgentModal").removeAttr("style");
+                $('.modal-backdrop').remove();
+                $('body').removeClass('modal-open');
+            });
+            
             if(data[0].status===200){
                 var refreshUrl = Routing.generate('crm_visit_item_refresh',{'id':crm_visit_id,'process':'other-agent'});
                 $(".crm_detail_other_agent_section").load(refreshUrl);
             }
+
         }
     });
-    $('#otherAgentModal').modal('hide');
+    // $('#otherAgentModal').modal('hide');
 
 });
+
+
+$(document).on('click','.subAgentModalButton', function () {
+    $('#subAgentModal').modal('show');
+});
+
 
 $(document).on('click', '#crm-sub-agent-btn', function(e) {
 
@@ -1020,9 +1070,17 @@ $(document).on('click', '#crm-sub-agent-btn', function(e) {
                 var refreshUrl = Routing.generate('crm_visit_item_refresh',{'id':crm_visit_id,'process':'sub-agent'});
                 $(".crm_detail_sub_agent_section").load(refreshUrl);
             }
+            $('#subAgentModal').modal('hide');
+            $('#subAgentModal').on('hidden.bs.modal', function () {
+                $('#subAgentModal').removeClass('show').removeClass('in');
+                $('#subAgentModal').attr("aria-hidden","true");
+                $("#subAgentModal").removeAttr("style");
+                $('.modal-backdrop').remove();
+                $('body').removeClass('modal-open');
+            });
+
         }
     });
-    $('#subAgentModal').modal('hide');
 
 });
 
@@ -1174,5 +1232,6 @@ $(document).on('change', '.meat-egg-price', function() {
         }
     })
 });
+
 
 

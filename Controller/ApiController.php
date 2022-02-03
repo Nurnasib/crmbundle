@@ -2377,6 +2377,12 @@ class ApiController extends AbstractController
                 $employee = $this->getDoctrine()->getRepository(User::class)->find($parameters['employeeId']);
                 $farmerGroup = $this->getDoctrine()->getRepository(Setting::class)->findOneBy(['slug' => 'farmer']);
 
+//                duplicate check
+                $existingFarmerCheck= $this->getDoctrine()->getRepository(CrmCustomer::class)->duplicateCustomerCheckByMobileAndType($parameters['mobile'], $parameters['farmerType']);
+
+                if($existingFarmerCheck){
+                    return new JsonResponse(['statusCode'=>'409','message'=>'This Farmar Already Exist.']);
+                }
                 // Add new Farmer
                 $newFarmer = new CrmCustomer();
                 $newFarmer->setName($parameters['name']);

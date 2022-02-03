@@ -73,6 +73,25 @@ class CrmCustomerRepository extends EntityRepository
         return $returnArray;
 
     }
+    
+    public function duplicateCustomerCheckByMobileAndType($mobile, $farmerType){
+        if($mobile && $farmerType){
+
+            $qb = $this->createQueryBuilder('e');
+            $qb->join('e.farmerIntroduce','farmerIntroduce');
+            $qb->join('farmerIntroduce.farmerType','farmerType');
+            $qb->select('e.id as id','e.name as name','e.mobile as mobile');
+            $qb->addSelect('farmerType.name as typeName');
+            $qb->where('e.mobile = :mobile')->setParameter('mobile',$mobile);
+            $qb->andWhere('farmerType.id = :farmerType')->setParameter('farmerType',$farmerType);
+
+            $results = $qb->getQuery()->getResult();
+
+            return $results;
+        }
+        return null;
+
+    }
 
 //    public function broilerLifeCycleReport()
 //    {
