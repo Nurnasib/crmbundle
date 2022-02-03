@@ -27,6 +27,9 @@ class MeatAndEggPriceController extends AbstractController
      */
     public function new()
     {
+        set_time_limit(0);
+        ignore_user_abort(true);
+
         $regions = $this->getDoctrine()->getRepository(Location::class)->findBy(['level' => 3]);
         $breedTypes = $this->getDoctrine()->getRepository(Setting::class)->findBy(['settingType' => 'MEAT_EGG_TYPE']);
         $price = $this->getDoctrine()->getRepository(PoultryMeatEggPrice::class)->processPrice($regions,$breedTypes, $this->getUser());

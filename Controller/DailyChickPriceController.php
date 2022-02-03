@@ -46,6 +46,9 @@ class DailyChickPriceController extends AbstractController
      */
     public function new()
     {
+        set_time_limit(0);
+        ignore_user_abort(true);
+
         $entity = new DailyChickPrice();
         $existReport = $this->getDoctrine()->getRepository(DailyChickPrice::class)->getExistingReportByDateAndEmployee($this->getUser());
         if (!$existReport){
@@ -82,12 +85,11 @@ class DailyChickPriceController extends AbstractController
         }
 
         $returnData = array();
+        $results = $this->getDoctrine()->getRepository(DailyChickPriceDetails::class)->findBy(array('crmDailyChickPrice' => $entity));
 
-        foreach ($entity->getCrmDailyChickPriceDetails() as $chickPriceDetail){
-            $returnData[$chickPriceDetail->getFeed()->getId()][$chickPriceDetail->getChickType()->getId()] = $chickPriceDetail;
+        foreach ($results as $result){
+            $returnData[$result->getFeed()->getId()][$result->getChickType()->getId()] = $result;
         }
-
-
         return $this->render('@TerminalbdCrm/dailyChickPrice/new.html.twig', [
             'chickPriceDetail' => $returnData,
             'feeds' => $feeds,

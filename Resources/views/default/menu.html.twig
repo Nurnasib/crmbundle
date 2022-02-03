@@ -18,7 +18,7 @@
     {% endif %}
 
     <li class="">
-        {% if is_granted('ROLE_CRM_POULTRY_ADMIN') or is_granted('ROLE_CRM_CATTLE_ADMIN') or is_granted('ROLE_CRM_AQUA_ADMIN') or is_granted('ROLE_CRM_SALES_MARKETING_USER') or is_granted('ROLE_CRM_REPORT') or is_granted('ROLE_DEVELOPER') %}
+        {% if is_granted('ROLE_CRM_POULTRY_ADMIN') or is_granted('ROLE_CRM_CATTLE_ADMIN') or is_granted('ROLE_CRM_AQUA_ADMIN') or is_granted('ROLE_CRM_SALES_MARKETING_USER') or is_granted('ROLE_CRM_SALES_MARKETING_ADMIN') or is_granted('ROLE_CRM_REPORT') or is_granted('ROLE_DEVELOPER') %}
             <a class="" href="javascript:"><i class="feather icon-file-text"></i>{{ 'Report'|trans }}</a>
             <ul class="sub-menu">
                 <li><a class="dropdown-item" href="{{ path('visit_report') }}">{{ 'Visit Report'|trans }}</a></li>
@@ -57,7 +57,7 @@
         <li><a class="dropdown-item" href="{{ path('fish_sales_price_add') }}"><i class="feather icon-activity"></i>{{ 'Fish Sales Price'|trans }}</a></li>
         <li><a class="dropdown-item" href="{{ path('tilapia_fry_sales_add') }}"><i class="feather icon-activity"></i>{{ 'Tilapia Fry Sales'|trans }}</a></li>
     {% endif %}
-    {% if is_granted('ROLE_CRM_SALES_MARKETING_USER') %}
+    {% if is_granted('ROLE_CRM_SALES_MARKETING_USER') or is_granted('ROLE_DEVELOPER') %}
         <li><a class="dropdown-item" href="{{ path('day_old_chick_price') }}"><i class="feather icon-credit-card"></i>{{ 'DOC Price'|trans }}</a></li>
         <li><a class="dropdown-item" href="{{ path('meat_egg_price_new') }}"><i class="feather icon-credit-card"></i>{{ 'Meat and Egg Price'|trans }}</a></li>
     {% endif %}
