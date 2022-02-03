@@ -41,16 +41,14 @@ class DailyChickPriceController extends AbstractController
     }
 
     /**
-     * @return Response
      * @throws \Exception
      * @Route("/day-old-chick-price", methods={"GET", "POST"}, name="day_old_chick_price")
      */
-    public function new(): Response
+    public function new()
     {
         $entity = new DailyChickPrice();
         $existReport = $this->getDoctrine()->getRepository(DailyChickPrice::class)->getExistingReportByDateAndEmployee($this->getUser());
         if (!$existReport){
-//            return $this->redirectToRoute('daily_chick_price_details_modal', ['id' => $entity->getId()]);
             $entity->setReportingDate(new \DateTime("now"));
             $entity->setEmployee($this->getUser());
             $em = $this->getDoctrine()->getManager();

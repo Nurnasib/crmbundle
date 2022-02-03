@@ -1,0 +1,122 @@
+{% extends 'admin/layout.html.twig' %}
+{#{% block body_id 'kpi_domain_new' %}#}
+{% block body %}
+<div class="pcoded-inner-content">
+    <!-- [ breadcrumb ] start -->
+    <div class="page-header">
+        <div class="page-block">
+            <div class="row align-items-center">
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/"><i class="feather icon-home"></i></a></li>
+                    <li class="breadcrumb-item"> <a href="javascript:void(0)">  {{ 'Meat And Egg Price'|trans }}</a></li>
+                    {#<li class="breadcrumb-item"> <a href="javascript:">{{ 'Add New'|trans }}</a></li>#}
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- [ breadcrumb ] end -->
+    <!-- [ Main Content ] start -->
+    <div class="row">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between">
+                <h5 class="d-inline-block">{{ 'Meat And Egg Price'|trans }}</h5>
+                <h5 class="d-inline-block">Reporting Date: {{ "now"|date('d-m-Y') }}</h5>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="card">
+            <div class="card-block">
+                <div class="portlet box">
+                    <div class="portlet-body form" style="overflow-y: scroll; height: 500px">
+                        <table class="table table-striped table-bordered table-hover">
+                            <thead class="thead-dark" style="position: sticky; top: -15px; z-index: 99; background-color: rgb(123 123 123)">
+                            <tr>
+                                <th style="text-align: center">{{ 'Rigion'|default('') }}</th>
+                                {% for breedType in breedTypes %}
+                                    <th style="text-align: center">{{ breedType.name|default('') }} {{ breedType.slug == 'white-layer-egg' or breedType.slug == 'brown-layer-egg' ? '(Egg 100 Pcs)':'(kg)' }}</th>
+                                {% endfor %}
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for region in regions %}
+                                <tr>
+                                    <td>{{ region.name }}</td>
+                                    {% for breedType in breedTypes %}
+
+                                        {% set key = region.id~'-'~breedType.id %}
+
+                                        <td><input class="form-control meat-egg-price" type="number" data-action="{{ path('meat_egg_price_update',{'id': price[key].recordId}) }}" data-record-id="{{ price[key].recordId }}" data-region-id="{{ region.id }}" data-breed-type-id="{{ breedType.id }}" value={{ price[key].price }}>
+                                        </td>
+                                    {% endfor %}
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block cssBlock %}
+    <link rel="stylesheet" href="{{ asset('assets/module/css/app.css') }}">
+    <link rel="stylesheet" href="{{ asset('bundles/terminalbdcrm/css/crm.css') }}">
+{% endblock  %}
+
+{% block javascripts %}
+    {#<script>#}
+    {{ parent() }}
+{#    <script type="application/javascript" src="{{ asset('bundles/terminalbdcrm/js/crm/script.js') }}"></script>#}
+{#    <script type="application/javascript" src="{{ asset('bundles/terminalbdcrm/js/crm/daily-chick-price.js') }}"></script>#}
+    <script>
+        // Meat & Egg Price Update
+        $(document).on('change', '.meat-egg-price', function() {
+
+            var price = $(this).val();
+            var url = $(this).attr('data-action');
+            var regionId = $(this).attr('data-region-id');
+            var breedTypeId = $(this).attr('data-breed-type-id');
+
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: {'regionId':regionId, 'breedTypeId':breedTypeId, 'price':price},
+                success: function (response) {
+                    console.log(response);
+                }
+            })
+        });
+    </script>
+
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
