@@ -21,119 +21,32 @@
         {% if is_granted('ROLE_CRM_POULTRY_ADMIN') or is_granted('ROLE_CRM_CATTLE_ADMIN') or is_granted('ROLE_CRM_AQUA_ADMIN') or is_granted('ROLE_CRM_SALES_MARKETING_USER') or is_granted('ROLE_CRM_REPORT') or is_granted('ROLE_DEVELOPER') %}
             <a class="" href="javascript:"><i class="feather icon-file-text"></i>{{ 'Report'|trans }}</a>
             <ul class="sub-menu">
-                {#                <li><a class="" href="{{ path('daily_activities_report') }}"><span>{{ 'Daily Activities'|trans }}</span></a></li>#}
                 <li><a class="dropdown-item" href="{{ path('visit_report') }}">{{ 'Visit Report'|trans }}</a></li>
-                <li><a class=""
-                       href="{{ path('life_cycle_report_index') }}"><span>{{ 'Life Cycle Report'|trans }}</span></a>
-                </li>
-                <li><a class="" href="{{ path('monthly_report_index') }}"><span>{{ 'Monthly Report'|trans }}</span></a>
-                </li>
-                <li><a class="" href="{{ path('others_report_index') }}"><span>{{ 'Others Report'|trans }}</span></a>
-                </li>
-                {#<li><a class="" href="javascript:"><span>{{ 'Poultry'|trans }}</span></a>
-                    <ul class="sub-menu">
-                        <li><a class="" href="javascript:"><span>{{ 'Sonali'|trans }}</span></a>
-                            <ul class="sub-menu">
-                                <li><a class="" href="{{ path('chick_life_cycle_report',{'breed':'sonali'}) }}"><span>{{ 'Life Cycle'|trans }}</span></a>
-                                </li>
-                                <li><a class="" href="{{ path('chick_fcr_report',{'slug':'fcr-before-sale-sonali'}) }}"><span>{{ 'FCR(Before)'|trans }}</span></a>
-                                </li>
-                                <li><a class="" href="{{ path('chick_fcr_report',{'slug':'fcr-after-sale-sonali'}) }}"><span>{{ 'FCR(After)'|trans }}</span></a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li><a class="" href="javascript:"><span>{{ 'Broiler'|trans }}</span></a>
-                            <ul class="sub-menu">
-                                <li><a class="" href="{{ path('chick_life_cycle_report',{'breed':'broiler'}) }}"><span>{{ 'Life Cycle'|trans }}</span></a>
-                                </li>
-                                <li><a class="" href="{{ path('chick_fcr_report',{'slug':'fcr-before-sale-boiler'}) }}"><span>{{ 'FCR(Before)'|trans }}</span></a>
-                                </li>
-                                <li><a class="" href="{{ path('chick_fcr_report',{'slug':'fcr-after-sale-boiler'}) }}"><span>{{ 'FCR(After)'|trans }}</span></a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li><a class="" href="javascript:"><span>{{ 'Layer'|trans }}</span></a>
-                            <ul class="sub-menu">
-                                <li><a class="" href="{{ path('chick_life_cycle_report',{'breed':'layer'}) }}"><span>{{ 'Life Cycle'|trans }}</span></a>
-                                </li>
-                                <li><a class="" href="{{ path('layer_performance_report') }}"><span>{{ 'Performance'|trans }}</span></a>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
-                </li>#}
-                {#<li><a class="" href="javascript:"><span>{{ 'Cattle'|trans }}</span></a>
-                    <ul class="sub-menu">
-                        <li><a class="" href="{{ path('cattle_farm_visit_report') }}"><span>{{ 'Farm Visit'|trans }}</span></a></li>
-                        <li><a class="" href="javascript:"><span>{{ 'Fattening'|trans }}</span></a>
-                            <ul class="sub-menu">
-                                <li><a class="" href="javascript:"><span>{{ 'Life Cycle'|trans }}</span></a></li>
-                                <li><a class="" href="javascript:"><span>{{ 'Performance'|trans }}</span></a></li>
-                            </ul>
-                        </li>
-                        <li><a class="" href="javascript:"><span>{{ 'Dairy'|trans }}</span></a>
-                            <ul class="sub-menu">
-                                <li><a class="" href="javascript:"><span>{{ 'Life Cycle'|trans }}</span></a></li>
-                                <li><a class="" href="javascript:"><span>{{ 'Performance'|trans }}</span></a></li>
-                            </ul>
-                        </li>
-                    </ul>
-                </li>#}
-                {#<li><a class="" href="javascript:"><span>{{ 'Fish'|trans }}</span></a>
-                    <ul class="sub-menu">
-                        <li><a class="" href="{{ path('crm_fish_life_cycle') }}"><span>{{ 'Life Cycle'|trans }}</span></a>
-                        </li>
-                        <li><a class="" href="javascript:"><span>{{ 'Performance'|trans }}</span></a></li>
-                    </ul>
-                </li>#}
-                {#<li><a class="" href="javascript:"><span>{{ 'Farmer Touch'|trans }}</span></a>
-                    <ul class="sub-menu">
-                        <li><a class="" href="{{ path('farmer-touch-report',{'type': 'poultry-breed','slug':'farmer-touch-report-poultry'}) }}"><span>{{ 'Poultry'|trans }}</span></a>
-                        </li>
-                        <li><a class="" href="{{ path('farmer-touch-report',{'type': 'fish-breed','slug':'farmer-touch-report-fish'}) }}"><span>{{ 'Fish'|trans }}</span></a>
-                        </li>
-                        <li><a class="" href="{{ path('farmer-touch-report',{'type': 'cattle-breed','slug':'farmer-touch-report-cattle'}) }}"><span>{{ 'Cattle'|trans }}</span></a>
-                        </li>
-                    </ul>
-                </li>#}
-                {#<li><a class="" href="javascript:"><span>{{ 'Farmer Introduce'|trans }}</span></a>
-                    <ul class="sub-menu">
-                        <li><a class="" href="{{ path('farmer_introduce_report',{'breedType': 'poultry-breed'}) }}"><span>{{ 'Poultry'|trans }}</span></a>
-                        </li>
-                        <li><a class="" href="{{ path('farmer_introduce_report',{'breedType': 'fish-breed'}) }}"><span>{{ 'Fish'|trans }}</span></a>
-                        </li>
-                        <li><a class="" href="{{ path('farmer_introduce_report',{'breedType': 'cattle-breed'}) }}"><span>{{ 'Cattle'|trans }}</span></a>
-                        </li>
-                    </ul>
-                </li>#}
-                {#<li><a class="" href="javascript:"><span>{{ 'Farmer Training'|trans }}</span></a>
-                    <ul class="sub-menu">
-                        <li><a class="" href="{{ path('farmer_training_report',{'breedType': 'poultry-breed'}) }}"><span>{{ 'Poultry'|trans }}</span></a>
-                        </li>
-                        <li><a class="" href="{{ path('farmer_training_report',{'breedType': 'fish-breed'}) }}"><span>{{ 'Fish'|trans }}</span></a>
-                        </li>
-                        <li><a class="" href="{{ path('farmer_training_report',{'breedType': 'cattle-breed'}) }}"><span>{{ 'Cattle'|trans }}</span></a>
-                        </li>
-                    </ul>
-                </li>#}
-
+                {% if not is_granted('ROLE_CRM_SALES_MARKETING_USER') %}
+                    <li><a class="" href="{{ path('life_cycle_report_index') }}"><span>{{ 'Life Cycle Report'|trans }}</span></a></li>
+                {% endif %}
+                <li><a class="" href="{{ path('monthly_report_index') }}"><span>{{ 'Monthly Report'|trans }}</span></a></li>
+                <li><a class="" href="{{ path('others_report_index') }}"><span>{{ 'Others Report'|trans }}</span></a></li>
             </ul>
         {% endif %}
     </li>
-    <li>
-        <a class="" href="javascript:"><i class="fa fa-building-o"></i>{{ 'Company Feed Sale'|trans }}</a>
-        <ul class="sub-menu">
-            {% if is_granted('ROLE_CRM_POULTRY_USER') or is_granted('ROLE_DEVELOPER') %}
-                <li><a class="dropdown-item" href="{{ path('company_wise_feed_sale_new',{'breed_name': 'poultry'}) }}">{{ 'Poultry'|trans }}</a></li>
-            {% endif %}
-            {% if is_granted('ROLE_CRM_CATTLE_USER') or is_granted('ROLE_DEVELOPER') %}
-                <li><a class="dropdown-item" href="{{ path('company_wise_feed_sale_new',{'breed_name': 'cattle'}) }}">{{ 'Cattle'|trans }}</a> </li>
-            {% endif %}
-            {% if is_granted('ROLE_CRM_AQUA_USER') or is_granted('ROLE_DEVELOPER') %}
-                <li><a class="dropdown-item" href="{{ path('company_wise_feed_sale_new',{'breed_name': 'fish'}) }}">{{ 'Fish'|trans }}</a></li>
-            {% endif %}
-        </ul>
-    </li>
+    {% if is_granted('ROLE_CRM_POULTRY_USER') or is_granted('ROLE_CRM_CATTLE_USER') or is_granted('ROLE_CRM_AQUA_USER') or is_granted('ROLE_DEVELOPER') %}
+        <li>
+            <a class="" href="javascript:"><i class="fa fa-building-o"></i>{{ 'Company Feed Sale'|trans }}</a>
+            <ul class="sub-menu">
+                {% if is_granted('ROLE_CRM_POULTRY_USER') or is_granted('ROLE_DEVELOPER') %}
+                    <li><a class="dropdown-item" href="{{ path('company_wise_feed_sale_new',{'breed_name': 'poultry'}) }}">{{ 'Poultry'|trans }}</a></li>
+                {% endif %}
+                {% if is_granted('ROLE_CRM_CATTLE_USER') or is_granted('ROLE_DEVELOPER') %}
+                    <li><a class="dropdown-item" href="{{ path('company_wise_feed_sale_new',{'breed_name': 'cattle'}) }}">{{ 'Cattle'|trans }}</a> </li>
+                {% endif %}
+                {% if is_granted('ROLE_CRM_AQUA_USER') or is_granted('ROLE_DEVELOPER') %}
+                    <li><a class="dropdown-item" href="{{ path('company_wise_feed_sale_new',{'breed_name': 'fish'}) }}">{{ 'Fish'|trans }}</a></li>
+                {% endif %}
+            </ul>
+        </li>
+    {% endif %}
+
 
     {% if is_granted('ROLE_CRM_POULTRY_USER') or is_granted('ROLE_DEVELOPER') %}
         <li><a class="dropdown-item" href='{{ path('fcr_different_company_new_modal',{'breed_name': 'poultry'}) }}'><i class="feather icon-percent"></i>{{ 'FCR Different Company'|trans }}</a> </li>
@@ -144,7 +57,11 @@
         <li><a class="dropdown-item" href="{{ path('fish_sales_price_add') }}"><i class="feather icon-activity"></i>{{ 'Fish Sales Price'|trans }}</a></li>
         <li><a class="dropdown-item" href="{{ path('tilapia_fry_sales_add') }}"><i class="feather icon-activity"></i>{{ 'Tilapia Fry Sales'|trans }}</a></li>
     {% endif %}
-    {% if is_granted('ROLE_CRM_POULTRY_USER') or is_granted('ROLE_CRM_CATTLE_USER') or is_granted('ROLE_CRM_AQUA_USER') or is_granted('ROLE_DEVELOPER') %}
+    {% if is_granted('ROLE_CRM_SALES_MARKETING_USER') %}
+        <li><a class="dropdown-item" href="{{ path('day_old_chick_price') }}"><i class="feather icon-credit-card"></i>{{ 'DOC Price'|trans }}</a></li>
+        <li><a class="dropdown-item" href="#"><i class="feather icon-credit-card"></i>{{ 'Meat and Egg Price'|trans }}</a></li>
+    {% endif %}
+    {% if is_granted('ROLE_CRM_POULTRY_USER') or is_granted('ROLE_CRM_CATTLE_USER') or is_granted('ROLE_CRM_AQUA_USER') or is_granted('ROLE_CRM_SALES_MARKETING_USER') or is_granted('ROLE_DEVELOPER') %}
         <li><a class="dropdown-item" href="{{ path('crm_expense') }}"><i class="feather icon-credit-card"></i>{{ 'Expense'|trans }}</a></li>
         {#    <li><a class="dropdown-item" href="{{ path('crm_employee') }}">{{ 'Employee'|trans }}</a></li>#}
         <li><a class="dropdown-item" href="{{ path('crm_customer') }}"><i class="feather icon-users"></i>{{ 'Farmer'|trans }}</a></li>

@@ -28,7 +28,7 @@
                     <thead class="thead-dark">
                     {{ form_start(form) }}
                     <tr>
-                        {% if is_granted('ROLE_CRM_ADMIN') %}
+                        {% if is_granted('ROLE_CRM_POULTRY_ADMIN') or is_granted('ROLE_CRM_CATTLE_ADMIN') or is_granted('ROLE_CRM_AQUA_ADMIN') %}
                             <th>
                                 {{ form_label(form.employee, 'Employee:') }}
                                 {{ form_widget(form.employee) }}

@@ -12,6 +12,7 @@
 namespace Terminalbd\CrmBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
 
 /**
  * This custom Doctrine repository contains some methods which are useful when
@@ -24,19 +25,14 @@ use Doctrine\ORM\EntityRepository;
 class DailyChickPriceRepository extends EntityRepository
 {
 
-    public function getExistingReportByDateEmployeeAndLocation($employee, $location)
+    public function getExistingReportByDateAndEmployee($employee)
     {
-        if($employee){
-            $startDate = date('Y-m-d', strtotime("now"));
-            $query = $this->createQueryBuilder('dcp')
-                ->where('dcp.reportingDate = :reportingDate')
-                ->andWhere('dcp.employee = :employee')
-                ->andWhere('dcp.location = :location')
-                ->setParameters(array('reportingDate'=>$startDate, 'employee'=>$employee, 'location'=>$location));
+        $query = $this->createQueryBuilder('dcp')
+            ->where('dcp.reportingDate = :reportingDate')
+            ->andWhere('dcp.employee = :employee')
+            ->setParameters(array('reportingDate' => (new \DateTime('now'))->format('Y-m-d'), 'employee' => $employee));
+        return $query->getQuery()->getOneOrNullResult();
 
-            return $query->getQuery()->getOneOrNullResult();
-        }
-        return array();
     }
 
 }

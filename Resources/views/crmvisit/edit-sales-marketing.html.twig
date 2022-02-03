@@ -22,9 +22,6 @@
                     <h5>{{ 'Manage Daily Activies'|trans }}</h5>
                     <div class="card-header-right">
                         <div class="btn-group btn-group-sm" role="group" aria-label="Button group with nested dropdown">
-                            <a style="margin-right: 5px" class="btn btn-primary btn-sm" data-action='{{ path('daily_chick_price',{'location':entity.location.id}) }}' href='?process=postView_daily_chick_price_report&report={{ '' }}&check=show#modal' id='postView_daily_chick_price_report'>{{ 'Daily Chick Price Report' }}</a>
-                        </div>
-                        <div class="btn-group btn-group-sm" role="group" aria-label="Button group with nested dropdown">
                             <a style="margin-right: 5px" class="btn btn-primary btn-sm" data-action='{{ path('crm_expense_new',{'crmVisit':entity.id, 'location':entity.location.id}) }}' href='?process=postView_crm_expense_new&report={{ '' }}&check=show#modal' id='postView_crm_expense_new'>{{ 'Expense' }}</a>
 
                             <a href="{{ path('crm_visit') }}" class="btn btn-sm gray-bg white-font"><i class="fa fa-th-list"></i>{{ 'CRM VISIT'|trans }}</a>
@@ -765,7 +762,7 @@
     {{ parent() }}
     <script type="application/javascript" src="{{ asset('bundles/terminalbdcrm/js/crm/script.js') }}"></script>
 
-    <script type="application/javascript" src="{{ asset('bundles/terminalbdcrm/js/crm/daily-chick-price.js') }}"></script>
     <script type="application/javascript" src="{{ asset('bundles/terminalbdcrm/js/crm/expense.js') }}"></script>
+{#    <script type="application/javascript" src="{{ asset('bundles/terminalbdcrm/js/crm/fcr.js') }}"></script>#}
 
 {% endblock %}

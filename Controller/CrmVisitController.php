@@ -136,7 +136,6 @@ class CrmVisitController extends AbstractController
             $regions = $this->getDoctrine()->getRepository(Location::class)->findBy(['level' => 3]);
             $breedTypes = $this->getDoctrine()->getRepository(Setting::class)->findBy(['settingType' => 'MEAT_EGG_TYPE']);
             $price = $this->getDoctrine()->getRepository(PoultryMeatEggPrice::class)->processPrice($regions,$breedTypes, $visitId);
-//            dd($price);
             return $this->render('@TerminalbdCrm/crmvisit/edit-sales-marketing.html.twig', [
                 'entity' => $entity,
                 'purposes'=>$purpose,

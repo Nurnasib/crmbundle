@@ -3,15 +3,17 @@
 namespace Terminalbd\CrmBundle\Entity;
 
 use App\Entity\Admin\Location;
-use App\Entity\Core\Agent;
 use App\Entity\User;
-//use Terminalbd\CrmBundle\Entity\Setting;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 
 /**
- * @ORM\Table(name="crm_daily_chick_price")
+ * @ORM\Table(
+ *     name="crm_daily_chick_price",
+ *     uniqueConstraints={@ORM\UniqueConstraint(columns={"employee_id", "reporting_date"})}
+ *     )
  * @ORM\Entity(repositoryClass="Terminalbd\CrmBundle\Repository\DailyChickPriceRepository")
  */
 class DailyChickPrice
@@ -59,6 +61,11 @@ class DailyChickPrice
      * @ORM\Column(name="created_at", type="datetime")
      */
     private $createdAt;
+
+    public function __construct()
+    {
+        $this->crmDailyChickPriceDetails = new ArrayCollection();
+    }
 
     /**
      * @return int
