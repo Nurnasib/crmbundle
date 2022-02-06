@@ -13,6 +13,7 @@ namespace Terminalbd\CrmBundle\Repository;
 use App\Entity\Admin\Location;
 use App\Entity\User;
 use Doctrine\ORM\EntityRepository;
+use function Doctrine\ORM\QueryBuilder;
 
 /**
  * This custom Doctrine repository contains some methods which are useful when
@@ -54,16 +55,57 @@ class CrmVisitRepository extends EntityRepository
         return $qb->getQuery()->getArrayResult();
     }
 
-    public function getVisits($startDate, $endDate, $employee)
+    public function getVisits($startDate, $endDate, $employee, User $loggedUser)
     {
         $qb = $this->createQueryBuilder('e');
         $qb->leftJoin('e.location', 'location');
         $qb->leftJoin('e.workingMode', 'workingMode');
+        $qb->join('e.employee', 'employee');
+        $qb->join('employee.userGroup', 'userGroup');
         $qb->select('e.id AS visitId','e.created AS visitDate','e.workingDuration AS visitBegin','e.workingDurationTo AS visitEnd', 'location.name AS locationName');
         $qb->addSelect('workingMode.id AS workingModeId', 'workingMode.name AS workingModeName', 'workingMode.slug AS workingModeSlug');
         $qb->where('e.created >= :startDate')->setParameter('startDate', $startDate);
         $qb->andWhere('e.created <= :endDate')->setParameter('endDate', $endDate);
-        $qb->andWhere('e.employee = :employee')->setParameter('employee', $employee);
+        $qb->andWhere('userGroup.slug = :userGroupSlug')->setParameter('userGroupSlug', 'employee');
+
+        $roleSplitArray = [];
+
+        foreach ($loggedUser->getRoles() as $role) {
+            $roleSplitArray = array_merge(explode('_', $role), $roleSplitArray);
+        }
+        if (in_array('ADMIN', $roleSplitArray) && !$employee){
+            if (in_array('ROLE_CRM_POULTRY_ADMIN', $loggedUser->getRoles())){
+                $qb->orWhere(
+                    $qb->expr()->like('employee.roles', ':role')
+                )->setParameter('role', '%ROLE_CRM_POULTRY_USER%');
+
+            }
+            if (in_array('ROLE_CRM_CATTLE_ADMIN', $loggedUser->getRoles())){
+                $qb->orWhere(
+                    $qb->expr()->like('employee.roles', ':role')
+                )->setParameter('role', '%ROLE_CRM_CATTLE_USER%');
+
+
+            }
+            if (in_array('ROLE_CRM_AQUA_ADMIN', $loggedUser->getRoles())){
+                $qb->orWhere(
+                    $qb->expr()->like('employee.roles', ':role')
+                )->setParameter('role', '%ROLE_CRM_AQUA_USER%');
+
+            }
+            if (in_array('ROLE_CRM_SALES_MARKETING_ADMIN', $loggedUser->getRoles())){
+                $qb->orWhere(
+                    $qb->expr()->like('employee.roles', ':role')
+                )->setParameter('role', '%ROLE_CRM_SALES_MARKETING_USER%');
+
+            }
+
+        }elseif ((in_array('ADMIN', $roleSplitArray) || in_array('ROLE_LINE_MANAGER', $loggedUser->getRoles())) && $employee){
+            $qb->andWhere('e.employee = :employee')->setParameter('employee', $employee);
+        }elseif (!in_array('ADMIN', $roleSplitArray) && !$employee){
+            $qb->andWhere('e.employee = :employee')->setParameter('employee', $loggedUser);
+        }
+
 
         $results = $qb->getQuery()->getArrayResult();
 

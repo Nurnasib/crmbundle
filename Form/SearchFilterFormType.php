@@ -262,7 +262,10 @@ class SearchFilterFormType extends AbstractType
                     $qb->orderBy('e.name');
                     return $qb;
                 },
-                'choice_label' => 'name',
+                'choice_label' => function($employee){
+                    /**  @var User $employee */
+                return '(' . $employee->getUserId() . ') ' . $employee->getName();
+                },
                 'placeholder' => '- Select Employee -',
                 'required' => false,
                 'attr' => [

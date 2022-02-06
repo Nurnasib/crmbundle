@@ -43,10 +43,8 @@ class VisitReportController extends AbstractController
             $endDate = $endDate->format('Y-m-d 23:59:59');
 
             $employee = $form->getData()['employee'];
-            if (!in_array('ROLE_CRM_ADMIN', $this->getUser()->getRoles())){
-                $employee = $this->getUser();
-            }
-            $entities = $this->getDoctrine()->getRepository(CrmVisit::class)->getVisits($startDate, $endDate, $employee);
+
+            $entities = $this->getDoctrine()->getRepository(CrmVisit::class)->getVisits($startDate, $endDate, $employee, $this->getUser());
         }
         return $this->render('@TerminalbdCrm/report/visit/index.html.twig',[
             'form' => $form->createView(),
