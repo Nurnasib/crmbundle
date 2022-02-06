@@ -46,20 +46,6 @@ class LayerPerformanceDetailsRepository extends BaseRepository
         }
         return array();
     }
-    public function getLayerPerformanceReport($filterBy)
-    {
-        $qb = $this->createQueryBuilder('e');
-        $this->handleSearchFilterBetween($qb, $filterBy);
-
-        $results = $qb->getQuery()->getResult();
-
-       // $results['month'] = $results[0]->getCreated()->format('F-Y');
-
-        return $results;
-
-
-    }
-
 
     public function getMonthlyLayerPerformanceTotalReport($filterBy)
     {

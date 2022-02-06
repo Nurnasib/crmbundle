@@ -39,29 +39,5 @@ class CattleFarmVisitDetailsRepository extends BaseRepository
         }
         return array();
     }
-    public function getCattleFarmVisitReport($filterBy)
-    {
-        $qb = $this->createQueryBuilder('crmCattleFarmVisitDetails');
-        $qb->select('crmCattleFarmVisitDetails.visitingDate', 'crmCattleFarmVisitDetails.cattlePopulationOx', 'crmCattleFarmVisitDetails.cattlePopulationCow', 'crmCattleFarmVisitDetails.cattlePopulationCalf', 'crmCattleFarmVisitDetails.avgMilkYieldPerDay', 'crmCattleFarmVisitDetails.conceptionRate', 'crmCattleFarmVisitDetails.fodderGreenGrassKg', 'crmCattleFarmVisitDetails.fodderStrawKg','crmCattleFarmVisitDetails.typeOfConcentrateFeed','crmCattleFarmVisitDetails.marketPriceMilkPerLiter','crmCattleFarmVisitDetails.marketPriceMeatPerKg','crmCattleFarmVisitDetails.remarks AS comments');
-
-        $qb->addSelect('customer.name AS customerName', 'customer.mobile AS cusomerMobile', 'customer.address AS customerAddress');
-        $qb->addSelect('location.name AS customerUpazila');
-        $qb->addSelect('locationParent.name AS customerDistrict');
-        $qb->addSelect('employee.name AS employeeName');
-
-
-
-        $qb->leftJoin('crmCattleFarmVisitDetails.customer', 'customer');
-        $qb->leftJoin('customer.location', 'location');
-        $qb->leftJoin('location.parent', 'locationParent');
-        $this->handleSearchFilterBetween($qb, $filterBy);
-
-        $results = $qb->getQuery()->getArrayResult();
-        return $results;
-
-//        dd($results);
-
-
-    }
 
 }

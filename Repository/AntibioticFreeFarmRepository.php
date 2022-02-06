@@ -41,49 +41,6 @@ class AntibioticFreeFarmRepository extends BaseRepository
         return array();
     }
 
-
-    public function getAntibioticFreeFarmReport($filterBy)
-    {
-
-        $qb = $this->createQueryBuilder('e');
-
-        $this->handleSearchFilterBetween($qb, $filterBy);
-        $qb->select('e.id','e.totalStockedChicksPcs', 'e.totalFeedUsedKg', 'e.mortality', 'e.totalBroilerWeightKg','e.ageDays', 'e.fcr', 'e.reportingMonth', 'e.hatchingDate');
-        $qb->addSelect('agent.name AS agentName', 'agent.address AS agentAddress', 'agent.mobile AS agentMobile');
-        $qb->addSelect('farmer.name AS farmerName', 'farmer.address AS farmerAddress', 'farmer.mobile AS farmerMobile');
-        $qb->addSelect('hatchery.name AS hatcheryName');
-        $qb->addSelect('breed.name AS breedName');
-
-        $qb->join('e.agent', 'agent');
-        $qb->join('e.customer', 'farmer');
-        $qb->join('e.hatchery', 'hatchery');
-        $qb->join('e.breed', 'breed');
-
-        $results = $qb->getQuery()->getArrayResult();
-        $data = [];
-        foreach ($results as $result){
-            $data[$result['agentName']][] = $result;
-        }
-        return $data;
-    }
-
-    public function getAntibioticFreeFarmCost()
-    {
-
-        $qb = $this->createQueryBuilder('e');
-
-        $qb->select('e.id', 'antibioticFreeFarmMedicineOrCost.costType', 'SUM(antibioticFreeFarmMedicineOrCost.price) AS totalPrice');
-        $qb->join('e.antibioticFreeFarmMedicineOrCost', 'antibioticFreeFarmMedicineOrCost');
-        $qb->groupBy('antibioticFreeFarmMedicineOrCost.costType');
-        $qb->addGroupBy('e.id');
-        $results = $qb->getQuery()->getArrayResult();
-        $data = [];
-        foreach ($results as $result){
-            $data[$result['id']][$result['costType']] = $result['totalPrice'];
-        }
-        return $data;
-    }
-
     public function getMonthlyAntibioticFreeFarmTotalReport($filterBy)
     {
         $qb = $this->createQueryBuilder('e');

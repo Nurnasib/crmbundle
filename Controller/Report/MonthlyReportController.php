@@ -4,25 +4,17 @@
 namespace Terminalbd\CrmBundle\Controller\Report;
 
 
-use App\Entity\User;
-use Dompdf\Dompdf;
-use Dompdf\Options;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Terminalbd\CrmBundle\Entity\AntibioticFreeFarm;
-use Terminalbd\CrmBundle\Entity\ChickLifeCycle;
-use Terminalbd\CrmBundle\Entity\ChickLifeCycleDetails;
 use Terminalbd\CrmBundle\Entity\CostBenefitAnalysisForLessCostingFarm;
-use Terminalbd\CrmBundle\Entity\CrmCustomer;
 use Terminalbd\CrmBundle\Entity\DiseaseMapping;
 use Terminalbd\CrmBundle\Entity\FcrDetails;
 use Terminalbd\CrmBundle\Entity\LayerPerformanceDetails;
 use Terminalbd\CrmBundle\Entity\NewFarmerIntroduce\FarmerIntroduceDetails;
 use Terminalbd\CrmBundle\Form\SearchFilterFormType;
-use Terminalbd\CrmBundle\Repository\AntibioticFreeFarmRepository;
 
 /**
  * Class MonthlyReportController

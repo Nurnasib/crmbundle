@@ -24,24 +24,6 @@ use Terminalbd\CrmBundle\Repository\BaseRepository;
  */
 class ChickLifeCycleRepository extends BaseRepository
 {
-    public function getChickLifeCycleByReportType($filterBy){
-
-        $qb = $this->createQueryBuilder('e');
-        $this->handleSearchFilterBetween($qb, $filterBy);
-
-        $results = $qb->getQuery()->getResult();
-
-        $data=[];
-        foreach ($results as $result){
-            $month = $result->getCreatedAt()->format('F-Y') ;
-
-            $data[$month][]= $result;
-            $data['officer_name'] = $result->getEmployee()->getName();
-            $data['officer_region'] = $result->getEmployee()->getRegional()->getName();
-            $data['life_cycle'] = $result->getReport()->getParent()->getName();
-        }
-        return $data;
-    }
 
     public function getMonthlyBroilerLifeCycleTotalReport($filterBy)
     {
