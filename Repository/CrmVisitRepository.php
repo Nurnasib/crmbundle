@@ -74,31 +74,28 @@ class CrmVisitRepository extends EntityRepository
             $roleSplitArray = array_merge(explode('_', $role), $roleSplitArray);
         }
         if (in_array('ADMIN', $roleSplitArray) && !$employee){
+            $userRole = [];
             if (in_array('ROLE_CRM_POULTRY_ADMIN', $loggedUser->getRoles())){
-                $qb->orWhere(
-                    $qb->expr()->like('employee.roles', ':role')
-                )->setParameter('role', '%ROLE_CRM_POULTRY_USER%');
-
+                array_push($userRole, 'ROLE_CRM_POULTRY_USER');
             }
             if (in_array('ROLE_CRM_CATTLE_ADMIN', $loggedUser->getRoles())){
-                $qb->orWhere(
-                    $qb->expr()->like('employee.roles', ':role')
-                )->setParameter('role', '%ROLE_CRM_CATTLE_USER%');
-
-
+                array_push($userRole, 'ROLE_CRM_CATTLE_USER');
             }
             if (in_array('ROLE_CRM_AQUA_ADMIN', $loggedUser->getRoles())){
-                $qb->orWhere(
-                    $qb->expr()->like('employee.roles', ':role')
-                )->setParameter('role', '%ROLE_CRM_AQUA_USER%');
-
+                array_push($userRole, 'ROLE_CRM_AQUA_USER');
             }
             if (in_array('ROLE_CRM_SALES_MARKETING_ADMIN', $loggedUser->getRoles())){
-                $qb->orWhere(
-                    $qb->expr()->like('employee.roles', ':role')
-                )->setParameter('role', '%ROLE_CRM_SALES_MARKETING_USER%');
+                array_push($userRole, 'ROLE_CRM_SALES_MARKETING_USER');
+            }
+            $query = '';
+            foreach ($userRole as $key => $role) {
+                if ($key !== 0){
+                    $query .= " OR ";
+                }
+                $query .= "e.roles LIKE '%" . $role . "%'";
 
             }
+            $qb->andWhere($query);
 
         }elseif ((in_array('ADMIN', $roleSplitArray) || in_array('ROLE_LINE_MANAGER', $loggedUser->getRoles())) && $employee){
             $qb->andWhere('e.employee = :employee')->setParameter('employee', $employee);

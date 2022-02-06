@@ -102,6 +102,9 @@
                         {% elseif filterBy['otherReport'] in ['farmer-training-poultry','farmer-training-cattle','farmer-training-fish'] %}
                             {% include '@TerminalbdCrm/report/others/inc/_farmer_training.html.twig'%}
 
+                        {% elseif filterBy['otherReport'] is same as 'doc-price' %}
+                            {% include '@TerminalbdCrm/report/others/inc/_doc_price.html.twig'%}
+
                         {% endif %}
 
                     </div>

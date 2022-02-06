@@ -25,6 +25,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Terminalbd\CrmBundle\Entity\CrmCustomer;
 use Terminalbd\CrmBundle\Entity\Fcr;
 use Terminalbd\CrmBundle\Entity\Setting;
+use function Doctrine\ORM\QueryBuilder;
 
 
 /**
@@ -258,7 +259,32 @@ class SearchFilterFormType extends AbstractType
                     }
                     if (!in_array('ADMIN', $roleSplitArray)){
                         $qb->andWhere("e.lineManager = :lineManager")->setParameter('lineManager', $user);
+                    }elseif (in_array('ADMIN', $roleSplitArray)){
+                        $userRole = [];
+                        if (in_array('ROLE_CRM_POULTRY_ADMIN', $user->getRoles())){
+                            array_push($userRole, 'ROLE_CRM_POULTRY_USER');
+                        }
+                        if (in_array('ROLE_CRM_CATTLE_ADMIN', $user->getRoles())){
+                            array_push($userRole, 'ROLE_CRM_CATTLE_USER');
+                        }
+                        if (in_array('ROLE_CRM_AQUA_ADMIN', $user->getRoles())){
+                            array_push($userRole, 'ROLE_CRM_AQUA_USER');
+                        }
+                        if (in_array('ROLE_CRM_SALES_MARKETING_ADMIN', $user->getRoles())){
+                            array_push($userRole, 'ROLE_CRM_SALES_MARKETING_USER');
+                        }
+                        $query = '';
+                        foreach ($userRole as $key => $role) {
+                            if ($key !== 0){
+                                $query .= " OR ";
+                            }
+                            $query .= "e.roles LIKE '%" . $role . "%'";
+
+                        }
+                        $qb->andWhere($query);
+
                     }
+
                     $qb->orderBy('e.name');
                     return $qb;
                 },
@@ -332,7 +358,7 @@ class SearchFilterFormType extends AbstractType
                     'Lab Service' => 'lab-service-poultry',
                     'FCR Different Companies' => 'fcr-different-companies-poultry',
                     'Company Wise Feed Sale' => 'company-wise-feed-sale-poultry',
-                    'Farmer Training' => 'farmer-training-poultry'
+                    'Farmer Training' => 'farmer-training-poultry',
                     ]
                 ]
             );
@@ -356,6 +382,15 @@ class SearchFilterFormType extends AbstractType
                     'Company Wise Feed Sale' => 'company-wise-feed-sale-fish',
                     'Farmer Training' => 'farmer-training-fish',
                     ]
+                ]
+            );
+        }
+        if (in_array('ROLE_CRM_SALES_MARKETING_USER', $user->getRoles()) || in_array('ROLE_CRM_SALES_MARKETING_ADMIN', $user->getRoles())) {
+            $otherReport = array_merge(
+                $otherReport,
+                [
+                    'DOC Price' => 'doc-price',
+                    'Meat & Egg Price' => 'meat-egg-price'
                 ]
             );
         }

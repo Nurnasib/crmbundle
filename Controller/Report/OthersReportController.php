@@ -18,6 +18,8 @@ use Terminalbd\CrmBundle\Entity\ChickLifeCycleDetails;
 use Terminalbd\CrmBundle\Entity\CompanyWiseFeedSale;
 use Terminalbd\CrmBundle\Entity\CostBenefitAnalysisForLessCostingFarm;
 use Terminalbd\CrmBundle\Entity\CrmCustomer;
+use Terminalbd\CrmBundle\Entity\DailyChickPrice;
+use Terminalbd\CrmBundle\Entity\DailyChickPriceDetails;
 use Terminalbd\CrmBundle\Entity\DiseaseMapping;
 use Terminalbd\CrmBundle\Entity\FarmerTrainingReportDetails;
 use Terminalbd\CrmBundle\Entity\FcrDetails;
@@ -64,45 +66,58 @@ class OthersReportController extends AbstractController
                     $species = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('status'=>1,'settingType'=>'SPECIES_TYPE','parent'=>$breed));
                     $entities = $this->getDoctrine()->getRepository(FarmerIntroduceDetails::class)->getFarmerSurveyReport($filterBy);
                     break;
+
                 case 'lab-service-poultry':
                     $entities = $this->getDoctrine()->getRepository(LabService::class)->getLabServiceSummaryReport($filterBy);
                     break;
+
                 case 'fcr-different-companies-poultry':
                     $entities = $this->getDoctrine()->getRepository(FcrDifferentCompanies::class)->getFcrDifferentCompaniesReport($filterBy);
                     break;
+
                 case 'company-wise-feed-sale-poultry':
                     $breed = $this->getDoctrine()->getRepository(Setting::class)->findBy(['status' => 1, 'slug' => 'poultry-breed', 'settingType' => 'BREED_NAME']);
                     $species = $this->getDoctrine()->getRepository(Setting::class)->getProductType($breed);
                     $entities = $this->getDoctrine()->getRepository(CompanyWiseFeedSale::class)->getCompanyWiseFeedSale('poultry', $filterBy);
                     break;
+
                 case 'company-wise-feed-sale-cattle':
                     $breed = $this->getDoctrine()->getRepository(Setting::class)->findBy(['status' => 1, 'slug' => 'cattle-breed', 'settingType' => 'BREED_NAME']);
                     $species = $this->getDoctrine()->getRepository(Setting::class)->getProductType($breed);
                     $entities = $this->getDoctrine()->getRepository(CompanyWiseFeedSale::class)->getCompanyWiseFeedSale('cattle', $filterBy);
                     break;
+
                 case 'company-wise-feed-sale-fish':
                     $breed = $this->getDoctrine()->getRepository(Setting::class)->findBy(['status' => 1, 'slug' => 'fish-breed', 'settingType' => 'BREED_NAME']);
                     $species = $this->getDoctrine()->getRepository(Setting::class)->getProductType($breed);
                     $entities = $this->getDoctrine()->getRepository(CompanyWiseFeedSale::class)->getCompanyWiseFeedSale('fish', $filterBy);
                     break;
+
                 case 'farmer-training-poultry':
                     $breed = $this->getDoctrine()->getRepository(Setting::class)->findBy(['status' => 1, 'slug' => 'poultry-breed', 'settingType' => 'BREED_NAME']);
                     $species = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('status' => 1,'settingType' => 'SPECIES_TYPE','parent' => $breed));
                     $trainingMaterials = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('status' => 1,'settingType' => 'TRAINING_MATERIAL','parent' => $breed));
                     $entities = $this->getDoctrine()->getRepository(FarmerTrainingReportDetails::class)->getFarmerTrainingReport('poultry-breed', $filterBy);
                     break;
+
                 case 'farmer-training-cattle':
                     $breed = $this->getDoctrine()->getRepository(Setting::class)->findBy(['status' => 1, 'slug' => 'cattle-breed', 'settingType' => 'BREED_NAME']);
                     $species = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('status' => 1,'settingType' => 'SPECIES_TYPE','parent' => $breed));
                     $trainingMaterials = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('status' => 1,'settingType' => 'TRAINING_MATERIAL','parent' => $breed));
                     $entities = $this->getDoctrine()->getRepository(FarmerTrainingReportDetails::class)->getFarmerTrainingReport('cattle-breed', $filterBy);
                     break;
+
                 case 'farmer-training-fish':
                     $breed = $this->getDoctrine()->getRepository(Setting::class)->findBy(['status' => 1, 'slug' => 'fish-breed', 'settingType' => 'BREED_NAME']);
                     $species = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('status' => 1,'settingType' => 'SPECIES_TYPE','parent' => $breed));
                     $trainingMaterials = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('status' => 1,'settingType' => 'TRAINING_MATERIAL','parent' => $breed));
                     $entities = $this->getDoctrine()->getRepository(FarmerTrainingReportDetails::class)->getFarmerTrainingReport('fish-breed', $filterBy);
                     break;
+
+                case 'doc-price':
+                    $entities = $this->getDoctrine()->getRepository(DailyChickPriceDetails::class)->getDocPriceReport($filterBy, $this->getUser());
+                    break;
+
                 default:
                     $entities = [];
                     break;
