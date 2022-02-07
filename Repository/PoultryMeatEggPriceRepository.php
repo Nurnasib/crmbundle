@@ -98,7 +98,7 @@ class PoultryMeatEggPriceRepository extends EntityRepository
         $qb->join('employee.userGroup', 'user_group');
 
 
-        $qb->select('AVG(e.price) AS avgPrice', 'MONTH(e.reportingDate) AS month', 'YEAR(e.reportingDate) AS year');
+        $qb->select('AVG(e.price) AS avgPrice', 'MONTH(e.reportingDate) AS month', 'YEAR(e.reportingDate) AS year', 'e.reportingDate');
         $qb->addSelect('breed_type.id AS breedTypeId', 'breed_type.name AS breedTypeName');
         $qb->addSelect('employee.userId', 'employee.name');
 
@@ -108,6 +108,8 @@ class PoultryMeatEggPriceRepository extends EntityRepository
 
         $qb->groupBy('month');
         $qb->addGroupBy('year');
+        $qb->addGroupBy('breedTypeName');
+        $qb->addGroupBy('employee.userId');
 
         $roleSplitArray = [];
         foreach ($loggedUser->getRoles() as $role) {
@@ -124,9 +126,9 @@ class PoultryMeatEggPriceRepository extends EntityRepository
         $data = [];
         foreach ($results as $result) {
             $month = $result['reportingDate']->format('m-F');
-            $data['Year-' . $result['reportingDate']->format('Y')][$result['breedTypeName']][$result['userId'] . '~' . $result['name']][$month] = $result['price'];
+            $data['Year-' . $result['reportingDate']->format('Y')][$result['breedTypeName']][$result['userId'] . '~' . $result['name']][$month] = $result['avgPrice'];
+            ksort($data['Year-' . $result['reportingDate']->format('Y')][$result['breedTypeName']][$result['userId'] . '~' . $result['name']]);
         }
-        dd($results);
         return $data;
 
 

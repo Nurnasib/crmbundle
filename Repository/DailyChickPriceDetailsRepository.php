@@ -41,14 +41,20 @@ class DailyChickPriceDetailsRepository extends EntityRepository
         $qb->join('e.feed', 'feed');
 
         $qb->select('employee.id','employee.userId', 'employee.name');
-        $qb->addSelect('e.price');
+        $qb->addSelect('AVG(e.price) AS avgPrice');
         $qb->addSelect('chick_type_parent.id AS chickTypeParentId', 'chick_type_parent.name AS chickTypeParentName');
         $qb->addSelect('feed.id AS feedId', 'feed.name AS feedName');
-        $qb->addSelect('parent.reportingDate');
+        $qb->addSelect('parent.reportingDate', 'MONTH(parent.reportingDate) AS month', 'YEAR(parent.reportingDate) AS year');
 
         $qb->where('parent.reportingDate >= :start')->setParameter('start', $start);
         $qb->andWhere('parent.reportingDate <= :end')->setParameter('end', $end);
         $qb->andWhere('user_group.slug = :userGroupSlug')->setParameter('userGroupSlug', 'employee');
+
+        $qb->groupBy('employee.userId');
+        $qb->addGroupBy('month');
+        $qb->addGroupBy('year');
+        $qb->addGroupBy('chickTypeParentName');
+        $qb->addGroupBy('feedName');
         $qb->orderBy('feed.name', 'ASC');
 
         $roleSplitArray = [];
@@ -68,9 +74,10 @@ class DailyChickPriceDetailsRepository extends EntityRepository
 
         foreach ($results as $result) {
             $month = $result['reportingDate']->format('m-F');
-            $data['Year-' . $result['reportingDate']->format('Y')][$result['chickTypeParentName']][$result['userId'] . '~' . $result['name']][$result['feedName']][$month] = $result['price'];
-        }
+            $data['Year-' . $result['reportingDate']->format('Y')][$result['chickTypeParentName']][$result['userId'] . '~' . $result['name']][$result['feedName']][$month] = $result['avgPrice'];
 
+            ksort($data['Year-' . $result['reportingDate']->format('Y')][$result['chickTypeParentName']][$result['userId'] . '~' . $result['name']][$result['feedName']]);
+        }
         return $data;
 
     }
