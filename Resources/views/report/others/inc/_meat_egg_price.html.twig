@@ -39,10 +39,10 @@
                 <tbody>
                 {% for employee, details in data %}
                     <tr>
-                        {% if loop.first %}
-                            <td rowspan="{{ details|length }}">{{ employee|split('~')[0] }}</td>
-                            <td rowspan="{{ details|length }}">{{ employee|split('~')[1] }}</td>
-                        {% endif %}
+{#                        {% if loop.first %}#}
+                            <td>{{ employee|split('~')[0] }}</td>
+                            <td>{{ employee|split('~')[1] }}</td>
+{#                        {% endif %}#}
                         {% for month in 1..12 %}
                             {% set date = '01-' ~ month ~ '-2022' %}
                             <td align="center">
