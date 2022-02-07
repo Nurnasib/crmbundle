@@ -27,6 +27,7 @@ use Terminalbd\CrmBundle\Entity\FcrDifferentCompanies;
 use Terminalbd\CrmBundle\Entity\LabService;
 use Terminalbd\CrmBundle\Entity\LayerPerformanceDetails;
 use Terminalbd\CrmBundle\Entity\NewFarmerIntroduce\FarmerIntroduceDetails;
+use Terminalbd\CrmBundle\Entity\PoultryMeatEggPrice;
 use Terminalbd\CrmBundle\Entity\Setting;
 use Terminalbd\CrmBundle\Form\SearchFilterFormType;
 use Terminalbd\CrmBundle\Repository\AntibioticFreeFarmRepository;
@@ -116,6 +117,10 @@ class OthersReportController extends AbstractController
 
                 case 'doc-price':
                     $entities = $this->getDoctrine()->getRepository(DailyChickPriceDetails::class)->getDocPriceReport($filterBy, $this->getUser());
+                    break;
+
+                case 'meat-egg-price':
+                    $entities = $this->getDoctrine()->getRepository(PoultryMeatEggPrice::class)->getMeatEggPriceReport($filterBy, $this->getUser());
                     break;
 
                 default:

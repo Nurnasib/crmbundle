@@ -11,6 +11,7 @@
 
 namespace Terminalbd\CrmBundle\Repository;
 
+use App\Entity\User;
 use Doctrine\ORM\EntityRepository;
 
 /**
@@ -82,6 +83,54 @@ class PoultryMeatEggPriceRepository extends EntityRepository
 
 
         return $qb->getQuery()->getResult();
+    }
+
+    public function getMeatEggPriceReport($filterBy, User $loggedUser)
+    {
+        $start = isset($filterBy['startDate']) ? (new \DateTime($filterBy['startDate']))->format('Y-m-d') : null;
+        $end = isset($filterBy['endDate']) ? (new \DateTime($filterBy['endDate']))->format('Y-m-d') : null;
+        $employeeId = isset($filterBy['employee']) ? $filterBy['employee']->getId() : null;
+
+
+        $qb = $this->createQueryBuilder('e');
+        $qb->join('e.breedType', 'breed_type');
+        $qb->join('e.employee', 'employee');
+        $qb->join('employee.userGroup', 'user_group');
+
+
+        $qb->select('AVG(e.price) AS avgPrice', 'MONTH(e.reportingDate) AS month', 'YEAR(e.reportingDate) AS year');
+        $qb->addSelect('breed_type.id AS breedTypeId', 'breed_type.name AS breedTypeName');
+        $qb->addSelect('employee.userId', 'employee.name');
+
+        $qb->where('e.reportingDate >= :start')->setParameter('start', $start);
+        $qb->andWhere('e.reportingDate <= :end')->setParameter('end', $end);
+        $qb->andWhere('user_group.slug = :userGroupSlug')->setParameter('userGroupSlug', 'employee');
+
+        $qb->groupBy('month');
+        $qb->addGroupBy('year');
+
+        $roleSplitArray = [];
+        foreach ($loggedUser->getRoles() as $role) {
+            $roleSplitArray = array_merge(explode('_', $role), $roleSplitArray);
+        }
+        if (!in_array('ADMIN', $roleSplitArray) && !in_array('ROLE_LINE_MANAGER', $loggedUser->getRoles())){
+            $qb->andWhere('employee.id = :employeeId')->setParameter('employeeId', $loggedUser->getId());
+        }
+        if (isset($filterBy['employee']) && $filterBy['employee'] !== null){
+            $qb->andWhere('employee.id = :employeeId')->setParameter('employeeId', $employeeId);
+        }
+
+        $results = $qb->getQuery()->getArrayResult();
+        $data = [];
+        foreach ($results as $result) {
+            $month = $result['reportingDate']->format('m-F');
+            $data['Year-' . $result['reportingDate']->format('Y')][$result['breedTypeName']][$result['userId'] . '~' . $result['name']][$month] = $result['price'];
+        }
+        dd($results);
+        return $data;
+
+
+
     }
 
 }

@@ -26,7 +26,7 @@ function dailyChickPriceDetailDataInsertUsingAjax(element) {
     }
 
     $.ajax({
-        url    : Routing.generate('crm_daily_chick_price_detail_update',{'id':daily_chick_price_details_id}),
+        url    : Routing.generate('day_old_chick_price_update',{'id':daily_chick_price_details_id}),
         type   : 'post',
         data   : {
             'price':thisElementValue

@@ -24,7 +24,7 @@ use Terminalbd\CrmBundle\Entity\Setting;
 
 
 /**
- * @Route("/crm/daily/chick/price")
+ * @Route("/crm/day-old-chick-price", name="day_old_chick_price")
  * @Security("is_granted('ROLE_CRM_SALES_MARKETING_USER') or is_granted('ROLE_DEVELOPER')")
  */
 class DailyChickPriceController extends AbstractController
@@ -42,7 +42,7 @@ class DailyChickPriceController extends AbstractController
 
     /**
      * @throws \Exception
-     * @Route("/day-old-chick-price", methods={"GET", "POST"}, name="day_old_chick_price")
+     * @Route("/new", methods={"GET", "POST"}, name="_new")
      */
     public function new()
     {
@@ -100,7 +100,7 @@ class DailyChickPriceController extends AbstractController
 
     /**
      * Displays a form to edit an existing ChickLifeCycle entity.
-     * @Route("/details/{id}/edit", methods={"POST"}, name="crm_daily_chick_price_detail_update", options={"expose"=true})
+     * @Route("/details/{id}/edit", methods={"POST"}, name="_update", options={"expose"=true})
      * @param Request $request
      * @param DailyChickPriceDetails $entity
      * @return Response

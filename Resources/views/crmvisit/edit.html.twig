@@ -36,11 +36,11 @@
                             </div>
                         {% endif %}
 
-                        {% if 'ROLE_CRM_SALES_MARKETING_USER' in app.user.roles %}
+{#                        {% if 'ROLE_CRM_SALES_MARKETING_USER' in app.user.roles %}
                             <div class="btn-group btn-group-sm" role="group" aria-label="Button group with nested dropdown">
                                 <a style="margin-right: 5px" class="btn btn-primary btn-sm" data-action='{{ path('day_old_chick_price',{'location':entity.location.id}) }}' href='?process=postView_daily_chick_price_report&report={{ '' }}&check=show#modal' id='postView_daily_chick_price_report' >{{ 'Daily Chick Price Report' }}</a>
                             </div>
-                        {% endif %}
+                        {% endif %}#}
                         <div class="btn-group btn-group-sm" role="group" aria-label="Button group with nested dropdown">
                             <a style="margin-right: 5px" class="btn btn-primary btn-sm" data-action='{{ path('crm_expense_new',{'crmVisit':entity.id, 'location':entity.location.id}) }}' href='?process=postView_crm_expense_new&report={{ '' }}&check=show#modal' id='postView_crm_expense_new' >{{ 'Expense' }}</a>
 

@@ -58,7 +58,7 @@
         <li><a class="dropdown-item" href="{{ path('tilapia_fry_sales_add') }}"><i class="feather icon-activity"></i>{{ 'Tilapia Fry Sales'|trans }}</a></li>
     {% endif %}
     {% if is_granted('ROLE_CRM_SALES_MARKETING_USER') or is_granted('ROLE_DEVELOPER') %}
-        <li><a class="dropdown-item" href="{{ path('day_old_chick_price') }}"><i class="feather icon-credit-card"></i>{{ 'DOC Price'|trans }}</a></li>
+        <li><a class="dropdown-item" href="{{ path('day_old_chick_price_new') }}"><i class="feather icon-credit-card"></i>{{ 'DOC Price'|trans }}</a></li>
         <li><a class="dropdown-item" href="{{ path('meat_egg_price_new') }}"><i class="feather icon-credit-card"></i>{{ 'Meat and Egg Price'|trans }}</a></li>
     {% endif %}
     {% if is_granted('ROLE_CRM_POULTRY_USER') or is_granted('ROLE_CRM_CATTLE_USER') or is_granted('ROLE_CRM_AQUA_USER') or is_granted('ROLE_CRM_SALES_MARKETING_USER') or is_granted('ROLE_DEVELOPER') %}
