@@ -53,8 +53,8 @@ class DailyChickPriceDetailsRepository extends EntityRepository
         $qb->groupBy('employee.userId');
         $qb->addGroupBy('month');
         $qb->addGroupBy('year');
-        $qb->addGroupBy('chickTypeParentName');
-        $qb->addGroupBy('feedName');
+        $qb->addGroupBy('chickTypeParentId');
+        $qb->addGroupBy('feedId');
         $qb->orderBy('feed.name', 'ASC');
 
         $roleSplitArray = [];

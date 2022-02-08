@@ -43,14 +43,18 @@ use Terminalbd\CrmBundle\Form\DairyLifeCycleDetailsFormType;
 
 /**
  * @Route("/crm/fish/company/species")
+ * @Security("is_granted('ROLE_CRM_AQUA_ADMIN') or is_granted('ROLE_CRM_AQUA_USER') or is_granted('ROLE_DEVELOPER')")
  */
 class FishCompanyAndSpeciesWiseAverageFcrController extends AbstractController
 {
 
     /**
+     * @param Request $request
      * @param CrmCustomer $crmCustomer
+     * @param Setting $report
+     * @return Response
+     * @throws \Exception
      * @ParamConverter("crmCustomer", class="Terminalbd\CrmBundle\Entity\CrmCustomer")
-     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      * @Route("/customer/{id}/report/{report}/new/modal", methods={"GET", "POST"}, name="fish_company_species_wise_fcr_modal", options={"expose"=true})
      */
     public function newModal(Request $request, CrmCustomer $crmCustomer, Setting $report): Response
@@ -62,7 +66,6 @@ class FishCompanyAndSpeciesWiseAverageFcrController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted()){
             $data = $request->request->get('company_species_wise_fcr_form');
-//            dd($data);
             $reportingDate = isset($data['reporting_date'])? $data['reporting_date'] : date('Y-m-d',strtotime('now'));
             $date=new \DateTime($reportingDate);
             if(isset($data['feed'])&&$data['feed']!=''){
@@ -131,8 +134,11 @@ class FishCompanyAndSpeciesWiseAverageFcrController extends AbstractController
     }
 
     /**
-     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      * @Route("/{beforeAfter}/{feedType}/details", methods={"GET", "POST"}, name="fish_company_species_wise_fcr_details", options={"expose"=true})
+     * @param Request $request
+     * @param Setting $feedType
+     * @param $beforeAfter
+     * @return Response
      */
     public function companySpeciesWiseFcrDetails(Request $request, Setting $feedType, $beforeAfter): Response
     {
@@ -173,7 +179,9 @@ class FishCompanyAndSpeciesWiseAverageFcrController extends AbstractController
 
     /**
      * @Route("/details/{id}/update", methods={"POST"}, name="fish_company_species_wise_fcr_details_data_update", options={"expose"=true})
-     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @param Request $request
+     * @param FishCompanyAndSpeciesWiseAverageFcrDetails $entity
+     * @return Response
      */
 
     public function editCompanySpeciesWiseFcrDetails(Request $request, FishCompanyAndSpeciesWiseAverageFcrDetails $entity): Response
@@ -205,10 +213,10 @@ class FishCompanyAndSpeciesWiseAverageFcrController extends AbstractController
 
     /**
      * @param FishCompanyAndSpeciesWiseAverageFcr $companySpeciesWiseFcr
+     * @return Response
      * @Route("{id}/refresh", methods={"GET"}, name="crm_fish_company_species_wise_fcr_refresh", options={"expose"=true})
-     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      */
-    public function fishCompanySpeciesWiseFcrReportRefresh(Request $request, FishCompanyAndSpeciesWiseAverageFcr $companySpeciesWiseFcr)
+    public function fishCompanySpeciesWiseFcrReportRefresh(FishCompanyAndSpeciesWiseAverageFcr $companySpeciesWiseFcr)
     {
         $reportingDate = $companySpeciesWiseFcr->getReportingMonth()->format('Y-m-d');
         $mainCultureSpecies = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('status'=>1,'settingType'=>'SPECIES_NAME','parent'=>$companySpeciesWiseFcr->getFeedType()),['id' => 'ASC']);
@@ -224,8 +232,11 @@ class FishCompanyAndSpeciesWiseAverageFcrController extends AbstractController
     }
 
     /**
-     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      * @Route("/report/{report}/after/new/modal", methods={"GET", "POST"}, name="fish_company_species_wise_fcr_after_modal", options={"expose"=true})
+     * @param Request $request
+     * @param Setting $report
+     * @return Response
+     * @throws \Exception
      */
     public function newAfterModal(Request $request, Setting $report): Response
     {
@@ -238,7 +249,6 @@ class FishCompanyAndSpeciesWiseAverageFcrController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted()){
             $data = $request->request->get('company_species_wise_fcr_after_form');
-//            dd($data);
             $reportingDate = isset($data['reporting_date'])? $data['reporting_date'] : date('Y-m-d',strtotime('now'));
             $date=new \DateTime($reportingDate);
             if(isset($data['feed'])){
@@ -308,7 +318,8 @@ class FishCompanyAndSpeciesWiseAverageFcrController extends AbstractController
     /**
      * Deletes a Fcr entity.
      * @Route("/details/{id}/delete", methods={"POST"}, name="fish_life_cycle_detail_delete", options={"expose"=true})
-     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @param $id
+     * @return Response
      */
     public function deleteDetails($id): Response
     {
@@ -324,7 +335,7 @@ class FishCompanyAndSpeciesWiseAverageFcrController extends AbstractController
     /**
      * @param $report
      * @Route("/life/cycle/{report}", methods={"GET"}, name="crm_fish_report")
-     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_AGM')")
+     * @return Response
      */
     public function indexReport( string $report): Response
     {
@@ -336,7 +347,7 @@ class FishCompanyAndSpeciesWiseAverageFcrController extends AbstractController
     /**
      * @param FishLifeCycle $cattleLifeCycle
      * @Route("/life/cycle/{id}/report", methods={"GET"}, name="crm_fish_report_detail")
-     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_AGM')")
+     * @return Response
      */
     public function reportDetails( FishLifeCycle $cattleLifeCycle): Response
     {

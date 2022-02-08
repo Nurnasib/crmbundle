@@ -108,7 +108,7 @@ class PoultryMeatEggPriceRepository extends EntityRepository
 
         $qb->groupBy('month');
         $qb->addGroupBy('year');
-        $qb->addGroupBy('breedTypeName');
+        $qb->addGroupBy('breedTypeId');
         $qb->addGroupBy('employee.userId');
 
         $roleSplitArray = [];

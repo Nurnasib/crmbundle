@@ -51,6 +51,67 @@ WHERE fcrDetails.quantity>0 and fcr.employee_id = :employee_id and fcr.feed_type
         return $returnArray;
     }
 
+    public function getAverageFcrReport($fcrOfFeed, $filterBy, $loggedUser)
+    {
+        $start = isset($filterBy['startDate']) ? (new \DateTime($filterBy['startDate']))->format('Y-m-d') : null;
+        $end = isset($filterBy['endDate']) ? (new \DateTime($filterBy['endDate']))->format('Y-m-d') : null;
+        $employeeId = isset($filterBy['employeeId']) ?: null;
+
+        $qb = $this->createQueryBuilder('e');
+        $qb->join('e.fishCompanyAndSpeciesWiseAverageFcr', 'parent');
+        $qb->join('parent.employee', 'employee');
+        $qb->join('parent.feedType', 'feed_type');
+        $qb->join('parent.feed', 'feed');
+        $qb->join('employee.userGroup', 'user_group');
+        $qb->leftJoin('employee.designation', 'designation');
+        $qb->join('e.speciesName', 'species_name');
+
+        $qb->select('AVG(e.quantity) AS avgQuantity','e.quantity');
+        $qb->addSelect('employee.userId', 'employee.name');
+        $qb->addSelect( 'designation.name AS designationName');
+        $qb->addSelect('species_name.id AS speciesId', 'species_name.name AS speciesName');
+        $qb->addSelect('feed.id AS feedId', 'feed.name AS feedName');
+        $qb->addSelect('feed_type.id AS feedTypeId', 'feed_type.name AS feedTypeName');
+        $qb->addSelect('MONTH(parent.reportingMonth) AS month', 'YEAR(parent.reportingMonth) AS year', 'parent.reportingMonth');
+
+
+        $qb->where('parent.reportingMonth >= :start')->setParameter('start', $start);
+        $qb->andWhere('parent.reportingMonth <= :end')->setParameter('end', $end);
+        $qb->andWhere('user_group.slug = :userGroupSlug')->setParameter('userGroupSlug', 'employee');
+        $qb->andWhere('parent.fcrOfFeed = :fcrOfFeed')->setParameter('fcrOfFeed', $fcrOfFeed);
+
+        $qb->groupBy('species_name.id');
+        $qb->addGroupBy('feedId');
+        $qb->addGroupBy('month');
+        $qb->addGroupBy('year');
+
+        $rolesString = implode($loggedUser->getRoles(), '_');
+
+        if (!str_contains($rolesString, 'ADMIN') && !in_array('ROLE_LINE_MANAGER', $loggedUser->getRoles())){
+            $qb->andWhere('employee.id = :employeeId')->setParameter('employeeId', $loggedUser->getId());
+        }
+        if (isset($filterBy['employee']) && $filterBy['employee'] !== null){
+            $qb->andWhere('employee.id = :employeeId')->setParameter('employeeId', $employeeId);
+        }
+
+        $results = $qb->getQuery()->getArrayResult();
+
+        $data = [];
+        foreach ($results as $result) {
+            $month = $result['reportingMonth']->format('m-F');
+            $data['Year-' . $result['reportingMonth']->format('Y')][$month][$result['userId']]['employee'] = [
+                'userId' => $result['userId'],
+                'name' => $result['name'],
+                'designation' => $result['designationName']
+            ];
+            $data['Year-' . $result['reportingMonth']->format('Y')][$month][$result['userId']]['data'][$result['feedName']][$result['feedTypeName']][$result['speciesId']] = $result;
+            ksort($data['Year-' . $result['reportingMonth']->format('Y')]);
+        }
+        return $data;
+
+
+    }
+
 
 
 }

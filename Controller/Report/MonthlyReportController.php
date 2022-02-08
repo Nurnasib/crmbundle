@@ -12,8 +12,10 @@ use Terminalbd\CrmBundle\Entity\AntibioticFreeFarm;
 use Terminalbd\CrmBundle\Entity\CostBenefitAnalysisForLessCostingFarm;
 use Terminalbd\CrmBundle\Entity\DiseaseMapping;
 use Terminalbd\CrmBundle\Entity\FcrDetails;
+use Terminalbd\CrmBundle\Entity\FishCompanyAndSpeciesWiseAverageFcrDetails;
 use Terminalbd\CrmBundle\Entity\LayerPerformanceDetails;
 use Terminalbd\CrmBundle\Entity\NewFarmerIntroduce\FarmerIntroduceDetails;
+use Terminalbd\CrmBundle\Entity\Setting;
 use Terminalbd\CrmBundle\Form\SearchFilterFormType;
 
 /**
@@ -33,6 +35,7 @@ class MonthlyReportController extends AbstractController
     {
         $filterBy = [];
         $entities = [];
+        $species = [];
         $employee = null;
         $report = null;
         $form = $this->createForm(SearchFilterFormType::class, null, ['loggedUser' => $this->getUser()]);
@@ -76,6 +79,29 @@ class MonthlyReportController extends AbstractController
                 case 'farmer-touch-report-cattle':
                     $entities = $this->getDoctrine()->getRepository(FarmerIntroduceDetails::class)->getFarmerIntroduceReportByEmployeeDate($report, $filterBy);
                     break;
+
+                case 'company-species-wise-average-fcr-before':
+                    $speciesObj = $this->getDoctrine()->getRepository(Setting::class)->findBy(['settingType' => 'SPECIES_NAME', 'status' => true]);
+                    foreach ($speciesObj as $item) {
+                        if ($item->getParent()){
+                            $species[$item->getParent()->getName()][] = $item;
+                        }
+                    }
+                    $entities = $this->getDoctrine()->getRepository(FishCompanyAndSpeciesWiseAverageFcrDetails::class)->getAverageFcrReport('BEFORE', $filterBy, $this->getUser());
+
+                    break;
+
+                case 'company-species-wise-average-fcr-after':
+                    $speciesObj = $this->getDoctrine()->getRepository(Setting::class)->findBy(['settingType' => 'SPECIES_NAME', 'status' => true]);
+                    foreach ($speciesObj as $item) {
+                        if ($item->getParent()){
+                            $species[$item->getParent()->getName()][] = $item;
+                        }
+                    }
+                    $entities = $this->getDoctrine()->getRepository(FishCompanyAndSpeciesWiseAverageFcrDetails::class)->getAverageFcrReport('AFTER', $filterBy, $this->getUser());
+
+                    break;
+
                 default:
                     $entities = [];
                     break;
@@ -86,10 +112,11 @@ class MonthlyReportController extends AbstractController
         if(isset($isExcel) && !empty($isExcel)){
             $html = $this->renderView('@TerminalbdCrm/report/monthlyReport/excel.html.twig',[
                 'entities' => $entities,
-                'filterBy'=> $filterBy,
-                'lifeCycleSlug'=> $report->getSlug(),
-                'employee'=> $employee,
-                'report'=> $report,
+                'filterBy' => $filterBy,
+                'lifeCycleSlug' => $report->getSlug(),
+                'employee' => $employee,
+                'report' => $report,
+                'species' => $species,
             ]);
 
             $fileName = $report->getSlug().'_'.time().".xls";
@@ -106,10 +133,11 @@ class MonthlyReportController extends AbstractController
         return $this->render('@TerminalbdCrm/report/monthlyReport/index.html.twig',[
             'form' => $form->createView(),
             'entities' => $entities,
-            'filterBy'=> $filterBy,
-            'lifeCycleSlug'=> $report ? $report->getSlug() : null,
-            'employee'=> $employee,
-            'report'=> $report,
+            'filterBy' => $filterBy,
+            'lifeCycleSlug' => $report ? $report->getSlug() : null,
+            'employee' => $employee,
+            'report' => $report,
+            'species' => $species,
         ]);
     }
 
