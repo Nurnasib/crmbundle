@@ -99,13 +99,14 @@ WHERE fcrDetails.quantity>0 and fcr.employee_id = :employee_id and fcr.feed_type
         $data = [];
         foreach ($results as $result) {
             $month = $result['reportingMonth']->format('m-F');
-            $data['Year-' . $result['reportingMonth']->format('Y')][$month][$result['userId']]['employee'] = [
+            $data[$result['reportingMonth']->format('Y')][$month][$result['userId']]['employee'] = [
                 'userId' => $result['userId'],
                 'name' => $result['name'],
                 'designation' => $result['designationName']
             ];
-            $data['Year-' . $result['reportingMonth']->format('Y')][$month][$result['userId']]['data'][$result['feedName']][$result['feedTypeName']][$result['speciesId']] = $result;
-            ksort($data['Year-' . $result['reportingMonth']->format('Y')]);
+            $data[$result['reportingMonth']->format('Y')][$month][$result['userId']]['data'][$result['feedName']][$result['feedTypeName']][$result['speciesId']] = $result;
+
+            ksort($data);
         }
         return $data;
 
