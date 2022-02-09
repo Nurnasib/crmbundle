@@ -99,7 +99,7 @@ class CrmVisitController extends AbstractController
             return $this->redirectToRoute('crm_visit');
         }
 
-        $serviceMode= $this->getUser()->getServiceMode()->getSlug();
+        $serviceMode= $this->getUser()->getServiceMode() ? $this->getUser()->getServiceMode()->getSlug() : null;
         $serviceModeExplode=explode('-', $serviceMode);
         $lastElement = end($serviceModeExplode);
 

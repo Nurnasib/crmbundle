@@ -370,7 +370,7 @@ class SearchFilterFormType extends AbstractType
                     'Farmer Survey' => 'farmer-survey-cattle',
                     'Company Wise Feed Sale' => 'company-wise-feed-sale-cattle',
                     'Farmer Training' => 'farmer-training-cattle',
-                    ]
+                ]
                 ]
             );
         }
@@ -381,16 +381,18 @@ class SearchFilterFormType extends AbstractType
                     'Farmer Survey' => 'farmer-survey-fish',
                     'Company Wise Feed Sale' => 'company-wise-feed-sale-fish',
                     'Farmer Training' => 'farmer-training-fish',
-                    ]
+                ]
                 ]
             );
         }
         if (in_array('ROLE_CRM_SALES_MARKETING_USER', $user->getRoles()) || in_array('ROLE_CRM_SALES_MARKETING_ADMIN', $user->getRoles())) {
             $otherReport = array_merge(
                 $otherReport,
-                [
-                    'DOC Price' => 'doc-price',
-                    'Meat & Egg Price' => 'meat-egg-price'
+                ['Sales & Marketing' =>
+                    [
+                        'DOC Price' => 'doc-price',
+                        'Meat & Egg Price' => 'meat-egg-price'
+                    ]
                 ]
             );
         }

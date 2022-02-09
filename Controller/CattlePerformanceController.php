@@ -37,17 +37,19 @@ use Terminalbd\CrmBundle\Form\DairyLifeCycleDetailsFormType;
 
 /**
  * @Route("/crm/cattle/performance")
+ * @Security("is_granted('ROLE_CRM_CATTLE_ADMIN') or is_granted('ROLE_CRM_CATTLE_USER') or is_granted('ROLE_DEVELOPER')")
  */
 class CattlePerformanceController extends AbstractController
 {
 
     /**
      * @param CrmCustomer $crmCustomer
+     * @param Setting $report
+     * @return Response
      * @ParamConverter("crmCustomer", class="Terminalbd\CrmBundle\Entity\CrmCustomer")
-     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      * @Route("/customer/{id}/report/{report}/new/modal", methods={"GET", "POST"}, name="cattle_performance_new_modal", options={"expose"=true})
      */
-    public function newModal(Request $request, CrmCustomer $crmCustomer, Setting $report): Response
+    public function newModal(CrmCustomer $crmCustomer, Setting $report): Response
     {
         $breedTypes = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('status'=>1,'settingType'=>'BREED_TYPE','parent'=>$report->getParent()));
         $feedTypes = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('status'=>1,'settingType'=>'FEED_TYPE','parent'=>$report->getParent()));
@@ -78,7 +80,10 @@ class CattlePerformanceController extends AbstractController
     /**
      * Displays a form to edit an existing ChickLifeCycle entity.
      * @Route("/{id}/fattening/details/add", methods={"POST"}, name="crm_fattening_performance_detail_report_add", options={"expose"=true})
-     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @param Request $request
+     * @param Setting $report
+     * @return Response
+     * @throws \Exception
      */
 
     public function addFatteningPerformanceDetailsReport(Request $request, Setting $report): Response
@@ -153,7 +158,10 @@ class CattlePerformanceController extends AbstractController
     /**
      * Displays a form to edit an existing ChickLifeCycle entity.
      * @Route("/{id}/dairy/details/add", methods={"POST"}, name="crm_dairy_performance_detail_report_add", options={"expose"=true})
-     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @param Request $request
+     * @param Setting $report
+     * @return Response
+     * @throws \Exception
      */
 
     public function addDairyPerformanceDetailsReport(Request $request, Setting $report): Response
@@ -230,7 +238,7 @@ class CattlePerformanceController extends AbstractController
     /**
      * @param Setting $report
      * @Route("/detail/{id}/refresh", methods={"GET"}, name="crm_cattle_performance_detail_refresh", options={"expose"=true})
-     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @return Response
      */
     public function cattleLifeCycleReportRefresh(Setting $report): Response
     {
@@ -248,7 +256,6 @@ class CattlePerformanceController extends AbstractController
     /**
      * Deletes a Fcr entity.
      * @Route("/details/{id}/delete", methods={"POST"}, name="cattle_performance_detail_delete")
-     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      */
     public function deleteDetails($id): Response
     {

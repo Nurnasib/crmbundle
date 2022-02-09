@@ -48,6 +48,9 @@
     {% elseif lifeCycleSlug in ['company-species-wise-average-fcr-before','company-species-wise-average-fcr-after'] %}
         {% include '@TerminalbdCrm/report/monthlyReport/inc/fish/_company_species_average_fcr.html.twig' %}
 
+    {% elseif lifeCycleSlug in ['fattening-performance-report','dairy-performance-report'] %}
+        {% include '@TerminalbdCrm/report/monthlyReport/inc/cattle/_performance.html.twig'%}
+
     {% endif %}
 
 {% endif %}
