@@ -28,7 +28,7 @@ use Terminalbd\CrmBundle\Repository\CrmCustomerRepository;
 
 /**
  * @Route("/crm/customer")
- * @Security("is_granted('ROLE_CRM_POULTRY_USER') or is_granted('ROLE_CRM_CATTLE_USER') or is_granted('ROLE_CRM_AQUA_USER') or is_granted('ROLE_CRM_SALES_MARKETING_USER') or is_granted('ROLE_DEVELOPER')")
+ * @Security("is_granted('ROLE_CRM_POULTRY_USER') or is_granted('ROLE_CRM_CATTLE_USER') or is_granted('ROLE_CRM_AQUA_USER') or is_granted('ROLE_CRM_SALES_MARKETING_USER') or is_granted('ROLE_CRM_POULTRY_ADMIN') or is_granted('ROLE_CRM_CATTLE_ADMIN') or is_granted('ROLE_CRM_AQUA_ADMIN') or is_granted('ROLE_CRM_SALES_MARKETING_ADMIN') or is_granted('ROLE_DEVELOPER')")
  */
 
 class CrmCustomerController extends AbstractController
@@ -38,7 +38,7 @@ class CrmCustomerController extends AbstractController
      */
     public function index()
     {
-        $entities=$this->getDoctrine()->getRepository(CrmCustomer::class)->findAll();
+        $entities=$this->getDoctrine()->getRepository(CrmCustomer::class)->getLocationWise($this->getUser(), 'farmer');
         return $this->render('@TerminalbdCrm/crmcustomer/index.html.twig', [
             'entities' =>$entities
         ]);
@@ -79,6 +79,8 @@ class CrmCustomerController extends AbstractController
      * Displays a form to edit an existing Post entity.
      *
      * @Route("/{id}/edit", methods={"GET", "POST"}, name="crm_customer_edit")
+     * @Security("is_granted('ROLE_CRM_POULTRY_ADMIN') or is_granted('ROLE_CRM_CATTLE_ADMIN') or is_granted('ROLE_CRM_AQUA_ADMIN') or is_granted('ROLE_CRM_SALES_MARKETING_ADMIN') or is_granted('ROLE_DEVELOPER')")
+
      * @param Request $request
      * @param CrmCustomer $entity
      * @return Response
@@ -249,6 +251,7 @@ class CrmCustomerController extends AbstractController
     /**
      * Deletes a CrmCustomer entity.
      * @Route("/{id}/delete", methods={"GET"}, name="customer_delete")
+     * @Security("is_granted('ROLE_CRM_POULTRY_ADMIN') or is_granted('ROLE_CRM_CATTLE_ADMIN') or is_granted('ROLE_CRM_AQUA_ADMIN') or is_granted('ROLE_CRM_SALES_MARKETING_ADMIN') or is_granted('ROLE_DEVELOPER')")
      * @param $id
      * @return Response
      */

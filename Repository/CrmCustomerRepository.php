@@ -28,19 +28,25 @@ class CrmCustomerRepository extends EntityRepository
 
     public function getLocationWise(User $user,$pram)
     {
+        $rolesString = implode($user->getRoles(), '_');
 
-        $arrs = array();
+        $locationsId = array();
         foreach ($user->getUpozila() as $location){
-            $arrs[] = $location->getId();
+            $locationsId[] = $location->getId();
         }
         $qb = $this->createQueryBuilder('e');
+
         $qb->join('e.location','location');
         $qb->join('e.customerGroup','s');
-        $qb->select('e.id as id','e.name as name','e.address as address','e.mobile as mobile');
+        $qb->leftJoin('e.agent','agent');
+
+        $qb->select('e.id as id','e.name as name','e.address as address','e.mobile as mobile', 'agent.name AS agentName', 'location.name AS locationName');
+
         $qb->where('s.slug = :slug')->setParameter('slug',$pram);
-        $qb->andWhere('location.id IN (:upozils)')->setParameter('upozils',$arrs);
-        $result = $qb->getQuery()->getArrayResult();
-        return $result;
+        if (!str_contains($rolesString, 'ADMIN')){
+            $qb->andWhere('location.id IN (:upozilas)')->setParameter('upozilas',$locationsId);
+        }
+        return $qb->getQuery()->getArrayResult();
 
     }
 

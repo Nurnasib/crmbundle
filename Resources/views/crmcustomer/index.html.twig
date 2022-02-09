@@ -38,11 +38,10 @@
                             <th scope="col">Name</th>
                             <th scope="col">Mobile</th>
                             <th scope="col">Address</th>
-                            <th scope="col">Custom Group</th>
                             <th scope="col">Agent</th>
                             <th scope="col">Location</th>
 
-                            <th scope="col text-center"><i class="feather icon-KPI Setup"></i></th>
+                            <th scope="col" class="text-center" width="150"><i class="feather icon-settings"></i></th>
                         </tr>
                         </thead>
                         <tbody>
@@ -52,12 +51,15 @@
                                 <td>{{ entity.name }}</td>
                                 <td>{{ entity.mobile }}</td>
                                 <td>{{ entity.address }}</td>
-                                <td>{{ entity.customerGroup.name }}</td>
-                                <td>{% if entity.agent is not empty %}{{ entity.agent.name }}{% endif %}</td>
-                                <td>{% if  entity.location is not empty %}{{ entity.location.name }}{% endif %}</td>
+                                <td>{{ entity.agentName }}</td>
+                                <td>{{ entity.locationName }}</td>
                                 <td>
-                                    <a class="btn btn-mini yellow-bg white-font" href="{{ path('crm_customer_edit',{'id':entity.id}) }}"><i class="feather icon-edit"></i> Edit</a>
-                                    <a class="btn  btn-transparent btn-mini red-font remove" href="javascript:" data-action="{{ path('customer_delete',{'id':entity.id}) }}"><i class="fa fa-remove"></i></a>
+                                    {% if 'ADMIN' in app.user.roles|join('_') %}
+                                        <div class="btn-group">
+                                            <a class="btn btn-mini yellow-bg white-font" href="{{ path('crm_customer_edit',{'id':entity.id}) }}"><i class="feather icon-edit"></i> Edit</a>
+                                            <a class="btn  btn-transparent btn-mini red-font remove" href="javascript:" data-action="{{ path('customer_delete',{'id':entity.id}) }}"><i class="fa fa-remove"></i></a>
+                                        </div>
+                                    {% endif %}
                                 </td>
 
                             </tr>
