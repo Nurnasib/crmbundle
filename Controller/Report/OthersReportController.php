@@ -123,6 +123,12 @@ class OthersReportController extends AbstractController
                     $entities = $this->getDoctrine()->getRepository(PoultryMeatEggPrice::class)->getMeatEggPriceReport($filterBy, $this->getUser());
                     break;
 
+                case 'complain-poultry':
+                    dd($filterBy);
+                    $entities = [];
+
+                    break;
+
                 default:
                     $entities = [];
                     break;

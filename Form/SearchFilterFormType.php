@@ -354,11 +354,12 @@ class SearchFilterFormType extends AbstractType
             $otherReport = array_merge(
                 $otherReport,
                 ['Poultry' => [
-                    'Farmer Survey' => 'farmer-survey-poultry',
-                    'Lab Service' => 'lab-service-poultry',
-                    'FCR Different Companies' => 'fcr-different-companies-poultry',
                     'Company Wise Feed Sale' => 'company-wise-feed-sale-poultry',
+                    'Complain' => 'complain-poultry',
+                    'Farmer Survey' => 'farmer-survey-poultry',
                     'Farmer Training' => 'farmer-training-poultry',
+                    'FCR Different Companies' => 'fcr-different-companies-poultry',
+                    'Lab Service' => 'lab-service-poultry',
                     ]
                 ]
             );
@@ -367,9 +368,11 @@ class SearchFilterFormType extends AbstractType
             $otherReport = array_merge(
                 $otherReport,
                 ['Cattle' => [
-                    'Farmer Survey' => 'farmer-survey-cattle',
+                    'Complain' => 'complain-cattle',
                     'Company Wise Feed Sale' => 'company-wise-feed-sale-cattle',
+                    'Farmer Survey' => 'farmer-survey-cattle',
                     'Farmer Training' => 'farmer-training-cattle',
+
                 ]
                 ]
             );
@@ -378,8 +381,8 @@ class SearchFilterFormType extends AbstractType
             $otherReport = array_merge(
                 $otherReport,
                 ['Fish' => [
-                    'Farmer Survey' => 'farmer-survey-fish',
                     'Company Wise Feed Sale' => 'company-wise-feed-sale-fish',
+                    'Farmer Survey' => 'farmer-survey-fish',
                     'Farmer Training' => 'farmer-training-fish',
                 ]
                 ]

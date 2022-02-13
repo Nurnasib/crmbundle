@@ -284,7 +284,7 @@ class CrmVisitDetails
     }
 
     /**
-     * @return Agent
+     * @return Agent $agent
      */
     public function getAgent()
     {
@@ -292,7 +292,7 @@ class CrmVisitDetails
     }
 
     /**
-     * @param Agent $agent
+     * @param $agent
      */
     public function setAgent($agent)
     {

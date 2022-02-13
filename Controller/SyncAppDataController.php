@@ -257,6 +257,9 @@ VALUES (:crm_visit_id, :farmCapacity, :updated, :comments, :created, :customer_i
                 $createdAt = new \DateTime($visitDetail['created']);
                 $updatedAt = new \DateTime($visitDetail['updated']);
 
+                if ($visitDetail['agent_id'] == 0){
+                    $visitDetail['agent_id'] = NULL;
+                }
                 $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
                 $stmt->bindValue('crm_visit_id', $findVisit->getId());
                 $stmt->bindValue('farmCapacity', $visitDetail['farmCapacity']);
@@ -551,7 +554,7 @@ VALUES (:report_id, :report_parent_parent_id, :agent_id, :customer_id, :employee
 
             $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
             $stmt->bindValue('report_id', $report['report_id']);
-            $stmt->bindValue('agent_id', $report['agent_id']);
+            $stmt->bindValue('agent_id', $report['agent_id'] !== 0 ?: NULL);
             $stmt->bindValue('customer_id', $report['customer_id']);
             $stmt->bindValue('employee_id', $report['employee_id']);
             $stmt->bindValue('hatchery_id', $report['hatchery_id']);
@@ -1168,10 +1171,10 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
     private function processFarmerIntroduce($farmers, Api $batch)
     {
         foreach ($farmers as $farmer) {
-            $farmer = $this->getDoctrine()->getRepository(CrmCustomer::class)->find($farmer['customer_id']);
-            $findFarmer = $this->getDoctrine()->getRepository(FarmerIntroduceDetails::class)->findBy(['customer' => $farmer]);
+            $findFarmer = $this->getDoctrine()->getRepository(CrmCustomer::class)->find($farmer['customer_id']);
+            $findIntroFarmer = $this->getDoctrine()->getRepository(FarmerIntroduceDetails::class)->findOneBy(['customer' => $findFarmer]);
 
-            if (!$findFarmer && $farmer['feed_id'] == 1){
+            if (!$findIntroFarmer && $farmer['feed_id'] == 1){
                 $updateFarmer = "UPDATE `crm_customers` SET `updated`= :updated,`agent_id`= :agent_id WHERE id = :id";
                 $updateFarmerStmt = $this->getDoctrine()->getConnection()->prepare($updateFarmer);
                 $updateFarmerStmt->bindValue('agent_id', $farmer['agent_id']);
