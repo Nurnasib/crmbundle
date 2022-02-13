@@ -436,7 +436,7 @@ VALUES (:report_id, :employee_id, :agent_id, :customer_id, :hatchery_id, :breed_
                 $stmt->bindValue('weight', $frcDetail['weight']);
                 $stmt->bindValue('feed_consumption_total_kg', $frcDetail['feed_consumption_total_kg']);
                 $stmt->bindValue('feed_consumption_per_bird', $frcDetail['feed_consumption_per_bird']);
-                $stmt->bindValue('feed_consumption_standard', $frcDetail['feed_consumption_standard']);
+                $stmt->bindValue('feed_consumption_standard', $frcDetail['feed_consumption_standard'] !== null ?: 0);
                 $stmt->bindValue('fcr_without_mortality', $frcDetail['fcr_without_mortality']);
                 $stmt->bindValue('fcr_with_mortality', $frcDetail['fcr_with_mortality']);
                 $stmt->bindValue('pro_date', $proDate->format('Y-m-d'));
