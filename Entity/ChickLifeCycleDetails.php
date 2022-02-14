@@ -229,9 +229,10 @@ class ChickLifeCycleDetails
      */
     public function getVisitingWeek()
     {
-        $locale = 'en_US';
+        return $this->visitingWeek;
+/*        $locale = 'en_US';
         $nf = new NumberFormatter($locale, NumberFormatter::ORDINAL);
-        return $nf->format($this->visitingWeek).' week';
+        return $nf->format($this->visitingWeek).' week';*/
     }
 
     /**

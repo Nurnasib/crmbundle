@@ -47,7 +47,7 @@
                                 <th scope="col" colspan="2">Weight</th>
                                 <th scope="col" colspan="3">Feed Consumption</th>
                                 <th scope="col" colspan="2">FCR</th>
-                                <th style="width: 70px" scope="col" rowspan="2">Hatchery</th>
+                                <th style="width: 70px" scope="col" rowspan="2">Hatch.</th>
                                 <th style="width: 70px" scope="col" rowspan="2">Breed</th>
                                 <th style="width: 70px" scope="col" rowspan="2">Feed</th>
                                 <th style="width: 150px" scope="col" rowspan="2">FeedType</th>
@@ -61,12 +61,12 @@
                                 <th scope="col">Pes</th>
                                 <th style="width: 70px" scope="col">%</th>
 
-                                <th scope="col">Standard</th>
-                                <th scope="col">Achieved</th>
+                                <th scope="col">Std.</th>
+                                <th scope="col">Achi.</th>
 
                                 <th scope="col">Total (kg)</th>
                                 <th scope="col">Per bird (gm)</th>
-                                <th scope="col">Standard</th>
+                                <th scope="col">Std.</th>
 
                                 <th scope="col">Without  M</th>
                                 <th scope="col">With M</th>
@@ -81,7 +81,7 @@
                                     <tr>
                                         <td>{{ index+1 }} </td>
                                         <td>
-                                            {{ detail.visitingWeek }}
+                                            {{ detail.visitingWeek|week }}
                                             <input type="hidden" class="crmChickLifeCycleDetails" value="{{ detail.id }}">
                                         </td>
                                         <td>

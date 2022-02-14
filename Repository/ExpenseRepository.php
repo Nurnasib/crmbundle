@@ -30,19 +30,35 @@ class ExpenseRepository extends EntityRepository
         $qb = $this->createQueryBuilder('e');
         $qb->join('e.crmVisit', 'crm_visit');
         $qb->join('crm_visit.employee', 'employee');
+
         $qb->select('e');
 
-        if (in_array('ROLE_CRM_POULTRY_ADMIN', $user->getRoles())){
-            $qb->andWhere($qb->expr()->like('employee.roles', '%ROLE_CRM_POULTRY_USER%'));
-        }
-        if (in_array('ROLE_CRM_CATTLE_ADMIN', $user->getRoles())){
-            $qb->andWhere($qb->expr()->like('employee.roles', '%ROLE_CRM_CATTLE_USER%'));
-        }
-        if (in_array('ROLE_CRM_AQUA_ADMIN', $user->getRoles())){
-            $qb->andWhere($qb->expr()->like('employee.roles', '%ROLE_CRM_AQUA_USER%'));
-        }
-        if (!array_intersect(['ROLE_CRM_POULTRY_ADMIN','ROLE_CRM_CATTLE_ADMIN','ROLE_CRM_AQUA_ADMIN'], $user->getRoles())){
-            $qb->andWhere('employee.id = :employeeId')->setParameter('employeeId', $user->getId());
+        $loggedUserRoles = implode($user->getRoles(), '_');
+        if (!str_contains($loggedUserRoles, 'ADMIN')){
+            $qb->andWhere('employee.id = :id')->setParameter('id', $user->getId());
+        }else{
+            $userRole = [];
+            if (in_array('ROLE_CRM_POULTRY_ADMIN', $user->getRoles())){
+                array_push($userRole, 'ROLE_CRM_POULTRY_USER');
+            }
+            if (in_array('ROLE_CRM_CATTLE_ADMIN', $user->getRoles())){
+                array_push($userRole, 'ROLE_CRM_CATTLE_USER');
+            }
+            if (in_array('ROLE_CRM_AQUA_ADMIN', $user->getRoles())){
+                array_push($userRole, 'ROLE_CRM_AQUA_USER');
+            }
+            if (in_array('ROLE_CRM_SALES_MARKETING_ADMIN', $user->getRoles())){
+                array_push($userRole, 'ROLE_CRM_SALES_MARKETING_USER');
+            }
+            $query = '';
+            foreach ($userRole as $key => $role) {
+                if ($key !== 0){
+                    $query .= " OR ";
+                }
+                $query .= "employee.roles LIKE '%" . $role . "%'";
+
+            }
+            $qb->andWhere($query);
         }
 
         return $qb->getQuery()->getResult();
