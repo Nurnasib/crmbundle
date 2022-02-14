@@ -1242,19 +1242,23 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
     private function processPoulltryMeatEggPrice($reports, Api $batch)
     {
         foreach ($reports as $report) {
+
 //            $findVisit = $this->getDoctrine()->getRepository(CrmVisit::class)->findOneBy(['appId' => $report['crm_visit_id'], 'appBatch' => $batch]);
 //            if ($findVisit){
                 $createdAt = $report['created_at'] ? (new \DateTime($report['created_at']))->format('Y-m-d H:i:s') : null;
-                foreach (json_decode($report['poultry_meat_egg_prices'], true) as $item) {
-                    $sql = "INSERT INTO `crm_poultry_meat_egg_price` (`region_id`, `status`, `created_at`, `breed_type_id`,`price`) VALUES (:region_id, :status, :created_at, :breed_type_id, :price)";
+                $items = json_decode($report['poultry_meat_egg_prices'], true);
+                foreach ( $items as $item) {
+                    $sql = "INSERT INTO `crm_poultry_meat_egg_price` (`employee_id`,`region_id`, `status`, `created_at`, `breed_type_id`,`price`, `reporting_date`) VALUES (:employee_id, :region_id, :status, :created_at, :breed_type_id, :price, :reporting_date)";
 
                     $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
 //                    $stmt->bindValue('crm_visit_id', $findVisit->getId());
+                    $stmt->bindValue('employee_id', $report['employee_id']);
                     $stmt->bindValue('region_id', $report['region_id']);
+                    $stmt->bindValue('status', 1);
+                    $stmt->bindValue('created_at', $createdAt);
                     $stmt->bindValue('breed_type_id', $item['id']);
                     $stmt->bindValue('price', $item['price']);
-                    $stmt->bindValue('created_at', $createdAt);
-                    $stmt->bindValue('status', 1);
+                    $stmt->bindValue('reporting_date', $createdAt);
 
                     $stmt->execute();
 
