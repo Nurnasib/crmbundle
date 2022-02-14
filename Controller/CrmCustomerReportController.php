@@ -26,7 +26,6 @@ class CrmCustomerReportController extends AbstractController
 
     /**
      * @Route("/report", name="crm_customer_report")
-     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      */
     public function index()
     {

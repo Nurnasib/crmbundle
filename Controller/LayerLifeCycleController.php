@@ -36,22 +36,26 @@ use Terminalbd\CrmBundle\Form\LayerPerformanceFormType;
 
 /**
  * @Route("/crm/layer/life/cycle")
+ * @Security("is_granted('ROLE_CRM_POULTRY_USER') or is_granted('ROLE_DEVELOPER)")
  */
 class LayerLifeCycleController extends AbstractController
 {
     /**
      * @Route("/", methods={"GET"}, name="layer_life_cycle")
-     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @return Response
      */
-    public function index(Request $request): Response
+    public function index(): Response
     {
-        $entitys = $this->getDoctrine()->getRepository(LayerLifeCycle::class)->findAll();
-        return $this->render('@TerminalbdCrm/layerLifeCycle/index.html.twig',['entities' => $entitys]);
+        $entities = $this->getDoctrine()->getRepository(LayerLifeCycle::class)->findAll();
+        return $this->render('@TerminalbdCrm/layerLifeCycle/index.html.twig',['entities' => $entities]);
     }
 
     /**
+     * @param Request $request
      * @param CrmCustomer $crmCustomer
-     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @param Setting $report
+     * @return Response
+     * @throws \Exception
      * @Route("/customer/{id}/report/{report}/new/modal", methods={"GET", "POST"}, name="layer_new_modal")
      */
     public function newModal(Request $request, CrmCustomer $crmCustomer, Setting $report): Response
@@ -102,8 +106,8 @@ class LayerLifeCycleController extends AbstractController
 
     /**
      * @param LayerLifeCycle $layerLifeCycle
-     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      * @Route("/report/{id}/modal", methods={"GET", "POST"}, name="layer_life_cycle_details_modal")
+     * @return Response
      */
     public function lifeCycleDetailsModal(LayerLifeCycle $layerLifeCycle): Response
     {
@@ -136,7 +140,10 @@ class LayerLifeCycleController extends AbstractController
 
     /**
      * @Route("/details/{id}/edit", methods={"POST"}, name="crm_layer_life_cycle_details_edit", options={"expose"=true})
-     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @param Request $request
+     * @param LayerLifeCycleDetails $entity
+     * @return Response
+     * @throws \Exception
      */
 
     public function editLifeCycleDetails(Request $request, LayerLifeCycleDetails $entity): Response
@@ -210,7 +217,8 @@ class LayerLifeCycleController extends AbstractController
     /**
      * Deletes a LayerPerformance entity.
      * @Route("/{id}/delete", methods={"GET"}, name="layer_life_cycle_delete")
-     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @param $id
+     * @return Response
      */
     public function delete($id): Response
     {
@@ -226,7 +234,7 @@ class LayerLifeCycleController extends AbstractController
     /**
      * @param LayerLifeCycle $layerLifeCycle
      * @Route("/{id}/complete", methods={"POST"}, name="crm_layer_life_cycle_complete", options={"expose"=true})
-     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @return Response
      */
     public function layerLifeCycleReportComplete(LayerLifeCycle $layerLifeCycle): Response
     {

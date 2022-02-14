@@ -36,12 +36,18 @@ use Terminalbd\CrmBundle\Repository\FcrRepository;
 
 /**
  * @Route("/crm/fcr")
+ * @Security("is_granted('ROLE_CRM_POULTRY_USER') or is_granted('ROLE_DEVELOPER)")
  */
 class FcrController extends AbstractController
 {
     /**
-     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      * @Route("/{customer}/{report}/{afterBefore}/new", methods={"GET", "POST"}, name="fcr_new", options={"expose"=true})
+     * @param Request $request
+     * @param CrmCustomer $customer
+     * @param Setting $report
+     * @param $afterBefore
+     * @return Response
+     * @throws \Exception
      */
     public function new(Request $request, CrmCustomer $customer, Setting $report, $afterBefore): Response
     {
@@ -107,7 +113,6 @@ class FcrController extends AbstractController
 
 
     /**
-     * @Security("is_granted('ROLE_CRM_POULTRY_USER') or is_granted('ROLE_DEVELOPER')")
      * @Route("/{report}/{afterBefore}/new", methods={"GET", "POST"}, name="fcr_after_new", options={"expose"=true})
      * @param Request $request
      * @param Setting $report
@@ -184,7 +189,8 @@ class FcrController extends AbstractController
     /**
      * Deletes a Fcr entity.
      * @Route("/details/{id}/delete", methods={"POST"}, name="fcr_detail_delete")
-     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @param $id
+     * @return Response
      */
     public function deleteDetails($id): Response
     {
@@ -198,10 +204,11 @@ class FcrController extends AbstractController
 
     /**
      * @param Setting $report
-     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @param $afterBefore
+     * @return Response
      * @Route("/{id}/{afterBefore}/details/refresh", methods={"GET", "POST"}, name="fcr_details_refresh", options={"expose"=true})
      */
-    public function fcrDetailsRefresh(Request $request, Setting $report, $afterBefore): Response
+    public function fcrDetailsRefresh(Setting $report, $afterBefore): Response
     {
         $fcrAllReports = $this->getDoctrine()->getRepository(FcrDetails::class)->getFcrReportByReportingDateAndFeedType($afterBefore, $report, $this->getUser());
 
@@ -214,7 +221,9 @@ class FcrController extends AbstractController
     /**
      * Displays a form to edit an existing ChickLifeCycle entity.
      * @Route("/{id}/sonali-broiler/standard", methods={"POST"}, name="crm_sonali_and_broiler_standard_by_age", options={"expose"=true})
-     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @param Request $request
+     * @param Setting $report
+     * @return Response
      */
 
     public function getSonaliBroilerStandardUsingAjax(Request $request, Setting $report): Response

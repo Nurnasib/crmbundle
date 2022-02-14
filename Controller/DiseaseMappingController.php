@@ -26,13 +26,16 @@ use Terminalbd\CrmBundle\Form\DiseaseMappingFormType;
 
 /**
  * @Route("/crm/disease/mapping")
+ * @Security("is_granted('ROLE_CRM_POULTRY_USER') or is_granted('ROLE_CRM_CATTLE_USER') or is_granted('ROLE_CRM_AQUA_USER') or is_granted('ROLE_DEVELOPER)")
  */
 class DiseaseMappingController extends AbstractController
 {
     /**
+     * @param Request $request
      * @param CrmCustomer $crmCustomer
+     * @param Setting $report
+     * @return Response
      * @ParamConverter("crmCustomer", class="Terminalbd\CrmBundle\Entity\CrmCustomer")
-     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      * @Route("/customer/{id}/report/{report}/new/modal", methods={"GET", "POST"}, name="disease_mapping_new_modal", options={"expose"=true})
      */
     public function newModal(Request $request, CrmCustomer $crmCustomer, Setting $report): Response
@@ -74,6 +77,7 @@ class DiseaseMappingController extends AbstractController
     /**
      * @param DiseaseMapping $entity
      * @Route("/details/{id}/modal", methods={"GET", "POST"}, name="disease_mapping_detail_modal", options={"expose"=true})
+     * @return Response
      */
     public function diseaseMappingDetailsModal(DiseaseMapping $entity): Response
     {
@@ -87,7 +91,8 @@ class DiseaseMappingController extends AbstractController
     /**
      * Deletes a Disease Mapping entity.
      * @Route("/{id}/delete", methods={"POST"}, name="disease_mapping_delete")
-     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @param $id
+     * @return Response
      */
     public function deleteDetails($id): Response
     {

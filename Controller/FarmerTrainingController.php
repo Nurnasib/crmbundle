@@ -38,13 +38,18 @@ use Terminalbd\CrmBundle\Form\FarmerTrainingReportFormType;
 
 /**
  * @Route("/crm/farmer/training")
+ * @Security("is_granted('ROLE_CRM_POULTRY_USER') or is_granted('ROLE_CRM_CATTLE_USER') or is_granted('ROLE_CRM_AQUA_USER') or is_granted('ROLE_DEVELOPER)")
  */
 class FarmerTrainingController extends AbstractController
 {
 
     /**
-     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      * @Route("/agent/{id}/purpose/{purpose}/new/modal", methods={"GET", "POST"}, name="farmer_training_report_new_modal", options={"expose"=true})
+     * @param Request $request
+     * @param Agent $agent
+     * @param Setting $purpose
+     * @return Response
+     * @throws \Exception
      */
     public function newModal(Request $request, Agent $agent, Setting $purpose): Response
     {
@@ -145,7 +150,8 @@ class FarmerTrainingController extends AbstractController
     }
 
     /**
-     * @param FarmerTrainingReport $farmerTrainingReport
+     * @param $id
+     * @return Response
      * @Route("/details/{id}/modal", methods={"GET", "POST"}, name="farmer_training_report_detail_modal", options={"expose"=true})
      */
     public function farmerTrainingDetailsModal($id): Response
@@ -187,6 +193,8 @@ class FarmerTrainingController extends AbstractController
 
     /**
      * @Route("/materials/breed/{id}/ajax", methods={"POST"}, name="crm_farmer_training_material_ajax", options={"expose"=true})
+     * @param $id
+     * @return Response
      */
     public function getFarmerTrainingMaterialByBreedName($id): Response
     {

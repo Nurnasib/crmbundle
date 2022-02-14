@@ -22,7 +22,7 @@ use Terminalbd\CrmBundle\Form\BroilerStandardFormType;
 
 /**
  * @Route("/crm/broiler/standard")
- * @Security("is_granted('ROLE_DEVELOPER')")
+ * @Security("is_granted('ROLE_CRM_POULTRY_ADMIN') or is_granted('ROLE_DEVELOPER')")
  */
 class BroilerStandardController extends AbstractController
 {

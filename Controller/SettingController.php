@@ -29,7 +29,7 @@ use Terminalbd\CrmBundle\Form\SettingLifeCycleFormType;
  * Class SettingController
  * @package Terminalbd\CrmBundle\Controller
  * @Route("/crm/setting")
- * @Security("is_granted('ROLE_DEVELOPER')")
+ * @Security("is_granted('ROLE_CRM_POULTRY_ADMIN') or is_granted('ROLE_CRM_CATTLE_ADMIN') or is_granted('ROLE_CRM_AQUA_ADMIN') or is_granted('ROLE_DEVELOPER')")
  */
 class SettingController extends AbstractController
 {

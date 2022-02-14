@@ -32,15 +32,19 @@ use Terminalbd\CrmBundle\Form\CostBenefitAnalysisLessCostingFarmForPoultryFormTy
 
 /**
  * @Route("/crm/cost/benefit/analysis/less/costing/farm")
+ * @Security("is_granted('ROLE_CRM_POULTRY_USER') or is_granted('ROLE_CRM_AQUA_USER') or is_granted('ROLE_DEVELOPER)")
  */
 class CostBenefitAnalysisForLessCostingFarmController extends AbstractController
 {
     /**
+     * @param Request $request
      * @param CrmCustomer $crmCustomer
+     * @param Setting $report
+     * @param Setting $parentParent
+     * @return Response
      * @ParamConverter("crmCustomer", class="Terminalbd\CrmBundle\Entity\CrmCustomer")
      * @ParamConverter("report", class="Terminalbd\CrmBundle\Entity\Setting")
      * @ParamConverter("parentParent", class="Terminalbd\CrmBundle\Entity\Setting")
-     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      * @Route("/customer/{id}/report/{report}/parentParent/{parentParent}/new/modal", methods={"GET", "POST"}, name="cost_benefit_analysis_less_costing_farm_new_modal", options={"expose"=true})
      */
     public function newModal(Request $request, CrmCustomer $crmCustomer, Setting $report, Setting $parentParent): Response
@@ -135,7 +139,8 @@ class CostBenefitAnalysisForLessCostingFarmController extends AbstractController
     }
 
     /**
-     * @param AntibioticFreeFarm $antibioticFreeFarm
+     * @param $id
+     * @return Response
      * @Route("/details/{id}/modal", methods={"GET", "POST"}, name="cost_benefit_analysis_less_costing_farm_detail_modal", options={"expose"=true})
      */
     public function lessCostingFarmDetailsModal($id): Response

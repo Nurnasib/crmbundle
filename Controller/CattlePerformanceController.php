@@ -253,9 +253,12 @@ class CattlePerformanceController extends AbstractController
             'crmCattlePerformanceDetails' => $allCattlePerformances,
         ]);
     }
+
     /**
      * Deletes a Fcr entity.
      * @Route("/details/{id}/delete", methods={"POST"}, name="cattle_performance_detail_delete")
+     * @param $id
+     * @return Response
      */
     public function deleteDetails($id): Response
     {

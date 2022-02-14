@@ -40,6 +40,7 @@ use Terminalbd\CrmBundle\Form\DairyLifeCycleDetailsFormType;
 
 /**
  * @Route("/crm/cattle/farm/visit")
+ * @Security("is_granted('ROLE_CRM_CATTLE_USER') or is_granted('ROLE_DEVELOPER)")
  */
 class CattleFarmVisitController extends AbstractController
 {
@@ -47,8 +48,8 @@ class CattleFarmVisitController extends AbstractController
     /**
      * @param CrmCustomer $crmCustomer
      * @ParamConverter("crmCustomer", class="Terminalbd\CrmBundle\Entity\CrmCustomer")
-     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      * @Route("/customer/{id}/report/{report}/new/modal", methods={"GET", "POST"}, name="cattle_farm_visit_new_modal", options={"expose"=true})
+     * @return Response
      */
     public function newModal(Request $request, CrmCustomer $crmCustomer, Setting $report): Response
     {
@@ -58,8 +59,10 @@ class CattleFarmVisitController extends AbstractController
     }
 
     /**
-     * @param CattleFarmVisit $cattleFarmVisit
-     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @param Request $request
+     * @param Setting $report
+     * @return Response
+     * @throws \Exception
      * @Route("/report/{id}/modal", methods={"GET", "POST"}, name="cattle_farm_visit_details_modal", options={"expose"=true})
      */
     public function cattleFarmVisitDetailsModal( Request $request, Setting $report ): Response
@@ -106,7 +109,7 @@ class CattleFarmVisitController extends AbstractController
     /**
      * @param Setting $report
      * @Route("/detail/{id}/refresh", methods={"GET"}, name="crm_cattle_farm_visit_detail_refresh", options={"expose"=true})
-     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @return Response
      */
     public function cattleFarmVisitDetailsReportRefresh( Setting $report): Response
     {
@@ -119,7 +122,6 @@ class CattleFarmVisitController extends AbstractController
     /**
      * Deletes a Fcr entity.
      * @Route("/details/{id}/delete", methods={"POST"}, name="cattle_farm_visit_detail_delete")
-     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      * @param $id
      * @return Response
      */

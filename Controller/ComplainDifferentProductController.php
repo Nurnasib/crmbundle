@@ -28,13 +28,16 @@ use Terminalbd\CrmBundle\Form\DiseaseMappingFormType;
 
 /**
  * @Route("/crm/complain/differnt/product")
+ * @Security("is_granted('ROLE_CRM_POULTRY_USER') or is_granted('ROLE_CRM_CATTLE_USER') or is_granted('ROLE_DEVELOPER)")
  */
 class ComplainDifferentProductController extends AbstractController
 {
     /**
+     * @param Request $request
      * @param CrmCustomer $crmCustomer
+     * @param Setting $report
+     * @return Response
      * @ParamConverter("crmCustomer", class="Terminalbd\CrmBundle\Entity\CrmCustomer")
-     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      * @Route("/customer/{id}/report/{report}/new/modal", methods={"GET", "POST"}, name="complain_different_product_new_modal", options={"expose"=true})
      */
     public function newModal(Request $request, CrmCustomer $crmCustomer, Setting $report): Response
@@ -83,7 +86,8 @@ class ComplainDifferentProductController extends AbstractController
 
 
     /**
-     * @param AntibioticFreeFarm $antibioticFreeFarm
+     * @param ComplainDifferentProduct $complainDifferentProduct
+     * @return Response
      * @Route("/details/{id}/modal", methods={"GET", "POST"}, name="complain_different_product_detail_modal", options={"expose"=true})
      */
     public function detailsModal(ComplainDifferentProduct $complainDifferentProduct): Response
@@ -109,7 +113,8 @@ class ComplainDifferentProductController extends AbstractController
     /**
      * Deletes a Disease Mapping entity.
      * @Route("/{id}/delete", methods={"POST"}, name="complain_different_product_delete")
-     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @param $id
+     * @return Response
      */
     public function deleteDetails($id): Response
     {

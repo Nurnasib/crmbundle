@@ -24,13 +24,16 @@ use Terminalbd\CrmBundle\Entity\Setting;
 
 /**
  * @Route("/crm/antibiotic/free/farm")
+ * @Security("is_granted('ROLE_CRM_POULTRY_USER') or is_granted('ROLE_DEVELOPER)")
  */
 class AntibioticFreeFarmController extends AbstractController
 {
     /**
+     * @param Request $request
      * @param CrmCustomer $crmCustomer
+     * @param Setting $report
+     * @return Response
      * @ParamConverter("crmCustomer", class="Terminalbd\CrmBundle\Entity\CrmCustomer")
-     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      * @Route("/customer/{id}/report/{report}/new/modal", methods={"GET", "POST"}, name="antibiotic_free_farm_new_modal", options={"expose"=true})
      */
     public function newModal(Request $request, CrmCustomer $crmCustomer, Setting $report): Response
@@ -110,7 +113,8 @@ class AntibioticFreeFarmController extends AbstractController
 
 
     /**
-     * @param AntibioticFreeFarm $antibioticFreeFarm
+     * @param $id
+     * @return Response
      * @Route("/details/{id}/modal", methods={"GET", "POST"}, name="antibiotic_free_farm_detail_modal", options={"expose"=true})
      */
     public function antibioticFreeFarmDetailsModal($id): Response

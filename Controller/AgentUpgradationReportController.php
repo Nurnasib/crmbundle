@@ -38,13 +38,17 @@ use Terminalbd\CrmBundle\Form\DairyLifeCycleDetailsFormType;
 
 /**
  * @Route("/crm/agent/upgradation/report")
+ * @Security("is_granted('ROLE_CRM_POULTRY_USER') or is_granted('ROLE_CRM_CATTLE_USER') or is_granted('ROLE_CRM_AQUA_USER') or is_granted('ROLE_DEVELOPER)")
  */
 class AgentUpgradationReportController extends AbstractController
 {
 
     /**
-     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      * @Route("/agent/{id}/purpose/{purpose}/new/modal", methods={"GET", "POST"}, name="agent_upgradation_report_new_modal", options={"expose"=true})
+     * @param Request $request
+     * @param Agent $agent
+     * @param Setting $purpose
+     * @return Response
      */
     public function newModal(Request $request, Agent $agent, Setting $purpose): Response
     {
@@ -80,7 +84,7 @@ class AgentUpgradationReportController extends AbstractController
     /**
      * @param AgentUpgradationReport $agentUpgradationReport
      * @Route("/{id}/refresh", methods={"GET"}, name="agent_upgradation_report_refresh", options={"expose"=true})
-     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @return Response
      */
     public function reportRefresh(AgentUpgradationReport $agentUpgradationReport): Response
     {
@@ -94,7 +98,8 @@ class AgentUpgradationReportController extends AbstractController
     /**
      * Deletes a Fcr entity.
      * @Route("/{id}/delete", methods={"POST"}, name="agent_upgradation_report_delete", options={"expose"=true})
-     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @param $id
+     * @return Response
      */
     public function deleteDetails($id): Response
     {

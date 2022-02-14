@@ -27,22 +27,24 @@ use Terminalbd\CrmBundle\Entity\Setting;
 
 /**
  * @Route("/crm/broiler")
+ * @Security("is_granted('ROLE_CRM_POULTRY_USER') or is_granted('ROLE_DEVELOPER)")
  */
 class BroilerLifeCycleController extends AbstractController
 {
     /**
      * @Route("/", methods={"GET"}, name="crm_broiler")
-     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @return Response
      */
-    public function index(Request $request): Response
+    public function index(): Response
     {
-        $entitys = $this->getDoctrine()->getRepository(BroilerLifeCycle::class)->findAll();
-        return $this->render('@TerminalbdCrm/broilerlifecycle/index.html.twig',['entities' => $entitys]);
+        $entities = $this->getDoctrine()->getRepository(BroilerLifeCycle::class)->findAll();
+        return $this->render('@TerminalbdCrm/broilerlifecycle/index.html.twig',['entities' => $entities]);
     }
 
     /**
-     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      * @Route("/new", methods={"GET", "POST"}, name="crm_broiler_new")
+     * @param Request $request
+     * @return Response
      */
     public function new(Request $request): Response
     {
@@ -74,7 +76,9 @@ class BroilerLifeCycleController extends AbstractController
      * Displays a form to edit an existing Post entity.
      *
      * @Route("/{id}/edit", methods={"GET", "POST"}, name="crm_setting_edit")
-     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @param Request $request
+     * @param Setting $entity
+     * @return Response
      */
 
     public function edit(Request $request, Setting $entity): Response
@@ -101,7 +105,8 @@ class BroilerLifeCycleController extends AbstractController
     /**
      * Deletes a Setting entity.
      * @Route("/{id}/delete", methods={"GET"}, name="crm_setting_delete")
-     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
+     * @param $id
+     * @return Response
      */
     public function delete($id): Response
     {
