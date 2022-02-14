@@ -32,7 +32,7 @@ use Terminalbd\CrmBundle\Form\CostBenefitAnalysisLessCostingFarmForPoultryFormTy
 
 /**
  * @Route("/crm/cost/benefit/analysis/less/costing/farm")
- * @Security("is_granted('ROLE_CRM_POULTRY_USER') or is_granted('ROLE_CRM_AQUA_USER') or is_granted('ROLE_DEVELOPER)")
+ * @Security("is_granted('ROLE_CRM_POULTRY_USER') or is_granted('ROLE_CRM_AQUA_USER') or is_granted('ROLE_DEVELOPER')")
  */
 class CostBenefitAnalysisForLessCostingFarmController extends AbstractController
 {

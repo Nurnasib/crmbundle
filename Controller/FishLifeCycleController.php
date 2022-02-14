@@ -37,7 +37,7 @@ use Terminalbd\CrmBundle\Form\DairyLifeCycleDetailsFormType;
 
 /**
  * @Route("/crm/fish/life/cycle")
- * @Security("is_granted('ROLE_CRM_AQUA_USER') or is_granted('ROLE_DEVELOPER)")
+ * @Security("is_granted('ROLE_CRM_AQUA_USER') or is_granted('ROLE_DEVELOPER')")
  */
 class FishLifeCycleController extends AbstractController
 {

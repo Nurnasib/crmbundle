@@ -36,7 +36,7 @@ use Terminalbd\CrmBundle\Repository\FcrRepository;
 
 /**
  * @Route("/crm/fcr")
- * @Security("is_granted('ROLE_CRM_POULTRY_USER') or is_granted('ROLE_DEVELOPER)")
+ * @Security("is_granted('ROLE_CRM_POULTRY_USER') or is_granted('ROLE_DEVELOPER')")
  */
 class FcrController extends AbstractController
 {

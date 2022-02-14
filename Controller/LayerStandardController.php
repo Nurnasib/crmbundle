@@ -32,7 +32,7 @@ use Terminalbd\CrmBundle\Form\LayerStandardFormType;
  * Class LayerStandardController
  * @package Terminalbd\CrmBundle\Controller
  * @Route("/crm/layer/standard")
- * @Security("is_granted('ROLE_CRM_POULTRY_USER') or is_granted('ROLE_CRM_POULTRY_ADMIN') or is_granted('ROLE_DEVELOPER)")
+ * @Security("is_granted('ROLE_CRM_POULTRY_USER') or is_granted('ROLE_CRM_POULTRY_ADMIN') or is_granted('ROLE_DEVELOPER')")
  */
 class LayerStandardController extends AbstractController
 {

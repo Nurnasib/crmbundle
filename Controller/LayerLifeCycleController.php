@@ -36,7 +36,7 @@ use Terminalbd\CrmBundle\Form\LayerPerformanceFormType;
 
 /**
  * @Route("/crm/layer/life/cycle")
- * @Security("is_granted('ROLE_CRM_POULTRY_USER') or is_granted('ROLE_DEVELOPER)")
+ * @Security("is_granted('ROLE_CRM_POULTRY_USER') or is_granted('ROLE_DEVELOPER')")
  */
 class LayerLifeCycleController extends AbstractController
 {

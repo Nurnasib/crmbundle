@@ -40,7 +40,7 @@ use Terminalbd\CrmBundle\Form\DairyLifeCycleDetailsFormType;
 
 /**
  * @Route("/crm/cattle/farm/visit")
- * @Security("is_granted('ROLE_CRM_CATTLE_USER') or is_granted('ROLE_DEVELOPER)")
+ * @Security("is_granted('ROLE_CRM_CATTLE_USER') or is_granted('ROLE_DEVELOPER')")
  */
 class CattleFarmVisitController extends AbstractController
 {

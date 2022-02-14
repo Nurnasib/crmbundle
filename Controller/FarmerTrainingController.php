@@ -38,7 +38,7 @@ use Terminalbd\CrmBundle\Form\FarmerTrainingReportFormType;
 
 /**
  * @Route("/crm/farmer/training")
- * @Security("is_granted('ROLE_CRM_POULTRY_USER') or is_granted('ROLE_CRM_CATTLE_USER') or is_granted('ROLE_CRM_AQUA_USER') or is_granted('ROLE_DEVELOPER)")
+ * @Security("is_granted('ROLE_CRM_POULTRY_USER') or is_granted('ROLE_CRM_CATTLE_USER') or is_granted('ROLE_CRM_AQUA_USER') or is_granted('ROLE_DEVELOPER')")
  */
 class FarmerTrainingController extends AbstractController
 {

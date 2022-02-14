@@ -34,7 +34,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
 /**
  * @Route("/crm/fish/feed/complain")
- * @Security("is_granted('ROLE_CRM_AQUA_USER') or is_granted('ROLE_DEVELOPER)")
+ * @Security("is_granted('ROLE_CRM_AQUA_USER') or is_granted('ROLE_DEVELOPER')")
  */
 class FishFeedComplainController extends AbstractController
 {

@@ -27,7 +27,7 @@ use Terminalbd\CrmBundle\Entity\Setting;
 
 /**
  * @Route("/crm/broiler")
- * @Security("is_granted('ROLE_CRM_POULTRY_USER') or is_granted('ROLE_DEVELOPER)")
+ * @Security("is_granted('ROLE_CRM_POULTRY_USER') or is_granted('ROLE_DEVELOPER')")
  */
 class BroilerLifeCycleController extends AbstractController
 {
