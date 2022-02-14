@@ -37,7 +37,7 @@ use Terminalbd\CrmBundle\Form\SearchFilterFormType;
 
 /**
  * @Route("/crm/chick")
- * @Security("is_granted('ROLE_CRM_POULTRY_USER') or is_granted('ROLE_DEVELOPER)")
+ * @Security("is_granted('ROLE_CRM_POULTRY_USER') or is_granted('ROLE_DEVELOPER')")
  */
 class ChickLifeCycleController extends AbstractController
 {
