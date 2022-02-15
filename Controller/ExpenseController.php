@@ -37,13 +37,13 @@ class ExpenseController extends AbstractController
      * @Route("/", methods={"GET"}, name="crm_expense")
      * @return Response
      */
-    public function index(): Response
+/*    public function index(): Response
     {
         $entities = $this->getDoctrine()->getRepository(Expense::class)->getExpense($this->getUser());
         return $this->render('@TerminalbdCrm/expense/index.html.twig',[
             'entities' => $entities
         ]);
-    }
+    }*/
 
     /**
      * @Route("/{crmVisit}/{location}/new", methods={"GET", "POST"}, name="crm_expense_new")

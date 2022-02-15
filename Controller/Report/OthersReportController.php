@@ -21,6 +21,7 @@ use Terminalbd\CrmBundle\Entity\CrmCustomer;
 use Terminalbd\CrmBundle\Entity\DailyChickPrice;
 use Terminalbd\CrmBundle\Entity\DailyChickPriceDetails;
 use Terminalbd\CrmBundle\Entity\DiseaseMapping;
+use Terminalbd\CrmBundle\Entity\Expense;
 use Terminalbd\CrmBundle\Entity\FarmerTrainingReportDetails;
 use Terminalbd\CrmBundle\Entity\FcrDetails;
 use Terminalbd\CrmBundle\Entity\FcrDifferentCompanies;
@@ -126,6 +127,11 @@ class OthersReportController extends AbstractController
                 case 'complain-poultry':
                     dd($filterBy);
                     $entities = [];
+
+                    break;
+
+                case 'expense':
+                    $entities = $this->getDoctrine()->getRepository(Expense::class)->getExpense($filterBy, $this->getUser());
 
                     break;
 

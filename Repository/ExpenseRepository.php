@@ -25,43 +25,55 @@ use function Doctrine\ORM\QueryBuilder;
  */
 class ExpenseRepository extends EntityRepository
 {
-    public function getExpense(User $user)
+    public function getExpense($filterBy, User $user)
     {
+        $start = isset($filterBy['startDate']) ? (new \DateTime($filterBy['startDate']))->format('Y-m-d 00:00:00') : null;
+        $end = isset($filterBy['endDate']) ? (new \DateTime($filterBy['endDate']))->format('Y-m-d 23:59:59') : null;
+        $employeeId = isset($filterBy['employee']) ? $filterBy['employee']->getId() : null;
+
+
         $qb = $this->createQueryBuilder('e');
         $qb->join('e.crmVisit', 'crm_visit');
+        $qb->leftJoin('e.visitingArea', 'visiting_area');
         $qb->join('crm_visit.employee', 'employee');
+        $qb->leftJoin('employee.designation', 'designation');
 
-        $qb->select('e');
+        $qb->select('e AS details');
+        $qb->addSelect('crm_visit.created AS visitedDate', 'visiting_area.name AS visitingAreaName');
+        $qb->addSelect('employee.userId', 'employee.name', 'designation.name AS designationName');
 
-        $loggedUserRoles = implode($user->getRoles(), '_');
-        if (!str_contains($loggedUserRoles, 'ADMIN')){
-            $qb->andWhere('employee.id = :id')->setParameter('id', $user->getId());
+
+        if (isset($filterBy['employee']) && $filterBy['employee'] !== null){
+            $qb->andWhere('employee.id = :employeeId')->setParameter('employeeId', $employeeId);
         }else{
-            $userRole = [];
-            if (in_array('ROLE_CRM_POULTRY_ADMIN', $user->getRoles())){
-                array_push($userRole, 'ROLE_CRM_POULTRY_USER');
-            }
-            if (in_array('ROLE_CRM_CATTLE_ADMIN', $user->getRoles())){
-                array_push($userRole, 'ROLE_CRM_CATTLE_USER');
-            }
-            if (in_array('ROLE_CRM_AQUA_ADMIN', $user->getRoles())){
-                array_push($userRole, 'ROLE_CRM_AQUA_USER');
-            }
-            if (in_array('ROLE_CRM_SALES_MARKETING_ADMIN', $user->getRoles())){
-                array_push($userRole, 'ROLE_CRM_SALES_MARKETING_USER');
-            }
-            $query = '';
-            foreach ($userRole as $key => $role) {
-                if ($key !== 0){
-                    $query .= " OR ";
-                }
-                $query .= "employee.roles LIKE '%" . $role . "%'";
+            $qb->andWhere('employee.id = :employeeId')->setParameter('employeeId', $user->getId());
 
-            }
-            $qb->andWhere($query);
         }
 
-        return $qb->getQuery()->getResult();
+        $qb->andWhere('crm_visit.created >= :start')->setParameter('start', $start);
+        $qb->andWhere('crm_visit.created <= :end')->setParameter('end', $end);
+
+        $results = $qb->getQuery()->getArrayResult();
+
+        $data = [];
+
+        foreach ($results as $key => $result) {
+            $month = $result['visitedDate']->format('m-F');
+
+            $result['details']['visitedDate'] = $result['visitedDate'];
+            $result['details']['visitingAreaName'] = $result['visitingAreaName'];
+
+            $data[$result['visitedDate']->format('Y')][$month]['details'][] = $result['details'];
+            $data[$result['visitedDate']->format('Y')][$month]['employee'] = [
+                'userId' => $result['userId'],
+                'name' => $result['name'],
+                'designation' => $result['designationName'],
+            ];
+
+            ksort($data);
+            ksort($data[$result['visitedDate']->format('Y')]);
+        }
+        return $data;
     }
 
 }

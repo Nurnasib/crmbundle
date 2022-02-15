@@ -348,7 +348,11 @@ class SearchFilterFormType extends AbstractType
 
     private function otherReportUserWise($user)
     {
-        $otherReport = [];
+        $otherReport = [
+            'Others' => [
+                'Expense' => 'expense'
+            ]
+        ];
 
         if (in_array('ROLE_CRM_POULTRY_USER', $user->getRoles()) || in_array('ROLE_CRM_POULTRY_ADMIN', $user->getRoles())) {
             $otherReport = array_merge(
