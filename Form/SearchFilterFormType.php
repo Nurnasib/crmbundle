@@ -372,6 +372,7 @@ class SearchFilterFormType extends AbstractType
             $otherReport = array_merge(
                 $otherReport,
                 ['Cattle' => [
+                    'New Agent or Upgradation' => 'new-agent-upgradation-cattle',
                     'Complain' => 'complain-cattle',
                     'Company Wise Feed Sale' => 'company-wise-feed-sale-cattle',
                     'Farmer Survey' => 'farmer-survey-cattle',
@@ -385,6 +386,7 @@ class SearchFilterFormType extends AbstractType
             $otherReport = array_merge(
                 $otherReport,
                 ['Fish' => [
+                    'New Agent or Upgradation' => 'new-agent-upgradation-fish',
                     'Company Wise Feed Sale' => 'company-wise-feed-sale-fish',
                     'Farmer Survey' => 'farmer-survey-fish',
                     'Farmer Training' => 'farmer-training-fish',

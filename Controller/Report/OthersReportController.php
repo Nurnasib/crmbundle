@@ -125,12 +125,17 @@ class OthersReportController extends AbstractController
                     break;
 
                 case 'complain-poultry':
-                    dd($filterBy);
+                    dd('Stay for anonymous reason!!');
                     $entities = [];
 
                     break;
 
                 case 'expense':
+                    $entities = $this->getDoctrine()->getRepository(Expense::class)->getExpense($filterBy, $this->getUser());
+
+                    break;
+
+                case 'new-agent-upgradation-cattle':
                     $entities = $this->getDoctrine()->getRepository(Expense::class)->getExpense($filterBy, $this->getUser());
 
                     break;
