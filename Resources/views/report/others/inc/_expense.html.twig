@@ -29,6 +29,7 @@
                 <th scope="col">S/N</th>
                 <th scope="col">Visiting Date</th>
                 <th scope="col">Visiting Area</th>
+                <th scope="col">Schedule Visit</th>
                 <th scope="col">Conveyance</th>
                 <th scope="col">Daily Allowance</th>
                 <th scope="col">Hotel Rent</th>
@@ -46,6 +47,7 @@
                     <td>{{ loop.index }}</td>
                     <td>{{ item.visitedDate|date('d-m-Y') }}</td>
                     <td>{{ item.visitingAreaName }}</td>
+                    <td>{{ item.scheduleVisit }}</td>
                     <td>{{ item.conveyance }}</td>
                     <td>{{ item.dailyAllowance }}</td>
                     <td>{{ item.hotelRent }}</td>
