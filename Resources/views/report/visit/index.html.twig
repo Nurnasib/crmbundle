@@ -78,6 +78,7 @@
                                     <th>{{ 'Location'|trans }}</th>
                                     <th>{{ 'Visit Begin'|trans }}</th>
                                     <th>{{ 'Visit End'|trans }}</th>
+                                    <th>{{ 'Remarks'|trans }}</th>
                                     <th width="100" class="text-center">{{ 'Details' }}</i></th>
                                 </tr>
                                 </thead>
@@ -93,6 +94,7 @@
                                             <td>{{ data.locationName }}</td>
                                             <td>{{ data.visitBegin }}</td>
                                             <td>{{ data.visitEnd }}</td>
+                                            <td>{{ data.remarks }}</td>
 
                                             {% if loop.first %}
                                                 <td rowspan="{{ entity|length }}">

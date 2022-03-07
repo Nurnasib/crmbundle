@@ -59,7 +59,7 @@ class FarmerTouchRepository extends BaseRepository
         $qb->andWhere('e.visitingDate >= :monthStart')->setParameter('monthStart', $filterBy['monthStart']);
         $qb->andWhere('e.visitingDate <= :monthEnd')->setParameter('monthEnd', $filterBy['monthEnd']);
         $qb->andWhere('report.settingType = :settingType')->setParameter('settingType', 'FARMER_REPORT');
-        $qb->andWhere('report.slug = :slug')->setParameter('slug', 'farmer-touch-report-poultry');
+        $qb->andWhere('report.slug = :slug')->setParameter('slug', 'farmer-introduce-report-poultry');
 
         $results = $qb->getQuery()->getSingleResult();
         return $results['totalReport'];

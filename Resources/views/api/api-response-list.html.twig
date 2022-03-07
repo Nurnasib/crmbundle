@@ -20,7 +20,7 @@
                 <div class="card-header">
                     <h5>{{ 'API Response List'|trans }}</h5>
                     <div class="btn-group float-right">
-                        <a href="{{ path('crm_sync_app_data_sync') }}" class="btn btn-mini purple-bg white-font loader"><i class="fa fa-sync"></i> Sync All</a>
+                        <a href="{{ path('crm_sync_app_data_sync') }}" class="btn btn-mini purple-bg white-font loader"><i class="fa fa-sync"></i> Process All</a>
                     </div>
                 </div>
             </div>
@@ -53,7 +53,7 @@
                                     <td>{{ record.status == 1 ? 'Yes':'No' }}</td>
                                     <td align="center">
                                         <div class="btn-group">
-                                            <a href="{{ path('crm_sync_app_data_sync', {id: record.id}) }}" class="btn btn-mini purple-bg white-font loader"><i class="fa fa-sync"></i> Sync</a>
+                                            <a href="{{ path('crm_sync_app_data_sync', {id: record.id}) }}" class="btn btn-mini purple-bg white-font loader"><i class="fa fa-sync"></i> Process</a>
                                         </div>
                                     </td>
                                 </tr>
