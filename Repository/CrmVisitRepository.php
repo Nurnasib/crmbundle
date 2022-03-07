@@ -63,7 +63,7 @@ class CrmVisitRepository extends EntityRepository
         $qb->join('e.employee', 'employee');
         $qb->join('employee.userGroup', 'userGroup');
         $qb->select('e.id AS visitId','e.created AS visitDate','e.workingDuration AS visitBegin','e.workingDurationTo AS visitEnd', 'location.name AS locationName');
-        $qb->addSelect('workingMode.id AS workingModeId', 'workingMode.name AS workingModeName', 'workingMode.slug AS workingModeSlug');
+        $qb->addSelect('workingMode.id AS workingModeId', 'workingMode.name AS workingModeName', 'workingMode.slug AS workingModeSlug', 'e.remarks');
         $qb->where('e.created >= :startDate')->setParameter('startDate', $startDate);
         $qb->andWhere('e.created <= :endDate')->setParameter('endDate', $endDate);
         $qb->andWhere('userGroup.slug = :userGroupSlug')->setParameter('userGroupSlug', 'employee');
@@ -116,4 +116,5 @@ class CrmVisitRepository extends EntityRepository
         }
         return $data;
     }
+
 }

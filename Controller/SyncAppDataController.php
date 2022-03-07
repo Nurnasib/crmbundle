@@ -554,7 +554,7 @@ VALUES (:report_id, :report_parent_parent_id, :agent_id, :customer_id, :employee
 
             $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
             $stmt->bindValue('report_id', $report['report_id']);
-            $stmt->bindValue('agent_id', $report['agent_id'] !== 0 ?: NULL);
+            $stmt->bindValue('agent_id', $report['agent_id'] != 0 ?: NULL);
             $stmt->bindValue('customer_id', $report['customer_id']);
             $stmt->bindValue('employee_id', $report['employee_id']);
             $stmt->bindValue('hatchery_id', $report['hatchery_id']);

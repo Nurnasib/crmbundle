@@ -55,7 +55,7 @@
                 {% if details.report is not empty and details.report.slug in ['cattle-farm-visit-report'] %}
                      <a class="btn blue-bg btn-sm text-white" data-action='{{ path('cattle_farm_visit_new_modal',{'id': details.crmCustomer is not empty?details.crmCustomer.id:'', 'report':details.report.id}) }}' href='?process=postView_{{ details.id }}_{{ details.report.id }}&report={{ details.report.slug }}&check=show#modal' id='postView_{{ details.id }}_{{ details.report.id }}' >{{ 'Report'|trans }}</a>
                 {% endif %}
-                {% if details.report is not empty and details.crmCustomer.farmerIntroduce is not empty and details.report.slug in ['farmer-touch-report-fish','farmer-touch-report-poultry','farmer-touch-report-cattle'] %}
+                {% if details.report is not empty and details.crmCustomer.farmerIntroduce is not empty and details.report.slug in ['farmer-introduce-report-fish','farmer-introduce-report-poultry','farmer-introduce-report-cattle'] %}
                      <a class="btn blue-bg btn-sm text-white" data-action='{{ path('farmer_introduce_new_modal',{'id': details.crmCustomer is not empty?details.crmCustomer.id:'', 'report':details.report.id}) }}' href='?process=postView_{{ details.id }}_{{ details.report.id }}&report={{ details.report.slug }}&check=show#modal' id='postView_{{ details.id }}_{{ details.report.id }}' >{{ 'Report'|trans }}</a>
                 {% endif %}
                 {% if details.report is not empty and details.report.slug in ['antibiotic-free-farm-poultry','antibiotic-free-farm-fish','antibiotic-free-farm-cattle'] %}
