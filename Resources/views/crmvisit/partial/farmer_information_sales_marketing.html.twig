@@ -4,7 +4,13 @@
         {% if details.process == "farmer" %}
             <tr>
                 <td>
-                    {{ details.purpose is not empty?details.purpose.name:'' }}
+                    {% set purposes=details.purposeMultiple|json_decode  %}
+                    <ol>
+                        {% for purpose in purposes %}
+                            <li>{{ purpose }}</li>
+                        {% endfor %}
+                    </ol>
+                    {#                    {{ details.purposeMultiple is not empty?purposeName:'' }}#}
                 </td>
                 <td>
                     {{ details.crmCustomer is not empty?details.crmCustomer.name:'' }}

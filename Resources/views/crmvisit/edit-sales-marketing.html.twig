@@ -102,11 +102,10 @@
                                         <table class="table table-bordered">
                                             <thead>
                                             <tr class="farmer_section">
-                                                <td>
-                                                    <select name="purpose" id="" class="form-control farmer_purpose">
-                                                        <option value="">Select Purpose</option>
+                                                <td style="width: 200px">
+                                                    <select data-placeholder="Select Purpose" name="purpose[]" id="" class="form-control farmer_purpose select2" multiple>
                                                         {% for purpose in purposes %}
-                                                            <option value="{{ purpose.id }}"> {{ purpose.name }} </option>
+                                                            <option value="{{purpose.id}}"> {{purpose.name}} </option>
                                                         {% endfor %}
                                                     </select>
                                                 </td>
@@ -160,13 +159,24 @@
                                             <table class="table table-bordered">
                                                 <thead>
                                                 <tr class="agent_section">
-                                                    <td>
-                                                        <select name="agentPurpose" id=""
-                                                                class="form-control agentPurpose">
-                                                            <option value="">Select Purpose</option>
+                                                    <td width="200px">
+                                                        <select data-placeholder="Select Purpose" name="agentPurpose[]"
+                                                                class="form-control agentPurpose select2" multiple>
                                                             {% if agentPurposes is not empty %}
                                                                 {% for purpose in agentPurposes %}
                                                                     <option value="{{ purpose.id }}"> {{ purpose.name }} </option>
+                                                                {% endfor %}
+                                                            {% endif %}
+                                                        </select>
+                                                    </td>
+                                                    <td>
+                                                        <select name="agentSinglePurpose" class="form-control agentSinglePurpose">
+                                                            <option value="">Select Report</option>
+                                                            {% if agentPurposes is not empty %}
+                                                                {% for purpose in agentPurposes %}
+                                                                    {% if purpose.slug in ['farmer-training','agent-upgradation'] %}
+                                                                        <option value="{{purpose.id}}"> {{purpose.name}} </option>
+                                                                    {% endif %}
                                                                 {% endfor %}
                                                             {% endif %}
                                                         </select>
@@ -229,10 +239,8 @@
                                             <table class="table table-bordered">
                                                 <thead>
                                                 <tr class="other_agent_section">
-                                                    <td>
-                                                        <select name="otherPurpose" id=""
-                                                                class="form-control other_agent_purpose">
-                                                            <option value="">Select Purpose</option>
+                                                    <td width="200px">
+                                                        <select data-placeholder="Select Purpose" name="otherPurpose[]" class="form-control other_agent_purpose select2" multiple>
                                                             {% if otherAgentPurposes is not empty %}
                                                                 {% for purpose in otherAgentPurposes %}
                                                                     <option value="{{ purpose.id }}"> {{ purpose.name }} </option>
@@ -301,10 +309,8 @@
                                             <table class="table table-bordered">
                                                 <thead>
                                                 <tr class="sub_agent_section">
-                                                    <td>
-                                                        <select name="subPurpose" id=""
-                                                                class="form-control sub_agent_purpose">
-                                                            <option value="">Select Purpose</option>
+                                                    <td width="200px">
+                                                        <select data-placeholder="Select Purpose" name="subPurpose[]" class="form-control sub_agent_purpose select2" multiple>
                                                             {% if subAgentPurposes is not empty %}
                                                                 {% for purpose in subAgentPurposes %}
                                                                     <option value="{{ purpose.id }}"> {{ purpose.name }} </option>

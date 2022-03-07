@@ -18,6 +18,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Terminalbd\CrmBundle\Entity\Api;
+use Terminalbd\CrmBundle\Entity\ApiDetails;
 use Terminalbd\CrmBundle\Entity\CattleLifeCycle;
 use Terminalbd\CrmBundle\Entity\ChickLifeCycle;
 use Terminalbd\CrmBundle\Entity\ChickLifeCycleDetails;
@@ -92,7 +93,9 @@ class SyncAppDataController extends AbstractController
         foreach ($batches as $batch) {
             $findVisit = $this->getDoctrine()->getRepository(CrmVisit::class)->findOneBy(['appBatch' => $batch]);
             if (!$findVisit){
-                $details = $batch->getApiDetails();
+//                $details = $batch->getApiDetails();
+                $details = $this->getDoctrine()->getRepository(ApiDetails::class)->findBy(['batch'=>$batch,'status'=>0]);
+
                 foreach ($details as $detail) {
 
                     $jsonToArray = json_decode($detail->getJsonData(), true);
@@ -249,10 +252,20 @@ class SyncAppDataController extends AbstractController
     private function processVisitDetail($visitDetails, Api $batch)
     {
         foreach ($visitDetails as $visitDetail) {
+
             $findVisit = $this->getDoctrine()->getRepository(CrmVisit::class)->findOneBy(['appId' => $visitDetail['crm_visit_id'], 'appBatch' => $batch]);
             if ($findVisit){
-                $sql = "INSERT INTO `crm_visit_details`(`crm_visit_id`, `farmCapacity`, `updated`, `comments`, `created`, `customer_id`, `process`, `agent_id`, `purpose_id`, `firm_type_id`, `report_id`)
-VALUES (:crm_visit_id, :farmCapacity, :updated, :comments, :created, :customer_id, :process, :agent_id, :purpose_id, :firm_type_id, :report_id)";
+
+                $purposeMultipleJson= json_decode($visitDetail['purposeName']);
+                $purposeMultiple=[];
+                if($purposeMultipleJson){
+                    foreach ($purposeMultipleJson as $value){
+                        $purposeMultiple[$value->id]=$value->name;
+                    }
+                }
+
+                $sql = "INSERT INTO `crm_visit_details`(`crm_visit_id`, `farmCapacity`, `updated`, `comments`, `created`, `customer_id`, `process`, `agent_id`, `purpose_id`, `firm_type_id`, `report_id`, `purpose_multiple`)
+VALUES (:crm_visit_id, :farmCapacity, :updated, :comments, :created, :customer_id, :process, :agent_id, :purpose_id, :firm_type_id, :report_id, :purpose_multiple)";
 
                 $createdAt = new \DateTime($visitDetail['created']);
                 $updatedAt = new \DateTime($visitDetail['updated']);
@@ -272,6 +285,7 @@ VALUES (:crm_visit_id, :farmCapacity, :updated, :comments, :created, :customer_i
                 $stmt->bindValue('purpose_id', $visitDetail['purpose_id']);
                 $stmt->bindValue('firm_type_id', $visitDetail['firm_type_id']);
                 $stmt->bindValue('report_id', $visitDetail['report_id']);
+                $stmt->bindValue('purpose_multiple', json_encode($purposeMultiple));
 
                 $stmt->execute();
             }
@@ -1462,20 +1476,31 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
     {
         foreach ($reports as $report) {
 
+            $employee = $this->getDoctrine()->getRepository(User::class)->find($report['employee_id']);
+
             $createdAt = $report['created_at'] ? (new \DateTime($report['created_at']))->format('Y-m-d H:i:s') : null;
             $reportingDate = $report['reporting_date'] ? (new \DateTime($report['reporting_date']))->format('Y-m-d') : null;
 
-            $sql = "INSERT INTO `crm_daily_chick_price` (`employee_id`, `reporting_date`,`created_at`) VALUES (:employee_id, :reporting_date, :created_at)";
+            $existDailyChickPrice = $this->getDoctrine()->getRepository(DailyChickPrice::class)->findOneBy(['employee'=>$employee,'reportingDate'=>new \DateTime($reportingDate)]);
+            $parentId=null;
+            if($existDailyChickPrice){
+                $parentId=$existDailyChickPrice->getId();
+                $sql = "UPDATE crm_daily_chick_price SET employee_id={$report['employee_id']}, reporting_date='{$reportingDate}' WHERE id = {$existDailyChickPrice->getId()}";
+                $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
+                $stmt->execute();
+            }else{
 
-            $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
+                $sql = "INSERT INTO `crm_daily_chick_price` (`employee_id`, `reporting_date`,`created_at`) VALUES (:employee_id, :reporting_date, :created_at)";
+                $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
 
-            $stmt->bindValue('employee_id', $report['employee_id']);
+                $stmt->bindValue('employee_id', $report['employee_id']);
 //            $stmt->bindValue('location_id', $report['location_id']);
-            $stmt->bindValue('reporting_date', $reportingDate);
-            $stmt->bindValue('created_at', $createdAt);
+                $stmt->bindValue('reporting_date', $reportingDate);
+                $stmt->bindValue('created_at', $createdAt);
+                $stmt->execute();
+                $parentId = $this->getDoctrine()->getConnection()->lastInsertId();
+            }
 
-            $stmt->execute();
-            $parentId = $this->getDoctrine()->getConnection()->lastInsertId();
             if ($parentId){
                 $parent = $this->getDoctrine()->getRepository(DailyChickPrice::class)->find($parentId);
                 foreach (json_decode($report['chick_prices'], true) as $item) {
@@ -1486,7 +1511,7 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
                     if($exist){
                         /* @var DailyChickPriceDetails $exist*/
                         $exist->setPrice($item['price'] ?: 0);
-                        $exist->setUpdatedAt($createdAt);
+//                        $exist->setUpdatedAt($createdAt);
                         $this->getDoctrine()->getManager()->persist($exist);
                         $this->getDoctrine()->getManager()->flush();
                     }else{
@@ -1508,7 +1533,6 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
 
         }
     }
-
     private function processFishLifeCycle($reports, Api $batch)
     {
         foreach ($reports as $report) {

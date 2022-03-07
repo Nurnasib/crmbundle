@@ -226,7 +226,6 @@ class CrmVisitController extends AbstractController
             $entity->setAgent($agent?$agent:null);
         }
 
-        $purpose = $this->getDoctrine()->getRepository(Setting::class)->find($request->request->get('purpose'));
 
         if($request->request->get('farmer_firm_type')!=''){
             $farmer_firm_type = $this->getDoctrine()->getRepository(Setting::class)->find($request->request->get('farmer_firm_type'));
@@ -239,7 +238,26 @@ class CrmVisitController extends AbstractController
         }
 
         $entity->setCrmVisit($crmVisit?$crmVisit:null);
-        $entity->setPurpose($purpose?$purpose:null);
+        $purposeId=$request->request->get('purpose');
+        if(isset($purposeId)&&$purposeId){
+            $purpose = $this->getDoctrine()->getRepository(Setting::class)->find($request->request->get('purpose'));
+
+            if($purpose){
+                $entity->setPurpose($purpose);
+            }
+        }
+
+        $purposes = $this->getDoctrine()->getRepository(Setting::class)->findBy(['id'=>$request->request->get('purpose_multiple')]);
+
+        $arrayPurpose=[];
+        if($purposes){
+            foreach ($purposes as $purpose){
+                $arrayPurpose[$purpose->getId()]=$purpose->getName();
+            }
+        }
+
+        $entity->setPurposeMultiple(json_encode($arrayPurpose));
+
         $entity->setFarmCapacity($request->request->get('farmer_capacity')!=''?$request->request->get('farmer_capacity'):null);
 
         $entity->setComments($request->request->get('comments'));

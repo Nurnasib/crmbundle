@@ -1477,7 +1477,7 @@ class ApiController extends AbstractController
         ignore_user_abort(true);
 
         if ($request->getMethod() == 'GET' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')) {
-            $records = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType' => 'AGENT_PURPOSE'));
+            $records = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType' => 'AGENT_PURPOSE','status'=>1));
             $data = [];
             foreach ($records as $key => $record) {
                 $data[$key]['id'] = $record->getId();
@@ -2557,6 +2557,38 @@ class ApiController extends AbstractController
                 ];
             }
             return new JsonResponse($data);
+        }
+        return new JsonResponse([
+            'status' => 404,
+            'message' => 'Not Found!'
+        ]);
+
+    }
+
+
+    /**
+     * @Route("/agent-purpose-for-report", name="agent_purpose_for_report_api")
+     * @param Request $request
+     * @param ParameterBagInterface $parameterBag
+     * @return JsonResponse|Response
+     */
+    public function agentPurposeForReportApi(Request $request, ParameterBagInterface $parameterBag)
+    {
+        set_time_limit(0);
+        ignore_user_abort(true);
+
+        if ($request->getMethod() == 'GET' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')) {
+            $records = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType' => 'AGENT_PURPOSE', 'slug'=>['farmer-training','agent-upgradation']));
+            $data = [];
+            foreach ($records as $key => $record) {
+                $data[$key]['id'] = $record->getId();
+                $data[$key]['name'] = $record->getName();
+            }
+            $response = new Response();
+            $response->headers->set('Content-Type', 'application/json');
+            $response->setContent(json_encode($data));
+            $response->setStatusCode(Response::HTTP_OK);
+            return $response;
         }
         return new JsonResponse([
             'status' => 404,

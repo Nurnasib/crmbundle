@@ -666,8 +666,8 @@ $('.addmore').click(function(){
     var farmer = farmer_section.find('.farmer').val();
     var farmer_capacity = farmer_section.find('.farmer_capacity').val();
     var farmer_comments = farmer_section.find('.farmer_comments').val();
-
-    if(farmer_purpose==='' || farmer==='' || farmer_firm_type==='' || farmer_report===''){
+    
+    if(farmer_purpose.length==0 || farmer==='' || farmer_firm_type==='' || farmer_report===''){
         alert('Please enter required field.');
         return false;
     }
@@ -677,7 +677,7 @@ $('.addmore').click(function(){
         dataType: 'json',
         data:{
             'crm_visit_id':crm_visit_id,
-            'purpose':farmer_purpose,
+            'purpose_multiple':farmer_purpose,
             'farmer_firm_type':farmer_firm_type,
             'farmer_report':farmer_report,
             'farmer':farmer,
@@ -728,9 +728,11 @@ $('.addAgent').click(function(){
     var crm_visit_id = $('.crm_visit_id').val();
     var agent_section = el.closest('tr.agent_section');
     var agentPurpose = agent_section.find('.agentPurpose').val();
+    var agentSinglePurpose = agent_section.find('.agentSinglePurpose').val();
     var agent = agent_section.find('.agent').val();
     var agentComments = agent_section.find('.agentComments').val();
-    if(agentPurpose==='' || agent===''){
+    if(agentPurpose.length==0 || agent===''){
+        alert('Please enter required field.');
         return false;
     }
     $.ajax({
@@ -739,7 +741,8 @@ $('.addAgent').click(function(){
         dataType: 'json',
         data:{
             'crm_visit_id':crm_visit_id,
-            'purpose':agentPurpose,
+            'purpose':agentSinglePurpose,
+            'purpose_multiple':agentPurpose,
             'agent':agent,
             'comments':agentComments,
             'process':'agent'
@@ -785,7 +788,7 @@ $('.addOtherAgent').click(function(){
     var agentPurpose = agent_section.find('.other_agent_purpose').val();
     var agent = agent_section.find('.other_agent').val();
     var agentComments = agent_section.find('.other_agent_comments').val();
-    if(agentPurpose==='' || agent===''){
+    if(agentPurpose.length==0 || agent===''){
         return false;
     }
     $.ajax({
@@ -794,7 +797,7 @@ $('.addOtherAgent').click(function(){
         dataType: 'json',
         data:{
             'crm_visit_id':crm_visit_id,
-            'purpose':agentPurpose,
+            'purpose_multiple':agentPurpose,
             'agent':agent,
             'comments':agentComments,
             'process':'other-agent'
@@ -835,7 +838,7 @@ $('.addSubAgent').click(function(){
     var agentPurpose = agent_section.find('.sub_agent_purpose').val();
     var agent = agent_section.find('.sub_agent').val();
     var agentComments = agent_section.find('.sub_agent_comments').val();
-    if(agentPurpose==='' || agent===''){
+    if(agentPurpose.length==0 || agent===''){
         return false;
     }
     $.ajax({
@@ -844,7 +847,7 @@ $('.addSubAgent').click(function(){
         dataType: 'json',
         data:{
             'crm_visit_id':crm_visit_id,
-            'purpose':agentPurpose,
+            'purpose_multiple':agentPurpose,
             'agent':agent,
             'comments':agentComments,
             'process':'sub-agent'
