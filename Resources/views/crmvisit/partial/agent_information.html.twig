@@ -2,6 +2,16 @@
     {% for details in entity.crmVisitDetails  %}
         {% if details.process == "agent" %}
             <tr>
+
+                <td>
+                    {% set purposes=details.purposeMultiple|json_decode  %}
+                    <ol>
+                        {% for purpose in purposes %}
+                            <li>{{ purpose }}</li>
+                        {% endfor %}
+                    </ol>
+                    {#                    {{ details.purposeMultiple is not empty?purposeName:'' }}#}
+                </td>
                 <td>
                     {{ details.purpose is not empty?details.purpose.name:'' }}
                 </td>

@@ -43,7 +43,7 @@
                                 <tr>
                                     <td>{{ feed.name }}</td>
                                     {% for chickType in chickTypes %}
-                                        <td><input class="form-control" type="number" name="chickPriceDetail[]" data-id="{{ chickPriceDetail[feed.id][chickType.id] is defined ? chickPriceDetail[feed.id][chickType.id].id:'' }}" value="{{ chickPriceDetail[feed.id][chickType.id].price }}"></td>
+                                        <td><input class="form-control" type="number" name="chickPriceDetail[]" data-id="{{ chickPriceDetail[feed.id][chickType.id] is defined ? chickPriceDetail[feed.id][chickType.id].id:'' }}" value="{{ chickPriceDetail[feed.id][chickType.id].price|default(0) }}"></td>
                                     {% endfor %}
                                 </tr>
                             {% endfor %}

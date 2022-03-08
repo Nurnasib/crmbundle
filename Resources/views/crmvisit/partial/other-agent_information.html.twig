@@ -3,7 +3,13 @@
         {% if details.process == "other-agent" %}
             <tr>
                 <td>
-                    {{ details.purpose is not empty?details.purpose.name:'' }}
+                    {% set purposes=details.purposeMultiple|json_decode  %}
+                    <ol>
+                        {% for purpose in purposes %}
+                            <li>{{ purpose }}</li>
+                        {% endfor %}
+                    </ol>
+                    {#                    {{ details.purposeMultiple is not empty?purposeName:'' }}#}
                 </td>
                 <td>
                     {{ details.agent is not empty?details.agent.name:'' }}

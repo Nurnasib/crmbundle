@@ -78,7 +78,15 @@ class CrmVisitDetails
      */
     private $purpose;
 
-     /**
+
+    /**
+     * @var string
+     * @ORM\Column(name="purpose_multiple" , type="text", nullable=true)
+     */
+    private $purposeMultiple;
+
+
+    /**
      * @var Setting
      * @ORM\ManyToOne(targetEntity="Setting", inversedBy="crmVisitDetails")
      * @ORM\JoinColumn(name="firm_type_id", referencedColumnName="id", onDelete="SET NULL", nullable=true)
@@ -297,6 +305,22 @@ class CrmVisitDetails
     public function setAgent($agent)
     {
         $this->agent = $agent;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPurposeMultiple()
+    {
+        return $this->purposeMultiple;
+    }
+
+    /**
+     * @param string $purposeMultiple
+     */
+    public function setPurposeMultiple($purposeMultiple)
+    {
+        $this->purposeMultiple = $purposeMultiple;
     }
 
 
