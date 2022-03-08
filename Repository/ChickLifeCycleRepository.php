@@ -13,6 +13,7 @@ namespace Terminalbd\CrmBundle\Repository;
 
 //use Doctrine\ORM\EntityRepository;
 use Terminalbd\CrmBundle\Repository\BaseRepository;
+use Terminalbd\KpiBundle\Entity\EmployeeBoard;
 
 /**
  * This custom Doctrine repository contains some methods which are useful when
@@ -42,6 +43,7 @@ class ChickLifeCycleRepository extends BaseRepository
         $results = $qb->getQuery()->getSingleResult();
         return $results['totalReport'];
     }
+
 
 
 }

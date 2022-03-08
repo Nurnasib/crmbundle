@@ -12,6 +12,7 @@
 namespace Terminalbd\CrmBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
+use Terminalbd\KpiBundle\Entity\EmployeeBoard;
 
 /**
  * This custom Doctrine repository contains some methods which are useful when
@@ -157,6 +158,26 @@ class FcrDetailsRepository extends BaseRepository
 
         $results = $qb->getQuery()->getSingleResult();
         return $results['totalReport'];
+    }
+
+
+    public function getNumberOfReportsForKpi($board, $type)
+    {
+        /**
+         * @var EmployeeBoard $board
+         */
+        $startDate = (new \DateTime('01-' . date('m', strtotime($board->getMonth())) . '-' . $board->getYear()))->format('Y-m-d');
+        $endDate = (new \DateTime('01-' . date('m', strtotime($board->getMonth())) . '-' . $board->getYear()))->format('Y-m-t');
+
+
+        $qb = $this->createQueryBuilder('e');
+
+        $qb->where('e.employee = :employee')->setParameter('employee', $board->getEmployee());
+        $qb->andWhere('e.fcrOfFeed = :type')->setParameter('type', $type);
+        $qb->andWhere('e.reportingMonth >= :startDate')->setParameter('startDate', $startDate);
+        $qb->andWhere('e.reportingMonth <= :endDate')->setParameter('endDate', $endDate);
+
+        return count($qb->getQuery()->getArrayResult());
     }
 
 }
