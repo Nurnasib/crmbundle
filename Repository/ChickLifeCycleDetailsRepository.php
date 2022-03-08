@@ -12,6 +12,8 @@
 namespace Terminalbd\CrmBundle\Repository;
 
 //use Doctrine\ORM\EntityRepository;
+use Terminalbd\KpiBundle\Entity\EmployeeBoard;
+
 /**
  * This custom Doctrine repository contains some methods which are useful when
  * querying for blog post information.
@@ -82,5 +84,27 @@ class ChickLifeCycleDetailsRepository extends BaseRepository
         }
         ksort($data);
         return $data;
+    }
+
+
+
+
+    public function getNumberOfReportsForKpi($board)
+    {
+        /**
+         * @var EmployeeBoard $board
+         */
+        $startDate = (new \DateTime('01-' . date('m', strtotime($board->getMonth())) . '-' . $board->getYear()))->format('Y-m-d');
+        $endDate = (new \DateTime('01-' . date('m', strtotime($board->getMonth())) . '-' . $board->getYear()))->format('Y-m-t');
+
+        $qb = $this->createQueryBuilder('e');
+
+        $qb->join('e.crmChickLifeCycle', 'crm_chick_life_cycle');
+
+        $qb->where('crm_chick_life_cycle.employee = :employee')->setParameter('employee',$board->getEmployee());
+        $qb->andWhere('e.reportingDate >= :startDate')->setParameter('startDate', $startDate);
+        $qb->andWhere('e.reportingDate <= :endDate')->setParameter('endDate', $endDate);
+
+        return count($qb->getQuery()->getArrayResult());
     }
 }

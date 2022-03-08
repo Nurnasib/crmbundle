@@ -12,6 +12,7 @@
 namespace Terminalbd\CrmBundle\Repository;
 
 //use Doctrine\ORM\EntityRepository;
+use Terminalbd\KpiBundle\Entity\EmployeeBoard;
 
 /**
  * This custom Doctrine repository contains some methods which are useful when
@@ -90,5 +91,24 @@ class LayerLifeCycleDetailsRepository extends BaseRepository
 //        dd($data);
         return $data;
 
+    }
+
+    public function getNumberOfReportsForKpi($board)
+    {
+        /**
+         * @var EmployeeBoard $board
+         */
+        $startDate = (new \DateTime('01-' . date('m', strtotime($board->getMonth())) . '-' . $board->getYear()))->format('Y-m-d');
+        $endDate = (new \DateTime('01-' . date('m', strtotime($board->getMonth())) . '-' . $board->getYear()))->format('Y-m-t');
+
+        $qb = $this->createQueryBuilder('e');
+
+        $qb->join('e.crmLayerLifeCycle', 'crm_layer_life_cycle');
+
+        $qb->where('crm_layer_life_cycle.employee = :employee')->setParameter('employee',$board->getEmployee());
+        $qb->andWhere('e.visitingDate >= :startDate')->setParameter('startDate', $startDate);
+        $qb->andWhere('e.visitingDate <= :endDate')->setParameter('endDate', $endDate);
+
+        return count($qb->getQuery()->getArrayResult());
     }
 }

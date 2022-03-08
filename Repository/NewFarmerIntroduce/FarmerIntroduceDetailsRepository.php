@@ -8,6 +8,7 @@ use Terminalbd\CrmBundle\Entity\CrmCustomer;
 use Terminalbd\CrmBundle\Entity\NewFarmerIntroduce\FarmerIntroduceDetails;
 use Terminalbd\CrmBundle\Entity\Setting;
 use Terminalbd\CrmBundle\Repository\BaseRepository;
+use Terminalbd\KpiBundle\Entity\EmployeeBoard;
 
 class FarmerIntroduceDetailsRepository extends BaseRepository
 {
@@ -171,6 +172,47 @@ class FarmerIntroduceDetailsRepository extends BaseRepository
         }
         ksort($data);
         return $data;
+    }
+
+
+    public function getNumberOfReportsForKpi($board, $type)
+    {
+        /**
+         * @var EmployeeBoard $board
+         */
+        $startDate = (new \DateTime('01-' . date('m', strtotime($board->getMonth())) . '-' . $board->getYear()))->format('Y-m-d');
+        $endDate = (new \DateTime('01-' . date('m', strtotime($board->getMonth())) . '-' . $board->getYear()))->format('Y-m-t');
+
+        $qb = $this->createQueryBuilder('e');
+
+        $qb->join('e.farmerType', 'farmer_type');
+        $qb->where('e.employee = :employee')->setParameter('employee',$board->getEmployee());
+        $qb->andWhere('e.introduceDate >= :startDate')->setParameter('startDate', $startDate);
+        $qb->andWhere('e.introduceDate <= :endDate')->setParameter('endDate', $endDate);
+        $qb->andWhere('farmer_type.slug = :slug')->setParameter('slug', $type);
+
+
+        return count($qb->getQuery()->getArrayResult());
+    }
+
+    public function getNumberOfReportsNewFarmerForKpi($board, $type)
+    {
+        /**
+         * @var EmployeeBoard $board
+         */
+        $startDate = (new \DateTime('01-' . date('m', strtotime($board->getMonth())) . '-' . $board->getYear()))->format('Y-m-d');
+        $endDate = (new \DateTime('01-' . date('m', strtotime($board->getMonth())) . '-' . $board->getYear()))->format('Y-m-t');
+
+        $qb = $this->createQueryBuilder('e');
+
+        $qb->join('e.farmerType', 'farmer_type');
+        $qb->where('e.employee = :employee')->setParameter('employee',$board->getEmployee());
+        $qb->andWhere('e.createdAt >= :startDate')->setParameter('startDate', $startDate);
+        $qb->andWhere('e.createdAt <= :endDate')->setParameter('endDate', $endDate);
+        $qb->andWhere('farmer_type.slug = :slug')->setParameter('slug', $type);
+
+
+        return count($qb->getQuery()->getArrayResult());
     }
 
 }

@@ -12,6 +12,7 @@
 namespace Terminalbd\CrmBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
+use Terminalbd\KpiBundle\Entity\EmployeeBoard;
 
 /**
  * This custom Doctrine repository contains some methods which are useful when
@@ -32,6 +33,25 @@ class CattleLifeCycleRepository extends EntityRepository
         $results = $query->getQuery()->getResult();
 
         return $results;
+    }
+
+
+    public function getNumberOfReportsForKpi($board, $type)
+    {
+        /**
+         * @var EmployeeBoard $board
+         */
+        $startDate = (new \DateTime('01-' . date('m', strtotime($board->getMonth())) . '-' . $board->getYear()))->format('Y-m-d');
+        $endDate = (new \DateTime('01-' . date('m', strtotime($board->getMonth())) . '-' . $board->getYear()))->format('Y-m-t');
+
+        $qb = $this->createQueryBuilder('e');
+
+
+        $qb->where('e.employee = :employee')->setParameter('employee',$board->getEmployee());
+        $qb->andWhere('e.reportingDate >= :startDate')->setParameter('startDate', $startDate);
+        $qb->andWhere('e.reportingDate <= :endDate')->setParameter('endDate', $endDate);
+        $qb->andWhere('e.lifeCycleState = :status')->setParameter('status', $type);
+        return count($qb->getQuery()->getArrayResult());
     }
 
 }

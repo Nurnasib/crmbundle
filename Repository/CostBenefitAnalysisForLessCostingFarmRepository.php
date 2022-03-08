@@ -12,6 +12,7 @@
 namespace Terminalbd\CrmBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
+use Terminalbd\KpiBundle\Entity\EmployeeBoard;
 
 /**
  * This custom Doctrine repository contains some methods which are useful when
@@ -127,6 +128,23 @@ class CostBenefitAnalysisForLessCostingFarmRepository extends BaseRepository
         }
 //        dd($returnArray);
         return $returnArray;
+    }
+
+
+    public function getNumberOfReportsForKpi($board)
+    {
+        /**
+         * @var EmployeeBoard $board
+         */
+        $startDate = (new \DateTime('01-' . date('m', strtotime($board->getMonth())) . '-' . $board->getYear()))->format('Y-m-d');
+        $endDate = (new \DateTime('01-' . date('m', strtotime($board->getMonth())) . '-' . $board->getYear()))->format('Y-m-t');
+
+        $qb = $this->createQueryBuilder('e');
+        $qb->where('e.employee = :employee')->setParameter('employee',$board->getEmployee());
+        $qb->andWhere('e.reportingMonth >= :startDate')->setParameter('startDate', $startDate);
+        $qb->andWhere('e.reportingMonth <= :endDate')->setParameter('endDate', $endDate);
+
+        return count($qb->getQuery()->getArrayResult());
     }
 
 }
