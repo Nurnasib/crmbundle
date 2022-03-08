@@ -40,6 +40,7 @@
                             <th scope="col">Address</th>
                             <th scope="col">Agent</th>
                             <th scope="col">Location</th>
+                            <th scope="col">Farmer Type</th>
 
                             <th scope="col" class="text-center" width="150"><i class="feather icon-settings"></i></th>
                         </tr>
@@ -53,6 +54,7 @@
                                 <td>{{ entity.address }}</td>
                                 <td>{{ entity.agentName }}</td>
                                 <td>{{ entity.locationName }}</td>
+                                <td>{{ entity.farmerTypeName|default('') }}</td>
                                 <td>
                                     {% if 'ADMIN' in app.user.roles|join('_') %}
                                         <div class="btn-group">

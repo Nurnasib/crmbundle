@@ -12,6 +12,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Terminalbd\CrmBundle\Entity\AgentUpgradationReport;
 use Terminalbd\CrmBundle\Entity\AntibioticFreeFarm;
 use Terminalbd\CrmBundle\Entity\ChickLifeCycle;
 use Terminalbd\CrmBundle\Entity\ChickLifeCycleDetails;
@@ -136,8 +137,9 @@ class OthersReportController extends AbstractController
                     break;
 
                 case 'new-agent-upgradation-cattle':
-                    $entities = $this->getDoctrine()->getRepository(Expense::class)->getExpense($filterBy, $this->getUser());
-
+                case 'new-agent-upgradation-fish':
+                    $entities = $this->getDoctrine()->getRepository(AgentUpgradationReport::class)->getAgentUpgradation($filterBy);
+//dd($entities);
                     break;
 
                 default:

@@ -23,5 +23,8 @@
     {% elseif filterBy['otherReport'] is same as 'expense' %}
         {% include '@TerminalbdCrm/report/others/inc/_expense.html.twig'%}
 
+    {% elseif filterBy['otherReport'] in ['new-agent-upgradation-cattle','new-agent-upgradation-fish'] %}
+        {% include '@TerminalbdCrm/report/others/inc/_agent_upgradation.html.twig'%}
+
     {% endif %}
 {% endif %}

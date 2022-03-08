@@ -12,6 +12,7 @@
 namespace Terminalbd\CrmBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
+use Terminalbd\CrmBundle\Entity\AgentUpgradationReport;
 
 /**
  * This custom Doctrine repository contains some methods which are useful when
@@ -37,6 +38,41 @@ class AgentUpgradationReportRepository extends BaseRepository
             return $query->getQuery()->getResult();
         }
         return array();
+    }
+
+    public function getAgentUpgradation($filterBy){
+            $startDate = isset($filterBy['startDate']) ? (new \DateTime($filterBy['startDate']))->format('Y-m-d') . ' 00:00:00' : null;
+            $endDate = isset($filterBy['endDate']) ? (new \DateTime($filterBy['endDate']))->format('Y-m-d') . ' 23:59:59' : null;
+
+            $query = $this->createQueryBuilder('aur');
+            $query->join('aur.agent','agent');
+            $query->join('aur.employee','employee');
+            $query->where('aur.createdAt IS NOT NULL');
+
+            if($startDate&&$endDate){
+                $query->andWhere('aur.createdAt >= :startDate')->setParameter('startDate',$startDate);
+                $query->andWhere('aur.createdAt <= :endDate')->setParameter('endDate', $endDate);
+            }
+
+            if(isset($filterBy['employee'])&&$filterBy['employee']!=''){
+                $query->andWhere('employee.id = :employee')->setParameter('employee',$filterBy['employee']);
+            }
+
+        $results=$query->getQuery()->getResult();
+        $returnArray=[];
+        if($results){
+            /* @var AgentUpgradationReport $result*/
+            foreach ($results as $result){
+                $monthYear = $result->getCreatedAt()->format('F-Y');
+                $returnArray[$result->getEmployee()->getId()]['name']=$result->getEmployee()->getName();
+                $returnArray[$result->getEmployee()->getId()]['employeeDesignationName']=$result->getEmployee()->getDesignation()->getName();
+                $returnArray[$result->getEmployee()->getId()]['details'][$monthYear][]=$result;
+//                $returnArray[$result['employeeId']]['details'][$monthYear][]=$result;
+            }
+        }
+
+        return $returnArray;
+
     }
 
 

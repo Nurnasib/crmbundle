@@ -42,6 +42,7 @@ class AgentUpgradationReportFormType extends AbstractType
                     return $er->createQueryBuilder('e')
                         ->where("e.settingType ='BREED_NAME'")
                         ->andWhere("e.status =1")
+                        ->andWhere('e.slug IN (:slug)')->setParameter('slug',['cattle-breed','fish-breed'])
                         ->orderBy('e.name', 'ASC');
                 },
             ))

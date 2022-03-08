@@ -731,9 +731,11 @@
 {% block javascripts %}
     {#<script>#}
     {{ parent() }}
-    <script type="application/javascript" src="{{ asset('bundles/terminalbdcrm/js/crm/script.js') }}"></script>
+    <script type="application/javascript" src="{{ asset('bundles/terminalbdcrm/js/crm/script-sales.js') }}"></script>
 
     <script type="application/javascript" src="{{ asset('bundles/terminalbdcrm/js/crm/expense.js') }}"></script>
 {#    <script type="application/javascript" src="{{ asset('bundles/terminalbdcrm/js/crm/fcr.js') }}"></script>#}
+    <script type="application/javascript" src="{{ asset('bundles/terminalbdcrm/js/crm/agent-upgradation-report.js') }}"></script>
+
 
 {% endblock %}

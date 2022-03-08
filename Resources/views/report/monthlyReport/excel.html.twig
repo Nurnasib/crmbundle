@@ -51,6 +51,9 @@
     {% elseif lifeCycleSlug in ['fattening-performance-report','dairy-performance-report'] %}
         {% include '@TerminalbdCrm/report/monthlyReport/inc/cattle/_performance.html.twig'%}
 
+    {% elseif lifeCycleSlug is same as 'cattle-farm-visit-report' %}
+        {% include '@TerminalbdCrm/report/monthlyReport/inc/cattle/_farm_visit.html.twig'%}
+
     {% endif %}
 
 {% endif %}

@@ -9,6 +9,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Terminalbd\CrmBundle\Entity\AntibioticFreeFarm;
+use Terminalbd\CrmBundle\Entity\CattleFarmVisitDetails;
 use Terminalbd\CrmBundle\Entity\CattlePerformanceDetails;
 use Terminalbd\CrmBundle\Entity\CostBenefitAnalysisForLessCostingFarm;
 use Terminalbd\CrmBundle\Entity\DiseaseMapping;
@@ -107,6 +108,13 @@ class MonthlyReportController extends AbstractController
                 case 'dairy-performance-report':
 
                 $entities = $this->getDoctrine()->getRepository(CattlePerformanceDetails::class)->getPerformanceReport($report, $filterBy, $this->getUser());
+
+                    break;
+
+                case 'cattle-farm-visit-report':
+
+                $entities = $this->getDoctrine()->getRepository(CattleFarmVisitDetails::class)->getCattleFarmVisitReport($report, $filterBy, $this->getUser());
+//                dd($entities);
 
                     break;
 

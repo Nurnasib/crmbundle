@@ -64,7 +64,18 @@
                             <td>{{ data.farmerName }}</td>
                             <td>{{ data.farmerAddress }}</td>
                             <td>{{ data.farmerMobile }}</td>
-                            <td>{{ data.purposeName }}</td>
+                            <td>
+                                {% if data.purposeMultiple is not empty %}
+                                {% set purposes=data.purposeMultiple|json_decode  %}
+                                <ol>
+                                    {% for purpose in purposes %}
+                                        <li>{{ purpose }}</li>
+                                    {% endfor %}
+                                </ol>
+                                {% else %}
+                                {{ data.purposeName }}
+                                {% endif %}
+                            </td>
                             <td>{{ data.farmCapacity }}</td>
                             <td>{{ data.comments }}</td>
                         </tr>

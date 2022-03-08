@@ -39,8 +39,11 @@ class CrmCustomerRepository extends EntityRepository
         $qb->join('e.location','location');
         $qb->join('e.customerGroup','s');
         $qb->leftJoin('e.agent','agent');
+        $qb->leftJoin('e.farmerIntroduce','farmerIntroduce');
+        $qb->leftJoin('farmerIntroduce.farmerType','farmerType');
 
         $qb->select('e.id as id','e.name as name','e.address as address','e.mobile as mobile', 'agent.name AS agentName', 'location.name AS locationName');
+        $qb->addSelect('farmerType.name as farmerTypeName');
 
         $qb->where('s.slug = :slug')->setParameter('slug',$pram);
         if (!str_contains($rolesString, 'ADMIN')){

@@ -1,0 +1,80 @@
+{% for employeeId, details in entities %}
+    {% for month, data in details['details'] %}
+        {#            {{ dump(month, data) }}#}
+        <table width="100%">
+            <tr>
+                <th colspan="15"><h3 class="text-center">NOURISH POULTRY AND HATCHERY LTD</h3></th>
+            </tr>
+            <tr>
+                <th colspan="15"><h5 class="text-center">UTTARA, DHAKA.</h5></th>
+            </tr>
+            <tr>
+                <td colspan="15" align="center"><h6>{{ report.name|default('') }}</h6></td>
+            </tr>
+        </table>
+        <table width="100%" class="table table-striped table-bordered table-hover">
+            <thead class="thead-dark">
+            <tr>
+                <th>{{ 'ID' }}: {{ details['userId'] }}</th>
+                <th>{{ 'Name of CSO' }}: {{ details['employeeName'] }}</th>
+                <th>{{ 'Designation' }}: {{ details['employeeDesignationName'] }}</th>
+                <th>{{ 'Month' }}: {{ month|date('m-Y') }}</th>
+            </tr>
+            </thead>
+        </table>
+
+        <table class="table table-striped table-bordered table-hover" id="datatable">
+            <thead class="thead-dark">
+            <tr>
+                <th rowspan="2">S/L</th>
+                <th rowspan="2">Visiting Date</th>
+                <th rowspan="2">Name of Farmer</th>
+                <th rowspan="2">Mobile Number</th>
+                <th rowspan="2">Address</th>
+                <th colspan="3">Cattle Population</th>
+                <th rowspan="2">Avg Milk Yield (Ltr.) per day</th>
+                <th rowspan="2">Conception Rate (%)</th>
+                <th colspan="2">Fodder (Yes/No)</th>
+                <th rowspan="2">Type of Concentrate Feed</th>
+                <th colspan="2">Market Price</th>
+                <th rowspan="2">Comment</th>
+            </tr>
+            <tr>
+                <th>OX</th>
+                <th>Cow</th>
+                <th>Calf</th>
+
+                <th>Green Grass</th>
+                <th>Straw</th>
+
+                <th>Milk (per Liter) TK</th>
+                <th>Meat (per Kg) TK</th>
+            </tr>
+
+            </thead>
+            <tbody>
+            {% for item in data %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ item.visitingDate|date('d-m-Y') }}</td>
+                    <td>{{ item.farmerName }}</td>
+                    <td>{{ item.farmerMobile }}</td>
+                    <td>{{ item.farmerAddress }}</td>
+                    <td>{{ item.cattlePopulationOx|number_format(2) }}</td>
+                    <td>{{ item.cattlePopulationCow|number_format(2) }}</td>
+                    <td>{{ item.cattlePopulationCalf|number_format(2) }}</td>
+
+                    <td>{{ item.avgMilkYieldPerDay|number_format(2) }}</td>
+                    <td>{{ item.conceptionRate|number_format(2) }}</td>
+                    <td>{{ item.fodderGreenGrassKg }}</td>
+                    <td>{{ item.fodderStrawKg }}</td>
+                    <td>{{ item.typeOfConcentrateFeed }}</td>
+                    <td>{{ item.marketPriceMilkPerLiter }}</td>
+                    <td>{{ item.marketPriceMeatPerKg }}</td>
+                    <td>{{ item.remarks }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% endfor %}
+{% endfor %}
