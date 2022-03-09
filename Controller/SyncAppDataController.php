@@ -1288,8 +1288,7 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
             $feedCompany = $this->getDoctrine()->getRepository(Setting::class)->find($report['feed_company_id']);
 
             /* @var CompanyWiseFeedSale $exist */
-            $exist = $this->getDoctrine()->getRepository(CompanyWiseFeedSale::class)->findOneBy(['employee' => $employee, 'feedCompany' => $feedCompany, 'monthName' => $report['month_name'], 'year' => $report['year'], 'breedName' => $report['breed_name']]);
-
+            $exist = $this->getDoctrine()->getRepository(CompanyWiseFeedSale::class)->findOneBy(['employee' => $employee, 'feedCompany' => $feedCompany, 'monthName' => $report['month_name'], 'year' => $report['year'], 'breedName' => strtolower($report['breed_name'])]);
             if ($exist){
                 $exist->setProductWiseQty($report['product_wise_qty']);
                 $exist->setTotalQty($report['total_qty']);

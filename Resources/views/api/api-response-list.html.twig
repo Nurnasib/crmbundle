@@ -46,7 +46,7 @@
                             {% for record in records %}
                                 <tr>
                                     <td>{{ loop.index }}</td>
-                                    <td>{{ record.employee.userId|default('') }}</td>
+                                    <td>{{ record.employee ? record.employee.userId : '' }}</td>
                                     <td>{{ record.employee.name|default('') }}</td>
                                     <td>{{ record.batchNo|default('') }}</td>
                                     <td>{{ record.createdAt ? record.createdAt|date('d-m-Y h:i A') : '' }}</td>
