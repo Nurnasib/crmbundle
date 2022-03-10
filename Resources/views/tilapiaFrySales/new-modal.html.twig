@@ -171,6 +171,77 @@
                                     </div>
                                 </div>
 
+                                <div class="row">
+                                    <div class="col-md-12 tilapiaFrySales_competitor_other_agent_section">
+                                        <h4 class="text-center">{{ "Tilapia Fry Sales of Competitors in your Area"|trans }}</h4>
+                                        <table class="table table-bordered" id="datatable">
+                                            <thead>
+                                            <tr class="text-center">
+                                                <th>Company Name</th>
+                                                <th>Month</th>
+                                                <th>Quantity</th>
+                                                <th></th>
+                                            </tr>
+
+                                            </thead>
+                                            <tbody>
+                                            <tr>
+                                                <td>
+                                                    <select name="feed_id" id="feed_id" class="form-control feed_id">
+                                                        <option value="">Select Company</option>
+                                                        {% if feeds is not empty %}
+                                                            {% for feed in feeds %}
+                                                                {% if feed.name !='Nourish' %}
+                                                                    <option value="{{ feed.id }}">{{ feed.name }}</option>
+                                                                {% endif %}
+                                                            {% endfor %}
+
+                                                        {% endif %}
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <select name="month" id="month" class="form-control month">
+                                                        <option value="">Select Month</option>
+                                                        {% if arrayMonthRange is not empty %}
+                                                            {% for month in arrayMonthRange %}
+                                                                <option value="{{ month }}">{{ month }}</option>
+                                                            {% endfor %}
+
+                                                        {% endif %}
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <input type="number" class="form-control quantity" name="quantity" min="0" value="">
+                                                </td>
+                                                <td>
+                                                    <button type="button" id="tilapia_fry_sales_competitor_other_agent_add_button" class="btn btn-primary btn-sm tilapia_fry_sales_competitor_other_agent_add_button">Add</button>
+                                                </td>
+                                            </tr>
+
+                                            </tbody>
+                                        </table>
+                                        <table class="table table-bordered tilapiaFrySales_competitor_other_agent_table" id="datatable">
+                                            <thead>
+                                            <tr class="text-center">
+                                                <th>SL</th>
+                                                <th>Company Name</th>
+                                            {% if arrayMonthRange is not empty %}
+                                            {% for month in arrayMonthRange %}
+                                                <th>{{ month }}</th>
+                                            {% endfor %}
+                                            {% endif %}
+                                            </tr>
+
+                                            </thead>
+                                            <tbody class="tilapiaFrySales_competitor_other_agent_body_section">
+                                            {% include '@TerminalbdCrm/tilapiaFrySales/_competitor_other_agent_content_table_body.html.twig' %}
+
+                                            </tbody>
+                                        </table>
+
+                                    </div>
+                                </div>
+
                             </div>
                         </div>
                     </div>
@@ -179,6 +250,11 @@
         </div>
         <!-- [ Main Content ] end -->
     </div>
+    <style>
+        .error{
+            border: 1px solid red!important;
+        }
+    </style>
 
 {% endblock %}
  {% block cssBlock %}

@@ -7,6 +7,11 @@ $('.tilapia_fry_sales_competitor_add_button').on('click',function () {
 });
 
 
+$('.tilapia_fry_sales_competitor_other_agent_add_button').on('click',function () {
+    fishSalesPriceCompetitorOtherAgentDataUpdateInsertAjax($(this));
+});
+
+
 function fishSalesPriceDataUpdateInsertAjax(element) {
 
     var closestTr=element.closest('tr');
@@ -15,6 +20,14 @@ function fishSalesPriceDataUpdateInsertAjax(element) {
     var quantity= closestTr.find('.quantity').val();
 
     if(agent_id==''||month==''||quantity==''){
+        alert('Please enter required field.')
+        if(agent_id==''){
+            closestTr.find('.agent_id').addClass("error").focus();
+        }else if(month==''){
+            closestTr.find('.month').addClass("error").focus();
+        }else if(quantity==''){
+            closestTr.find('.quantity').addClass("error").focus();
+        }
         return false;
     }
 
@@ -52,6 +65,17 @@ function fishSalesPriceCompetitorDataUpdateInsertAjax(element) {
     var quantity= closestTr.find('.quantity').val();
 
     if(agent_id==''||feed_id==''||month==''||quantity==''){
+        alert('Please enter required field.')
+
+        if(agent_id==''){
+            closestTr.find('.agent_id').addClass("error").focus();
+        }else if(month==''){
+            closestTr.find('.month').addClass("error").focus();
+        }else if(feed_id==''){
+            closestTr.find('.feed_id').addClass("error").focus();
+        }else if(quantity==''){
+            closestTr.find('.quantity').addClass("error").focus();
+        }
         return false;
     }
 
@@ -74,6 +98,49 @@ function fishSalesPriceCompetitorDataUpdateInsertAjax(element) {
 
                 var refreshUrl = Routing.generate('crm_competitor_tilapia_fry_sales_refresh');
                 $('.tilapiaFrySales_competitor_table tbody').load(refreshUrl);
+                // console.log(response);
+            }
+        }
+    });
+
+}
+
+function fishSalesPriceCompetitorOtherAgentDataUpdateInsertAjax(element) {
+
+    var closestTr=element.closest('tr');
+    var feed_id= closestTr.find('.feed_id').val();
+    var month= closestTr.find('.month').val();
+    var quantity= closestTr.find('.quantity').val();
+
+    if(feed_id==''||month==''||quantity==''){
+        alert('Please enter required field.')
+        if(month==''){
+            closestTr.find('.month').addClass("error").focus();
+        }else if(feed_id==''){
+            closestTr.find('.feed_id').addClass("error").focus();
+        }else if(quantity==''){
+            closestTr.find('.quantity').addClass("error").focus();
+        }
+        return false;
+    }
+
+    $.ajax({
+        url    : Routing.generate('competitor_other_agent_tilapia_fry_sales_data_insert'),
+        type   : 'post',
+        data   : {
+            'feed_id':feed_id,
+            'month':month,
+            'quantity':quantity,
+        },
+        dataType : 'json',
+        success: function(response){
+            if(response.status===200){
+                closestTr.find('.feed_id').val('');
+                closestTr.find('.month').val('');
+                closestTr.find('.quantity').val('');
+
+                var refreshUrl = Routing.generate('crm_competitor_other_agent_tilapia_fry_sales_refresh');
+                $('.tilapiaFrySales_competitor_other_agent_table tbody').load(refreshUrl);
                 // console.log(response);
             }
         }

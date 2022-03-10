@@ -39,7 +39,7 @@ use Terminalbd\CrmBundle\Form\DairyLifeCycleDetailsFormType;
 
 /**
  * @Route("/crm/tilapia/fry/sales")
- * @Security("is_granted('ROLE_CRM_AQUA_USER') or is_granted('ROLE_DEVELOPER')")
+ * @Security("is_granted('ROLE_CRM_AQUA_USER') or is_granted('ROLE_CRM_AQUA_ADMIN') or is_granted('ROLE_DEVELOPER')")
  */
 class TilapiaFrySalesController extends AbstractController
 {
@@ -72,6 +72,7 @@ class TilapiaFrySalesController extends AbstractController
 
         $nourishTilapiaFrySales = $this->getDoctrine()->getRepository(TilapiaFrySales::class)->getTilapiaFrySalesByEmployeeMonthYear( $this->getUser(), $arrayMonth, $currentYear);
         $competitorTilapiaFrySales = $this->getDoctrine()->getRepository(TilapiaFrySales::class)->getCompetitorsTilapiaFrySalesByEmployeeMonthYear( $this->getUser(), $arrayMonth, $currentYear);
+        $competitorOtherAgentTilapiaFrySales = $this->getDoctrine()->getRepository(TilapiaFrySales::class)->getCompetitorsTilapiaFrySalesOtherAgentByEmployeeMonthYear( $this->getUser(), $arrayMonth, $currentYear);
 
         return $this->render('@TerminalbdCrm/tilapiaFrySales/new-modal.html.twig', [
             'user' => $this->getUser(),
@@ -83,6 +84,7 @@ class TilapiaFrySalesController extends AbstractController
             'agents' => $agents,
             'allTilapiaFrySales' => $nourishTilapiaFrySales,
             'competitorsTilapiaFrySales' => $competitorTilapiaFrySales,
+            'competitorOtherAgentTilapiaFrySales' => $competitorOtherAgentTilapiaFrySales,
         ]);
     }
 
@@ -191,9 +193,58 @@ class TilapiaFrySalesController extends AbstractController
     }
 
     /**
+     * @Route("/competitor/other-agent/data/insert", methods={"POST"}, name="competitor_other_agent_tilapia_fry_sales_data_insert", options={"expose"=true})
+     * @param Request $request
+     * @return Response
+     */
+
+    public function competitorOtherAgentTilapiaFrySalesQuantityInsert(Request $request): Response
+    {
+        $data = $request->request->all();
+        $feedId = $data['feed_id'];
+        $month = $data['month'];
+        $quantity = $data['quantity'];
+        $currentYear = date('Y');
+        $employee=$this->getUser();
+        $feed=null;
+        if($feedId){
+            $feed=$this->getDoctrine()->getRepository(Setting::class)->find($feedId);
+        }
+
+        $existingEntity = $this->getDoctrine()->getRepository(TilapiaFrySales::class)->getExitingCheckTilapiaFrySalesForOtherAgentByCreatedDateEmployeeFeedMonthYear($employee, $month, $currentYear, $feed, TilapiaFrySales::TILAPIA_FRY_SALES_OTHER);
+
+        $entity= new TilapiaFrySales();
+        if($existingEntity){
+            $entity=$this->getDoctrine()->getRepository(TilapiaFrySales::class)->find($existingEntity['id']);
+        }
+
+        $entity->setMonthName($month?$month:null);
+        $entity->setYear($currentYear);
+        $entity->setQuantity($quantity?$quantity:0);
+        $entity->setEmployee($employee);
+        $entity->setCreatedAt(new \DateTime());
+        if($feed){
+            $entity->setFeed($feed);
+        }
+        $entity->setType(TilapiaFrySales::TILAPIA_FRY_SALES_OTHER);
+
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($entity);
+        $em->flush();
+
+        return new JsonResponse(
+            array(
+                'success'=>'Success',
+                'data'=>$data,
+                'status'=>200,
+            )
+        );
+
+    }
+
+    /**
      * @return Response
      * @Route("/refresh", methods={"GET"}, name="crm_tilapia_fry_sales_refresh", options={"expose"=true})
-     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      */
     public function tilapiaFrySalesRefresh(): Response
     {
@@ -225,7 +276,6 @@ class TilapiaFrySalesController extends AbstractController
     /**
      * @return Response
      * @Route("/competitor/refresh", methods={"GET"}, name="crm_competitor_tilapia_fry_sales_refresh", options={"expose"=true})
-     * @Security("is_granted('ROLE_CRM_ADMIN') or is_granted('ROLE_DOMAIN') or is_granted('ROLE_CRM')")
      */
     public function competitorTilapiaFrySalesRefresh(): Response
     {
@@ -250,6 +300,39 @@ class TilapiaFrySalesController extends AbstractController
 
         return $this->render('@TerminalbdCrm/tilapiaFrySales/_competitor_content_table_body.html.twig', [
             'competitorsTilapiaFrySales' => $competitorTilapiaFrySales,
+            'arrayMonth' => $arrayMonth,
+            'arrayMonthRange' => $arrayMonthRange,
+        ]);
+    }
+
+    /**
+     * @return Response
+     * @Route("/competitor/other-agent/refresh", methods={"GET"}, name="crm_competitor_other_agent_tilapia_fry_sales_refresh", options={"expose"=true})
+     */
+    public function competitorOtherAgentTilapiaFrySalesRefresh(): Response
+    {
+
+        $arrayMonth=[];
+        $arrayMonthRange=[];
+        $currentYear = date('Y');
+        $yearRange[]=$currentYear;
+
+        for($i=1; $i<=12; $i++){
+            $monthDigit = date('m', mktime(0, 0, 0, $i, 10));
+            $month = date('F', mktime(0, 0, 0, $i, 10));
+            $currentMonth = date('m');
+
+            $arrayMonth[]=$month;
+            if($currentMonth==$monthDigit || $currentMonth-1==$monthDigit){
+                $arrayMonthRange[]=$month;
+            }
+        }
+
+        $competitorOtherAgentTilapiaFrySales = $this->getDoctrine()->getRepository(TilapiaFrySales::class)->getCompetitorsTilapiaFrySalesOtherAgentByEmployeeMonthYear( $this->getUser(), $arrayMonth, $currentYear);
+
+
+        return $this->render('@TerminalbdCrm/tilapiaFrySales/_competitor_other_agent_content_table_body.html.twig', [
+            'competitorOtherAgentTilapiaFrySales' => $competitorOtherAgentTilapiaFrySales,
             'arrayMonth' => $arrayMonth,
             'arrayMonthRange' => $arrayMonthRange,
         ]);

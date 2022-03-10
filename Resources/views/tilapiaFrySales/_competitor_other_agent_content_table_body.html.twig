@@ -1,0 +1,21 @@
+{% if competitorOtherAgentTilapiaFrySales['feeds'] is defined %}
+    {% for feedId, feed in competitorOtherAgentTilapiaFrySales['feeds'] %}
+        <tr>
+            <th>{{loop.index}}</th>
+            <th>{{feed|default('')}}</th>
+            {% if arrayMonthRange is not empty %}
+                {% for month in arrayMonthRange %}
+                    <th>{{ competitorOtherAgentTilapiaFrySales['items'][feedId][month].qty|default(0) }}</th>
+                {% endfor %}
+            {% endif %}
+        </tr>
+    {% endfor %}
+    <tr>
+        <td colspan="2">Total</td>
+        {% if arrayMonthRange is not empty %}
+            {% for month in arrayMonthRange %}
+                <th>{{ competitorOtherAgentTilapiaFrySales['grandTotal'][month] is defined? competitorOtherAgentTilapiaFrySales['grandTotal'][month]|arraySum|default(0):'0' }}</th>
+            {% endfor %}
+        {% endif %}
+    </tr>
+{% endif %}

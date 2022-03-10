@@ -91,7 +91,7 @@ class FishSalesPriceController extends AbstractController
             }
         }
 
-        $allFishSalesPrice = $this->getDoctrine()->getRepository(FishSalesPrice::class)->getFishSalesPriceByCreatedDateAndEmployee( $yearRange, $arrayMonthRange, $this->getUser());
+        $allFishSalesPrice = $this->getDoctrine()->getRepository(FishSalesPrice::class)->getFishSalesPriceByCreatedDateAndEmployee( $yearRange, $arrayMonth, $this->getUser());
 
         return $this->render('@TerminalbdCrm/fishSalesPrice/new-modal.html.twig', [
             'user' => $this->getUser(),
