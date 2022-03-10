@@ -27,6 +27,7 @@ use Terminalbd\CrmBundle\Entity\CrmCustomer;
 use Terminalbd\CrmBundle\Entity\CrmVisit;
 use Terminalbd\CrmBundle\Entity\DailyChickPrice;
 use Terminalbd\CrmBundle\Entity\DailyChickPriceDetails;
+use Terminalbd\CrmBundle\Entity\FcrDifferentCompanies;
 use Terminalbd\CrmBundle\Entity\FishCompanyAndSpeciesWiseAverageFcr;
 use Terminalbd\CrmBundle\Entity\FishLifeCycle;
 use Terminalbd\CrmBundle\Entity\FishLifeCycleDetails;
@@ -1320,28 +1321,44 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
         foreach ($reports as $report) {
             $createdAt = $report['created_at'] ? (new \DateTime($report['created_at']))->format('Y-m-d H:i:s') : null;
 
-            $sql = "INSERT INTO `crm_fcr_different_companies` (`employee_id`, `hatchery_id`, `breed_name`, `january`, `february`, `march`, `april`, `may`, `june`, `july`, `august`, `september`, `october`, `november`, `december`, `created_at`) VALUES (:employee_id, :hatchery_id, :breed_name, :january, :february, :march, :april, :may, :june, :july, :august, :september, :october, :november, :december, :created_at)";
+            /**
+             * @var FcrDifferentCompanies $exist
+             */
+            $exist = $this->getDoctrine()->getRepository(FcrDifferentCompanies::class)->getExists($report['employee_id'], $report['hatchery_id'], $report['breed_name'], $createdAt);
+            if ($exist){
+                for($i = 1; $i <= 12; $i++){
+                    $date = '01-' . $i . '-2022';
+                    $month = date('F', strtotime($date));
+                    $set = 'set' . $month;
+                    $exist->$set($report[strtolower($month)] ?: 0);
 
-            $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
+                }
+                $this->getDoctrine()->getManager()->flush();
+            }else{
+                $sql = "INSERT INTO `crm_fcr_different_companies` (`employee_id`, `hatchery_id`, `breed_name`, `january`, `february`, `march`, `april`, `may`, `june`, `july`, `august`, `september`, `october`, `november`, `december`, `created_at`) VALUES (:employee_id, :hatchery_id, :breed_name, :january, :february, :march, :april, :may, :june, :july, :august, :september, :october, :november, :december, :created_at)";
 
-            $stmt->bindValue('employee_id', $report['employee_id']);
-            $stmt->bindValue('hatchery_id', $report['hatchery_id']);
-            $stmt->bindValue('breed_name', $report['breed_name']);
-            $stmt->bindValue('january', $report['january'] ?: 0);
-            $stmt->bindValue('february', $report['february'] ?: 0);
-            $stmt->bindValue('march', $report['march'] ?: 0);
-            $stmt->bindValue('april', $report['april'] ?: 0);
-            $stmt->bindValue('may', $report['may'] ?: 0);
-            $stmt->bindValue('june', $report['june'] ?: 0);
-            $stmt->bindValue('july', $report['july'] ?: 0);
-            $stmt->bindValue('august', $report['august'] ?: 0);
-            $stmt->bindValue('september', $report['september'] ?: 0);
-            $stmt->bindValue('october', $report['october'] ?: 0);
-            $stmt->bindValue('november', $report['november'] ?: 0);
-            $stmt->bindValue('december', $report['december'] ?: 0);
-            $stmt->bindValue('created_at', $createdAt);
+                $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
 
-            $stmt->execute();
+                $stmt->bindValue('employee_id', $report['employee_id']);
+                $stmt->bindValue('hatchery_id', $report['hatchery_id']);
+                $stmt->bindValue('breed_name', strtolower($report['breed_name']));
+                $stmt->bindValue('january', $report['january'] ?: 0);
+                $stmt->bindValue('february', $report['february'] ?: 0);
+                $stmt->bindValue('march', $report['march'] ?: 0);
+                $stmt->bindValue('april', $report['april'] ?: 0);
+                $stmt->bindValue('may', $report['may'] ?: 0);
+                $stmt->bindValue('june', $report['june'] ?: 0);
+                $stmt->bindValue('july', $report['july'] ?: 0);
+                $stmt->bindValue('august', $report['august'] ?: 0);
+                $stmt->bindValue('september', $report['september'] ?: 0);
+                $stmt->bindValue('october', $report['october'] ?: 0);
+                $stmt->bindValue('november', $report['november'] ?: 0);
+                $stmt->bindValue('december', $report['december'] ?: 0);
+                $stmt->bindValue('created_at', $createdAt);
+
+                $stmt->execute();
+            }
+
         }
     }
 
