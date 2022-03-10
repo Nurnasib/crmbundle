@@ -26,11 +26,13 @@ use Terminalbd\CrmBundle\Entity\Expense;
 use Terminalbd\CrmBundle\Entity\FarmerTrainingReportDetails;
 use Terminalbd\CrmBundle\Entity\FcrDetails;
 use Terminalbd\CrmBundle\Entity\FcrDifferentCompanies;
+use Terminalbd\CrmBundle\Entity\FishSalesPrice;
 use Terminalbd\CrmBundle\Entity\LabService;
 use Terminalbd\CrmBundle\Entity\LayerPerformanceDetails;
 use Terminalbd\CrmBundle\Entity\NewFarmerIntroduce\FarmerIntroduceDetails;
 use Terminalbd\CrmBundle\Entity\PoultryMeatEggPrice;
 use Terminalbd\CrmBundle\Entity\Setting;
+use Terminalbd\CrmBundle\Entity\TilapiaFrySales;
 use Terminalbd\CrmBundle\Form\SearchFilterFormType;
 use Terminalbd\CrmBundle\Repository\AntibioticFreeFarmRepository;
 
@@ -54,6 +56,9 @@ class OthersReportController extends AbstractController
         $species = [];
         $trainingMaterials = [];
         $employee = null;
+        $speciesTypesByParent=[];
+        $arrFishSizes=[];
+        $arrayMonth=[];
 
         $form = $this->createForm(SearchFilterFormType::class, null, ['loggedUser' => $this->getUser()]);
         $form->handleRequest($request);
@@ -139,7 +144,50 @@ class OthersReportController extends AbstractController
                 case 'new-agent-upgradation-cattle':
                 case 'new-agent-upgradation-fish':
                     $entities = $this->getDoctrine()->getRepository(AgentUpgradationReport::class)->getAgentUpgradation($filterBy);
-//dd($entities);
+                    break;
+
+                case 'fish-sales-price':
+
+                    $breedNameObj = $this->getDoctrine()->getRepository(Setting::class)->findOneBy(array('status'=>1, 'settingType'=>'BREED_NAME','slug'=>'fish-breed'));
+
+                    $speciesTypesByParent = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('status'=>1,'settingType'=>'SPECIES_TYPE','parent'=>$breedNameObj));
+
+
+                    $fishSizes = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('status'=>1,'settingType'=>'FISH_SIZE'));
+                    $arrFishSizes=[];
+                    foreach ($fishSizes as $fishSize){
+                        $arrFishSizes[$fishSize->getParent()->getId()][]=$fishSize;
+                    }
+
+                    for($i=1; $i<=12; $i++){
+                        $month = date('F', mktime(0, 0, 0, $i, 10));
+                        $arrayMonth[]=$month;
+                    }
+
+
+                    $entities = $this->getDoctrine()->getRepository(FishSalesPrice::class)->getFishSalesPriceReport( $filterBy, $this->getUser());
+
+                    break;
+
+                case 'fish-tilapia-fry-sales':
+
+                    $breedNameObj = $this->getDoctrine()->getRepository(Setting::class)->findOneBy(array('status'=>1, 'settingType'=>'BREED_NAME','slug'=>'fish-breed'));
+
+                    $speciesTypesByParent = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('status'=>1,'settingType'=>'SPECIES_TYPE','parent'=>$breedNameObj));
+
+
+                    $fishSizes = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('status'=>1,'settingType'=>'FISH_SIZE'));
+                    $arrFishSizes=[];
+                    foreach ($fishSizes as $fishSize){
+                        $arrFishSizes[$fishSize->getParent()->getId()][]=$fishSize;
+                    }
+
+                    for($i=1; $i<=12; $i++){
+                        $month = date('F', mktime(0, 0, 0, $i, 10));
+                        $arrayMonth[]=$month;
+                    }
+
+                    $entities = $this->getDoctrine()->getRepository(TilapiaFrySales::class)->getTilapiaFrySalesReport( $filterBy, $this->getUser());
                     break;
 
                 default:
@@ -155,6 +203,9 @@ class OthersReportController extends AbstractController
                 'species' => $species,
                 'trainingMaterials' => $trainingMaterials,
                 'employee' => $employee,
+                'speciesTypes' => $speciesTypesByParent,
+                'fishSizes' => $arrFishSizes,
+                'arrayMonth' => $arrayMonth,
             ]);
 
             $fileName = $filterBy['otherReport'] .'_'.time().".xls";
@@ -175,6 +226,9 @@ class OthersReportController extends AbstractController
             'species' => $species,
             'trainingMaterials' => $trainingMaterials,
             'employee'=> $employee,
+            'speciesTypes' => $speciesTypesByParent,
+            'fishSizes' => $arrFishSizes,
+            'arrayMonth' => $arrayMonth,
         ]);
     }
 

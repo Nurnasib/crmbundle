@@ -68,6 +68,11 @@ class CattleFarmVisitDetailsRepository extends BaseRepository
             $qb->andWhere('employee.id = :employeeId')->setParameter('employeeId', $employeeId);
         }
 
+        if($start&&$end){
+            $qb->andWhere('e.reportingMonth >= :startDate')->setParameter('startDate',$start);
+            $qb->andWhere('e.reportingMonth <= :endDate')->setParameter('endDate', $end);
+        }
+
         $results = $qb->getQuery()->getArrayResult();
 
         $returnArray = [];

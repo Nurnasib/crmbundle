@@ -11,6 +11,7 @@
 
 namespace Terminalbd\CrmBundle\Repository;
 
+use App\Entity\User;
 use Doctrine\ORM\EntityRepository;
 use Terminalbd\CrmBundle\Entity\FishSalesPrice;
 
@@ -46,5 +47,52 @@ class FishSalesPriceRepository extends BaseRepository
             return $returnArray;
         }
         return array();
+    }
+
+    public function getFishSalesPriceReport($filterBy, User $loggedUser)
+    {
+        $start = isset($filterBy['startDate']) ? (new \DateTime($filterBy['startDate']))->format('Y-m-d') : null;
+        $end = isset($filterBy['endDate']) ? (new \DateTime($filterBy['endDate']))->format('Y-m-d') : null;
+        $employeeId = isset($filterBy['employee']) ? $filterBy['employee']->getId() : null;
+
+        $qb = $this->createQueryBuilder('e');
+
+        $qb->join('e.employee', 'employee');
+        $qb->join('e.fishSize', 'fishSize');
+        $qb->leftJoin('employee.designation', 'designation');
+
+        $qb->select('e.id AS eId','e.price','e.year','e.monthName');
+        $qb->addSelect('employee.id empId','employee.userId', 'employee.name as employeeName', 'designation.name AS designationName');
+        $qb->addSelect('fishSize.id as fsId');
+        $rolesString = implode($loggedUser->getRoles(), '_');
+
+        if (!str_contains($rolesString, 'ADMIN') && !in_array('ROLE_LINE_MANAGER', $loggedUser->getRoles())){
+            $qb->andWhere('employee.id = :employeeId')->setParameter('employeeId', $loggedUser->getId());
+        }
+        if (isset($filterBy['employee']) && $filterBy['employee'] !== null){
+            $qb->andWhere('employee.id = :employeeId')->setParameter('employeeId', $employeeId);
+        }
+        if(isset($filterBy['year']) && $filterBy['year']){
+            $currentYear= $filterBy['year'];
+        }else{
+            $currentYear = date('Y');
+        }
+
+        $qb->andWhere('e.year = :year')->setParameter('year',$currentYear);
+
+        $results = $qb->getQuery()->getArrayResult();
+
+        $returnArray = [];
+        if($results){
+            foreach ($results as $result){
+
+                $returnArray[$result['year']][$result['empId']]['userId']=$result['userId'];
+                $returnArray[$result['year']][$result['empId']]['employeeName']=$result['employeeName'];
+                $returnArray[$result['year']][$result['empId']]['employeeDesignationName']=$result['designationName'];
+                $returnArray[$result['year']][$result['empId']]['details'][$result['monthName']][$result['fsId']]=$result;
+            }
+        }
+
+        return $returnArray;
     }
 }

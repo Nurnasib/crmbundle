@@ -45,6 +45,10 @@
                             {{ form_widget(form.endDate,{'id':'end-date', 'attr':{'placeholder': 'dd-mm-YYYY'}}) }}
                         </th>
                         <th>
+                            {{ form_label(form.year, 'Year:') }}
+                            {{ form_widget(form.year) }}
+                        </th>
+                        <th>
                             {{ form_label(form.lab, 'Lab:') }}
                             {{ form_widget(form.lab) }}
                         </th>
@@ -66,7 +70,7 @@
                             {{ form_label(form.breed, 'Breed:') }}
                             {{ form_widget(form.breed) }}
                         </th>
-                        <th>
+                        <th colspan="2">
                             <div class="btn-group" style="margin-top: 25px">
                                 <button type="submit" name="search" class="btn btn-primary btn-sm" title="Search" value="search"><i class="fa fa-search" aria-hidden="true"></i></button>
                                 <a href="{{ path('others_report_index') }}" class="btn purple-bg btn-sm white-font" title="Reset" value="reset"><i class="fa fa-refresh" aria-hidden="true"></i></a>
@@ -113,6 +117,12 @@
 
                         {% elseif filterBy['otherReport'] in ['new-agent-upgradation-cattle','new-agent-upgradation-fish'] %}
                             {% include '@TerminalbdCrm/report/others/inc/_agent_upgradation.html.twig'%}
+
+                        {% elseif filterBy['otherReport'] is same as 'fish-sales-price' %}
+                            {% include '@TerminalbdCrm/report/others/inc/_fish_sales_price.html.twig'%}
+
+                        {% elseif filterBy['otherReport'] is same as 'fish-tilapia-fry-sales' %}
+                            {% include '@TerminalbdCrm/report/others/inc/_fish_tilapia_fry_sales.html.twig'%}
 
                         {% endif %}
 

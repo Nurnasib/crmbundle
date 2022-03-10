@@ -26,5 +26,11 @@
     {% elseif filterBy['otherReport'] in ['new-agent-upgradation-cattle','new-agent-upgradation-fish'] %}
         {% include '@TerminalbdCrm/report/others/inc/_agent_upgradation.html.twig'%}
 
+    {% elseif filterBy['otherReport'] is same as 'fish-sales-price' %}
+        {% include '@TerminalbdCrm/report/others/inc/_fish_sales_price.html.twig'%}
+
+    {% elseif filterBy['otherReport'] is same as 'fish-tilapia-fry-sales' %}
+        {% include '@TerminalbdCrm/report/others/inc/_fish_tilapia_fry_sales.html.twig'%}
+
     {% endif %}
 {% endif %}

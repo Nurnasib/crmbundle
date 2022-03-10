@@ -390,6 +390,8 @@ class SearchFilterFormType extends AbstractType
                     'Company Wise Feed Sale' => 'company-wise-feed-sale-fish',
                     'Farmer Survey' => 'farmer-survey-fish',
                     'Farmer Training' => 'farmer-training-fish',
+                    'Fish Sales Price' => 'fish-sales-price',
+                    'Tilapia Fry Sales' => 'fish-tilapia-fry-sales',
                 ]
                 ]
             );

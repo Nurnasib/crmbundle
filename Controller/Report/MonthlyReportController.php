@@ -114,7 +114,6 @@ class MonthlyReportController extends AbstractController
                 case 'cattle-farm-visit-report':
 
                 $entities = $this->getDoctrine()->getRepository(CattleFarmVisitDetails::class)->getCattleFarmVisitReport($report, $filterBy, $this->getUser());
-//                dd($entities);
 
                     break;
 
