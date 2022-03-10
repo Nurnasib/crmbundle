@@ -37,7 +37,6 @@ class FcrDifferentCompaniesRepository extends EntityRepository
                 ->andWhere('fdc.hatchery = :company')
                 ->andWhere('fdc.breedName = :breed_name')
                 ->setParameters(array('startDate'=>$startDate.' 00:00:00', 'endDate'=>$endDate.' 23:59:59', 'company'=>$company, 'employee'=>$employee, 'breed_name'=>$breed_name));
-
             return $query->getQuery()->getOneOrNullResult();
         }
         return array();
@@ -109,6 +108,26 @@ class FcrDifferentCompaniesRepository extends EntityRepository
         }
         ksort($data);
         return $data;
+    }
+
+    public function getExists($employeeId, $hatcheryId, $breedName, $createdAt)
+    {
+        $startDate = (new \DateTime($createdAt))->format('Y-01-01 00:00:00');
+        $endDate = (new \DateTime($createdAt))->format('Y-12-31 23:59:59');
+
+        $qb = $this->createQueryBuilder('e');
+
+        $qb->join('e.employee', 'employee');
+        $qb->join('e.hatchery', 'hatchery');
+
+        $qb->where('employee.id = :employeeId')->setParameter('employeeId', $employeeId);
+        $qb->andWhere('hatchery.id = :hatcheryId')->setParameter('hatcheryId', $hatcheryId);
+        $qb->andWhere('e.breedName = :breedName')->setParameter('breedName', strtolower($breedName));
+        $qb->andWhere('e.createdAt >= :startDate')->setParameter('startDate', $startDate);
+        $qb->andWhere('e.createdAt <= :endDate')->setParameter('endDate', $endDate);
+
+        return $qb->getQuery()->getOneOrNullResult();
+
     }
 
 }
