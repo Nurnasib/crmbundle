@@ -11,6 +11,7 @@
 
 namespace Terminalbd\CrmBundle\Repository;
 
+use App\Entity\User;
 use Doctrine\ORM\EntityRepository;
 use Terminalbd\CrmBundle\Entity\AgentUpgradationReport;
 
@@ -40,9 +41,10 @@ class AgentUpgradationReportRepository extends BaseRepository
         return array();
     }
 
-    public function getAgentUpgradation($filterBy){
+    public function getAgentUpgradation($filterBy, User $loggedUser){
             $startDate = isset($filterBy['startDate']) ? (new \DateTime($filterBy['startDate']))->format('Y-m-d') . ' 00:00:00' : null;
             $endDate = isset($filterBy['endDate']) ? (new \DateTime($filterBy['endDate']))->format('Y-m-d') . ' 23:59:59' : null;
+            $employeeId = isset($filterBy['employee']) ? $filterBy['employee']->getId() : null;
 
             $query = $this->createQueryBuilder('aur');
             $query->join('aur.agent','agent');
@@ -54,9 +56,18 @@ class AgentUpgradationReportRepository extends BaseRepository
                 $query->andWhere('aur.createdAt <= :endDate')->setParameter('endDate', $endDate);
             }
 
-            if(isset($filterBy['employee'])&&$filterBy['employee']!=''){
-                $query->andWhere('employee.id = :employee')->setParameter('employee',$filterBy['employee']);
+            $rolesString = implode($loggedUser->getRoles(), '_');
+
+            if (!str_contains($rolesString, 'ADMIN') && !in_array('ROLE_LINE_MANAGER', $loggedUser->getRoles())){
+                $query->andWhere('employee.id = :employeeId')->setParameter('employeeId', $loggedUser->getId());
             }
+            if (isset($filterBy['employee']) && $filterBy['employee'] !== null){
+                $query->andWhere('employee.id = :employeeId')->setParameter('employeeId', $employeeId);
+            }
+
+            /*if(isset($filterBy['employee'])&&$filterBy['employee']!=''){
+                $query->andWhere('employee.id = :employee')->setParameter('employee',$filterBy['employee']);
+            }*/
 
         $results=$query->getQuery()->getResult();
         $returnArray=[];
