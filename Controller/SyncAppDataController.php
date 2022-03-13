@@ -1275,7 +1275,6 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
                         $stmt->bindValue('price', $item['price']);
                         $stmt->bindValue('employee_id', $report['employee_id']);
                         $stmt->bindValue('region_id', $report['region_id']);
-                        $stmt->bindValue('breed_type_id', $item['id']);
                         $stmt->bindValue('reporting_date', $reportingDate);
 
                         $stmt->execute();
