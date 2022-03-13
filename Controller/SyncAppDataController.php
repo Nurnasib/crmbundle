@@ -1268,7 +1268,7 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
                 foreach ( $items as $item) {
                     $findExist = $this->getDoctrine()->getRepository(PoultryMeatEggPrice::class)->checkExistRecord($report['region_id'],$item['id'], $report['employee_id'], $reportingDate);
                     if ($findExist){
-                        $sql = "UPDATE `crm_poultry_meat_egg_price` SET `breed_type_id` = :breed_type_id, `price` = :price WHERE `employee_id` = :employee_id,`region_id` = :region_id, `breed_type_id` = :breed_type_id, `reporting_date` = :reporting_date";
+                        $sql = "UPDATE `crm_poultry_meat_egg_price` SET breed_type_id = :breed_type_id, price = :price WHERE employee_id = :employee_id AND region_id = :region_id AND breed_type_id = :breed_type_id AND reporting_date = :reporting_date";
 
                         $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
                         $stmt->bindValue('breed_type_id', $item['id']);
