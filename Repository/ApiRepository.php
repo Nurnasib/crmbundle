@@ -953,6 +953,37 @@ class ApiRepository extends BaseRepository
     }
 
     /**
+     * Select Farm Type For Marketing Employee
+     */
+    public function selectFarmTypeForMarketing()
+    {
+        $em = $this->_em;
+        $qb = $em->createQueryBuilder();
+        $qb->from(Setting::class,'s');
+        $qb->leftJoin('s.parent','p');
+
+        $qb->select('s.id as id','s.name as name','s.slug as slug','s.settingType as settingType');
+        $qb->addselect('p.name as breedName');
+
+        $qb->where("s.settingType = 'FARM_TYPE'");
+        $qb->andWhere('s.status = 1');
+        $qb->andWhere('s.slug IN (:slug)')->setParameter('slug',['others-poultry','others-cattle','others-fish']);
+
+        $qb->orderBy('s.id', 'ASC');
+        $result = $qb->getQuery()->getArrayResult();
+        $data = array();
+        foreach ($result as $key => $row) {
+
+            $data[$key]['id'] = (string)$row['id'];
+            $data[$key]['name'] = (string)$row['name'];
+            $data[$key]['slug'] = (string)$row['slug'];
+            $data[$key]['breedName'] = (string)$row['breedName'];
+
+        }
+        return $data;
+    }
+
+    /**
      * Farm Select Report
      */
     public function farmSelectReport()
@@ -985,6 +1016,36 @@ class ApiRepository extends BaseRepository
                 $data[$key]['slug'] = (string)$row['slug'];
 //            }
 
+        }
+        return $data;
+    }
+
+    /**
+     * Farm Select Report For Marketing
+     */
+    public function farmSelectReportForMarketing()
+    {
+        $em = $this->_em;
+        $qb = $em->createQueryBuilder();
+        $qb->from(Setting::class,'s');
+        $qb->leftJoin('s.parent','p');
+
+        $qb->select('s.id as id','s.name as name','s.slug as slug');
+        $qb->addSelect('p.name as farmType');
+
+        $qb->where("s.settingType = 'FARMER_REPORT'");
+        $qb->andWhere('s.status = 1');
+        $qb->andWhere('s.slug IN (:slug)')->setParameter('slug',['farmer-introduce-report-poultry','farmer-introduce-report-cattle','farmer-introduce-report-fish']);
+
+        $qb->orderBy('s.id', 'ASC');
+        $result = $qb->getQuery()->getArrayResult();
+
+        $data = array();
+        foreach ($result as $key => $row) {
+                $data[$key]['id'] = (string)$row['id'];
+                $data[$key]['name'] = (string)$row['name'];
+                $data[$key]['farmType'] = (string)$row['farmType'];
+                $data[$key]['slug'] = (string)$row['slug'];
         }
         return $data;
     }
