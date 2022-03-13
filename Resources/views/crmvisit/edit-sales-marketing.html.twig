@@ -122,6 +122,25 @@
                                                 </td>
 
                                                 <td>
+                                                    <select name="farmer_firm_type" class="form-control farmer_firm_type">
+                                                        <option value="">Select Farm Type</option>
+                                                        {% for index, items in firmTypes %}
+                                                            <optgroup label="{{ index }}">
+                                                                {% for firmType in items %}
+                                                                    <option value="{{firmType['id']}}"> {{firmType['name']}} </option>
+                                                                {% endfor %}
+                                                            </optgroup>
+                                                        {% endfor %}
+                                                    </select>
+
+                                                </td>
+                                                <td>
+                                                    <select name="farmer_report" class="form-control farmer_report">
+                                                        <option value="">Select Report</option>
+                                                    </select>
+                                                </td>
+
+                                                <td>
                                                     <input type="text" name="capacity" id="capacity"
                                                            class="form-control form-control-sm farmer_capacity"
                                                            placeholder="Farm Capacity" value="">
@@ -736,6 +755,6 @@
     <script type="application/javascript" src="{{ asset('bundles/terminalbdcrm/js/crm/expense.js') }}"></script>
 {#    <script type="application/javascript" src="{{ asset('bundles/terminalbdcrm/js/crm/fcr.js') }}"></script>#}
     <script type="application/javascript" src="{{ asset('bundles/terminalbdcrm/js/crm/agent-upgradation-report.js') }}"></script>
-
+    <script type="application/javascript" src="{{ asset('bundles/terminalbdcrm/js/crm/farmer-touch/farmer-touch.js') }}"></script>
 
 {% endblock %}

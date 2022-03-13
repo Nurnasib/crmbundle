@@ -82,7 +82,7 @@
                                     {{ form_widget(form.agent) }}
                                 </td>
                                 <td>
-                                    {{ entity.agent and entity.agent.agentGroup.slug!='other-agent'?entity.agent.name:'' }}
+                                    {{ entity.agent and entity.agent.agentGroup.slug!='other-agent'?entity.agent.address:'' }}
                                 </td>
                                 <td>
                                     {{ form_widget(form.feed) }}

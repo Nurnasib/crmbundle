@@ -678,7 +678,7 @@ $('.addmore').click(function(){
     var farmer_capacity = farmer_section.find('.farmer_capacity').val();
     var farmer_comments = farmer_section.find('.farmer_comments').val();
     
-    if(farmer_purpose.length==0 || farmer==='' || farmer_firm_type==='' || farmer_report===''){
+    if(farmer_purpose.length==0 || farmer===''){
         alert('Please enter required field.');
         return false;
     }

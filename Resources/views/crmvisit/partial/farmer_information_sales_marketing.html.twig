@@ -18,6 +18,19 @@
                 <td>
                     {% if details.crmCustomer is not empty  %} {{ details.crmCustomer.mobile }} {% endif %}
                 </td>
+
+                <td>
+                    {% if details.firmType is not empty %}
+                    {{ details.firmType is not empty?details.firmType.name:'' }}
+                    {% endif %}
+                </td>
+
+                <td>
+                    {% if(details.report is not empty) %}
+                    {{ details.report.name|default('') }}
+                    {% endif %}
+                </td>
+
                 <td>
                     {{ details.farmCapacity }}
                 </td>

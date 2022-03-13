@@ -16,6 +16,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Terminalbd\CrmBundle\Entity\Api;
 use Terminalbd\CrmBundle\Entity\CrmCustomer;
 use Terminalbd\CrmBundle\Entity\CrmVisit;
 use Terminalbd\CrmBundle\Entity\CrmVisitDetails;
@@ -130,6 +131,13 @@ class CrmVisitController extends AbstractController
 //            $regions = $this->getDoctrine()->getRepository(Location::class)->findBy(['level' => 3]);
 //            $breedTypes = $this->getDoctrine()->getRepository(Setting::class)->findBy(['settingType' => 'MEAT_EGG_TYPE']);
 //            $price = $this->getDoctrine()->getRepository(PoultryMeatEggPrice::class)->processPrice($regions,$breedTypes, $visitId);
+            $firmTypes = $this->getDoctrine()->getRepository(Api::class)->selectFarmTypeForMarketing();
+
+            $firmTypesArray=array();
+
+            foreach ($firmTypes as $firmType){
+                    $firmTypesArray[$firmType['breedName']][]=['id'=>$firmType['id'],'name'=>$firmType['name']];
+            }
             return $this->render('@TerminalbdCrm/crmvisit/edit-sales-marketing.html.twig', [
                 'entity' => $entity,
                 'purposes'=>$purpose,
@@ -137,7 +145,7 @@ class CrmVisitController extends AbstractController
                 'otherAgentPurposes'=>$otherAgentPurpose,
                 'subAgentPurposes'=>$subAgentPurpose,
 //                'lifeCycleReport'=>$lifeCycleReport,
-//                'firmTypes'=>$firmTypesArray,
+                'firmTypes'=>$firmTypesArray,
 //                'breedTypes'=>$breedTypes,
 //                'breedNames'=>$breedNames,
                 'feedCompanies'=>$feedCompanies,
@@ -334,7 +342,13 @@ class CrmVisitController extends AbstractController
         /**@var Setting $entity*/
         foreach ($entities as $entity){
             if(!in_array($entity->getSlug(),$exceptSlug)){
-                $arrayData[]=array('id'=>$entity->getId(),'name'=>$entity->getName());
+                if(in_array('ROLE_CRM_SALES_MARKETING_USER', $this->getUser()->getRoles())){
+                    if(in_array($entity->getSlug(),['farmer-introduce-report-poultry','farmer-introduce-report-cattle','farmer-introduce-report-fish'])){
+                        $arrayData[]=array('id'=>$entity->getId(),'name'=>$entity->getName());
+                    }
+                }else{
+                    $arrayData[]=array('id'=>$entity->getId(),'name'=>$entity->getName());
+                }
             }
 
         }
