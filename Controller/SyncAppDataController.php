@@ -173,7 +173,7 @@ class SyncAppDataController extends AbstractController
                             $this->processCattleFarmVisitDetails($jsonToArray, $batch);
                             break;
                         case "crm_poultry_meat_egg_price":
-                            $this->processPoulltryMeatEggPrice($jsonToArray, $batch);
+                            $this->processPoultryMeatEggPrice($jsonToArray, $batch);
                             break;
                         case "crm_company_wise_feed_sale":
                             $this->processCompanyWiseFeedSale($jsonToArray, $batch);
@@ -1255,7 +1255,7 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
         }
     }
 
-    private function processPoulltryMeatEggPrice($reports, Api $batch)
+    private function processPoultryMeatEggPrice($reports, Api $batch)
     {
         foreach ($reports as $report) {
 
@@ -1269,7 +1269,7 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
                     $findExist = $this->getDoctrine()->getRepository(PoultryMeatEggPrice::class)->checkExistRecord($report['region_id'],$item['id'], $report['employee_id'], $reportingDate);
                     if ($findExist){
                         $sql = "UPDATE `crm_poultry_meat_egg_price` SET `breed_type_id` = :breed_type_id, `price` = :price";
-                        
+
                         $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
                         $stmt->bindValue('breed_type_id', $item['id']);
                         $stmt->bindValue('price', $item['price']);

@@ -1431,7 +1431,7 @@ class ApiController extends AbstractController
                         $attachment = base64_decode($attachment);
                         $fileName = $data['farmer_id'] . '_' . $comment['comment'] . '_' . date('d-m-Y') . '_' . time() . '.' . $extension;
 
-                        file_put_contents($parameterBag->get('uploadDir') . '/public/uploads/crm/visit/complain/' . $fileName, $attachment);
+                        file_put_contents($parameterBag->get('projectRoot') . '/public/uploads/crm/visit/complain/' . $fileName, $attachment);
                     }
 
                     $details = new FarmerComplainDetails();
