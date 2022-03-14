@@ -62,6 +62,7 @@ class LabServiceController extends AbstractController
                     $entity->setLab($lab);
                     $entity->setService($labService);
                     $entity->setEmployee($this->getUser());
+                    $entity->setReportingYear(date('Y'));
 
                     $em->persist($entity);
                     $em->flush();

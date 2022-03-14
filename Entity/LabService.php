@@ -13,7 +13,9 @@ use Terminalbd\CrmBundle\Entity\Setting;
 
 /**
  *
- * @ORM\Table(name="crm_lab_services")
+ * @ORM\Table(name="crm_lab_services",
+ *     uniqueConstraints={@ORM\UniqueConstraint(columns={"employee_id", "lab_id", "service_id", "breed_name", "reporting_year"})}
+ *     )
  * @ORM\Entity(repositoryClass="Terminalbd\CrmBundle\Repository\LabServiceRepository")
  */
 class LabService
@@ -52,6 +54,12 @@ class LabService
      * @ORM\JoinColumn(name="service_id", referencedColumnName="id", onDelete="SET NULL", nullable=true)
      */
     private $service;
+
+    /**
+     * @var string
+     * @Orm\Column(type="string", nullable=true)
+     */
+    private $reportingYear;
 
     /**
      * @var float
@@ -442,6 +450,22 @@ class LabService
     public function setBreedName(string $breedName): void
     {
         $this->breedName = $breedName;
+    }
+
+    /**
+     * @return string
+     */
+    public function getReportingYear()
+    {
+        return $this->reportingYear;
+    }
+
+    /**
+     * @param string $reportingYear
+     */
+    public function setReportingYear(string $reportingYear): void
+    {
+        $this->reportingYear = $reportingYear;
     }
 
 }

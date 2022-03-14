@@ -29,17 +29,15 @@ class LabServiceRepository extends EntityRepository
     public function getExitingCheckLabServiceByCreatedDateEmployeeAndCompany($employee, $lab, $labService, $breed_name)
     {
         if($lab&&$labService&&$employee){
-            $startDate = date('Y-01-01');
-            $endDate = date('Y-12-31');
+            $year = date('Y');
             $query = $this->createQueryBuilder('ls')
                 ->select('ls.id')
-                ->where('ls.createdAt >= :startDate')
-                ->andWhere('ls.createdAt <= :endDate')
+                ->where('ls.reportingYear >= :reportingYear')
                 ->andWhere('ls.employee = :employee')
                 ->andWhere('ls.lab = :lab')
                 ->andWhere('ls.service = :labService')
                 ->andWhere('ls.breedName = :breed_name')
-                ->setParameters(array('startDate'=>$startDate.' 00:00:00', 'endDate'=>$endDate.' 23:59:59', 'lab'=>$lab, 'labService'=>$labService, 'employee'=>$employee, 'breed_name'=>$breed_name));
+                ->setParameters(array('reportingYear'=>$year, 'lab'=>$lab, 'labService'=>$labService, 'employee'=>$employee, 'breed_name'=>$breed_name));
 
             return $query->getQuery()->getOneOrNullResult();
         }
@@ -79,6 +77,27 @@ class LabServiceRepository extends EntityRepository
             }
 //            dd($returnArray);
             return $returnArray;
+        }
+        return array();
+    }
+
+
+    public function getExitingLabService($employee, $lab, $labService, $breed_name, $year)
+    {
+        if($lab&&$labService&&$employee){
+            $query = $this->createQueryBuilder('ls')
+                ->join('ls.employee','employee')
+                ->join('ls.lab','lab')
+                ->join('ls.service','service')
+                ->select('ls.id','ls.january','ls.february','ls.march','ls.april','ls.may','ls.june','ls.july','ls.august','ls.september','ls.october','ls.november','ls.december')
+                ->where('ls.reportingYear >= :reportingYear')
+                ->andWhere('ls.employee = :employee')
+                ->andWhere('ls.lab = :lab')
+                ->andWhere('ls.service = :labService')
+                ->andWhere('ls.breedName = :breed_name')
+                ->setParameters(array('reportingYear'=>$year, 'lab.id'=>$lab, 'service.id'=>$labService, 'employee.id'=>$employee, 'breed_name'=>$breed_name));
+
+            return $query->getQuery()->getOneOrNullResult();
         }
         return array();
     }

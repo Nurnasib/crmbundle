@@ -31,6 +31,7 @@ use Terminalbd\CrmBundle\Entity\FcrDifferentCompanies;
 use Terminalbd\CrmBundle\Entity\FishCompanyAndSpeciesWiseAverageFcr;
 use Terminalbd\CrmBundle\Entity\FishLifeCycle;
 use Terminalbd\CrmBundle\Entity\FishLifeCycleDetails;
+use Terminalbd\CrmBundle\Entity\LabService;
 use Terminalbd\CrmBundle\Entity\LayerLifeCycle;
 use Terminalbd\CrmBundle\Entity\LayerLifeCycleDetails;
 use Terminalbd\CrmBundle\Entity\NewFarmerIntroduce\FarmerIntroduceDetails;
@@ -1384,29 +1385,54 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
         foreach ($reports as $report) {
             $createdAt = $report['created_at'] ? (new \DateTime($report['created_at']))->format('Y-m-d H:i:s') : null;
 
-            $sql = "INSERT INTO `crm_lab_services` (`employee_id`, `lab_id`, `service_id`, `breed_name`, `january`, `february`, `march`, `april`, `may`, `june`, `july`, `august`, `september`, `october`, `november`, `december`, `created_at`) VALUES (:employee_id, :lab_id, :service_id, :breed_name, :january, :february, :march, :april, :may, :june, :july, :august, :september, :october, :november, :december, :created_at)";
+            $year = $report['created_at'] ? (new \DateTime($report['created_at']))->format('Y') : null;
+            
+            $exitingLabService = $this->getDoctrine()->getRepository(LabService::class)->getExitingLabService($report['employee_id'], $report['lab_id'], $report['service_id'], $report['breed_name'], $year);
+            
+            if($exitingLabService){
+                $sql = "UPDATE `crm_lab_services` SET `january`= :january, `february`= :february, `march`= :march, `april`= :april, `may`= :may, `june`= :june, `july`= :july, `august`= :august, `september`= :september, `october`= :october, `november`= :november, `december`= :december, `created_at`= :created_at WHERE id = :id";
+                $stmt->bindValue('id', $exitingLabService['id']);
 
-            $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
+                $stmt->bindValue('january', $report['january'] ?: $exitingLabService['january']);
+                $stmt->bindValue('february', $report['february'] ?: $exitingLabService['february']);
+                $stmt->bindValue('march', $report['march'] ?: $exitingLabService['march']);
+                $stmt->bindValue('april', $report['april'] ?: $exitingLabService['april']);
+                $stmt->bindValue('may', $report['may'] ?: $exitingLabService['may']);
+                $stmt->bindValue('june', $report['june'] ?: $exitingLabService['june']);
+                $stmt->bindValue('july', $report['july'] ?: $exitingLabService['july']);
+                $stmt->bindValue('august', $report['august'] ?: $exitingLabService['august']);
+                $stmt->bindValue('september', $report['september'] ?: $exitingLabService['september']);
+                $stmt->bindValue('october', $report['october'] ?: $exitingLabService['october']);
+                $stmt->bindValue('november', $report['november'] ?: $exitingLabService['november']);
+                $stmt->bindValue('december', $report['december'] ?: $exitingLabService['december']);
+                $stmt->bindValue('created_at', $createdAt);
+                $stmt->execute();
+            }else{
+                $sql = "INSERT INTO `crm_lab_services` (`employee_id`, `lab_id`, `service_id`, `breed_name`, `january`, `february`, `march`, `april`, `may`, `june`, `july`, `august`, `september`, `october`, `november`, `december`, `created_at`) VALUES (:employee_id, :lab_id, :service_id, :breed_name, :january, :february, :march, :april, :may, :june, :july, :august, :september, :october, :november, :december, :created_at, :reporting_year)";
 
-            $stmt->bindValue('employee_id', $report['employee_id']);
-            $stmt->bindValue('lab_id', $report['lab_id']);
-            $stmt->bindValue('service_id', $report['service_id']);
-            $stmt->bindValue('breed_name', $report['breed_name']);
-            $stmt->bindValue('january', $report['january'] ?: 0);
-            $stmt->bindValue('february', $report['february'] ?: 0);
-            $stmt->bindValue('march', $report['march'] ?: 0);
-            $stmt->bindValue('april', $report['april'] ?: 0);
-            $stmt->bindValue('may', $report['may'] ?: 0);
-            $stmt->bindValue('june', $report['june'] ?: 0);
-            $stmt->bindValue('july', $report['july'] ?: 0);
-            $stmt->bindValue('august', $report['august'] ?: 0);
-            $stmt->bindValue('september', $report['september'] ?: 0);
-            $stmt->bindValue('october', $report['october'] ?: 0);
-            $stmt->bindValue('november', $report['november'] ?: 0);
-            $stmt->bindValue('december', $report['december'] ?: 0);
-            $stmt->bindValue('created_at', $createdAt);
+                $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
 
-            $stmt->execute();
+                $stmt->bindValue('employee_id', $report['employee_id']);
+                $stmt->bindValue('lab_id', $report['lab_id']);
+                $stmt->bindValue('service_id', $report['service_id']);
+                $stmt->bindValue('breed_name', $report['breed_name']);
+                $stmt->bindValue('january', $report['january'] ?: 0);
+                $stmt->bindValue('february', $report['february'] ?: 0);
+                $stmt->bindValue('march', $report['march'] ?: 0);
+                $stmt->bindValue('april', $report['april'] ?: 0);
+                $stmt->bindValue('may', $report['may'] ?: 0);
+                $stmt->bindValue('june', $report['june'] ?: 0);
+                $stmt->bindValue('july', $report['july'] ?: 0);
+                $stmt->bindValue('august', $report['august'] ?: 0);
+                $stmt->bindValue('september', $report['september'] ?: 0);
+                $stmt->bindValue('october', $report['october'] ?: 0);
+                $stmt->bindValue('november', $report['november'] ?: 0);
+                $stmt->bindValue('december', $report['december'] ?: 0);
+                $stmt->bindValue('created_at', $createdAt);
+                $stmt->bindValue('reporting_year', $year);
+
+                $stmt->execute();
+            }
 
         }
     }
