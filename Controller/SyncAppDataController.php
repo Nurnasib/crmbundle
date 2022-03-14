@@ -1394,6 +1394,9 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
             
             if($exitingLabService){
                 $sql = "UPDATE `crm_lab_services` SET `january`= :january, `february`= :february, `march`= :march, `april`= :april, `may`= :may, `june`= :june, `july`= :july, `august`= :august, `september`= :september, `october`= :october, `november`= :november, `december`= :december, `created_at`= :created_at WHERE id = :id";
+
+                $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
+
                 $stmt->bindValue('id', $exitingLabService['id']);
 
                 $stmt->bindValue('january', $report['january'] ?: $exitingLabService['january']);
