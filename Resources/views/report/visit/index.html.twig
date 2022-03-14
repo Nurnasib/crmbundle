@@ -99,12 +99,8 @@
                                             {% if loop.first %}
                                                 <td rowspan="{{ entity|length }}">
                                                     <div class="btn-group">
-                                                        <a href="{{ path('visit_details_report',{mode:'pdf', visitDate:visitDate}) }}"
-                                                           target="_blank" class="btn purple-bg white-font btn-mini"><i
-                                                                    class="fa fa-file-pdf"></i> {{ 'PDF'|trans }}</a>
-                                                        <a href="{{ path('visit_details_report',{mode:'excel', visitDate:visitDate}) }}"
-                                                           class="btn blue-bg white-font btn-mini"><i
-                                                                    class="fa fa-file-excel"></i>{{ 'Excel'|trans }}</a>
+                                                        <a href="{{ path('visit_details_report',{mode:'pdf', visitDate:visitDate, employee:employee.id}) }}" target="_blank" class="btn purple-bg white-font btn-mini"><i class="fa fa-file-pdf"></i> {{ 'PDF'|trans }}</a>
+{#                                                        <a href="{{ path('visit_details_report',{mode:'excel', visitDate:visitDate, employee:employee.id}) }}" class="btn blue-bg white-font btn-mini"><i class="fa fa-file-excel"></i>{{ 'Excel'|trans }}</a>#}
 
                                                     </div>
                                                 </td>

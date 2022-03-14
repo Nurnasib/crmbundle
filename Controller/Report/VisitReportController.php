@@ -33,6 +33,7 @@ class VisitReportController extends AbstractController
         $entities = [];
         $startDate = null;
         $endDate = null;
+        $employee = null;
         $form = $this->createForm(SearchFilterFormType::class, null, ['loggedUser' => $this->getUser()]);
         $form->handleRequest($request);
         if ($form->isSubmitted()){
@@ -51,6 +52,7 @@ class VisitReportController extends AbstractController
             'entities' => $entities,
             'startDate' => $startDate,
             'endDate' => $endDate,
+            'employee' => $employee,
         ]);
     }
 
@@ -61,8 +63,9 @@ class VisitReportController extends AbstractController
      */
     public function visitDetails(Request $request)
     {
-
         $mode = $request->query->get('mode');
+        $employeeId = $request->query->get('employee');
+
         $visitDate = $request->query->get('visitDate');
         $begin = (new \DateTime($visitDate))->format('Y-m-d 00:00:00');
         $end = (new \DateTime($visitDate))->format('Y-m-d 23:59:59');
@@ -71,7 +74,7 @@ class VisitReportController extends AbstractController
             $begin = $request->query->get('startDate');
             $end = $request->query->get('endDate');
         }
-        $entities = $this->getDoctrine()->getRepository(CrmVisitDetails::class)->getVisitDetails($begin,$end);
+        $entities = $this->getDoctrine()->getRepository(CrmVisitDetails::class)->getVisitDetails($begin,$end,$employeeId);
         if ($mode == 'pdf'){
 
             // Configure Dompdf according to your needs

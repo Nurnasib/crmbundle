@@ -200,7 +200,7 @@ class CrmVisitDetailsRepository extends EntityRepository
         }
     }
 
-    public function getVisitDetails($begin,$end)
+    public function getVisitDetails($begin,$end,$employeeId)
     {
         $qb = $this->createQueryBuilder('e');
         $qb->join('e.crmVisit', 'crmVisit');
@@ -218,6 +218,7 @@ class CrmVisitDetailsRepository extends EntityRepository
         $qb->addSelect('nourishAgent.name AS nourishAgentName');
         $qb->where('crmVisit.created >=:begin')->setParameter('begin', $begin);
         $qb->andWhere('crmVisit.created <=:end')->setParameter('end', $end);
+        $qb->andWhere('employee.id =:employeeId')->setParameter('employeeId', $employeeId);
 
         $results = $qb->getQuery()->getArrayResult();
 
