@@ -1,81 +1,88 @@
-{% for monthYear, entity in entities %}
-    {% set monthTotal = [] %}
-
-    <table width="100%">
-        <tr>
-            <th colspan="14"><h3 class="text-center">NOURISH POULTRY AND HATCHERY LTD</h3></th>
-        </tr>
-        <tr>
-            <th colspan="14"><h5 class="text-center">UTTARA, DHAKA.</h5></th>
-        </tr>
-
-        <tr>
-            <td colspan="14" align="center"><h6>{{ 'Lab Service Report (Poultry)'|upper }}</h6></td>
-        </tr>
-    </table>
-    <table width="100%" class="table table-bordered">
-        <thead class="thead-dark">
-        <tr>
-            <th>Officer's ID: {{ employee ? employee.userId : '' }}</th>
-            <th>Officer's Name: {{ employee ? employee.name : '' }}</th>
-            <th>Designation: {{ employee and employee.designation ? employee.designation.name : '' }}</th>
-            <th>Region: {{ employee and employee.regional ? employee.regional.name : '' }}</th>
-            <th>Name of Lab: {{ filterBy.lab.name|default() }}</th>
-            <th>Month: {{ monthYear|split('-')[2] ~ '-' ~ monthYear|split('-')[0] }}</th>
-
-        </tr>
-        </thead>
-    </table>
-    <table class="table table-striped table-bordered table-hover">
-        <thead class="thead-dark">
-        <tr>
-            <th scope="col">Services</th>
-            {% for month in 1..12 %}
-                {% set date = '01-' ~ month ~ '-2021' %}
-                <th scope="col" style="text-align: center">{{ date|date('F') }}</th>
-            {% endfor %}
-            <th scope="col" style="text-align: center">Total</th>
-
-        </tr>
-        </thead>
-        <tbody>
-        {% for data in entity %}
-            {% set yearTotal = 0 %}
+{% for year, entity in entities %}
+    {% for employeeId, details in entity %}
+        <table width="100%">
             <tr>
-                <td>{{ data.serviceName }}</td>
-                {% for month in 1..12 %}
-                    {% set date = '01-' ~ month ~ '-2021' %}
-                    {% set monthName = date|date('F')|lower %}
-                    {% set value = data[monthName]|default(0) %}
-                    {% set yearTotal = yearTotal + value %}
-
-                    {% if monthTotal[monthName] is defined %}
-                        {% set monthTotal = monthTotal|merge({(monthName): (monthTotal[monthName] + value)}) %}
-                    {% else %}
-                        {% set monthTotal = monthTotal|merge({(monthName): (value)}) %}
-                    {% endif %}
-                    <td align="center">{{ value }}</td>
-                {% endfor %}
-                <td align="right">{{ yearTotal }}</td>
+                <th colspan="15"><h3 class="text-center">NOURISH POULTRY AND HATCHERY LTD</h3></th>
             </tr>
+            <tr>
+                <th colspan="15"><h5 class="text-center">UTTARA, DHAKA.</h5></th>
+            </tr>
+            <tr>
+                <td colspan="15" align="center"><h6>{{ "Summery of Lab Service,"|trans }} {{ year }}</h6></td>
+            </tr>
+        </table>
 
-        {% endfor %}
+        <table width="100%" class="table table-striped table-bordered table-hover">
+            <thead class="thead-dark">
+            <tr>
+                <th>{{ 'ID' }}: {{ details['userId'] }}</th>
+                <th>{{ 'Name of CSO' }}: {{ details['employeeName'] }}</th>
+                <th>{{ 'Designation' }}: {{ details['employeeDesignationName'] }}</th>
+            </tr>
+            </thead>
+        </table>
+        {#        Nourish section#}
+        {% if details['items'] is defined %}
+            {% if details['labs'] is defined %}
+                {% for labId, lab in details['labs'] %}
+                    <table class="table table-bordered tilapiaFrySales_nourish_table" id="datatable">
+                        <thead>
+                        <tr>
+                            <th colspan="14">{{ lab }}</th>
+                        </tr>
+                        <tr>
+                            <th>{{ 'Services'|trans }}</th>
+                            {% for month in 1..12 %}
+                                {% set date = month ~ "/1" %}
+                                <td class="text-left">{{ date|date("F") }}</td>
+                            {% endfor %}
+                            <td>{{ 'Total'|trans }}-{{ "now"|date('Y') }}</td>
 
-        <tr>
-            <th style="text-align: center">Total</th>
+                        </tr>
+                        </thead>
+                        <tbody class="lab_service_section">
+                        {% if details['services'] is defined %}
+                            {% for serviceId, serviceName in details['services'] %}
+                                {% set lineTotal=0 %}
+                                <tr>
+                                    <th>{{ serviceName }}</th>
+                                    {% for month in 1..12 %}
+                                        {% set date = month ~ "/1" %}
+                                        {% set quantity = details['items'][labId][serviceId][date|date("F")|lower]|default(0) %}
+                                        {% set lineTotal=lineTotal+quantity %}
+                                        <td class="text-left">
+                                            {{ details['items'][labId][serviceId][date|date("F")|lower]|default(0) }}
+                                        </td>
+                                    {% endfor %}
+                                    <td>{{ lineTotal|default(0) }}</td>
+                                </tr>
+                            {% endfor %}
+                        {% endif %}
 
-            {% set total = 0 %}
-            {% for month in 1..12 %}
-                {% set date = '01-' ~ month ~ '-2021' %}
-                {% set monthName = date|date('F')|lower %}
-                {% set total = total + monthTotal[monthName] %}
+                        </tbody>
+                        <tfood>
+                            <tr>
+                                <td>Total</td>
+                                {% set grandTotalQty=0 %}
+                                {% for month in 1..12 %}
+                                    {% set date = month ~ "/1" %}
+                                    {% set calDate = date|date("F")|lower %}
+                                    {% set totalQuantity = details['grandTotals'][labId]|arraySumColWise(calDate)|default(0) %}
+{#                                    {% set lineTotal=lineTotal+quantity %}#}
+                                    {% set grandTotalQty=grandTotalQty+totalQuantity %}
+                                    <td class="text-left">
+                                        {{ totalQuantity|default(0) }}
+                                    </td>
+                                {% endfor %}
+                                <td>
+                                    {{ grandTotalQty|default(0) }}
+                                </td>
+                            </tr>
+                        </tfood>
+                    </table>
+                {% endfor %}
+            {% endif %}
+        {% endif %}
 
-                <th style="text-align: center">{{ monthTotal[monthName]|default() }}</th>
-            {% endfor %}
-
-            <th style="text-align: center">{{ total }}</th>
-        </tr>
-        </tbody>
-
-    </table>
+    {% endfor %}
 {% endfor %}

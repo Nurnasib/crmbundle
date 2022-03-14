@@ -76,7 +76,7 @@ class OthersReportController extends AbstractController
                     break;
 
                 case 'lab-service-poultry':
-                    $entities = $this->getDoctrine()->getRepository(LabService::class)->getLabServiceSummaryReport($filterBy);
+                    $entities = $this->getDoctrine()->getRepository(LabService::class)->getLabServiceSummaryReport($filterBy, $this->getUser());
                     break;
 
                 case 'fcr-different-companies-poultry':
