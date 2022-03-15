@@ -91,11 +91,11 @@ class LabServiceRepository extends EntityRepository
                 ->join('ls.service','service')
                 ->select('ls.id','ls.january','ls.february','ls.march','ls.april','ls.may','ls.june','ls.july','ls.august','ls.september','ls.october','ls.november','ls.december')
                 ->where('ls.reportingYear >= :reportingYear')
-                ->andWhere('ls.employee = :employee')
-                ->andWhere('ls.lab = :lab')
-                ->andWhere('ls.service = :labService')
+                ->andWhere('employee.id = :employeeId')
+                ->andWhere('lab.id = :lab')
+                ->andWhere('service.id = :labService')
                 ->andWhere('ls.breedName = :breed_name')
-                ->setParameters(array('reportingYear'=>$year, 'lab.id'=>$lab, 'service.id'=>$labService, 'employee.id'=>$employee, 'breed_name'=>$breed_name));
+                ->setParameters(array('reportingYear'=>$year, 'lab'=>$lab, 'labService'=>$labService, 'employeeId'=>$employee, 'breed_name'=>$breed_name));
 
             return $query->getQuery()->getOneOrNullResult();
         }
