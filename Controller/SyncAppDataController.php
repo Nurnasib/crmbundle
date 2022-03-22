@@ -1194,7 +1194,7 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
             $findFarmer = $this->getDoctrine()->getRepository(CrmCustomer::class)->find($farmer['customer_id']);
             $findIntroFarmer = $this->getDoctrine()->getRepository(FarmerIntroduceDetails::class)->findOneBy(['customer' => $findFarmer]);
 
-            if (!$findIntroFarmer && $farmer['feed_id'] == 1){
+            if ($findIntroFarmer && $farmer['feed_id'] == 1){
                 $updateFarmer = "UPDATE `crm_customers` SET `updated`= :updated,`agent_id`= :agent_id WHERE id = :id";
                 $updateFarmerStmt = $this->getDoctrine()->getConnection()->prepare($updateFarmer);
                 $updateFarmerStmt->bindValue('agent_id', $farmer['agent_id']);
@@ -1207,7 +1207,7 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
                 }
                 $updateFarmerStmt->execute();
 
-                $sql = "UPDATE `crm_customer_introduce_details` SET `agent_id`= :agentId,`culture_species_item_and_qty`=:culture_species_item_and_qty,`remarks`=:remarks,`feed_id`= :feed_id,`introduce_date`= :introduce_date WHERE customer_id = :farmerId";
+                $sql = "UPDATE `crm_customer_introduce_details` SET `agent_id`= :agentId,`culture_species_item_and_qty`= :culture_species_item_and_qty,`remarks`= :remarks,`feed_id`= :feed_id,`introduce_date`= :introduce_date WHERE customer_id = :farmerId";  // every time exits when create new farmer
                 $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
                 $stmt->bindValue('farmerId', $farmer['customer_id']);
                 $stmt->bindValue('agentId', $farmer['agent_id']);
