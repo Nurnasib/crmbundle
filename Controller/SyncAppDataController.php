@@ -1401,7 +1401,7 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
 
                 $stmt->bindValue('january', $report['january'] && $report['january']!="" ?: $exitingLabService['january']);
                 $stmt->bindValue('february',$report['february'] && $report['february']!="" ?: $exitingLabService['february']);
-                $stmt->bindValue('march', $report['march'] && $report['march']=!"" ?: $exitingLabService['march']);
+                $stmt->bindValue('march', $report['march'] && $report['march']!="" ?: $exitingLabService['march']);
                 $stmt->bindValue('april', $report['april'] && $report['april']!="" ?: $exitingLabService['april']);
                 $stmt->bindValue('may', $report['may'] && $report['may']!="" ?: $exitingLabService['may']);
                 $stmt->bindValue('june', $report['june'] && $report['june']!="" ?: $exitingLabService['june']);
