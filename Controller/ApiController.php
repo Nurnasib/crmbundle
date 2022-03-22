@@ -1110,6 +1110,29 @@ class ApiController extends AbstractController
     }
 
     /**
+     * @Route("/product-for-chick", methods={"GET"}, name="product_for_chick")
+     */
+    public function productForChick(Request $request, ParameterBagInterface $parameterBag)
+    {
+
+        set_time_limit(0);
+        ignore_user_abort(true);
+
+        if ($request->getMethod() == 'GET' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')) {
+            $entities = $this->getDoctrine()->getRepository(Api::class)->productForChick();
+            $response = new Response();
+            $response->headers->set('Content-Type', 'application/json');
+            $response->setContent(json_encode($entities));
+            $response->setStatusCode(Response::HTTP_OK);
+            return $response;
+        }
+        return new JsonResponse([
+            'status' => 404,
+            'message' => 'Not Found!'
+        ]);
+    }
+
+    /**
      * @Route("/mainculturespecies", methods={"GET"}, name="mainculturespecies")
      * @param Request $request
      * @param ParameterBagInterface $parameterBag
