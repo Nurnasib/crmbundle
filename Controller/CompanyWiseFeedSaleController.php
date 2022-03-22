@@ -15,7 +15,7 @@ use Terminalbd\CrmBundle\Entity\Setting;
 
 /**
  * @Route("/crm/company/wise/feed/sale")
- * @Security("is_granted('ROLE_CRM_POULTRY_USER') or is_granted('ROLE_CRM_CATTLE_USER') or is_granted('ROLE_CRM_AQUA_USER') or is_granted('ROLE_DEVELOPER')")
+ * @Security("is_granted('ROLE_CRM_POULTRY_USER') or is_granted('ROLE_CRM_CATTLE_USER') or is_granted('ROLE_CRM_AQUA_USER') or is_granted('ROLE_DEVELOPER') or is_granted('ROLE_CRM_SALES_MARKETING_USER')")
  */
 class CompanyWiseFeedSaleController extends AbstractController
 {
@@ -27,6 +27,10 @@ class CompanyWiseFeedSaleController extends AbstractController
      */
     public function newModal(Request $request, $breed_name): Response
     {
+        $breedParam=$breed_name;
+        $breedExplode= explode('-',$breed_name);
+        $breed_name=isset($breedExplode[0])?$breedExplode[0]:'';
+        $breedType=isset($breedExplode[1])?$breedExplode[1]:null;
         $em = $this->getDoctrine()->getManager();
 
         $breedNameObj = $this->getDoctrine()->getRepository(Setting::class)->findOneBy(array('status'=>1, 'settingType'=>'BREED_NAME','slug'=>$breed_name.'-breed'));
@@ -40,7 +44,11 @@ class CompanyWiseFeedSaleController extends AbstractController
             }
         }
 
-        $productsName = $this->getDoctrine()->getRepository(Setting::class)->getProductTypeByParentParentChildren($farmTypeId);
+        $productsName = $this->getDoctrine()->getRepository(Setting::class)->getProductTypeWithOutChickByBreedName($farmTypeId);
+
+        if($breedType=='chick'){
+            $productsName = $this->getDoctrine()->getRepository(Setting::class)->getProductTypeForChickByBreedName($farmTypeId);
+        }
 
         $feedCompanies = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('status'=>1,'settingType'=>'FEED_NAME'));
         $arrayMonth=[];
@@ -57,11 +65,10 @@ class CompanyWiseFeedSaleController extends AbstractController
             if($currentMonth==$monthDigit || $currentMonth-1==$monthDigit){
                 $arrayMonthRange[]=$month;
                 foreach ($feedCompanies as $feedCompany){
-                    $exitingCompanyWiseFeedSale = $this->getDoctrine()->getRepository(CompanyWiseFeedSale::class)->getExitingCheckCompanyWiseFeedSaleByMonthYearEmployeeAndCompany($currentYear, $month, $feedCompany, $this->getUser(), $breed_name);
-
+                    $exitingCompanyWiseFeedSale = $this->getDoctrine()->getRepository(CompanyWiseFeedSale::class)->getExitingCheckCompanyWiseFeedSaleByMonthYearEmployeeAndCompany($currentYear, $month, $feedCompany, $this->getUser(), $breedParam);
                     if(!$exitingCompanyWiseFeedSale){
                         $companyWiseFeedSale= new CompanyWiseFeedSale();
-                        $companyWiseFeedSale->setBreedName($breed_name);
+                        $companyWiseFeedSale->setBreedName($breedParam);
                         $companyWiseFeedSale->setEmployee($this->getUser());
                         $companyWiseFeedSale->setFeedCompany($feedCompany);
                         $companyWiseFeedSale->setMonthName($month);
@@ -75,7 +82,7 @@ class CompanyWiseFeedSaleController extends AbstractController
             }
         }
 
-        $allFeedSales = $this->getDoctrine()->getRepository(CompanyWiseFeedSale::class)->getCompanyWiseFeedSaleByCreatedDateAndEmployee( $yearRange, $arrayMonthRange, $this->getUser(), $breed_name);
+        $allFeedSales = $this->getDoctrine()->getRepository(CompanyWiseFeedSale::class)->getCompanyWiseFeedSaleByCreatedDateAndEmployee( $yearRange, $arrayMonthRange, $this->getUser(), $breedParam);
 
         return $this->render('@TerminalbdCrm/companyWiseFeedSale/new-modal.html.twig', [
             'productsName' => $productsName,

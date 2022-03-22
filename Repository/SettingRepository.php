@@ -63,6 +63,36 @@ class SettingRepository extends EntityRepository
         return $results;
     }
 
+    public function getProductTypeWithOutChickByBreedName($childrenIds)
+    {
+        $qb = $this->createQueryBuilder('e');
+            $qb->select('e.id','e.name')
+        ->where("e.status =1")
+        ->andWhere("e.settingType ='PRODUCT_TYPE'")
+        ->andWhere("e.parent IN (:parent)")
+        ->setParameter('parent',$childrenIds)
+        ->andWhere("e.slug NOT IN (:slug)")
+        ->setParameter('slug',['broiler-chicks','layer-chicks'])
+        ->orderBy('e.id', 'ASC');
+        $results = $qb->getQuery()->getArrayResult();
+        return $results;
+    }
+
+    public function getProductTypeForChickByBreedName($childrenIds)
+    {
+        $qb = $this->createQueryBuilder('e');
+            $qb->select('e.id','e.name')
+        ->where("e.status =1")
+        ->andWhere("e.settingType ='PRODUCT_TYPE'")
+        ->andWhere("e.parent IN (:parent)")
+        ->setParameter('parent',$childrenIds)
+        ->andWhere("e.slug IN (:slug)")
+        ->setParameter('slug',['broiler-chicks','layer-chicks'])
+        ->orderBy('e.id', 'ASC');
+        $results = $qb->getQuery()->getArrayResult();
+        return $results;
+    }
+
     public function getFarmerPurposeByServiceMode($serviceMode){
         $qb = $this->createQueryBuilder('e');
         $qb->where("e.status =1");

@@ -33,21 +33,24 @@
         </li>
     {% endif %}
 
-    {% if is_granted('ROLE_CRM_POULTRY_USER') or is_granted('ROLE_CRM_CATTLE_USER') or is_granted('ROLE_CRM_AQUA_USER') or is_granted('ROLE_DEVELOPER') %}
+    {% if is_granted('ROLE_CRM_POULTRY_USER') or is_granted('ROLE_CRM_CATTLE_USER') or is_granted('ROLE_CRM_AQUA_USER') or is_granted('ROLE_DEVELOPER')  or is_granted('ROLE_CRM_SALES_MARKETING_USER') %}
         <li>
             <a class="" href="javascript:"><i class="fa fa-building-o"></i>{{ 'Company Feed Sale'|trans }}</a>
             <ul class="sub-menu">
-                {% if is_granted('ROLE_CRM_POULTRY_USER') or is_granted('ROLE_DEVELOPER') %}
+                {% if is_granted('ROLE_CRM_POULTRY_USER') or is_granted('ROLE_DEVELOPER')  or is_granted('ROLE_CRM_SALES_MARKETING_USER') %}
                     <li><a class="dropdown-item"
-                           href="{{ path('company_wise_feed_sale_new',{'breed_name': 'poultry'}) }}">{{ 'Poultry'|trans }}</a>
+                           href="{{ path('company_wise_feed_sale_new',{'breed_name': 'poultry'}) }}">{{ 'Poultry Feed'|trans }}</a>
+                    </li>
+                    <li><a class="dropdown-item"
+                           href="{{ path('company_wise_feed_sale_new',{'breed_name': 'poultry-chick'}) }}">{{ 'Poultry Chicks'|trans }}</a>
                     </li>
                 {% endif %}
-                {% if is_granted('ROLE_CRM_CATTLE_USER') or is_granted('ROLE_DEVELOPER') %}
+                {% if is_granted('ROLE_CRM_CATTLE_USER') or is_granted('ROLE_DEVELOPER')  or is_granted('ROLE_CRM_SALES_MARKETING_USER') %}
                     <li><a class="dropdown-item"
                            href="{{ path('company_wise_feed_sale_new',{'breed_name': 'cattle'}) }}">{{ 'Cattle'|trans }}</a>
                     </li>
                 {% endif %}
-                {% if is_granted('ROLE_CRM_AQUA_USER') or is_granted('ROLE_DEVELOPER') %}
+                {% if is_granted('ROLE_CRM_AQUA_USER') or is_granted('ROLE_DEVELOPER') or is_granted('ROLE_CRM_SALES_MARKETING_USER') %}
                     <li><a class="dropdown-item"
                            href="{{ path('company_wise_feed_sale_new',{'breed_name': 'fish'}) }}">{{ 'Fish'|trans }}</a>
                     </li>
