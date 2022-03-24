@@ -18,7 +18,7 @@
                 <th>Officer's ID: {{ data['employee'].userId }}</th>
                 <th>Officer's Name: {{ data['employee'].name }}</th>
                 <th>Designation: {{ data['employee'].designation }}</th>
-                <th>Month: {{ month|split('-')[1] ~ '-' ~ year }}</th>
+                <th>Month: {{ year|split('-')|last ~ '-' ~ year }}</th>
             </tr>
             </thead>
         </table>

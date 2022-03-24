@@ -52,6 +52,12 @@ class ExpenseRepository extends EntityRepository
 //        $qb->addGroupBy('crm_visit.id');
         $rolesString = implode($loggedUser->getRoles(), '_');
 
+        if ($employeeId){
+            $qb->andWhere('employee.id = :employeeId')->setParameter('employeeId', $employeeId);
+        }else{
+
+        }
+
         if (!str_contains($rolesString, 'ADMIN') && !in_array('ROLE_LINE_MANAGER', $loggedUser->getRoles())){
             $qb->andWhere('employee.id = :employeeId')->setParameter('employeeId', $loggedUser->getId());
         }elseif (in_array('ROLE_LINE_MANAGER', $loggedUser->getRoles())){
@@ -92,8 +98,7 @@ class ExpenseRepository extends EntityRepository
 
             ksort($data);
         }
-
-        dd($results);
+        dd($data);
         return $data;
     }
 

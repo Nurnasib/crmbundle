@@ -27,6 +27,7 @@ use Terminalbd\CrmBundle\Entity\CrmCustomer;
 use Terminalbd\CrmBundle\Entity\CrmVisit;
 use Terminalbd\CrmBundle\Entity\DailyChickPrice;
 use Terminalbd\CrmBundle\Entity\DailyChickPriceDetails;
+use Terminalbd\CrmBundle\Entity\FarmerTrainingReport;
 use Terminalbd\CrmBundle\Entity\FcrDifferentCompanies;
 use Terminalbd\CrmBundle\Entity\FishCompanyAndSpeciesWiseAverageFcr;
 use Terminalbd\CrmBundle\Entity\FishLifeCycle;
@@ -212,15 +213,21 @@ class SyncAppDataController extends AbstractController
                         case "crm_agent_upgradation_report":
                             $this->processAgentUpgradtion($jsonToArray, $batch);
                             break;
+                        case "crm_farmer_training_report":
+                            $this->processFarmerTraining($jsonToArray, $batch);
+                            break;
+                        case "crm_farmer_training_report_details":
+                            $this->processFarmerTrainingDetails($jsonToArray, $batch);
+                            break;
                     }
-                    $detail->setStatus(true);
-                    $em->persist($detail);
-                    $em->flush();
+//                    $detail->setStatus(true);
+//                    $em->persist($detail);
+//                    $em->flush();
                 }
             }
-            $batch->setStatus(true);
-            $em->persist($batch);
-            $em->flush();
+//            $batch->setStatus(true);
+//            $em->persist($batch);
+//            $em->flush();
         }
         $this->addFlash('success', 'Synchronization Completed!');
         return $this->redirectToRoute('crm_sync_app_data_index');
@@ -1746,6 +1753,59 @@ VALUES (
             $stmt->bindValue('remarks', $report['remarks']);
             $stmt->bindValue('created_at',$createdAt);
             $stmt->execute();
+
+        }
+    }
+
+    private function processFarmerTraining($reports, Api $batch)
+    {
+        foreach ($reports as $report) {
+
+            $createdAt = $report['created_at'] ? (new \DateTime($report['created_at']))->format('Y-m-d H:i:s') : null;
+            $trainingDate = $report['training_date'] ? (new \DateTime($report['training_date']))->format('Y-m-d') : null;
+
+            $sql = "INSERT INTO `crm_farmer_training_report`(`agent_purpose_id`, `agent_id`, `employee_id`, `breed_name`, `training_date`, `training_material`, `training_topics`, `remarks`, `created_at`, `app_batch_id`, `app_id`) VALUES (:agent_purpose_id, :agent_id, :employee_id, :breed_name, :training_date, :training_material, :training_topics, :remarks, :created_at, :app_batch_id, :app_id)";
+
+            $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
+
+            $stmt->bindValue('agent_purpose_id', $report['agent_purpose_id']);
+            $stmt->bindValue('agent_id', $report['agent_id']);
+            $stmt->bindValue('employee_id', $report['employee_id']);
+            $stmt->bindValue('breed_name', $report['breed_name']);
+            $stmt->bindValue('training_date', $trainingDate);
+            $stmt->bindValue('training_material', $report['training_material']);
+            $stmt->bindValue('training_topics', $report['training_topics']);
+            $stmt->bindValue('remarks', $report['remarks']);
+            $stmt->bindValue('created_at', $createdAt);
+            $stmt->bindValue('app_batch_id', $batch->getId());
+            $stmt->bindValue('app_id', $report['id']);
+
+            $stmt->execute();
+        }
+    }
+    private function processFarmerTrainingDetails($reports, Api $batch)
+    {
+        foreach ($reports as $report) {
+            /**
+             * @var FarmerTrainingReport $farmerTraining
+             */
+            $farmerTraining = $this->getDoctrine()->getRepository(FarmerTrainingReport::class)->findOneBy(['appBatch' => $batch, 'appId' => $report['farmer_training_report_id']]);
+
+            if ($farmerTraining){
+                $createdAt = $report['created_at'] ? (new \DateTime($report['created_at']))->format('Y-m-d H:i:s') : null;
+
+                $sql = "INSERT INTO `crm_farmer_training_report_details`(`farmer_training_report_id`, `customer_id`, `training_material_qty`, `farmer_capacity`, `created_at`) VALUES (:farmer_training_report_id, :customer_id, :training_material_qty, :farmer_capacity, :created_at)";
+
+                $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
+
+                $stmt->bindValue('farmer_training_report_id', $farmerTraining->getId());
+                $stmt->bindValue('customer_id', $report['customer_id']);
+                $stmt->bindValue('training_material_qty', $report['training_material_qty']);
+                $stmt->bindValue('farmer_capacity', $report['farmer_capacity']);
+                $stmt->bindValue('created_at', $createdAt);
+
+                $stmt->execute();
+            }
 
         }
     }
