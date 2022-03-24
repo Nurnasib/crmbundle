@@ -230,7 +230,7 @@ class FarmerIntroduceDetails
     /**
      * @return Agent
      */
-    public function getSubAgent(): Agent
+    public function getSubAgent()
     {
         return $this->subAgent;
     }

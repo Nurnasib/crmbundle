@@ -93,10 +93,15 @@
                                 </td>
                                 <td>
                                     {{ entity.otherAgent.address|default('') }}
+
+{#                                    {{ entity.otherAgent.address|default('') }}#}
 {#                                    {{ form_widget(form.yearlyFeedUseTon,{'type':'number'}) }}#}
                                 </td>
                                 <td>
                                     {{ entity.otherFeed.name|default('') }}
+{#                                        {{ entity.otherFeed.name }}#}
+{#                                    {% endif %}#}
+{#                                    {{ entity.otherFeed.name|default('') }}#}
                                 </td>
                                 <td>
                                     {{ form_widget(form.remarks) }}

@@ -16,8 +16,8 @@
     <td>{{ fcrDetail.hatchery.name|default('') }}</td>
     <td>{{ fcrDetail.breed.name|default('') }}</td>
     <td>{{ fcrDetail.feed.name|default('') }}</td>
-    {% if fcrDetail.fcrOfFeed == "BEFORE" %}
     <td>{{ fcrDetail.feedMill.name|default('') }}</td>
+    {% if fcrDetail.fcrOfFeed == "BEFORE" %}
     <td>{{ fcrDetail.feedType.name|default('') }}</td>
     <td>{{ fcrDetail.proDate|date('d-m-Y') }}</td>
     <td>{{ fcrDetail.batchNo }}</td>

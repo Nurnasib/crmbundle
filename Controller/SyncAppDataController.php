@@ -1199,9 +1199,15 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
     {
         foreach ($farmers as $farmer) {
             $findFarmer = $this->getDoctrine()->getRepository(CrmCustomer::class)->find($farmer['customer_id']);
+            /**
+             * @var FarmerIntroduceDetails $findIntroFarmer
+             */
             $findIntroFarmer = $this->getDoctrine()->getRepository(FarmerIntroduceDetails::class)->findOneBy(['customer' => $findFarmer]);
 
             if ($findIntroFarmer && $farmer['feed_id'] == 1){
+                if ($findIntroFarmer->getIntroduceDate()){ // if farmer already introduced
+                    continue;
+                }
                 $updateFarmer = "UPDATE `crm_customers` SET `updated`= :updated,`agent_id`= :agent_id WHERE id = :id";
                 $updateFarmerStmt = $this->getDoctrine()->getConnection()->prepare($updateFarmer);
                 $updateFarmerStmt->bindValue('agent_id', $farmer['agent_id']);
