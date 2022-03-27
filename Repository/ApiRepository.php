@@ -121,6 +121,7 @@ class ApiRepository extends BaseRepository
         $qb->from(CrmCustomer::class,'e');
         $qb->Join('e.customerGroup','cg');
         $qb->leftJoin('e.farmerIntroduce','fi');
+        $qb->leftJoin('fi.feed','feed');
         $qb->leftJoin('fi.otherFeed','otherFeed');
         $qb->leftJoin('fi.farmerType','farmerTypes');
         $qb->leftJoin('fi.otherAgent','otherAgent');
@@ -133,7 +134,7 @@ class ApiRepository extends BaseRepository
         $qb->addSelect('ca.id as agentId','ca.name as agentName');
         $qb->addSelect('l.name as upozila','l.id as upozilaId');
         $qb->addSelect('dis.name as district','dis.id as districtId');
-        $qb->addSelect('fi.cultureSpeciesItemAndQty', 'otherAgent.name AS otherAgentName', 'otherAgent.address AS otherAgentAddress', 'subAgent.name AS subAgentName', 'subAgent.address AS subAgentAddress', 'otherFeed.name AS previousFeedName', 'otherFeed.id AS feed_id', 'farmerTypes.id AS farmerType');
+        $qb->addSelect('fi.cultureSpeciesItemAndQty', 'otherAgent.name AS otherAgentName', 'otherAgent.address AS otherAgentAddress', 'subAgent.name AS subAgentName', 'subAgent.address AS subAgentAddress', 'feed.name AS feedName', 'feed.id AS feed_id', 'otherFeed.name AS previousFeedName', 'otherFeed.id AS other_feed_id', 'farmerTypes.id AS farmerType');
         $qb->where("cg.slug =:slug")->setParameter('slug', $mode);
         if($locations){
             $locations = explode(',',$locations);
@@ -172,7 +173,9 @@ class ApiRepository extends BaseRepository
             $data[$key]['previousAgentName'] = (string)$previousAgentName;
             $data[$key]['previousAgentAddress'] = (string)$previousAgentAddress;
             $data[$key]['feed_id'] = (string)$row['feed_id'];
+            $data[$key]['feed_name'] = (string)$row['feedName'];
             $data[$key]['farmerType'] = (string)$row['farmerType'];
+            $data[$key]['previousFeedId'] = (string)$row['other_feed_id'];
             $data[$key]['previousFeedName'] = (string)$row['previousFeedName'];
             $data[$key]['culture_species_item_and_qty'] = (string)$row['cultureSpeciesItemAndQty'];
 
