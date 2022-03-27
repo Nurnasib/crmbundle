@@ -844,6 +844,41 @@ class ApiRepository extends BaseRepository
         $qb->select('s.id as id','s.name as name','s.settingType as settingType');
 
         $qb->where("s.settingType = 'PURPOSE'");
+        $qb->andWhere('s.slug NOT IN (:slug)')->setParameter('slug',['broiler-shed-included','layer-shed-included','cattle-farm-included','pond-included']);
+        $qb->andWhere('s.status = 1');
+
+        $qb->orderBy('s.id', 'ASC');
+        $result = $qb->getQuery()->getArrayResult();
+        $data = array();
+        foreach($result as $key => $row) {
+
+            $data[$key]['id'] = (string)$row['id'];
+            $data[$key]['name'] = (string)$row['name'];
+            //$data[$key]['breedName'] = (string)$row['breedName'];
+
+            /*$data[$row['settingType']][]= array(
+                'id'=>(int)$row['id'],
+                'name'=>$row['name']
+            );*/
+
+        }
+        return $data;
+
+    }
+
+    /**
+     * Daily Activies Purpose
+     */
+    public function dailyActivitiesPurposeForSalesAndMarketing()
+    {
+        $em = $this->_em;
+        $qb = $em->createQueryBuilder();
+        $qb->from(Setting::class,'s');
+        $qb->leftJoin('s.parent','p');
+        $qb->select('s.id as id','s.name as name','s.settingType as settingType');
+
+        $qb->where("s.settingType = 'PURPOSE'");
+        $qb->andWhere('s.slug IN (:slug)')->setParameter('slug',['broiler-shed-included','layer-shed-included','cattle-farm-included','pond-included']);
         $qb->andWhere('s.status = 1');
 
         $qb->orderBy('s.id', 'ASC');
