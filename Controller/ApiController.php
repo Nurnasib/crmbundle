@@ -2479,6 +2479,9 @@ class ApiController extends AbstractController
                 $introduceFarmer->setEmployee($employee);
                 $introduceFarmer->setOtherAgent($otherAgent);
                 $introduceFarmer->setFarmerType($farmerType);
+                if ($feed->getName() != 'Nourish'){
+                    $introduceFarmer->setOtherFeed($feed);
+                }
                 $introduceFarmer->setFeed($feed);
                 $introduceFarmer->setCultureSpeciesItemAndQty(isset($parameters['cultureSpeciesItemAndQty']) ? $parameters['cultureSpeciesItemAndQty'] : null);
                 $introduceFarmer->setCreatedAt(new \DateTime('now'));
