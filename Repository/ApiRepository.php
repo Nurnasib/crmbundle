@@ -844,7 +844,7 @@ class ApiRepository extends BaseRepository
         $qb->select('s.id as id','s.name as name','s.settingType as settingType');
 
         $qb->where("s.settingType = 'PURPOSE'");
-        $qb->andWhere('s.slug NOT IN (:slug)')->setParameter('slug',['broiler-shed-included','layer-shed-included','cattle-farm-included','pond-included']);
+        $qb->andWhere('s.slug IS NULL or s.slug NOT IN (:slug)')->setParameter('slug',['broiler-shed-included','layer-shed-included','cattle-farm-included','pond-included']);
         $qb->andWhere('s.status = 1');
 
         $qb->orderBy('s.id', 'ASC');
@@ -1039,7 +1039,7 @@ class ApiRepository extends BaseRepository
         $qb->where("s.settingType = 'FARMER_REPORT'");
         $qb->andWhere('s.status = 1');
         $qb->andWhere($qb->expr()->notIn('s.slug',  $exceptSlug));
-    //    $qb->andWhere('s.slug NOT IN (:slug)')->setParameter('slug', $exceptSlug);
+        //    $qb->andWhere('s.slug NOT IN (:slug)')->setParameter('slug', $exceptSlug);
 
 
         $qb->orderBy('s.id', 'ASC');
@@ -1048,10 +1048,10 @@ class ApiRepository extends BaseRepository
         $data = array();
         foreach ($result as $key => $row) {
 //            if(!in_array($row['slug'],$exceptSlug)){
-                $data[$key]['id'] = (string)$row['id'];
-                $data[$key]['name'] = (string)$row['name'];
-                $data[$key]['farmType'] = (string)$row['farmType'];
-                $data[$key]['slug'] = (string)$row['slug'];
+            $data[$key]['id'] = (string)$row['id'];
+            $data[$key]['name'] = (string)$row['name'];
+            $data[$key]['farmType'] = (string)$row['farmType'];
+            $data[$key]['slug'] = (string)$row['slug'];
 //            }
 
         }
@@ -1080,10 +1080,10 @@ class ApiRepository extends BaseRepository
 
         $data = array();
         foreach ($result as $key => $row) {
-                $data[$key]['id'] = (string)$row['id'];
-                $data[$key]['name'] = (string)$row['name'];
-                $data[$key]['farmType'] = (string)$row['farmType'];
-                $data[$key]['slug'] = (string)$row['slug'];
+            $data[$key]['id'] = (string)$row['id'];
+            $data[$key]['name'] = (string)$row['name'];
+            $data[$key]['farmType'] = (string)$row['farmType'];
+            $data[$key]['slug'] = (string)$row['slug'];
         }
         return $data;
     }
@@ -1322,7 +1322,7 @@ class ApiRepository extends BaseRepository
 
         $qb->orderBy('s.name', 'ASC');
         return $qb->getQuery()->getArrayResult();
-        
+
     }
 
     /**
