@@ -1493,9 +1493,9 @@ class ApiRepository extends BaseRepository
 
 
     /**
-     * Product Name For Chick
+     * Product Name For Chick Boiler
      */
-    public function productForChick()
+    public function productForBoilerChick()
     {
         $em = $this->_em;
         $qb = $em->createQueryBuilder();
@@ -1508,7 +1508,7 @@ class ApiRepository extends BaseRepository
 
         $qb->where("s.settingType = 'PRODUCT_TYPE'");
         $qb->andWhere('s.status = 1');
-        $qb->andWhere('s.slug IN (:slug)')->setParameter('slug',['broiler-chicks','layer-chicks']);
+        $qb->andWhere('s.slug IN (:slug)')->setParameter('slug',['broiler-chicks']);
 
         $qb->orderBy('s.id', 'ASC');
         $result = $qb->getQuery()->getArrayResult();
@@ -1519,6 +1519,36 @@ class ApiRepository extends BaseRepository
             $data[$key]['feedName'] = (string)$row['feedName'];
             $data[$key]['name'] = (string)$row['name'];
 
+        }
+
+        return $data;
+    }
+
+    /**
+     * Product Name For Chick Layer
+     */
+    public function productForLayerChick()
+    {
+        $em = $this->_em;
+        $qb = $em->createQueryBuilder();
+        $qb->from(Setting::class,'s');
+        $qb->leftJoin('s.parent','p');
+        $qb->leftJoin('p.parent','pp');
+
+        $qb->select('s.id as id','s.name as feedName');
+        $qb->addSelect('pp.name as name');
+
+        $qb->where("s.settingType = 'PRODUCT_TYPE'");
+        $qb->andWhere('s.status = 1');
+        $qb->andWhere('s.slug IN (:slug)')->setParameter('slug',['layer-chicks']);
+
+        $qb->orderBy('s.id', 'ASC');
+        $result = $qb->getQuery()->getArrayResult();
+        $data = array();
+        foreach ($result as $key => $row) {
+            $data[$key]['id'] = (int)$row['id'];
+            $data[$key]['feedName'] = (string)$row['feedName'];
+            $data[$key]['name'] = (string)$row['name'];
         }
 
         return $data;
