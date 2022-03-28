@@ -17,6 +17,7 @@ use Terminalbd\CrmBundle\Entity\AntibioticFreeFarm;
 use Terminalbd\CrmBundle\Entity\ChickLifeCycle;
 use Terminalbd\CrmBundle\Entity\ChickLifeCycleDetails;
 use Terminalbd\CrmBundle\Entity\CompanyWiseFeedSale;
+use Terminalbd\CrmBundle\Entity\ComplainDifferentProductDetails;
 use Terminalbd\CrmBundle\Entity\CostBenefitAnalysisForLessCostingFarm;
 use Terminalbd\CrmBundle\Entity\CrmCustomer;
 use Terminalbd\CrmBundle\Entity\DailyChickPrice;
@@ -86,19 +87,19 @@ class OthersReportController extends AbstractController
                 case 'company-wise-feed-sale-poultry':
                     $breed = $this->getDoctrine()->getRepository(Setting::class)->findBy(['status' => 1, 'slug' => 'poultry-breed', 'settingType' => 'BREED_NAME']);
                     $species = $this->getDoctrine()->getRepository(Setting::class)->getProductType($breed);
-                    $entities = $this->getDoctrine()->getRepository(CompanyWiseFeedSale::class)->getCompanyWiseFeedSale('poultry', $filterBy);
+                    $entities = $this->getDoctrine()->getRepository(CompanyWiseFeedSale::class)->getCompanyWiseFeedSaleReport('poultry', $filterBy);
                     break;
 
                 case 'company-wise-feed-sale-cattle':
                     $breed = $this->getDoctrine()->getRepository(Setting::class)->findBy(['status' => 1, 'slug' => 'cattle-breed', 'settingType' => 'BREED_NAME']);
                     $species = $this->getDoctrine()->getRepository(Setting::class)->getProductType($breed);
-                    $entities = $this->getDoctrine()->getRepository(CompanyWiseFeedSale::class)->getCompanyWiseFeedSale('cattle', $filterBy);
+                    $entities = $this->getDoctrine()->getRepository(CompanyWiseFeedSale::class)->getCompanyWiseFeedSaleReport('cattle', $filterBy);
                     break;
 
                 case 'company-wise-feed-sale-fish':
                     $breed = $this->getDoctrine()->getRepository(Setting::class)->findBy(['status' => 1, 'slug' => 'fish-breed', 'settingType' => 'BREED_NAME']);
                     $species = $this->getDoctrine()->getRepository(Setting::class)->getProductType($breed);
-                    $entities = $this->getDoctrine()->getRepository(CompanyWiseFeedSale::class)->getCompanyWiseFeedSale('fish', $filterBy);
+                    $entities = $this->getDoctrine()->getRepository(CompanyWiseFeedSale::class)->getCompanyWiseFeedSaleReport('fish', $filterBy);
                     break;
 
                 case 'farmer-training-poultry':
@@ -134,15 +135,18 @@ class OthersReportController extends AbstractController
 //                    dd('Stay for anonymous reason!!');
 //                    $entities = [];
 //                    break;
+                case 'doc-complain-poultry':
+                    $entities = $this->getDoctrine()->getRepository(ComplainDifferentProductDetails::class)->getDocComplainReport($filterBy, $this->getUser());
+                    break;
 
                 case 'expense':
-                    $entities = $this->getDoctrine()->getRepository(Expense::class)->getExpense($filterBy, $this->getUser());
+                    $entities = $this->getDoctrine()->getRepository(Expense::class)->getExpenseReport($filterBy, $this->getUser());
 
                     break;
 
                 case 'new-agent-upgradation-cattle':
                 case 'new-agent-upgradation-fish':
-                    $entities = $this->getDoctrine()->getRepository(AgentUpgradationReport::class)->getAgentUpgradation($filterBy, $this->getUser());
+                    $entities = $this->getDoctrine()->getRepository(AgentUpgradationReport::class)->getAgentUpgradationReport($filterBy, $this->getUser());
                     break;
 
                 case 'fish-sales-price':

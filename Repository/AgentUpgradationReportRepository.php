@@ -41,7 +41,7 @@ class AgentUpgradationReportRepository extends BaseRepository
         return array();
     }
 
-    public function getAgentUpgradation($filterBy, User $loggedUser){
+    public function getAgentUpgradationReport($filterBy, User $loggedUser){
             $startDate = isset($filterBy['startDate']) ? (new \DateTime($filterBy['startDate']))->format('Y-m-d') . ' 00:00:00' : null;
             $endDate = isset($filterBy['endDate']) ? (new \DateTime($filterBy['endDate']))->format('Y-m-d') . ' 23:59:59' : null;
             $employeeId = isset($filterBy['employee']) ? $filterBy['employee']->getId() : null;

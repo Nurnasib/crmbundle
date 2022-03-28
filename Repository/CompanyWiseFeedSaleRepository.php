@@ -78,7 +78,7 @@ class CompanyWiseFeedSaleRepository extends BaseRepository
     }
 
 
-    public function getCompanyWiseFeedSale($breedName, $filterBy)
+    public function getCompanyWiseFeedSaleReport($breedName, $filterBy)
     {
         $start = isset($filterBy['startDate']) ? (new \DateTime($filterBy['startDate']))->format('Y-m-d') . ' 00:00:00' : null;
         $end = isset($filterBy['endDate']) ? (new \DateTime($filterBy['endDate']))->format('Y-m-d') . ' 23:59:59' : null;

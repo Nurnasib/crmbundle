@@ -25,7 +25,7 @@ use function Doctrine\ORM\QueryBuilder;
  */
 class ExpenseRepository extends EntityRepository
 {
-    public function getExpense($filterBy, User $loggedUser)
+    public function getExpenseReport($filterBy, User $loggedUser)
     {
         $start = isset($filterBy['startDate']) ? (new \DateTime($filterBy['startDate']))->format('Y-m-d 00:00:00') : null;
         $end = isset($filterBy['endDate']) ? (new \DateTime($filterBy['endDate']))->format('Y-m-d 23:59:59') : null;

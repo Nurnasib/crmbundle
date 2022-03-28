@@ -89,7 +89,7 @@
         </div>
         {% if entities is defined and entities is not empty %}
             <div class="row">
-                <div class="card" style="overflow-x: scroll">
+                <div class="card" style="overflow: scroll; max-height: 500px">
                     <div class="card-block">
                         {% if filterBy['otherReport'] is same as 'farmer-survey-poultry' %}
                             {% include '@TerminalbdCrm/report/others/inc/_farmer_survey.html.twig'%}
@@ -123,6 +123,9 @@
 
                         {% elseif filterBy['otherReport'] is same as 'fish-tilapia-fry-sales' %}
                             {% include '@TerminalbdCrm/report/others/inc/_fish_tilapia_fry_sales.html.twig'%}
+
+                        {% elseif filterBy['otherReport'] is same as 'doc-complain-poultry' %}
+                            {% include '@TerminalbdCrm/report/others/inc/_doc_complain.html.twig'%}
 
                         {% endif %}
 

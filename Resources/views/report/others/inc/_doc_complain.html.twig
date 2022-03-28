@@ -1,0 +1,45 @@
+<table width="100%">
+    <tr>
+        <th colspan="15"><h3 class="text-center">NOURISH POULTRY AND HATCHERY LTD</h3></th>
+    </tr>
+    <tr>
+        <th colspan="15"><h5 class="text-center">UTTARA, DHAKA.</h5></th>
+    </tr>
+
+    <tr>
+        <td colspan="15" align="center"><h6>{{ filterBy['otherReport']|replace({'-': ' '}) |upper }}</h6></td>
+    </tr>
+</table>
+{% if employee is defined and employee is not null %}
+    <table width="100%" class="table table-bordered">
+        <thead class="thead-dark">
+        <tr>
+            <th>Officer's ID: {{ employee.userId }}</th>
+            <th>Officer's Name: {{ employee.name }}</th>
+            <th>Designation: {{ employee.designation.name }}</th>
+            <th>Month: {{ filterBy['startDate']|date('F-Y') }}</th>
+        </tr>
+        </thead>
+    </table>
+{% endif %}
+
+<table class="table table-striped table-bordered table-hover">
+    <thead class="thead-dark">
+    <tr>
+        <th scope="col" width="50">S/N</th>
+        <th scope="col">Parameter</th>
+        <th scope="col">Quantity</th>
+        <th scope="col">Observation</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for entity in entities %}
+        <tr>
+            <td>{{ loop.index }}</td>
+            <td>{{ entity.parameterName }}</td>
+            <td>{{ entity.quantity }}</td>
+            <td>{{ entity.observation }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>

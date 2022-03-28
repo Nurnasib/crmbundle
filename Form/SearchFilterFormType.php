@@ -370,6 +370,7 @@ class SearchFilterFormType extends AbstractType
                     'Farmer Training' => 'farmer-training-poultry',
                     'FCR Different Companies' => 'fcr-different-companies-poultry',
                     'Lab Service' => 'lab-service-poultry',
+                    'DOC Complain' => 'doc-complain-poultry',
                     ]
                 ]
             );
