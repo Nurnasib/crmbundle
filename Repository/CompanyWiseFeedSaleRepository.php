@@ -82,7 +82,6 @@ class CompanyWiseFeedSaleRepository extends BaseRepository
     {
         $start = isset($filterBy['startDate']) ? (new \DateTime($filterBy['startDate']))->format('Y-m-d') . ' 00:00:00' : null;
         $end = isset($filterBy['endDate']) ? (new \DateTime($filterBy['endDate']))->format('Y-m-d') . ' 23:59:59' : null;
-//dd($filterBy['employee']);
         $qb = $this->createQueryBuilder('e');
         $qb->join('e.feedCompany', 'feedCompany');
 
@@ -95,7 +94,6 @@ class CompanyWiseFeedSaleRepository extends BaseRepository
         $qb->andWhere('e.breedName = :breedName')->setParameter('breedName', $breedName);
 
         $results = $qb->getQuery()->getArrayResult();
-//dd($results);
         $data = [];
 
         foreach ($results as $result) {

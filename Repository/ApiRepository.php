@@ -134,7 +134,7 @@ class ApiRepository extends BaseRepository
         $qb->addSelect('ca.id as agentId','ca.name as agentName');
         $qb->addSelect('l.name as upozila','l.id as upozilaId');
         $qb->addSelect('dis.name as district','dis.id as districtId');
-        $qb->addSelect('fi.cultureSpeciesItemAndQty', 'otherAgent.name AS otherAgentName', 'otherAgent.address AS otherAgentAddress', 'subAgent.name AS subAgentName', 'subAgent.address AS subAgentAddress', 'feed.name AS feedName', 'feed.id AS feed_id', 'otherFeed.name AS previousFeedName', 'otherFeed.id AS other_feed_id', 'farmerTypes.id AS farmerType');
+        $qb->addSelect('fi.cultureSpeciesItemAndQty', 'otherAgent.name AS otherAgentName', 'otherAgent.address AS otherAgentAddress', 'subAgent.name AS subAgentName', 'subAgent.address AS subAgentAddress', 'feed.name AS feedName', 'feed.id AS feed_id', 'otherFeed.name AS previousFeedName', 'otherFeed.id AS other_feed_id', 'farmerTypes.id AS farmerType', 'farmerTypes.name AS farmerTypeName');
         $qb->where("cg.slug =:slug")->setParameter('slug', $mode);
         if($locations){
             $locations = explode(',',$locations);
@@ -158,9 +158,10 @@ class ApiRepository extends BaseRepository
             }elseif ($row['subAgentAddress']){
                 $previousAgentAddress = $row['subAgentAddress'];
             }
+            $customerType = $row['farmerTypeName']!=''?' ('.$row['farmerTypeName'].')':'';
 
             $data[$key]['id'] = (int)$row['id'];
-            $data[$key]['name'] = (string)$row['name'];
+            $data[$key]['name'] = (string)$row['name'].''.$customerType;
             $data[$key]['mobile'] = (string)$row['mobile'];
             $data[$key]['address'] = (string)$row['address'];
             $data[$key]['customerGroup'] = (string)$row['customerGroup'];
