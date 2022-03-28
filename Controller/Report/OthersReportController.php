@@ -17,6 +17,7 @@ use Terminalbd\CrmBundle\Entity\AntibioticFreeFarm;
 use Terminalbd\CrmBundle\Entity\ChickLifeCycle;
 use Terminalbd\CrmBundle\Entity\ChickLifeCycleDetails;
 use Terminalbd\CrmBundle\Entity\CompanyWiseFeedSale;
+use Terminalbd\CrmBundle\Entity\ComplainDifferentProductDetails;
 use Terminalbd\CrmBundle\Entity\CostBenefitAnalysisForLessCostingFarm;
 use Terminalbd\CrmBundle\Entity\CrmCustomer;
 use Terminalbd\CrmBundle\Entity\DailyChickPrice;
@@ -146,9 +147,15 @@ class OthersReportController extends AbstractController
 //                    dd('Stay for anonymous reason!!');
 //                    $entities = [];
 //                    break;
+                case 'doc-complain':
+                    $entities = $this->getDoctrine()->getRepository(ComplainDifferentProductDetails::class)->getComplainReport($filterBy, $this->getUser(), 'COMPLAIN_DOC');
+                    break;
+                case 'feed-complain':
+                    $entities = $this->getDoctrine()->getRepository(ComplainDifferentProductDetails::class)->getComplainReport($filterBy, $this->getUser(), 'COMPLAIN_FEED');
+                    break;
 
                 case 'expense':
-                    $entities = $this->getDoctrine()->getRepository(Expense::class)->getExpense($filterBy, $this->getUser());
+                    $entities = $this->getDoctrine()->getRepository(Expense::class)->getExpenseReport($filterBy, $this->getUser());
 
                     break;
 

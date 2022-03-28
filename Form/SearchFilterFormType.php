@@ -356,7 +356,8 @@ class SearchFilterFormType extends AbstractType
     {
         $otherReport = [
             'Others' => [
-                'Expense' => 'expense'
+                'Expense' => 'expense',
+                'Feed Complain' => 'feed-complain'
             ]
         ];
 

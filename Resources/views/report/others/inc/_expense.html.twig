@@ -18,7 +18,7 @@
                 <th>Officer's ID: {{ data['employee'].userId }}</th>
                 <th>Officer's Name: {{ data['employee'].name }}</th>
                 <th>Designation: {{ data['employee'].designation }}</th>
-                <th>Month: {{ year|split('-')|last ~ '-' ~ year }}</th>
+                <th>Month: {{ year|split('-')|last ~ '-' ~ year|split('-')|first }}</th>
             </tr>
             </thead>
         </table>
@@ -29,6 +29,8 @@
                 <th scope="col">S/N</th>
                 <th scope="col">Visiting Date</th>
                 <th scope="col">Visiting Area</th>
+                <th scope="col">Purpose</th>
+                <th scope="col">Vehicle</th>
                 <th scope="col">Schedule Visit</th>
                 <th scope="col">Conveyance</th>
                 <th scope="col">Daily Allowance</th>
@@ -47,6 +49,35 @@
                     <td>{{ loop.index }}</td>
                     <td>{{ item.visitedDate|date('d-m-Y') }}</td>
                     <td>{{ item.visitingAreaName }}</td>
+                    <td style="vertical-align: top !important;">
+
+                        {% if item.purpose is defined %}
+                            <ul style="padding-inline-start: 25px !important; list-style-type: square">
+                                {% for purpose in item.purpose %}
+
+                                    <li>{{ purpose }}</li>
+
+                                {% endfor %}
+                            </ul>
+
+                        {% endif %}
+
+                    </td>
+                    <td style="vertical-align: top !important;">
+
+                        {% if item.vehicle is defined %}
+                            <ul style="padding-inline-start: 25px !important; list-style-type: square">
+
+                                {% for vehicle in item.vehicle %}
+
+                                    <li>{{ vehicle }}</li>
+
+                                {% endfor %}
+                            </ul>
+
+                        {% endif %}
+
+                    </td>
                     <td>{{ item.scheduleVisit }}</td>
                     <td>{{ item.conveyance }}</td>
                     <td>{{ item.dailyAllowance }}</td>
