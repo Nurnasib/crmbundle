@@ -58,7 +58,7 @@ class ApiController extends AbstractController
                     $response->headers->set('Content-Type', 'application/json');
                     $response->setContent(json_encode([
                         'message' => 'Mobile number does not found!',
-                        'status' => 404,
+                        'status' => '404',
                     ]));
                     $response->setStatusCode(Response::HTTP_NOT_FOUND);
                     return $response;
@@ -108,7 +108,7 @@ class ApiController extends AbstractController
                 $response->headers->set('Content-Type', 'application/json');
                 $response->setContent(json_encode([
                     'message' => 'Unregistered employee!',
-                    'status' => 401,
+                    'status' => '401',
                 ]));
                 $response->setStatusCode(Response::HTTP_UNAUTHORIZED);
                 return $response;
@@ -119,7 +119,7 @@ class ApiController extends AbstractController
         $response->headers->set('Content-Type', 'application/json');
         $response->setContent(json_encode([
             'message' => 'Invalid request!',
-            'status' => 405,
+            'status' => '405',
         ]));
         $response->setStatusCode(Response::HTTP_UNAUTHORIZED);
         return $response;

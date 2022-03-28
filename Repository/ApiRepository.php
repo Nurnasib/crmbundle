@@ -1104,9 +1104,11 @@ class ApiRepository extends BaseRepository
         $qb->join('e.location','location');
         $qb->join('e.customerGroup','s');
         $qb->join('e.agent','a');
+        $qb->leftJoin('e.farmerIntroduce','fi');
+        $qb->leftJoin('fi.farmerType','farmerType');
 
         $qb->select('e.id as id','e.name as name','e.address as address','e.mobile as mobile');
-        $qb->addSelect('a.id as agentId','a.name as agentName');
+        $qb->addSelect('a.id as agentId','a.name as agentName', 'farmerType.name AS farmerTypeName');
 
         $qb->where('s.slug = :slug')->setParameter('slug','farmer');
         $qb->andWhere('location.id IN (:upozils)')->setParameter('upozils',$arrs);
@@ -1114,8 +1116,10 @@ class ApiRepository extends BaseRepository
 
         $data = array();
         foreach ($result as $key => $row) {
+            $customerType = $row['farmerTypeName']!=''?' ('.$row['farmerTypeName'].')':'';
+
             $data[$key]['id'] = (int)$row['id'];
-            $data[$key]['name'] = (string)$row['name'];
+            $data[$key]['name'] = (string)$row['name'].''.$customerType;;
             $data[$key]['address'] = (string)$row['address'];
             $data[$key]['mobile'] = (string)$row['mobile'];
             $data[$key]['agentId'] = (string)$row['agentId'];
