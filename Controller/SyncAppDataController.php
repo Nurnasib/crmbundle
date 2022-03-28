@@ -220,14 +220,14 @@ class SyncAppDataController extends AbstractController
                             $this->processFarmerTrainingDetails($jsonToArray, $batch);
                             break;
                     }
-//                    $detail->setStatus(true);
-//                    $em->persist($detail);
-//                    $em->flush();
+                    $detail->setStatus(true);
+                    $em->persist($detail);
+                    $em->flush();
                 }
             }
-//            $batch->setStatus(true);
-//            $em->persist($batch);
-//            $em->flush();
+            $batch->setStatus(true);
+            $em->persist($batch);
+            $em->flush();
         }
         $this->addFlash('success', 'Synchronization Completed!');
         return $this->redirectToRoute('crm_sync_app_data_index');
@@ -1278,45 +1278,45 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
 
 //            $findVisit = $this->getDoctrine()->getRepository(CrmVisit::class)->findOneBy(['appId' => $report['crm_visit_id'], 'appBatch' => $batch]);
 //            if ($findVisit){
-                $createdAt = $report['created_at'] ? (new \DateTime($report['created_at']))->format('Y-m-d H:i:s') : null;
-                $reportingDate = $report['created_at'] ? (new \DateTime($report['created_at']))->format('Y-m-d') : null;
-                $items = json_decode($report['poultry_meat_egg_prices'], true);
+            $createdAt = $report['created_at'] ? (new \DateTime($report['created_at']))->format('Y-m-d H:i:s') : null;
+            $reportingDate = $report['created_at'] ? (new \DateTime($report['created_at']))->format('Y-m-d') : null;
+            $items = json_decode($report['poultry_meat_egg_prices'], true);
 
-                foreach ( $items as $item) {
-                    $findExist = $this->getDoctrine()->getRepository(PoultryMeatEggPrice::class)->checkExistRecord($report['region_id'],$item['id'], $report['employee_id'], $reportingDate);
-                    if ($findExist){
-                        $sql = "UPDATE `crm_poultry_meat_egg_price` SET breed_type_id = :breed_type_id, price = :price WHERE employee_id = :employee_id AND region_id = :region_id AND breed_type_id = :breed_type_id AND reporting_date = :reporting_date";
+            foreach ( $items as $item) {
+                $findExist = $this->getDoctrine()->getRepository(PoultryMeatEggPrice::class)->checkExistRecord($report['region_id'],$item['id'], $report['employee_id'], $reportingDate);
+                if ($findExist){
+                    $sql = "UPDATE `crm_poultry_meat_egg_price` SET breed_type_id = :breed_type_id, price = :price WHERE employee_id = :employee_id AND region_id = :region_id AND breed_type_id = :breed_type_id AND reporting_date = :reporting_date";
 
-                        $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
-                        $stmt->bindValue('breed_type_id', $item['id']);
-                        $stmt->bindValue('price', $item['price']);
-                        $stmt->bindValue('employee_id', $report['employee_id']);
-                        $stmt->bindValue('region_id', $report['region_id']);
-                        $stmt->bindValue('reporting_date', $reportingDate);
+                    $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
+                    $stmt->bindValue('breed_type_id', $item['id']);
+                    $stmt->bindValue('price', $item['price']);
+                    $stmt->bindValue('employee_id', $report['employee_id']);
+                    $stmt->bindValue('region_id', $report['region_id']);
+                    $stmt->bindValue('reporting_date', $reportingDate);
 
-                        $stmt->execute();
+                    $stmt->execute();
 
-                    }else{
-                        $sql = "INSERT INTO `crm_poultry_meat_egg_price` (`employee_id`,`region_id`, `status`, `created_at`, `breed_type_id`,`price`, `reporting_date`) VALUES (:employee_id, :region_id, :status, :created_at, :breed_type_id, :price, :reporting_date)";
+                }else{
+                    $sql = "INSERT INTO `crm_poultry_meat_egg_price` (`employee_id`,`region_id`, `status`, `created_at`, `breed_type_id`,`price`, `reporting_date`) VALUES (:employee_id, :region_id, :status, :created_at, :breed_type_id, :price, :reporting_date)";
 
-                        $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
+                    $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
 //                    $stmt->bindValue('crm_visit_id', $findVisit->getId());
-                        $stmt->bindValue('employee_id', $report['employee_id']);
-                        $stmt->bindValue('region_id', $report['region_id']);
-                        $stmt->bindValue('status', 1);
-                        $stmt->bindValue('created_at', $createdAt);
-                        $stmt->bindValue('breed_type_id', $item['id']);
-                        $stmt->bindValue('price', $item['price']);
-                        $stmt->bindValue('reporting_date', $reportingDate);
+                    $stmt->bindValue('employee_id', $report['employee_id']);
+                    $stmt->bindValue('region_id', $report['region_id']);
+                    $stmt->bindValue('status', 1);
+                    $stmt->bindValue('created_at', $createdAt);
+                    $stmt->bindValue('breed_type_id', $item['id']);
+                    $stmt->bindValue('price', $item['price']);
+                    $stmt->bindValue('reporting_date', $reportingDate);
 
-                        $stmt->execute();
-                    }
+                    $stmt->execute();
                 }
+            }
 
 //            }
         }
     }
-    
+
     private function processCompanyWiseFeedSale($reports, Api $batch){
         foreach ($reports as $report) {
             $employee = $this->getDoctrine()->getRepository(User::class)->find($report['employee_id']);
@@ -1402,9 +1402,9 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
             $createdAt = $report['created_at'] ? (new \DateTime($report['created_at']))->format('Y-m-d H:i:s') : null;
 
             $year = $report['created_at'] ? (new \DateTime($report['created_at']))->format('Y') : null;
-            
+
             $exitingLabService = $this->getDoctrine()->getRepository(LabService::class)->getExitingLabService($report['employee_id'], $report['lab_id'], $report['service_id'], $report['breed_name'], $year);
-            
+
             if($exitingLabService){
                 $sql = "UPDATE `crm_lab_services` SET `january`= :january, `february`= :february, `march`= :march, `april`= :april, `may`= :may, `june`= :june, `july`= :july, `august`= :august, `september`= :september, `october`= :october, `november`= :november, `december`= :december, `created_at`= :created_at WHERE id = :id";
 
@@ -1526,7 +1526,7 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
             $stmt->execute();
         }
     }
-    
+
     private function processFishCompanySpeciesWiseAverageFcrDetails($reports, Api $batch)
     {
         foreach ($reports as $report) {
@@ -1634,7 +1634,7 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
             $stmt->execute();
         }
     }
-    
+
     private function processFishLifeCycleDetails($reports, Api $batch)
     {
         foreach ($reports as $report) {
@@ -1710,10 +1710,10 @@ VALUES (
                 $stmt->execute();
 
             }
-            
+
         }
     }
-    
+
     private function processFishLifeCycleDetailsSpecies($reports, Api $batch)
     {
         foreach ($reports as $report) {
