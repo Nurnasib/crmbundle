@@ -365,6 +365,8 @@ class SearchFilterFormType extends AbstractType
                 $otherReport,
                 ['Poultry' => [
                     'Company Wise Feed Sale' => 'company-wise-feed-sale-poultry',
+                    'Company Wise Boiler Chicks' => 'company-wise-boiler-chick',
+                    'Company Wise Layer Chicks' => 'company-wise-layer-chick',
 //                    'Complain' => 'complain-poultry',
                     'Farmer Survey' => 'farmer-survey-poultry',
                     'Farmer Training' => 'farmer-training-poultry',
