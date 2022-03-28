@@ -42,10 +42,7 @@
                            href="{{ path('company_wise_feed_sale_new',{'breed_name': 'poultry'}) }}">{{ 'Poultry Feed'|trans }}</a>
                     </li>
                     <li><a class="dropdown-item"
-                           href="{{ path('company_wise_feed_sale_new',{'breed_name': 'poultry-boiler-chicks'}) }}">{{ 'Poultry Boiler Chicks'|trans }}</a>
-                    </li>
-                    <li><a class="dropdown-item"
-                           href="{{ path('company_wise_feed_sale_new',{'breed_name': 'poultry-layer-chicks'}) }}">{{ 'Poultry Layer Chicks'|trans }}</a>
+                           href="{{ path('company_wise_feed_sale_new',{'breed_name': 'poultry-chick'}) }}">{{ 'Poultry Chicks'|trans }}</a>
                     </li>
                 {% endif %}
                 {% if is_granted('ROLE_CRM_CATTLE_USER') or is_granted('ROLE_DEVELOPER')  or is_granted('ROLE_CRM_SALES_MARKETING_USER') %}

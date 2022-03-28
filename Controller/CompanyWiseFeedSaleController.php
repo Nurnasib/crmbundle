@@ -46,19 +46,11 @@ class CompanyWiseFeedSaleController extends AbstractController
 
         $productsName = $this->getDoctrine()->getRepository(Setting::class)->getProductTypeWithOutChickByBreedName($farmTypeId);
 
-        if($breedType=='boiler'){
-            $productsName = $this->getDoctrine()->getRepository(Setting::class)->getProductTypeForBoilerChickByBreedName($farmTypeId);
-        }
-        if($breedType=='layer'){
-            $productsName = $this->getDoctrine()->getRepository(Setting::class)->getProductTypeForLayerChickByBreedName($farmTypeId);
+        if($breedType=='chick'){
+            $productsName = $this->getDoctrine()->getRepository(Setting::class)->getProductTypeForChickByBreedName($farmTypeId);
         }
 
         $feedCompanies = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('status'=>1,'settingType'=>'FEED_NAME'));
-
-        if($breedType=='boiler' || $breedType=='layer'){
-            $feedCompanies = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('status'=>1,'settingType'=>'HATCHERY'));
-        }
-
         $arrayMonth=[];
         $arrayMonthRange=[];
         $currentYear = date('Y');

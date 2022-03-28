@@ -356,7 +356,8 @@ class SearchFilterFormType extends AbstractType
     {
         $otherReport = [
             'Others' => [
-                'Expense' => 'expense'
+                'Expense' => 'expense',
+                'Feed Complain' => 'feed-complain'
             ]
         ];
 
@@ -365,14 +366,12 @@ class SearchFilterFormType extends AbstractType
                 $otherReport,
                 ['Poultry' => [
                     'Company Wise Feed Sale' => 'company-wise-feed-sale-poultry',
-                    'Company Wise Boiler Chicks' => 'company-wise-boiler-chick',
-                    'Company Wise Layer Chicks' => 'company-wise-layer-chick',
 //                    'Complain' => 'complain-poultry',
                     'Farmer Survey' => 'farmer-survey-poultry',
                     'Farmer Training' => 'farmer-training-poultry',
                     'FCR Different Companies' => 'fcr-different-companies-poultry',
                     'Lab Service' => 'lab-service-poultry',
-                    'DOC Complain' => 'doc-complain-poultry',
+                    'DOC Complain' => 'doc-complain',
                     ]
                 ]
             );

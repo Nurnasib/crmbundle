@@ -78,7 +78,7 @@ class SettingRepository extends EntityRepository
         return $results;
     }
 
-    public function getProductTypeForBoilerChickByBreedName($childrenIds)
+    public function getProductTypeForChickByBreedName($childrenIds)
     {
         $qb = $this->createQueryBuilder('e');
             $qb->select('e.id','e.name')
@@ -87,22 +87,7 @@ class SettingRepository extends EntityRepository
         ->andWhere("e.parent IN (:parent)")
         ->setParameter('parent',$childrenIds)
         ->andWhere("e.slug IN (:slug)")
-        ->setParameter('slug',['broiler-chicks'])
-        ->orderBy('e.id', 'ASC');
-        $results = $qb->getQuery()->getArrayResult();
-        return $results;
-    }
-
-    public function getProductTypeForLayerChickByBreedName($childrenIds)
-    {
-        $qb = $this->createQueryBuilder('e');
-            $qb->select('e.id','e.name')
-        ->where("e.status =1")
-        ->andWhere("e.settingType ='PRODUCT_TYPE'")
-        ->andWhere("e.parent IN (:parent)")
-        ->setParameter('parent',$childrenIds)
-        ->andWhere("e.slug IN (:slug)")
-        ->setParameter('slug',['layer-chicks'])
+        ->setParameter('slug',['broiler-chicks','layer-chicks'])
         ->orderBy('e.id', 'ASC');
         $results = $qb->getQuery()->getArrayResult();
         return $results;
@@ -134,66 +119,6 @@ class SettingRepository extends EntityRepository
         $qb->where("e.settingType = 'PRODUCT_TYPE'");
         $qb->andWhere('parent.parent = :breed')->setParameter('breed', $breed);
         $qb->andWhere('e.status = 1');
-        $qb->andWhere("e.slug NOT IN (:slug)");
-        $qb->setParameter('slug',['broiler-chicks','layer-chicks']);
-
-        $results = $qb->getQuery()->getArrayResult();
-
-        $data = [];
-
-        foreach ($results as $result) {
-            $data[$result['parentName']][] = [
-                'id' => $result['id'],
-                'name' => $result['name'],
-                'parent' => $result['parentName'],
-            ];
-        }
-
-        return $data;
-    }
-
-    public function getProductTypeForBoilerChick($breed)
-    {
-        $qb = $this->createQueryBuilder('e');
-        $qb->join('e.parent', 'parent');
-
-        $qb->select('e.id', 'e.name');
-        $qb->addSelect('parent.name AS parentName');
-
-        $qb->where("e.settingType = 'PRODUCT_TYPE'");
-        $qb->andWhere('parent.parent = :breed')->setParameter('breed', $breed);
-        $qb->andWhere('e.status = 1');
-        $qb->andWhere("e.slug IN (:slug)");
-        $qb->setParameter('slug',['broiler-chicks']);
-
-        $results = $qb->getQuery()->getArrayResult();
-
-        $data = [];
-
-        foreach ($results as $result) {
-            $data[$result['parentName']][] = [
-                'id' => $result['id'],
-                'name' => $result['name'],
-                'parent' => $result['parentName'],
-            ];
-        }
-
-        return $data;
-    }
-
-    public function getProductTypeForLayerChick($breed)
-    {
-        $qb = $this->createQueryBuilder('e');
-        $qb->join('e.parent', 'parent');
-
-        $qb->select('e.id', 'e.name');
-        $qb->addSelect('parent.name AS parentName');
-
-        $qb->where("e.settingType = 'PRODUCT_TYPE'");
-        $qb->andWhere('parent.parent = :breed')->setParameter('breed', $breed);
-        $qb->andWhere('e.status = 1');
-        $qb->andWhere("e.slug IN (:slug)");
-        $qb->setParameter('slug',['layer-chicks']);
 
         $results = $qb->getQuery()->getArrayResult();
 

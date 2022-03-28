@@ -100,7 +100,7 @@
                         {% elseif filterBy['otherReport'] is same as 'fcr-different-companies-poultry' %}
                             {% include '@TerminalbdCrm/report/others/inc/_fcr_different_companies.html.twig'%}
 
-                        {% elseif filterBy['otherReport'] in ['company-wise-feed-sale-poultry','company-wise-boiler-chick','company-wise-layer-chick','company-wise-feed-sale-cattle','company-wise-feed-sale-fish'] %}
+                        {% elseif filterBy['otherReport'] in ['company-wise-feed-sale-poultry','company-wise-feed-sale-cattle','company-wise-feed-sale-fish'] %}
                             {% include '@TerminalbdCrm/report/others/inc/_company_wise_feed_sale.html.twig'%}
 
                         {% elseif filterBy['otherReport'] in ['farmer-training-poultry','farmer-training-cattle','farmer-training-fish'] %}
@@ -124,8 +124,8 @@
                         {% elseif filterBy['otherReport'] is same as 'fish-tilapia-fry-sales' %}
                             {% include '@TerminalbdCrm/report/others/inc/_fish_tilapia_fry_sales.html.twig'%}
 
-                        {% elseif filterBy['otherReport'] is same as 'doc-complain-poultry' %}
-                            {% include '@TerminalbdCrm/report/others/inc/_doc_complain.html.twig'%}
+                        {% elseif filterBy['otherReport'] in ['doc-complain', 'feed-complain'] %}
+                            {% include '@TerminalbdCrm/report/others/inc/_complain.html.twig'%}
 
                         {% endif %}
 

@@ -13,6 +13,7 @@ namespace Terminalbd\CrmBundle\Repository;
 
 use App\Entity\User;
 use Doctrine\ORM\EntityRepository;
+use function Doctrine\ORM\QueryBuilder;
 
 /**
  * This custom Doctrine repository contains some methods which are useful when
@@ -24,7 +25,7 @@ use Doctrine\ORM\EntityRepository;
  */
 class ComplainDifferentProductDetailsRepository extends EntityRepository
 {
-    public function getDocComplainReport($filterBy, User $loggedUser)
+    public function getComplainReport($filterBy, User $loggedUser, $type)
     {
         $start = isset($filterBy['startDate']) ? (new \DateTime($filterBy['startDate']))->format('Y-m-d 00:00:00') : null;
         $end = isset($filterBy['endDate']) ? (new \DateTime($filterBy['endDate']))->format('Y-m-d 23:59:59') : null;
@@ -37,11 +38,12 @@ class ComplainDifferentProductDetailsRepository extends EntityRepository
         $qb->join('parent.employee', 'employee');
 
         $qb->select('e.id','e.quantity');
-        $qb->addSelect('parent.observation', 'parent.ageDays');
+        $qb->addSelect('parent.observation', 'parent.ageDays', 'parent.createdAt');
         $qb->addSelect('parameter.item AS parameterName');
 
         $rolesString = implode($loggedUser->getRoles(), '_');
 
+        $qb->where('parameter.type = :type')->setParameter('type', $type);
         if ($employeeId){
             $qb->andWhere('employee.id = :employeeId')->setParameter('employeeId', $employeeId);
         }else{
@@ -53,10 +55,20 @@ class ComplainDifferentProductDetailsRepository extends EntityRepository
                 }
             }
         }
-
+//        $qb->andWhere($qb->expr()->like('parent.createdAt', ':startD'))->setParameter('startD', '%'.(new \DateTime($filterBy['startDate']))->format('Y-m-d').'%');
         $qb->andWhere('parent.createdAt >= :start')->setParameter('start', $start);
         $qb->andWhere('parent.createdAt <= :end')->setParameter('end', $end);
 
-        return $qb->getQuery()->getArrayResult();
+        $results = $qb->getQuery()->getArrayResult();
+
+        $data = [];
+        foreach ($results as $result) {
+            $monthYear = $result['createdAt']->format('Y-m-F');
+            $data[$monthYear][] = $result;
+        }
+
+        ksort($data);
+        return $data;
+
     }
 }
