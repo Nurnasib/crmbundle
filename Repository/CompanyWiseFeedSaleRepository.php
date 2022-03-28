@@ -95,7 +95,6 @@ class CompanyWiseFeedSaleRepository extends BaseRepository
         $qb->andWhere('e.breedName = :breedName')->setParameter('breedName', $breedName);
 
         $results = $qb->getQuery()->getArrayResult();
-
         $data = [];
 
         foreach ($results as $result) {
