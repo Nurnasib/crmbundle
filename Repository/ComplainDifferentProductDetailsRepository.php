@@ -12,6 +12,8 @@
 namespace Terminalbd\CrmBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
+use App\Entity\User;
+
 
 /**
  * This custom Doctrine repository contains some methods which are useful when
