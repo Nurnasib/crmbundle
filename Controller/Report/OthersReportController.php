@@ -89,6 +89,18 @@ class OthersReportController extends AbstractController
                     $entities = $this->getDoctrine()->getRepository(CompanyWiseFeedSale::class)->getCompanyWiseFeedSale('poultry', $filterBy);
                     break;
 
+                case 'company-wise-boiler-chick':
+                    $breed = $this->getDoctrine()->getRepository(Setting::class)->findBy(['status' => 1, 'slug' => 'poultry-breed', 'settingType' => 'BREED_NAME']);
+                    $species = $this->getDoctrine()->getRepository(Setting::class)->getProductTypeForBoilerChick($breed);
+                    $entities = $this->getDoctrine()->getRepository(CompanyWiseFeedSale::class)->getCompanyWiseFeedSale('poultry-boiler-chicks', $filterBy);
+                    break;
+
+                case 'company-wise-layer-chick':
+                    $breed = $this->getDoctrine()->getRepository(Setting::class)->findBy(['status' => 1, 'slug' => 'poultry-breed', 'settingType' => 'BREED_NAME']);
+                    $species = $this->getDoctrine()->getRepository(Setting::class)->getProductTypeForLayerChick($breed);
+                    $entities = $this->getDoctrine()->getRepository(CompanyWiseFeedSale::class)->getCompanyWiseFeedSale('poultry-layer-chicks', $filterBy);
+                    break;
+
                 case 'company-wise-feed-sale-cattle':
                     $breed = $this->getDoctrine()->getRepository(Setting::class)->findBy(['status' => 1, 'slug' => 'cattle-breed', 'settingType' => 'BREED_NAME']);
                     $species = $this->getDoctrine()->getRepository(Setting::class)->getProductType($breed);
