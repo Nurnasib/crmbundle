@@ -34,7 +34,7 @@ class ExpenseRepository extends EntityRepository
 
         $qb = $this->createQueryBuilder('e');
         $qb->join('e.crmVisit', 'crm_visit');
-        $qb->leftJoin('e.visitingArea', 'visiting_area');
+        $qb->join('e.visitingArea', 'visiting_area');
         $qb->leftJoin('e.purpose', 'purpose');
         $qb->leftJoin('e.vehicle', 'vehicle');
         $qb->join('crm_visit.employee', 'employee');
@@ -47,30 +47,22 @@ class ExpenseRepository extends EntityRepository
         $qb->addSelect('purpose.id AS purposeId','purpose.name AS purposeName');
         $qb->addSelect('vehicle.id AS vehicleId','vehicle.name AS vehicleName');
 
-//        $qb->groupBy('purpose.id');
-//        $qb->addGroupBy('vehicle.id');
-//        $qb->addGroupBy('crm_visit.id');
         $rolesString = implode($loggedUser->getRoles(), '_');
 
         if ($employeeId){
             $qb->andWhere('employee.id = :employeeId')->setParameter('employeeId', $employeeId);
         }else{
-
-        }
-
-        if (!str_contains($rolesString, 'ADMIN') && !in_array('ROLE_LINE_MANAGER', $loggedUser->getRoles())){
-            $qb->andWhere('employee.id = :employeeId')->setParameter('employeeId', $loggedUser->getId());
-        }elseif (in_array('ROLE_LINE_MANAGER', $loggedUser->getRoles())){
-            if (isset($filterBy['employee']) && $filterBy['employee'] !== null){
-                $qb->andWhere('employee.id = :employeeId')->setParameter('employeeId', $employeeId);
-            }else{
-                $qb->andWhere('lineManager.id = :lineManagerId')->setParameter('lineManagerId', $loggedUser->getId());
+            if (!str_contains($rolesString, 'ADMIN') && !in_array('ROLE_LINE_MANAGER', $loggedUser->getRoles())){
+                $qb->andWhere('employee.id = :employeeId')->setParameter('employeeId', $loggedUser->getId());
+            }elseif (in_array('ROLE_LINE_MANAGER', $loggedUser->getRoles())){
+                if (isset($filterBy['employee']) && $filterBy['employee'] !== null){
+                    $qb->andWhere('lineManager.id = :lineManagerId')->setParameter('lineManagerId', $loggedUser->getId());
+                }
             }
         }
 
         $qb->andWhere('crm_visit.created >= :start')->setParameter('start', $start);
         $qb->andWhere('crm_visit.created <= :end')->setParameter('end', $end);
-//        $qb->andWhere('crm_visit.id = 196');
 
         $results = $qb->getQuery()->getArrayResult();
 
@@ -80,15 +72,15 @@ class ExpenseRepository extends EntityRepository
 
             $yearMonth = $result['visitedDate']->format('Y-m-F');
 
-
             $result['details']['visitId'] = $result['visitId'];
             $result['details']['visitedDate'] = $result['visitedDate'];
             $result['details']['visitingAreaName'] = $result['visitingAreaName'];
+            $purpose[$result['visitId']][] = $result['purposeName'];
+            $vehicle[$result['visitId']][] = $result['vehicleName'];
 
             $data[$yearMonth][$result['userId']]['details'][$result['visitId']] = $result['details'];
-            $data[$yearMonth][$result['userId']]['details'][$result['visitId']]['purpose'][] = $result['purposeName'];
-//            $data[$yearMonth][$result['userId']]['details'][$result['visitId']]['purpose'][] = $result['purposeName'];
-//            $data[$yearMonth][$result['userId']]['details'][$result['visitId']]['vehicle'][] = $result['vehicleName'];
+            $data[$yearMonth][$result['userId']]['details'][$result['visitId']]['purpose'] = array_unique(array_filter($purpose[$result['visitId']])); // remove all null element & make unique
+            $data[$yearMonth][$result['userId']]['details'][$result['visitId']]['vehicle'] = array_unique(array_filter($vehicle[$result['visitId']])); // remove all null element & make unique
 
             $data[$yearMonth][$result['userId']]['employee'] = [
                 'userId' => $result['userId'],
@@ -98,7 +90,7 @@ class ExpenseRepository extends EntityRepository
 
             ksort($data);
         }
-        dd($data);
+
         return $data;
     }
 
