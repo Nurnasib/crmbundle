@@ -264,7 +264,11 @@ class SearchFilterFormType extends AbstractType
                         $roleSplitArray = array_merge(explode('_', $role), $roleSplitArray);
                     }
                     if (!in_array('ADMIN', $roleSplitArray)){
-                        $qb->andWhere("e.lineManager = :lineManager")->setParameter('lineManager', $user);
+                        if (!in_array('ROLE_LINE_MANAGER', $user->getRoles())){
+                            $qb->andWhere('e.id = :employeeId')->setParameter('employeeId', $user->getId());
+                        }else{
+                            $qb->andWhere("e.lineManager = :lineManager")->setParameter('lineManager', $user);
+                        }
                     }elseif (in_array('ADMIN', $roleSplitArray)){
                         $userRole = [];
                         if (in_array('ROLE_CRM_POULTRY_ADMIN', $user->getRoles())){
@@ -413,11 +417,6 @@ class SearchFilterFormType extends AbstractType
                     [
                         'DOC Price' => 'doc-price',
                         'Meat & Egg Price' => 'meat-egg-price',
-                        'Company Wise Feed Sale (Poultry)' => 'company-wise-feed-sale-poultry',
-                        'Company Wise Boiler Chicks' => 'company-wise-boiler-chick',
-                        'Company Wise Layer Chicks' => 'company-wise-layer-chick',
-                        'Company Wise Feed Sale (Cattle)' => 'company-wise-feed-sale-cattle',
-                        'Company Wise Feed Sale (Fish)' => 'company-wise-feed-sale-fish',
                     ]
                 ]
             );

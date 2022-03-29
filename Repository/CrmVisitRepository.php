@@ -62,8 +62,12 @@ class CrmVisitRepository extends EntityRepository
         $qb->leftJoin('e.workingMode', 'workingMode');
         $qb->join('e.employee', 'employee');
         $qb->join('employee.userGroup', 'userGroup');
+        $qb->leftJoin('employee.designation', 'designation');
         $qb->select('e.id AS visitId','e.created AS visitDate','e.workingDuration AS visitBegin','e.workingDurationTo AS visitEnd', 'location.name AS locationName');
         $qb->addSelect('workingMode.id AS workingModeId', 'workingMode.name AS workingModeName', 'workingMode.slug AS workingModeSlug', 'e.remarks');
+        $qb->addSelect('employee.id as empId','employee.name as employeeName','employee.userId');
+        $qb->addSelect('designation.name as employeeDesignationName');
+
         $qb->where('e.created >= :startDate')->setParameter('startDate', $startDate);
         $qb->andWhere('e.created <= :endDate')->setParameter('endDate', $endDate);
         $qb->andWhere('userGroup.slug = :userGroupSlug')->setParameter('userGroupSlug', 'employee');
@@ -88,11 +92,12 @@ class CrmVisitRepository extends EntityRepository
                 array_push($userRole, 'ROLE_CRM_SALES_MARKETING_USER');
             }
             $query = '';
+//            dd($userRole);
             foreach ($userRole as $key => $role) {
                 if ($key !== 0){
                     $query .= " OR ";
                 }
-                $query .= "e.roles LIKE '%" . $role . "%'";
+                $query .= "employee.roles LIKE '%" . $role . "%'";
 
             }
             $qb->andWhere($query);
@@ -104,12 +109,15 @@ class CrmVisitRepository extends EntityRepository
         }
 
 
-        $results = $qb->getQuery()->getArrayResult();
 
+        $results = $qb->getQuery()->getArrayResult();
         $data = [];
 
         foreach ($results as $result) {
-            $data[$result['visitDate']->format('d-m-Y')][] = $result;
+            $data[$result['empId']]['userId']=$result['userId'];
+            $data[$result['empId']]['employeeName']=$result['employeeName'];
+            $data[$result['empId']]['employeeDesignationName']=$result['employeeDesignationName'];
+            $data[$result['empId']]['details'][$result['visitDate']->format('d-m-Y')][] = $result;
 //            $data['visitDays'][$result['visitDate']->format('d-m-Y')]['visitIds'][] = $result['visitId'];
 //            $data['visitIds'][] = $result['visitId'];
 
