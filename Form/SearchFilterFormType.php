@@ -412,7 +412,12 @@ class SearchFilterFormType extends AbstractType
                 ['Sales & Marketing' =>
                     [
                         'DOC Price' => 'doc-price',
-                        'Meat & Egg Price' => 'meat-egg-price'
+                        'Meat & Egg Price' => 'meat-egg-price',
+                        'Company Wise Feed Sale (Poultry)' => 'company-wise-feed-sale-poultry',
+                        'Company Wise Boiler Chicks' => 'company-wise-boiler-chick',
+                        'Company Wise Layer Chicks' => 'company-wise-layer-chick',
+                        'Company Wise Feed Sale (Cattle)' => 'company-wise-feed-sale-cattle',
+                        'Company Wise Feed Sale (Fish)' => 'company-wise-feed-sale-fish',
                     ]
                 ]
             );
