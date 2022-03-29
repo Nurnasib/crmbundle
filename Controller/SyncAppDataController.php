@@ -888,7 +888,7 @@ VALUES (:crm_cattle_life_cycle_id, :visiting_date, :age_of_cattle_month, :previo
             $findEmployee = $this->getDoctrine()->getRepository(User::class)->find($report['employee_id']);
             $findReport = $this->getDoctrine()->getRepository(Setting::class)->find($report['report_id']);
 
-            $findLifeCycle = $this->getDoctrine()->getRepository(CattleLifeCycle::class)->findOneBy(['customer' => $findFarmer, 'employee' => $findEmployee, 'report' => $findReport]);
+            $findLifeCycle = $this->getDoctrine()->getRepository(LayerLifeCycle::class)->findOneBy(['customer' => $findFarmer, 'employee' => $findEmployee, 'report' => $findReport]);
 
             if ($findLifeCycle){
                 $findLifeCycle->setLifeCycleState($report['life_cycle_state']);
