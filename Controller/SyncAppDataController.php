@@ -1427,7 +1427,7 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
                 $stmt->bindValue('created_at', $createdAt);
                 $stmt->execute();
             }else{
-                $sql = "INSERT INTO `crm_lab_services` (`employee_id`, `lab_id`, `service_id`, `breed_name`, `january`, `february`, `march`, `april`, `may`, `june`, `july`, `august`, `september`, `october`, `november`, `december`, `created_at`) VALUES (:employee_id, :lab_id, :service_id, :breed_name, :january, :february, :march, :april, :may, :june, :july, :august, :september, :october, :november, :december, :created_at, :reporting_year)";
+                $sql = "INSERT INTO `crm_lab_services` (`employee_id`, `lab_id`, `service_id`, `breed_name`, `january`, `february`, `march`, `april`, `may`, `june`, `july`, `august`, `september`, `october`, `november`, `december`, `created_at`, `reporting_year`) VALUES (:employee_id, :lab_id, :service_id, :breed_name, :january, :february, :march, :april, :may, :june, :july, :august, :september, :october, :november, :december, :created_at, :reporting_year)";
 
                 $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
 
