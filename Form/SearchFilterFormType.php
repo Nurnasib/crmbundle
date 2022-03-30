@@ -258,18 +258,15 @@ class SearchFilterFormType extends AbstractType
                     $qb->where("userGroup.slug = 'employee'");
                     $qb->andWhere("e.enabled = 1");
 
-                    $roleSplitArray = [];
+                    $rolesString = implode($user->getRoles(), '_');
 
-                    foreach ($user->getRoles() as $role) {
-                        $roleSplitArray = array_merge(explode('_', $role), $roleSplitArray);
-                    }
-                    if (!in_array('ADMIN', $roleSplitArray)){
+                    if (!str_contains($rolesString,'ADMIN')){
                         if (!in_array('ROLE_LINE_MANAGER', $user->getRoles())){
                             $qb->andWhere('e.id = :employeeId')->setParameter('employeeId', $user->getId());
                         }else{
                             $qb->andWhere("e.lineManager = :lineManager")->setParameter('lineManager', $user);
                         }
-                    }elseif (in_array('ADMIN', $roleSplitArray)){
+                    }else{
                         $userRole = [];
                         if (in_array('ROLE_CRM_POULTRY_ADMIN', $user->getRoles())){
                             array_push($userRole, 'ROLE_CRM_POULTRY_USER');

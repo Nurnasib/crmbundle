@@ -40,6 +40,7 @@ use Terminalbd\CrmBundle\Entity\Fcr;
 use Terminalbd\CrmBundle\Entity\SettingLifeCycle;
 use Terminalbd\CrmBundle\Entity\SonaliStandard;
 use Terminalbd\CrmBundle\Repository\BaseRepository;
+use function Doctrine\ORM\QueryBuilder;
 
 /**
  * This custom Doctrine repository contains some methods which are useful when
@@ -2042,6 +2043,7 @@ class ApiRepository extends BaseRepository
 
     public function getEmployeeLocation(User $lineManager, $ids)
     {
+        $rolesString = implode($lineManager->getRoles(), '_');
 
         $qb = $this->_em->createQueryBuilder();
         $qb->from(User::class, 'u');
@@ -2052,8 +2054,32 @@ class ApiRepository extends BaseRepository
         $qb->andWhere('u.longitude IS NOT NULL');
         $qb->andWhere('userGroup.slug = :groupSlug')->setParameter('groupSlug', 'employee');
 
-        if (!in_array('ROLE_CRM_ADMIN', $lineManager->getRoles())){
+        if ($ids){
             $qb->andWhere('u.id IN (:ids)')->setParameter('ids', $ids);
+        }else{
+            $userRole = [];
+            if (str_contains($rolesString,'ROLE_CRM_POULTRY_ADMIN')){
+                array_push($userRole, 'ROLE_CRM_POULTRY_USER');
+            }
+            if (str_contains($rolesString,'ROLE_CRM_CATTLE_ADMIN')){
+                array_push($userRole, 'ROLE_CRM_CATTLE_USER');
+            }
+            if (str_contains($rolesString,'ROLE_CRM_AQUA_ADMIN')){
+                array_push($userRole, 'ROLE_CRM_AQUA_USER');
+            }
+            if (str_contains($rolesString,'ROLE_CRM_SALES_MARKETING_ADMIN')){
+                array_push($userRole, 'ROLE_CRM_SALES_MARKETING_USER');
+            }
+            $query = '';
+            foreach ($userRole as $key => $role) {
+                if ($key != 0){
+                    $query .= " OR ";
+                }
+
+                $query .= "u.roles LIKE '%" . $role . "%'";
+            }
+
+            $qb->andWhere($query);
         }
 
         return $qb->getQuery()->getArrayResult();

@@ -2167,7 +2167,26 @@ class ApiController extends AbstractController
             $lineManager = (int)$request->request->get('line_manager_id');
             $lineManager = $this->getDoctrine()->getRepository(User::class)->find($lineManager);
 
-            $allUser = $this->getDoctrine()->getRepository(User::class)->findAll();
+            if (!$lineManager){
+                $response = new Response();
+                $response->headers->set('Content-Type', 'application/json');
+                $response->setContent(json_encode(['message' => 'Unregistered user', 'status' => Response::HTTP_NOT_FOUND]));
+                $response->setStatusCode(Response::HTTP_NOT_FOUND);
+                return $response;
+            }
+
+            if (in_array('ROLE_CRM_POULTRY_ADMIN', (array)$lineManager->getRoles()) || in_array('ROLE_CRM_CATTLE_ADMIN', (array)$lineManager->getRoles()) || in_array('ROLE_CRM_AQUA_ADMIN', (array)$lineManager->getRoles()) || in_array('ROLE_CRM_SALES_MARKETING_ADMIN', (array)$lineManager->getRoles())){
+                $entities = $this->getDoctrine()->getRepository(Api::class)->getEmployeeLocation($lineManager, []);
+                $response = new Response();
+                $response->headers->set('Content-Type', 'application/json');
+                $response->setContent(json_encode($entities));
+                $response->setStatusCode(Response::HTTP_OK);
+                return $response;
+            }
+
+            $userType = $this->getDoctrine()->getRepository(\App\Entity\Core\Setting::class)->findOneBy(['slug' => 'employee']);
+            $allUser = $this->getDoctrine()->getRepository(User::class)->findBy(['enabled' => 1, 'userGroup' => $userType]); //136
+
             $users = [];
             foreach ($allUser as $user) {
                 if ($user->getLineManager() && $user->isEnabled()) {
