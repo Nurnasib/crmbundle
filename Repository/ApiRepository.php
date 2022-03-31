@@ -880,7 +880,7 @@ class ApiRepository extends BaseRepository
         $qb->select('s.id as id','s.name as name','s.settingType as settingType');
 
         $qb->where("s.settingType = 'PURPOSE'");
-        $qb->andWhere('s.slug IN (:slug)')->setParameter('slug',['broiler-shed-included','layer-shed-included','cattle-farm-included','pond-included']);
+        $qb->andWhere('s.slug IN (:slug)')->setParameter('slug',['broiler-shed-included','layer-shed-included','cattle-farm-included','pond-included','market-promotion','area-problems','customer-service','problem-farm-visit','survey-purpose','others-purpose']);
         $qb->andWhere('s.status = 1');
 
         $qb->orderBy('s.id', 'ASC');
@@ -890,13 +890,6 @@ class ApiRepository extends BaseRepository
 
             $data[$key]['id'] = (string)$row['id'];
             $data[$key]['name'] = (string)$row['name'];
-            //$data[$key]['breedName'] = (string)$row['breedName'];
-
-            /*$data[$row['settingType']][]= array(
-                'id'=>(int)$row['id'],
-                'name'=>$row['name']
-            );*/
-
         }
         return $data;
 
