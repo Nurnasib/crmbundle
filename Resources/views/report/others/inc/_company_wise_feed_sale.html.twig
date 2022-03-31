@@ -33,11 +33,15 @@
             <th scope="col" rowspan="2">Company</th>
             {% if species is defined %}
                 {% for key, item in species %}
-                    <th scope="col" colspan="{{ (item|length) + 1 }}" style="text-align: center">{{ key }}</th>
+                    {% if filterBy['otherReport'] in ['company-wise-feed-sale-cattle','company-wise-feed-sale-fish'] %}
+                    <th scope="col" colspan="{{ (item|length)+1 }}" style="text-align: center">{{ key }}</th>
+                    {% else %}
+                        <th scope="col" colspan="{{ (item|length) }}" style="text-align: center">{{ key }}</th>
+                    {% endif %}
                 {% endfor %}
             {% endif %}
             <th scope="col" rowspan="2" style="text-align: center">Total</th>
-            <th scope="col" rowspan="2" width="100">Market Share by Nourish (%)</th>
+            <th scope="col" rowspan="2" width="100">Market Share (%)</th>
 
         </tr>
         <tr>
@@ -46,13 +50,18 @@
                     {% for child in item %}
                         <th scope="col" style="text-align: center">{{ child.name }}</th>
                     {% endfor %}
-                    <th scope="col" style="text-align: center">Total</th>
+
+                    {% if filterBy['otherReport'] in ['company-wise-feed-sale-cattle','company-wise-feed-sale-fish'] %}
+                        <th scope="col" style="text-align: center">Total</th>
+                    {% endif %}
+
                 {% endfor %}
             {% endif %}
         </tr>
         </thead>
         <tbody>
         {% set fullTotal = 0 %}
+        {% set totalPercentage = 0 %}
 
         {% for details in entity.details %}
             {% set fullTotal = fullTotal + details.totalQty %}
@@ -81,13 +90,18 @@
                                 <td align="right">0</td>
                             {% endif %}
                         {% endfor %}
-                        <td align="right">{{ total }}</td>
+                        {% if filterBy['otherReport'] in ['company-wise-feed-sale-cattle','company-wise-feed-sale-fish'] %}
+                            <td align="right">{{ total }}</td>
+                        {% endif %}
+
 
                     {% endfor %}
                 {% endif %}
 
                 <td align="right">{{ details.totalQty }}</td>
                 <td align="right">{{ entity.companyTotalQty > 0 ? ((details.totalQty * 100) / entity.companyTotalQty)|number_format(2) : 0 }}</td>
+                {% set percentage=entity.companyTotalQty > 0 ? ((details.totalQty * 100) / entity.companyTotalQty)|number_format(2) : 0 %}
+                {% set totalPercentage=totalPercentage+percentage %}
             </tr>
         {% endfor %}
         <tr>
@@ -104,11 +118,14 @@
                             <th align="right" style="text-align: right">0</th>
                         {% endif %}
                     {% endfor %}
-                    <th align="right" style="text-align: right"> </th>
-
+                    {% if filterBy['otherReport'] in ['company-wise-feed-sale-cattle','company-wise-feed-sale-fish'] %}
+                        <th align="right" style="text-align: right"> </th>
+                    {% endif %}
                 {% endfor %}
             {% endif %}
             <th align="right" style="text-align: right">{{ fullTotal }}</th>
+            <th align="right" style="text-align: right">{{ totalPercentage }}</th>
+
         </tr>
         </tbody>
     </table>
