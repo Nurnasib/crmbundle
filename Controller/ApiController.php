@@ -51,58 +51,68 @@ class ApiController extends AbstractController
         ignore_user_abort(true);
         if ($request->getMethod() == 'POST' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')) {
             $userId = trim($request->request->get('user_id'));
-            $findUser = $this->getDoctrine()->getRepository(User::class)->findOneBy(['enabled' => 1, 'userId' => $userId]);
+            $findUser = $this->getDoctrine()->getRepository(User::class)->findOneBy(['isDelete'=>'0','userId' => $userId]);
             if ($findUser) {
-                if (!$findUser->getMobile()) {
-                    $response = new Response();
-                    $response->headers->set('Content-Type', 'application/json');
-                    $response->setContent(json_encode([
-                        'message' => 'Mobile number does not found!',
-                        'status' => '404',
-                    ]));
-                    $response->setStatusCode(Response::HTTP_NOT_FOUND);
-                    return $response;
-                }
-                $userMobile = str_replace('-', '', $findUser->getMobile());
+                if($findUser->isEnabled()){
+                    if (!$findUser->getMobile()) {
+                        $response = new Response();
+                        $response->headers->set('Content-Type', 'application/json');
+                        $response->setContent(json_encode([
+                            'message' => 'Mobile number does not found!',
+                            'status' => '404',
+                        ]));
+                        $response->setStatusCode(Response::HTTP_NOT_FOUND);
+                        return $response;
+                    }
+                    $userMobile = str_replace('-', '', $findUser->getMobile());
 
-                $otp = (string)mt_rand(1000, 9999);
-                $message = 'Your OTP is ' . $otp . '.';
-                $smsResponse = $smsSender->sendSmsToAgent($message, $userMobile);
+                    $otp = (string)mt_rand(1000, 9999);
+                    $message = 'Your OTP is ' . $otp . '.';
+                    $smsResponse = $smsSender->sendSmsToAgent($message, $userMobile);
 
 //                $smsResponse = json_decode($smsResponse, true);
 
 //                if ($smsResponse['message'] === 'Success'){
-                if ($findUser->getUserGroup()->getSlug() == 'administrator') {
-                    $roles = $findUser->getUserGroup()->getSlug();
-                } else {
-                    $roles = $findUser->getServiceMode() ? $findUser->getServiceMode()->getSlug() : '';
-                }
+                    if ($findUser->getUserGroup()->getSlug() == 'administrator') {
+                        $roles = $findUser->getUserGroup()->getSlug();
+                    } else {
+                        $roles = $findUser->getServiceMode() ? $findUser->getServiceMode()->getSlug() : '';
+                    }
 //                    $rolesSeparated = implode(",", $roles);
-                $upozilas = [];
-                foreach ($findUser->getUpozila() as $location) {
-                    $upozilas[] = $location->getId();
-                }
+                    $upozilas = [];
+                    foreach ($findUser->getUpozila() as $location) {
+                        $upozilas[] = $location->getId();
+                    }
 
-                $locations = implode(",", $upozilas);
-                $data = [
-                    'userId' => $findUser->getId(),
-                    'username' => $findUser->getUsername(),
-                    'name' => $findUser->getName(),
-                    'email' => $findUser->getEmail(),
-                    'roles' => $roles,
-                    'designation' => $findUser->getDesignation() ? $findUser->getDesignation()->getName() : '',
-                    'lineManager' => $findUser->getLineManager() ? $findUser->getLineManager()->getId() : '',
-                    'locations' => $locations,
-                    'upozilas' => $upozilas,
-                    'status' => '200',
-                    'otp' => $otp,
-                ];
-                $response = new Response();
-                $response->headers->set('Content-Type', 'application/json');
-                $response->setContent(json_encode($data));
-                $response->setStatusCode(Response::HTTP_OK);
-                return $response;
-//                }
+                    $locations = implode(",", $upozilas);
+                    $data = [
+                        'userId' => $findUser->getId(),
+                        'username' => $findUser->getUsername(),
+                        'name' => $findUser->getName(),
+                        'email' => $findUser->getEmail(),
+                        'roles' => $roles,
+                        'designation' => $findUser->getDesignation() ? $findUser->getDesignation()->getName() : '',
+                        'lineManager' => $findUser->getLineManager() ? $findUser->getLineManager()->getId() : '',
+                        'locations' => $locations,
+                        'upozilas' => $upozilas,
+                        'status' => '200',
+                        'otp' => $otp,
+                    ];
+                    $response = new Response();
+                    $response->headers->set('Content-Type', 'application/json');
+                    $response->setContent(json_encode($data));
+                    $response->setStatusCode(Response::HTTP_OK);
+                    return $response;
+                }else{
+                    $response = new Response();
+                    $response->headers->set('Content-Type', 'application/json');
+                    $response->setContent(json_encode([
+                        'message' => 'This employee is disabled!',
+                        'status' => '401',
+                    ]));
+                    $response->setStatusCode(Response::HTTP_UNAUTHORIZED);
+                    return $response;
+                }
             } else {
                 $response = new Response();
                 $response->headers->set('Content-Type', 'application/json');

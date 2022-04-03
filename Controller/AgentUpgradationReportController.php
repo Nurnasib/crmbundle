@@ -59,6 +59,22 @@ class AgentUpgradationReportController extends AbstractController
         $form = $this->createForm(AgentUpgradationReportFormType::class, $entity);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+
+            $reportingMonth=$form->getData()->getReportingMonth()->format('Y-m-d');
+            $breed=$form->getData()->getBreedName();
+
+            $existingReport = $this->getDoctrine()->getRepository(AgentUpgradationReport::class)->checkExistingAgentUpgradationReport($reportingMonth, $breed, $purpose, $this->getUser(), $agent);
+
+            if($existingReport){
+
+                $entity=$this->getDoctrine()->getRepository(AgentUpgradationReport::class)->find($existingReport->getId());
+
+                $entity->setPreviousSaleTon($form->getData()->getPreviousSaleTon());
+                $entity->setPresentSaleTon($form->getData()->getPresentSaleTon());
+                $entity->setAgentStatus($form->getData()->getAgentStatus());
+                $entity->setRemarks($form->getData()->getRemarks());
+            }
+
             $entity->setAgent($agent);
             $entity->setAgentPurpose($purpose);
             $entity->setEmployee($this->getUser());

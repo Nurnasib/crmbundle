@@ -25,6 +25,24 @@ use Terminalbd\CrmBundle\Entity\AgentUpgradationReport;
  */
 class AgentUpgradationReportRepository extends BaseRepository
 {
+    public function checkExistingAgentUpgradationReport($reportingMonth, $breed, $purpose, $employee,$agent){
+        if($purpose&&$employee&&$agent){
+            $startDate = date('Y-m-01', strtotime($reportingMonth));
+            $endDate = date('Y-m-t', strtotime($reportingMonth));
+            $query = $this->createQueryBuilder('aur')
+                ->where('aur.reportingMonth >= :startDate')
+                ->andWhere('aur.reportingMonth <= :endDate')
+                ->andWhere('aur.breedName = :breed')
+                ->andWhere('aur.agentPurpose = :purpose')
+                ->andWhere('aur.employee = :employee')
+                ->andWhere('aur.agent = :agent')
+                ->setParameters(array('startDate'=>$startDate, 'endDate'=>$endDate, 'breed'=>$breed, 'purpose'=>$purpose, 'employee'=>$employee, 'agent'=>$agent));
+
+            return $query->getQuery()->getOneOrNullResult();
+        }
+        return array();
+    }
+
     public function getAgentUpgradationReportByCreatedDateEmployeeReport($purpose, $employee){
         if($purpose&&$employee){
             $startDate = date('Y-m-01', strtotime("now"));

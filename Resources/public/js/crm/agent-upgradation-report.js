@@ -10,6 +10,12 @@ function formSubmitProcessForAgentUpgradationReport(element) {
 
        return false;
     }
+        var agent_upgradation_report_form_reporting_month = parentElement.find('#agent_upgradation_report_form_reporting_month').val();
+        if (agent_upgradation_report_form_reporting_month==='' || typeof agent_upgradation_report_form_reporting_month === "undefined"){
+       parentElement.find('#agent_upgradation_report_form_reporting_month').addClass('is-invalid');
+
+       return false;
+    }
 
     $.ajax({
         url         : $('form#agent_upgradation_report').attr( 'action' ),

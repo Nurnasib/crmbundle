@@ -67,6 +67,16 @@ class AgentUpgradationReportFormType extends AbstractType
                 'label' => 'label.remarks',
                 'required' => false,
             ])
+            ->add($builder->create('reporting_month', TextType::class, array(
+                'label' => 'Reporting Month',
+                'attr' => array(
+                    'class' => 'reporting_month monthYearPickerForPreviousTwoMonthEnabled',
+                    'autocomplete' => 'off',
+                    'placeholder' => 'mm-YYYY'
+                ),
+                'empty_data' => new \DateTime(),
+            ))->addViewTransformer(new DateTimeToStringTransformer(null, null, 'm-Y')))
+
         ;
     }
 

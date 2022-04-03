@@ -3,6 +3,7 @@
         <tr>
             <td class="text-left detail_id_{{ detail.id }}">{{ detail.agent.name|default('') }}</td>
             <td class="text-left">{{ detail.breedName.name|default('') }}</td>
+            <td class="text-left">{{ detail.reportingMonth|date("F' Y") }}</td>
             <td>{{ detail.agentStatus=='NEW'?detail.agentStatus:'' }}</td>
             <td>{{ detail.agentStatus=='UPGRADE'?detail.agentStatus:'' }}</td>
             <td>{{ detail.previousSaleTon|default('') }}</td>

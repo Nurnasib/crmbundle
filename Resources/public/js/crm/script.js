@@ -173,6 +173,37 @@ function formCommonProcess() {
         }
     });
 
+    $('.monthYearPickerForPreviousTwoMonthEnabled').datepicker({
+        changeMonth: true,
+        changeYear: true,
+        dateFormat: 'mm-yy',
+        autoClose:true,
+        minDate:"-2M",
+        maxDate: "-1M",
+
+        onClose: function() {
+            $("#ui-datepicker-div").removeClass('monthYearPickerForPreviousTwoMonthEnabled');
+            var iMonth = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
+            var iYear = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
+            $(this).datepicker('setDate', new Date(iYear, iMonth, 1));
+        },
+
+        beforeShow: function() {
+            $("#ui-datepicker-div").addClass('monthYearPickerForPreviousTwoMonthEnabled');
+            // console.log($(this).val());
+            if ((selDate = $(this).val()).length > 0)
+            {
+                iYear = selDate.substring(selDate.length - 4, selDate.length);
+                iMonth = selDate.substring(0, 2);
+                // iMonth = jQuery.inArray(selDate.substring(1, 2), $(this).datepicker('option', 'monthNames'));
+                // console.log(iMonth);
+                iMonth = iMonth-1;
+                $(this).datepicker('option', 'defaultDate', new Date(iYear, iMonth, 1));
+                $(this).datepicker('setDate', new Date(iYear, iMonth, 1));
+            }
+        }
+    });
+
 
     $('.chickLifeCycleDetails_section').on('keypress blur','.chickLifeCycleDetails input[type=text], .chickLifeCycleDetails input[type=number], .chickLifeCycleDetails select', function (e) {
         if (e.which === 13) {

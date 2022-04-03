@@ -23,6 +23,7 @@
                             <tr>
                                 <th rowspan="2">{{ 'Agent'|trans }}</th>
                                 <th rowspan="2">{{ 'Feed Type'|trans }}</th>
+                                <th rowspan="2">{{ 'Month'|trans }}</th>
                                 <th colspan="2">{{ 'Agent Status'|trans }}</th>
                                 <th colspan="2">{{ 'Previous Category'|trans }}</th>
                                 <th colspan="2">{{ 'Present Category'|trans }}</th>
@@ -40,6 +41,7 @@
                             <tr>
                                 <td>{{ agent.name }}</td>
                                 <td>{{ form_widget(form.breedName) }}</td>
+                                <td>{{ form_widget(form.reporting_month) }}</td>
                                 <td colspan="2">{{ form_widget(form.agentStatus) }}</td>
                                 <td>{{ form_widget(form.previousSaleTon,{'type':'number'}) }}</td>
                                 <td></td>

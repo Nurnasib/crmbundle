@@ -88,6 +88,12 @@ class AgentUpgradationReport
     private $createdAt;
 
     /**
+     * @var \DateTime
+     * @ORM\Column(name="reporting_month", type="date", nullable=true)
+     */
+    private $reportingMonth;
+
+    /**
      * @return int
      */
     public function getId()
@@ -245,6 +251,22 @@ class AgentUpgradationReport
     public function setCreatedAt(\DateTime $createdAt): void
     {
         $this->createdAt = $createdAt;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getReportingMonth()
+    {
+        return $this->reportingMonth;
+    }
+
+    /**
+     * @param \DateTime $reportingMonth
+     */
+    public function setReportingMonth(\DateTime $reportingMonth): void
+    {
+        $this->reportingMonth = $reportingMonth;
     }
 
     public function calculationPreviousCategory()
