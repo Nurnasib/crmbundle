@@ -221,14 +221,14 @@ class SyncAppDataController extends AbstractController
                             $this->processFarmerTrainingDetails($jsonToArray, $batch);
                             break;
                     }
-                    $detail->setStatus(true);
-                    $em->persist($detail);
-                    $em->flush();
+//                    $detail->setStatus(true);
+//                    $em->persist($detail);
+//                    $em->flush();
                 }
             }
-            $batch->setStatus(true);
-            $em->persist($batch);
-            $em->flush();
+//            $batch->setStatus(true);
+//            $em->persist($batch);
+//            $em->flush();
         }
         $this->addFlash('success', 'Synchronization Completed!');
         return $this->redirectToRoute('crm_sync_app_data_index');
@@ -516,60 +516,157 @@ VALUES (:report_id, :report_parent_parent_id, :agent_id, :customer_id, :employee
     private function processCostBenefitAnalysis($reports, Api $batch)
     {
         foreach ($reports as $report) {
-            $sql = "INSERT INTO `crm_cost_benefit_analysis_for_less_costing_farm`(`report_id`, `report_parent_parent_id`, `agent_id`, `customer_id`, `employee_id`, `hatchery_id`, `breed_id`, `feed_id`, `hatching_date`, `total_stocked_chicks_pcs`, `total_feed_used_kg`, `total_broiler_weight_kg`, `mortality`, `remarks`, `created_at`, `species_id`, `reporting_month`, `pond_size`, `fingerling_size`, `harvesting_size`, `age_days`, `fcr`, `item_price_per_pcs`, `feed_price_per_kg`, `broiler_or_fish_price_per_kg`, `total_medicine_cost`, `total_vaccine_cost`, `total_pond_preparation_cost`, `used_bag_price_per_pcs`, `litter_or_pond_rent_cost`, `electricity_and_fuel_cost`, `labour_cost`, `transport_cost`, `other_cost`) 
+
+            $sql = "SELECT id FROM `crm_cost_benefit_analysis_for_less_costing_farm` WHERE `employee_id` = :employee_id AND `customer_id` = :customer_id AND `reporting_month` = :reporting_month AND `report_id` = :report_id LIMIT 1";
+            $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
+            $stmt->bindValue('employee_id', $report['employee_id']);
+            $stmt->bindValue('customer_id', $report['customer_id']);
+            $stmt->bindValue('reporting_month', $report['reporting_month']);
+            $stmt->bindValue('report_id', $report['report_id']);
+
+//            $stmt->bindValue('employee_id', 255);
+//            $stmt->bindValue('customer_id', 257);
+//            $stmt->bindValue('reporting_month', '2022-03-01');
+//            $stmt->bindValue('report_id', 242);
+
+            $stmt->execute();
+            $exist = $stmt->fetch();
+
+            $hatchingDate = new \DateTime($report['hatching_date']);
+
+            if ($exist){
+                $sql = "UPDATE `crm_cost_benefit_analysis_for_less_costing_farm` SET 
+`report_id` = :report_id, 
+`report_parent_parent_id` = :report_parent_parent_id, 
+`agent_id` = :agent_id, 
+`hatchery_id` =  :hatchery_id, 
+`breed_id` = :breed_id, 
+`feed_id` = :feed_id,
+`hatching_date` = :hatching_date,
+`total_stocked_chicks_pcs` = :total_stocked_chicks_pcs,
+`total_feed_used_kg` = :total_feed_used_kg,
+`total_broiler_weight_kg` = :total_broiler_weight_kg,
+`mortality` = :mortality,
+`remarks` = :remarks,
+`species_id` = :species_id,
+`pond_size` = :pond_size,
+`fingerling_size` = :fingerling_size,
+`harvesting_size`= :harvesting_size,
+`age_days`= :age_days,
+`fcr` = :fcr,
+`item_price_per_pcs` = :item_price_per_pcs,
+`feed_price_per_kg` = :feed_price_per_kg,
+`broiler_or_fish_price_per_kg` = :broiler_or_fish_price_per_kg,
+`total_medicine_cost` = :total_medicine_cost,
+`total_vaccine_cost` = :total_vaccine_cost,
+`total_pond_preparation_cost` = :total_pond_preparation_cost,
+`used_bag_price_per_pcs` = :used_bag_price_per_pcs,
+`litter_or_pond_rent_cost` = :litter_or_pond_rent_cost,
+`electricity_and_fuel_cost` = :electricity_and_fuel_cost,
+`labour_cost` = :labour_cost,
+`transport_cost` = :transport_cost,
+`other_cost` = :other_cost WHERE id = {$exist['id']}";
+
+                $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
+                $stmt->bindValue('report_id', $report['report_id']);
+                $stmt->bindValue('report_parent_parent_id', $report['report_parent_parent_id']);
+                $stmt->bindValue('agent_id', $report['agent_id']);
+                $stmt->bindValue('hatchery_id', $report['hatchery_id']);
+                $stmt->bindValue('breed_id', $report['breed_id']);
+                $stmt->bindValue('feed_id', $report['feed_id']);
+                $stmt->bindValue('hatching_date', $hatchingDate->format('Y-m-d'));
+                $stmt->bindValue('total_stocked_chicks_pcs', $report['total_stocked_chicks_pcs'] ?: 0);
+                $stmt->bindValue('total_feed_used_kg', $report['total_feed_used_kg'] ?: 0);
+                $stmt->bindValue('total_broiler_weight_kg', $report['total_broiler_weight_kg'] ?: 0);
+                $stmt->bindValue('mortality', $report['mortality'] ?: 0);
+                $stmt->bindValue('remarks', $report['remarks']);
+                $stmt->bindValue('species_id', $report['species_id']);
+                $stmt->bindValue('pond_size', $report['pond_size']);
+                if ($report['fingerling_size'] === null){
+                    $stmt->bindValue('fingerling_size', 0);
+                }else{
+                    $stmt->bindValue('fingerling_size', $report['fingerling_size']);
+                }
+                if ($report['harvesting_size'] === null){
+                    $stmt->bindValue('harvesting_size', 0);
+                }else{
+                    $stmt->bindValue('harvesting_size', $report['harvesting_size']);
+
+                }
+                $stmt->bindValue('age_days', $report['age_days'] ?: 0);
+                $stmt->bindValue('fcr', $report['fcr'] ?: 0);
+                $stmt->bindValue('item_price_per_pcs', $report['item_price_per_pcs'] ?: 0);
+                $stmt->bindValue('feed_price_per_kg', $report['feed_price_per_kg'] ?: 0);
+                $stmt->bindValue('broiler_or_fish_price_per_kg', $report['broiler_or_fish_price_per_kg'] ?: 0);
+                $stmt->bindValue('total_medicine_cost', $report['total_medicine_cost'] ?: 0);
+                $stmt->bindValue('total_vaccine_cost', $report['total_vaccine_cost'] ?: 0);
+                $stmt->bindValue('total_pond_preparation_cost', $report['total_pond_preparation_cost'] ?: 0);
+                $stmt->bindValue('used_bag_price_per_pcs', $report['used_bag_price_per_pcs'] ?: 0);
+                $stmt->bindValue('litter_or_pond_rent_cost', $report['litter_or_pond_rent_cost'] ?: 0);
+                $stmt->bindValue('electricity_and_fuel_cost', $report['electricity_and_fuel_cost'] ?: 0);
+                $stmt->bindValue('labour_cost', $report['labour_cost'] ?: 0);
+                $stmt->bindValue('transport_cost', $report['transport_cost'] ?: 0);
+                $stmt->bindValue('other_cost', $report['other_cost'] ?: 0);
+
+                $stmt->execute();
+
+            }else{
+                $sql = "INSERT INTO `crm_cost_benefit_analysis_for_less_costing_farm`(`report_id`, `report_parent_parent_id`, `agent_id`, `customer_id`, `employee_id`, `hatchery_id`, `breed_id`, `feed_id`, `hatching_date`, `total_stocked_chicks_pcs`, `total_feed_used_kg`, `total_broiler_weight_kg`, `mortality`, `remarks`, `created_at`, `species_id`, `reporting_month`, `pond_size`, `fingerling_size`, `harvesting_size`, `age_days`, `fcr`, `item_price_per_pcs`, `feed_price_per_kg`, `broiler_or_fish_price_per_kg`, `total_medicine_cost`, `total_vaccine_cost`, `total_pond_preparation_cost`, `used_bag_price_per_pcs`, `litter_or_pond_rent_cost`, `electricity_and_fuel_cost`, `labour_cost`, `transport_cost`, `other_cost`) 
 
 VALUES (:report_id, :report_parent_parent_id, :agent_id, :customer_id, :employee_id, :hatchery_id, :breed_id, :feed_id, :hatching_date, :total_stocked_chicks_pcs, :total_feed_used_kg, :total_broiler_weight_kg, :mortality, :remarks, :created_at, :species_id, :reporting_month, :pond_size, :fingerling_size, :harvesting_size, :age_days, :fcr, :item_price_per_pcs, :feed_price_per_kg, :broiler_or_fish_price_per_kg, :total_medicine_cost, :total_vaccine_cost, :total_pond_preparation_cost, :used_bag_price_per_pcs, :litter_or_pond_rent_cost, :electricity_and_fuel_cost, :labour_cost, :transport_cost, :other_cost)";
 
-            $hatchingDate = new \DateTime($report['hatching_date']);
-            $createdAt = new \DateTime($report['created_at']);
-            $reportingMonth = new \DateTime($report['reporting_month']);
+                $hatchingDate = new \DateTime($report['hatching_date']);
+                $createdAt = new \DateTime($report['created_at']);
+                $reportingMonth = new \DateTime($report['reporting_month']);
 
-            $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
-            $stmt->bindValue('report_id', $report['report_id']);
-            $stmt->bindValue('report_parent_parent_id', $report['report_parent_parent_id']);
-            $stmt->bindValue('agent_id', $report['agent_id']);
-            $stmt->bindValue('customer_id', $report['customer_id']);
-            $stmt->bindValue('employee_id', $report['employee_id']);
-            $stmt->bindValue('hatchery_id', $report['hatchery_id']);
-            $stmt->bindValue('breed_id', $report['breed_id']);
-            $stmt->bindValue('feed_id', $report['feed_id']);
-            $stmt->bindValue('hatching_date', $hatchingDate->format('Y-m-d'));
-            $stmt->bindValue('total_stocked_chicks_pcs', $report['total_stocked_chicks_pcs'] ?: 0);
-            $stmt->bindValue('total_feed_used_kg', $report['total_feed_used_kg'] ?: 0);
-            $stmt->bindValue('total_broiler_weight_kg', $report['total_broiler_weight_kg'] ?: 0);
-            $stmt->bindValue('mortality', $report['mortality'] ?: 0);
-            $stmt->bindValue('remarks', $report['remarks']);
-            $stmt->bindValue('created_at', $createdAt->format('Y-m-d H:i:s'));
-            $stmt->bindValue('species_id', $report['species_id']);
-            $stmt->bindValue('reporting_month', $reportingMonth->format('Y-m-d'));
-            $stmt->bindValue('pond_size', $report['pond_size']);
-            if ($report['fingerling_size'] === null){
-                $stmt->bindValue('fingerling_size', 0);
-            }else{
-                $stmt->bindValue('fingerling_size', $report['fingerling_size']);
+                $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
+                $stmt->bindValue('report_id', $report['report_id']);
+                $stmt->bindValue('report_parent_parent_id', $report['report_parent_parent_id']);
+                $stmt->bindValue('agent_id', $report['agent_id']);
+                $stmt->bindValue('customer_id', $report['customer_id']);
+                $stmt->bindValue('employee_id', $report['employee_id']);
+                $stmt->bindValue('hatchery_id', $report['hatchery_id']);
+                $stmt->bindValue('breed_id', $report['breed_id']);
+                $stmt->bindValue('feed_id', $report['feed_id']);
+                $stmt->bindValue('hatching_date', $hatchingDate->format('Y-m-d'));
+                $stmt->bindValue('total_stocked_chicks_pcs', $report['total_stocked_chicks_pcs'] ?: 0);
+                $stmt->bindValue('total_feed_used_kg', $report['total_feed_used_kg'] ?: 0);
+                $stmt->bindValue('total_broiler_weight_kg', $report['total_broiler_weight_kg'] ?: 0);
+                $stmt->bindValue('mortality', $report['mortality'] ?: 0);
+                $stmt->bindValue('remarks', $report['remarks']);
+                $stmt->bindValue('created_at', $createdAt->format('Y-m-d H:i:s'));
+                $stmt->bindValue('species_id', $report['species_id']);
+                $stmt->bindValue('reporting_month', $reportingMonth->format('Y-m-d'));
+                $stmt->bindValue('pond_size', $report['pond_size']);
+                if ($report['fingerling_size'] === null){
+                    $stmt->bindValue('fingerling_size', 0);
+                }else{
+                    $stmt->bindValue('fingerling_size', $report['fingerling_size']);
+                }
+                if ($report['harvesting_size'] === null){
+                    $stmt->bindValue('harvesting_size', 0);
+                }else{
+                    $stmt->bindValue('harvesting_size', $report['harvesting_size']);
+
+                }
+                $stmt->bindValue('age_days', $report['age_days'] ?: 0);
+                $stmt->bindValue('fcr', $report['fcr'] ?: 0);
+                $stmt->bindValue('item_price_per_pcs', $report['item_price_per_pcs'] ?: 0);
+                $stmt->bindValue('feed_price_per_kg', $report['feed_price_per_kg'] ?: 0);
+                $stmt->bindValue('broiler_or_fish_price_per_kg', $report['broiler_or_fish_price_per_kg'] ?: 0);
+                $stmt->bindValue('total_medicine_cost', $report['total_medicine_cost'] ?: 0);
+                $stmt->bindValue('total_vaccine_cost', $report['total_vaccine_cost'] ?: 0);
+                $stmt->bindValue('total_pond_preparation_cost', $report['total_pond_preparation_cost'] ?: 0);
+                $stmt->bindValue('used_bag_price_per_pcs', $report['used_bag_price_per_pcs'] ?: 0);
+                $stmt->bindValue('litter_or_pond_rent_cost', $report['litter_or_pond_rent_cost'] ?: 0);
+                $stmt->bindValue('electricity_and_fuel_cost', $report['electricity_and_fuel_cost'] ?: 0);
+                $stmt->bindValue('labour_cost', $report['labour_cost'] ?: 0);
+                $stmt->bindValue('transport_cost', $report['transport_cost'] ?: 0);
+                $stmt->bindValue('other_cost', $report['other_cost'] ?: 0);
+
+                $stmt->execute();
             }
-            if ($report['harvesting_size'] === null){
-                $stmt->bindValue('harvesting_size', 0);
-            }else{
-                $stmt->bindValue('harvesting_size', $report['harvesting_size']);
 
-            }
-            $stmt->bindValue('age_days', $report['age_days']);
-            $stmt->bindValue('fcr', $report['fcr']);
-            $stmt->bindValue('item_price_per_pcs', $report['item_price_per_pcs'] ?: 0);
-            $stmt->bindValue('feed_price_per_kg', $report['feed_price_per_kg'] ?: 0);
-            $stmt->bindValue('broiler_or_fish_price_per_kg', $report['broiler_or_fish_price_per_kg'] ?: 0);
-            $stmt->bindValue('total_medicine_cost', $report['total_medicine_cost'] ?: 0);
-            $stmt->bindValue('total_vaccine_cost', $report['total_vaccine_cost'] ?: 0);
-            $stmt->bindValue('total_pond_preparation_cost', $report['total_pond_preparation_cost'] ?: 0);
-            $stmt->bindValue('used_bag_price_per_pcs', $report['used_bag_price_per_pcs'] ?: 0);
-            $stmt->bindValue('litter_or_pond_rent_cost', $report['litter_or_pond_rent_cost'] ?: 0);
-            $stmt->bindValue('electricity_and_fuel_cost', $report['electricity_and_fuel_cost'] ?: 0);
-            $stmt->bindValue('labour_cost', $report['labour_cost'] ?: 0);
-            $stmt->bindValue('transport_cost', $report['transport_cost'] ?: 0);
-            $stmt->bindValue('other_cost', $report['other_cost'] ?: 0);
-
-            $stmt->execute();
         }
     }
     private function processDiseaseMapping($reports, Api $batch)
