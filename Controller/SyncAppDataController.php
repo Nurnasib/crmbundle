@@ -221,14 +221,14 @@ class SyncAppDataController extends AbstractController
                             $this->processFarmerTrainingDetails($jsonToArray, $batch);
                             break;
                     }
-//                    $detail->setStatus(true);
-//                    $em->persist($detail);
-//                    $em->flush();
+                    $detail->setStatus(true);
+                    $em->persist($detail);
+                    $em->flush();
                 }
             }
-//            $batch->setStatus(true);
-//            $em->persist($batch);
-//            $em->flush();
+            $batch->setStatus(true);
+            $em->persist($batch);
+            $em->flush();
         }
         $this->addFlash('success', 'Synchronization Completed!');
         return $this->redirectToRoute('crm_sync_app_data_index');
@@ -480,37 +480,84 @@ VALUES (:report_id, :employee_id, :agent_id, :customer_id, :hatchery_id, :breed_
     private function processAntibioticFreeFarm($reports, Api $batch)
     {
         foreach ($reports as $report) {
-            $sql = "INSERT INTO `crm_antibiotic_free_farm`(`report_id`, `report_parent_parent_id`, `agent_id`, `customer_id`, `employee_id`, `hatchery_id`, `breed_id`, `feed_id`, `hatching_date`, `reporting_month`, `total_stocked_chicks_pcs`, `total_feed_used_kg`, `age_days`, `total_broiler_weight_kg`, `mortality`, `fcr`, `remarks`, `created_at`, `medicine_total_cost`, `vaccine_total_cost`) 
-VALUES (:report_id, :report_parent_parent_id, :agent_id, :customer_id, :employee_id, :hatchery_id, :breed_id, :feed_id, :hatching_date, :reporting_month, :total_stocked_chicks_pcs, :total_feed_used_kg, :age_days, :total_broiler_weight_kg, :mortality, :fcr, :remarks, :created_at, :medicine_total_cost, :vaccine_total_cost)";
 
-            $hatchingDate = new \DateTime($report['hatching_date']);
-            $reportingMonth = new \DateTime($report['reporting_month']);
-            $createdAt = new \DateTime($report['created_at']);
-
+            $sql = "SELECT id FROM `crm_antibiotic_free_farm` WHERE `employee_id` = :employee_id AND `customer_id` = :customer_id AND `reporting_month` = :reporting_month LIMIT 1";
             $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
-            $stmt->bindValue('report_id',$report['report_id']);
-            $stmt->bindValue('report_parent_parent_id',$report['report_parent_parent_id']);
-            $stmt->bindValue('agent_id',$report['agent_id']);
-            $stmt->bindValue('customer_id',$report['customer_id']);
-            $stmt->bindValue('employee_id',$report['employee_id']);
-            $stmt->bindValue('hatchery_id',$report['hatchery_id']);
-            $stmt->bindValue('breed_id',$report['breed_id']);
-            $stmt->bindValue('feed_id',$report['feed_id']);
-            $stmt->bindValue('hatching_date',$hatchingDate->format('Y-m-d'));
-            $stmt->bindValue('reporting_month',$reportingMonth->format('Y-m-d'));
-//            $stmt->bindValue('reporting_month',(new \DateTime('now'))->format('Y-m-d'));
-            $stmt->bindValue('total_stocked_chicks_pcs',$report['total_stocked_chicks_pcs']);
-            $stmt->bindValue('total_feed_used_kg',$report['total_feed_used_kg']);
-            $stmt->bindValue('age_days',$report['age_days']);
-            $stmt->bindValue('total_broiler_weight_kg',$report['total_broiler_weight_kg']);
-            $stmt->bindValue('mortality',$report['mortality']);
-            $stmt->bindValue('fcr',$report['fcr']);
-            $stmt->bindValue('remarks',$report['remarks']);
-            $stmt->bindValue('created_at',$createdAt->format('Y-m-d H:i:s'));
-            $stmt->bindValue('medicine_total_cost',$report['medicine_total_cost']);
-            $stmt->bindValue('vaccine_total_cost',$report['vaccine_total_cost']);
+            $stmt->bindValue('employee_id', $report['employee_id']);
+            $stmt->bindValue('customer_id', $report['customer_id']);
+            $stmt->bindValue('reporting_month', $report['reporting_month']);
 
             $stmt->execute();
+            $exist = $stmt->fetch();
+
+            $hatchingDate = new \DateTime($report['hatching_date']);
+
+            if ($exist){
+                $sql = "UPDATE `crm_antibiotic_free_farm` SET 
+                        `agent_id` = :agent_id, 
+                        `hatchery_id` = :hatchery_id, 
+                        `breed_id` = :breed_id, 
+                        `feed_id` = :feed_id, 
+                        `hatching_date` = :hatching_date, 
+                        `total_stocked_chicks_pcs` = :total_stocked_chicks_pcs, 
+                        `total_feed_used_kg` = :total_feed_used_kg, 
+                        `age_days` = :age_days, 
+                        `total_broiler_weight_kg` = :total_broiler_weight_kg, 
+                        `mortality` = :mortality, 
+                        `fcr` = :fcr, 
+                        `remarks` = :remarks, 
+                        `medicine_total_cost` = :medicine_total_cost, 
+                        `vaccine_total_cost` = :vaccine_total_cost WHERE id = {$exist['id']}";
+
+                $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
+                $stmt->bindValue('agent_id',$report['agent_id']);
+                $stmt->bindValue('hatchery_id',$report['hatchery_id']);
+                $stmt->bindValue('breed_id',$report['breed_id']);
+                $stmt->bindValue('feed_id',$report['feed_id']);
+                $stmt->bindValue('hatching_date',$hatchingDate->format('Y-m-d'));
+                $stmt->bindValue('total_stocked_chicks_pcs',$report['total_stocked_chicks_pcs']);
+                $stmt->bindValue('total_feed_used_kg',$report['total_feed_used_kg']);
+                $stmt->bindValue('age_days',$report['age_days']);
+                $stmt->bindValue('total_broiler_weight_kg',$report['total_broiler_weight_kg']);
+                $stmt->bindValue('mortality',$report['mortality']);
+                $stmt->bindValue('fcr',$report['fcr']);
+                $stmt->bindValue('remarks',$report['remarks']);
+                $stmt->bindValue('medicine_total_cost',$report['medicine_total_cost']);
+                $stmt->bindValue('vaccine_total_cost',$report['vaccine_total_cost']);
+
+                $stmt->execute();
+
+            }else{
+                $sql = "INSERT INTO `crm_antibiotic_free_farm`(`report_id`, `report_parent_parent_id`, `agent_id`, `customer_id`, `employee_id`, `hatchery_id`, `breed_id`, `feed_id`, `hatching_date`, `reporting_month`, `total_stocked_chicks_pcs`, `total_feed_used_kg`, `age_days`, `total_broiler_weight_kg`, `mortality`, `fcr`, `remarks`, `created_at`, `medicine_total_cost`, `vaccine_total_cost`) 
+VALUES (:report_id, :report_parent_parent_id, :agent_id, :customer_id, :employee_id, :hatchery_id, :breed_id, :feed_id, :hatching_date, :reporting_month, :total_stocked_chicks_pcs, :total_feed_used_kg, :age_days, :total_broiler_weight_kg, :mortality, :fcr, :remarks, :created_at, :medicine_total_cost, :vaccine_total_cost)";
+
+                $hatchingDate = new \DateTime($report['hatching_date']);
+                $createdAt = new \DateTime($report['created_at']);
+
+                $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
+                $stmt->bindValue('report_id',$report['report_id']);
+                $stmt->bindValue('report_parent_parent_id',$report['report_parent_parent_id']);
+                $stmt->bindValue('agent_id',$report['agent_id']);
+                $stmt->bindValue('customer_id',$report['customer_id']);
+                $stmt->bindValue('employee_id',$report['employee_id']);
+                $stmt->bindValue('hatchery_id',$report['hatchery_id']);
+                $stmt->bindValue('breed_id',$report['breed_id']);
+                $stmt->bindValue('feed_id',$report['feed_id']);
+                $stmt->bindValue('hatching_date',$hatchingDate->format('Y-m-d'));
+                $stmt->bindValue('reporting_month',$report['reporting_month']);
+                $stmt->bindValue('total_stocked_chicks_pcs',$report['total_stocked_chicks_pcs']);
+                $stmt->bindValue('total_feed_used_kg',$report['total_feed_used_kg']);
+                $stmt->bindValue('age_days',$report['age_days']);
+                $stmt->bindValue('total_broiler_weight_kg',$report['total_broiler_weight_kg']);
+                $stmt->bindValue('mortality',$report['mortality']);
+                $stmt->bindValue('fcr',$report['fcr']);
+                $stmt->bindValue('remarks',$report['remarks']);
+                $stmt->bindValue('created_at',$createdAt->format('Y-m-d H:i:s'));
+                $stmt->bindValue('medicine_total_cost',$report['medicine_total_cost']);
+                $stmt->bindValue('vaccine_total_cost',$report['vaccine_total_cost']);
+
+                $stmt->execute();
+            }
         }
     }
     private function processCostBenefitAnalysis($reports, Api $batch)
@@ -536,36 +583,36 @@ VALUES (:report_id, :report_parent_parent_id, :agent_id, :customer_id, :employee
 
             if ($exist){
                 $sql = "UPDATE `crm_cost_benefit_analysis_for_less_costing_farm` SET 
-`report_id` = :report_id, 
-`report_parent_parent_id` = :report_parent_parent_id, 
-`agent_id` = :agent_id, 
-`hatchery_id` =  :hatchery_id, 
-`breed_id` = :breed_id, 
-`feed_id` = :feed_id,
-`hatching_date` = :hatching_date,
-`total_stocked_chicks_pcs` = :total_stocked_chicks_pcs,
-`total_feed_used_kg` = :total_feed_used_kg,
-`total_broiler_weight_kg` = :total_broiler_weight_kg,
-`mortality` = :mortality,
-`remarks` = :remarks,
-`species_id` = :species_id,
-`pond_size` = :pond_size,
-`fingerling_size` = :fingerling_size,
-`harvesting_size`= :harvesting_size,
-`age_days`= :age_days,
-`fcr` = :fcr,
-`item_price_per_pcs` = :item_price_per_pcs,
-`feed_price_per_kg` = :feed_price_per_kg,
-`broiler_or_fish_price_per_kg` = :broiler_or_fish_price_per_kg,
-`total_medicine_cost` = :total_medicine_cost,
-`total_vaccine_cost` = :total_vaccine_cost,
-`total_pond_preparation_cost` = :total_pond_preparation_cost,
-`used_bag_price_per_pcs` = :used_bag_price_per_pcs,
-`litter_or_pond_rent_cost` = :litter_or_pond_rent_cost,
-`electricity_and_fuel_cost` = :electricity_and_fuel_cost,
-`labour_cost` = :labour_cost,
-`transport_cost` = :transport_cost,
-`other_cost` = :other_cost WHERE id = {$exist['id']}";
+                        `report_id` = :report_id, 
+                        `report_parent_parent_id` = :report_parent_parent_id, 
+                        `agent_id` = :agent_id, 
+                        `hatchery_id` =  :hatchery_id, 
+                        `breed_id` = :breed_id, 
+                        `feed_id` = :feed_id,
+                        `hatching_date` = :hatching_date,
+                        `total_stocked_chicks_pcs` = :total_stocked_chicks_pcs,
+                        `total_feed_used_kg` = :total_feed_used_kg,
+                        `total_broiler_weight_kg` = :total_broiler_weight_kg,
+                        `mortality` = :mortality,
+                        `remarks` = :remarks,
+                        `species_id` = :species_id,
+                        `pond_size` = :pond_size,
+                        `fingerling_size` = :fingerling_size,
+                        `harvesting_size`= :harvesting_size,
+                        `age_days`= :age_days,
+                        `fcr` = :fcr,
+                        `item_price_per_pcs` = :item_price_per_pcs,
+                        `feed_price_per_kg` = :feed_price_per_kg,
+                        `broiler_or_fish_price_per_kg` = :broiler_or_fish_price_per_kg,
+                        `total_medicine_cost` = :total_medicine_cost,
+                        `total_vaccine_cost` = :total_vaccine_cost,
+                        `total_pond_preparation_cost` = :total_pond_preparation_cost,
+                        `used_bag_price_per_pcs` = :used_bag_price_per_pcs,
+                        `litter_or_pond_rent_cost` = :litter_or_pond_rent_cost,
+                        `electricity_and_fuel_cost` = :electricity_and_fuel_cost,
+                        `labour_cost` = :labour_cost,
+                        `transport_cost` = :transport_cost,
+                        `other_cost` = :other_cost WHERE id = {$exist['id']}";
 
                 $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
                 $stmt->bindValue('report_id', $report['report_id']);
@@ -617,7 +664,6 @@ VALUES (:report_id, :report_parent_parent_id, :agent_id, :customer_id, :employee
 
                 $hatchingDate = new \DateTime($report['hatching_date']);
                 $createdAt = new \DateTime($report['created_at']);
-                $reportingMonth = new \DateTime($report['reporting_month']);
 
                 $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
                 $stmt->bindValue('report_id', $report['report_id']);
@@ -636,7 +682,7 @@ VALUES (:report_id, :report_parent_parent_id, :agent_id, :customer_id, :employee
                 $stmt->bindValue('remarks', $report['remarks']);
                 $stmt->bindValue('created_at', $createdAt->format('Y-m-d H:i:s'));
                 $stmt->bindValue('species_id', $report['species_id']);
-                $stmt->bindValue('reporting_month', $reportingMonth->format('Y-m-d'));
+                $stmt->bindValue('reporting_month', $report['reporting_month']);
                 $stmt->bindValue('pond_size', $report['pond_size']);
                 if ($report['fingerling_size'] === null){
                     $stmt->bindValue('fingerling_size', 0);
