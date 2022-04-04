@@ -17,6 +17,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Terminalbd\CrmBundle\Entity\AgentUpgradationReport;
 use Terminalbd\CrmBundle\Entity\Api;
 use Terminalbd\CrmBundle\Entity\ApiDetails;
 use Terminalbd\CrmBundle\Entity\CattleLifeCycle;
@@ -1745,20 +1746,39 @@ VALUES (
     {
         foreach ($reports as $report) {
             $createdAt = (new \DateTime($report['created_at']))->format('Y-m-d H:i:s');
+            $reportingMonth = (new \DateTime($report['reporting_month']))->format('Y-m-d');
+            $breed=$report['breed_name'];
+            $employee=$report['employee_id'];
+            $agent= $report['agent_id'];
 
-            $sql = "INSERT INTO `crm_agent_upgradation_report`(`agent_purpose_id`, `agent_id`, `employee_id`, `breed_name`, `agent_status`, `previous_sale_ton`, `present_sale_ton`, `remarks`, `created_at`) VALUES (:agent_purpose_id, :agent_id, :employee_id, :breed_name, :agent_status, :previous_sale_ton, :present_sale_ton, :remarks, :created_at)";
-            $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
+            $existingReport= $this->getDoctrine()->getRepository(AgentUpgradationReport::class)->duplicateCheckSyncAgentUpgradationReport($reportingMonth, $breed, $employee, $agent);
 
-            $stmt->bindValue('agent_purpose_id', $report['agent_purpose_id']);
-            $stmt->bindValue('agent_id', $report['agent_id']);
-            $stmt->bindValue('employee_id', $report['employee_id']);
-            $stmt->bindValue('breed_name', $report['breed_name']);
-            $stmt->bindValue('agent_status', $report['agent_status']);
-            $stmt->bindValue('previous_sale_ton', $report['previous_sale_ton']);
-            $stmt->bindValue('present_sale_ton', $report['present_sale_ton']);
-            $stmt->bindValue('remarks', $report['remarks']);
-            $stmt->bindValue('created_at',$createdAt);
-            $stmt->execute();
+            if($existingReport){
+                $sql = "UPDATE `crm_agent_upgradation_report` SET `agent_status`= :agent_status,`previous_sale_ton`= :previous_sale_ton,`present_sale_ton`= :present_sale_ton,`remarks`= :remarks WHERE id = :id";  // every time exits when create new farmer
+                $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
+                $stmt->bindValue('id', $existingReport->getId());
+                $stmt->bindValue('agent_status', $report['agent_status']);
+                $stmt->bindValue('previous_sale_ton', $report['previous_sale_ton']);
+                $stmt->bindValue('present_sale_ton', $report['present_sale_ton']);
+                $stmt->bindValue('remarks', $report['remarks']);
+                $stmt->execute();
+            }else{
+                $sql = "INSERT INTO `crm_agent_upgradation_report`(`agent_purpose_id`, `agent_id`, `employee_id`, `breed_name`, `agent_status`, `previous_sale_ton`, `present_sale_ton`, `remarks`, `created_at`, `reporting_month`) VALUES (:agent_purpose_id, :agent_id, :employee_id, :breed_name, :agent_status, :previous_sale_ton, :present_sale_ton, :remarks, :created_at, :reporting_month)";
+                $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
+
+                $stmt->bindValue('agent_purpose_id', $report['agent_purpose_id']);
+                $stmt->bindValue('agent_id', $report['agent_id']);
+                $stmt->bindValue('employee_id', $report['employee_id']);
+                $stmt->bindValue('breed_name', $report['breed_name']);
+                $stmt->bindValue('agent_status', $report['agent_status']);
+                $stmt->bindValue('previous_sale_ton', $report['previous_sale_ton']);
+                $stmt->bindValue('present_sale_ton', $report['present_sale_ton']);
+                $stmt->bindValue('remarks', $report['remarks']);
+                $stmt->bindValue('created_at',$createdAt);
+                $stmt->bindValue('reporting_month',$reportingMonth);
+                $stmt->execute();
+
+            }
 
         }
     }

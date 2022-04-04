@@ -42,6 +42,26 @@ class AgentUpgradationReportRepository extends BaseRepository
         }
         return array();
     }
+    
+    public function duplicateCheckSyncAgentUpgradationReport($reportingMonth, $breed, $employee, $agent){
+        if($employee&&$agent){
+            $startDate = date('Y-m-01', strtotime($reportingMonth));
+            $endDate = date('Y-m-t', strtotime($reportingMonth));
+            $query = $this->createQueryBuilder('aur')
+                ->join('aur.agent', 'agent')
+                ->join('aur.breedName','breedName')
+                ->join('aur.employee','employee')
+                ->where('aur.reportingMonth >= :startDate')
+                ->andWhere('aur.reportingMonth <= :endDate')
+                ->andWhere('breedName.id = :breed')
+                ->andWhere('employee.id = :employee')
+                ->andWhere('agent.id = :agent')
+                ->setParameters(array('startDate'=>$startDate, 'endDate'=>$endDate, 'breed'=>$breed, 'employee'=>$employee, 'agent'=>$agent));
+
+            return $query->getQuery()->getOneOrNullResult();
+        }
+        return array();
+    }
 
     public function getAgentUpgradationReportByCreatedDateEmployeeReport($purpose, $employee){
         if($purpose&&$employee){
