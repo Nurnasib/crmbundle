@@ -84,6 +84,7 @@ class SettingFormType extends AbstractType
                     'Training Material'=>'TRAINING_MATERIAL', //parent BREED_NAME (poultry, cattle, fish etc)
                     'Disease Name'=>'DISEASE_NAME', //parent BREED_NAME (poultry, cattle, fish etc)
                     'Product Type'=>'PRODUCT_TYPE', //parent FARM_TYPE (broiler, sonali, layer, dairy, fattening etc)
+                    'Product Name'=>'PRODUCT_NAME', //parent FARM_TYPE (broiler, sonali, layer, dairy, fattening etc)
                     'Lab Name'=>'LAB_NAME', //parent FARM_TYPE (broiler, sonali, layer, dairy, fattening etc)
                     'Lab Service Name'=>'LAB_SERVICE_NAME', //parent FARM_TYPE (broiler, sonali, layer, dairy, fattening etc)
                     'Complain Doc'=>'COMPLAIN_DOC',

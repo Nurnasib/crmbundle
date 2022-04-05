@@ -2079,4 +2079,39 @@ class ApiRepository extends BaseRepository
 
     }
 
+
+    /**
+     * Product Name
+     */
+    public function productName()
+    {
+        $em = $this->_em;
+        $qb = $em->createQueryBuilder();
+        $qb->from(Setting::class,'s');
+        $qb->leftJoin('s.parent','p');
+        $qb->leftJoin('p.parent','pp');
+
+
+        $qb->select('s.id as id','s.name as productName');
+        $qb->addSelect('p.name as feedName');
+        $qb->addSelect('pp.name as parentName');
+
+        $qb->where("s.settingType = 'PRODUCT_NAME'");
+        $qb->andWhere('s.status = 1');
+
+        $qb->orderBy('s.id', 'ASC');
+        $result = $qb->getQuery()->getArrayResult();
+        $data = array();
+        foreach ($result as $key => $row) {
+
+            $data[$key]['id'] = (int)$row['id'];
+            $data[$key]['feedTypeName'] = (string)$row['productName'];
+            $data[$key]['feedName'] = (string)$row['feedName'];
+            $data[$key]['parentName'] = (string)$row['parentName'];
+
+        }
+
+        return $data;
+    }
+
 }
