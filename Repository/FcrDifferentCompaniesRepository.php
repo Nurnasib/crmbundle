@@ -73,7 +73,6 @@ class FcrDifferentCompaniesRepository extends EntityRepository
                     'december'=>['id'=>$value->getId(),'value'=>$value->getDecember()],
                 );
             }
-//            dd($returnArray);
             return $returnArray;
         }
         return array();
