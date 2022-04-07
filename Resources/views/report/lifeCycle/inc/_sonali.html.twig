@@ -104,7 +104,7 @@
                                     rowspan="{{ lifeCycle.details|length }}">{{ lifeCycle.parent.hatchingDate|date('d-m-Y') }}</td>
                             {% endif %}
                             <td>{{ detail.visitingWeek|week|default('N/A') }}</td>
-                            <td>{{ detail.totalBirds|default(0) }}</td>
+                            <td>{{ lifeCycle.parent.totalBirds|default(0) }}</td>
                             <td>{{ detail.ageDays|default(0) }}</td>
                             <td>{{ detail.mortalityPes|number_format(2)|default(0) }}</td>
                             <td>{{ detail.mortalityPercent|number_format(2)|default(0) }}</td>
