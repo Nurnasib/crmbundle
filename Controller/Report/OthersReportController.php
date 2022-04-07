@@ -76,6 +76,18 @@ class OthersReportController extends AbstractController
                     $entities = $this->getDoctrine()->getRepository(FarmerIntroduceDetails::class)->getFarmerSurveyReport($filterBy);
                     break;
 
+                case 'farmer-survey-cattle':
+                    $breed = $this->getDoctrine()->getRepository(Setting::class)->findBy(['status' => 1, 'slug' => 'cattle-breed', 'settingType' => 'BREED_NAME']);
+                    $species = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('status'=>1,'settingType'=>'SPECIES_TYPE','parent'=>$breed));
+                    $entities = $this->getDoctrine()->getRepository(FarmerIntroduceDetails::class)->getFarmerSurveyReport($filterBy);
+                    break;
+
+                case 'farmer-survey-fish':
+                    $breed = $this->getDoctrine()->getRepository(Setting::class)->findBy(['status' => 1, 'slug' => 'fish-breed', 'settingType' => 'BREED_NAME']);
+                    $species = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('status'=>1,'settingType'=>'SPECIES_TYPE','parent'=>$breed));
+                    $entities = $this->getDoctrine()->getRepository(FarmerIntroduceDetails::class)->getFarmerSurveyReport($filterBy);
+                    break;
+
                 case 'lab-service-poultry':
                     $entities = $this->getDoctrine()->getRepository(LabService::class)->getLabServiceSummaryReport($filterBy, $this->getUser());
                     break;
