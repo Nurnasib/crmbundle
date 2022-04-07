@@ -40,7 +40,7 @@
                     {% endif %}
                 {% endfor %}
             {% endif %}
-            <th scope="col" rowspan="2" style="text-align: center">Total</th>
+{#            <th scope="col" rowspan="2" style="text-align: center">Total</th>#}
             <th scope="col" rowspan="2" width="100">Market Share (%)</th>
 
         </tr>
@@ -98,14 +98,14 @@
                     {% endfor %}
                 {% endif %}
 
-                <td align="right">{{ details.totalQty }}</td>
+{#                <td align="right">{{ details.totalQty }}</td>#}
                 <td align="right">{{ entity.companyTotalQty > 0 ? ((details.totalQty * 100) / entity.companyTotalQty)|number_format(2) : 0 }}</td>
                 {% set percentage=entity.companyTotalQty > 0 ? ((details.totalQty * 100) / entity.companyTotalQty)|number_format(2) : 0 %}
                 {% set totalPercentage=totalPercentage+percentage %}
             </tr>
         {% endfor %}
         <tr>
-            <th colspan="2" style="text-align: center">Total</th>
+            <th style="text-align: center">Total</th>
 
 
             {% if species is defined %}
