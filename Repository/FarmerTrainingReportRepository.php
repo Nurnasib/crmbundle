@@ -39,7 +39,7 @@ class FarmerTrainingReportRepository extends BaseRepository
 
         $qb->select('e.farmerCapacity', 'e.trainingMaterialQty');
         $qb->addSelect('farmer.id AS farmerId', 'farmer.name AS farmerName', 'farmer.address AS farmerAddress', 'farmer.mobile AS farmerMobile');
-        $qb->addSelect('agent.id AS agentId', 'agent.name AS agentName', 'agent.address AS agentAddress', 'agent.mobile AS agentMobile');
+        $qb->addSelect('agent.name AS agentName', 'agent.address AS agentAddress', 'agent.mobile AS agentMobile', 'agent.agentId');
         $qb->addSelect('farmer_training_report.id AS trainingId','farmer_training_report.trainingTopics', 'farmer_training_report.remarks', 'farmer_training_report.trainingDate');
 
         $qb->where('breed_name.slug = :slug')->setParameter('slug', $breedSlug);

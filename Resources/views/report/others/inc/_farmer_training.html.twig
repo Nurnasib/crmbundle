@@ -27,7 +27,7 @@
 {#            <th scope="col" width="50" rowspan="2">S/N</th>#}
 {#            <th scope="col" rowspan="2">Month</th>#}
             <th scope="col" rowspan="2" width="100" style="text-align: center">Date of Training</th>
-            <th scope="col" colspan="3" style="text-align: center">Agent</th>
+            <th scope="col" colspan="4" style="text-align: center">Agent</th>
             <th scope="col" colspan="4" style="text-align: center">Participants Information</th>
             <th scope="col" colspan="{{ species ? ((species|length) + 1) : '' }}" style="text-align: center">Capacity</th>
             <th scope="col" colspan="{{ trainingMaterials ? (trainingMaterials|length) : '' }}" style="text-align: center">Training Materials</th>
@@ -36,6 +36,7 @@
 
         </tr>
         <tr>
+            <th style="text-align: center">ID</th>
             <th style="text-align: center">Name</th>
             <th style="text-align: center">Address</th>
             <th style="text-align: center">Mobile No</th>
@@ -58,13 +59,12 @@
         </tr>
         </thead>
         <tbody>
-{#        {{ dump(entities) }}#}
 
         {% for monthYear, entity in entities %}
             {% set count = 1 %}
 
             <tr>
-                <td align="center" colspan="{{ (species ? ((species|length) +1) : 0) + (trainingMaterials ? trainingMaterials|length : 0) + 10 }}" style="background-color: #CCCCCC">{{ monthYear|split('-')[2] }}, {{ monthYear|split('-')[0] }}</td>
+                <td align="center" colspan="{{ (species ? ((species|length) +1) : 0) + (trainingMaterials ? trainingMaterials|length : 0) + 11 }}" style="background-color: #CCCCCC">{{ monthYear|split('-')[2] }}, {{ monthYear|split('-')[0] }}</td>
             </tr>
             {% for training in entity %}
                 {% for key, agent in training %}
@@ -75,6 +75,7 @@
                                 {% if loop.first %}
 {#                                    <td rowspan="{{ agent.farmerDetails|length }}">{{ monthYear|split('-')[2] }}, {{ monthYear|split('-')[0] }}</td>#}
                                     <td rowspan="{{ agent.farmerDetails|length }}">{{ training['trainingDetails']['trainingDate']|date('d-m-Y') }}</td>
+                                    <td rowspan="{{ agent.farmerDetails|length }}">{{ agent['agentDetails']['id'] }}</td>
                                     <td rowspan="{{ agent.farmerDetails|length }}">{{ agent['agentDetails']['name'] }}</td>
                                     <td rowspan="{{ agent.farmerDetails|length }}">{{ agent['agentDetails']['address'] }}</td>
                                     <td rowspan="{{ agent.farmerDetails|length }}">{{ agent['agentDetails']['mobile'] }}</td>
