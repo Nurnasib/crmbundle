@@ -22,10 +22,10 @@
         <th style="width: 105px" scope="col" rowspan="2">Hatching date</th>
         <th scope="col" rowspan="2">Total Birds</th>
         <th scope="col" rowspan="2">Age (Day)</th>
-        <th scope="col" colspan="2">Mortality</th>
-        <th scope="col" rowspan="2">Weight (gm)</th>
-        <th scope="col" colspan="2">Feed Consumption</th>
-        <th scope="col" colspan="2">FCR</th>
+        <th scope="col" colspan="2" style="text-align: center">Mortality</th>
+        <th scope="col" colspan="2" style="text-align: center">Weight (gm)</th>
+        <th scope="col" colspan="3" style="text-align: center">Feed Consumption</th>
+        <th scope="col" colspan="2" style="text-align: center">FCR</th>
         <th style="width: 150px;" scope="col" rowspan="2">Hatchery</th>
         <th style="width: 150px;" scope="col" rowspan="2">Breed</th>
         <th style="width: 150px;" scope="col" rowspan="2">Feed</th>
@@ -40,8 +40,12 @@
         <th scope="col">Pes</th>
         <th scope="col">%</th>
 
+        <th scope="col">Achieve</th>
+        <th scope="col">Target</th>
+
         <th scope="col">Total (kg)</th>
         <th scope="col">Per bird (gm)</th>
+        <th scope="col">Standard</th>
 
         <th scope="col">Without  M</th>
         <th scope="col">With M</th>
@@ -73,10 +77,10 @@
                     <td>{{ fcrDetail['mortalityPes'] }}</td>
                     <td>{{ fcrDetail['mortalityPercent']|number_format(2,'.','') }}</td>
                     <td>{{ fcrDetail['weight']|number_format(2,'.','') }}</td>
-{#                    <td>{{ fcrDetail['weightStandard'] }}</td>#}
+                    <td>{{ fcrDetail['weightStandard'] }}</td>
                     <td>{{ fcrDetail['feedConsumptionTotalKg']|number_format(2,'.','') }}</td>
                     <td>{{ fcrDetail['feedConsumptionPerBird']|number_format(2,'.','') }}</td>
-{#                    <td>{{ fcrDetail['feedConsumptionStandard'] }}</td>#}
+                    <td>{{ fcrDetail['feedConsumptionStandard'] }}</td>
                     <td>{{ fcrDetail['fcrWithoutMortality']|number_format(2,'.','') }}</td>
                     <td>{{ fcrDetail['fcrWithMortality']|number_format(2,'.','') }}</td>
                     <td>{{ fcrDetail['hatcheryName']|default('') }}</td>
