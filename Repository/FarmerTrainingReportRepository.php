@@ -28,6 +28,7 @@ class FarmerTrainingReportRepository extends BaseRepository
     {
         $start = isset($filterBy['startDate']) ? (new \DateTime($filterBy['startDate']))->format('Y-m-d') : null;
         $end = isset($filterBy['endDate']) ? (new \DateTime($filterBy['endDate']))->format('Y-m-d') : null;
+        $employeeId = (isset($filterBy['employee']) && $filterBy['employee'] != null) ? $filterBy['employee']->getId() : null;
 
         $qb = $this->createQueryBuilder('e');
         $qb->join('e.farmerTrainingReport', 'farmer_training_report');
@@ -44,6 +45,10 @@ class FarmerTrainingReportRepository extends BaseRepository
         $qb->where('breed_name.slug = :slug')->setParameter('slug', $breedSlug);
         $qb->andWhere('farmer_training_report.trainingDate >= :start')->setParameter('start', $start);
         $qb->andWhere('farmer_training_report.trainingDate <= :end')->setParameter('end', $end);
+
+        if ($employeeId){
+            $qb->andWhere('employee.id = :employeeId')->setParameter('employeeId', $employeeId);
+        }
 
         $qb->orderBy('farmer_training_report.trainingDate', 'ASC');
 
