@@ -29,8 +29,8 @@
         <th style="width: 150px;" scope="col" rowspan="2">Hatchery</th>
         <th style="width: 150px;" scope="col" rowspan="2">Breed</th>
         <th style="width: 150px;" scope="col" rowspan="2">Feed</th>
-        {#<th style="width: 150px;" scope="col" rowspan="2">FeedMill</th>
-        <th style="width: 150px;" scope="col" rowspan="2">FeedType</th>
+        <th style="width: 150px;" scope="col" rowspan="2">Feed Mill</th>
+        {#<th style="width: 150px;" scope="col" rowspan="2">FeedType</th>
         <th style="width: 150px;" style="width: 105px" scope="col" rowspan="2">Pro. Date</th>
         <th style="width: 200px;" scope="col" rowspan="2">Batch No.</th>#}
         <th style="width: 300px;" scope="col" rowspan="2">Remarks</th>
@@ -82,8 +82,8 @@
                     <td>{{ fcrDetail['hatcheryName']|default('') }}</td>
                     <td>{{ fcrDetail['breedBame']|default('') }}</td>
                     <td>{{ fcrDetail['feedName']|default('') }}</td>
-                    {#<td>{{ fcrDetail['feedMillName']|default('') }}</td>
-                    <td>{{ fcrDetail['feedTypeName']|default('') }}</td>
+                    <td>{{ fcrDetail['feedMillName']|default('') }}</td>
+                    {#<td>{{ fcrDetail['feedTypeName']|default('') }}</td>
                     <td>{{ fcrDetail['proDate']|date('d-m-Y') }}</td>
                     <td>{{ fcrDetail['batchNo'] }}</td>#}
                     <td>{{ fcrDetail['remarks'] }}</td>
