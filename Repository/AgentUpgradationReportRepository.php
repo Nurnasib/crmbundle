@@ -79,19 +79,24 @@ class AgentUpgradationReportRepository extends BaseRepository
         return array();
     }
 
-    public function getAgentUpgradationReport($filterBy, User $loggedUser){
-            $startDate = isset($filterBy['startDate']) ? (new \DateTime($filterBy['startDate']))->format('Y-m-d') . ' 00:00:00' : null;
-            $endDate = isset($filterBy['endDate']) ? (new \DateTime($filterBy['endDate']))->format('Y-m-d') . ' 23:59:59' : null;
+    public function getAgentUpgradationReport($filterBy, User $loggedUser)
+    {
+//            $startDate = isset($filterBy['startDate']) ? (new \DateTime($filterBy['startDate']))->format('Y-m-d') . ' 00:00:00' : null;
+//            $endDate = isset($filterBy['endDate']) ? (new \DateTime($filterBy['endDate']))->format('Y-m-d') . ' 23:59:59' : null;
+            $startDate = isset($filterBy['startDate']) ? (new \DateTime($filterBy['startDate']))->format('Y-m-d') : null;
+            $endDate = isset($filterBy['endDate']) ? (new \DateTime($filterBy['endDate']))->format('Y-m-d') : null;
             $employeeId = isset($filterBy['employee']) ? $filterBy['employee']->getId() : null;
 
             $query = $this->createQueryBuilder('aur');
             $query->join('aur.agent','agent');
+            $query->leftJoin('agent.agentGroup','agentGroup');
             $query->join('aur.employee','employee');
-            $query->where('aur.createdAt IS NOT NULL');
+//            $query->where('aur.createdAt IS NOT NULL');
+            $query->where('aur.reportingMonth IS NOT NULL');
 
-            if($startDate&&$endDate){
-                $query->andWhere('aur.createdAt >= :startDate')->setParameter('startDate',$startDate);
-                $query->andWhere('aur.createdAt <= :endDate')->setParameter('endDate', $endDate);
+            if($startDate && $endDate){
+                $query->andWhere('aur.reportingMonth >= :startDate')->setParameter('startDate',$startDate);
+                $query->andWhere('aur.reportingMonth <= :endDate')->setParameter('endDate', $endDate);
             }
 
             $rolesString = implode($loggedUser->getRoles(), '_');
@@ -107,19 +112,18 @@ class AgentUpgradationReportRepository extends BaseRepository
                 $query->andWhere('employee.id = :employee')->setParameter('employee',$filterBy['employee']);
             }*/
 
-        $results=$query->getQuery()->getResult();
-        $returnArray=[];
+        $results = $query->getQuery()->getResult();
+        $returnArray = [];
         if($results){
             /* @var AgentUpgradationReport $result*/
             foreach ($results as $result){
-                $monthYear = $result->getCreatedAt()->format('F-Y');
+                $monthYear = $result->getReportingMonth()->format('F-Y');
                 $returnArray[$result->getEmployee()->getId()]['name']=$result->getEmployee()->getName();
                 $returnArray[$result->getEmployee()->getId()]['employeeDesignationName']=$result->getEmployee()->getDesignation()->getName();
                 $returnArray[$result->getEmployee()->getId()]['details'][$monthYear][]=$result;
 //                $returnArray[$result['employeeId']]['details'][$monthYear][]=$result;
             }
         }
-
         return $returnArray;
 
     }

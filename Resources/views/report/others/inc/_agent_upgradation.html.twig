@@ -36,6 +36,7 @@
                 <th scope="col" colspan="2" class="text-center">Present Category</th>
 
                 <th scope="col" rowspan="2" class="text-center">Remarks</th>
+                <th scope="col" rowspan="2" class="text-center">Created Date</th>
 
 
             </tr>
@@ -67,7 +68,7 @@
                         {#                        <td>{{ monthYear }}</td>#}
                         <td>{{ loop.index }}</td>
                         <td>{{ detail.agent.agentId|default('') }}</td>
-                        <td>{{ detail.agent.name|default('') }}</td>
+                        <td>{{ detail.agent.name|default('') ~ ' (' ~detail.agent.agentGroup.name ~ ')' }}</td>
                         <td>{{ detail.agent.address|default('') }}</td>
                         <td>{{ detail.agent.mobile|default('') }}</td>
                         <td>{{ detail.agentStatus=='NEW'?detail.agentStatus|default(''):'' }}</td>
@@ -77,6 +78,7 @@
                         <td>{{ detail.presentSaleTon?detail.presentSaleTon|number_format(2,'.',''):'0' }}</td>
                         <td>{{ detail.calculationPresentCategory }}</td>
                         <td>{{ detail.remarks }}</td>
+                        <td>{{ detail.createdAt|date('d-m-Y') }}</td>
 
                     </tr>
                 {% endfor %}
