@@ -28,7 +28,7 @@ class CrmCustomerRepository extends EntityRepository
 
     public function getLocationWise(User $user,$pram)
     {
-        $rolesString = implode($user->getRoles(), '_');
+        $rolesString = implode('_', $user->getRoles());
 
         $locationsId = array();
         foreach ($user->getUpozila() as $location){

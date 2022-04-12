@@ -258,7 +258,7 @@ class SearchFilterFormType extends AbstractType
                     $qb->where("userGroup.slug = 'employee'");
                     $qb->andWhere("e.enabled = 1");
 
-                    $rolesString = implode($user->getRoles(), '_');
+                    $rolesString = implode('_', $user->getRoles());
 
                     if (!str_contains($rolesString,'ADMIN')){
                         if (!in_array('ROLE_LINE_MANAGER', $user->getRoles())){

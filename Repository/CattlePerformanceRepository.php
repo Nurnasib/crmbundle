@@ -71,7 +71,7 @@ class CattlePerformanceRepository extends EntityRepository
         $qb->andWhere('e.visitingDate <= :end')->setParameter('end', $end);
         $qb->andWhere('report.slug = :reportSlug')->setParameter('reportSlug', $report->getSlug());
 
-        $rolesString = implode($loggedUser->getRoles(), '_');
+        $rolesString = implode('_', $loggedUser->getRoles());
 
         if (!str_contains($rolesString, 'ADMIN') && !in_array('ROLE_LINE_MANAGER', $loggedUser->getRoles())){
             $qb->andWhere('employee.id = :employeeId')->setParameter('employeeId', $loggedUser->getId());

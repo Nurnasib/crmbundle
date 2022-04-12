@@ -2036,7 +2036,7 @@ class ApiRepository extends BaseRepository
 
     public function getEmployeeLocation(User $lineManager, $ids)
     {
-        $rolesString = implode($lineManager->getRoles(), '_');
+        $rolesString = implode( '_', $lineManager->getRoles());
 
         $qb = $this->_em->createQueryBuilder();
         $qb->from(User::class, 'u');

@@ -59,7 +59,7 @@ class CattleFarmVisitDetailsRepository extends BaseRepository
         $qb->addSelect('employee.id empId','employee.userId', 'employee.name as employeeName', 'designation.name AS designationName');
         $qb->addSelect('agent.id AS agentId', 'agent.name AS agentName');
         $qb->addSelect('farmer.id AS farmerId', 'farmer.name AS farmerName', 'farmer.address AS farmerAddress', 'farmer.mobile AS farmerMobile');
-        $rolesString = implode($loggedUser->getRoles(), '_');
+        $rolesString = implode( '_', $loggedUser->getRoles());
 
         if (!str_contains($rolesString, 'ADMIN') && !in_array('ROLE_LINE_MANAGER', $loggedUser->getRoles())){
             $qb->andWhere('employee.id = :employeeId')->setParameter('employeeId', $loggedUser->getId());

@@ -200,7 +200,7 @@ class TilapiaFrySalesRepository extends BaseRepository
         $queryNourishSales->leftJoin('employee.designation', 'designation');
         $queryNourishSales->where('tfs.type = :type')->setParameter('type',TilapiaFrySales::TILAPIA_FRY_SALES_NOURISH);
 
-        $rolesString = implode($loggedUser->getRoles(), '_');
+        $rolesString = implode('_', $loggedUser->getRoles(),);
         if (!str_contains($rolesString, 'ADMIN') && !in_array('ROLE_LINE_MANAGER', $loggedUser->getRoles())){
             $queryNourishSales->andWhere('employee.id = :employeeId')->setParameter('employeeId', $loggedUser->getId());
         }
@@ -247,7 +247,7 @@ class TilapiaFrySalesRepository extends BaseRepository
         $queryCompetitorNourishAgent->leftJoin('employee.designation', 'designation');
         $queryCompetitorNourishAgent->where('tfs.type = :type')->setParameter('type',TilapiaFrySales::TILAPIA_FRY_SALES_OTHER);
 
-        $rolesString = implode($loggedUser->getRoles(), '_');
+        $rolesString = implode('_', $loggedUser->getRoles());
         if (!str_contains($rolesString, 'ADMIN') && !in_array('ROLE_LINE_MANAGER', $loggedUser->getRoles())){
             $queryCompetitorNourishAgent->andWhere('employee.id = :employeeId')->setParameter('employeeId', $loggedUser->getId());
         }
@@ -293,7 +293,7 @@ class TilapiaFrySalesRepository extends BaseRepository
         $queryCompetitorOtherAgent->where('tfs.type = :type')->setParameter('type',TilapiaFrySales::TILAPIA_FRY_SALES_OTHER);
         $queryCompetitorOtherAgent->andWhere('tfs.agent IS NULL');
 
-        $rolesString = implode($loggedUser->getRoles(), '_');
+        $rolesString = implode('_', $loggedUser->getRoles());
         if (!str_contains($rolesString, 'ADMIN') && !in_array('ROLE_LINE_MANAGER', $loggedUser->getRoles())){
             $queryCompetitorOtherAgent->andWhere('employee.id = :employeeId')->setParameter('employeeId', $loggedUser->getId());
         }

@@ -85,7 +85,7 @@ WHERE fcrDetails.quantity>0 and fcr.employee_id = :employee_id and fcr.feed_type
         $qb->addGroupBy('month');
         $qb->addGroupBy('year');
 
-        $rolesString = implode($loggedUser->getRoles(), '_');
+        $rolesString = implode('_', $loggedUser->getRoles());
 
         if (!str_contains($rolesString, 'ADMIN') && !in_array('ROLE_LINE_MANAGER', $loggedUser->getRoles())){
             $qb->andWhere('employee.id = :employeeId')->setParameter('employeeId', $loggedUser->getId());

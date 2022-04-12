@@ -129,7 +129,7 @@ class LabServiceRepository extends EntityRepository
         $qb->andWhere('e.createdAt >= :start')->setParameter('start', $start);
         $qb->andWhere('e.createdAt <= :end')->setParameter('end', $end);
 
-        $rolesString = implode($loggedUser->getRoles(), '_');
+        $rolesString = implode('_', $loggedUser->getRoles());
         if (!str_contains($rolesString, 'ADMIN') && !in_array('ROLE_LINE_MANAGER', $loggedUser->getRoles())){
             $qb->andWhere('employee.id = :employeeId')->setParameter('employeeId', $loggedUser->getId());
         }

@@ -99,7 +99,7 @@ class AgentUpgradationReportRepository extends BaseRepository
                 $query->andWhere('aur.reportingMonth <= :endDate')->setParameter('endDate', $endDate);
             }
 
-            $rolesString = implode($loggedUser->getRoles(), '_');
+            $rolesString = implode('_', $loggedUser->getRoles());
 
             if (!str_contains($rolesString, 'ADMIN') && !in_array('ROLE_LINE_MANAGER', $loggedUser->getRoles())){
                 $query->andWhere('employee.id = :employeeId')->setParameter('employeeId', $loggedUser->getId());

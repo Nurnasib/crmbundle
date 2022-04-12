@@ -47,7 +47,7 @@ class ExpenseRepository extends EntityRepository
         $qb->addSelect('purpose.id AS purposeId','purpose.name AS purposeName');
         $qb->addSelect('vehicle.id AS vehicleId','vehicle.name AS vehicleName');
 
-        $rolesString = implode($loggedUser->getRoles(), '_');
+        $rolesString = implode('_', $loggedUser->getRoles());
 
         if ($employeeId){
             $qb->andWhere('employee.id = :employeeId')->setParameter('employeeId', $employeeId);

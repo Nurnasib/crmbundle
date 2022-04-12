@@ -41,7 +41,7 @@ class ComplainDifferentProductDetailsRepository extends EntityRepository
         $qb->addSelect('parent.observation', 'parent.ageDays', 'parent.createdAt');
         $qb->addSelect('parameter.item AS parameterName');
 
-        $rolesString = implode($loggedUser->getRoles(), '_');
+        $rolesString = implode('_', $loggedUser->getRoles());
 
         $qb->where('parameter.type = :type')->setParameter('type', $type);
         if ($employeeId){

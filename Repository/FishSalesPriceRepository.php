@@ -64,7 +64,7 @@ class FishSalesPriceRepository extends BaseRepository
         $qb->select('e.id AS eId','e.price','e.year','e.monthName');
         $qb->addSelect('employee.id empId','employee.userId', 'employee.name as employeeName', 'designation.name AS designationName');
         $qb->addSelect('fishSize.id as fsId');
-        $rolesString = implode($loggedUser->getRoles(), '_');
+        $rolesString = implode('_', $loggedUser->getRoles());
 
         if (!str_contains($rolesString, 'ADMIN') && !in_array('ROLE_LINE_MANAGER', $loggedUser->getRoles())){
             $qb->andWhere('employee.id = :employeeId')->setParameter('employeeId', $loggedUser->getId());
