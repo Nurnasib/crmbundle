@@ -1109,8 +1109,18 @@ VALUES (:total_birds, :hatchery_date, :created, :updated, :customer_id, :employe
                  */
                 $findDetails = $this->getDoctrine()->getRepository(LayerLifeCycleDetails::class)->findOneBy(['crmLayerLifeCycle' => $lifeCycleId, 'ageWeek' => $report['age_week']]);
                 if ($findDetails){
-                    $findFeedMill = $this->getDoctrine()->getRepository(Setting::class)->find($report['feed_mill_id']);
-                    $findFeedType = $this->getDoctrine()->getRepository(Setting::class)->find($report['feed_type_id']);
+                    if ($report['feed_mill_id']){
+                        $findFeedMill = $this->getDoctrine()->getRepository(Setting::class)->find($report['feed_mill_id']);
+                    }else{
+                        $findFeedMill = null;
+                    }
+
+                    if ($report['feed_type_id']){
+                        $findFeedType = $this->getDoctrine()->getRepository(Setting::class)->find($report['feed_type_id']);
+                    }else{
+                        $findFeedType = null;
+                    }
+
                     $findDetails->setVisitingDate($visitingDate);
                     $findDetails->setAgeWeek($report['age_week']);
                     $findDetails->setDeadBird($report['dead_bird']);
