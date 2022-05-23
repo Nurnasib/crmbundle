@@ -89,8 +89,7 @@
     <li><a class="dropdown-item" href="{{ path('crm_customer') }}"><i
                     class="feather icon-users"></i>{{ 'Farmer'|trans }}</a></li>
 
-
-    {% if is_granted('ROLE_DEVELOPER') %}
+    {% if is_granted('ROLE_CRM_POULTRY_ADMIN') or is_granted('ROLE_CRM_CATTLE_ADMIN') or is_granted('ROLE_CRM_AQUA_ADMIN') or is_granted('ROLE_CRM_SALES_MARKETING_ADMIN') or is_granted('ROLE_DEVELOPER') %}
     <li><a class="" href="{{ path('crm_sync_app_data_index') }}"><i
                     class="feather icon-refresh-ccw"></i>{{ 'Process App Data'|trans }}</a>
         {% endif %}

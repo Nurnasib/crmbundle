@@ -46,7 +46,7 @@ use Terminalbd\CrmBundle\Entity\SettingLifeCycle;
  * Class SyncAppDataController
  * @package Terminalbd\CrmBundle\Controller
  * @Route("/crm/sync-app-data", name="crm_sync_app_data")
- * @Security("is_granted('ROLE_DEVELOPER')")
+ * @Security("is_granted('ROLE_CRM_POULTRY_ADMIN') or is_granted('ROLE_CRM_CATTLE_ADMIN') or is_granted('ROLE_CRM_AQUA_ADMIN') or is_granted('ROLE_CRM_SALES_MARKETING_ADMIN') or is_granted('ROLE_DEVELOPER')")
  */
 class SyncAppDataController extends AbstractController
 {
