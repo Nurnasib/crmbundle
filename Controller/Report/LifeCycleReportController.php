@@ -64,12 +64,12 @@ class LifeCycleReportController extends AbstractController
                     break;
                 case 'dairy-life-cycle':
                 case 'fattening-life-cycle':
-                $entities = $this->getDoctrine()->getRepository(CattleLifeCycleDetails::class)->getCattleLifeCycleDetails($lifeCycleSlug,$filterBy);
+                    $entities = $this->getDoctrine()->getRepository(CattleLifeCycleDetails::class)->getCattleLifeCycleDetails($lifeCycleSlug,$filterBy);
 
                 break;
                 case 'fish-life-cycle-report':
                 case 'fish-life-cycle-after-sale-report':
-                $entities = $this->getDoctrine()->getRepository(FishLifeCycleDetails::class)->getFishLifeCycleDetails($lifeCycleSlug,$filterBy);
+                    $entities = $this->getDoctrine()->getRepository(FishLifeCycleDetails::class)->getFishLifeCycleDetails($lifeCycleSlug,$filterBy);
                 break;
                 default:
                     $entities = [];

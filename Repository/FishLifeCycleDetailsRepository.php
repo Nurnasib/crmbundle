@@ -131,6 +131,7 @@ class FishLifeCycleDetailsRepository extends EntityRepository
 
             $data[$month][] = $result['details'];
         }
+
         return $data;
 
 

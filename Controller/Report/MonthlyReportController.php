@@ -106,15 +106,12 @@ class MonthlyReportController extends AbstractController
 
                 case 'fattening-performance-report':
                 case 'dairy-performance-report':
-
-                $entities = $this->getDoctrine()->getRepository(CattlePerformanceDetails::class)->getPerformanceReport($report, $filterBy, $this->getUser());
+                    $entities = $this->getDoctrine()->getRepository(CattlePerformanceDetails::class)->getPerformanceReport($report, $filterBy, $this->getUser());
 
                     break;
 
                 case 'cattle-farm-visit-report':
-
-                $entities = $this->getDoctrine()->getRepository(CattleFarmVisitDetails::class)->getCattleFarmVisitReport($report, $filterBy, $this->getUser());
-
+                    $entities = $this->getDoctrine()->getRepository(CattleFarmVisitDetails::class)->getCattleFarmVisitReport($report, $filterBy, $this->getUser());
                     break;
 
                 default:

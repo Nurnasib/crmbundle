@@ -58,7 +58,7 @@ class DiseaseMappingRepository extends EntityRepository
         $returnArray=[];
         if(!empty($report)){
             $qb = $this->createQueryBuilder('e');
-            $qb->select('e.id eId', 'e.visitingDate', 'e.flockSizeOrCapacity', 'e.ageDays', 'e.remarks');
+            $qb->select('e.id eId', 'e.visitingDate', 'e.flockSizeOrCapacity', 'e.ageDays', 'e.remarks', 'e.ageUnitType');
 
             $qb->addSelect('agent.name AS agentName', 'agent.address AS agentAddress', 'agent.mobile AS agentMobile');
 

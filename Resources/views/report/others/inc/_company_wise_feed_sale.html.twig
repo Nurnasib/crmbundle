@@ -105,7 +105,7 @@
             </tr>
         {% endfor %}
         <tr>
-            <th style="text-align: center">Total</th>
+            <th style="text-align: center" colspan="2">Total</th>
 
 
             {% if species is defined %}
@@ -123,7 +123,7 @@
                     {% endif %}
                 {% endfor %}
             {% endif %}
-            <th align="right" style="text-align: right">{{ fullTotal }}</th>
+{#            <th align="right" style="text-align: right">{{ fullTotal }}</th>#}
             <th align="right" style="text-align: right">{{ totalPercentage }}</th>
 
         </tr>

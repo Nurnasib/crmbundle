@@ -108,7 +108,6 @@ class CattlePerformanceRepository extends EntityRepository
             ksort($data);
             ksort($data[$year][$result['userId']]['data']);
         }
-
         return $data;
     }
 

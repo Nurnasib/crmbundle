@@ -67,6 +67,7 @@ WHERE fcrDetails.quantity>0 and fcr.employee_id = :employee_id and fcr.feed_type
         $qb->join('e.speciesName', 'species_name');
 
         $qb->select('AVG(e.quantity) AS avgQuantity','e.quantity');
+        $qb->addSelect('parent.createdAt');
         $qb->addSelect('employee.userId', 'employee.name');
         $qb->addSelect( 'designation.name AS designationName');
         $qb->addSelect('species_name.id AS speciesId', 'species_name.name AS speciesName');

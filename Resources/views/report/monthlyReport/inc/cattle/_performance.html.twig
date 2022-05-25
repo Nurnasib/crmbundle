@@ -1,7 +1,6 @@
 {% for year, entity in entities %}
     {% for employeeId, details in entity %}
         {% for month, data in details['data'] %}
-{#            {{ dump(month, data) }}#}
             <table width="100%">
                 <tr>
                     <th colspan="15"><h3 class="text-center">NOURISH POULTRY AND HATCHERY LTD</h3></th>
@@ -28,14 +27,17 @@
                 <thead class="thead-dark">
                 <tr>
                     <th rowspan="2">S/L</th>
+                    <th rowspan="2">Created At</th>
                     <th rowspan="2">Name of Agent</th>
                     <th colspan="3" style="text-align: center">Farmer</th>
                     <th rowspan="2">Breed Type</th>
                     <th rowspan="2">Age of Cattle(Month)</th>
                     <th rowspan="2">Previous Body Weight(Kg)</th>
+                    <th rowspan="2">Present Body Weight(Kg)</th>
                     <th rowspan="2">Body Weight Difference(Kg)</th>
                     <th rowspan="2">Duration of Bwt Difference(Days)</th>
                     <th rowspan="2">Avg. Weight Gain Per Day(Kg)</th>
+                    <th rowspan="2">Avg. Weight Gain Per Consumption Feed(KG)</th>
                     <th rowspan="2">Avg. Weight Gain Per Kg DM(Kg)</th>
                     <th colspan="3">Con. Feed Intake (Kg)</th>
                     <th colspan="2">Fodder (Kg)</th>
@@ -63,6 +65,7 @@
                 {% for item in data %}
                     <tr>
                         <td>{{ loop.index }}</td>
+                        <td>{{ item.createdAt|date('d-m-Y') }}</td>
                         <td>{{ item.agentName }}</td>
                         <td>{{ item.farmerName }}</td>
                         <td>{{ item.farmerAddress }}</td>
@@ -70,9 +73,11 @@
                         <td>{{ item.breedTypeName }}</td>
                         <td>{{ item.ageOfCattleMonth|number_format(2) }}</td>
                         <td>{{ item.previousBodyWeight|number_format(2) }}</td>
+                        <td>{{ item.presentBodyWeight|number_format(2) }}</td>
                         <td>{{ item.bodyWeightDifference|number_format(2) }}</td>
                         <td>{{ item.durationOfBwtDifference|number_format(2) }}</td>
                         <td>{{ item.averageWeightPerDay|number_format(2) }}</td>
+                        <td>{{ item.averageWeightPerKgConsumptionFeed|number_format(2) }}</td>
                         <td>{{ item.averageWeightPerKgDm|number_format(2) }}</td>
                         <td>{{ item.consumptionFeedIntakeReadyFeed|number_format(2) }}</td>
                         <td>{{ item.consumptionFeedIntakeConventional|number_format(2) }}</td>

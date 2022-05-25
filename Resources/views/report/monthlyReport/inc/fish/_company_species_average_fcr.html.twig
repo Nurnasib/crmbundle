@@ -31,6 +31,7 @@
                 <thead class="thead-dark">
                 <tr>
                     <th scope="col">S/L</th>
+                    <th scope="col">Created At</th>
                     <th scope="col">Company Name</th>
                     <th scope="col">Feed Type</th>
                     {% if species and species['Floating'] is defined %}
@@ -51,6 +52,29 @@
                 {% for company, value in item['data'] %}
                     <tr>
                         <td>{{ loop.index }}</td>
+                        {% if value['Floating'] is defined %}
+                            {% if species and species['Floating'] is defined %}
+                                {% for item in species['Floating'] %}
+                                    {% if loop.first %}
+                                        <td>
+                                            {{ value['Floating'][item.id] is defined ? value['Floating'][item.id].createdAt|date('d-m-Y') : '' }}
+                                        </td>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+
+                        {% elseif value['Sinking'] is defined %}
+                            {% if species and species['Sinking'] is defined %}
+                                {% for item in species['Sinking'] %}
+                                    {% if loop.first %}
+                                        <td>
+                                            {{ value['Sinking'][item.id] is defined ? value['Sinking'][item.id].createdAt|date('d-m-Y') : '' }}
+                                        </td>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        {% endif %}
+
                         <td>{{ company }}</td>
                         <td>Floating</td>
 

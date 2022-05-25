@@ -51,7 +51,7 @@
                         <td>{{ detail['feedName']|default('') }}</td>
                         <td>{{ detail['feedTypeName']|default('') }}</td>
                         <td>{{ detail['flockSizeOrCapacity']|default('') }}</td>
-                        <td>{{ detail['ageDays']|default('') }}</td>
+                        <td>{{ detail['ageDays']|default('') ~ ' ' ~ detail['ageUnitType'] }}</td>
                         <td>{{ detail['diseaseName']|default('') }}</td>
 {#                        <td>{{ detail['remarks']|default('') }}</td>#}
                     </tr>

@@ -257,9 +257,13 @@ class CrmCustomerController extends AbstractController
      */
     public function delete($id): Response
     {
-        $entity = $this->getDoctrine()->getRepository(CrmCustomer::class)->find($id);
+        $customer = $this->getDoctrine()->getRepository(CrmCustomer::class)->find($id);
+        $visit = $this->getDoctrine()->getRepository(CrmVisitDetails::class)->findOneBy(['crmCustomer' => $customer]);
+        if ($visit){
+            return new Response('failed');
+        }
         $em = $this->getDoctrine()->getManager();
-        $em->remove($entity);
+        $em->remove($customer);
         $em->flush();
         $this->addFlash('success', 'post.deleted_successfully');
         return new Response('Success');
