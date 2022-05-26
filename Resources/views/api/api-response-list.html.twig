@@ -44,8 +44,10 @@
                         <tbody>
                         {% if records is defined and records is not empty %}
                             {% for record in records %}
+                                {% set count = loop.index + (records.itemNumberPerPage * records.currentPageNumber) - records.itemNumberPerPage %}
                                 <tr>
-                                    <td>{{ loop.index }}</td>
+{#                                    <td>{{ loop.index }}</td>#}
+                                    <td>{{ count }}</td>
                                     <td>{{ record.employee ? record.employee.userId : '' }}</td>
                                     <td>{{ record.employee.name|default('') }}</td>
                                     <td>{{ record.batchNo|default('') }}</td>
