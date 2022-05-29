@@ -121,6 +121,18 @@ class DiseaseMappingFormType extends AbstractType
                         ->orderBy('e.name', 'ASC');
                 },
             ))
+            ->add('breed', EntityType::class, array(
+                'required'    => false,
+                'class' => Setting::class,
+                'placeholder' => 'Choose Breed',
+                'choice_label' => 'name',
+                'attr'=>array('class'=>'span12 m-wrap feed'),
+                'query_builder' => function(EntityRepository $er){
+                    return $er->createQueryBuilder('e')
+                        ->where("e.settingType ='BREED_TYPE'")
+                        ->orderBy('e.name', 'ASC');
+                },
+            ))
             ->add('flockSizeOrCapacity', NumberType::class, [
                 'attr' => ['min'=>0,'autofocus' => true],
                 'label' => 'label.flockSizeOrCapacity',

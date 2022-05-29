@@ -273,10 +273,7 @@ class DiseaseMapping
         $this->disease = $disease;
     }
 
-    /**
-     * @return \Terminalbd\CrmBundle\Entity\Setting
-     */
-    public function getBreed(): \Terminalbd\CrmBundle\Entity\Setting
+    public function getBreed()
     {
         return $this->breed;
     }

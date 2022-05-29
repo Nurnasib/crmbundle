@@ -26,6 +26,7 @@
                             <th style="width: 150px">{{ 'Hatchery'|trans }}</th>
                             {% endif %}
                             <th style="width: 150px">{{ 'Feed'|trans }}</th>
+                            <th style="width: 150px">{{ 'Breed'|trans }}</th>
                             <th style="width: 150px">{{ 'Type of Species'|trans }}</th>
                             <th>{{ 'Capacity'|trans }}</th>
                             <th>{{ 'Age'|trans }}</th>
@@ -45,6 +46,7 @@
                             <td>{{ form_widget(form.hatchery) }}</td>
                             {% endif %}
                             <td>{{ form_widget(form.feed) }}</td>
+                            <td>{{ form_widget(form.breed) }}</td>
                             <td>{{ form_widget(form.farmType) }}</td>
                             <td>{{ form_widget(form.flockSizeOrCapacity,{'type':'number'}) }}</td>
                             <td>{{ form_widget(form.ageDays,{'type':'number'}) }}</td>
