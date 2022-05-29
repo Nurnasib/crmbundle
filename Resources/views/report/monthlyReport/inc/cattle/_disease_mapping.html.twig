@@ -32,6 +32,7 @@
                     <th>{{ 'Mobile No.'|trans }}</th>
 {#                    <th>{{ 'Hatchery'|trans }}</th>#}
                     <th>{{ 'Feed'|trans }}</th>
+                    <th>{{ 'Breed'|trans }}</th>
                     <th>{{ 'Type'|trans }}</th>
                     <th>{{ 'Farm Capacity'|trans }}</th>
                     <th>{{ 'Age'|trans }}</th>
@@ -49,6 +50,7 @@
                         <td>{{ detail['customerMobile']|default('') }}</td>
 {#                        <td>{{ detail['hatcheryName']|default('') }}</td>#}
                         <td>{{ detail['feedName']|default('') }}</td>
+                        <td>{{ detail['breedName']|default('') }}</td>
                         <td>{{ detail['feedTypeName']|default('') }}</td>
                         <td>{{ detail['flockSizeOrCapacity']|default('') }}</td>
                         <td>{{ detail['ageDays']|default('') ~ ' ' ~ detail['ageUnitType'] }}</td>

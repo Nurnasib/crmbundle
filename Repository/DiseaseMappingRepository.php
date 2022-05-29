@@ -61,6 +61,7 @@ class DiseaseMappingRepository extends EntityRepository
             $qb->select('e.id eId', 'e.visitingDate', 'e.flockSizeOrCapacity', 'e.ageDays', 'e.remarks', 'e.ageUnitType');
 
             $qb->addSelect('agent.name AS agentName', 'agent.address AS agentAddress', 'agent.mobile AS agentMobile');
+            $qb->addSelect('breed.id AS breedId', 'breed.name AS breedName');
 
             $qb->addSelect('employee.id AS employeeId', 'employee.name AS employeeName');
             $qb->addSelect('designation.name AS employeeDesignationName');
@@ -82,6 +83,7 @@ class DiseaseMappingRepository extends EntityRepository
             $qb->leftJoin('e.feed', 'feed');
             $qb->leftJoin('e.farmType', 'farmType');
             $qb->leftJoin('e.disease', 'disease');
+            $qb->leftJoin('e.breed', 'breed');
             $qb->where('e.report =:report')->setParameter('report',$report);
 
             $startDate = isset($filterBy['startDate'])&&$filterBy['startDate']!=''? (new \DateTime($filterBy['startDate']))->format('Y-m-d') . ' 00:00:00': '';

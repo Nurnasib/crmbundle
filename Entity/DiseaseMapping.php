@@ -81,6 +81,13 @@ class DiseaseMapping
     private $disease;
 
     /**
+     * @var Setting
+     * @ORM\ManyToOne(targetEntity="Terminalbd\CrmBundle\Entity\Setting")
+     * @ORM\JoinColumn(referencedColumnName="id", onDelete="SET NULL", nullable=true)
+     */
+    private $breed;
+
+    /**
      * @var \DateTime
      * @ORM\Column(type="date", nullable=true)
      */
@@ -120,6 +127,7 @@ class DiseaseMapping
      * @ORM\Column(name="created_at", type="datetime")
      */
     private $createdAt;
+    
 
     /**
      * @return int
@@ -264,6 +272,24 @@ class DiseaseMapping
     {
         $this->disease = $disease;
     }
+
+    /**
+     * @return \Terminalbd\CrmBundle\Entity\Setting
+     */
+    public function getBreed(): \Terminalbd\CrmBundle\Entity\Setting
+    {
+        return $this->breed;
+    }
+
+    /**
+     * @param \Terminalbd\CrmBundle\Entity\Setting $breed
+     */
+    public function setBreed(\Terminalbd\CrmBundle\Entity\Setting $breed): void
+    {
+        $this->breed = $breed;
+    }
+    
+    
 
     /**
      * @return \DateTime

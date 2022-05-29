@@ -718,7 +718,7 @@ VALUES (:report_id, :report_parent_parent_id, :agent_id, :customer_id, :employee
     private function processDiseaseMapping($reports, Api $batch)
     {
         foreach ($reports as $report) {
-            $sql = "INSERT INTO `crm_disease_mapping`(`report_id`, `agent_id`, `customer_id`, `employee_id`, `hatchery_id`, `farm_type_id`, `feed_id`, `disease_id`, `visiting_date`, `flock_size_or_capacity`, `age_days`, `age_unit_type`, `remarks`, `created_at`) VALUES (:report_id, :agent_id, :customer_id, :employee_id, :hatchery_id, :farm_type_id, :feed_id, :disease_id, :visiting_date, :flock_size_or_capacity, :age_days, :age_unit_type, :remarks, :created_at)";
+            $sql = "INSERT INTO `crm_disease_mapping`(`report_id`, `agent_id`, `customer_id`, `employee_id`, `hatchery_id`, `farm_type_id`, `feed_id`, `disease_id`, `visiting_date`, `flock_size_or_capacity`, `age_days`, `age_unit_type`, `remarks`, `created_at`, `breed_id`) VALUES (:report_id, :agent_id, :customer_id, :employee_id, :hatchery_id, :farm_type_id, :feed_id, :disease_id, :visiting_date, :flock_size_or_capacity, :age_days, :age_unit_type, :remarks, :created_at, :breed_id)";
 
             $visitingDate = new \DateTime($report['visiting_date']);
             $createdAt = new \DateTime($report['created_at']);
@@ -742,6 +742,7 @@ VALUES (:report_id, :report_parent_parent_id, :agent_id, :customer_id, :employee
             $stmt->bindValue('age_unit_type', $report['age_unit_type']);
             $stmt->bindValue('remarks', $report['remarks']);
             $stmt->bindValue('created_at', $createdAt->format('Y-m-d H:i:s'));
+            $stmt->bindValue('breed_id', $report['breed_id']);
 
             $stmt->execute();
         }
