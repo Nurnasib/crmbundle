@@ -45,6 +45,7 @@
                         <th style="min-width: 200px">
                             {{ form_label(form.employeeWiseFarmer, 'Farmer:') }}
                             {{ form_widget(form.employeeWiseFarmer) }}
+                            <input type="hidden" class="selected_farmer_id" value="{{ filterBy['farmerId'] is defined?filterBy['farmerId']:'' }}">
                         </th>
                         <th>
                             {{ form_label(form.startDate, 'Start Date:') }}
@@ -121,7 +122,7 @@
                 {% include '@TerminalbdCrm/report/lifeCycle/inc/_fish_before.html.twig'%}
 
             {% elseif lifeCycleSlug is same as 'fish-life-cycle-after-sale-report' %}
-
+                {% include '@TerminalbdCrm/report/lifeCycle/inc/_fish_after.html.twig'%}
             {% endif %}
 
         {% endif %}
@@ -152,20 +153,32 @@
     <script>
         $("#search_filter_form_employee").on('change', function () {
             var employeeId = $(this).val();
+            if(employeeId==''){
+                return false;
+            }
             $.ajax({
                 url: Routing.generate('get_farmer_by_employee_location',{'id':employeeId}),
                 type: 'post',
                 dataType: 'json',
                 success: function (res) {
                     console.log(res)
+                    var selected_farmer_id= $('.selected_farmer_id').val();
                     $("#search_filter_form_employeeWiseFarmer").find('option').remove();
-                    $("#search_filter_form_employeeWiseFarmer").append($('<option>', {value:'', text:'Select Farmer'}));
+                    var dataOption='<option value="">Select Farmer</option>';
+                    // $("#search_filter_form_employeeWiseFarmer").append($('<option>', {value:'', text:'Select Farmer'}));
                     $.each(res, function (id, name) {
-                        $("#search_filter_form_employeeWiseFarmer").append($('<option>', {value:id, text:name}))
+                        if(selected_farmer_id==id){
+                            var selected= 'selected="selected"'
+                        }else{
+                            var selected='';
+                        }
+                        dataOption += '<option value="'+id+'" '+selected+'>'+name+'</option>';
+
                     })
+                    $("#search_filter_form_employeeWiseFarmer").append($(dataOption))
                 }
             })
-        })
+        }).change();
 
         $('.datepicker').datepicker(
             {

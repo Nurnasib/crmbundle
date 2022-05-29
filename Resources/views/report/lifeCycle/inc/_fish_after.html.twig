@@ -10,7 +10,7 @@
             <td colspan="26" align="center"><h5>UTTARA, DHAKA.</h5></td>
         </tr>
         <tr>
-            <td colspan="26" align="center"><h6>{{ lifeCycleSlug=='fish-life-cycle-report'?'Fish Life Cycle (Culture) Report':'' }}</h6></td>
+            <td colspan="26" align="center"><h6>{{ lifeCycleSlug=='fish-life-cycle-after-sale-report'?'Fish Life Cycle (Harvest) Report':'' }}</h6></td>
         </tr>
         </tbody>
     </table>
@@ -32,31 +32,34 @@
                 <thead class="thead-dark">
                 <tr>
                     <th scope="col" colspan="2" style="text-align: center">Farmer</th>
-                    <th scope="col" rowspan="2">Feed Used Type</th>
-                    <th scope="col" rowspan="2">Feed Item Name</th>
+                    <th scope="col" rowspan="2">Feed Used</th>
+                    <th scope="col" rowspan="2">Species</th>
+{#                    <th scope="col" rowspan="2">Feed Item Name</th>#}
                     <th scope="col" rowspan="2">Feed Company</th>
-                    <th scope="col" rowspan="2">Main Culture Species</th>
-                    <th scope="col" rowspan="2">Culture area (m2) or decimal</th>
                     <th scope="col" rowspan="2">Hatchery Name</th>
                     <th scope="col" rowspan="2">Stocking date</th>
+                    <th scope="col" rowspan="2">Harvest date</th>
+                    <th scope="col" rowspan="2">Culture area (m2)</th>
                     <th scope="col" rowspan="2">No.of initial fish (pcs.)</th>
+                    <th scope="col" rowspan="2">Total initial weight (kg)</th>
                     <th scope="col" rowspan="2">Average initial weight (g)</th>
-                    <th scope="col" rowspan="2">Previous Sampling date</th>
-                    <th scope="col" rowspan="2">Present Sampling date</th>
-                    <th scope="col" rowspan="2">Culture days (During sampling)</th>
-                    <th scope="col" rowspan="2">Weight gain (g)</th>
-                    <th scope="col" rowspan="2">Weight gain (kg)</th>
-                    <th scope="col" rowspan="2">Current feed consumption (kg)</th>
-                    <th scope="col" rowspan="2">Current FCR</th>
-                    <th scope="col" rowspan="2">Current ADG (g/fish/day)</th>
-                    <th scope="col" rowspan="2">No.of Final fish (pcs.)</th>
-                    <th scope="col" rowspan="2">Final weight (g)</th>
-                    <th scope="col" rowspan="2">Final weight (kg)</th>
-                    <th scope="col" rowspan="2">Total DOC (Day Of Culture)</th>
+                    <th scope="col" rowspan="2">No.of final fish (pcs.)</th>
+                    <th scope="col" rowspan="2">No. of final (kg)</th>
+                    <th scope="col" rowspan="2">Average final weight (g)</th>
                     <th scope="col" rowspan="2">Total feed consumption (kg)</th>
-                    <th scope="col" rowspan="2">Final FCR</th>
-                    <th scope="col" rowspan="2">Final ADG (g/fish/day)</th>
+                    <th scope="col" rowspan="2">DOC</th>
+                    <th scope="col" rowspan="2">ADG (g/fish/day)</th>
+                    <th scope="col" rowspan="2">FCR</th>
                     <th scope="col" rowspan="2">SR(%)</th>
+                    <th scope="col" rowspan="2">Total seed cost (Taka)</th>
+                    <th scope="col" rowspan="2">Total feed cost (tk.)</th>
+                    <th scope="col" rowspan="2">Feed Cost/kg fish (tk.)</th>
+                    <th scope="col" rowspan="2">Total Others Cost (tk.)</th>
+                    <th scope="col" rowspan="2">Total Cost  (tk.)</th>
+                    <th scope="col" rowspan="2">Production Cost/Kg fish (tk.)</th>
+                    <th scope="col" rowspan="2">Total income  (tk.)</th>
+                    <th scope="col" rowspan="2">Profit/ Loss (tk.)</th>
+                    <th scope="col" rowspan="2">ROI (Retune Over Investment) %</th>
                     <th scope="col" rowspan="2">Farmer Comments</th>
                     <th scope="col" rowspan="2">Visitor's Comments</th>
                 </tr>
@@ -72,30 +75,33 @@
                         <td>{{ details.customer.name }}</td>
                         <td>{{ details.customer.mobile }}</td>
                         <td>{{ details.feedType }}</td>
-                        <td>{{ details.feedItemName }}</td>
-                        <td>{{ details.feed.name|default('') }}</td>
+{#                        <td>{{ details.feedItemName }}</td>#}
                         <td>{{ details.mainCultureSpecies }}</td>
-                        <td>{{ details.cultureAreaDecimal|number_format(2) }}</td>
+                        <td>{{ details.feed.name|default('') }}</td>
                         <td>{{ details.hatchery.name|default('') }}</td>
                         <td>{{ details.stockingDate ? details.stockingDate|date('d-m-Y') : '' }}</td>
+                        <td>{{ details.harvestDate ? details.harvestDate|date('d-m-Y') : '' }}</td>
+                        <td>{{ details.cultureAreaDecimal|number_format(2) }}</td>
                         <td>{{ details.noOfInitialFish|number_format(2) }}</td>
+                        <td>{{ details.totalInitialWeight|number_format(2) }}</td>
                         <td>{{ details.averageInitialWeight|number_format(2) }}</td>
-                        <td>{{ details.previousSamplingDate ? details.previousSamplingDate|date('d-m-Y') : '' }}</td>
-                        <td>{{ details.presentSamplingDate ? details.presentSamplingDate|date('d-m-Y') : '' }}</td>
-                        <td>{{ details.currentCultureDays|number_format(2) }}</td>
-                        <td>{{ details.weightGainGm|number_format(2) }}</td>
-                        <td>{{ details.weightGainKg|number_format(2) }}</td>
-                        <td>{{ details.currentFeedConsumptionKg|number_format(2) }}</td>
-                        <td>{{ details.currentFcr|number_format(2) }}</td>
-                        <td>{{ details.currentAdg|number_format(2) }}</td>
                         <td>{{ details.noOfFinalFish|number_format(2) }}</td>
-                        <td>{{ details.finalWeightGm|number_format(2) }}</td>
                         <td>{{ details.finalWeightKg|number_format(2) }}</td>
-                        <td>{{ details.totalDayOfCulture|number_format(2) }}</td>
+                        <td>{{ details.finalWeightGm|number_format(2) }}</td>
                         <td>{{ details.totalFeedConsumptionKg|number_format(2) }}</td>
-                        <td>{{ details.finalFcr|number_format(2) }}</td>
+                        <td>{{ details.totalDayOfCulture|number_format(2) }}</td>
                         <td>{{ details.finalAdg|number_format(2) }}</td>
+                        <td>{{ details.finalFcr|number_format(2) }}</td>
                         <td>{{ details.srPercentage|number_format(2) }}</td>
+                        <td>{{ details.totalSeedCost|number_format(2) }}</td>
+                        <td>{{ details.totalFeedCost|number_format(2) }}</td>
+                        <td>{{ details.feedCostPerKgFish|number_format(2) }}</td>
+                        <td>{{ details.totalOtherCost|number_format(2) }}</td>
+                        <td>{{ details.totalCost|number_format(2) }}</td>
+                        <td>{{ details.productionCostPerKgFish|number_format(2) }}</td>
+                        <td>{{ details.totalIncome|number_format(2) }}</td>
+                        <td>{{ details.netProfitOrLoss|number_format(2) }}</td>
+                        <td>{{ details.retuneOverInvestment|number_format(2) }}</td>
                         <td>{{ details.farmerRemarks }}</td>
                         <td>{{ details.employeeRemarks }}</td>
                     </tr>

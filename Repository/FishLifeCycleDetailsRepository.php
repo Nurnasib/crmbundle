@@ -12,6 +12,7 @@
 namespace Terminalbd\CrmBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
+use Terminalbd\CrmBundle\Entity\FishLifeCycleDetails;
 
 /**
  * This custom Doctrine repository contains some methods which are useful when
@@ -89,23 +90,23 @@ class FishLifeCycleDetailsRepository extends EntityRepository
 
         $qb = $this->createQueryBuilder('e');
         $qb->join('e.fishLifeCycle', 'fish_life_cycle');
-        $qb->leftJoin('e.fishLifeCycleDetailSpecies', 'fish_life_cycle_detail_species');
+//        $qb->leftJoin('e.fishLifeCycleDetailSpecies', 'fish_life_cycle_detail_species');
         $qb->leftJoin('e.feed', 'feed');
         $qb->leftJoin('e.hatchery', 'hatchery');
-        $qb->leftJoin('fish_life_cycle_detail_species.feedType', 'feed_type');
-        $qb->leftJoin('fish_life_cycle_detail_species.mainCultureSpecies', 'main_culture_species');
+//        $qb->leftJoin('fish_life_cycle_detail_species.feedType', 'feed_type');
+//        $qb->leftJoin('fish_life_cycle_detail_species.mainCultureSpecies', 'main_culture_species');
         $qb->join('fish_life_cycle.employee', 'employee');
         $qb->join('fish_life_cycle.report', 'report');
         $qb->join('fish_life_cycle.customer', 'customer');
 
-        $qb->select('e AS details');
+        /*$qb->select('e AS details');
         $qb->addSelect('customer.id AS customerId', 'customer.name AS customerName', 'customer.address AS customerAddress', 'customer.mobile AS customerMobile');
         $qb->addSelect('report.name AS reportName');
         $qb->addSelect('fish_life_cycle.reportingMonth','fish_life_cycle.id AS lifeCycleId');
         $qb->addSelect('feed_type.name AS feedTypeName');
         $qb->addSelect('feed.name AS feedCompanyName');
         $qb->addSelect('main_culture_species.name AS speciesName');
-        $qb->addSelect('hatchery.name AS hatcheryName');
+        $qb->addSelect('hatchery.name AS hatcheryName');*/
 
 
         $qb->where('employee.id = :employeeId')->setParameter('employeeId', $filterBy['employeeId']);
@@ -114,22 +115,23 @@ class FishLifeCycleDetailsRepository extends EntityRepository
         $qb->andWhere('report.slug = :reportSlug')->setParameter('reportSlug', $lifeCycleSlug);
 
 
-        $results = $qb->getQuery()->getArrayResult();
+        $results = $qb->getQuery()->getResult();
 
         $data = [];
 
+        /* @var FishLifeCycleDetails $result*/
         foreach ($results as $result) {
-            $month = $result['reportingMonth']->format('m-F-Y');
+            $month = $result->getFishLifeCycle()->getReportingMonth()->format('m-F-Y');
 
-            $result['details']['feedTypeName'] = $result['feedTypeName'];
+            /*$result['details']['feedTypeName'] = $result['feedTypeName'];
             $result['details']['feedCompanyName'] = $result['feedCompanyName'];
             $result['details']['customerName'] = $result['customerName'];
             $result['details']['customerAddress'] = $result['customerAddress'];
             $result['details']['customerMobile'] = $result['customerMobile'];
             $result['details']['speciesName'] = $result['speciesName'];
-            $result['details']['hatcheryName'] = $result['hatcheryName'];
+            $result['details']['hatcheryName'] = $result['hatcheryName'];*/
 
-            $data[$month][] = $result['details'];
+            $data[$month][] = $result;
         }
 
         return $data;

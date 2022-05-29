@@ -85,7 +85,7 @@ class FishLifeCycleDetails
 
     /**
      * @var string
-     *
+     *noOfFinal
      * @ORM\Column(name="culture_area_decimal", type="string", nullable=true)
      */
 
