@@ -68,7 +68,7 @@ class ApiController extends AbstractController
 
                     $otp = (string)mt_rand(1000, 9999);
                     $message = 'Your OTP is ' . $otp . '.';
-                    $smsResponse = $smsSender->sendSmsToAgent($message, $userMobile);
+                    $smsResponse = $smsSender->sendSms($message, $userMobile);
 
 //                $smsResponse = json_decode($smsResponse, true);
 
