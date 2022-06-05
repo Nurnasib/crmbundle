@@ -93,4 +93,8 @@
     <li><a class="" href="{{ path('crm_sync_app_data_index') }}"><i
                     class="feather icon-refresh-ccw"></i>{{ 'Process App Data'|trans }}</a>
         {% endif %}
+
+    {% if is_granted('ROLE_CRM_POULTRY_ADMIN') or is_granted('ROLE_CRM_CATTLE_ADMIN') or is_granted('ROLE_CRM_AQUA_ADMIN') or is_granted('ROLE_DEVELOPER') %}
+    <li><a class="" href="{{ path('training_material_list') }}"><i class="fas fa-gift"></i>{{ 'Training Materials'|trans }}</a>
+        {% endif %}
 </ul>
