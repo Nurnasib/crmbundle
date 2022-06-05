@@ -30,6 +30,7 @@
                 <th scope="col" rowspan="2" class="text-center">Name of Agent</th>
                 <th scope="col" rowspan="2" class="text-center">Address</th>
                 <th scope="col" rowspan="2" class="text-center">Mobile No.</th>
+                <th scope="col" rowspan="2" class="text-center">Breed Name</th>
 
                 <th scope="col" colspan="2" class="text-center">Agent Status</th>
                 <th scope="col" colspan="2" class="text-center">Previous Category</th>
@@ -71,6 +72,7 @@
                         <td>{{ detail.agent.name|default('') ~ ' (' ~detail.agent.agentGroup.name ~ ')' }}</td>
                         <td>{{ detail.agent.address|default('') }}</td>
                         <td>{{ detail.agent.mobile|default('') }}</td>
+                        <td>{{ detail.breedName.name|default('') }}</td>
                         <td>{{ detail.agentStatus=='NEW'?detail.agentStatus|default(''):'' }}</td>
                         <td>{{ detail.agentStatus=='UPGRADE'?detail.agentStatus|default(''):'' }}</td>
                         <td>{{ detail.previousSaleTon?detail.previousSaleTon|number_format(2,'.',''):'0' }}</td>

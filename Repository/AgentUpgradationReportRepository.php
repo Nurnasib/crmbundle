@@ -79,7 +79,7 @@ class AgentUpgradationReportRepository extends BaseRepository
         return array();
     }
 
-    public function getAgentUpgradationReport($filterBy, User $loggedUser)
+    public function getAgentUpgradationReport($breedNameSlug, $filterBy, User $loggedUser)
     {
 //            $startDate = isset($filterBy['startDate']) ? (new \DateTime($filterBy['startDate']))->format('Y-m-d') . ' 00:00:00' : null;
 //            $endDate = isset($filterBy['endDate']) ? (new \DateTime($filterBy['endDate']))->format('Y-m-d') . ' 23:59:59' : null;
@@ -91,8 +91,11 @@ class AgentUpgradationReportRepository extends BaseRepository
             $query->join('aur.agent','agent');
             $query->leftJoin('agent.agentGroup','agentGroup');
             $query->join('aur.employee','employee');
+            $query->join('aur.breedName','breedName');
 //            $query->where('aur.createdAt IS NOT NULL');
             $query->where('aur.reportingMonth IS NOT NULL');
+            $query->andWhere('breedName.slug =:slug')->setParameter('slug', $breedNameSlug);
+            $query->andWhere('breedName.settingType =:settingType')->setParameter('settingType', 'BREED_NAME');
 
             if($startDate && $endDate){
                 $query->andWhere('aur.reportingMonth >= :startDate')->setParameter('startDate',$startDate);

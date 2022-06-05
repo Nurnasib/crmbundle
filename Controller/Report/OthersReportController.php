@@ -172,8 +172,11 @@ class OthersReportController extends AbstractController
                     break;
 
                 case 'new-agent-upgradation-cattle':
+                    $entities = $this->getDoctrine()->getRepository(AgentUpgradationReport::class)->getAgentUpgradationReport('cattle-breed',$filterBy, $this->getUser());
+                    break;
+
                 case 'new-agent-upgradation-fish':
-                    $entities = $this->getDoctrine()->getRepository(AgentUpgradationReport::class)->getAgentUpgradationReport($filterBy, $this->getUser());
+                    $entities = $this->getDoctrine()->getRepository(AgentUpgradationReport::class)->getAgentUpgradationReport('fish-breed',$filterBy, $this->getUser());
                     break;
 
                 case 'fish-sales-price':
