@@ -738,11 +738,17 @@ VALUES (:report_id, :report_parent_parent_id, :agent_id, :customer_id, :employee
             }else{
                 $stmt->bindValue('flock_size_or_capacity', 0);
             }
-            $stmt->bindValue('age_days', $report['age_days']);
+//            $stmt->bindValue('age_days', $report['age_days']);
             $stmt->bindValue('age_unit_type', $report['age_unit_type']);
             $stmt->bindValue('remarks', $report['remarks']);
             $stmt->bindValue('created_at', $createdAt->format('Y-m-d H:i:s'));
             $stmt->bindValue('breed_id', $report['breed_id']);
+
+            if (isset($report['age_days'])&&$report['age_days']){
+                $stmt->bindValue('age_days', $report['age_days']);
+            }else{
+                $stmt->bindValue('age_days', 0);
+            }
 
             if (isset($report['culture_area'])&&$report['culture_area']){
                 $stmt->bindValue('culture_area_for_fish', $report['culture_area']);
