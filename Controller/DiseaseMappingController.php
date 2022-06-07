@@ -47,8 +47,16 @@ class DiseaseMappingController extends AbstractController
         $entity = new DiseaseMapping();
 
         $form = $this->createForm(DiseaseMappingFormType::class, $entity,array('report' => $report));
-        if($report->getSlug()=='disease-mapping-report-cattle'){
+        if($report->getSlug()!='disease-mapping-report-fish'){
             $form->remove('hatchery');
+            $form->remove('remarks');
+            $form->remove('cultureAreaForFish');
+            $form->remove('treatment');
+            $form->remove('averageWeightForFish');
+        }
+        if($report->getSlug()=='disease-mapping-report-fish'){
+            $form->remove('ageDays');
+            $form->remove('ageUnitType');
         }
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -57,6 +65,7 @@ class DiseaseMappingController extends AbstractController
             $entity->setReport($report);
             $entity->setAgent($crmCustomer->getAgent());
             $entity->setEmployee($this->getUser());
+            $entity->setDencityForFish($entity->calculateDencityForFish());
             $em->persist($entity);
             $em->flush();
             return new JsonResponse(array(

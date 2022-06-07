@@ -11,9 +11,20 @@
         <td>{{ diseaseMapping.breed.name|default('') }}</td>
         <td>{{ diseaseMapping.farmType.name|default('') }}</td>
         <td>{{ diseaseMapping.flockSizeOrCapacity|default('') }}</td>
+        {% if report.slug=='disease-mapping-report-fish' %}
+        <td>{{ diseaseMapping.cultureAreaForFish|default('') }}</td>
+        <td>{{ diseaseMapping.dencityForFish|default('') }}</td>
+        <td>{{ diseaseMapping.averageWeightForFish|default('') }}</td>
+        {% endif %}
+        {% if report.slug!='disease-mapping-report-fish' %}
         <td>{{ diseaseMapping.ageDays|default('') }}</td>
         <td>{{ diseaseMapping.ageUnitType|default('Day') }}</td>
+        {% endif %}
         <td>{{ diseaseMapping.disease.name|default('') }}</td>
+        {% if report.slug=='disease-mapping-report-fish' %}
+            <td>{{ diseaseMapping.treatment|default('') }}</td>
+            <td>{{ diseaseMapping.remarks|default('') }}</td>
+        {% endif %}
         <td>
             <a data-action="{{ path('disease_mapping_delete',{id:diseaseMapping.id}) }}" class="btn btn-danger btn-sm remove">x</a>
         </td>

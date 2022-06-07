@@ -718,7 +718,7 @@ VALUES (:report_id, :report_parent_parent_id, :agent_id, :customer_id, :employee
     private function processDiseaseMapping($reports, Api $batch)
     {
         foreach ($reports as $report) {
-            $sql = "INSERT INTO `crm_disease_mapping`(`report_id`, `agent_id`, `customer_id`, `employee_id`, `hatchery_id`, `farm_type_id`, `feed_id`, `disease_id`, `visiting_date`, `flock_size_or_capacity`, `age_days`, `age_unit_type`, `remarks`, `created_at`, `breed_id`) VALUES (:report_id, :agent_id, :customer_id, :employee_id, :hatchery_id, :farm_type_id, :feed_id, :disease_id, :visiting_date, :flock_size_or_capacity, :age_days, :age_unit_type, :remarks, :created_at, :breed_id)";
+            $sql = "INSERT INTO `crm_disease_mapping`(`report_id`, `agent_id`, `customer_id`, `employee_id`, `hatchery_id`, `farm_type_id`, `feed_id`, `disease_id`, `visiting_date`, `flock_size_or_capacity`, `age_days`, `age_unit_type`, `remarks`, `created_at`, `breed_id`, `culture_area_for_fish`, `dencity_for_fish`, `average_weight_for_fish`, `treatment`) VALUES (:report_id, :agent_id, :customer_id, :employee_id, :hatchery_id, :farm_type_id, :feed_id, :disease_id, :visiting_date, :flock_size_or_capacity, :age_days, :age_unit_type, :remarks, :created_at, :breed_id, :culture_area_for_fish, :dencity_for_fish, :average_weight_for_fish, :treatment)";
 
             $visitingDate = new \DateTime($report['visiting_date']);
             $createdAt = new \DateTime($report['created_at']);
@@ -743,6 +743,25 @@ VALUES (:report_id, :report_parent_parent_id, :agent_id, :customer_id, :employee
             $stmt->bindValue('remarks', $report['remarks']);
             $stmt->bindValue('created_at', $createdAt->format('Y-m-d H:i:s'));
             $stmt->bindValue('breed_id', $report['breed_id']);
+
+            if (isset($report['culture_area'])&&$report['culture_area']){
+                $stmt->bindValue('culture_area_for_fish', $report['culture_area']);
+            }else{
+                $stmt->bindValue('culture_area_for_fish', 0);
+            }
+            if (isset($report['avg_weight'])&&$report['avg_weight']){
+                $stmt->bindValue('average_weight_for_fish', $report['avg_weight']);
+            }else{
+                $stmt->bindValue('average_weight_for_fish', 0);
+            }
+            if(isset($report['treatment'])&&$report['treatment']){
+                $stmt->bindValue('treatment', $report['treatment']);
+            }
+            if (isset($report['culture_area'])&&$report['culture_area'] && $report['culture_area']>0){
+                $stmt->bindValue('dencity_for_fish', $report['flock_size_or_capacity']/$report['culture_area']);
+            }else{
+                $stmt->bindValue('dencity_for_fish', 0);
+            }
 
             $stmt->execute();
         }

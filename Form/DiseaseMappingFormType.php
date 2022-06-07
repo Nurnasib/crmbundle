@@ -151,6 +151,24 @@ class DiseaseMappingFormType extends AbstractType
                     'Month' => 'Month',],
                 'placeholder' => false,
             ])
+            ->add('treatment', TextareaType::class, [
+                'label' => 'label.treatment',
+                'required'=>false,
+            ])
+            ->add('remarks', TextareaType::class, [
+                'label' => 'label.remarks',
+                'required'=>false,
+            ])
+            ->add('cultureAreaForFish', NumberType::class, [
+                'attr' => ['min'=>0,'autofocus' => true],
+                'label' => 'label.cultureAreaForFish',
+                'required'=>false
+            ])
+            ->add('averageWeightForFish', NumberType::class, [
+                'attr' => ['min'=>0,'autofocus' => true],
+                'label' => 'label.averageWeightForFish',
+                'required'=>false
+            ])
         ;
     }
 

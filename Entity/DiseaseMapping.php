@@ -110,11 +110,40 @@ class DiseaseMapping
     private $ageDays=0;
 
     /**
+     * @var float
+     *
+     * @ORM\Column(type="float")
+     */
+
+    private $cultureAreaForFish=0;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(type="float")
+     */
+
+    private $dencityForFish=0;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(type="float")
+     */
+
+    private $averageWeightForFish=0;
+
+    /**
      * @var string
      * @Orm\Column(name="age_unit_type", type="string", nullable=true)
      */
     private $ageUnitType;
 
+    /**
+     * @var string
+     * @Orm\Column(name="treatment", type="text", nullable=true)
+     */
+    private $treatment;
     /**
      * @var string
      * @Orm\Column(name="remarks", type="text", nullable=true)
@@ -385,5 +414,80 @@ class DiseaseMapping
     {
         $this->createdAt = $createdAt;
     }
+
+    /**
+     * @return string
+     */
+    public function getTreatment(): string
+    {
+        return $this->treatment;
+    }
+
+    /**
+     * @param string $treatment
+     */
+    public function setTreatment(string $treatment): void
+    {
+        $this->treatment = $treatment;
+    }
+
+    /**
+     * @return float
+     */
+    public function getCultureAreaForFish(): float
+    {
+        return $this->cultureAreaForFish;
+    }
+
+    /**
+     * @param float $cultureAreaForFish
+     */
+    public function setCultureAreaForFish(float $cultureAreaForFish): void
+    {
+        $this->cultureAreaForFish = $cultureAreaForFish;
+    }
+
+    /**
+     * @return float
+     */
+    public function getDencityForFish(): float
+    {
+        return $this->dencityForFish;
+    }
+
+    /**
+     * @param float $dencityForFish
+     */
+    public function setDencityForFish(float $dencityForFish): void
+    {
+        $this->dencityForFish = $dencityForFish;
+    }
+
+    public function calculateDencityForFish(){
+        $value=0;
+        if($this->getCultureAreaForFish()>0){
+            $value = $this->getFlockSizeOrCapacity()/$this->getCultureAreaForFish();
+        }
+        
+        return $value;
+    }
+
+    /**
+     * @return float
+     */
+    public function getAverageWeightForFish(): float
+    {
+        return $this->averageWeightForFish;
+    }
+
+    /**
+     * @param float $averageWeightForFish
+     */
+    public function setAverageWeightForFish(float $averageWeightForFish): void
+    {
+        $this->averageWeightForFish = $averageWeightForFish;
+    }
+    
+    
 
 }
