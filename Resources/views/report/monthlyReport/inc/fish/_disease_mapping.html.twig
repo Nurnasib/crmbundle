@@ -26,16 +26,21 @@
 
                 <tr>
                     <th>{{ 'SL'|trans }}</th>
-                    <th>{{ 'Visting Date'|trans }}</th>
                     <th>{{ 'Name of Farmer'|trans }}</th>
                     <th>{{ 'Address'|trans }}</th>
                     <th>{{ 'Mobile No.'|trans }}</th>
+                    <th>{{ 'Visting Date'|trans }}</th>
                     <th>{{ 'Hatchery'|trans }}</th>
                     <th>{{ 'Feed'|trans }}</th>
+                    <th>{{ 'Breed'|trans }}</th>
                     <th>{{ 'Type of Species'|trans }}</th>
-                    <th>{{ 'Capacity'|trans }}</th>
-                    <th>{{ 'Age'|trans }}</th>
-                    <th>{{ 'Presumptive Diagnosis'|trans }}</th>
+                    <th>{{ 'No. of Fish (Pcs)'|trans }}</th>
+                    <th>{{ 'Culture Area (decimal)'|trans }}</th>
+                    <th>{{ 'Dencity'|trans }}</th>
+                    <th>{{ 'Avg Weight(g)'|trans }}</th>
+                    <th>{{ 'Tentative Diagnosis'|trans }}</th>
+                    <th>{{ 'Treatment'|trans }}</th>
+                    <th>{{ 'Remarks'|trans }}</th>
                 </tr>
 
                 </thead>
@@ -43,17 +48,21 @@
                 {% for detail in details['details'] %}
                     <tr>
                         <td>{{ loop.index }}</td>
-                        <td>{{ detail['visitingDate']|date('d-m-Y') }}</td>
                         <td>{{ detail['customerName']|default('') }}</td>
                         <td>{{ detail['customerAddress']|default('') }}</td>
                         <td>{{ detail['customerMobile']|default('') }}</td>
+                        <td>{{ detail['visitingDate']|date('d-m-Y') }}</td>
                         <td>{{ detail['hatcheryName']|default('') }}</td>
                         <td>{{ detail['feedName']|default('') }}</td>
+                        <td>{{ detail['breedName']|default('') }}</td>
                         <td>{{ detail['feedTypeName']|default('') }}</td>
                         <td>{{ detail['flockSizeOrCapacity']|default('') }}</td>
-                        <td>{{ detail['ageDays']|default('') ~ ' ' ~ detail['ageUnitType'] }}</td>
+                        <td>{{ detail['cultureAreaForFish']|default('')}}</td>
+                        <td>{{ detail['dencityForFish']|number_format(2,'.','')|default('')}}</td>
+                        <td>{{ detail['averageWeightForFish']|default('')}}</td>
                         <td>{{ detail['diseaseName']|default('') }}</td>
-{#                        <td>{{ detail['remarks']|default('') }}</td>#}
+                        <td>{{ detail['treatment']|default('') }}</td>
+                        <td>{{ detail['remarks']|default('') }}</td>
                     </tr>
                 {% endfor %}
 

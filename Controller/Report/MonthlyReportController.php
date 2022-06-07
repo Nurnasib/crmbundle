@@ -74,7 +74,7 @@ class MonthlyReportController extends AbstractController
                 case 'disease-mapping-report-poultry':
                 case 'disease-mapping-report-cattle':
                 case 'disease-mapping-report-fish':
-                    $entities = $this->getDoctrine()->getRepository(DiseaseMapping::class)->getDiseasesMappingReportByEmployeeDate($report, $filterBy);
+                    $entities = $this->getDoctrine()->getRepository(DiseaseMapping::class)->getDiseasesMappingReportByEmployeeDate($report, $filterBy, $this->getUser());
                     break;
                 case 'farmer-introduce-report-poultry':
                 case 'farmer-introduce-report-fish':

@@ -11,6 +11,7 @@
 
 namespace Terminalbd\CrmBundle\Repository;
 
+use App\Entity\User;
 use Doctrine\ORM\EntityRepository;
 
 /**
@@ -53,12 +54,12 @@ class DiseaseMappingRepository extends EntityRepository
         return $results['totalReport'];
     }
 
-    public function getDiseasesMappingReportByEmployeeDate($report, $filterBy)
+    public function getDiseasesMappingReportByEmployeeDate($report, $filterBy, User $loggedUser)
     {
         $returnArray=[];
         if(!empty($report)){
             $qb = $this->createQueryBuilder('e');
-            $qb->select('e.id eId', 'e.visitingDate', 'e.flockSizeOrCapacity', 'e.ageDays', 'e.remarks', 'e.ageUnitType');
+            $qb->select('e.id eId', 'e.visitingDate', 'e.flockSizeOrCapacity', 'e.ageDays', 'e.remarks', 'e.ageUnitType', 'e.treatment', 'e.cultureAreaForFish', 'e.dencityForFish', 'e.averageWeightForFish');
 
             $qb->addSelect('agent.name AS agentName', 'agent.address AS agentAddress', 'agent.mobile AS agentMobile');
             $qb->addSelect('breed.id AS breedId', 'breed.name AS breedName');
@@ -98,6 +99,17 @@ class DiseaseMappingRepository extends EntityRepository
                 $qb->andWhere('e.visitingDate >= :visitingDateStart')->setParameter('visitingDateStart', $startDate);
                 $qb->andWhere('e.visitingDate <= :visitingDateEnd')->setParameter('visitingDateEnd', $endDate);
             }
+
+
+            $rolesString = implode('_', $loggedUser->getRoles());
+
+            if (!str_contains($rolesString, 'ADMIN') && !in_array('ROLE_LINE_MANAGER', $loggedUser->getRoles())){
+                $qb->andWhere('employee.id = :employeeId')->setParameter('employeeId', $loggedUser->getId());
+            }
+            if (isset($filterBy['employee']) && $filterBy['employee'] !== null){
+                $qb->andWhere('employee.id = :employeeId')->setParameter('employeeId', $employeeId);
+            }
+            
             $qb->orderBy('e.visitingDate','ASC');
             $results = $qb->getQuery()->getArrayResult();
             if($results){
