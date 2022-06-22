@@ -16,6 +16,7 @@ use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Terminalbd\CrmBundle\Entity\Api;
 use Terminalbd\CrmBundle\Entity\ApiDetails;
 use Terminalbd\CrmBundle\Entity\BroilerStandard;
@@ -38,6 +39,7 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class ApiController extends AbstractController
 {
+
     /**
      * @Route("/login", methods={"POST","GET"}, options={"expose"=true})
      * @param Request $request
@@ -1633,58 +1635,6 @@ class ApiController extends AbstractController
         return new JsonResponse([
             'status' => 404,
             'message' => 'Not Found!'
-        ]);
-    }
-
-    /**
-     * @Route("/create-core-agent", methods={"POST","GET"}, name="create_core_agent_api")
-     * @param Request $request
-     * @return JsonResponse|Response
-     */
-    public function createCoreAgentFromSales(Request $request){
-
-        $allRequestData = $request->query->all();
-
-        $district= $this->getDoctrine()->getRepository(Location::class)->findOneBy(['oldId'=>$allRequestData['district_id']]);
-        $upozila= $this->getDoctrine()->getRepository(Location::class)->findOneBy(['oldId'=>$allRequestData['upozila_id']]);
-
-        $existingAgent= $this->getDoctrine()->getRepository(Agent::class)->findOneBy(['oldId'=>$allRequestData['oldId']]);
-        if(!$existingAgent){
-
-            $sql = "INSERT INTO `core_agent` (`agent_group_id`, `upozila_id`, `district_id`, `name`, `agentId`, `mobile`, `email`, `address`, `oldId`, `created`, `status`) VALUES (:agent_group_id, :upozila_id, :district_id, :name, :agentId, :mobile, :email, :address, :oldId, :created, :status)";
-
-            $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
-            $createdAt = new \DateTime('now');
-            $stmt->bindValue('name', $allRequestData['name']);
-            $stmt->bindValue('mobile', $allRequestData['mobile']);
-            $stmt->bindValue('email', $allRequestData['email']);
-            $stmt->bindValue('address', $allRequestData['address']);
-            $stmt->bindValue('agent_group_id', $allRequestData['agentType']=='FEED'?10:11);
-            $stmt->bindValue('upozila_id', $upozila?$upozila->getId():null);
-            $stmt->bindValue('district_id', $district?$district->getId():null);
-            $stmt->bindValue('agentId', $allRequestData['agentId']);
-            $stmt->bindValue('oldId', $allRequestData['oldId']);
-            $stmt->bindValue('created', $createdAt->format('Y-m-d'));
-            $stmt->bindValue('status', 1);
-
-            try {
-                $stmt->execute();
-            }catch (\Exception $e){
-                return new JsonResponse([
-                    'status' => 500,
-                    'message' => $e->getMessage(),
-                    'data'=>$allRequestData
-                ]);
-            }
-
-            return new JsonResponse([
-                'status' => 201,
-                'message' => 'success'
-            ]);
-        }
-        return new JsonResponse([
-            'status' => 409,
-            'message' => 'Already Exist'
         ]);
     }
 
