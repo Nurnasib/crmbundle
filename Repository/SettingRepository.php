@@ -72,7 +72,7 @@ class SettingRepository extends EntityRepository
         ->andWhere("e.parent IN (:parent)")
         ->setParameter('parent',$childrenIds)
         ->andWhere("e.slug NOT IN (:slug)")
-        ->setParameter('slug',['broiler-chicks','layer-chicks'])
+        ->setParameter('slug',['broiler-chicks','layer-chicks','sonali-chicks'])
         ->orderBy('e.id', 'ASC');
         $results = $qb->getQuery()->getArrayResult();
         return $results;
@@ -102,7 +102,7 @@ class SettingRepository extends EntityRepository
         ->andWhere("e.parent IN (:parent)")
         ->setParameter('parent',$childrenIds)
         ->andWhere("e.slug IN (:slug)")
-        ->setParameter('slug',['layer-chicks'])
+        ->setParameter('slug',['layer-chicks','broiler-chicks','sonali-chicks'])
         ->orderBy('e.id', 'ASC');
         $results = $qb->getQuery()->getArrayResult();
         return $results;
@@ -135,7 +135,7 @@ class SettingRepository extends EntityRepository
         $qb->andWhere('parent.parent = :breed')->setParameter('breed', $breed);
         $qb->andWhere('e.status = 1');
         $qb->andWhere("e.slug NOT IN (:slug)");
-        $qb->setParameter('slug',['broiler-chicks','layer-chicks']);
+        $qb->setParameter('slug',['broiler-chicks','layer-chicks','sonali-chicks']);
 
         $results = $qb->getQuery()->getArrayResult();
 
@@ -193,7 +193,7 @@ class SettingRepository extends EntityRepository
         $qb->andWhere('parent.parent = :breed')->setParameter('breed', $breed);
         $qb->andWhere('e.status = 1');
         $qb->andWhere("e.slug IN (:slug)");
-        $qb->setParameter('slug',['layer-chicks']);
+        $qb->setParameter('slug',['broiler-chicks','layer-chicks','sonali-chicks']);
 
         $results = $qb->getQuery()->getArrayResult();
 

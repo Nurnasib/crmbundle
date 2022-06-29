@@ -280,15 +280,17 @@ class SearchFilterFormType extends AbstractType
                         if (in_array('ROLE_CRM_SALES_MARKETING_ADMIN', $user->getRoles())){
                             array_push($userRole, 'ROLE_CRM_SALES_MARKETING_USER');
                         }
-                        $query = '';
-                        foreach ($userRole as $key => $role) {
-                            if ($key !== 0){
-                                $query .= " OR ";
-                            }
-                            $query .= "e.roles LIKE '%" . $role . "%'";
+                        if($userRole){
+                            $query = '';
+                            foreach ($userRole as $key => $role) {
+                                if ($key !== 0){
+                                    $query .= " OR ";
+                                }
+                                $query .= "e.roles LIKE '%" . $role . "%'";
 
+                            }
+                            $qb->andWhere($query);
                         }
-                        $qb->andWhere($query);
 
                     }
 
@@ -367,8 +369,8 @@ class SearchFilterFormType extends AbstractType
                 $otherReport,
                 ['Poultry' => [
                     'Company Wise Feed Sale' => 'company-wise-feed-sale-poultry',
-                    'Company Wise Boiler Chicks' => 'company-wise-boiler-chick',
-                    'Company Wise Layer Chicks' => 'company-wise-layer-chick',
+//                    'Company Wise Boiler Chicks' => 'company-wise-boiler-chick',
+                    'DOC Production' => 'company-wise-layer-chick',
 //                    'Complain' => 'complain-poultry',
                     'Farmer Survey' => 'farmer-survey-poultry',
                     'Farmer Training' => 'farmer-training-poultry',

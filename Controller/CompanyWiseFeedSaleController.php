@@ -100,6 +100,7 @@ class CompanyWiseFeedSaleController extends AbstractController
             'yearRange' => $yearRange,
             'arrayMonthRange' => $arrayMonthRange,
             'feedCompanies' => $feedCompanies,
+            'breedType' => $breedType,
         ]);
     }
 

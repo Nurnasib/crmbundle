@@ -1474,7 +1474,7 @@ class ApiRepository extends BaseRepository
 
         $qb->where("s.settingType = 'PRODUCT_TYPE'");
         $qb->andWhere('s.status = 1');
-        $qb->andWhere('s.slug NOT IN (:slug)')->setParameter('slug',['broiler-chicks','layer-chicks']);
+        $qb->andWhere('s.slug NOT IN (:slug)')->setParameter('slug',['broiler-chicks','layer-chicks','sonali-chicks']);
 
         $qb->orderBy('s.id', 'ASC');
         $result = $qb->getQuery()->getArrayResult();
@@ -1539,7 +1539,7 @@ class ApiRepository extends BaseRepository
 
         $qb->where("s.settingType = 'PRODUCT_TYPE'");
         $qb->andWhere('s.status = 1');
-        $qb->andWhere('s.slug IN (:slug)')->setParameter('slug',['layer-chicks']);
+        $qb->andWhere('s.slug IN (:slug)')->setParameter('slug',['broiler-chicks','layer-chicks','sonali-chicks']);
 
         $qb->orderBy('s.id', 'ASC');
         $result = $qb->getQuery()->getArrayResult();

@@ -15,7 +15,11 @@
                                     <div class="col-md-12 text-center">
                                         <h4>{{ 'NOURISH POULTRY & HATCHERY LTD'|trans }}</h4>
                                         <h5>{{ 'Uttara, Dhaka.'|trans }}</h5>
-                                        <h4>{{ 'Company Wise Feed Sale Report'|trans }}</h4>
+                                        {% if breedType is defined and breedType=='layer' %}
+                                            <h4>{{ 'Company Wise DOC Production'|trans }}</h4>
+                                        {% else %}
+                                            <h4>{{ 'Company Wise Feed Sale Report'|trans }}</h4>
+                                        {% endif %}
                                     </div>
                                 </div>
 
