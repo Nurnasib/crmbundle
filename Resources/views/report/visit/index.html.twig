@@ -49,7 +49,7 @@
                                 <a href="{{ path('visit_report') }}" class="btn purple-bg btn-sm white-font"
                                    title="Reset" value="reset"><i class="fa fa-refresh" aria-hidden="true"></i></a>
                                 {% if entities is defined and entities is not empty %}
-                                    <a href="{{ path('visit_details_report',{mode:'pdf', startDate: startDate, endDate: endDate}) }}"
+                                    <a href="{{ path('visit_details_report',{mode:'pdf', startDate: startDate, endDate: endDate, employeeId: employee?employee.id:null}) }}"
                                        target="_blank" class="btn blue-bg btn-sm white-font"><i class="fa fa-download"
                                                                                                 aria-hidden="true"></i> {{ 'All Details' }}
                                     </a>
@@ -152,7 +152,9 @@
     {#    <script>#}
     $('#start-date, #end-date').datepicker(
     {
-    dateFormat: 'dd-mm-yy'
+    dateFormat: 'dd-mm-yy',
+    changeMonth: true,
+    changeYear: true
     }
     );
 {% endblock %}

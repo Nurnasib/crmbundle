@@ -218,29 +218,25 @@ class CrmVisitDetailsRepository extends EntityRepository
         $qb->addSelect('nourishAgent.name AS nourishAgentName');
         $qb->where('crmVisit.created >=:begin')->setParameter('begin', $begin);
         $qb->andWhere('crmVisit.created <=:end')->setParameter('end', $end);
-        $qb->andWhere('employee.id =:employeeId')->setParameter('employeeId', $employeeId);
+        if($employeeId){
+            $qb->andWhere('employee.id =:employeeId')->setParameter('employeeId', $employeeId);
+        }
 
         $results = $qb->getQuery()->getArrayResult();
 
         $data = [];
         foreach ($results as $result) {
             if ($result['process'] == 'farmer'){
-                $data['farmer'][] = $result;
+                $data[$result['userId']]['farmer'][] = $result;
             }elseif ($result['process'] == 'agent'){
-                $data['agent'][] = $result;
+                $data[$result['userId']]['agent'][] = $result;
             }elseif ($result['process'] == 'other-agent'){
-                $data['other-agent'][] = $result;
+                $data[$result['userId']]['other-agent'][] = $result;
             }elseif ($result['process'] == 'sub-agent'){
-                $data['sub-agent'][] = $result;
+                $data[$result['userId']]['sub-agent'][] = $result;
             }
-            $data['employee'] = [
-                'userId' => $result['userId'],
-                'employeeName' => $result['employeeName'],
-                'visitDate' => [
-                    'begin' => $begin,
-                    'end' => $end,
-                    ]
-            ];
+            $data[$result['userId']]['employeeName']= $result['employeeName'];
+            $data['visitDate']= ['begin' => $begin,'end' => $end];
 
         }
         return $data;

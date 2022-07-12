@@ -19,32 +19,33 @@
         <h5 class="text-center" style="margin: 0px;">{{ 'UTTARA, DHAKA.'|trans }}</h5>
         <h6 class="text-center" style="margin: 0 0 10px;">
             {{ 'VISIT REPORT'|trans }} :
-            {% if entities.employee.visitDate.begin|date('d-m-Y') is not same as entities.employee.visitDate.end|date('d-m-Y') %}
-                {{ entities.employee.visitDate.begin|date('d-m-Y') }} - {{ entities.employee.visitDate.end|date('d-m-Y') }}
-            {% else%}
-                {{ entities.employee.visitDate.begin|date('d-m-Y') }}
+            {% if entities.visitDate.begin|date('d-m-Y') is not empty %}
+                {{ entities.visitDate.begin|date('d-m-Y') }} - {{ entities.visitDate.end|date('d-m-Y') }}
             {% endif %}
         </h6>
     </div>
-    <table width="100%" style="background-color: #CCCCCC">
-        <thead>
-        <tr>
-            <th>{{ 'Officer ID'|trans }}: {{ entities.employee.userId }}</th>
-            <th>{{ 'Name of Officer'|trans }}: {{ entities.employee.employeeName }}</th>
-            <th>
-                {{ 'Date'|trans }}:
-                {% if entities.employee.visitDate.begin|date('d-m-Y') is not same as entities.employee.visitDate.end|date('d-m-Y') %}
-                    {{ entities.employee.visitDate.begin|date('d-m-Y') }} - {{ entities.employee.visitDate.end|date('d-m-Y') }}
-                {% else%}
-                    {{ entities.employee.visitDate.begin|date('d-m-Y') }}
-                {% endif %}
-            </th>
-        </tr>
-        </thead>
-    </table>
-    {% for key, entity in entities %}
-        {% if key is not same as 'employee' %}
-            {% if key is same as 'farmer' %}
+
+    {% for employeeId, employee in entities %}
+        {% if employeeId is not same as 'visitDate' %}
+            <table width="100%" style="background-color: #CCCCCC; margin-top: 20px">
+                <thead>
+                <tr>
+                    <th>{{ 'Officer ID'|trans }}: {{ employeeId }}</th>
+                    <th>{{ 'Name of Officer'|trans }}: {{ entities[employeeId]['employeeName']|default }}</th>
+                    <th>
+                        {{ 'Date'|trans }}:
+                        {% if entities.visitDate.begin|date('d-m-Y') is not empty %}
+                            {{ entities.visitDate.begin|date('d-m-Y') }} - {{ entities.visitDate.end|date('d-m-Y') }}
+                        {% else%}
+                            {{ entities.visitDate.begin|date('d-m-Y') }}
+                        {% endif %}
+                    </th>
+                </tr>
+                </thead>
+            </table>
+            {# Agent Section#}
+            {% for key, entity in employee %}
+                {% if key is same as 'farmer' %}
                 <table border="1" cellspacing="0" cellpadding="5" width="100%" style="margin-top: 10px">
                     <thead style="background-color: #CCCCCC">
                     <tr>
@@ -82,7 +83,11 @@
                     {% endfor %}
                     </tbody>
                 </table>
-                {% elseif key is same as 'agent' %}
+                {% endif %}
+            {% endfor %}
+            {# Agent Section#}
+            {% for key, entity in employee %}
+                {% if key is same as 'agent' %}
                     <table border="1" cellspacing="0" cellpadding="5" width="100%" style="margin-top: 10px">
                         <thead style="background-color: #CCCCCC">
                         <tr>
@@ -107,7 +112,11 @@
                         {% endfor %}
                         </tbody>
                     </table>
-                {% elseif key is same as 'other-agent' %}
+                {% endif %}
+            {% endfor %}
+            {# Other Agent Section#}
+            {% for key, entity in employee %}
+                {% if key is same as 'other-agent' %}
                     <table border="1" cellspacing="0" cellpadding="5" width="100%" style="margin-top: 10px">
                         <thead style="background-color: #CCCCCC">
                         <tr>
@@ -134,32 +143,37 @@
                         {% endfor %}
                         </tbody>
                     </table>
-                {% elseif key is same as 'sub-agent' %}
+                {% endif %}
+            {% endfor %}
+{#            Sub Agent Section#}
+            {% for key, entity in employee %}
+                {% if key is same as 'sub-agent' %}
                     <table border="1" cellspacing="0" cellpadding="5" width="100%" style="margin-top: 10px">
-                        <thead style="background-color: #CCCCCC">
-                        <tr>
-                            <th width="50">S/N</th>
-                            <th>{{ 'Visited Agent Name(Sub Agent)'|trans }}</th>
-                            <th>{{ 'Address'|trans }}</th>
-                            <th>{{ 'Phone'|trans }}</th>
-                            <th>{{ 'Purpose'|trans }}</th>
-                            <th>{{ 'Comments'|trans }}</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {% for data in entity %}
+                            <thead style="background-color: #CCCCCC">
                             <tr>
-                                <td align="center">{{ loop.index }}</td>
-                                <td>{{ data.agentName }}</td>
-                                <td>{{ data.agentAddress }}</td>
-                                <td>{{ data.agentMobile }}</td>
-                                <td>{{ data.purposeName }}</td>
-                                <td>{{ data.comments }}</td>
+                                <th width="50">S/N</th>
+                                <th>{{ 'Visited Agent Name(Sub Agent)'|trans }}</th>
+                                <th>{{ 'Address'|trans }}</th>
+                                <th>{{ 'Phone'|trans }}</th>
+                                <th>{{ 'Purpose'|trans }}</th>
+                                <th>{{ 'Comments'|trans }}</th>
                             </tr>
-                        {% endfor %}
-                        </tbody>
-                    </table>
-            {% endif %}
+                            </thead>
+                            <tbody>
+                            {% for data in entity %}
+                                <tr>
+                                    <td align="center">{{ loop.index }}</td>
+                                    <td>{{ data.agentName }}</td>
+                                    <td>{{ data.agentAddress }}</td>
+                                    <td>{{ data.agentMobile }}</td>
+                                    <td>{{ data.purposeName }}</td>
+                                    <td>{{ data.comments }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                {% endif %}
+            {% endfor %}
         {% endif %}
     {% endfor %}
 
