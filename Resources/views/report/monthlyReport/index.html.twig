@@ -15,56 +15,66 @@
         </div>
         <!-- [ breadcrumb ] end -->
         <!-- [ Main Content ] start -->
-        <div class="row">
-            <div class="card">
-                <div class="card-header">
-                    <h5>{{ 'Monthly Report'|trans }}</h5>
-                </div>
-            </div>
-        </div>
+
         <div class="row">
             <div class="col-md-12">
                 <table class="table ">
                     <thead class="thead-dark">
                     {{ form_start(form) }}
                     <tr>
-                        <th style="min-width: 200px">
-                            {{ form_label(form.monthlyReport, 'Report:') }}
-                            {{ form_widget(form.monthlyReport) }}
+                        <th style="min-width: 300px">
+                            {{ form_label(form.monthlyReport, 'Report:', { 'label_attr': {'class': 'col-md-3 text-right'} })}}
+                            <div class="col-md-9">
+                                {{ form_widget(form.monthlyReport) }}
+                            </div>
                         </th>
                         <th style="min-width: 200px">
-                            {{ form_label(form.employee, 'Employee:') }}
+                        <div class="form-group">
+                            {{ form_label(form.employee, 'Employee:', { 'label_attr': {'class': 'col-md-3 text-right'} })}}
+                            <div class="col-md-9">
                             {{ form_widget(form.employee) }}
+                            </div>
+                        </div>
                         </th>
                         <th>
-                            {{ form_label(form.startDate, 'Start Date:') }}
+                            {{ form_label(form.startDate, 'Start Date:', { 'label_attr': {'class': 'col-md-4 text-right'} }) }}
+                            <div class="col-md-8">
                             {{ form_widget(form.startDate,{'id':'start-date', 'attr':{'placeholder': 'dd-mm-YYYY'}}) }}
+                            </div>
                         </th>
                         <th>
-                            {{ form_label(form.endDate, 'End Date:') }}
+                            {{ form_label(form.endDate, 'End Date:', { 'label_attr': {'class': 'col-md-4 text-right'} }) }}
+                            <div class="col-md-8">
                             {{ form_widget(form.endDate,{'id':'end-date', 'attr':{'placeholder': 'dd-mm-YYYY'}}) }}
+                            </div>
                         </th>
                         <th></th>
                     </tr>
                     <tr>
                         <th>
-                            {{ form_label(form.region, 'Region:') }}
+                            {{ form_label(form.region, 'Region:', { 'label_attr': {'class': 'col-md-3 text-right'} }) }}
+                            <div class="col-md-9">
                             {{ form_widget(form.region) }}
+                            </div>
                         </th>
-                        <th>
+                        {#<th>
                             {{ form_label(form.zone, 'Zone:') }}
                             {{ form_widget(form.zone) }}
-                        </th>
+                        </th>#}
                         <th>
-                            {{ form_label(form.feedMill, 'Mill:') }}
+                            {{ form_label(form.feedMill, 'Mill:', { 'label_attr': {'class': 'col-md-3 text-right'} }) }}
+                            <div class="col-md-9">
                             {{ form_widget(form.feedMill) }}
+                            </div>
                         </th>
                         <th>
-                            {{ form_label(form.breed, 'Breed:') }}
+                            {{ form_label(form.breed, 'Breed:', { 'label_attr': {'class': 'col-md-4 text-right'} }) }}
+                            <div class="col-md-8">
                             {{ form_widget(form.breed) }}
+                            </div>
                         </th>
                         <th>
-                            <div class="btn-group" style="margin-top: 25px">
+                            <div class="btn-group">
                                 <button type="submit" name="search" class="btn btn-primary btn-sm" title="Search" value="search"><i class="fa fa-search" aria-hidden="true"></i></button>
                                 <a href="{{ path('monthly_report_index') }}" class="btn purple-bg btn-sm white-font" title="Reset" value="reset"><i class="fa fa-refresh" aria-hidden="true"></i></a>
                                 {% if entities is defined and entities is not empty %}
@@ -75,6 +85,7 @@
                                 {% endif %}
                             </div>
                         </th>
+                        <th></th>
                     </tr>
                     </form>
                     </thead>
@@ -83,8 +94,8 @@
         </div>
         {% if entities is defined and entities is not empty %}
             <div class="row">
-                <div class="card" style="overflow-x: scroll">
-                    <div class="card-block">
+                <div class="card" style="overflow-x: scroll; max-height: 500px">
+                    <div class="card-body">
                         {% if lifeCycleSlug is same as 'fcr-before-sale-boiler' %}
                             {% include '@TerminalbdCrm/report/monthlyReport/inc/_fcr_broiler_before.html.twig'%}
 

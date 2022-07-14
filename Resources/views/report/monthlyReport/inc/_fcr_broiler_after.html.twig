@@ -57,44 +57,45 @@
 
     {% if entities is not empty %}
         {% for monthYear, employeesFcrDetails in entities %}
-        <tr>
-            <td colspan="20">{{ monthYear }}</td>
-        </tr>
-        {% for employeeId, fcrDetails in employeesFcrDetails %}
-            {% for fcrDetail in fcrDetails['details'] %}
-                <tr class="added_item">
-                    {% if loop.first %}
-                        <td valign="middle"
-                            rowspan="{{ fcrDetails['details']|length }}">{{ fcrDetail['employeeName'] }}</td>
-                    {% endif %}
-
-                    <td>{{ fcrDetail['agentName']|default('') }}</td>
-                    <td>{{ fcrDetail['agentDistrictName']|default('') }}</td>
-                    <td>{{ fcrDetail['agentAddress']|default('') }}</td>
-                    <td>{{ fcrDetail['hatchingDate']|date('d-m-Y') }}</td>
-                    <td>{{ fcrDetail['totalBirds'] }}</td>
-                    <td>{{ fcrDetail['ageDay'] }}</td>
-                    <td>{{ fcrDetail['mortalityPes'] }}</td>
-                    <td>{{ fcrDetail['mortalityPercent']|number_format(2,'.','') }}</td>
-                    <td>{{ fcrDetail['weight']|number_format(2,'.','') }}</td>
-                    <td>{{ fcrDetail['weightStandard'] }}</td>
-                    <td>{{ fcrDetail['feedConsumptionTotalKg']|number_format(2,'.','') }}</td>
-                    <td>{{ fcrDetail['feedConsumptionPerBird']|number_format(2,'.','') }}</td>
-                    <td>{{ fcrDetail['feedConsumptionStandard'] }}</td>
-                    <td>{{ fcrDetail['fcrWithoutMortality']|number_format(2,'.','') }}</td>
-                    <td>{{ fcrDetail['fcrWithMortality']|number_format(2,'.','') }}</td>
-                    <td>{{ fcrDetail['hatcheryName']|default('') }}</td>
-                    <td>{{ fcrDetail['breedBame']|default('') }}</td>
-                    <td>{{ fcrDetail['feedName']|default('') }}</td>
-                    <td>{{ fcrDetail['feedMillName']|default('') }}</td>
-                    {#<td>{{ fcrDetail['feedTypeName']|default('') }}</td>
-                    <td>{{ fcrDetail['proDate']|date('d-m-Y') }}</td>
-                    <td>{{ fcrDetail['batchNo'] }}</td>#}
-                    <td>{{ fcrDetail['remarks'] }}</td>
+            {% if monthYear is not same as 'totalRecord' %}
+                <tr>
+                    <td colspan="20">{{ monthYear }}</td>
                 </tr>
+                {% for employeeId, fcrDetails in employeesFcrDetails %}
+                    {% for fcrDetail in fcrDetails['details'] %}
+                        <tr class="added_item">
+                            {% if loop.first %}
+                                <td valign="middle"
+                                    rowspan="{{ fcrDetails['details']|length }}">{{ fcrDetail['employeeName'] }}</td>
+                            {% endif %}
+
+                            <td>{{ fcrDetail['agentName']|default('') }}</td>
+                            <td>{{ fcrDetail['agentDistrictName']|default('') }}</td>
+                            <td>{{ fcrDetail['agentAddress']|default('') }}</td>
+                            <td>{{ fcrDetail['hatchingDate']|date('d-m-Y') }}</td>
+                            <td>{{ fcrDetail['totalBirds'] }}</td>
+                            <td>{{ fcrDetail['ageDay'] }}</td>
+                            <td>{{ fcrDetail['mortalityPes'] }}</td>
+                            <td>{{ fcrDetail['mortalityPercent']|number_format(2,'.','') }}</td>
+                            <td>{{ fcrDetail['weight']|number_format(2,'.','') }}</td>
+                            <td>{{ fcrDetail['weightStandard'] }}</td>
+                            <td>{{ fcrDetail['feedConsumptionTotalKg']|number_format(2,'.','') }}</td>
+                            <td>{{ fcrDetail['feedConsumptionPerBird']|number_format(2,'.','') }}</td>
+                            <td>{{ fcrDetail['feedConsumptionStandard'] }}</td>
+                            <td>{{ fcrDetail['fcrWithoutMortality']|number_format(2,'.','') }}</td>
+                            <td>{{ fcrDetail['fcrWithMortality']|number_format(2,'.','') }}</td>
+                            <td>{{ fcrDetail['hatcheryName']|default('') }}</td>
+                            <td>{{ fcrDetail['breedBame']|default('') }}</td>
+                            <td>{{ fcrDetail['feedName']|default('') }}</td>
+                            <td>{{ fcrDetail['feedMillName']|default('') }}</td>
+                            {#<td>{{ fcrDetail['feedTypeName']|default('') }}</td>
+                            <td>{{ fcrDetail['proDate']|date('d-m-Y') }}</td>
+                            <td>{{ fcrDetail['batchNo'] }}</td>#}
+                            <td>{{ fcrDetail['remarks'] }}</td>
+                        </tr>
             {% endfor %}
         {% endfor %}
-
+            {% endif %}
         {% endfor %}
 
 

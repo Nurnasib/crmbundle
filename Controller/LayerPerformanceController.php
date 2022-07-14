@@ -22,6 +22,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Terminalbd\CrmBundle\Entity\CrmCustomer;
+use Terminalbd\CrmBundle\Entity\CrmVisit;
 use Terminalbd\CrmBundle\Entity\Fcr;
 use Terminalbd\CrmBundle\Entity\LayerPerformance;
 use Terminalbd\CrmBundle\Entity\LayerPerformanceDetails;
@@ -50,13 +51,14 @@ class LayerPerformanceController extends AbstractController
     }
 
     /**
-     * @Route("/customer/{id}/report/{report}/new", methods={"GET", "POST"}, name="layer_performance_new")
+     * @Route("/visit/{visit}/customer/{id}/report/{report}/new", methods={"GET", "POST"}, name="layer_performance_new")
      * @param Request $request
      * @param CrmCustomer $crmCustomer
      * @param Setting $report
+     * @param CrmVisit $visit
      * @return Response
      */
-    public function new(Request $request, CrmCustomer $crmCustomer, Setting $report): Response
+    public function new(Request $request, CrmCustomer $crmCustomer, Setting $report, CrmVisit $visit): Response
     {
         $data = $request->request->all();
         $noOfWeek = $this->getDoctrine()->getRepository(SettingLifeCycle::class)->getLifeCycleWeekByLifeCycle($report->getSlug());
@@ -79,6 +81,7 @@ class LayerPerformanceController extends AbstractController
             'report' => $report,
             'employee' => $this->getUser(),
             'crmLayerPerformanceDetails' => $layerPerformanceDetails,
+            'visit' => $visit,
         ]);
     }
 
@@ -99,14 +102,15 @@ class LayerPerformanceController extends AbstractController
 
 
     /**
-     * @Route("/{id}/details/add", methods={"POST"}, name="crm_layer_performance_detail_report_add", options={"expose"=true})
+     * @Route("/visit/{visit}/{id}/details/add", methods={"POST"}, name="crm_layer_performance_detail_report_add", options={"expose"=true})
      * @param Request $request
      * @param Setting $report
+     * @param CrmVisit $visit
      * @return Response
      * @throws \Exception
      */
 
-    public function addLayerPerformanceDetails(Request $request, Setting $report): Response
+    public function addLayerPerformanceDetails(Request $request, CrmVisit $visit, Setting $report): Response
     {
         $data = $request->request->all();
 
@@ -160,6 +164,7 @@ class LayerPerformanceController extends AbstractController
 
         $entity->setEmployee($this->getUser());
         $entity->setReport($report);
+        $entity->setVisit($visit);
 
         $reportingDate = date('Y-m-d',strtotime('now'));
         $entity->setReportingMonth(new \DateTime($reportingDate));

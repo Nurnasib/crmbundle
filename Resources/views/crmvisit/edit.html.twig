@@ -23,13 +23,13 @@
                     <div class="card-header-right">
                         {% if 'ROLE_CRM_SALES_MARKETING_USER' not in app.user.roles %}
                             <div class="btn-group btn-group-sm" role="group" aria-label="Button group with nested dropdown">
-                                {#<a class="btn btn-primary btn-sm" data-action='{{ path('fcr_after_new',{'report':report.id,'afterBefore':'after'}) }}' href='?process=postView_{{ details.id }}_{{ details.report is not empty? details.report.id:'' }}&report={{ details.report is not empty? details.report.slug:'' }}&check=show#modal' id='postView_{{ details.id }}_{{ details.report is not empty? details.report.id:'' }}' >{{ 'Report'|trans }}</a>#}
+                                {#<a class="btn btn-primary btn-sm" data-action='{{ path('fcr_after_new',{'report':report.id,'afterBefore':'after','visit':entity.id}) }}' href='?process=postView_{{ details.id }}_{{ details.report is not empty? details.report.id:'' }}&report={{ details.report is not empty? details.report.slug:'' }}&check=show#modal' id='postView_{{ details.id }}_{{ details.report is not empty? details.report.id:'' }}' >{{ 'Report'|trans }}</a>#}
                                 {% for report in fcr_after_reports %}
                                     {% if 'ROLE_CRM_AQUA_USER' in app.user.roles and report.slug is same as 'company-species-wise-average-fcr-after' %}
                                         <a class="btn btn-primary btn-sm" href='{{ path('fish_company_species_wise_fcr_after_modal',{ 'report':report.id}) }}' id='postView_{{ report.id }}_{{ report.id }}' >{{ report.name }}</a>
 
                                     {% elseif 'ROLE_CRM_POULTRY_USER' in app.user.roles and report.slug is not same as 'company-species-wise-average-fcr-after' %}
-                                        <a style="margin-right: 5px" class="btn btn-primary btn-sm" data-action='{{ path('fcr_after_new',{'report':report is not empty? report.id:'','afterBefore':'after'}) }}' href='?process=postView_fcr_after_{{ report.id }}&report={{ report is not empty? report.slug:'' }}&check=show#modal' id='postView_fcr_after_{{ report is not empty? report.id:'' }}' >{{ report.name }}</a>
+                                        <a style="margin-right: 5px" class="btn btn-primary btn-sm" data-action='{{ path('fcr_after_new',{'report':report is not empty? report.id:'','afterBefore':'after','visit':entity.id}) }}' href='?process=postView_fcr_after_{{ report.id }}&report={{ report is not empty? report.slug:'' }}&check=show#modal' id='postView_fcr_after_{{ report is not empty? report.id:'' }}' >{{ report.name }}</a>
                                     {% endif %}
                                 {% endfor %}
                             </div>

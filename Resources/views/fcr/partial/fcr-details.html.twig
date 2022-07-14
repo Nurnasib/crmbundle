@@ -9,7 +9,7 @@
     <td>{{ fcrDetail.weightStandard }}</td>
     <td>{{ fcrDetail.weight }}</td>
     <td>{{ fcrDetail.feedConsumptionTotalKg }}</td>
-    <td>{{ fcrDetail.feedConsumptionPerBird }}</td>
+    <td>{{ fcrDetail.feedConsumptionPerBird|number_format(3,'.','') }}</td>
     <td>{{ fcrDetail.feedConsumptionStandard }}</td>
     <td>{{ fcrDetail.fcrWithoutMortality|number_format(2,'.','') }}</td>
     <td>{{ fcrDetail.fcrWithMortality|number_format(2,'.','') }}</td>

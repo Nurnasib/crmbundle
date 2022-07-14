@@ -25,6 +25,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 //use Terminalbd\CrmBundle\Entity\ChickLifeCycle;
 use Terminalbd\CrmBundle\Entity\BroilerStandard;
 use Terminalbd\CrmBundle\Entity\CrmCustomer;
+use Terminalbd\CrmBundle\Entity\CrmVisit;
 use Terminalbd\CrmBundle\Entity\FcrDetails;
 use Terminalbd\CrmBundle\Entity\Setting;
 use Terminalbd\CrmBundle\Entity\SonaliStandard;
@@ -41,15 +42,16 @@ use Terminalbd\CrmBundle\Repository\FcrRepository;
 class FcrController extends AbstractController
 {
     /**
-     * @Route("/{customer}/{report}/{afterBefore}/new", methods={"GET", "POST"}, name="fcr_new", options={"expose"=true})
+     * @Route("/{customer}/{report}/{afterBefore}/new/{visit}", methods={"GET", "POST"}, name="fcr_new", options={"expose"=true})
      * @param Request $request
      * @param CrmCustomer $customer
      * @param Setting $report
+     * @param CrmVisit $visit
      * @param $afterBefore
      * @return Response
      * @throws \Exception
      */
-    public function new(Request $request, CrmCustomer $customer, Setting $report, $afterBefore): Response
+    public function new(Request $request, CrmCustomer $customer, Setting $report, $afterBefore, CrmVisit $visit): Response
     {
         $fcrAllReports = $this->getDoctrine()->getRepository(FcrDetails::class)->getFcrReportByReportingDateAndFeedType($afterBefore, $report, $this->getUser());
 
@@ -66,6 +68,7 @@ class FcrController extends AbstractController
             $entity->setReport($report);
             $entity->setAgent($customer->getAgent());
             $entity->setEmployee($this->getUser());
+            $entity->setVisit($visit);
 
 
             if(in_array($report->getSlug(),['fcr-before-sale-sonali','fcr-after-sale-sonali'])){
@@ -108,19 +111,21 @@ class FcrController extends AbstractController
             'fcrDetails'=>$fcrAllReports,
             'employee'=>$this->getUser(),
             'fcrOfFeed'=>strtoupper($afterBefore),
+            'visit'=>$visit
         ]);
     }
 
 
     /**
-     * @Route("/{report}/{afterBefore}/new", methods={"GET", "POST"}, name="fcr_after_new", options={"expose"=true})
+     * @Route("/{report}/{afterBefore}/new/{visit}", methods={"GET", "POST"}, name="fcr_after_new", options={"expose"=true})
      * @param Request $request
+     * @param CrmVisit $visit
      * @param Setting $report
      * @param $afterBefore
      * @return Response
      * @throws \Exception
      */
-    public function newAfter(Request $request, Setting $report, $afterBefore): Response
+    public function newAfter(Request $request, Setting $report, $afterBefore, CrmVisit $visit): Response
     {
         $fcrAllReports = $this->getDoctrine()->getRepository(FcrDetails::class)->getFcrReportByReportingDateAndFeedType($afterBefore, $report, $this->getUser());
         $data = $request->request->get('fcr_details_for_after_form');
@@ -144,6 +149,7 @@ class FcrController extends AbstractController
             $entity->setEmployee($this->getUser());
 
             $entity->setAgent($agent);
+            $entity->setVisit($visit);
 
 
             if(in_array($report->getSlug(),['fcr-before-sale-sonali','fcr-after-sale-sonali'])){
@@ -183,6 +189,7 @@ class FcrController extends AbstractController
                 'fcrOfFeed'=>strtoupper($afterBefore),
                 'form' => $form->createView(),
                 'employee'=>$this->getUser(),
+                'visit'=>$visit,
             ]);
     }
 

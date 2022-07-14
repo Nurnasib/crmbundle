@@ -23,6 +23,19 @@ use Doctrine\ORM\EntityRepository;
  */
 class SonaliStandardRepository extends EntityRepository
 {
+    public function getSonaliStandardByAge(){
+        $qb = $this->createQueryBuilder('e');
+
+        $qb->select('e.age', 'e.cumulativeFeedIntake', 'e.targetBodyWeight');
+        $results = $qb->getQuery()->getArrayResult();
+        $returnArray=[];
+        if($results){
+            foreach ($results as $result){
+                $returnArray[$result['age']]=$result;
+            }
+        }
+        return $returnArray;
+    }
 
 
 }

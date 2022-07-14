@@ -20,6 +20,7 @@ $(document).on('keypress','.layer_performance_details input[type=text], .layer_p
 function layerPerformanceDetailDataInsertUsingAjax(element) {
     var customerId=$('.customerId').val();
     var report_id = $('.report_id').val();
+    var visitId = $('.visitId').val();
     var parentElement = element.closest('tr');
     var totalBirds=parentElement.find('.totalBirds').val();
     var ageWeek=parentElement.find('.ageWeek').val();
@@ -42,7 +43,7 @@ function layerPerformanceDetailDataInsertUsingAjax(element) {
     }
 
     $.ajax({
-        url    : Routing.generate('crm_layer_performance_detail_report_add',{'id':report_id}),
+        url    : Routing.generate('crm_layer_performance_detail_report_add',{'visit':visitId, 'id':report_id}),
         type   : 'post',
         data   : {
             'customerId':customerId,

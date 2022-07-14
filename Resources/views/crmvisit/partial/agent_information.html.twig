@@ -36,7 +36,7 @@
                     {% endif %}
                     {% if details.process=='agent' and details.purpose is not empty and details.purpose.slug in ['fcr-report-after-sale'] and details.purpose.settingType=='AGENT_PURPOSE' %}
                         {% for report in fcr_after_reports %}
-                            <a style="margin-right: 5px; margin-bottom: 5px" class="btn blue-bg btn-sm text-white" data-action='{{ path('fcr_after_new',{'report':report is not empty? report.id:'','afterBefore':'after'}) }}' href='?process=postView_fcr_after_{{ report.id }}&report={{ report is not empty? report.slug:'' }}&check=show#modal' id='postView_fcr_after_{{ report is not empty? report.id:'' }}' >{{ report.name }}</a>
+                            <a style="margin-right: 5px; margin-bottom: 5px" class="btn blue-bg btn-sm text-white" data-action='{{ path('fcr_after_new',{'report':report is not empty? report.id:'','afterBefore':'after','visit':entity.id}) }}' href='?process=postView_fcr_after_{{ report.id }}&report={{ report is not empty? report.slug:'' }}&check=show#modal' id='postView_fcr_after_{{ report is not empty? report.id:'' }}' >{{ report.name }}</a>
                         {% endfor %}
                     {% endif %}
 

@@ -27,7 +27,7 @@
                 </div>
                 <div class="card-body-inner">
                     <div style="overflow-x: scroll;">
-                        {{ form_start(form, {'attr': {'method':'post','action': path('fcr_after_new',{'report':report.id,'afterBefore':'after'}),'class': 'form-horizontal right','id':'fcr_details_form'}}) }}
+                        {{ form_start(form, {'attr': {'method':'post','action': path('fcr_after_new',{'report':report.id,'afterBefore':'after','visit':visit.id}),'class': 'form-horizontal right','id':'fcr_details_form'}}) }}
                         <table class="table table-striped table-bordered table-hover fcrReportDetails" id="fcrReportDetails">
                             <thead class="thead-dark">
                             <tr>

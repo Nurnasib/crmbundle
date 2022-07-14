@@ -65,6 +65,7 @@ class FcrDetailsRepository extends BaseRepository
 
     public function getFcrDetailsByEmployee($report, $filterBy)
     {
+//        dd($filterBy);
         $returnArray=[];
         if(!empty($report)){
             $qb = $this->createQueryBuilder('e');
@@ -75,7 +76,7 @@ class FcrDetailsRepository extends BaseRepository
 
             $qb->addSelect('employee.id AS employeeId');
             $qb->addSelect('employee.name AS employeeName');
-            $qb->addSelect('customer.name AS customerName');
+            $qb->addSelect('customer.name AS customerName', 'customer.address AS customerAddress', 'customer.mobile AS customerMobile');
             $qb->addSelect('customer.id AS customerId');
 
             $qb->addSelect( 'district.name AS agentDistrictName');
@@ -106,6 +107,11 @@ class FcrDetailsRepository extends BaseRepository
                 $qb->andWhere('employee.id = :employee')->setParameter('employee', $employee);
             }
 
+            $feedMill = isset($filterBy['feedMill'])? $filterBy['feedMill']: '';
+            if (!empty($feedMill)){
+                $qb->andWhere('feed_mill.id = :feedMillId')->setParameter('feedMillId', $feedMill);
+            }
+
             if (!empty($startDate) && !empty($endDate)){
                 $qb->andWhere('e.reportingMonth >= :reportingMonthStart')->setParameter('reportingMonthStart', $startDate);
                 $qb->andWhere('e.reportingMonth <= :reportingMonthEnd')->setParameter('reportingMonthEnd', $endDate);
@@ -113,11 +119,53 @@ class FcrDetailsRepository extends BaseRepository
 
 
             $results = $qb->getQuery()->getArrayResult();
+//            dd(count($results));
+            $bodyWtGatterThanStandard=[];
+            $bodyWtLessThanStandard=[];
+            $fcrWithMortalitySummery=[];
             if($results){
                 foreach ($results as $result){
                     $monthYear = $result['createdAt']->format('F-Y');
                     $returnArray[$monthYear][$result['employeeId']]['name']=$result['employeeName'];
                     $returnArray[$monthYear][$result['employeeId']]['details'][]=$result;
+                    if(in_array($report->getSlug(),['fcr-before-sale-boiler','fcr-before-sale-sonali'])){
+                        if($result['weight']>=$result['weightStandard']){
+                            $bodyWtGatterThanStandard[]=$result;
+                        }elseif ($result['weight']<$result['weightStandard']){
+                            $bodyWtLessThanStandard[]=$result;
+                        }
+                    }
+                    if(in_array($report->getSlug(),['fcr-after-sale-sonali'])){
+                        if($result['fcrWithMortality']<2.50){
+                            $fcrWithMortalitySummery['excellent'][]=$result;
+                        }elseif ($result['fcrWithMortality']>=2.50 && $result['fcrWithMortality']<2.60){
+                            $fcrWithMortalitySummery['very_good'][]=$result;
+                        }elseif ($result['fcrWithMortality']>=2.60 && $result['fcrWithMortality']<2.70){
+                            $fcrWithMortalitySummery['good'][]=$result;
+                        }elseif ($result['fcrWithMortality']>=2.70 && $result['fcrWithMortality']<2.80){
+                            $fcrWithMortalitySummery['moderate'][]=$result;
+                        }elseif ($result['fcrWithMortality']>=2.80 && $result['fcrWithMortality']<2.90){
+                            $fcrWithMortalitySummery['bad'][]=$result;
+                        }elseif ($result['fcrWithMortality']>=2.90){
+                            $fcrWithMortalitySummery['very_bad'][]=$result;
+                        }
+                    }
+
+                }
+                if(in_array($report->getSlug(),['fcr-before-sale-sonali','fcr-after-sale-sonali'])){
+
+                    $returnArray['fcrSonaliStandard']=$this->getEntityManager()->getRepository('TerminalbdCrmBundle:SonaliStandard')->getSonaliStandardByAge();
+                }
+
+                $returnArray['totalRecord']= count($results);
+                
+                if(in_array($report->getSlug(),['fcr-before-sale-boiler','fcr-before-sale-sonali'])){
+                    $returnArray['bodyWtGatterThanStandard']= count($bodyWtGatterThanStandard);
+                    $returnArray['bodyWtLessThanStandard']= count($bodyWtLessThanStandard);
+                }
+
+                if(in_array($report->getSlug(),['fcr-after-sale-sonali'])){
+                    $returnArray['fcrWithMortalitySummery']=$fcrWithMortalitySummery;
                 }
             }
         }
