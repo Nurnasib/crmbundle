@@ -4,14 +4,17 @@
                         class="feather icon-edit"></i>{{ 'CRM Visit'|trans }}</a></li>
     {% endif %}
 
-    {% if is_granted('ROLE_DEVELOPER') %}
+    {% if is_granted('ROLE_DEVELOPER') or is_granted('ROLE_CRM_POULTRY_ADMIN') or is_granted('ROLE_CRM_CATTLE_ADMIN') or is_granted('ROLE_CRM_AQUA_ADMIN') or is_granted('ROLE_CRM_SALES_MARKETING_ADMIN') %}
         <li class="">
             <a class="" href="javascript:"><i class="feather icon-info"></i>{{ 'Master Data'|trans }}</a>
             <ul class="sub-menu">
-                <li><a class="dropdown-item" href="{{ path('broiler_standard') }}">{{ 'Broiler Standard'|trans }}</a>
-                </li>
-                <li><a class="dropdown-item" href="{{ path('sonali_standard') }}">{{ 'Sonali Standard'|trans }}</a></li>
-                <li><a class="dropdown-item" href="{{ path('layer_standard') }}">{{ 'Layer Standard'|trans }}</a></li>
+                {% if is_granted('ROLE_DEVELOPER') or is_granted('ROLE_CRM_POULTRY_ADMIN') %}
+                    <li><a class="dropdown-item" href="{{ path('broiler_standard') }}">{{ 'Broiler Standard'|trans }}</a>
+                    </li>
+                    <li><a class="dropdown-item" href="{{ path('sonali_standard') }}">{{ 'Sonali Standard'|trans }}</a></li>
+                    <li><a class="dropdown-item" href="{{ path('layer_standard') }}">{{ 'Layer Standard'|trans }}</a></li>
+                {% endif %}
+
                 <li><a class="dropdown-item"
                        href="{{ path('crm_setting_life_cycle') }}">{{ 'Life Cycle Setting'|trans }}</a></li>
                 <li><a class="dropdown-item" href="{{ path('crm_setting') }}">{{ 'Setting'|trans }}</a></li>
