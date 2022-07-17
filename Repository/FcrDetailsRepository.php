@@ -87,8 +87,13 @@ class FcrDetailsRepository extends BaseRepository
             $qb->addSelect('feed.name AS feedName');
             $qb->addSelect('feed_mill.name AS feedMillName');
             $qb->addSelect('feed_type.name AS feedTypeName');
+            $qb->addSelect('region.id AS regionId', 'region.name AS regionName');
 
-            $qb->leftJoin('e.employee','employee');
+            $qb->join('e.employee','employee');
+            $qb->leftJoin('e.visit','visit');
+            $qb->leftJoin('visit.location','location');
+            $qb->leftJoin('location.parent','dist');
+            $qb->leftJoin('dist.parent','region');
             $qb->leftJoin('e.customer','customer');
             $qb->leftJoin('e.agent', 'agent');
             $qb->leftJoin('agent.district', 'district');
@@ -112,6 +117,11 @@ class FcrDetailsRepository extends BaseRepository
                 $qb->andWhere('feed_mill.id = :feedMillId')->setParameter('feedMillId', $feedMill);
             }
 
+            $region = isset($filterBy['region'])? $filterBy['region']: '';
+            if (!empty($region)){
+                $qb->andWhere('region.id = :regionId')->setParameter('regionId', $region);
+            }
+
             if (!empty($startDate) && !empty($endDate)){
                 $qb->andWhere('e.reportingMonth >= :reportingMonthStart')->setParameter('reportingMonthStart', $startDate);
                 $qb->andWhere('e.reportingMonth <= :reportingMonthEnd')->setParameter('reportingMonthEnd', $endDate);
@@ -125,9 +135,12 @@ class FcrDetailsRepository extends BaseRepository
             $fcrWithMortalitySummery=[];
             if($results){
                 foreach ($results as $result){
+                    $result['cfcr']=(((2-($result['weight']/1000))*0.25)+($result['fcrWithMortality']));
                     $monthYear = $result['createdAt']->format('F-Y');
-                    $returnArray[$monthYear][$result['employeeId']]['name']=$result['employeeName'];
-                    $returnArray[$monthYear][$result['employeeId']]['details'][]=$result;
+                    
+                    $returnArray[$monthYear][$result['regionId']][$result['employeeId']]['name']=$result['employeeName'];
+                    $returnArray[$monthYear][$result['regionId']][$result['employeeId']]['details'][]=$result;
+                    $returnArray[$monthYear][$result['regionId']]['recordCount'][]=$result;
                     if(in_array($report->getSlug(),['fcr-before-sale-boiler','fcr-before-sale-sonali'])){
                         if($result['weight']>=$result['weightStandard']){
                             $bodyWtGatterThanStandard[]=$result;
@@ -150,11 +163,31 @@ class FcrDetailsRepository extends BaseRepository
                             $fcrWithMortalitySummery['very_bad'][]=$result;
                         }
                     }
+                    if(in_array($report->getSlug(),['fcr-after-sale-boiler'])){
+                        if($result['fcrWithMortality']<=1.45){
+                            $fcrWithMortalitySummery['excellent'][]=$result;
+                        }elseif ($result['fcrWithMortality']>=1.46 && $result['fcrWithMortality']<1.50){
+                            $fcrWithMortalitySummery['very_good'][]=$result;
+                        }elseif ($result['fcrWithMortality']>=1.50 && $result['fcrWithMortality']<1.53){
+                            $fcrWithMortalitySummery['good'][]=$result;
+                        }elseif ($result['fcrWithMortality']>=1.53 && $result['fcrWithMortality']<1.56){
+                            $fcrWithMortalitySummery['moderate'][]=$result;
+                        }elseif ($result['fcrWithMortality']>=1.56 && $result['fcrWithMortality']<1.61){
+                            $fcrWithMortalitySummery['bad'][]=$result;
+                        }elseif ($result['fcrWithMortality']>=1.61){
+                            $fcrWithMortalitySummery['very_bad'][]=$result;
+                        }
+                    }
 
                 }
                 if(in_array($report->getSlug(),['fcr-before-sale-sonali','fcr-after-sale-sonali'])){
 
-                    $returnArray['fcrSonaliStandard']=$this->getEntityManager()->getRepository('TerminalbdCrmBundle:SonaliStandard')->getSonaliStandardByAge();
+                    $returnArray['fcrSonaliStandard']=$this->getEntityManager()->getRepository('TerminalbdCrmBundle:SonaliStandard')->getSonaliStandard();
+                }
+                
+                if(in_array($report->getSlug(),['fcr-before-sale-boiler','fcr-after-sale-boiler'])){
+
+                    $returnArray['fcrBoilerStandard']=$this->getEntityManager()->getRepository('TerminalbdCrmBundle:BroilerStandard')->getBoilerStandard();
                 }
 
                 $returnArray['totalRecord']= count($results);
@@ -164,7 +197,7 @@ class FcrDetailsRepository extends BaseRepository
                     $returnArray['bodyWtLessThanStandard']= count($bodyWtLessThanStandard);
                 }
 
-                if(in_array($report->getSlug(),['fcr-after-sale-sonali'])){
+                if(in_array($report->getSlug(),['fcr-after-sale-sonali','fcr-after-sale-boiler'])){
                     $returnArray['fcrWithMortalitySummery']=$fcrWithMortalitySummery;
                 }
             }
