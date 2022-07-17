@@ -10,6 +10,7 @@
  */
 
 namespace Terminalbd\CrmBundle\Repository;
+
 use App\Entity\Admin\Location;
 use App\Entity\User;
 use Doctrine\ORM\EntityRepository;
@@ -33,13 +34,13 @@ class CrmVisitRepository extends EntityRepository
 
         $qb = $this->createQueryBuilder('e');
 
-        $qb->select('e.created', 'e.workingDuration','e.workingDurationTo');
+        $qb->select('e.created', 'e.workingDuration', 'e.workingDurationTo');
         $qb->addSelect('employee.name AS employee_name', 'employee.id AS employee_id');
         $qb->addSelect('location.name AS location_name');
-        $qb->addSelect('crm_visit_details.farmCapacity AS customer_farmCapacity','crm_visit_details.comments', 'crm_visit_details.process');
+        $qb->addSelect('crm_visit_details.farmCapacity AS customer_farmCapacity', 'crm_visit_details.comments', 'crm_visit_details.process');
         $qb->addSelect('purpose.name AS purpose_name');
         $qb->addSelect('crm_customer.name AS customer_name', 'crm_customer.address AS customer_address');
-        $qb->addSelect('agent.name AS agent_name', 'agent.address AS agent_address','agent.mobile AS agent_phone');
+        $qb->addSelect('agent.name AS agent_name', 'agent.address AS agent_address', 'agent.mobile AS agent_phone');
 
         $qb->leftJoin('e.employee', 'employee');
         $qb->leftJoin('e.location', 'location');
@@ -63,9 +64,9 @@ class CrmVisitRepository extends EntityRepository
         $qb->join('e.employee', 'employee');
         $qb->join('employee.userGroup', 'userGroup');
         $qb->leftJoin('employee.designation', 'designation');
-        $qb->select('e.id AS visitId','e.created AS visitDate','e.workingDuration AS visitBegin','e.workingDurationTo AS visitEnd', 'location.name AS locationName');
+        $qb->select('e.id AS visitId', 'e.created AS visitDate', 'e.workingDuration AS visitBegin', 'e.workingDurationTo AS visitEnd', 'location.name AS locationName');
         $qb->addSelect('workingMode.id AS workingModeId', 'workingMode.name AS workingModeName', 'workingMode.slug AS workingModeSlug', 'e.remarks');
-        $qb->addSelect('employee.id as empId','employee.name as employeeName','employee.userId');
+        $qb->addSelect('employee.id as empId', 'employee.name as employeeName', 'employee.userId');
         $qb->addSelect('designation.name as employeeDesignationName');
 
         $qb->where('e.created >= :startDate')->setParameter('startDate', $startDate);
@@ -77,24 +78,24 @@ class CrmVisitRepository extends EntityRepository
         foreach ($loggedUser->getRoles() as $role) {
             $roleSplitArray = array_merge(explode('_', $role), $roleSplitArray);
         }
-        if (in_array('ADMIN', $roleSplitArray) && !$employee){
+        if (in_array('ADMIN', $roleSplitArray) && !$employee) {
             $userRole = [];
-            if (in_array('ROLE_CRM_POULTRY_ADMIN', $loggedUser->getRoles())){
+            if (in_array('ROLE_CRM_POULTRY_ADMIN', $loggedUser->getRoles())) {
                 array_push($userRole, 'ROLE_CRM_POULTRY_USER');
             }
-            if (in_array('ROLE_CRM_CATTLE_ADMIN', $loggedUser->getRoles())){
+            if (in_array('ROLE_CRM_CATTLE_ADMIN', $loggedUser->getRoles())) {
                 array_push($userRole, 'ROLE_CRM_CATTLE_USER');
             }
-            if (in_array('ROLE_CRM_AQUA_ADMIN', $loggedUser->getRoles())){
+            if (in_array('ROLE_CRM_AQUA_ADMIN', $loggedUser->getRoles())) {
                 array_push($userRole, 'ROLE_CRM_AQUA_USER');
             }
-            if (in_array('ROLE_CRM_SALES_MARKETING_ADMIN', $loggedUser->getRoles())){
+            if (in_array('ROLE_CRM_SALES_MARKETING_ADMIN', $loggedUser->getRoles())) {
                 array_push($userRole, 'ROLE_CRM_SALES_MARKETING_USER');
             }
             $query = '';
 //            dd($userRole);
             foreach ($userRole as $key => $role) {
-                if ($key !== 0){
+                if ($key !== 0) {
                     $query .= " OR ";
                 }
                 $query .= "employee.roles LIKE '%" . $role . "%'";
@@ -102,21 +103,20 @@ class CrmVisitRepository extends EntityRepository
             }
             $qb->andWhere($query);
 
-        }elseif ((in_array('ADMIN', $roleSplitArray) || in_array('ROLE_LINE_MANAGER', $loggedUser->getRoles())) && $employee){
+        } elseif ((in_array('ADMIN', $roleSplitArray) || in_array('ROLE_LINE_MANAGER', $loggedUser->getRoles())) && $employee) {
             $qb->andWhere('e.employee = :employee')->setParameter('employee', $employee);
-        }elseif (!in_array('ADMIN', $roleSplitArray) && !$employee){
+        } elseif (!in_array('ADMIN', $roleSplitArray) && !$employee) {
             $qb->andWhere('e.employee = :employee')->setParameter('employee', $loggedUser);
         }
-
 
 
         $results = $qb->getQuery()->getArrayResult();
         $data = [];
 
         foreach ($results as $result) {
-            $data[$result['empId']]['userId']=$result['userId'];
-            $data[$result['empId']]['employeeName']=$result['employeeName'];
-            $data[$result['empId']]['employeeDesignationName']=$result['employeeDesignationName'];
+            $data[$result['empId']]['userId'] = $result['userId'];
+            $data[$result['empId']]['employeeName'] = $result['employeeName'];
+            $data[$result['empId']]['employeeDesignationName'] = $result['employeeDesignationName'];
             $data[$result['empId']]['details'][$result['visitDate']->format('d-m-Y')][] = $result;
 //            $data['visitDays'][$result['visitDate']->format('d-m-Y')]['visitIds'][] = $result['visitId'];
 //            $data['visitIds'][] = $result['visitId'];
@@ -125,4 +125,66 @@ class CrmVisitRepository extends EntityRepository
         return $data;
     }
 
+    public function getVisitsStatus($firstDayOfMonth, $lastDayOfMonth, $selectedEmployee, $loggedUser)
+    {
+        $qb = $this->createQueryBuilder('e');
+
+        $qb->join('e.employee', 'employee');
+        $qb->leftJoin('e.workingMode', 'working_mode');
+
+        $qb->select('e.created AS visitDate');
+        $qb->addSelect('working_mode.id AS workingModeId', 'working_mode.name AS workingModeName');
+        $qb->addSelect('employee.id AS employeeId', 'employee.userId AS employeeUserId', 'employee.name AS employeeName');
+
+        $qb->where('e.created BETWEEN :start AND :end')->setParameters([
+            'start' => $firstDayOfMonth . ' 00:00:00',
+            'end' => $lastDayOfMonth . ' 23:59:59',
+        ]);
+        if ($selectedEmployee) {
+            $qb->andWhere('employee.id = :employeeId')->setParameter('employeeId', $selectedEmployee->getId());
+        }
+
+
+        $roleSplitArray = [];
+
+        foreach ($loggedUser->getRoles() as $role) {
+            $roleSplitArray = array_merge(explode('_', $role), $roleSplitArray);
+        }
+        if (in_array('ADMIN', $roleSplitArray)) {
+            $userRole = [];
+            if (in_array('ROLE_CRM_POULTRY_ADMIN', $loggedUser->getRoles())) {
+                array_push($userRole, 'ROLE_CRM_POULTRY_USER');
+            }
+            if (in_array('ROLE_CRM_CATTLE_ADMIN', $loggedUser->getRoles())) {
+                array_push($userRole, 'ROLE_CRM_CATTLE_USER');
+            }
+            if (in_array('ROLE_CRM_AQUA_ADMIN', $loggedUser->getRoles())) {
+                array_push($userRole, 'ROLE_CRM_AQUA_USER');
+            }
+            if (in_array('ROLE_CRM_SALES_MARKETING_ADMIN', $loggedUser->getRoles())) {
+                array_push($userRole, 'ROLE_CRM_SALES_MARKETING_USER');
+            }
+            $query = '';
+            foreach ($userRole as $key => $role) {
+                if ($key !== 0) {
+                    $query .= " OR ";
+                }
+                $query .= "employee.roles LIKE '%" . $role . "%'";
+
+            }
+            $qb->andWhere($query);
+        }
+
+        $results = $qb->getQuery()->getArrayResult();
+
+        $data = [];
+        foreach ($results as $result) {
+            $day = $result['visitDate']->format('d');
+
+            $data[$result['employeeId']][$day][] = $result;
+        }
+
+        return $data;
+
+    }
 }

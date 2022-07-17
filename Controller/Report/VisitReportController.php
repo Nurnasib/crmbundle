@@ -110,11 +110,64 @@ class VisitReportController extends AbstractController
     /**
      * @Route("/visit-status", name="visit_status")
      */
-    public function visitStatus()
+    public function visitStatus(Request $request)
     {
-        $group = $this->getDoctrine()->getRepository(Setting::class)->findOneBy(['slug' => 'employee']);
-        $employees = $this->getDoctrine()->getRepository(User::class)->findBy(['enabled' => true, 'userGroup' => $group]);
-        dd($employees);
-        return $this->render("@TerminalbdCrm/report/visit-status/index.html.twig");
+        $employees = null;
+        $firstDayOfMonth = null;
+        $lastDayOfMonth = null;
+        $selectedEmployee = null;
+        $visitStatus = null;
+        
+        $form = $this->createForm(SearchFilterFormType::class, null, ['loggedUser' => $this->getUser()]);
+        $form->handleRequest($request);
+        if ($form->isSubmitted()){
+
+            $selectedEmployee = $form->get('employee')->getData();
+            $month = $form->get('month')->getData();
+            $year = $form->get('year')->getData();
+
+            if ($month && $year){
+                $firstDayOfMonth = date('Y-m-d', strtotime("01-$month-$year"));
+                $lastDayOfMonth = date('Y-m-t', strtotime("01-$month-$year"));
+
+                $group = $this->getDoctrine()->getRepository(Setting::class)->findOneBy(['slug' => 'employee']);
+                
+                $roleSplitArray = [];
+                $userRoles = [];
+
+                foreach ($this->getUser()->getRoles() as $role) {
+                    $roleSplitArray = array_merge(explode('_', $role), $roleSplitArray);
+                }
+                if (in_array('ADMIN', $roleSplitArray)) {
+                    if (in_array('ROLE_CRM_POULTRY_ADMIN', $this->getUser()->getRoles())) {
+                        array_push($userRoles, 'ROLE_CRM_POULTRY_USER');
+                    }
+                    if (in_array('ROLE_CRM_CATTLE_ADMIN', $this->getUser()->getRoles())) {
+                        array_push($userRoles, 'ROLE_CRM_CATTLE_USER');
+                    }
+                    if (in_array('ROLE_CRM_AQUA_ADMIN', $this->getUser()->getRoles())) {
+                        array_push($userRoles, 'ROLE_CRM_AQUA_USER');
+                    }
+                    if (in_array('ROLE_CRM_SALES_MARKETING_ADMIN', $this->getUser()->getRoles())) {
+                        array_push($userRoles, 'ROLE_CRM_SALES_MARKETING_USER');
+                    }
+                }
+
+                $employees = $this->getDoctrine()->getRepository(User::class)->getServiceModeWiseEmployee($userRoles);
+
+                $visitStatus = $this->getDoctrine()->getRepository(CrmVisit::class)->getVisitsStatus($firstDayOfMonth, $lastDayOfMonth, $selectedEmployee, $this->getUser());
+            }
+
+        }
+        
+        return $this->render("@TerminalbdCrm/report/visit-status/index.html.twig",[
+            'employees' => $employees,
+            'visitStatus' => $visitStatus,
+            'firstDayOfMonth' => $firstDayOfMonth,
+            'lastDayOfMonth' => $lastDayOfMonth,
+            'selectedEmployee' => $selectedEmployee,
+            'form' => $form->createView(),
+            
+        ]);
     }
 }
