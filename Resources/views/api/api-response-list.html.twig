@@ -45,10 +45,10 @@
                         <tbody>
                         {% if records is defined and records is not empty %}
                             {% for record in records %}
-                                {% set count = loop.index + (records.itemNumberPerPage * records.currentPageNumber) - records.itemNumberPerPage %}
+{#                                {% set count = loop.index + (records.itemNumberPerPage * records.currentPageNumber) - records.itemNumberPerPage %}#}
                                 <tr>
-{#                                    <td>{{ loop.index }}</td>#}
-                                    <td>{{ count }}</td>
+                                    <td>{{ loop.index }}</td>
+{#                                    <td>{{ count }}</td>#}
                                     <td>{{ record.employee ? record.employee.userId : '' }}</td>
                                     <td>{{ record.employee.name|default('') }}</td>
                                     <td>{{ record.employee.serviceMode.name|default('') }}</td>
@@ -69,16 +69,16 @@
                         {% endif %}
                         </tbody>
                     </table>
-                    <div class="row">
-                        <div class="col-md-3">
-                            <div class="count">
-                                Total Records: {{ records.getTotalItemCount }}
-                            </div>
-                        </div>
-                        <div class="col-md-9 navigation" style="padding-right: 0;">
-                            {{ knp_pagination_render(records) }}
-                        </div>
-                    </div>
+{#                    <div class="row">#}
+{#                        <div class="col-md-3">#}
+{#                            <div class="count">#}
+{#                                Total Records: {{ records.getTotalItemCount }}#}
+{#                            </div>#}
+{#                        </div>#}
+{#                        <div class="col-md-9 navigation" style="padding-right: 0;">#}
+{#                            {{ knp_pagination_render(records) }}#}
+{#                        </div>#}
+{#                    </div>#}
                 </div>
             </div>
         </div>
