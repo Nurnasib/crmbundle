@@ -5,6 +5,8 @@ namespace Terminalbd\CrmBundle\Controller\Report;
 
 
 
+use App\Entity\Core\Setting;
+use App\Entity\User;
 use Dompdf\Dompdf;
 use Dompdf\Options;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -103,5 +105,16 @@ class VisitReportController extends AbstractController
             ]);
         }
 
+    }
+
+    /**
+     * @Route("/visit-status", name="visit_status")
+     */
+    public function visitStatus()
+    {
+        $group = $this->getDoctrine()->getRepository(Setting::class)->findOneBy(['slug' => 'employee']);
+        $employees = $this->getDoctrine()->getRepository(User::class)->findBy(['enabled' => true, 'userGroup' => $group]);
+        dd($employees);
+        return $this->render("@TerminalbdCrm/report/visit-status/index.html.twig");
     }
 }
