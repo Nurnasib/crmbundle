@@ -117,7 +117,7 @@
         {% for monthYear, regionFcrDetails in entities %}
             {% if monthYear is not same as 'fcrSonaliStandard' and monthYear is not same as 'totalRecord' and monthYear is not same as 'fcrWithMortalitySummery' %}
                 <tr>
-                    <td colspan="20"><h4>{{ monthYear }}</h4></td>
+                    <td colspan="22"><h4>{{ monthYear }}</h4></td>
                 </tr>
                 {% for regionId, employeesFcrDetails in regionFcrDetails %}
                     {% set recordCount=1 %}
@@ -152,8 +152,13 @@
                                     {#                            <td>{{ entities['fcrSonaliStandard'] and entities['fcrSonaliStandard'][fcrDetail['ageDay']]?(entities['fcrSonaliStandard'][fcrDetail['ageDay']]['cumulativeFeedIntake']/entities['fcrSonaliStandard'][fcrDetail['ageDay']]['targetBodyWeight'])|number_format(2,'.',''):'' }}</td>#}
                                     <td>{{ fcrDetail['hatcheryName']|default('') }}</td>
                                     <td>{{ fcrDetail['breedBame']|default('') }}</td>
-                                    <td>{{ employeesFcrDetails[employeeId]['details']|length>0?(employeesFcrDetails[employeeId]['details']|arraySumColWise('fcrWithMortality')/employeesFcrDetails[employeeId]['details']|length)|number_format(2,'.',''):'' }}</td>
-                                    <td>{{ employeesFcrDetails[employeeId]['details']|length>0?(employeesFcrDetails[employeeId]['details']|arraySumColWise('ageDay')/employeesFcrDetails[employeeId]['details']|length)|number_format(2,'.',''):'' }}</td>
+
+                                    {% if loop.first %}
+                                        <td valign="middle" rowspan="{{ fcrDetails['details']|length }}">{{ employeesFcrDetails[employeeId]['details']|length>0?(employeesFcrDetails[employeeId]['details']|arraySumColWise('fcrWithMortality')/employeesFcrDetails[employeeId]['details']|length)|number_format(3,'.',''):'' }}</td>
+                                        <td valign="middle" rowspan="{{ fcrDetails['details']|length }}">{{ employeesFcrDetails[employeeId]['details']|length>0?(employeesFcrDetails[employeeId]['details']|arraySumColWise('ageDay')/employeesFcrDetails[employeeId]['details']|length)|number_format(3,'.',''):'' }}</td>
+                                    {% endif %}
+
+
                                     <td>{{ fcrDetail['feedName']|default('') }}</td>
                                     <td>{{ fcrDetail['feedMillName']|default('') }}</td>
                                     {#<td>{{ fcrDetail['feedTypeName']|default('') }}</td>
