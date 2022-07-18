@@ -14,6 +14,7 @@ namespace Terminalbd\CrmBundle\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -108,6 +109,54 @@ class BroilerStandardController extends AbstractController
         $em->flush();
         $this->addFlash('success', 'post.deleted_successfully');
         return new Response('Success');
+    }
+
+    /**
+     * @Route("/{id}/inline-age-update", name="inline_update_broiler_age")
+     */
+    public function inlineAgeUpdate(BroilerStandard $standard, Request $request)
+    {
+        $age = $request->request->get('value');
+        
+        $standard->setAge($age);
+        $this->getDoctrine()->getManager()->flush();
+
+        return new JsonResponse([
+            'status' => 200,
+            'message' => 'success'
+        ]);
+    }
+    
+    /**
+     * @Route("/{id}/inline-update-target-body-weight", name="inline_update_broiler_target_body_weight")
+     */
+    public function inlineTargetBodyWeightUpdate(BroilerStandard $standard, Request $request)
+    {
+        $weight = $request->request->get('value');
+        
+        $standard->setTargetBodyWeight($weight);
+        $this->getDoctrine()->getManager()->flush();
+
+        return new JsonResponse([
+            'status' => 200,
+            'message' => 'success'
+        ]);
+    }
+    
+    /**
+     * @Route("/{id}/inline-update-target-feed-consumption", name="inline_update_broiler_target_feed_consumption")
+     */
+    public function inlineTargetFeedConsumptionUpdate(BroilerStandard $standard, Request $request)
+    {
+        $consumption = $request->request->get('value');
+        
+        $standard->setTargetFeedConsumption($consumption);
+        $this->getDoctrine()->getManager()->flush();
+
+        return new JsonResponse([
+            'status' => 200,
+            'message' => 'success'
+        ]);
     }
 
     

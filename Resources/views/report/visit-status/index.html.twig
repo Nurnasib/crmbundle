@@ -99,7 +99,7 @@
                                         {% for day in 1..lastDayOfMonth|date('d') %}
                                             <td align="center">
                                                 {% if visitStatus[selectedEmployee.id]["%02d"|format(day)] is defined %}
-                                                    <a href="{{ path('visit_details_report', {'mode': 'pdf', 'visitDate': day ~ '-' ~ firstDayOfMonth|date('m-Y'), 'employeeId': selectedEmployee.id }) }}"
+                                                    <a style="text-decoration: underline" href="{{ path('visit_details_report', {'mode': 'pdf', 'visitDate': day ~ '-' ~ firstDayOfMonth|date('m-Y'), 'employeeId': selectedEmployee.id }) }}"
                                                        target="_blank" title="View visit details" style="text-decoration: underline">{{ visitStatus[selectedEmployee.id]["%02d"|format(day)]|length }}</i></a>
                                                 {% else %}
                                                     -
@@ -122,7 +122,7 @@
                                             {% for day in 1..lastDayOfMonth|date('d') %}
                                                 <td align="center">
                                                     {% if visitStatus[employee.id]["%02d"|format(day)] is defined %}
-                                                        <a href="{{ path('visit_details_report', {'mode': 'pdf', 'visitDate': day ~ '-' ~ firstDayOfMonth|date('m-Y'), 'employeeId': employee.id }) }}"
+                                                        <a style="text-decoration: underline" href="{{ path('visit_details_report', {'mode': 'pdf', 'visitDate': day ~ '-' ~ firstDayOfMonth|date('m-Y'), 'employeeId': employee.id }) }}"
                                                            target="_blank">{{ visitStatus[employee.id]["%02d"|format(day)]|length }}</a>
                                                     {% else %}
                                                         -

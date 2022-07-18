@@ -134,6 +134,56 @@ class SonaliStandardController extends AbstractController
         );
 
     }
+
+
+
+    /**
+     * @Route("/{id}/inline-age-update", name="inline_update_sonali_age")
+     */
+    public function inlineAgeUpdate(SonaliStandard $standard, Request $request)
+    {
+        $age = $request->request->get('value');
+
+        $standard->setAge($age);
+        $this->getDoctrine()->getManager()->flush();
+
+        return new JsonResponse([
+            'status' => 200,
+            'message' => 'success'
+        ]);
+    }
+
+    /**
+     * @Route("/{id}/inline-update-feed-intake-day", name="inline_update_sonali_feed_intake_day")
+     */
+    public function inlineFeedIntakeUpdate(SonaliStandard $standard, Request $request)
+    {
+        $amount = $request->request->get('value');
+
+        $standard->setFeedIntakePerDay($amount);
+        $this->getDoctrine()->getManager()->flush();
+
+        return new JsonResponse([
+            'status' => 200,
+            'message' => 'success'
+        ]);
+    }
+
+    /**
+     * @Route("/{id}/inline-update-target-body-weight", name="inline_update_sonali_target_body_weight")
+     */
+    public function inlineTargetBodyWeightUpdate(SonaliStandard $standard, Request $request)
+    {
+        $weight = $request->request->get('value');
+
+        $standard->setTargetBodyWeight($weight);
+        $this->getDoctrine()->getManager()->flush();
+
+        return new JsonResponse([
+            'status' => 200,
+            'message' => 'success'
+        ]);
+    }
     
 
 

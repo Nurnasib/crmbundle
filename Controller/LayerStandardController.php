@@ -21,7 +21,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
-use Terminalbd\CrmBundle\Entity\BroilerStandard;
 use Terminalbd\CrmBundle\Entity\LayerStandard;
 use Terminalbd\CrmBundle\Entity\Setting;
 use Terminalbd\CrmBundle\Entity\SettingLifeCycle;
@@ -77,7 +76,6 @@ class LayerStandardController extends AbstractController
     }
 
     /**
-     * Displays a form to edit an existing BroilerStandard entity.
      *
      * @Route("/{id}/edit", methods={"GET", "POST"}, name="layer_standard_edit")
      * @param Request $request
@@ -120,7 +118,6 @@ class LayerStandardController extends AbstractController
     }
 
     /**
-     * Deletes a BroilerStandard entity.
      * @Route("/{id}/delete", methods={"GET"}, name="layer_standard_delete")
      * @param $id
      * @return Response
@@ -135,6 +132,86 @@ class LayerStandardController extends AbstractController
         return new Response('Success');
     }
 
+
+    /**
+     * @Route("/{id}/inline-age-update", name="inline_update_layer_age")
+     */
+    public function inlineAgeUpdate(LayerStandard $standard, Request $request)
+    {
+        $age = $request->request->get('value');
+
+        $standard->setAge($age);
+        $this->getDoctrine()->getManager()->flush();
+
+        return new JsonResponse([
+            'status' => 200,
+            'message' => 'success'
+        ]);
+    }
+
+    /**
+     * @Route("/{id}/inline-update-target-body-weight", name="inline_update_layer_target_body_weight")
+     */
+    public function inlineTargetBodyWeightUpdate(LayerStandard $standard, Request $request)
+    {
+        $weight = $request->request->get('value');
+
+        $standard->setTargetBodyWeight($weight);
+        $this->getDoctrine()->getManager()->flush();
+
+        return new JsonResponse([
+            'status' => 200,
+            'message' => 'success'
+        ]);
+    }
+
+    /**
+     * @Route("/{id}/inline-update-target-feed-consumption", name="inline_update_layer_target_feed_consumption")
+     */
+    public function inlineTargetFeedConsumptionUpdate(LayerStandard $standard, Request $request)
+    {
+        $consumption = $request->request->get('value');
+
+        $standard->setTargetFeedConsumption($consumption);
+        $this->getDoctrine()->getManager()->flush();
+
+        return new JsonResponse([
+            'status' => 200,
+            'message' => 'success'
+        ]);
+    }
+
+    /**
+     * @Route("/{id}/inline-update-target-egg-production", name="inline_update_layer_target_egg_production")
+     */
+    public function inlineTargetEggProductionUpdate(LayerStandard $standard, Request $request)
+    {
+        $value = $request->request->get('value');
+
+        $standard->setTargetEggProduction($value);
+        $this->getDoctrine()->getManager()->flush();
+
+        return new JsonResponse([
+            'status' => 200,
+            'message' => 'success'
+        ]);
+    }
+
+    /**
+     * @Route("/{id}/inline-update-target-egg-weight", name="inline_update_layer_target_egg_weight")
+     */
+    public function inlineTargetEggWeightUpdate(LayerStandard $standard, Request $request)
+    {
+        $value = $request->request->get('value');
+
+        $standard->setTargetEggWeight($value);
+        $this->getDoctrine()->getManager()->flush();
+
+        return new JsonResponse([
+            'status' => 200,
+            'message' => 'success'
+        ]);
+    }
     
 
 

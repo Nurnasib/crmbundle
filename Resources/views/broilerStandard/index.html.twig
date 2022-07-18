@@ -8,7 +8,8 @@
                 <div class="row align-items-center">
                     <ul class="breadcrumb">
                         <li class="breadcrumb-item"><a href="/"><i class="feather icon-home"></i></a></li>
-                        <li class="breadcrumb-item"> <a href="{{ path('kpi_setting') }}">  {{ 'Settings'|trans }}</a></li>
+                        <li class="breadcrumb-item"><a href="{{ path('kpi_setting') }}">  {{ 'Settings'|trans }}</a>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -21,8 +22,10 @@
                     <h5>{{ 'Broiler Standard'|trans }}</h5>
                     <div class="card-header-right">
                         <div class="btn-group btn-group-sm" role="group" aria-label="Button group with nested dropdown">
-                            <a href="{{ path('broiler_standard_new') }}" class="btn btn-sm  green-bg white-font"><i class="fas fa-plus"></i>{{ 'Add New'|trans }}</a>
-                            <a href="{{ path('broiler_standard') }}" class="btn btn-sm gray-bg white-font"><i class="fa fa-th-list"></i>{{ 'Broiler'|trans }}</a>
+                            <a href="{{ path('broiler_standard_new') }}" class="btn btn-sm  green-bg white-font"><i
+                                        class="fas fa-plus"></i>{{ 'Add New'|trans }}</a>
+                            <a href="{{ path('broiler_standard') }}" class="btn btn-sm gray-bg white-font"><i
+                                        class="fa fa-th-list"></i>{{ 'Broiler'|trans }}</a>
                         </div>
                     </div>
                 </div>
@@ -40,24 +43,69 @@
                             <th scope="col">Target Feed Consumption(gm)</th>
                             <th scope="col">FCR</th>
 
-                            <th scope="col text-center"><i class="feather icon-settings"></i></th>
+                            <th scope="col"><i class="feather icon-settings"></i></th>
                         </tr>
                         </thead>
                         <tbody>
                         {% for entity in entities %}
-                        <tr>
-                            <td>{{ loop.index }}</td>
-                            <td>{{ entity.age }}</td>
-                            <td>{{ entity.targetBodyWeight }}</td>
-                            <td>{{ entity.targetFeedConsumption }}</td>
-                            <td>{{ entity.targetBodyWeight>0?(entity.targetFeedConsumption/entity.targetBodyWeight)|number_format(3,'.',''):'' }}</td>
+                            <tr>
+                                <td>{{ loop.index }}</td>
 
-                            <td>
-                                <a class="btn btn-mini yellow-bg white-font" href="{{ path('broiler_edit',{'id':entity.id}) }}"><i class="feather icon-edit"></i> Edit</a>
-                                <a class="btn  btn-transparent btn-mini red-font remove" href="javascript:" data-action="{{ path('broiler_delete',{'id':entity.id}) }}"><i class="fa fa-remove"></i></a>
-                            </td>
+                                <td>
+                                    <a
+                                            data-type="text"
+                                            class="editable"
+                                            id="age-{{ entity.id }}"
+                                            data-name="age"
+                                            href="javascript:"
+                                            data-url="{{ path('inline_update_broiler_age',{'id':entity.id}) }}"
+                                            data-pk="{{ entity.id }}"
+                                            data-value="{{ entity.age }}"
+                                    >
+                                        {{ entity.age }}
 
-                        </tr>
+                                    </a>
+                                </td>
+                                <td>
+                                    <a
+                                            data-type="text"
+                                            class="editable"
+                                            id="target-body-weight-{{ entity.id }}"
+                                            data-name="target-body-weight"
+                                            href="javascript:"
+                                            data-url="{{ path('inline_update_broiler_target_body_weight',{'id':entity.id}) }}"
+                                            data-pk="{{ entity.id }}"
+                                            data-value="{{ entity.targetBodyWeight }}"
+                                    >{{ entity.targetBodyWeight }}
+
+                                    </a>
+                                </td>
+                                <td>
+                                    <a
+                                            data-type="text"
+                                            class="editable"
+                                            id="target-feed-consumption-{{ entity.id }}"
+                                            data-name="target-feed-consumption"
+                                            href="javascript:"
+                                            data-url="{{ path('inline_update_broiler_target_feed_consumption',{'id':entity.id}) }}"
+                                            data-pk="{{ entity.id }}"
+                                            data-value="{{ entity.targetFeedConsumption }}"
+                                    >{{ entity.targetFeedConsumption }}
+
+                                    </a>
+                                </td>
+                                <td>{{ entity.targetBodyWeight > 0 ? (entity.targetFeedConsumption/entity.targetBodyWeight)|number_format(3,'.',''):'' }}</td>
+
+                                <td>
+                                    <a class="btn btn-mini yellow-bg white-font"
+                                       href="{{ path('broiler_edit',{'id':entity.id}) }}"><i
+                                                class="feather icon-edit"></i> Edit</a>
+                                    <a class="btn  btn-transparent btn-mini red-font remove" href="javascript:"
+                                       data-action="{{ path('broiler_delete',{'id':entity.id}) }}"><i
+                                                class="fa fa-remove"></i></a>
+                                </td>
+
+                            </tr>
                         {% endfor %}
                         </tbody>
                     </table>
@@ -68,14 +116,30 @@
     </div>
 {% endblock %}
 {% block cssBlock %}
+    <style>
+        .editable-click, a.editable-click, a.editable-click:hover {
+            text-decoration: none;
+            border-bottom: dashed 1px #0088cc;
+        }
+    </style>
     <link rel="stylesheet" href="{{ asset('assets/module/css/app.css') }}">
-{% endblock  %}
+{% endblock %}
 {% block javascripts %}
     {{ parent() }}
     <script type="application/javascript" src="{{ asset('assets/module/js/app.js') }}"></script>
-{% endblock  %}
+    <script type="application/javascript"
+            src="{{ asset('assets/plugins/bootstrap-editable/js/bootstrap4-editable.js') }}"></script>
+
+{% endblock %}
 {% block documentready %}
     {{ parent() }}
+    {#    <script>#}
+    {#        inline edit#}
+    $.fn.editable.defaults.mode ='inline';
+    {#    $.fn.editable.defaults.mode = 'popover';#}
+    $('.editable').editable();
+
+
     $('#datatable').DataTable( {
     "pageLength": 25,
     'columnDefs': [ {
@@ -83,4 +147,5 @@
     'orderable': false
     }]
     });
+
 {% endblock %}

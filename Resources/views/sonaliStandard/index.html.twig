@@ -41,7 +41,7 @@
                             <th scope="col">Target Body Weight(gm)</th>
                             <th scope="col">F.C.R</th>
 
-                            <th scope="col text-center"><i class="feather icon-settings"></i></th>
+                            <th scope="col"><i class="feather icon-settings"></i></th>
                         </tr>
                         </thead>
                         <tbody>
@@ -52,10 +52,51 @@
 
                         <tr>
                             <td>{{ loop.index }}</td>
-                            <td>{{ entity.age }}</td>
-                            <td>{{ entity.feedIntakePerDay }}</td>
-                            <td>{{ cumulative|number_format(0,'.','') }}</td>
-                            <td>{{ entity.targetBodyWeight }}</td>
+                            <td>
+                                <a
+                                        data-type="text"
+                                        class="editable"
+                                        id="age-{{ entity.id }}"
+                                        data-name="age"
+                                        href="javascript:"
+                                        data-url="{{ path('inline_update_sonali_age',{'id':entity.id}) }}"
+                                        data-pk="{{ entity.id }}"
+                                        data-value="{{ entity.age }}"
+                                >
+                                    {{ entity.age }}
+                                </a>
+                            </td>
+                            <td>
+                                <a
+                                        data-type="text"
+                                        class="editable"
+                                        id="feed-intake-day-{{ entity.id }}"
+                                        data-name="feed-intake-day"
+                                        href="javascript:"
+                                        data-url="{{ path('inline_update_sonali_feed_intake_day',{'id':entity.id}) }}"
+                                        data-pk="{{ entity.id }}"
+                                        data-value="{{ entity.feedIntakePerDay }}"
+                                >
+                                    {{ entity.feedIntakePerDay }}
+                                </a>
+                            </td>
+                            <td>
+                                {{ cumulative|number_format(0,'.','') }}
+                            </td>
+                            <td>
+                                <a
+                                        data-type="text"
+                                        class="editable"
+                                        id="target-body-weight-{{ entity.id }}"
+                                        data-name="target-body-weight"
+                                        href="javascript:"
+                                        data-url="{{ path('inline_update_sonali_target_body_weight',{'id':entity.id}) }}"
+                                        data-pk="{{ entity.id }}"
+                                        data-value="{{ entity.targetBodyWeight }}"
+                                >{{ entity.targetBodyWeight }}
+
+                                </a>
+                            </td>
                             <td>{{ fcr | round(2,'ceil') }}</td>
 
                             <td>
@@ -75,13 +116,29 @@
 {% endblock %}
 {% block cssBlock %}
     <link rel="stylesheet" href="{{ asset('assets/module/css/app.css') }}">
+    <style>
+        .editable-click, a.editable-click, a.editable-click:hover {
+            text-decoration: none;
+            border-bottom: dashed 1px #0088cc;
+        }
+    </style>
 {% endblock  %}
 {% block javascripts %}
     {{ parent() }}
     <script type="application/javascript" src="{{ asset('assets/module/js/app.js') }}"></script>
+    <script type="application/javascript"
+            src="{{ asset('assets/plugins/bootstrap-editable/js/bootstrap4-editable.js') }}"></script>
 {% endblock  %}
 {% block documentready %}
     {{ parent() }}
+
+
+    {#        inline edit#}
+    $.fn.editable.defaults.mode ='inline';
+    {#    $.fn.editable.defaults.mode = 'popover';#}
+    $('.editable').editable();
+
+
     $('#datatable').DataTable( {
     "pageLength": 25,
     'columnDefs': [ {
