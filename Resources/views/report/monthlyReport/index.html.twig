@@ -75,6 +75,7 @@
                         </th>
                         <th>
                             <div class="btn-group">
+                                {{ form_widget(form._token) }}
                                 <button type="submit" name="search" class="btn btn-primary btn-sm" title="Search" value="search"><i class="fa fa-search" aria-hidden="true"></i></button>
                                 <a href="{{ path('monthly_report_index') }}" class="btn purple-bg btn-sm white-font" title="Reset" value="reset"><i class="fa fa-refresh" aria-hidden="true"></i></a>
                                 {% if entities is defined and entities is not empty %}

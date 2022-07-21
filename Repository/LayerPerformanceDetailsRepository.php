@@ -91,8 +91,15 @@ class LayerPerformanceDetailsRepository extends BaseRepository
             $qb->addSelect('feedMill.name AS feedMillName');
             $qb->addSelect('feedType.name AS feedTypeName');
             $qb->addSelect('color.name AS colorName');
+            $qb->addSelect('region.id AS regionId', 'region.name AS regionName');
 
             $qb->join('e.employee', 'employee');
+            
+            $qb->leftJoin('e.visit','visit');
+            $qb->leftJoin('visit.location','location');
+            $qb->leftJoin('location.parent','dist');
+            $qb->leftJoin('dist.parent','region');
+            
             $qb->leftJoin('employee.designation', 'designation');
             $qb->leftJoin('e.customer','customer');
             $qb->leftJoin('e.agent', 'agent');
@@ -117,16 +124,41 @@ class LayerPerformanceDetailsRepository extends BaseRepository
                 $qb->andWhere('e.reportingMonth >= :reportingMonthStart')->setParameter('reportingMonthStart', $startDate);
                 $qb->andWhere('e.reportingMonth <= :reportingMonthEnd')->setParameter('reportingMonthEnd', $endDate);
             }
+            $feedMill = isset($filterBy['feedMill'])? $filterBy['feedMill']: '';
+            if (!empty($feedMill)){
+                $qb->andWhere('feedMill.id = :feedMillId')->setParameter('feedMillId', $feedMill);
+            }
+            $region = isset($filterBy['region'])? $filterBy['region']: '';
+            if (!empty($region)){
+                $qb->andWhere('region.id = :regionId')->setParameter('regionId', $region);
+            }
             $qb->orderBy('e.reportingMonth','ASC');
 
             $results = $qb->getQuery()->getArrayResult();
             if($results){
+                $avgSummery=[];
                 foreach ($results as $result){
+                    $ageGroup='';
+                    if($result['ageWeek']>60){
+                        $ageGroup='Old Age';
+                        $avgSummery['old_age'][]=$result;
+                    }elseif($result['ageWeek']>40 && $result['ageWeek']<=60){
+                        $ageGroup='Middle Age';
+                        $avgSummery['middle_age'][]=$result;
+                    }elseif($result['ageWeek']>25 && $result['ageWeek']<=40){
+                        $ageGroup='Young Age';
+                        $avgSummery['young_age'][]=$result;
+                    }else{
+                        $ageGroup='Not Consider';
+                    }
+                    $result['ageGroup']=$ageGroup;
                     $monthYear = $result['reportingMonth']->format('F-Y');
-                    $returnArray[$monthYear][$result['employeeId']]['name']=$result['employeeName'];
-                    $returnArray[$monthYear][$result['employeeId']]['employeeDesignationName']=$result['employeeDesignationName'];
-                    $returnArray[$monthYear][$result['employeeId']]['details'][]=$result;
+                    $returnArray[$monthYear][$result['regionId']][$result['employeeId']]['name']=$result['employeeName'];
+                    $returnArray[$monthYear][$result['regionId']][$result['employeeId']]['employeeDesignationName']=$result['employeeDesignationName'];
+                    $returnArray[$monthYear][$result['regionId']][$result['employeeId']]['details'][]=$result;
+                    $returnArray[$monthYear][$result['regionId']]['recordCount'][]=$result;
                 }
+                $returnArray['avgSummery']=$avgSummery;
             }
         }
 //        dd($returnArray);

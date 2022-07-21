@@ -65,7 +65,6 @@ class FcrDetailsRepository extends BaseRepository
 
     public function getFcrDetailsByEmployee($report, $filterBy)
     {
-//        dd($filterBy);
         $returnArray=[];
         if(!empty($report)){
             $qb = $this->createQueryBuilder('e');
@@ -137,10 +136,13 @@ class FcrDetailsRepository extends BaseRepository
                 foreach ($results as $result){
                     $result['cfcr']=(((2-($result['weight']/1000))*0.25)+($result['fcrWithMortality']));
                     $monthYear = $result['createdAt']->format('F-Y');
-                    
+
                     $returnArray[$monthYear][$result['regionId']][$result['employeeId']]['name']=$result['employeeName'];
                     $returnArray[$monthYear][$result['regionId']][$result['employeeId']]['details'][]=$result;
                     $returnArray[$monthYear][$result['regionId']]['recordCount'][]=$result;
+                    $returnArray[$monthYear]['monthRecordCount'][] = $result;
+                    
+
                     if(in_array($report->getSlug(),['fcr-before-sale-boiler','fcr-before-sale-sonali'])){
                         if($result['weight']>=$result['weightStandard']){
                             $bodyWtGatterThanStandard[]=$result;
