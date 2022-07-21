@@ -131,16 +131,14 @@ class MonthlyReportController extends AbstractController
             if ($isExcel && $entities) {
                 return $this->downloadExcel($report, $filterBy, $parameterBag, $entities);
             }
-
-            return $this->render('@TerminalbdCrm/report/monthlyReport/index.html.twig', ['form' => $form->createView(),
-                'entities' => $entities,
-                'filterBy' => $filterBy,
-                'lifeCycleSlug' => $report ? $report->getSlug() : null,
-                'employee' => $employee,
-                'report' => $report,
-                'species' => $species,]);
-
         }
+        return $this->render('@TerminalbdCrm/report/monthlyReport/index.html.twig', ['form' => $form->createView(),
+            'entities' => $entities,
+            'filterBy' => $filterBy,
+            'lifeCycleSlug' => $report ? $report->getSlug() : null,
+            'employee' => $employee,
+            'report' => $report,
+            'species' => $species,]);
     }
 
     private function downloadExcel($report, $filterBy, $parameterBag, $data)
