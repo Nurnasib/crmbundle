@@ -2482,48 +2482,49 @@ class ApiController extends AbstractController
 
                 if($existingFarmerCheck){
                     return new JsonResponse(['statusCode'=>'409','message'=>'This Farmar Already Exist.']);
-                }
-                // Add new Farmer
-                $newFarmer = new CrmCustomer();
-                $newFarmer->setName($parameters['name']);
-                $newFarmer->setMobile($parameters['mobile']);
-                $newFarmer->setAddress(isset($parameters['address']) ? $parameters['address'] : null);
-                $newFarmer->setAgent($agent ?: ($subAgent ?: ($otherAgent ?: null)));
-                $newFarmer->setOtherAgent($otherAgent);
-                $newFarmer->setLocation($location);
-                $newFarmer->setCustomerGroup($farmerGroup);
-                $newFarmer->setCreated(new \DateTime('now'));
-                $this->getDoctrine()->getManager()->persist($newFarmer);
-                $this->getDoctrine()->getManager()->flush();
-
-                // Introduce new Farmer
-                $introduceFarmer = new FarmerIntroduceDetails();
-                $introduceFarmer->setAgent($agent ?: ($subAgent ?: ($otherAgent ?: null)));
-                $introduceFarmer->setCustomer($newFarmer);
-                $introduceFarmer->setSubAgent($subAgent);
-                $introduceFarmer->setEmployee($employee);
-                $introduceFarmer->setOtherAgent($otherAgent);
-                $introduceFarmer->setFarmerType($farmerType);
-                if ($feed->getName() != 'Nourish'){
-                    $introduceFarmer->setOtherFeed($feed);
-                }
-                $introduceFarmer->setFeed($feed);
-                $introduceFarmer->setCultureSpeciesItemAndQty(isset($parameters['cultureSpeciesItemAndQty']) ? $parameters['cultureSpeciesItemAndQty'] : null);
-                $introduceFarmer->setCreatedAt(new \DateTime('now'));
-
-                if ((isset($parameters['agentId']) && !empty($parameters['agentId'])) && ($feed && $feed->getName() == 'Nourish')){
-                    $introduceFarmer->setIntroduceDate(new \DateTime('now'));
                 }else{
-                    $introduceFarmer->setIntroduceDate(null);
+                    // Add new Farmer
+                    $newFarmer = new CrmCustomer();
+                    $newFarmer->setName($parameters['name']);
+                    $newFarmer->setMobile($parameters['mobile']);
+                    $newFarmer->setAddress(isset($parameters['address']) ? $parameters['address'] : null);
+                    $newFarmer->setAgent($agent ?: ($subAgent ?: ($otherAgent ?: null)));
+                    $newFarmer->setOtherAgent($otherAgent);
+                    $newFarmer->setLocation($location);
+                    $newFarmer->setCustomerGroup($farmerGroup);
+                    $newFarmer->setCreated(new \DateTime('now'));
+                    $this->getDoctrine()->getManager()->persist($newFarmer);
+                    $this->getDoctrine()->getManager()->flush();
+
+                    // Introduce new Farmer
+                    $introduceFarmer = new FarmerIntroduceDetails();
+                    $introduceFarmer->setAgent($agent ?: ($subAgent ?: ($otherAgent ?: null)));
+                    $introduceFarmer->setCustomer($newFarmer);
+                    $introduceFarmer->setSubAgent($subAgent);
+                    $introduceFarmer->setEmployee($employee);
+                    $introduceFarmer->setOtherAgent($otherAgent);
+                    $introduceFarmer->setFarmerType($farmerType);
+                    if ($feed->getName() != 'Nourish'){
+                        $introduceFarmer->setOtherFeed($feed);
+                    }
+                    $introduceFarmer->setFeed($feed);
+                    $introduceFarmer->setCultureSpeciesItemAndQty(isset($parameters['cultureSpeciesItemAndQty']) ? $parameters['cultureSpeciesItemAndQty'] : null);
+                    $introduceFarmer->setCreatedAt(new \DateTime('now'));
+
+                    if ((isset($parameters['agentId']) && !empty($parameters['agentId'])) && ($feed && $feed->getName() == 'Nourish')){
+                        $introduceFarmer->setIntroduceDate(new \DateTime('now'));
+                    }else{
+                        $introduceFarmer->setIntroduceDate(null);
+                    }
+
+                    $this->getDoctrine()->getManager()->persist($introduceFarmer);
+                    $this->getDoctrine()->getManager()->flush();
+
+                    return new JsonResponse([
+                        'statusCode' => 201,
+                        'message' => 'success'
+                    ]);
                 }
-
-                $this->getDoctrine()->getManager()->persist($introduceFarmer);
-                $this->getDoctrine()->getManager()->flush();
-
-                return new JsonResponse([
-                    'statusCode' => 201,
-                    'message' => 'success'
-                ]);
             }else{
                 return new JsonResponse([
                     'statusCode' => 422,
