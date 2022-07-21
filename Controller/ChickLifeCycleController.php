@@ -163,6 +163,13 @@ class ChickLifeCycleController extends AbstractController
         $entity->setWithoutMortality($entity->calculateWithoutMortality());
         $entity->setWithMortality($entity->calculateWithMortality());
 
+        if(isset($data['feedType']) && $data['feedType']!=""){
+            $feedTypeObj = $this->getDoctrine()->getRepository(Setting::class)->find($data['feedType']);
+            if($feedTypeObj){
+                $feedType=$feedTypeObj;
+            }
+        }
+
 //        $entity->setHatchery($hatchery);
 //        $entity->setBreed($breed);
 //        $entity->setFeed($feed);
