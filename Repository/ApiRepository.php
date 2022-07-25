@@ -53,12 +53,12 @@ use function Doctrine\ORM\QueryBuilder;
 class ApiRepository extends BaseRepository
 {
 
-    protected function handleLocationSearchBetween($qb,$data)
+    protected function handleLocationSearchBetween($qb, $data)
     {
 
-        if($data){
-            $locations = explode(',',$data);
-            $qb->where('e.upozila IN (:upozila)')->setParameter('upozila',$locations);
+        if ($data) {
+            $locations = explode(',', $data);
+            $qb->where('e.upozila IN (:upozila)')->setParameter('upozila', $locations);
         }
 
     }
@@ -72,26 +72,26 @@ class ApiRepository extends BaseRepository
     {
         $em = $this->_em;
         $qb = $em->createQueryBuilder();
-        $qb->from(Agent::class,'e');
-        $qb->Join('e.agentGroup','ag');
-        $qb->Join('e.upozila','up');
-        $qb->leftJoin('up.parent','dis');
-        $qb->select('e.id as id','e.name as name','e.mobile as mobile','e.email as email','e.name as companyName','e.agentId as agentId','e.address as address');
+        $qb->from(Agent::class, 'e');
+        $qb->Join('e.agentGroup', 'ag');
+        $qb->Join('e.upozila', 'up');
+        $qb->leftJoin('up.parent', 'dis');
+        $qb->select('e.id as id', 'e.name as name', 'e.mobile as mobile', 'e.email as email', 'e.name as companyName', 'e.agentId as agentId', 'e.address as address');
         $qb->addSelect('ag.name as agentGroup');
-        $qb->addSelect('up.name as upozila','up.id as upozilaId');
-        $qb->addSelect('dis.name as district','dis.id as districtId');
+        $qb->addSelect('up.name as upozila', 'up.id as upozilaId');
+        $qb->addSelect('dis.name as district', 'dis.id as districtId');
 
 //        $qb->where('e.terminal = :terminal')->setParameter('terminal',$terminal);
-        $qb->where('ag.slug IN (:slug)')->setParameter('slug',['feed', 'chick']);
+        $qb->where('ag.slug IN (:slug)')->setParameter('slug', ['feed', 'chick']);
         $qb->andWhere('e.status =:status')->setParameter('status', 1);
-        if($locations){
-            $locations = explode(',',$locations);
-            $qb->andWhere('e.upozila IN (:upozila)')->setParameter('upozila',$locations);
+        if ($locations) {
+            $locations = explode(',', $locations);
+            $qb->andWhere('e.upozila IN (:upozila)')->setParameter('upozila', $locations);
         }
         $qb->orderBy('e.name', 'ASC');
         $result = $qb->getQuery()->getArrayResult();
         $data = array();
-        foreach($result as $key => $row) {
+        foreach ($result as $key => $row) {
             $data[$key]['id'] = (int)$row['id'];
             $data[$key]['agentId'] = (int)$row['agentId'];
             $data[$key]['name'] = (string)$row['name'];
@@ -114,55 +114,55 @@ class ApiRepository extends BaseRepository
      * @param $locations
      * @return array
      */
-    public function customerApi( $terminal,$mode,$locations): array
+    public function customerApi($terminal, $mode, $locations): array
     {
 
         $em = $this->_em;
         $qb = $em->createQueryBuilder();
-        $qb->from(CrmCustomer::class,'e');
-        $qb->Join('e.customerGroup','cg');
-        $qb->leftJoin('e.farmerIntroduce','fi');
-        $qb->leftJoin('fi.feed','feed');
-        $qb->leftJoin('fi.otherFeed','otherFeed');
-        $qb->leftJoin('fi.farmerType','farmerTypes');
-        $qb->leftJoin('fi.otherAgent','otherAgent');
-        $qb->leftJoin('fi.subAgent','subAgent');
-        $qb->leftJoin('e.agent','ca');
-        $qb->Join('e.location','l');
-        $qb->Join('l.parent','dis');
-        $qb->select('e.id as id','e.name as name','e.mobile as mobile','e.address as address');
+        $qb->from(CrmCustomer::class, 'e');
+        $qb->Join('e.customerGroup', 'cg');
+        $qb->leftJoin('e.farmerIntroduce', 'fi');
+        $qb->leftJoin('fi.feed', 'feed');
+        $qb->leftJoin('fi.otherFeed', 'otherFeed');
+        $qb->leftJoin('fi.farmerType', 'farmerTypes');
+        $qb->leftJoin('fi.otherAgent', 'otherAgent');
+        $qb->leftJoin('fi.subAgent', 'subAgent');
+        $qb->leftJoin('e.agent', 'ca');
+        $qb->Join('e.location', 'l');
+        $qb->Join('l.parent', 'dis');
+        $qb->select('e.id as id', 'e.name as name', 'e.mobile as mobile', 'e.address as address');
         $qb->addSelect('cg.name as customerGroup');
-        $qb->addSelect('ca.id as agentId','ca.name as agentName');
-        $qb->addSelect('l.name as upozila','l.id as upozilaId');
-        $qb->addSelect('dis.name as district','dis.id as districtId');
+        $qb->addSelect('ca.id as agentId', 'ca.name as agentName');
+        $qb->addSelect('l.name as upozila', 'l.id as upozilaId');
+        $qb->addSelect('dis.name as district', 'dis.id as districtId');
         $qb->addSelect('fi.cultureSpeciesItemAndQty', 'otherAgent.name AS otherAgentName', 'otherAgent.address AS otherAgentAddress', 'subAgent.name AS subAgentName', 'subAgent.address AS subAgentAddress', 'feed.name AS feedName', 'feed.id AS feed_id', 'otherFeed.name AS previousFeedName', 'otherFeed.id AS other_feed_id', 'farmerTypes.id AS farmerType', 'farmerTypes.name AS farmerTypeName');
         $qb->where("cg.slug =:slug")->setParameter('slug', $mode);
-        if($locations){
-            $locations = explode(',',$locations);
-            $qb->andWhere('e.location IN (:upozila)')->setParameter('upozila',$locations);
+        if ($locations) {
+            $locations = explode(',', $locations);
+            $qb->andWhere('e.location IN (:upozila)')->setParameter('upozila', $locations);
         }
         $qb->orderBy('e.id', 'ASC');
         $result = $qb->getQuery()->getArrayResult();
 //        return $result;
         $data = array();
-        foreach($result as $key => $row) {
+        foreach ($result as $key => $row) {
             $previousAgentName = '';
             $previousAgentAddress = '';
-            if($row['otherAgentName']){
+            if ($row['otherAgentName']) {
                 $previousAgentName = $row['otherAgentName'];
-            }elseif ($row['subAgentName']){
+            } elseif ($row['subAgentName']) {
                 $previousAgentName = $row['subAgentName'];
             }
 
-            if($row['otherAgentAddress']){
+            if ($row['otherAgentAddress']) {
                 $previousAgentAddress = $row['otherAgentAddress'];
-            }elseif ($row['subAgentAddress']){
+            } elseif ($row['subAgentAddress']) {
                 $previousAgentAddress = $row['subAgentAddress'];
             }
-            $customerType = $row['farmerTypeName']!=''?' ('.$row['farmerTypeName'].')':'';
+            $customerType = $row['farmerTypeName'] != '' ? ' (' . $row['farmerTypeName'] . ')' : '';
 
             $data[$key]['id'] = (int)$row['id'];
-            $data[$key]['name'] = (string)$row['name'].''.$customerType;
+            $data[$key]['name'] = (string)$row['name'] . '' . $customerType;
             $data[$key]['mobile'] = (string)$row['mobile'];
             $data[$key]['address'] = (string)$row['address'];
             $data[$key]['customerGroup'] = (string)$row['customerGroup'];
@@ -197,26 +197,26 @@ class ApiRepository extends BaseRepository
     {
         $em = $this->_em;
         $qb = $em->createQueryBuilder();
-        $qb->from(Agent::class,'e');
-        $qb->Join('e.agentGroup','ag');
-        $qb->Join('e.upozila','up');
-        $qb->leftJoin('up.parent','dis');
-        $qb->select('e.id as id','e.name as name','e.mobile as mobile','e.email as email','e.name as companyName','e.agentId as agentId','e.address as address');
+        $qb->from(Agent::class, 'e');
+        $qb->Join('e.agentGroup', 'ag');
+        $qb->Join('e.upozila', 'up');
+        $qb->leftJoin('up.parent', 'dis');
+        $qb->select('e.id as id', 'e.name as name', 'e.mobile as mobile', 'e.email as email', 'e.name as companyName', 'e.agentId as agentId', 'e.address as address');
         $qb->addSelect('ag.name as agentGroup');
-        $qb->addSelect('up.name as upozila','up.id as upozilaId');
-        $qb->addSelect('dis.name as district','dis.id as districtId');
+        $qb->addSelect('up.name as upozila', 'up.id as upozilaId');
+        $qb->addSelect('dis.name as district', 'dis.id as districtId');
 
 //        $qb->where('e.terminal = :terminal')->setParameter('terminal',$terminal);
-        $qb->where('ag.slug = :slug')->setParameter('slug',$mode);
+        $qb->where('ag.slug = :slug')->setParameter('slug', $mode);
         $qb->andWhere('e.status =:status')->setParameter('status', 1);
-        if($locations){
-            $locations = explode(',',$locations);
-            $qb->andWhere('e.upozila IN (:upozila)')->setParameter('upozila',$locations);
+        if ($locations) {
+            $locations = explode(',', $locations);
+            $qb->andWhere('e.upozila IN (:upozila)')->setParameter('upozila', $locations);
         }
         $qb->orderBy('e.name', 'ASC');
         $result = $qb->getQuery()->getArrayResult();
         $data = array();
-        foreach($result as $key => $row) {
+        foreach ($result as $key => $row) {
             $data[$key]['id'] = (int)$row['id'];
             $data[$key]['agentId'] = (int)$row['agentId'];
             $data[$key]['name'] = (string)$row['name'];
@@ -239,29 +239,29 @@ class ApiRepository extends BaseRepository
      * @return array
      */
 
-    public function crmVisit( $terminal, $username ): array
+    public function crmVisit($terminal, $username): array
     {
         $em = $this->_em;
         $qb = $em->createQueryBuilder();
-        $qb->from(CrmVisit::class,'cv');
-        $qb->leftJoin('cv.employee','cve');
-        $qb->leftJoin('cve.designation','cved');
-        $qb->leftJoin('cv.location','cvl');
+        $qb->from(CrmVisit::class, 'cv');
+        $qb->leftJoin('cv.employee', 'cve');
+        $qb->leftJoin('cve.designation', 'cved');
+        $qb->leftJoin('cv.location', 'cvl');
 
-        $qb->select('cv.id as id','cv.workingDuration as workingDurationForm','cv.workingDurationTo as workingDurationTo','cv.created as created');
+        $qb->select('cv.id as id', 'cv.workingDuration as workingDurationForm', 'cv.workingDurationTo as workingDurationTo', 'cv.created as created');
         $qb->addSelect('cve.name as employeeName');
         $qb->addSelect('cved.name as designationName');
         $qb->addSelect('cvl.name as areaName');
 
-        if($username){
-            $username = explode(',',$username);
-            $qb->where('cve.username IN (:username)')->setParameter('username',$username);
+        if ($username) {
+            $username = explode(',', $username);
+            $qb->where('cve.username IN (:username)')->setParameter('username', $username);
         }
 
         $qb->orderBy('cv.id', 'ASC');
         $result = $qb->getQuery()->getArrayResult();
         $data = array();
-        foreach($result as $key => $row) {
+        foreach ($result as $key => $row) {
             $data[$key]['id'] = (int)$row['id'];
             $data[$key]['employeeName'] = (string)$row['employeeName'];
             $data[$key]['designationName'] = (string)$row['designationName'];
@@ -280,22 +280,22 @@ class ApiRepository extends BaseRepository
      * @param $username
      * @return array
      */
-    public function employeeApi( $terminal, $username ): array
+    public function employeeApi($terminal, $username): array
     {
         $em = $this->_em;
         $qb = $em->createQueryBuilder();
-        $qb->from(User::class,'u');
-        $qb->Join('u.userGroup','ug');
-        $qb->leftJoin('u.designation','ud');
-        $qb->leftJoin('u.department','d');
-        $qb->select('u.id as id','u.name as name','u.username as username','u.email as email','u.mobile as mobile','u.enabled as enabled');
+        $qb->from(User::class, 'u');
+        $qb->Join('u.userGroup', 'ug');
+        $qb->leftJoin('u.designation', 'ud');
+        $qb->leftJoin('u.department', 'd');
+        $qb->select('u.id as id', 'u.name as name', 'u.username as username', 'u.email as email', 'u.mobile as mobile', 'u.enabled as enabled');
         $qb->addSelect('ug.name as groupName');
         $qb->addSelect('ud.name as designation');
         $qb->addSelect('d.name as department');
 
-        if($username){
-            $username = explode(',',$username);
-            $qb->where('u.username IN (:username)')->setParameter('username',$username);
+        if ($username) {
+            $username = explode(',', $username);
+            $qb->where('u.username IN (:username)')->setParameter('username', $username);
         }
 
         // $qb->where('ug.id = 9');
@@ -303,7 +303,7 @@ class ApiRepository extends BaseRepository
         $qb->orderBy('u.id', 'ASC');
         $result = $qb->getQuery()->getArrayResult();
         $data = array();
-        foreach($result as $key => $row) {
+        foreach ($result as $key => $row) {
             $data[$key]['id'] = (int)$row['id'];
             $data[$key]['group'] = (string)$row['groupName'];
             $data[$key]['name'] = (string)$row['name'];
@@ -325,17 +325,17 @@ class ApiRepository extends BaseRepository
      * @param array $data
      * @return array
      */
-    public function apiBroiler( $terminal, $data = array() ): array
+    public function apiBroiler($terminal, $data = array()): array
     {
         $em = $this->_em;
         $qb = $em->createQueryBuilder();
-        $qb->from(BroilerStandard::class,'b');
-        $qb->select('b.id as id','b.age as age','b.targetBodyWeight as targetBodyWeight','b.targetFeedConsumption as targetFeedConsumption');
+        $qb->from(BroilerStandard::class, 'b');
+        $qb->select('b.id as id', 'b.age as age', 'b.targetBodyWeight as targetBodyWeight', 'b.targetFeedConsumption as targetFeedConsumption');
         //    $qb->where('e.terminal = :terminal')->setParameter('terminal',$terminal);
         $qb->orderBy('b.id', 'ASC');
         $result = $qb->getQuery()->getArrayResult();
         $data = array();
-        foreach($result as $key => $row) {
+        foreach ($result as $key => $row) {
             $data[$key]['id'] = (int)$row['id'];
             $data[$key]['age'] = (int)$row['age'];
             $data[$key]['targetBodyWeight'] = (string)$row['targetBodyWeight'];
@@ -350,24 +350,24 @@ class ApiRepository extends BaseRepository
      * @param array $data
      * @return array
      */
-    public function apiSonali($terminal, $data = array() ): array
+    public function apiSonali($terminal, $data = array()): array
     {
         $em = $this->_em;
         $qb = $em->createQueryBuilder();
-        $qb->from(SonaliStandard::class,'s');
-        $qb->select('s.id as id','s.age as age','s.feedIntakePerDay as feedIntakePerDay','s.targetBodyWeight as targetBodyWeight','s.cumulativeFeedIntake as cumulativeFeedIntake');
+        $qb->from(SonaliStandard::class, 's');
+        $qb->select('s.id as id', 's.age as age', 's.feedIntakePerDay as feedIntakePerDay', 's.targetBodyWeight as targetBodyWeight', 's.cumulativeFeedIntake as cumulativeFeedIntake');
         //    $qb->where('e.terminal = :terminal')->setParameter('terminal',$terminal);
         $qb->orderBy('s.id', 'ASC');
         $result = $qb->getQuery()->getArrayResult();
         $data = array();
-        foreach($result as $key => $row) {
+        foreach ($result as $key => $row) {
             $cumulative = (int)$row['cumulativeFeedIntake'];
             $data[$key]['id'] = (int)$row['id'];
             $data[$key]['age'] = (int)$row['age'];
             $data[$key]['feedIntakePerDay'] = (float)$row['feedIntakePerDay'];
             $data[$key]['cumulativeFeedIntake'] = (float)$row['cumulativeFeedIntake'];
             $data[$key]['targetBodyWeight'] = (int)$row['targetBodyWeight'];
-            $data[$key]['fcr'] = $cumulative/(int)$row['targetBodyWeight'];
+            $data[$key]['fcr'] = $cumulative / (int)$row['targetBodyWeight'];
         }
         return $data;
     }
@@ -379,7 +379,7 @@ class ApiRepository extends BaseRepository
      * @param array $data
      * @return array
      */
-    public function apiLifeCycleSetting($terminal, $data = array() ): array
+    public function apiLifeCycleSetting($terminal, $data = array()): array
     {
         $em = $this->_em;
         /*$sql = 'SELECT crm_setting.name, crm_setting_life_cycle.id, crm_setting_life_cycle.number_of_week, crm_setting_life_cycle.status FROM crm_setting INNER JOIN crm_setting_life_cycle ON crm_setting.id = crm_setting_life_cycle.report_id';
@@ -387,14 +387,14 @@ class ApiRepository extends BaseRepository
 
         //dd($result);
         $qb = $em->createQueryBuilder();
-        $qb->from(SettingLifeCycle::class,'slc');
-        $qb->Join('slc.report','r');
-        $qb->select('slc.id as id, slc.numberOfWeek as numberOfWeek, slc.status as status','r.name as name');
+        $qb->from(SettingLifeCycle::class, 'slc');
+        $qb->Join('slc.report', 'r');
+        $qb->select('slc.id as id, slc.numberOfWeek as numberOfWeek, slc.status as status', 'r.name as name');
         $qb->orderBy('slc.id', 'ASC');
 
         $result = $qb->getQuery()->getArrayResult();
         $data = array();
-        foreach($result as $key => $row) {
+        foreach ($result as $key => $row) {
             $data[$key]['id'] = (int)$row['id'];
             $data[$key]['name'] = (string)$row['name'];
             $data[$key]['numberOfWeek'] = (int)$row['numberOfWeek'];
@@ -410,25 +410,25 @@ class ApiRepository extends BaseRepository
      * @param array $data
      * @return array
      */
-    public function apiSetting($terminal, $data = array() ): array
+    public function apiSetting($terminal, $data = array()): array
     {
         $em = $this->_em;
         $qb = $em->createQueryBuilder();
-        $qb->from(Setting::class,'s');
-        $qb->leftJoin('s.parent','p');
-        $qb->select('s.id as id','s.name as name','s.settingType as settingType','s.slug as slug','s.status as status'/*,'p.settingType as parent'*/,'p.name as parentName'/*,'p.id as parent_id'*/);
+        $qb->from(Setting::class, 's');
+        $qb->leftJoin('s.parent', 'p');
+        $qb->select('s.id as id', 's.name as name', 's.settingType as settingType', 's.slug as slug', 's.status as status'/*,'p.settingType as parent'*/, 'p.name as parentName'/*,'p.id as parent_id'*/);
         $qb->where('s.status = 1');
         $qb->orderBy('s.settingType', 'ASC');
         $result = $qb->getQuery()->getArrayResult();
         $data = array();
-        foreach($result as $key => $row) {
+        foreach ($result as $key => $row) {
 
-            $data[$row['settingType']][]= array(
-                'id'=>(int)$row['id'],
-                'name'=>$row['name'],
-                'settingType'=>$row['settingType'],
-                'parentName'=>$row['parentName'],
-                'slug'=>$row['slug'],
+            $data[$row['settingType']][] = array(
+                'id' => (int)$row['id'],
+                'name' => $row['name'],
+                'settingType' => $row['settingType'],
+                'parentName' => $row['parentName'],
+                'slug' => $row['slug'],
             );
 
         }
@@ -441,18 +441,18 @@ class ApiRepository extends BaseRepository
      * @param array $data
      * @return array
      */
-    public function apiLayer( $terminal, $data = array() ): array
+    public function apiLayer($terminal, $data = array()): array
     {
         $em = $this->_em;
         $qb = $em->createQueryBuilder();
-        $qb->from(LayerStandard::class,'ls');
-        $qb->Join('ls.report','r');
-        $qb->select('ls.id as id','ls.age as age', 'r.name as name','ls.targetFeedConsumption as targetFeedConsumption','ls.targetBodyWeight as targetBodyWeight','ls.targetEggProduction as targetEggProduction','ls.targetEggWeight as targetEggWeight');
+        $qb->from(LayerStandard::class, 'ls');
+        $qb->Join('ls.report', 'r');
+        $qb->select('ls.id as id', 'ls.age as age', 'r.name as name', 'ls.targetFeedConsumption as targetFeedConsumption', 'ls.targetBodyWeight as targetBodyWeight', 'ls.targetEggProduction as targetEggProduction', 'ls.targetEggWeight as targetEggWeight');
         //$qb->where('s.name = e.report_id');
         $qb->orderBy('ls.age', 'ASC');
         $result = $qb->getQuery()->getArrayResult();
         $data = array();
-        foreach($result as $key => $row) {
+        foreach ($result as $key => $row) {
             $data[$key]['id'] = (int)$row['id'];
             $data[$key]['age'] = (int)$row['age'];
             $data[$key]['name'] = (string)$row['name'];
@@ -473,15 +473,15 @@ class ApiRepository extends BaseRepository
      * @param $employee
      * @return array
      */
-    public function farmerIntroduceReport( $terminal, $farmerType, $employee ): array
+    public function farmerIntroduceReport($terminal, $farmerType, $employee): array
     {
         $em = $this->_em;
         $qb = $em->createQueryBuilder();
-        $qb->from(FarmerIntroduceDetails::class,'fid');
-        $qb->Join('fid.customer','fn');
-        $qb->Join('fid.agent','fa');
-        $qb->Join('fid.farmerType','ft');
-        $qb->select('fid.createdAt as createdAt','fid.id as id','fid.previousAgentName as previousAgentName','fn.name as farmerName','fa.name as agent','fn.address as address','fn.mobile as mobile','fid.previousFeedName as previousFeedName','fa.address as agentAddress','fid.previousAgentAddress as previousAgentAddress','fid.remarks as remarks','fid.cultureSpeciesItemAndQty as cultureSpeciesItemAndQty');
+        $qb->from(FarmerIntroduceDetails::class, 'fid');
+        $qb->Join('fid.customer', 'fn');
+        $qb->Join('fid.agent', 'fa');
+        $qb->Join('fid.farmerType', 'ft');
+        $qb->select('fid.createdAt as createdAt', 'fid.id as id', 'fid.previousAgentName as previousAgentName', 'fn.name as farmerName', 'fa.name as agent', 'fn.address as address', 'fn.mobile as mobile', 'fid.previousFeedName as previousFeedName', 'fa.address as agentAddress', 'fid.previousAgentAddress as previousAgentAddress', 'fid.remarks as remarks', 'fid.cultureSpeciesItemAndQty as cultureSpeciesItemAndQty');
 
         $qb->where('ft.slug = :farmerType')
             ->andWhere('fid.employee = :employee')
@@ -492,7 +492,7 @@ class ApiRepository extends BaseRepository
         $result = $qb->getQuery()->getArrayResult();
         $data = array();
         //$sum = 0;
-        foreach($result as $key => $row) {
+        foreach ($result as $key => $row) {
             $data[$key]['createdAt'] = $row['createdAt']->format('Y-m-d');
             $data[$key]['id'] = (int)$row['id'];
             $data[$key]['farmerName'] = (string)$row['farmerName'];
@@ -521,20 +521,20 @@ class ApiRepository extends BaseRepository
      * @param $employee
      * @return array
      */
-    public function farmerTrainingReport( $terminal,$breedName, $employee): array
+    public function farmerTrainingReport($terminal, $breedName, $employee): array
     {
         $em = $this->_em;
         $qb = $em->createQueryBuilder();
-        $qb->from(FarmerTrainingReport::class,'f');
-        $qb->leftJoin('f.agent','agent');
+        $qb->from(FarmerTrainingReport::class, 'f');
+        $qb->leftJoin('f.agent', 'agent');
         $qb->leftJoin('f.breedName', 'breedName');
-        $qb->leftJoin('f.farmerTrainingReportDetails','farmerTrainingReportDetails');
-        $qb->leftJoin('farmerTrainingReportDetails.customer','farmer');
+        $qb->leftJoin('f.farmerTrainingReportDetails', 'farmerTrainingReportDetails');
+        $qb->leftJoin('farmerTrainingReportDetails.customer', 'farmer');
 
-        $qb->select('f.id as id','f.trainingDate as trainingDate','f.trainingMaterial as trainingMaterial','f.trainingTopics as trainingTopics','f.remarks as remarks');
-        $qb->addSelect('agent.name AS agentName','agent.address AS agentAddress', 'agent.mobile AS agentMobile');
-        $qb->addSelect('farmer.id as farmerId','farmer.name AS farmerName', 'farmer.address AS farmerAddress', 'farmer.mobile AS farmerMobile');
-        $qb->addSelect('farmerTrainingReportDetails.farmerCapacity as farmerCapacity','farmerTrainingReportDetails.trainingMaterialQty as trainingMaterialQty');
+        $qb->select('f.id as id', 'f.trainingDate as trainingDate', 'f.trainingMaterial as trainingMaterial', 'f.trainingTopics as trainingTopics', 'f.remarks as remarks');
+        $qb->addSelect('agent.name AS agentName', 'agent.address AS agentAddress', 'agent.mobile AS agentMobile');
+        $qb->addSelect('farmer.id as farmerId', 'farmer.name AS farmerName', 'farmer.address AS farmerAddress', 'farmer.mobile AS farmerMobile');
+        $qb->addSelect('farmerTrainingReportDetails.farmerCapacity as farmerCapacity', 'farmerTrainingReportDetails.trainingMaterialQty as trainingMaterialQty');
 
         $qb->where('breedName.slug = :breedName')
             ->andWhere('f.employee = :employee')
@@ -543,7 +543,7 @@ class ApiRepository extends BaseRepository
         $qb->orderBy('f.id', 'ASC');
         $result = $qb->getQuery()->getArrayResult();
         $data = array();
-        foreach($result as $key => $row) {
+        foreach ($result as $key => $row) {
             $data[$key]['trainingDate'] = $row['trainingDate']->format('Y-m-d');
             $data[$key]['agentName'] = (string)$row['agentName'];
             $data[$key]['agentAddress'] = (string)$row['agentAddress'];
@@ -572,26 +572,26 @@ class ApiRepository extends BaseRepository
      * @param $employee
      * @return array
      */
-    public function farmerTouchReport($terminal,$start, $end, $report, $employee): array
+    public function farmerTouchReport($terminal, $start, $end, $report, $employee): array
     {
         $em = $this->_em;
         $startDate = date('Y-m-01', strtotime($start));
         $endDate = date('Y-m-t', strtotime($end));
 
-        if($report&&$employee) {
+        if ($report && $employee) {
             $qb = $em->createQueryBuilder();
-            $qb->from(FarmerTouchReport::class,'f');
-            $qb->join('f.agent','agent');
-            $qb->join('f.customer','farmer');
-            $qb->join('f.report','reportName');
-            $qb->leftJoin('agent.district','agentdistrict');
-            $qb->leftJoin('agent.upozila','agentupozila');
+            $qb->from(FarmerTouchReport::class, 'f');
+            $qb->join('f.agent', 'agent');
+            $qb->join('f.customer', 'farmer');
+            $qb->join('f.report', 'reportName');
+            $qb->leftJoin('agent.district', 'agentdistrict');
+            $qb->leftJoin('agent.upozila', 'agentupozila');
 
-            $qb->select('f.cultureSpeciesItemAndQty as cultureSpeciesItemAndQty','f.nourishItemName as nourishItemName','f.otherCultureSpecies as otherCultureSpecies','f.remarks as remarks');
-            $qb->addSelect('agent.mobile as mobile','agent.name as name');
+            $qb->select('f.cultureSpeciesItemAndQty as cultureSpeciesItemAndQty', 'f.nourishItemName as nourishItemName', 'f.otherCultureSpecies as otherCultureSpecies', 'f.remarks as remarks');
+            $qb->addSelect('agent.mobile as mobile', 'agent.name as name');
             $qb->addSelect('agentdistrict.name as districtName');
             $qb->addSelect('agentupozila.name as upozilaName');
-            $qb->addSelect('farmer.name as farmerName','farmer.address as farmerAddress','farmer.mobile as farmerMoblie');
+            $qb->addSelect('farmer.name as farmerName', 'farmer.address as farmerAddress', 'farmer.mobile as farmerMoblie');
 
             $qb->where('f.createdAt >= :startDate')
                 ->andWhere('f.createdAt <= :endDate')
@@ -601,18 +601,18 @@ class ApiRepository extends BaseRepository
             $qb->orderBy('f.id', 'ASC');
             $result = $qb->getQuery()->getArrayResult();
             $data = array();
-            foreach($result as $key => $row) {
-                $data[$key]['mobile'] =(string)$row['mobile'];
-                $data[$key]['name'] =(string)$row['name'];
-                $data[$key]['districtName'] =(string)$row['districtName'];
-                $data[$key]['upozilaName'] =(string)$row['upozilaName'];
-                $data[$key]['farmerName'] =(string)$row['farmerName'];
-                $data[$key]['farmerAddress'] =(string)$row['farmerAddress'];
-                $data[$key]['farmerMoblie'] =(string)$row['farmerMoblie'];
+            foreach ($result as $key => $row) {
+                $data[$key]['mobile'] = (string)$row['mobile'];
+                $data[$key]['name'] = (string)$row['name'];
+                $data[$key]['districtName'] = (string)$row['districtName'];
+                $data[$key]['upozilaName'] = (string)$row['upozilaName'];
+                $data[$key]['farmerName'] = (string)$row['farmerName'];
+                $data[$key]['farmerAddress'] = (string)$row['farmerAddress'];
+                $data[$key]['farmerMoblie'] = (string)$row['farmerMoblie'];
                 $data[$key]['cultureSpeciesItemAndQty'] = json_decode((string)$row['cultureSpeciesItemAndQty']);
-                $data[$key]['nourishItemName'] =(string)$row['nourishItemName'];
-                $data[$key]['otherCultureSpecies'] =(string)$row['otherCultureSpecies'];
-                $data[$key]['remarks'] =(string)$row['remarks'];
+                $data[$key]['nourishItemName'] = (string)$row['nourishItemName'];
+                $data[$key]['otherCultureSpecies'] = (string)$row['otherCultureSpecies'];
+                $data[$key]['remarks'] = (string)$row['remarks'];
 
             }
             return $data;
@@ -629,12 +629,12 @@ class ApiRepository extends BaseRepository
      * @param $customer
      * @return array
      */
-    public function poultryLifeCylceReport( $terminal, $start, $end, $report, $customer): array
+    public function poultryLifeCylceReport($terminal, $start, $end, $report, $customer): array
     {
         $em = $this->_em;
         $startDate = date('Y-m-01', strtotime($start));
         $endDate = date('Y-m-t', strtotime($end));
-        if($report&&$customer) {
+        if ($report && $customer) {
             $qb = $em->createQueryBuilder();
             $qb->from(ChickLifeCycle::class, 'c');
             $qb->Join('c.agent', 'agent');
@@ -712,22 +712,22 @@ class ApiRepository extends BaseRepository
      * @param $employee
      * @return array
      */
-    public function farmVisitCattle( $terminal,$start, $end, $employee): array
+    public function farmVisitCattle($terminal, $start, $end, $employee): array
     {
         $em = $this->_em;
         $startDate = date('Y-m-01', strtotime($start));
         $endDate = date('Y-m-t', strtotime($end));
 
         $qb = $em->createQueryBuilder();
-        $qb->from(CattleFarmVisit::class,'cfv');
-        $qb->leftJoin('cfv.crmCattleFarmVisitDetails','cfvd');
-        $qb->leftJoin('cfvd.customer','cfvdc');
-        $qb->leftJoin('cfvd.agent','cfvda');
-        $qb->leftJoin('cfvda.upozila','cfvdaz');
-        $qb->leftJoin('cfvda.district','cfvdad');
+        $qb->from(CattleFarmVisit::class, 'cfv');
+        $qb->leftJoin('cfv.crmCattleFarmVisitDetails', 'cfvd');
+        $qb->leftJoin('cfvd.customer', 'cfvdc');
+        $qb->leftJoin('cfvd.agent', 'cfvda');
+        $qb->leftJoin('cfvda.upozila', 'cfvdaz');
+        $qb->leftJoin('cfvda.district', 'cfvdad');
 
-        $qb->addselect('cfvd.visitingDate as visitingDate','cfvd.cattlePopulationOx as cattlePopulationOX','cfvd.cattlePopulationCow as cattlePopulationCow','cfvd.cattlePopulationCalf as cattlePopulationCalf','cfvd.avgMilkYieldPerDay as avgMilkYieldPerDay','cfvd.conceptionRate as conceptionRate','cfvd.fodderGreenGrassKg as fodderGreenGrassKg','cfvd.fodderStrawKg as fodderStrawKg','cfvd.typeOfConcentrateFeed as typeOfConcentrateFeed','cfvd.marketPriceMilkPerLiter as marketPriceMilkPerLiter','cfvd.marketPriceMeatPerKg as marketPriceMeatPerKg','cfvd.remarks as comment');
-        $qb->addselect('cfvdc.name as customerName','cfvdc.address as customerAddress');
+        $qb->addselect('cfvd.visitingDate as visitingDate', 'cfvd.cattlePopulationOx as cattlePopulationOX', 'cfvd.cattlePopulationCow as cattlePopulationCow', 'cfvd.cattlePopulationCalf as cattlePopulationCalf', 'cfvd.avgMilkYieldPerDay as avgMilkYieldPerDay', 'cfvd.conceptionRate as conceptionRate', 'cfvd.fodderGreenGrassKg as fodderGreenGrassKg', 'cfvd.fodderStrawKg as fodderStrawKg', 'cfvd.typeOfConcentrateFeed as typeOfConcentrateFeed', 'cfvd.marketPriceMilkPerLiter as marketPriceMilkPerLiter', 'cfvd.marketPriceMeatPerKg as marketPriceMeatPerKg', 'cfvd.remarks as comment');
+        $qb->addselect('cfvdc.name as customerName', 'cfvdc.address as customerAddress');
         $qb->addselect('cfvda.phone as agentPhone');
         $qb->addselect('cfvdaz.name as agentUpozila');
         $qb->addselect('cfvdad.name as agentDistrict');
@@ -735,12 +735,12 @@ class ApiRepository extends BaseRepository
         $qb->where('cfv.reportingMonth >= :startDate')
             ->andWhere('cfv.reportingMonth <= :endDate')
             ->andWhere('cfv.employee = :employee')
-            ->setParameters(array('startDate' => $startDate . ' 00:00:00', 'endDate' => $endDate . ' 23:59:59',  'employee' => $employee));
+            ->setParameters(array('startDate' => $startDate . ' 00:00:00', 'endDate' => $endDate . ' 23:59:59', 'employee' => $employee));
 
         $qb->orderBy('cfv.id', 'ASC');
         $result = $qb->getQuery()->getArrayResult();
         $data = array();
-        foreach($result as $key => $row) {
+        foreach ($result as $key => $row) {
             $data[$key]['visitingDate'] = $row['visitingDate']->format('Y-m-d');
             $data[$key]['customerName'] = (string)$row['customerName'];
             $data[$key]['customerAddress'] = (string)$row['customerAddress'];
@@ -766,14 +766,14 @@ class ApiRepository extends BaseRepository
     /**
      * Report Poultry FRC
      */
-    public function frcReportPoulty($terminal,$start, $end, $report, $employee): array
+    public function frcReportPoulty($terminal, $start, $end, $report, $employee): array
     {
         $em = $this->_em;
 
         $startDate = date('Y-m-01', strtotime($start));
         $endDate = date('Y-m-t', strtotime($end));
 
-        if($report && $employee) {
+        if ($report && $employee) {
             $qb = $em->createQueryBuilder();
             $qb->from(FcrDetails::class, 'f');
             $qb->join('f.agent', 'agent');
@@ -841,18 +841,18 @@ class ApiRepository extends BaseRepository
     {
         $em = $this->_em;
         $qb = $em->createQueryBuilder();
-        $qb->from(Setting::class,'s');
-        $qb->leftJoin('s.parent','p');
-        $qb->select('s.id as id','s.name as name','s.settingType as settingType');
+        $qb->from(Setting::class, 's');
+        $qb->leftJoin('s.parent', 'p');
+        $qb->select('s.id as id', 's.name as name', 's.settingType as settingType');
 
         $qb->where("s.settingType = 'PURPOSE'");
-        $qb->andWhere('s.slug IS NULL or s.slug NOT IN (:slug)')->setParameter('slug',['broiler-shed-included','layer-shed-included','cattle-farm-included','pond-included']);
+        $qb->andWhere('s.slug IS NULL or s.slug NOT IN (:slug)')->setParameter('slug', ['broiler-shed-included', 'layer-shed-included', 'cattle-farm-included', 'pond-included']);
         $qb->andWhere('s.status = 1');
 
         $qb->orderBy('s.id', 'ASC');
         $result = $qb->getQuery()->getArrayResult();
         $data = array();
-        foreach($result as $key => $row) {
+        foreach ($result as $key => $row) {
 
             $data[$key]['id'] = (string)$row['id'];
             $data[$key]['name'] = (string)$row['name'];
@@ -875,18 +875,18 @@ class ApiRepository extends BaseRepository
     {
         $em = $this->_em;
         $qb = $em->createQueryBuilder();
-        $qb->from(Setting::class,'s');
-        $qb->leftJoin('s.parent','p');
-        $qb->select('s.id as id','s.name as name','s.settingType as settingType');
+        $qb->from(Setting::class, 's');
+        $qb->leftJoin('s.parent', 'p');
+        $qb->select('s.id as id', 's.name as name', 's.settingType as settingType');
 
         $qb->where("s.settingType = 'PURPOSE'");
-        $qb->andWhere('s.slug IN (:slug)')->setParameter('slug',['broiler-shed-included','layer-shed-included','cattle-farm-included','pond-included','market-promotion','area-problems','customer-service','problem-farm-visit','survey-purpose','others-purpose']);
+        $qb->andWhere('s.slug IN (:slug)')->setParameter('slug', ['broiler-shed-included', 'layer-shed-included', 'cattle-farm-included', 'pond-included', 'market-promotion', 'area-problems', 'customer-service', 'problem-farm-visit', 'survey-purpose', 'others-purpose']);
         $qb->andWhere('s.status = 1');
 
         $qb->orderBy('s.id', 'ASC');
         $result = $qb->getQuery()->getArrayResult();
         $data = array();
-        foreach($result as $key => $row) {
+        foreach ($result as $key => $row) {
 
             $data[$key]['id'] = (string)$row['id'];
             $data[$key]['name'] = (string)$row['name'];
@@ -902,8 +902,8 @@ class ApiRepository extends BaseRepository
     {
         $em = $this->_em;
         $qb = $em->createQueryBuilder();
-        $qb->from(Setting::class,'s');
-        $qb->select('s.id as id','s.name as name','s.settingType as settingType');
+        $qb->from(Setting::class, 's');
+        $qb->select('s.id as id', 's.name as name', 's.settingType as settingType');
 
         $qb->where("s.settingType = 'VEHICLE'");
         $qb->andWhere('s.status = 1');
@@ -911,7 +911,7 @@ class ApiRepository extends BaseRepository
         $qb->orderBy('s.id', 'ASC');
         $result = $qb->getQuery()->getArrayResult();
         $data = array();
-        foreach($result as $key => $row) {
+        foreach ($result as $key => $row) {
 
             $data[$key]['id'] = (string)$row['id'];
             $data[$key]['name'] = (string)$row['name'];
@@ -929,13 +929,13 @@ class ApiRepository extends BaseRepository
     {
         $em = $this->_em;
         $qb = $em->createQueryBuilder();
-        $qb->from(FarmerIntroduceDetails::class,'fid');
-        $qb->Join('fid.customer','farmer');
-        $qb->Join('fid.employee','employee');
+        $qb->from(FarmerIntroduceDetails::class, 'fid');
+        $qb->Join('fid.customer', 'farmer');
+        $qb->Join('fid.employee', 'employee');
 
-        $qb->select('farmer.id as id','farmer.name as name','farmer.mobile as mobile');
+        $qb->select('farmer.id as id', 'farmer.name as name', 'farmer.mobile as mobile');
 
-        $qb->where('employee.id = :employeeId')->setParameters(array('employeeId'=> $employee));
+        $qb->where('employee.id = :employeeId')->setParameters(array('employeeId' => $employee));
 
         $qb->orderBy('fid.id', 'ASC');
         $result = $qb->getQuery()->getArrayResult();
@@ -957,10 +957,10 @@ class ApiRepository extends BaseRepository
     {
         $em = $this->_em;
         $qb = $em->createQueryBuilder();
-        $qb->from(Setting::class,'s');
-        $qb->leftJoin('s.parent','p');
+        $qb->from(Setting::class, 's');
+        $qb->leftJoin('s.parent', 'p');
 
-        $qb->select('s.id as id','s.name as name','s.settingType as settingType');
+        $qb->select('s.id as id', 's.name as name', 's.settingType as settingType');
         $qb->addselect('p.name as breedName');
 
         $qb->where("s.settingType = 'FARM_TYPE'");
@@ -992,15 +992,15 @@ class ApiRepository extends BaseRepository
     {
         $em = $this->_em;
         $qb = $em->createQueryBuilder();
-        $qb->from(Setting::class,'s');
-        $qb->leftJoin('s.parent','p');
+        $qb->from(Setting::class, 's');
+        $qb->leftJoin('s.parent', 'p');
 
-        $qb->select('s.id as id','s.name as name','s.slug as slug','s.settingType as settingType');
+        $qb->select('s.id as id', 's.name as name', 's.slug as slug', 's.settingType as settingType');
         $qb->addselect('p.name as breedName');
 
         $qb->where("s.settingType = 'FARM_TYPE'");
         $qb->andWhere('s.status = 1');
-        $qb->andWhere('s.slug IN (:slug)')->setParameter('slug',['others-poultry','others-cattle','others-fish']);
+        $qb->andWhere('s.slug IN (:slug)')->setParameter('slug', ['others-poultry', 'others-cattle', 'others-fish']);
 
         $qb->orderBy('s.id', 'ASC');
         $result = $qb->getQuery()->getArrayResult();
@@ -1021,19 +1021,19 @@ class ApiRepository extends BaseRepository
      */
     public function farmSelectReport()
     {
-        $exceptSlug = array('fcr-after-sale-boiler','fcr-after-sale-sonali');
+        $exceptSlug = array('fcr-after-sale-boiler', 'fcr-after-sale-sonali');
 
         $em = $this->_em;
         $qb = $em->createQueryBuilder();
-        $qb->from(Setting::class,'s');
-        $qb->leftJoin('s.parent','p');
+        $qb->from(Setting::class, 's');
+        $qb->leftJoin('s.parent', 'p');
 
-        $qb->select('s.id as id','s.name as name','s.slug as slug');
+        $qb->select('s.id as id', 's.name as name', 's.slug as slug');
         $qb->addSelect('p.name as farmType');
 
         $qb->where("s.settingType = 'FARMER_REPORT'");
         $qb->andWhere('s.status = 1');
-        $qb->andWhere($qb->expr()->notIn('s.slug',  $exceptSlug));
+        $qb->andWhere($qb->expr()->notIn('s.slug', $exceptSlug));
         //    $qb->andWhere('s.slug NOT IN (:slug)')->setParameter('slug', $exceptSlug);
 
 
@@ -1060,15 +1060,15 @@ class ApiRepository extends BaseRepository
     {
         $em = $this->_em;
         $qb = $em->createQueryBuilder();
-        $qb->from(Setting::class,'s');
-        $qb->leftJoin('s.parent','p');
+        $qb->from(Setting::class, 's');
+        $qb->leftJoin('s.parent', 'p');
 
-        $qb->select('s.id as id','s.name as name','s.slug as slug');
+        $qb->select('s.id as id', 's.name as name', 's.slug as slug');
         $qb->addSelect('p.name as farmType');
 
         $qb->where("s.settingType = 'FARMER_REPORT'");
         $qb->andWhere('s.status = 1');
-        $qb->andWhere('s.slug IN (:slug)')->setParameter('slug',['farmer-introduce-report-poultry','farmer-introduce-report-cattle','farmer-introduce-report-fish']);
+        $qb->andWhere('s.slug IN (:slug)')->setParameter('slug', ['farmer-introduce-report-poultry', 'farmer-introduce-report-cattle', 'farmer-introduce-report-fish']);
 
         $qb->orderBy('s.id', 'ASC');
         $result = $qb->getQuery()->getArrayResult();
@@ -1089,31 +1089,31 @@ class ApiRepository extends BaseRepository
     public function searchfarmer($user)
     {
         $arrs = array();
-        foreach ($user->getUpozila() as $location){
+        foreach ($user->getUpozila() as $location) {
             $arrs[] = $location->getId();
         }
         $em = $this->_em;
         $qb = $em->createQueryBuilder();
-        $qb->from(CrmCustomer::class,'e');
-        $qb->join('e.location','location');
-        $qb->join('e.customerGroup','s');
-        $qb->join('e.agent','a');
-        $qb->leftJoin('e.farmerIntroduce','fi');
-        $qb->leftJoin('fi.farmerType','farmerType');
+        $qb->from(CrmCustomer::class, 'e');
+        $qb->join('e.location', 'location');
+        $qb->join('e.customerGroup', 's');
+        $qb->join('e.agent', 'a');
+        $qb->leftJoin('e.farmerIntroduce', 'fi');
+        $qb->leftJoin('fi.farmerType', 'farmerType');
 
-        $qb->select('e.id as id','e.name as name','e.address as address','e.mobile as mobile');
-        $qb->addSelect('a.id as agentId','a.name as agentName', 'farmerType.name AS farmerTypeName');
+        $qb->select('e.id as id', 'e.name as name', 'e.address as address', 'e.mobile as mobile');
+        $qb->addSelect('a.id as agentId', 'a.name as agentName', 'farmerType.name AS farmerTypeName');
 
-        $qb->where('s.slug = :slug')->setParameter('slug','farmer');
-        $qb->andWhere('location.id IN (:upozils)')->setParameter('upozils',$arrs);
+        $qb->where('s.slug = :slug')->setParameter('slug', 'farmer');
+        $qb->andWhere('location.id IN (:upozils)')->setParameter('upozils', $arrs);
         $result = $qb->getQuery()->getArrayResult();
 
         $data = array();
         foreach ($result as $key => $row) {
-            $customerType = $row['farmerTypeName']!=''?' ('.$row['farmerTypeName'].')':'';
+            $customerType = $row['farmerTypeName'] != '' ? ' (' . $row['farmerTypeName'] . ')' : '';
 
             $data[$key]['id'] = (int)$row['id'];
-            $data[$key]['name'] = (string)$row['name'].''.$customerType;;
+            $data[$key]['name'] = (string)$row['name'] . '' . $customerType;;
             $data[$key]['address'] = (string)$row['address'];
             $data[$key]['mobile'] = (string)$row['mobile'];
             $data[$key]['agentId'] = (string)$row['agentId'];
@@ -1129,10 +1129,10 @@ class ApiRepository extends BaseRepository
     {
         $em = $this->_em;
         $qb = $em->createQueryBuilder();
-        $qb->from(Setting::class,'s');
-        $qb->leftJoin('s.parent','p');
+        $qb->from(Setting::class, 's');
+        $qb->leftJoin('s.parent', 'p');
 
-        $qb->select('s.id as id','s.name as name','s.settingType as settingType');
+        $qb->select('s.id as id', 's.name as name', 's.settingType as settingType');
         $qb->addselect('p.name as breedName');
 
         $qb->where("s.settingType = 'BREED_NAME'");
@@ -1157,10 +1157,10 @@ class ApiRepository extends BaseRepository
     {
         $em = $this->_em;
         $qb = $em->createQueryBuilder();
-        $qb->from(LayerStandard::class,'l');
-        $qb->leftJoin('l.report','r');
+        $qb->from(LayerStandard::class, 'l');
+        $qb->leftJoin('l.report', 'r');
 
-        $qb->select('l.id as id','l.age as ageWeek');
+        $qb->select('l.id as id', 'l.age as ageWeek');
 
         $qb->where("r.slug = 'layer-life-cycle-brown'");
 
@@ -1169,7 +1169,7 @@ class ApiRepository extends BaseRepository
         $data = array();
         foreach ($result as $key => $row) {
             $data[$key]['id'] = (int)$row['id'];
-            $data[$key]['ageWeek'] =(float)$row['ageWeek'];
+            $data[$key]['ageWeek'] = (float)$row['ageWeek'];
 
         }
 
@@ -1183,12 +1183,12 @@ class ApiRepository extends BaseRepository
     {
         $em = $this->_em;
         $qb = $em->createQueryBuilder();
-        $qb->from(Setting::class,'s');
-        $qb->leftJoin('s.parent','p');
-        $qb->leftJoin('p.parent','pp');
+        $qb->from(Setting::class, 's');
+        $qb->leftJoin('s.parent', 'p');
+        $qb->leftJoin('p.parent', 'pp');
 
 
-        $qb->select('s.id as id','s.name as feedTypeName');
+        $qb->select('s.id as id', 's.name as feedTypeName');
         $qb->addSelect('p.name as feedName');
         $qb->addSelect('pp.name as parentName');
 
@@ -1217,19 +1217,19 @@ class ApiRepository extends BaseRepository
     {
         $em = $this->_em;
         $qb = $em->createQueryBuilder();
-        $qb->from(Setting::class,'s');
-        $qb->leftJoin('s.parent','p');
-        $qb->leftJoin('p.parent','pp');
+        $qb->from(Setting::class, 's');
+        $qb->leftJoin('s.parent', 'p');
+        $qb->leftJoin('p.parent', 'pp');
 
 
-        $qb->select('s.id as id','s.name as feedTypeName');
+        $qb->select('s.id as id', 's.name as feedTypeName');
         $qb->addSelect('p.name as feedName');
         $qb->addSelect('pp.name as parentName');
 
         $qb->where("s.settingType = 'FEED_TYPE'");
         $qb->andWhere('s.status = 1');
         $qb->andWhere('pp.name =:parentParentName');
-        $qb->setParameter('parentParentName','Fish');
+        $qb->setParameter('parentParentName', 'Fish');
 
         $qb->orderBy('s.id', 'ASC');
         $result = $qb->getQuery()->getArrayResult();
@@ -1249,18 +1249,18 @@ class ApiRepository extends BaseRepository
     {
         $em = $this->_em;
         $qb = $em->createQueryBuilder();
-        $qb->from(Setting::class,'s');
-        $qb->leftJoin('s.parent','p');
-        $qb->leftJoin('p.parent','pp');
+        $qb->from(Setting::class, 's');
+        $qb->leftJoin('s.parent', 'p');
+        $qb->leftJoin('p.parent', 'pp');
 
 
-        $qb->select('s.id as id','s.name as speciesName');
+        $qb->select('s.id as id', 's.name as speciesName');
         $qb->addSelect('p.name as feedTypeName');
 
         $qb->where("s.settingType = 'SPECIES_NAME'");
         $qb->andWhere('s.status = 1');
         $qb->andWhere('pp.name =:parentParentName');
-        $qb->setParameter('parentParentName','Fish');
+        $qb->setParameter('parentParentName', 'Fish');
 
         $qb->orderBy('s.id', 'ASC');
         $result = $qb->getQuery()->getArrayResult();
@@ -1282,10 +1282,10 @@ class ApiRepository extends BaseRepository
     {
         $em = $this->_em;
         $qb = $em->createQueryBuilder();
-        $qb->from(Setting::class,'s');
+        $qb->from(Setting::class, 's');
 
 
-        $qb->select('s.id as id','s.name as hatchery');
+        $qb->select('s.id as id', 's.name as hatchery');
 
         $qb->where("s.settingType = 'HATCHERY'");
         $qb->andWhere('s.status = 1');
@@ -1310,14 +1310,14 @@ class ApiRepository extends BaseRepository
     {
         $em = $this->_em;
         $qb = $em->createQueryBuilder();
-        $qb->from(Setting::class,'s');
+        $qb->from(Setting::class, 's');
 
 
-        $qb->select('s.id','s.name');
+        $qb->select('s.id', 's.name');
 
         $qb->where("s.settingType = 'HATCHERY'");
         $qb->andWhere('s.status = 1');
-        $qb->andWhere('s.slug IN (:slug)')->setParameter('slug',['nourish','cp','ag','new-hope','kazi','aftab','aci-godrej','paragon','provita','quality','aman','rrp']);
+        $qb->andWhere('s.slug IN (:slug)')->setParameter('slug', ['nourish', 'cp', 'ag', 'new-hope', 'kazi', 'aftab', 'aci-godrej', 'paragon', 'provita', 'quality', 'aman', 'rrp']);
 
         $qb->orderBy('s.name', 'ASC');
         return $qb->getQuery()->getArrayResult();
@@ -1331,10 +1331,10 @@ class ApiRepository extends BaseRepository
     {
         $em = $this->_em;
         $qb = $em->createQueryBuilder();
-        $qb->from(Setting::class,'s');
+        $qb->from(Setting::class, 's');
 
 
-        $qb->select('s.id as id','s.name as feedMill');
+        $qb->select('s.id as id', 's.name as feedMill');
 
         $qb->where("s.settingType = 'FEED_MILL'");
         $qb->andWhere('s.status = 1');
@@ -1359,11 +1359,11 @@ class ApiRepository extends BaseRepository
     {
         $em = $this->_em;
         $qb = $em->createQueryBuilder();
-        $qb->from(Setting::class,'s');
-        $qb->leftJoin('s.parent','p');
-        $qb->leftJoin('p.parent','pp');
+        $qb->from(Setting::class, 's');
+        $qb->leftJoin('s.parent', 'p');
+        $qb->leftJoin('p.parent', 'pp');
 
-        $qb->select('s.id as id','s.name as breedType');
+        $qb->select('s.id as id', 's.name as breedType');
         $qb->addSelect('p.name as breedName');
         $qb->addSelect('pp.name as parentName');
 
@@ -1391,9 +1391,9 @@ class ApiRepository extends BaseRepository
     {
         $em = $this->_em;
         $qb = $em->createQueryBuilder();
-        $qb->from(Setting::class,'s');
+        $qb->from(Setting::class, 's');
 
-        $qb->select('s.id as id','s.name as color');
+        $qb->select('s.id as id', 's.name as color');
 
         $qb->where("s.settingType = 'COLOR'");
         $qb->andWhere('s.status = 1');
@@ -1415,8 +1415,8 @@ class ApiRepository extends BaseRepository
     {
         $em = $this->_em;
         $qb = $em->createQueryBuilder();
-        $qb->from(Setting::class,'s');
-        $qb->select('s.id as id','s.name as feedName');
+        $qb->from(Setting::class, 's');
+        $qb->select('s.id as id', 's.name as feedName');
 
         $qb->where("s.settingType = 'FEED_NAME'");
         $qb->andWhere('s.status = 1');
@@ -1438,10 +1438,10 @@ class ApiRepository extends BaseRepository
     {
         $em = $this->_em;
         $qb = $em->createQueryBuilder();
-        $qb->from(Setting::class,'s');
-        $qb->leftJoin('s.parent','p');
+        $qb->from(Setting::class, 's');
+        $qb->leftJoin('s.parent', 'p');
 
-        $qb->select('s.id as id','s.name as feedName');
+        $qb->select('s.id as id', 's.name as feedName');
         $qb->addSelect('p.name as breedName');
 
         $qb->where("s.settingType = 'DISEASE_NAME'");
@@ -1465,16 +1465,16 @@ class ApiRepository extends BaseRepository
     {
         $em = $this->_em;
         $qb = $em->createQueryBuilder();
-        $qb->from(Setting::class,'s');
-        $qb->leftJoin('s.parent','p');
-        $qb->leftJoin('p.parent','pp');
+        $qb->from(Setting::class, 's');
+        $qb->leftJoin('s.parent', 'p');
+        $qb->leftJoin('p.parent', 'pp');
 
-        $qb->select('s.id as id','s.name as feedName');
+        $qb->select('s.id as id', 's.name as feedName');
         $qb->addSelect('pp.name as name');
 
         $qb->where("s.settingType = 'PRODUCT_TYPE'");
         $qb->andWhere('s.status = 1');
-        $qb->andWhere('s.slug NOT IN (:slug)')->setParameter('slug',['broiler-chicks','layer-chicks','sonali-chicks']);
+        $qb->andWhere('s.slug NOT IN (:slug)')->setParameter('slug', ['broiler-chicks', 'layer-chicks', 'sonali-chicks']);
 
         $qb->orderBy('s.id', 'ASC');
         $result = $qb->getQuery()->getArrayResult();
@@ -1498,16 +1498,16 @@ class ApiRepository extends BaseRepository
     {
         $em = $this->_em;
         $qb = $em->createQueryBuilder();
-        $qb->from(Setting::class,'s');
-        $qb->leftJoin('s.parent','p');
-        $qb->leftJoin('p.parent','pp');
+        $qb->from(Setting::class, 's');
+        $qb->leftJoin('s.parent', 'p');
+        $qb->leftJoin('p.parent', 'pp');
 
-        $qb->select('s.id as id','s.name as feedName');
+        $qb->select('s.id as id', 's.name as feedName');
         $qb->addSelect('pp.name as name');
 
         $qb->where("s.settingType = 'PRODUCT_TYPE'");
         $qb->andWhere('s.status = 1');
-        $qb->andWhere('s.slug IN (:slug)')->setParameter('slug',['broiler-chicks']);
+        $qb->andWhere('s.slug IN (:slug)')->setParameter('slug', ['broiler-chicks']);
 
         $qb->orderBy('s.id', 'ASC');
         $result = $qb->getQuery()->getArrayResult();
@@ -1530,16 +1530,16 @@ class ApiRepository extends BaseRepository
     {
         $em = $this->_em;
         $qb = $em->createQueryBuilder();
-        $qb->from(Setting::class,'s');
-        $qb->leftJoin('s.parent','p');
-        $qb->leftJoin('p.parent','pp');
+        $qb->from(Setting::class, 's');
+        $qb->leftJoin('s.parent', 'p');
+        $qb->leftJoin('p.parent', 'pp');
 
-        $qb->select('s.id as id','s.name as feedName');
+        $qb->select('s.id as id', 's.name as feedName');
         $qb->addSelect('pp.name as name');
 
         $qb->where("s.settingType = 'PRODUCT_TYPE'");
         $qb->andWhere('s.status = 1');
-        $qb->andWhere('s.slug IN (:slug)')->setParameter('slug',['broiler-chicks','layer-chicks','sonali-chicks']);
+        $qb->andWhere('s.slug IN (:slug)')->setParameter('slug', ['broiler-chicks', 'layer-chicks', 'sonali-chicks']);
 
         $qb->orderBy('s.id', 'ASC');
         $result = $qb->getQuery()->getArrayResult();
@@ -1560,10 +1560,10 @@ class ApiRepository extends BaseRepository
     {
         $em = $this->_em;
         $qb = $em->createQueryBuilder();
-        $qb->from(Setting::class,'s');
-        $qb->leftJoin('s.parent','p');
+        $qb->from(Setting::class, 's');
+        $qb->leftJoin('s.parent', 'p');
 
-        $qb->select('s.id as id','s.name as feedName');
+        $qb->select('s.id as id', 's.name as feedName');
         $qb->addSelect('p.name as name');
 
         $qb->where("s.settingType = 'SPECIES_TYPE'");
@@ -1590,13 +1590,13 @@ class ApiRepository extends BaseRepository
     {
         $em = $this->_em;
         $qb = $em->createQueryBuilder();
-        $qb->from(User::class,'u');
-        $qb->Join('u.upozila','uz');
+        $qb->from(User::class, 'u');
+        $qb->Join('u.upozila', 'uz');
 
-        $qb->select('u.id as id','u.name as name');
-        $qb->addSelect('uz.id as upozilaId','uz.name as upozilaName');
+        $qb->select('u.id as id', 'u.name as name');
+        $qb->addSelect('uz.id as upozilaId', 'uz.name as upozilaName');
 
-        $qb->where('u.id = :employeeId')->setParameters(array('employeeId'=> $employee));
+        $qb->where('u.id = :employeeId')->setParameters(array('employeeId' => $employee));
         $qb->orderBy('u.id', 'ASC');
         $result = $qb->getQuery()->getArrayResult();
         $data = array();
@@ -1618,10 +1618,10 @@ class ApiRepository extends BaseRepository
     {
         $em = $this->_em;
         $qb = $em->createQueryBuilder();
-        $qb->from(Setting::class,'s');
-        $qb->leftJoin('s.parent','p');
+        $qb->from(Setting::class, 's');
+        $qb->leftJoin('s.parent', 'p');
 
-        $qb->select('s.id as id','s.name as breedType');
+        $qb->select('s.id as id', 's.name as breedType');
         $qb->addSelect('p.name as breedName');
 
         $qb->where("s.settingType = 'BREED_TYPE'");
@@ -1648,10 +1648,10 @@ class ApiRepository extends BaseRepository
     {
         $em = $this->_em;
         $qb = $em->createQueryBuilder();
-        $qb->from(Setting::class,'s');
-        $qb->leftJoin('s.parent','p');
+        $qb->from(Setting::class, 's');
+        $qb->leftJoin('s.parent', 'p');
 
-        $qb->select('s.id as id','s.name as breedType');
+        $qb->select('s.id as id', 's.name as breedType');
         $qb->addSelect('p.name as breedName');
 
         $qb->where("s.settingType = 'BREED_TYPE'");
@@ -1680,15 +1680,14 @@ class ApiRepository extends BaseRepository
     }
 
 
-
     public function companySpeciesWiseAvarageFCRBefore()
     {
         $em = $this->_em;
         $qb = $em->createQueryBuilder();
-        $qb->from(Setting::class,'s');
-        $qb->leftJoin('s.parent','p');
+        $qb->from(Setting::class, 's');
+        $qb->leftJoin('s.parent', 'p');
 
-        $qb->select('s.id as id','s.name as fishName');
+        $qb->select('s.id as id', 's.name as fishName');
         $qb->addSelect('p.name as fishType');
 
         $qb->where("s.settingType = 'SPECIES_NAME'");
@@ -1714,16 +1713,16 @@ class ApiRepository extends BaseRepository
     {
         $em = $this->_em;
         $qb = $em->createQueryBuilder();
-        $qb->from(Setting::class,'s');
-        $qb->leftJoin('s.parent','p');
+        $qb->from(Setting::class, 's');
+        $qb->leftJoin('s.parent', 'p');
 
-        $qb->select('s.id as id','s.name as gmPcs');
+        $qb->select('s.id as id', 's.name as gmPcs');
         $qb->addSelect('p.name as fishName', 'p.id as fishId');
 
         $qb->where("s.settingType = 'FISH_SIZE'");
         $qb->andWhere('s.status = 1');
 
-        $qb->orderBy('s.id','ASC');
+        $qb->orderBy('s.id', 'ASC');
         $result = $qb->getQuery()->getArrayResult();
 
         $data = [];
@@ -1745,10 +1744,10 @@ class ApiRepository extends BaseRepository
     {
         $em = $this->_em;
         $qb = $em->createQueryBuilder();
-        $qb->from(Setting::class,'s');
-        $qb->leftJoin('s.parent','p');
+        $qb->from(Setting::class, 's');
+        $qb->leftJoin('s.parent', 'p');
 
-        $qb->select('s.id as id','s.name as name');
+        $qb->select('s.id as id', 's.name as name');
         $qb->addSelect('p.name as feedName');
 
         $qb->where("s.settingType = 'PRODUCT_TYPE'");
@@ -1774,9 +1773,9 @@ class ApiRepository extends BaseRepository
     {
         $em = $this->_em;
         $qb = $em->createQueryBuilder();
-        $qb->from(Setting::class,'s');
+        $qb->from(Setting::class, 's');
 
-        $qb->select('s.id as id','s.name as name');
+        $qb->select('s.id as id', 's.name as name');
         $qb->where("s.settingType = 'FEED_NAME'");
         $qb->andWhere('s.status = 1');
 
@@ -1800,17 +1799,17 @@ class ApiRepository extends BaseRepository
 
         $em = $this->_em;
         $qb = $em->createQueryBuilder();
-        $qb->from(Setting::class,'s');
+        $qb->from(Setting::class, 's');
         $qb->select('s.id as id', 's.name as name');
         $qb->where("s.settingType = 'FEED_NAME'");
         $qb->andWhere('s.status = 1');
 
         $qb->andWhere('s.name NOT IN (:name)')->setParameter('name', $exceptName);
-        $qb->orderBy('s.id','ASC');
+        $qb->orderBy('s.id', 'ASC');
         $result = $qb->getQuery()->getArrayResult();
 
         $data = [];
-        foreach ($result as $key => $row){
+        foreach ($result as $key => $row) {
             $data[$key]['id'] = (int)$row['id'];
             $data[$key]['name'] = (string)$row['name'];
         }
@@ -1822,22 +1821,22 @@ class ApiRepository extends BaseRepository
      */
     public function farmSelectReportFcrAfter()
     {
-        $exceptSlug = ['fcr-after-sale-boiler','fcr-after-sale-sonali','company-species-wise-average-fcr-after'];
+        $exceptSlug = ['fcr-after-sale-boiler', 'fcr-after-sale-sonali', 'company-species-wise-average-fcr-after'];
 
         $em = $this->_em;
         $qb = $em->createQueryBuilder();
-        $qb->from(Setting::class,'s');
+        $qb->from(Setting::class, 's');
 
-        $qb->select("s.id as id","s.name as name");
+        $qb->select("s.id as id", "s.name as name");
         $qb->where("s.settingType = 'FARMER_REPORT'");
         $qb->andWhere('s.status = 1');
 
         $qb->andWhere('s.slug IN (:slug)')->setParameter('slug', $exceptSlug);
-        $qb->orderBy('s.id','ASC');
+        $qb->orderBy('s.id', 'ASC');
         $result = $qb->getQuery()->getArrayResult();
 
         $data = [];
-        foreach ($result as $key => $row){
+        foreach ($result as $key => $row) {
             $data[$key]['id'] = (int)$row['id'];
             $data[$key]['name'] = (string)$row['name'];
         }
@@ -1915,7 +1914,7 @@ class ApiRepository extends BaseRepository
         $em = $this->_em;
         $qb = $em->createQueryBuilder();
         $qb->from(ComplainParameter::class, 'c');
-        $qb->select('c.id','c.type', 'c.item', 'c.slug', 'c.status', 'c.days', 'c.quantity', 'c.order');
+        $qb->select('c.id', 'c.type', 'c.item', 'c.slug', 'c.status', 'c.days', 'c.quantity', 'c.order');
         $qb->where('c.type =:type')->setParameter('type', $type);
         $qb->andWhere('c.status = 1');
         $qb->orderBy('c.order', 'ASC');
@@ -1928,7 +1927,7 @@ class ApiRepository extends BaseRepository
         $em = $this->_em;
         $qb = $em->createQueryBuilder();
         $qb->from(Setting::class, 's');
-        $qb->select('s.id','s.settingType', 's.name', 's.slug', 's.status');
+        $qb->select('s.id', 's.settingType', 's.name', 's.slug', 's.status');
         $qb->where('s.settingType =:type')->setParameter('type', $type);
         $qb->andWhere('s.status = 1');
 
@@ -1940,7 +1939,7 @@ class ApiRepository extends BaseRepository
         $em = $this->_em;
         $qb = $em->createQueryBuilder();
         $qb->from(Setting::class, 's');
-        $qb->select('s.id','s.settingType', 's.name', 's.slug', 's.status');
+        $qb->select('s.id', 's.settingType', 's.name', 's.slug', 's.status');
         $qb->where('s.settingType =:type')->setParameter('type', $type);
         $qb->andWhere('s.status = 1');
 
@@ -1955,8 +1954,8 @@ class ApiRepository extends BaseRepository
     {
         $em = $this->_em;
         $qb = $em->createQueryBuilder();
-        $qb->from(Setting::class,'s');
-        $qb->select('s.id as id','s.name as labName');
+        $qb->from(Setting::class, 's');
+        $qb->select('s.id as id', 's.name as labName');
         $qb->where("s.settingType = 'LAB_NAME'");
         $qb->andWhere('s.status = 1');
 
@@ -1977,9 +1976,9 @@ class ApiRepository extends BaseRepository
     {
         $em = $this->_em;
         $qb = $em->createQueryBuilder();
-        $qb->from(Setting::class,'s');
-        $qb->leftJoin('s.parent','p');
-        $qb->select('s.id as id','s.name as labServiceName');
+        $qb->from(Setting::class, 's');
+        $qb->leftJoin('s.parent', 'p');
+        $qb->select('s.id as id', 's.name as labServiceName');
         $qb->addSelect('p.name as breedName');
         $qb->where("s.settingType = 'LAB_SERVICE_NAME'");
         $qb->andWhere('s.status = 1');
@@ -2036,36 +2035,36 @@ class ApiRepository extends BaseRepository
 
     public function getEmployeeLocation(User $lineManager, $ids)
     {
-        $rolesString = implode( '_', $lineManager->getRoles());
+        $rolesString = implode('_', $lineManager->getRoles());
 
         $qb = $this->_em->createQueryBuilder();
         $qb->from(User::class, 'u');
         $qb->join('u.userGroup', 'userGroup');
-        $qb->select( 'u.id', 'u.name', 'u.mobile', 'u.userId', 'u.latitude', 'u.longitude');
+        $qb->select('u.id', 'u.name', 'u.mobile', 'u.userId', 'u.latitude', 'u.longitude');
         $qb->where('u.enabled = 1');
         $qb->andWhere('u.latitude IS NOT NULL');
         $qb->andWhere('u.longitude IS NOT NULL');
         $qb->andWhere('userGroup.slug = :groupSlug')->setParameter('groupSlug', 'employee');
 
-        if ($ids){
+        if ($ids) {
             $qb->andWhere('u.id IN (:ids)')->setParameter('ids', $ids);
-        }else{
+        } else {
             $userRole = [];
-            if (str_contains($rolesString,'ROLE_CRM_POULTRY_ADMIN')){
+            if (str_contains($rolesString, 'ROLE_CRM_POULTRY_ADMIN')) {
                 array_push($userRole, 'ROLE_CRM_POULTRY_USER');
             }
-            if (str_contains($rolesString,'ROLE_CRM_CATTLE_ADMIN')){
+            if (str_contains($rolesString, 'ROLE_CRM_CATTLE_ADMIN')) {
                 array_push($userRole, 'ROLE_CRM_CATTLE_USER');
             }
-            if (str_contains($rolesString,'ROLE_CRM_AQUA_ADMIN')){
+            if (str_contains($rolesString, 'ROLE_CRM_AQUA_ADMIN')) {
                 array_push($userRole, 'ROLE_CRM_AQUA_USER');
             }
-            if (str_contains($rolesString,'ROLE_CRM_SALES_MARKETING_ADMIN')){
+            if (str_contains($rolesString, 'ROLE_CRM_SALES_MARKETING_ADMIN')) {
                 array_push($userRole, 'ROLE_CRM_SALES_MARKETING_USER');
             }
             $query = '';
             foreach ($userRole as $key => $role) {
-                if ($key != 0){
+                if ($key != 0) {
                     $query .= " OR ";
                 }
 
@@ -2087,12 +2086,12 @@ class ApiRepository extends BaseRepository
     {
         $em = $this->_em;
         $qb = $em->createQueryBuilder();
-        $qb->from(Setting::class,'s');
-        $qb->leftJoin('s.parent','p');
-        $qb->leftJoin('p.parent','pp');
+        $qb->from(Setting::class, 's');
+        $qb->leftJoin('s.parent', 'p');
+        $qb->leftJoin('p.parent', 'pp');
 
 
-        $qb->select('s.id as id','s.name as productName');
+        $qb->select('s.id as id', 's.name as productName');
         $qb->addSelect('p.name as feedName');
         $qb->addSelect('pp.name as parentName');
 
@@ -2114,4 +2113,46 @@ class ApiRepository extends BaseRepository
         return $data;
     }
 
+
+    public function getUnprocessData(User $loggedUser)
+    {
+        $employeeRoles = [];
+        if (in_array('ROLE_CRM_POULTRY_ADMIN', $loggedUser->getRoles())) {
+            array_push($employeeRoles, 'ROLE_CRM_POULTRY_USER');
+        }
+        if (in_array('ROLE_CRM_CATTLE_ADMIN', $loggedUser->getRoles())) {
+            array_push($employeeRoles, 'ROLE_CRM_CATTLE_USER');
+        }
+        if (in_array('ROLE_CRM_AQUA_ADMIN', $loggedUser->getRoles())) {
+            array_push($employeeRoles, 'ROLE_CRM_AQUA_USER');
+        }
+        if (in_array('ROLE_CRM_SALES_MARKETING_ADMIN', $loggedUser->getRoles())) {
+            array_push($employeeRoles, 'ROLE_CRM_SALES_MARKETING_USER');
+        }
+
+
+        $qb = $this->createQueryBuilder('e');
+
+        $qb->join('e.employee', 'employee');
+        
+        $qb->select('e');
+
+        $qb->where('e.status = false');
+        $qb->orderBy('e.createdAt', 'DESC');
+
+        if ($employeeRoles) {
+            $query = '';
+            foreach ($employeeRoles as $key => $role) {
+                if ($key !== 0) {
+                    $query .= " OR ";
+                }
+                $query .= "employee.roles LIKE '%" . $role . "%'";
+
+            }
+            $qb->andWhere($query);
+
+            return $qb->getQuery()->getResult();
+
+        }
+    }
 }
