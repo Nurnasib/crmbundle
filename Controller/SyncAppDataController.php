@@ -69,7 +69,7 @@ class SyncAppDataController extends AbstractController
      */
     public function index(Request $request)
     {
-        $records = $this->getDoctrine()->getRepository(Api::class)->findBy(['status' => 0], ['createdAt' => 'DESC']);
+        $records = $this->getDoctrine()->getRepository(Api::class)->getUnprocessData($this->getUser());
 //        $records = $this->pagination($request, $records);
 
         return $this->render('@TerminalbdCrm/api/api-response-list.html.twig',[
@@ -90,16 +90,16 @@ class SyncAppDataController extends AbstractController
         $em = $this->getDoctrine()->getManager();
 
         if ($id){
-            $batches = $this->getDoctrine()->getRepository(Api::class)->findBy(['id' => $id]);
+            $batches = $this->getDoctrine()->getRepository(Api::class)->findBy(['id' => $id, 'status' => false]);
         }else{
-            $batches = $this->getDoctrine()->getRepository(Api::class)->findBy(['status' => 0]);
+            $batches = $this->getDoctrine()->getRepository(Api::class)->getUnprocessData($this->getUser());
         }
 
         foreach ($batches as $batch) {
             $findVisit = $this->getDoctrine()->getRepository(CrmVisit::class)->findOneBy(['appBatch' => $batch]);
             if (!$findVisit){
 //                $details = $batch->getApiDetails();
-                $details = $this->getDoctrine()->getRepository(ApiDetails::class)->findBy(['batch'=>$batch,'status'=>0]);
+                $details = $this->getDoctrine()->getRepository(ApiDetails::class)->findBy(['batch' => $batch,'status' => 0]);
 
                 foreach ($details as $detail) {
 
