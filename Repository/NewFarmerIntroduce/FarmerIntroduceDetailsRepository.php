@@ -94,7 +94,7 @@ class FarmerIntroduceDetailsRepository extends BaseRepository
                 $qb->andWhere('e.introduceDate >= :startDate')->setParameter('startDate', $startDate);
                 $qb->andWhere('e.introduceDate <= :endDate')->setParameter('endDate', $endDate);
             }
-//            $qb->andWhere('e.introduceDate IS NOT NULL');
+            $qb->andWhere('e.introduceDate IS NOT NULL');
             $qb->andWhere('e.createdAt IS NOT NULL');
             $qb->orderBy('e.introduceDate','ASC');
             $results = $qb->getQuery()->getArrayResult();
