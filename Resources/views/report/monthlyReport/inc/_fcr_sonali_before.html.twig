@@ -1,27 +1,27 @@
 <table class="table table-striped table-bordered table-hover fcrReportDetails download-excel" id="fcrReportDetails">
     <thead class="thead-dark">
     <tr>
-        <th colspan="2" class="border" style="border-color: #4C9EE7!important">No of Farms</th>
-        <th class="text-right border"
+        <th data-b-a-s="thin" data-b-a-c="#000000" colspan="2" class="border" style="border-color: #4C9EE7!important">No of Farms</th>
+        <th data-b-a-s="thin" data-b-a-c="#000000" class="text-right border"
             style="border-color: #4C9EE7!important">{{ entities['totalRecord'] is defined?entities['totalRecord']:'' }}</th>
-        <th class="text-right border" style="border-color: #4C9EE7!important">%</th>
+        <th data-b-a-s="thin" data-b-a-c="#000000" class="text-right border" style="border-color: #4C9EE7!important">%</th>
         <th colspan="25" class="border-0" data-a-h="center"><h3 class="text-center">NOURISH POULTRY AND HATCHERY
                 LTD</h3></th>
     </tr>
     <tr>
-        <th colspan="2" class="border" style="border-color: #4C9EE7!important">Body Wt > Stad.</th>
-        <th class="text-right border"
+        <th data-b-a-s="thin" data-b-a-c="#000000" colspan="2" class="border" style="border-color: #4C9EE7!important">Body Wt > Stad.</th>
+        <th data-b-a-s="thin" data-b-a-c="#000000" class="text-right border"
             style="border-color: #4C9EE7!important">{{ entities['bodyWtGatterThanStandard'] is defined?entities['bodyWtGatterThanStandard']:'' }}</th>
-        <th class="text-right border"
+        <th data-b-a-s="thin" data-b-a-c="#000000" class="text-right border"
             style="border-color: #4C9EE7!important">{{ entities['bodyWtGatterThanStandard'] is defined and entities['totalRecord'] is defined and entities['totalRecord']>0?((entities['bodyWtGatterThanStandard']*100)/entities['totalRecord'])|number_format(0):'' }}</th>
         <th colspan="25" class="border-0" data-a-h="center"><h5 class="text-center">UTTARA, DHAKA.</h5></th>
     </tr>
 
     <tr>
-        <th colspan="2" class="border" style="border-color: #4C9EE7!important">Body Wt < Stad.</th>
-        <th class="text-right border"
+        <th data-b-a-s="thin" data-b-a-c="#000000" colspan="2" class="border" style="border-color: #4C9EE7!important">Body Wt < Stad.</th>
+        <th data-b-a-s="thin" data-b-a-c="#000000" class="text-right border"
             style="border-color: #4C9EE7!important">{{ entities['bodyWtLessThanStandard'] is defined?entities['bodyWtLessThanStandard']:'' }}</th>
-        <th class="text-right border"
+        <th data-b-a-s="thin" data-b-a-c="#000000" class="text-right border"
             style="border-color: #4C9EE7!important">{{ entities['bodyWtLessThanStandard'] is defined and entities['totalRecord'] is defined and entities['totalRecord']>0?((entities['bodyWtLessThanStandard']*100)/entities['totalRecord'])|number_format(0):'' }}</th>
         <th colspan="25" class="border-0 text-center"
             data-a-h="center"><h6>{{ report.name|default('') }} {{ filterBy['startDate']?filterBy['startDate']:'' }} {{ filterBy['startDate']?' to '~filterBy['endDate']:'' }}</h6></th>
@@ -46,10 +46,10 @@
         <th style="width: 105px" scope="col" rowspan="2">Hatching date</th>
         <th scope="col" rowspan="2">Total Birds</th>
         <th scope="col" rowspan="2">Age (Day)</th>
-        <th scope="col" colspan="2">Mortality</th>
-        <th scope="col" colspan="3">Weight (gm)</th>
-        <th scope="col" colspan="3">Feed Consumption</th>
-        <th scope="col" colspan="3">FCR</th>
+        <th data-a-h="center" class="text-center" scope="col" colspan="2">Mortality</th>
+        <th data-a-h="center" class="text-center" scope="col" colspan="3">Weight (gm)</th>
+        <th data-a-h="center" class="text-center" scope="col" colspan="3">Feed Consumption</th>
+        <th data-a-h="center" class="text-center" scope="col" colspan="3">FCR</th>
         <th style="width: 150px;" scope="col" rowspan="2">Hatchery</th>
         <th style="width: 150px;" scope="col" rowspan="2">Breed</th>
         <th style="width: 150px;" scope="col" rowspan="2">Feed</th>
@@ -85,7 +85,7 @@
         {% for monthYear, regionFcrDetails in entities %}
             {% if monthYear is not same as 'fcrSonaliStandard' and monthYear is not same as 'totalRecord' and monthYear is not same as 'bodyWtGatterThanStandard' and monthYear is not same as 'bodyWtLessThanStandard' %}
                 <tr>
-                    <td data-t="s" colspan="25">{{ monthYear }}</td>
+                    <td data-t="s" colspan="29">{{ monthYear }}</td>
                 </tr>
                 {% for regionId, employeesFcrDetails in regionFcrDetails %}
                     {% if regionId is not same as 'monthRecordCount' %}
@@ -95,11 +95,11 @@
                                 {% for fcrDetail in fcrDetails['details'] %}
                                     <tr class="added_item">
                                         {% if recordCount==1 %}
-                                            <td data-t="s" valign="middle"
+                                            <td data-a-v="middle" data-t="s" valign="middle"
                                                 rowspan="{{ employeesFcrDetails['recordCount']|length }}">{{ fcrDetail['regionName'] }}</td>
                                         {% endif %}
                                         {% if loop.first %}
-                                            <td data-t="s" valign="middle"
+                                            <td data-a-v="middle" data-t="s" valign="middle"
                                                 rowspan="{{ fcrDetails['details']|length }}">{{ fcrDetail['employeeName'] }}</td>
                                         {% endif %}
 

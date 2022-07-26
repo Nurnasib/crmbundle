@@ -89,13 +89,13 @@
                                 {% for fcrDetail in fcrDetails['details'] %}
                                     <tr class="added_item">
                                         {% if recordCount==1 %}
-                                            <td valign="middle"
+                                            <td data-a-v="middle" valign="middle"
                                                 rowspan="{{ employeesFcrDetails['recordCount']|length }}">{{ fcrDetail['regionName'] }}</td>
                                         {% endif %}
 
                                         {% if loop.first %}
 
-                                            <td valign="middle"
+                                            <td data-a-v="middle" valign="middle"
                                                 rowspan="{{ fcrDetails['details']|length }}">{{ fcrDetail['employeeName'] }}</td>
                                         {% endif %}
 
