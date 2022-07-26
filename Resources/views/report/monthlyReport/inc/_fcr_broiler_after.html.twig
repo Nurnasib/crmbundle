@@ -1,4 +1,4 @@
-<table width="100%" style="color: black; margin-bottom: 5px">
+{#<table width="100%" style="color: black; margin-bottom: 5px">
     <tr>
         <th style="color: black; border: 1px solid black">No of Farms</th>
         <th style="border: 1px solid black"
@@ -105,9 +105,121 @@
         <td></td>
     </tr>
 
-</table>
-<table class="table table-striped table-bordered table-hover fcrReportDetails" id="fcrReportDetails">
+</table>#}
+
+
+
+
+
+
+<table class="table table-striped table-bordered table-hover fcrReportDetails download-excel" id="fcrReportDetails">
     <thead class="thead-dark">
+    <tr>
+        <th colspan="2" class="border" style="border-color: #4C9EE7!important">No of Farms</th>
+        <th class="text-right border" style="border-color: #4C9EE7!important">{{ entities['totalRecord'] is defined?entities['totalRecord']:'' }}</th>
+        <th class="text-right border" style="border-color: #4C9EE7!important">%</th>
+        <th class="text-right border" style="border-color: #4C9EE7!important">Comments</th>
+        <th class="border-0"></th>
+        <th colspan="2" class="border" style="border-color: #4C9EE7!important">No of Farms</th>
+        <th class="text-right border" style="border-color: #4C9EE7!important">{{ entities['totalRecord'] is defined?entities['totalRecord']:'' }}</th>
+        <th class="text-right border" style="border-color: #4C9EE7!important">%</th>
+        <th class="text-right border" style="border-color: #4C9EE7!important">Comments</th>
+        <th colspan="19" class="border-0" data-a-h="center"><h3 class="text-center">NOURISH POULTRY AND HATCHERY LTD</h3></th>
+    </tr>
+    <tr>
+        <th colspan="2" class="border" style="border-color: #4C9EE7!important">FCR Below of <=1.45</th>
+        <th class="text-right border" style="border-color: #4C9EE7!important">{{ entities['fcrWithMortalitySummery'] is defined and entities['fcrWithMortalitySummery']['excellent'] is defined?entities['fcrWithMortalitySummery']['excellent']|length:'0' }}</th>
+        <th class="text-right border" style="border-color: #4C9EE7!important">{{ entities['totalRecord'] is defined and entities['totalRecord']>0 and entities['fcrWithMortalitySummery'] is defined and entities['fcrWithMortalitySummery']['excellent'] is defined?(((entities['fcrWithMortalitySummery']['excellent']|length)*100)/entities['totalRecord'])|number_format(2,'.',''):'0.00' }}</th>
+        <th class="text-right border" style="border-color: #4C9EE7!important">Excellent</th>
+        <th class="border-0"></th>
+        <th colspan="2" class="border" style="border-color: #4C9EE7!important">FCR Below of <1.50</th>
+        {% set lessThanFifty=0 %}
+        {% if entities['fcrWithMortalitySummery'] is defined and entities['fcrWithMortalitySummery']['excellent'] is defined %}
+            {% set lessThanFifty=lessThanFifty+entities['fcrWithMortalitySummery']['excellent']|length %}
+        {% endif %}
+        {% if entities['fcrWithMortalitySummery'] is defined and entities['fcrWithMortalitySummery']['very_good'] is defined %}
+            {% set lessThanFifty=lessThanFifty+entities['fcrWithMortalitySummery']['very_good']|length %}
+        {% endif %}
+        <th class="text-right border" style="border-color: #4C9EE7!important">{{ lessThanFifty }}</th>
+        <th class="text-right border" style="border-color: #4C9EE7!important">{{ entities['totalRecord'] is defined and entities['totalRecord']>0 and entities['fcrWithMortalitySummery'] is defined?((lessThanFifty*100)/entities['totalRecord'])|number_format(2,'.',''):'0.00' }}</th>
+        <th class="text-right border" style="border-color: #4C9EE7!important">Good</th>
+        <th colspan="19" class="border-0" data-a-h="center"><h5 class="text-center">UTTARA, DHAKA.</h5></th>
+    </tr>
+
+    <tr>
+        <th colspan="2" class="border" style="border-color: #4C9EE7!important">FCR Between (1.46-1.49)</th>
+        <th class="text-right border" style="border-color: #4C9EE7!important">{{ entities['fcrWithMortalitySummery'] is defined and entities['fcrWithMortalitySummery']['very_good'] is defined?entities['fcrWithMortalitySummery']['very_good']|length:'0' }}</th>
+        <th class="text-right border" style="border-color: #4C9EE7!important">{{ entities['totalRecord'] is defined and entities['totalRecord']>0 and entities['fcrWithMortalitySummery'] is defined and entities['fcrWithMortalitySummery']['very_good'] is defined?(((entities['fcrWithMortalitySummery']['very_good']|length)*100)/entities['totalRecord'])|number_format(2,'.',''):'0.00' }}</th>
+        <th class="text-right border" style="border-color: #4C9EE7!important">Very Good</th>
+        <th class="border-0"></th>
+        {% set moreThanFifty=0 %}
+        {% if entities['fcrWithMortalitySummery'] is defined and entities['fcrWithMortalitySummery']['good'] is defined %}
+            {% set moreThanFifty=moreThanFifty+entities['fcrWithMortalitySummery']['good']|length %}
+        {% endif %}
+        {% if entities['fcrWithMortalitySummery'] is defined and entities['fcrWithMortalitySummery']['moderate'] is defined %}
+            {% set moreThanFifty=moreThanFifty+entities['fcrWithMortalitySummery']['moderate']|length %}
+        {% endif %}
+        {% if entities['fcrWithMortalitySummery'] is defined and entities['fcrWithMortalitySummery']['bad'] is defined %}
+            {% set moreThanFifty=moreThanFifty+entities['fcrWithMortalitySummery']['bad']|length %}
+        {% endif %}
+        {% if entities['fcrWithMortalitySummery'] is defined and entities['fcrWithMortalitySummery']['very_bad'] is defined %}
+            {% set moreThanFifty=moreThanFifty+entities['fcrWithMortalitySummery']['very_bad']|length %}
+        {% endif %}
+        <th colspan="2" class="border" style="border-color: #4C9EE7!important">FCR Above of ≥1.50</th>
+        <th class="text-right border" style="border-color: #4C9EE7!important">{{ moreThanFifty }}</th>
+        <th class="text-right border" style="border-color: #4C9EE7!important">{{ entities['totalRecord'] is defined and entities['totalRecord']>0 and entities['fcrWithMortalitySummery'] is defined ?((moreThanFifty*100)/entities['totalRecord'])|number_format(2,'.',''):'0.00' }}</th>
+        <th class="text-right border" style="border-color: #4C9EE7!important">Bad</th>
+        <th  colspan="19" class="border-0" data-a-h="center"><h6 class="text-center">{{ report.name|default('') }}  &nbsp; &nbsp;
+                &nbsp; {{ filterBy['startDate']?filterBy['startDate']:'' }} {{ filterBy['startDate']?' to '~filterBy['endDate']:'' }}</h6></th>
+    </tr>
+    <tr>
+        <th colspan="2" class="border" style="border-color: #4C9EE7!important">FCR Between (1.50-1.52)</th>
+        <th class="text-right border" style="border-color: #4C9EE7!important">{{ entities['fcrWithMortalitySummery'] is defined and entities['fcrWithMortalitySummery']['good'] is defined?entities['fcrWithMortalitySummery']['good']|length:'0' }}</th>
+        <th class="text-right border" style="border-color: #4C9EE7!important">{{ entities['totalRecord'] is defined and entities['totalRecord']>0 and entities['fcrWithMortalitySummery'] is defined and entities['fcrWithMortalitySummery']['good'] is defined?(((entities['fcrWithMortalitySummery']['good']|length)*100)/entities['totalRecord'])|number_format(2,'.',''):'0.00' }}</th>
+        <th class="text-right border" style="border-color: #4C9EE7!important">Good</th>
+        <th class="border-0"></th>
+        <th class="border-0"></th>
+        <th class="border-0"></th>
+        <th class="border-0"></th>
+        <th class="border-0"></th>
+        <th class="border-0"></th>
+        <th colspan="19" class="border-0"></th>
+    </tr>
+    <tr>
+        <th colspan="2" class="border" style="border-color: #4C9EE7!important">FCR Between (1.53-1.55)</th>
+        <th class="text-right border" style="border-color: #4C9EE7!important">{{ entities['fcrWithMortalitySummery'] is defined and entities['fcrWithMortalitySummery']['moderate'] is defined?entities['fcrWithMortalitySummery']['moderate']|length:'0' }}</th>
+        <th class="text-right border" style="border-color: #4C9EE7!important">{{ entities['totalRecord'] is defined and entities['totalRecord']>0 and entities['fcrWithMortalitySummery'] is defined and entities['fcrWithMortalitySummery']['moderate'] is defined?(((entities['fcrWithMortalitySummery']['moderate']|length)*100)/entities['totalRecord'])|number_format(2,'.',''):'0.00' }}</th>
+        <th class="text-right border" style="border-color: #4C9EE7!important">Moderate</th>
+        <th class="border-0"></th>
+        <th class="border-0"></th>
+        <th class="border-0"></th>
+        <th class="border-0"></th>
+        <th class="border-0"></th>
+        <th class="border-0"></th>
+        <th colspan="19" class="border-0" data-a-h="center"><h6 class="text-center">Reporting Date : {{ "now"|date('d-m-Y') }}</h6></th>
+    </tr>
+    <tr>
+        <th colspan="2" class="border" style="border-color: #4C9EE7!important">FCR Between (1.56-1.60)</th>
+        <th class="text-right border" style="border-color: #4C9EE7!important">{{ entities['fcrWithMortalitySummery'] is defined and entities['fcrWithMortalitySummery']['bad'] is defined?entities['fcrWithMortalitySummery']['bad']|length:'0' }}</th>
+        <th class="text-right border" style="border-color: #4C9EE7!important">{{ entities['totalRecord'] is defined and entities['totalRecord']>0 and entities['fcrWithMortalitySummery'] is defined and entities['fcrWithMortalitySummery']['bad'] is defined?(((entities['fcrWithMortalitySummery']['bad']|length)*100)/entities['totalRecord'])|number_format(2,'.',''):'0.00' }}</th>
+        <th class="text-right border" style="border-color: #4C9EE7!important">Bad</th>
+        <th class="border-0"></th>
+    </tr>
+    <tr>
+        <th colspan="2" class="border" style="border-color: #4C9EE7!important">FCR Above of >1.60</th>
+        <th class="text-right border" style="border-color: #4C9EE7!important">{{ entities['fcrWithMortalitySummery'] is defined and entities['fcrWithMortalitySummery']['very_bad'] is defined?entities['fcrWithMortalitySummery']['very_bad']|length:'0' }}</th>
+        <th class="text-right border" style="border-color: #4C9EE7!important">{{ entities['totalRecord'] is defined and entities['totalRecord']>0 and entities['fcrWithMortalitySummery'] is defined and entities['fcrWithMortalitySummery']['very_bad'] is defined?(((entities['fcrWithMortalitySummery']['very_bad']|length)*100)/entities['totalRecord'])|number_format(2,'.',''):'0.00' }}</th>
+        <th class="text-right border" style="border-color: #4C9EE7!important">Very Bad</th>
+        <th class="border-0"></th>
+    </tr>
+
+
+
+
+
+
+
+
     <tr>
 
         <th style="width: 150px;" scope="col" rowspan="2">Region</th>
