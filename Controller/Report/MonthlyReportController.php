@@ -581,9 +581,9 @@ class MonthlyReportController extends AbstractController
                                             $sheet->setCellValue("R" . $dataCellCoordinate, round($fcrDetail['fcrWithMortality'], 2));
 
                                             $standard = 0;
-                                            if (isset($data['fcrBoilerStandard']) && isset($data['fcrBoilerStandard']['fcrDetail']['ageDay']) && $data['fcrBoilerStandard']['fcrDetail']['ageDay']['targetBodyWeight'] > 0){
-                                                $targetConsumption = $data['fcrBoilerStandard']['fcrDetail']['ageDay']['targetFeedConsumption'];
-                                                $targetBodyWeight = $data['fcrBoilerStandard']['fcrDetail']['ageDay']['targetBodyWeight'];
+                                            if (isset($data['fcrBoilerStandard']) && isset($data['fcrBoilerStandard'][$fcrDetail['ageDay']]) && $data['fcrBoilerStandard'][$fcrDetail['ageDay']]['targetBodyWeight'] > 0){
+                                                $targetConsumption = $data['fcrBoilerStandard'][$fcrDetail['ageDay']]['targetFeedConsumption'];
+                                                $targetBodyWeight = $data['fcrBoilerStandard'][$fcrDetail['ageDay']]['targetBodyWeight'];
                                                 $standard = $targetConsumption / $targetBodyWeight;
                                             }
                                             $sheet->setCellValue("S" . $dataCellCoordinate, round($standard, 3));
