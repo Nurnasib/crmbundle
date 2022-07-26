@@ -135,7 +135,7 @@ class FcrDetailsRepository extends BaseRepository
             if($results){
                 foreach ($results as $result){
                     $result['cfcr']=(((2-($result['weight']/1000))*0.25)+($result['fcrWithMortality']));
-                    $monthYear = $result['createdAt']->format('F-Y');
+                    $monthYear = $result['reportingMonth']->format('F-Y');
 
                     $returnArray[$monthYear][$result['regionId']][$result['employeeId']]['name']=$result['employeeName'];
                     $returnArray[$monthYear][$result['regionId']][$result['employeeId']]['details'][]=$result;
