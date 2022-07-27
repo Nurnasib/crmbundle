@@ -130,7 +130,7 @@ class MonthlyReportController extends AbstractController
         return $this->render('@TerminalbdCrm/report/monthlyReport/index.html.twig', ['form' => $form->createView(),
             'entities' => $entities,
             'filterBy' => $filterBy,
-            'lifeCycleSlug' => $report ? $report->getSlug() : null,
+            'reportSlug' => $report ? $report->getSlug() : null,
             'employee' => $employee,
             'report' => $report,
             'species' => $species,]);

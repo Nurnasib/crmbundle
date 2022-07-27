@@ -1,42 +1,42 @@
 {% if entities is not empty %}
-    {% for employeeId, employeesDetails in entities %}
+    <table class="table table-striped table-bordered table-hover download-excel">
+        {% for employeeId, employeesDetails in entities %}
 
-        <table width="100%">
+            <thead class="thead-dark" style="background-color: #dbdee3">
+            {% if loop.first %}
+                <tr>
+                    <th colspan="38" class="border-0" data-a-h="center"><h3 class="text-center">NOURISH POULTRY AND
+                            HATCHERY LTD</h3></th>
+                </tr>
+                <tr>
+                    <th colspan="38" class="border-0" data-a-h="center"><h5 class="text-center">UTTARA, DHAKA.</h5></th>
+                </tr>
+                <tr>
+                    <td colspan="38" class="border-0" data-a-h="center"><h6
+                                class="text-center">{{ report.name|default('') }}</h6></td>
+                </tr>
+            {% endif %}
+
             <tr>
-                <th colspan="38"><h3 class="text-center">NOURISH POULTRY AND HATCHERY LTD</h3></th>
-            </tr>
-            <tr>
-                <th colspan="38"><h5 class="text-center">UTTARA, DHAKA.</h5></th>
-            </tr>
-            <tr>
-                <td colspan="38" align="center"><h6>{{ report.name|default('') }}</h6></td>
-            </tr>
-        </table>
-        <table width="100%">
-            <tr>
-                <th colspan="19"><h5>{{ 'Name Of CSO' }}: {{ entities[employeeId]['name'] }}</h5></th>
-                <th colspan="19" class="text-center"><h5>{{ 'Designation' }}
+                <th colspan="19" class="border-0"><h5>{{ 'Name Of CSO' }}: {{ entities[employeeId]['name'] }}</h5></th>
+                <th colspan="19" class="border-0 text-center"><h5>{{ 'Designation' }}
                         : {{ entities[employeeId]['employeeDesignationName'] }}</h5></th>
-                {#                <th colspan="8" class="text-right"><h5>{{ 'Month' }}: {{ monthYear }}</h5></th>#}
             </tr>
-        </table>
 
-        <table class="table table-striped table-bordered table-hover" id="datatable">
-            <thead class="thead-dark">
-            <tr>
+            <tr class="data-header">
                 <th scope="col" rowspan="2" class="text-center">Month</th>
                 <th scope="col" rowspan="2" class="text-center">SL No.</th>
-                <th scope="col" colspan="3" class="text-center">Agent Information</th>
-                <th scope="col" colspan="3" class="text-center">Farmer Information</th>
-                <th scope="col" colspan="6" class="text-center">Fish Information</th>
-                <th scope="col" colspan="6" class="text-center">Fry Details</th>
-                <th scope="col" colspan="3" class="text-center">Price Details</th>
-                <th scope="col" colspan="9" class="text-center">Cost Details</th>
-                <th scope="col" colspan="3" class="text-center">Production Cost</th>
-                <th scope="col" colspan="3" class="text-center">Selling Price</th>
-                <th scope="col" colspan="3" class="text-center">Net Profit</th>
+                <th scope="col" data-a-h="center" colspan="3" class="text-center">Agent Information</th>
+                <th scope="col" data-a-h="center" colspan="3" class="text-center">Farmer Information</th>
+                <th scope="col" data-a-h="center" colspan="6" class="text-center">Fish Information</th>
+                <th scope="col" data-a-h="center" colspan="6" class="text-center">Fry Details</th>
+                <th scope="col" data-a-h="center" colspan="3" class="text-center">Price Details</th>
+                <th scope="col" data-a-h="center" colspan="9" class="text-center">Cost Details</th>
+                <th scope="col" data-a-h="center" colspan="3" class="text-center">Production Cost</th>
+                <th scope="col" data-a-h="center" colspan="3" class="text-center">Selling Price</th>
+                <th scope="col" data-a-h="center" colspan="3" class="text-center">Net Profit</th>
             </tr>
-            <tr>
+            <tr class="data-header">
                 <th scope="col">Agent Name</th>
                 <th scope="col">Address</th>
                 <th scope="col">Mobile</th>
@@ -123,64 +123,67 @@
 
                     <tr>
                         {% if loop.first %}
-                            <td valign="middle"
+                            <td valign="middle" data-a-v="middle"
                                 rowspan="{{ details|length }}">{{ monthYear }}</td>
                         {% endif %}
-                        {#                        <td>{{ monthYear }}</td>#}
                         <td>{{ loop.index }}</td>
                         <td>{{ detail['agentName']|default('') }}</td>
                         <td>{{ detail['agentAddress']|default('') }}</td>
-                        <td>{{ detail['agentMobile']|default('') }}</td>
+                        <td data-t="s">{{ detail['agentMobile']|default('') }}</td>
 
                         <td>{{ detail['customerName']|default('') }}</td>
                         <td>{{ detail['customerAddress']|default('') }}</td>
-                        <td>{{ detail['customerMobile']|default('') }}</td>
+                        <td data-t="s">{{ detail['customerMobile']|default('') }}</td>
 
                         <td>{{ detail['speciesName']|default('') }}</td>
                         <td>{{ detail['hatcheryName']|default('') }}</td>
                         <td>{{ detail['feedBame']|default('') }}</td>
-                        <td>{{ detail['fingerlingSize']|default('') }}</td>
-                        <td>{{ detail['harvestingSize']|default('') }}</td>
-                        <td>{{ detail['pondSize']|default('') }}</td>
+                        <td data-t="n">{{ detail['fingerlingSize']|default('') }}</td>
+                        <td data-t="n">{{ detail['harvestingSize']|default('') }}</td>
+                        <td data-t="n">{{ detail['pondSize']|default('') }}</td>
 
-                        <td>{{ totalStockedChicksPcs|number_format(2,'.','') }}</td>
-                        <td>{{ totalFeedUsedKg|number_format(2,'.','') }}</td>
-                        <td>{{ totalBroilerWeightKg|number_format(2,'.','') }}</td>
-                        <td>{{ detail['mortality']|default(0) }}</td>
-                        <td>{{ detail['ageDays']|default(0) }}</td>
-                        <td>{{ detail['fcr']|default(0)|number_format(2,'.','') }}</td>
+                        <td data-t="n">{{ totalStockedChicksPcs|number_format(2,'.','') }}</td>
+                        <td data-t="n">{{ totalFeedUsedKg|number_format(2,'.','') }}</td>
+                        <td data-t="n">{{ totalBroilerWeightKg|number_format(2,'.','') }}</td>
+                        <td data-t="n">{{ detail['mortality']|default(0) }}</td>
+                        <td data-t="n">{{ detail['ageDays']|default(0) }}</td>
+                        <td data-t="n">{{ detail['fcr']|default(0)|number_format(2,'.','') }}</td>
 
-                        <td>{{ itemPricePerPcs|number_format(2,'.','') }}</td>
-                        <td>{{ feedPricePerKg|number_format(2,'.','') }}</td>
-                        <td>{{ broilerOrFishPricePerKg|number_format(2,'.','') }}</td>
+                        <td data-t="n">{{ itemPricePerPcs|number_format(2,'.','') }}</td>
+                        <td data-t="n">{{ feedPricePerKg|number_format(2,'.','') }}</td>
+                        <td data-t="n">{{ broilerOrFishPricePerKg|number_format(2,'.','') }}</td>
 
-                        <td>{{ totalChickCost|number_format(2,'.','') }}</td>
-                        <td>{{ totalFeedCost|number_format(2,'.','') }}</td>
-                        <td>{{ totalMedicineCost|number_format(2,'.','') }}</td>
-                        <td>{{ totalPondPreparationCost|number_format(2,'.','') }}</td>
-                        <td>{{ litterOrPondRentCost|number_format(2,'.','') }}</td>
-                        <td>{{ electricityAndFuelCost|number_format(2,'.','') }}</td>
-                        <td>{{ labourCost|number_format(2,'.','') }}</td>
-                        <td>{{ transportCost|number_format(2,'.','') }}</td>
-                        <td>{{ otherCost|number_format(2,'.','') }}</td>
+                        <td data-t="n">{{ totalChickCost|number_format(2,'.','') }}</td>
+                        <td data-t="n">{{ totalFeedCost|number_format(2,'.','') }}</td>
+                        <td data-t="n">{{ totalMedicineCost|number_format(2,'.','') }}</td>
+                        <td data-t="n">{{ totalPondPreparationCost|number_format(2,'.','') }}</td>
+                        <td data-t="n">{{ litterOrPondRentCost|number_format(2,'.','') }}</td>
+                        <td data-t="n">{{ electricityAndFuelCost|number_format(2,'.','') }}</td>
+                        <td data-t="n">{{ labourCost|number_format(2,'.','') }}</td>
+                        <td data-t="n">{{ transportCost|number_format(2,'.','') }}</td>
+                        <td data-t="n">{{ otherCost|number_format(2,'.','') }}</td>
 
-                        <td>{{ totalCosting|number_format(2,'.','') }}</td>
-                        <td>{{ totalCostingUnit|number_format(2,'.','') }}</td>
-                        <td>{{ totalCostingKg|number_format(2,'.','') }}</td>
+                        <td data-t="n">{{ totalCosting|number_format(2,'.','') }}</td>
+                        <td data-t="n">{{ totalCostingUnit|number_format(2,'.','') }}</td>
+                        <td data-t="n">{{ totalCostingKg|number_format(2,'.','') }}</td>
 
-                        <td>{{ totalBroilerPrice|number_format(2,'.','') }}</td>
-                        <td>{{ broilerPricePerUnit|number_format(2,'.','') }}</td>
-                        <td>{{ broilerPricePerKg|number_format(2,'.','') }}</td>
+                        <td data-t="n">{{ totalBroilerPrice|number_format(2,'.','') }}</td>
+                        <td data-t="n">{{ broilerPricePerUnit|number_format(2,'.','') }}</td>
+                        <td data-t="n">{{ broilerPricePerKg|number_format(2,'.','') }}</td>
 
-                        <td>{{ totalProfit|number_format(2,'.','') }}</td>
-                        <td>{{ totalProfitPerUnit|number_format(2,'.','') }}</td>
-                        <td>{{ totalProfitPerKg|number_format(2,'.','') }}</td>
+                        <td data-t="n">{{ totalProfit|number_format(2,'.','') }}</td>
+                        <td data-t="n">{{ totalProfitPerUnit|number_format(2,'.','') }}</td>
+                        <td data-t="n">{{ totalProfitPerKg|number_format(2,'.','') }}</td>
                     </tr>
                 {% endfor %}
 
             {% endfor %}
+            <tr>
+                <td colspan="38"></td>
+            </tr>
             </tbody>
-        </table>
+        {% endfor %}
 
-    {% endfor %}
+    </table>
+
 {% endif %}

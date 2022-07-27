@@ -1,60 +1,57 @@
 {% if entities is defined and entities is not empty %}
 
-    {% if lifeCycleSlug is same as 'fcr-before-sale-boiler' %}
+    {% if reportSlug is same as 'fcr-before-sale-boiler' %}
         {% include '@TerminalbdCrm/report/monthlyReport/inc/_fcr_broiler_before.html.twig' %}
 
-    {% elseif lifeCycleSlug is same as 'fcr-after-sale-boiler' %}
+    {% elseif reportSlug is same as 'fcr-after-sale-boiler' %}
         {% include '@TerminalbdCrm/report/monthlyReport/inc/_fcr_broiler_after.html.twig' %}
 
-    {% elseif lifeCycleSlug is same as 'fcr-before-sale-sonali' %}
+    {% elseif reportSlug is same as 'fcr-before-sale-sonali' %}
         {% include '@TerminalbdCrm/report/monthlyReport/inc/_fcr_sonali_before.html.twig' %}
 
-    {% elseif lifeCycleSlug is same as 'fcr-after-sale-sonali' %}
+    {% elseif reportSlug is same as 'fcr-after-sale-sonali' %}
         {% include '@TerminalbdCrm/report/monthlyReport/inc/_fcr_sonali_after.html.twig' %}
 
-    {% elseif lifeCycleSlug is same as 'layer-performance-brown' %}
+    {% elseif reportSlug in ['layer-performance-brown','layer-performance-white'] %}
         {% include '@TerminalbdCrm/report/monthlyReport/inc/poultry/_layer_performance.html.twig' %}
 
-    {% elseif lifeCycleSlug is same as 'layer-performance-white' %}
-        {% include '@TerminalbdCrm/report/monthlyReport/inc/poultry/_layer_performance.html.twig' %}
-
-    {% elseif lifeCycleSlug is same as 'antibiotic-free-farm-poultry' %}
+    {% elseif reportSlug is same as 'antibiotic-free-farm-poultry' %}
         {% include '@TerminalbdCrm/report/monthlyReport/inc/poultry/_antibiotic_free_farm.html.twig' %}
 
-    {% elseif lifeCycleSlug is same as 'less-costing-farm-poultry' %}
+    {% elseif reportSlug is same as 'less-costing-farm-poultry' %}
         {% include '@TerminalbdCrm/report/monthlyReport/inc/poultry/_less_costing_farm.html.twig' %}
 
-    {% elseif lifeCycleSlug is same as 'less-costing-farm-fish' %}
+    {% elseif reportSlug is same as 'less-costing-farm-fish' %}
         {% include '@TerminalbdCrm/report/monthlyReport/inc/fish/_less_costing_farm.html.twig' %}
 
-    {% elseif lifeCycleSlug is same as 'disease-mapping-report-poultry' %}
+    {% elseif reportSlug is same as 'disease-mapping-report-poultry' %}
         {% include '@TerminalbdCrm/report/monthlyReport/inc/poultry/_disease_mapping.html.twig' %}
 
-    {% elseif lifeCycleSlug is same as 'disease-mapping-report-cattle' %}
+    {% elseif reportSlug is same as 'disease-mapping-report-cattle' %}
         {% include '@TerminalbdCrm/report/monthlyReport/inc/cattle/_disease_mapping.html.twig' %}
 
-    {% elseif lifeCycleSlug is same as 'disease-mapping-report-fish' %}
+    {% elseif reportSlug is same as 'disease-mapping-report-fish' %}
         {% include '@TerminalbdCrm/report/monthlyReport/inc/fish/_disease_mapping.html.twig' %}
 
-    {% elseif lifeCycleSlug is same as 'farmer-introduce-report-poultry' %}
+    {% elseif reportSlug is same as 'farmer-introduce-report-poultry' %}
         {% include '@TerminalbdCrm/report/monthlyReport/inc/poultry/_farmer_introduce.html.twig' %}
 
-    {% elseif lifeCycleSlug is same as 'farmer-introduce-report-fish' %}
+    {% elseif reportSlug is same as 'farmer-introduce-report-fish' %}
         {% include '@TerminalbdCrm/report/monthlyReport/inc/fish/_farmer_introduce.html.twig' %}
 
-    {% elseif lifeCycleSlug is same as 'farmer-introduce-report-cattle' %}
+    {% elseif reportSlug is same as 'farmer-introduce-report-cattle' %}
         {% include '@TerminalbdCrm/report/monthlyReport/inc/cattle/_farmer_introduce.html.twig' %}
 
-    {% elseif lifeCycleSlug in ['company-species-wise-average-fcr-before','company-species-wise-average-fcr-after'] %}
+    {% elseif reportSlug in ['company-species-wise-average-fcr-before','company-species-wise-average-fcr-after'] %}
         {% include '@TerminalbdCrm/report/monthlyReport/inc/fish/_company_species_average_fcr.html.twig' %}
 
-    {% elseif lifeCycleSlug in ['fattening-performance-report'] %}
+    {% elseif reportSlug in ['fattening-performance-report'] %}
         {% include '@TerminalbdCrm/report/monthlyReport/inc/cattle/_fattening_performance.html.twig'%}
 
-    {% elseif lifeCycleSlug in ['dairy-performance-report'] %}
+    {% elseif reportSlug in ['dairy-performance-report'] %}
         {% include '@TerminalbdCrm/report/monthlyReport/inc/cattle/_dairy_performance.html.twig'%}
 
-    {% elseif lifeCycleSlug is same as 'cattle-farm-visit-report' %}
+    {% elseif reportSlug is same as 'cattle-farm-visit-report' %}
         {% include '@TerminalbdCrm/report/monthlyReport/inc/cattle/_farm_visit.html.twig'%}
 
     {% endif %}

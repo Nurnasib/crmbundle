@@ -63,6 +63,7 @@ class SearchFilterFormType extends AbstractType
                     $qb->where('e.settingType = :settingType')->setParameter('settingType', 'FARMER_REPORT');
                     $qb->andWhere('e.slug NOT IN (:lifeCycleSlug)')->setParameter('lifeCycleSlug', ['sonali-life-cycle','boiler-life-cycle','layer-life-cycle-brown','layer-life-cycle-white','dairy-life-cycle','fattening-life-cycle','fish-life-cycle-report','fish-life-cycle-after-sale-report']);
                     $qb->andWhere('e.status = 1');
+                    $qb->orderBy('e.name', 'ASC');
 
 
                     $grandParentSlug = [];
