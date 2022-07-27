@@ -1,72 +1,69 @@
 {% if entities is not empty %}
     {% for employeeId, employeesDetails in entities %}
 
-        <table width="100%">
+        <table class="table table-striped table-bordered table-hover download-excel">
+            <thead class="thead-dark" style="background-color: #dbdee3">
             <tr>
-                <th colspan="26"><h3 class="text-center">NOURISH POULTRY AND HATCHERY LTD</h3></th>
+                <th colspan="26" class="border-0" data-a-h="center"><h3 class="text-center">NOURISH POULTRY AND HATCHERY
+                        LTD</h3></th>
             </tr>
             <tr>
-                <th colspan="26"><h5 class="text-center">UTTARA, DHAKA.</h5></th>
+                <th colspan="26" class="border-0" data-a-h="center"><h5 class="text-center">UTTARA, DHAKA.</h5></th>
             </tr>
             <tr>
-                <td colspan="26" align="center"><h6>{{ report.name|default('') }}</h6></td>
+                <th colspan="26" class="border-0" data-a-h="center"><h6
+                            class="text-center">{{ report.name|default('') }}</h6></th>
             </tr>
-        </table>
-        <table width="100%">
             <tr>
-                <th colspan="13"><h5>{{ 'Name Of CSO' }}: {{ entities[employeeId]['name'] }}</h5></th>
-                <th colspan="13" class="text-center"><h5>{{ 'Designation' }}
+                <th colspan="13" class="border-0"><h5>{{ 'Name Of CSO' }}: {{ entities[employeeId]['name'] }}</h5></th>
+                <th colspan="13" class="border-0 text-center"><h5>{{ 'Designation' }}
                         : {{ entities[employeeId]['employeeDesignationName'] }}</h5></th>
                 {#                <th colspan="8" class="text-right"><h5>{{ 'Month' }}: {{ monthYear }}</h5></th>#}
             </tr>
-        </table>
 
-        <table class="table table-striped table-bordered table-hover" id="datatable">
-            <thead class="thead-dark">
-            <tr>
+            <tr style="position: sticky; top: -1px; background-color: #dbdee3" class="data-header">
                 <th scope="col" rowspan="2" class="text-center">Month</th>
                 <th scope="col" rowspan="2" class="text-center">SL No.</th>
-                <th scope="col" colspan="3" class="text-center">Agent Information</th>
-                <th scope="col" colspan="3" class="text-center">Farmer Information</th>
-                <th scope="col" colspan="3" class="text-center">DOC Information</th>
-                <th scope="col" colspan="6" class="text-center">Flock Details</th>
-                <th scope="col" colspan="3" class="text-center">Cost Details (Total)</th>
-                <th scope="col" colspan="3" class="text-center">Cost Details (Per Bird)</th>
-                <th scope="col" colspan="3" class="text-center">Cost Details (Per kg)</th>
+                <th scope="col" data-a-h="center" colspan="3" class="text-center">Agent Information</th>
+                <th scope="col" data-a-h="center" colspan="3" class="text-center">Farmer Information</th>
+                <th scope="col" data-a-h="center" colspan="3" class="text-center">DOC Information</th>
+                <th scope="col" data-a-h="center" colspan="6" class="text-center">Flock Details</th>
+                <th scope="col" data-a-h="center" colspan="3" class="text-center">Cost Details (Total)</th>
+                <th scope="col" data-a-h="center" colspan="3" class="text-center">Cost Details (Per Bird)</th>
+                <th scope="col" data-a-h="center" colspan="3" class="text-center">Cost Details (Per kg)</th>
             </tr>
-            <tr>
-                <th scope="col">Agent Name</th>
-                <th scope="col">Address</th>
-                <th scope="col">Mobile</th>
+            <tr style="position: sticky; top: 28px; background-color: #dbdee3" class="data-header">
+                <th class="text-center" scope="col">Agent Name</th>
+                <th class="text-center" scope="col">Address</th>
+                <th class="text-center" scope="col">Mobile</th>
 
-                <th scope="col">Farmer Name</th>
-                <th scope="col">Address</th>
-                <th scope="col">Mobile</th>
+                <th class="text-center" scope="col">Farmer Name</th>
+                <th class="text-center" scope="col">Address</th>
+                <th class="text-center" scope="col">Mobile</th>
 
-                <th scope="col">Hatch Date</th>
-                <th scope="col">Hatchery</th>
-                <th scope="col">Breed</th>
+                <th class="text-center" scope="col">Hatch Date</th>
+                <th class="text-center" scope="col">Hatchery</th>
+                <th class="text-center" scope="col">Breed</th>
 
-                <th scope="col">Total Chicks (Pcs)</th>
-                <th scope="col">Total Feed (Kg)</th>
-                <th scope="col">Total Broiler Wt (Kg)</th>
-                <th scope="col">Mortality (Pcs)</th>
-                <th scope="col">Age (days)</th>
-                <th scope="col">FCR</th>
+                <th class="text-center" scope="col">Total Chicks (Pcs)</th>
+                <th class="text-center" scope="col">Total Feed (Kg)</th>
+                <th class="text-center" scope="col">Total Broiler Wt (Kg)</th>
+                <th class="text-center" scope="col">Mortality (Pcs)</th>
+                <th class="text-center" scope="col">Age (days)</th>
+                <th class="text-center" scope="col">FCR</th>
 
-                <th scope="col">Medicine Cost (Total)</th>
-                <th scope="col">Vaccine Cost (Total)</th>
-                <th scope="col">M & V Cost (Total)</th>
+                <th class="text-center" scope="col">Medicine Cost (Total)</th>
+                <th class="text-center" scope="col">Vaccine Cost (Total)</th>
+                <th class="text-center" scope="col">M & V Cost (Total)</th>
 
-                <th scope="col">Medicine Cost/Bird</th>
-                <th scope="col">Vaccine Cost/Bird</th>
-                <th scope="col">M & V Cost/Bird</th>
+                <th class="text-center" scope="col">Medicine Cost/Bird</th>
+                <th class="text-center" scope="col">Vaccine Cost/Bird</th>
+                <th class="text-center" scope="col">M & V Cost/Bird</th>
 
-                <th scope="col">Medicine Cost/kg</th>
-                <th scope="col">Vaccine Cost/kg</th>
-                <th scope="col">M & V Cost/kg</th>
+                <th class="text-center" scope="col">Medicine Cost/kg</th>
+                <th class="text-center" scope="col">Vaccine Cost/kg</th>
+                <th class="text-center" scope="col">M & V Cost/kg</th>
             </tr>
-
             </thead>
             <tbody>
             {% for monthYear,details in employeesDetails['details'] %}
@@ -92,34 +89,34 @@
                         <td>{{ loop.index }}</td>
                         <td>{{ detail['agentName']|default('') }}</td>
                         <td>{{ detail['agentAddress']|default('') }}</td>
-                        <td>{{ detail['agentMobile']|default('') }}</td>
+                        <td data-t="s">{{ detail['agentMobile']|default('') }}</td>
 
                         <td>{{ detail['customerName']|default('') }}</td>
                         <td>{{ detail['customerAddress']|default('') }}</td>
-                        <td>{{ detail['customerMobile']|default('') }}</td>
+                        <td data-t="s">{{ detail['customerMobile']|default('') }}</td>
 
-                        <td>{{ detail['hatchingDate']|date('d-m-Y') }}</td>
+                        <td data-t="s">{{ detail['hatchingDate']|date('d-F-Y') }}</td>
                         <td>{{ detail['hatcheryName']|default('') }}</td>
                         <td>{{ detail['breedBame']|default('') }}</td>
 
-                        <td>{{ detail['totalStockedChicksPcs']|default(0) }}</td>
-                        <td>{{ detail['totalFeedUsedKg']|default(0) }}</td>
-                        <td>{{ detail['totalBroilerWeightKg']|default(0) }}</td>
-                        <td>{{ detail['mortality']|default(0) }}</td>
-                        <td>{{ detail['ageDays']|default(0) }}</td>
-                        <td>{{ detail['fcr']|default(0)|number_format(2,'.','') }}</td>
+                        <td data-t="n">{{ detail['totalStockedChicksPcs']|default(0) }}</td>
+                        <td data-t="n">{{ detail['totalFeedUsedKg']|default(0) }}</td>
+                        <td data-t="n">{{ detail['totalBroilerWeightKg']|default(0) }}</td>
+                        <td data-t="n">{{ detail['mortality']|default(0) }}</td>
+                        <td data-t="n">{{ detail['ageDays']|default(0) }}</td>
+                        <td data-t="n">{{ detail['fcr']|default(0)|number_format(2,'.','') }}</td>
 
-                        <td>{{ detail['medicineTotalCost']|default(0)|number_format(2,'.','') }}</td>
-                        <td>{{ detail['vaccineTotalCost']|default(0)|number_format(2,'.','') }}</td>
-                        <td>{{ medicineAndVaccineCost|number_format(2,'.','') }}</td>
+                        <td data-t="n">{{ detail['medicineTotalCost']|default(0)|number_format(2,'.','') }}</td>
+                        <td data-t="n">{{ detail['vaccineTotalCost']|default(0)|number_format(2,'.','') }}</td>
+                        <td data-t="n">{{ medicineAndVaccineCost|number_format(2,'.','') }}</td>
 
-                        <td>{{ medicineCostPerBird|number_format(2,'.','') }}</td>
-                        <td>{{ vaccineCostPerBird|number_format(2,'.','') }}</td>
-                        <td>{{ medicineAndVaccineCostPerBird|number_format(2,'.','') }}</td>
+                        <td data-t="n">{{ medicineCostPerBird|number_format(2,'.','') }}</td>
+                        <td data-t="n">{{ vaccineCostPerBird|number_format(2,'.','') }}</td>
+                        <td data-t="n">{{ medicineAndVaccineCostPerBird|number_format(2,'.','') }}</td>
 
-                        <td>{{ medicineCostPerKg|number_format(2,'.','') }}</td>
-                        <td>{{ vaccineCostPerKg|number_format(2,'.','') }}</td>
-                        <td>{{ medicineAndVaccineCostPerKg|number_format(2,'.','') }}</td>
+                        <td data-t="n">{{ medicineCostPerKg|number_format(2,'.','') }}</td>
+                        <td data-t="n">{{ vaccineCostPerKg|number_format(2,'.','') }}</td>
+                        <td data-t="n">{{ medicineAndVaccineCostPerKg|number_format(2,'.','') }}</td>
                     </tr>
                 {% endfor %}
 
