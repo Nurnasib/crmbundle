@@ -108,7 +108,7 @@ class VisitReportController extends AbstractController
     }
 
     /**
-     * @Route("/visit-status", name="visit_status")
+     * @Route("/crm/visit-status", name="visit_status")
      */
     public function visitStatus(Request $request)
     {
