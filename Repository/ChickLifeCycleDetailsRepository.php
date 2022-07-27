@@ -28,11 +28,9 @@ class ChickLifeCycleDetailsRepository extends BaseRepository
     {
         $data = [];
         $lifeCycleIdsMonthWise=$this->getChickLifeCycles($lifeCycleSlug, $filterBy);
-//        dd($lifeCycleIdsMonthWise);
         if(sizeof($lifeCycleIdsMonthWise)>0){
             foreach ($lifeCycleIdsMonthWise as $monthYear=>$lifeCycleIds) {
                 foreach ($lifeCycleIds as $lifeCycleId=>$item){
-//                    dd($item);
                     $qb = $this->createQueryBuilder('e');
                     $qb->join('e.crmChickLifeCycle', 'crm_chick_life_cycle');
                     $qb->join('crm_chick_life_cycle.report', 'report');
