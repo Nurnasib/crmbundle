@@ -302,7 +302,7 @@ class SearchFilterFormType extends AbstractType
                     /**  @var User $employee */
                 return '(' . $employee->getUserId() . ') ' . $employee->getName();
                 },
-                'placeholder' => '- Select Employee -',
+                'placeholder' => '- All Employee -',
                 'required' => false,
                 'attr' => [
                     'class' => 'select2'
@@ -324,7 +324,8 @@ class SearchFilterFormType extends AbstractType
                     'December' => '12',
                 ],
                 'placeholder' => '- Select month -',
-                'required' => false
+                'required' => false,
+                'data' => date('m')
             ])
             ->add('year', ChoiceType::class,[
                 'choices' => $this->getYears(2020),
@@ -332,7 +333,8 @@ class SearchFilterFormType extends AbstractType
                 'required' => false,
                 'attr' => [
                     'class' => 'select2'
-                ]
+                ],
+                'data' => date('Y')
             ])
             ->add('reportStatus', ChoiceType::class,[
                 'choices' => [
@@ -352,7 +354,8 @@ class SearchFilterFormType extends AbstractType
 
     private function getYears($min, $max='current')
     {
-        $years = range($min, ($max === 'current' ? date('Y') : $max));
+//        $years = range($min, ($max === 'current' ? date('Y') : $max));
+        $years = range(($max === 'current' ? date('Y') : $max), $min);
         return array_combine($years, $years);
     }
 

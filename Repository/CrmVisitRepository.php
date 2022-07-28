@@ -125,16 +125,18 @@ class CrmVisitRepository extends EntityRepository
         return $data;
     }
 
-    public function getVisitsStatus($firstDayOfMonth, $lastDayOfMonth, $selectedEmployee, $loggedUser)
+    public function getVisitsStatus($firstDayOfMonth, $lastDayOfMonth, $selectedEmployee, $lineManagersId)
     {
         $qb = $this->createQueryBuilder('e');
 
         $qb->join('e.employee', 'employee');
+        $qb->join('employee.lineManager', 'lineManager');
         $qb->leftJoin('e.workingMode', 'working_mode');
 
         $qb->select('e.created AS visitDate');
         $qb->addSelect('working_mode.id AS workingModeId', 'working_mode.name AS workingModeName');
         $qb->addSelect('employee.id AS employeeId', 'employee.userId AS employeeUserId', 'employee.name AS employeeName');
+        $qb->addSelect('lineManager.id AS lineManagerAutoIncId', 'lineManager.userId AS lineManagerUserId', 'lineManager.name AS lineManagerName');
 
         $qb->where('e.created BETWEEN :start AND :end')->setParameters([
             'start' => $firstDayOfMonth . ' 00:00:00',
@@ -142,49 +144,43 @@ class CrmVisitRepository extends EntityRepository
         ]);
         if ($selectedEmployee) {
             $qb->andWhere('employee.id = :employeeId')->setParameter('employeeId', $selectedEmployee->getId());
+        }elseif (!empty($lineManagersId)){
+            $qb->andWhere('lineManager.userId IN (:lineManagersId)')->setParameter('lineManagersId', $lineManagersId);
+
         }
-
-
-        $roleSplitArray = [];
-
-        foreach ($loggedUser->getRoles() as $role) {
-            $roleSplitArray = array_merge(explode('_', $role), $roleSplitArray);
-        }
-        if (in_array('ADMIN', $roleSplitArray)) {
-            $userRole = [];
-            if (in_array('ROLE_CRM_POULTRY_ADMIN', $loggedUser->getRoles())) {
-                array_push($userRole, 'ROLE_CRM_POULTRY_USER');
-            }
-            if (in_array('ROLE_CRM_CATTLE_ADMIN', $loggedUser->getRoles())) {
-                array_push($userRole, 'ROLE_CRM_CATTLE_USER');
-            }
-            if (in_array('ROLE_CRM_AQUA_ADMIN', $loggedUser->getRoles())) {
-                array_push($userRole, 'ROLE_CRM_AQUA_USER');
-            }
-            if (in_array('ROLE_CRM_SALES_MARKETING_ADMIN', $loggedUser->getRoles())) {
-                array_push($userRole, 'ROLE_CRM_SALES_MARKETING_USER');
-            }
-            $query = '';
-            foreach ($userRole as $key => $role) {
-                if ($key !== 0) {
-                    $query .= " OR ";
-                }
-                $query .= "employee.roles LIKE '%" . $role . "%'";
-
-            }
-            $qb->andWhere($query);
-        }
-
         $results = $qb->getQuery()->getArrayResult();
+        $data = [];
+        foreach ($results as $result) {
+            $day = $result['visitDate']->format('d');
+
+/*            $data[$result['lineManagerUserId']]['lineManager'] = [
+                'id' => $result['lineManagerAutoIncId'],
+                'userId' => $result['lineManagerUserId'],
+                'name' => $result['lineManagerName'],
+            ];*/
+            $data[$result['lineManagerUserId']]['teamMember'][$result['employeeUserId']]['employeeDetails']['id'] = $result['employeeId'];
+            $data[$result['lineManagerUserId']]['teamMember'][$result['employeeUserId']]['employeeDetails']['employeeName'] = $result['employeeName'];
+            $data[$result['lineManagerUserId']]['teamMember'][$result['employeeUserId']]['employeeDetails']['userId'] = $result['employeeUserId'];
+            $data[$result['lineManagerUserId']]['teamMember'][$result['employeeUserId']]['days'][$day]['status'] = $result['workingModeName'];
+            $data[$result['lineManagerUserId']]['teamMember'][$result['employeeUserId']]['days'][$day]['visits'][] = $result;
+        }
+        return $data;
+
+
+
+
+
+
+/*
 
         $data = [];
         foreach ($results as $result) {
             $day = $result['visitDate']->format('d');
 
-            $data[$result['employeeId']][$day][] = $result;
+            $data[$result['employeeId']][$day]['status'] = $result['workingModeName'];
+            $data[$result['employeeId']][$day]['visits'][] = $result;
         }
-
-        return $data;
+        return $data;*/
 
     }
 }
