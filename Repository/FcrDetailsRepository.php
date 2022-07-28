@@ -192,7 +192,7 @@ class FcrDetailsRepository extends BaseRepository
                     $returnArray['fcrBoilerStandard']=$this->getEntityManager()->getRepository('TerminalbdCrmBundle:BroilerStandard')->getBoilerStandard();
                 }
 
-                $returnArray['totalRecord']= count($results);
+
                 
                 if(in_array($report->getSlug(),['fcr-before-sale-boiler','fcr-before-sale-sonali'])){
                     $returnArray['bodyWtGatterThanStandard']= count($bodyWtGatterThanStandard);
@@ -201,6 +201,9 @@ class FcrDetailsRepository extends BaseRepository
 
                 if(in_array($report->getSlug(),['fcr-after-sale-sonali','fcr-after-sale-boiler'])){
                     $returnArray['fcrWithMortalitySummery']=$fcrWithMortalitySummery;
+                    $returnArray['totalRecord']= ['countRecord'=>count($results),'arrayData'=>$results];
+                }else{
+                    $returnArray['totalRecord']= count($results);
                 }
             }
         }
