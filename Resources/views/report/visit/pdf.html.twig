@@ -7,24 +7,25 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Daily Visit Report</title>
     <style>
-        body{
+        body {
             font-size: 12px;
         }
     </style>
 </head>
 <body>
-{% if entities is defined and entities is not empty %}
-    <div style="text-align: center">
-        <h3 class="text-center" style="margin: 0px;">{{ 'NOURISH POULTRY AND HATCHERY LTD'|trans }}</h3>
-        <h5 class="text-center" style="margin: 0px;">{{ 'UTTARA, DHAKA.'|trans }}</h5>
+<div style="text-align: center">
+    <h3 class="text-center" style="margin: 0px;">{{ 'NOURISH POULTRY AND HATCHERY LTD'|trans }}</h3>
+    <h5 class="text-center" style="margin: 0px;">{{ 'UTTARA, DHAKA.'|trans }}</h5>
+    {% if entities is defined and entities is not empty %}
         <h6 class="text-center" style="margin: 0 0 10px;">
             {{ 'VISIT REPORT'|trans }} :
             {% if entities.visitDate.begin|date('d-m-Y') is not empty %}
                 {{ entities.visitDate.begin|date('d-m-Y') }} - {{ entities.visitDate.end|date('d-m-Y') }}
             {% endif %}
         </h6>
-    </div>
-
+    {% endif %}
+</div>
+{% if entities is defined and entities is not empty %}
     {% for employeeId, employee in entities %}
         {% if employeeId is not same as 'visitDate' %}
             <table width="100%" style="background-color: #CCCCCC; margin-top: 20px">
@@ -36,7 +37,7 @@
                         {{ 'Date'|trans }}:
                         {% if entities.visitDate.begin|date('d-m-Y') is not empty %}
                             {{ entities.visitDate.begin|date('d-m-Y') }} - {{ entities.visitDate.end|date('d-m-Y') }}
-                        {% else%}
+                        {% else %}
                             {{ entities.visitDate.begin|date('d-m-Y') }}
                         {% endif %}
                     </th>
@@ -46,43 +47,43 @@
             {# Agent Section#}
             {% for key, entity in employee %}
                 {% if key is same as 'farmer' %}
-                <table border="1" cellspacing="0" cellpadding="5" width="100%" style="margin-top: 10px">
-                    <thead style="background-color: #CCCCCC">
-                    <tr>
-                        <th width="50">S/N</th>
-                        <th>{{ 'Visited Farmers\' Name'|trans }}</th>
-                        <th>{{ 'Address'|trans }}</th>
-                        <th>{{ 'Phone'|trans }}</th>
-                        <th>{{ 'Purpose'|trans }}</th>
-                        <th>{{ 'Farm Capacity'|trans }}</th>
-                        <th>{{ 'Comments'|trans }}</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {% for data in entity %}
+                    <table border="1" cellspacing="0" cellpadding="5" width="100%" style="margin-top: 10px">
+                        <thead style="background-color: #CCCCCC">
                         <tr>
-                            <td align="center">{{ loop.index }}</td>
-                            <td>{{ data.farmerName }}</td>
-                            <td>{{ data.farmerAddress }}</td>
-                            <td>{{ data.farmerMobile }}</td>
-                            <td>
-                                {% if data.purposeMultiple is not empty %}
-                                {% set purposes=data.purposeMultiple|json_decode  %}
-                                <ol>
-                                    {% for purpose in purposes %}
-                                        <li>{{ purpose }}</li>
-                                    {% endfor %}
-                                </ol>
-                                {% else %}
-                                {{ data.purposeName }}
-                                {% endif %}
-                            </td>
-                            <td>{{ data.farmCapacity }}</td>
-                            <td>{{ data.comments }}</td>
+                            <th width="50">S/N</th>
+                            <th>{{ 'Visited Farmers\' Name'|trans }}</th>
+                            <th>{{ 'Address'|trans }}</th>
+                            <th>{{ 'Phone'|trans }}</th>
+                            <th>{{ 'Purpose'|trans }}</th>
+                            <th>{{ 'Farm Capacity'|trans }}</th>
+                            <th>{{ 'Comments'|trans }}</th>
                         </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                        {% for data in entity %}
+                            <tr>
+                                <td align="center">{{ loop.index }}</td>
+                                <td>{{ data.farmerName }}</td>
+                                <td>{{ data.farmerAddress }}</td>
+                                <td>{{ data.farmerMobile }}</td>
+                                <td>
+                                    {% if data.purposeMultiple is not empty %}
+                                        {% set purposes=data.purposeMultiple|json_decode %}
+                                        <ol>
+                                            {% for purpose in purposes %}
+                                                <li>{{ purpose }}</li>
+                                            {% endfor %}
+                                        </ol>
+                                    {% else %}
+                                        {{ data.purposeName }}
+                                    {% endif %}
+                                </td>
+                                <td>{{ data.farmCapacity }}</td>
+                                <td>{{ data.comments }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
                 {% endif %}
             {% endfor %}
             {# Agent Section#}
@@ -145,38 +146,46 @@
                     </table>
                 {% endif %}
             {% endfor %}
-{#            Sub Agent Section#}
+            {#            Sub Agent Section#}
             {% for key, entity in employee %}
                 {% if key is same as 'sub-agent' %}
                     <table border="1" cellspacing="0" cellpadding="5" width="100%" style="margin-top: 10px">
-                            <thead style="background-color: #CCCCCC">
+                        <thead style="background-color: #CCCCCC">
+                        <tr>
+                            <th width="50">S/N</th>
+                            <th>{{ 'Visited Agent Name(Sub Agent)'|trans }}</th>
+                            <th>{{ 'Address'|trans }}</th>
+                            <th>{{ 'Phone'|trans }}</th>
+                            <th>{{ 'Purpose'|trans }}</th>
+                            <th>{{ 'Comments'|trans }}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for data in entity %}
                             <tr>
-                                <th width="50">S/N</th>
-                                <th>{{ 'Visited Agent Name(Sub Agent)'|trans }}</th>
-                                <th>{{ 'Address'|trans }}</th>
-                                <th>{{ 'Phone'|trans }}</th>
-                                <th>{{ 'Purpose'|trans }}</th>
-                                <th>{{ 'Comments'|trans }}</th>
+                                <td align="center">{{ loop.index }}</td>
+                                <td>{{ data.agentName }}</td>
+                                <td>{{ data.agentAddress }}</td>
+                                <td>{{ data.agentMobile }}</td>
+                                <td>{{ data.purposeName }}</td>
+                                <td>{{ data.comments }}</td>
                             </tr>
-                            </thead>
-                            <tbody>
-                            {% for data in entity %}
-                                <tr>
-                                    <td align="center">{{ loop.index }}</td>
-                                    <td>{{ data.agentName }}</td>
-                                    <td>{{ data.agentAddress }}</td>
-                                    <td>{{ data.agentMobile }}</td>
-                                    <td>{{ data.purposeName }}</td>
-                                    <td>{{ data.comments }}</td>
-                                </tr>
-                            {% endfor %}
-                            </tbody>
-                        </table>
+                        {% endfor %}
+                        </tbody>
+                    </table>
                 {% endif %}
             {% endfor %}
         {% endif %}
     {% endfor %}
 
+{% else %}
+    <table border="1" cellspacing="0" cellpadding="5" width="100%" style="margin-top: 10px">
+        <thead>
+        <tr>
+            <th width="50">Details Not Found!</th>
+        </tr>
+        </thead>
+    </table>
 {% endif %}
 </body>
 </html>
