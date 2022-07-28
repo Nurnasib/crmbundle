@@ -120,7 +120,8 @@
                                         <td data-t="n">{{ fcrDetail['feedConsumptionStandard']|number_format(2,'.','') }}</td>
                                         <td data-t="n">{{ fcrDetail['fcrWithoutMortality']|number_format(2,'.','') }}</td>
                                         <td data-t="n">{{ fcrDetail['fcrWithMortality']|number_format(2,'.','') }}</td>
-                                        <td data-t="n">{{ entities['fcrSonaliStandard'] and entities['fcrSonaliStandard'][fcrDetail['ageDay']]?(entities['fcrSonaliStandard'][fcrDetail['ageDay']]['cumulativeFeedIntake']/entities['fcrSonaliStandard'][fcrDetail['ageDay']]['targetBodyWeight'])|number_format(2,'.',''):'' }}</td>
+                                        <td data-t="n">{{ fcrDetail['weightStandard']>0?(fcrDetail['feedConsumptionStandard']/fcrDetail['weightStandard'])|number_format(2,'.',''):'' }}</td>
+{#                                        <td data-t="n">{{ entities['fcrSonaliStandard'] and entities['fcrSonaliStandard'][fcrDetail['ageDay']]?(entities['fcrSonaliStandard'][fcrDetail['ageDay']]['cumulativeFeedIntake']/entities['fcrSonaliStandard'][fcrDetail['ageDay']]['targetBodyWeight'])|number_format(2,'.',''):'' }}</td>#}
                                         <td data-t="s">{{ fcrDetail['hatcheryName']|default('') }}</td>
                                         <td data-t="s">{{ fcrDetail['breedBame']|default('') }}</td>
                                         <td data-t="s">{{ fcrDetail['feedName']|default('') }}</td>
