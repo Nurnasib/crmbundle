@@ -86,7 +86,7 @@ class LayerPerformanceDetailsRepository extends BaseRepository
 
             $qb->addSelect('hatchery.name AS hatcheryName');
 
-            $qb->addSelect('breed.name AS breedBame');
+            $qb->addSelect('breed.name AS breedName');
             $qb->addSelect('feed.name AS feedName');
             $qb->addSelect('feedMill.name AS feedMillName');
             $qb->addSelect('feedType.name AS feedTypeName');

@@ -78,6 +78,7 @@ class CostBenefitAnalysisForLessCostingFarmRepository extends BaseRepository
             $qb->addSelect('customer.id AS customerId', 'customer.name AS customerName', 'customer.mobile AS customerMobile', 'customer.address AS customerAddress');
 
             $qb->addSelect( 'district.name AS agentDistrictName');
+            $qb->addSelect( 'customerRegion.id AS regionId', 'customerRegion.name AS regionName');
 
             $qb->addSelect('hatchery.name AS hatcheryName');
             $qb->addSelect('breed.name AS breedBame');
@@ -86,7 +87,10 @@ class CostBenefitAnalysisForLessCostingFarmRepository extends BaseRepository
 
             $qb->join('e.employee', 'employee');
             $qb->leftJoin('employee.designation', 'designation');
-            $qb->leftJoin('e.customer','customer');
+            $qb->join('e.customer','customer');
+            $qb->join('customer.location','customerUpazila');
+            $qb->join('customerUpazila.parent', 'customerDistrict');
+            $qb->join('customerDistrict.parent', 'customerRegion');
             $qb->leftJoin('e.agent', 'agent');
             $qb->leftJoin('agent.district', 'district');
             $qb->leftJoin('e.hatchery', 'hatchery');
@@ -120,9 +124,12 @@ class CostBenefitAnalysisForLessCostingFarmRepository extends BaseRepository
             if($results){
                 foreach ($results as $result){
                     $monthYear = $result['reportingMonth']->format('F-Y');
-                    $returnArray[$result['employeeId']]['name']=$result['employeeName'];
-                    $returnArray[$result['employeeId']]['employeeDesignationName']=$result['employeeDesignationName'];
-                    $returnArray[$result['employeeId']]['details'][$monthYear][]=$result;
+//                    $returnArray[$monthYear][$result['regionId']][$result['employeeId']]['name']=$result['employeeName'];
+//                    $returnArray[$monthYear][$result['regionId']][$result['employeeId']]['employeeDesignationName']=$result['employeeDesignationName'];
+                    $returnArray['totalRecord'][]=$result;
+                    $returnArray['details'][$monthYear][$result['regionId']][$result['employeeId']][]=$result;
+                    $returnArray['regionRecord'][$monthYear][$result['regionId']][]=$result;
+                    $returnArray['monthRecord'][$monthYear][]=$result;
                 }
             }
         }

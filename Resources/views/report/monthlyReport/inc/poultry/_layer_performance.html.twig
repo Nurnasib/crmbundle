@@ -114,9 +114,9 @@
                             <td data-t="n">{{ detail['eggProductionTarget']|default(0) }}</td>
                             <td data-t="n">{{ detail['eggWeightAchieved']|default(0) }}</td>
                             <td data-t="n">{{ detail['eggWeightStand']|default(0) }}</td>
-                            <td>{{ detail['feedType'].name|default('') }}</td>
+                            <td>{{ detail['feedTypeName']|default('') }}</td>
                             <td data-t="s">{{ detail['productionDate']|date('d-M-Y') }}</td>
-                            <td>{{ detail['batchNo']|default('') }}</td>
+                            <td>{{ detail['batch_no']|default('') }}</td>
                             <td>{{ detail['feedMillName']|default('') }}</td>
                             <td>{{ detail['hatcheryName']|default('') }}</td>
                             <td>{{ detail['breedName']|default('') }}</td>
