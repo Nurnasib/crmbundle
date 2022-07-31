@@ -1,96 +1,103 @@
-{% if entities is not empty %}
+{% if entities['totalRecord'] is defined and entities['totalRecord'] is not empty %}
     <table class="table table-striped table-bordered table-hover download-excel">
-        {% for employeeId, employeesDetails in entities %}
+        <thead class="thead-dark" style="background-color: #dbdee3">
+        <tr>
+            <th colspan="16" class="border-0" data-a-h="center"><h3 class="text-center">NOURISH POULTRY AND
+                    HATCHERY LTD</h3></th>
+        </tr>
+        <tr>
+            <th colspan="16" class="border-0" data-a-h="center"><h5 class="text-center">UTTARA, DHAKA.</h5></th>
+        </tr>
+        <tr>
+            <th colspan="16" class="border-0" data-a-h="center"><h6
+                        class="text-center">{{ report.name|default('') }}</h6></th>
+        </tr>
+        <tr class="data-header">
+            <th data-a-v="middle" scope="col" rowspan="2" class="text-center">Region</th>
+            <th data-a-v="middle" scope="col" rowspan="2" class="text-center">Name Of CSO</th>
+            <th data-a-v="middle" scope="col" rowspan="2" class="text-center">SL No.</th>
+            <th data-a-v="middle" scope="col" rowspan="2" class="text-center">Name Of Farmers</th>
+            <th data-a-v="middle" scope="col" rowspan="2" class="text-center">Address</th>
+            <th data-a-v="middle" scope="col" rowspan="2" class="text-center">Mobile</th>
+            <th scope="col"
+                colspan="{{ entities['species'] is defined?entities['species']|length:'0' }}"
+                data-a-h="center" class="text-center">Capacity
+            </th>
+            <th scope="col" data-a-h="center" colspan="3" class="text-center">Present Agent Information</th>
+            <th scope="col" data-a-h="center" colspan="3" class="text-center">Previous Agent Information</th>
+            <th data-a-v="middle" scope="col" rowspan="2" class="text-center">Remarks</th>
+        </tr>
+        <tr class="data-header">
 
-            <thead class="thead-dark" style="background-color: #dbdee3">
-            {% if loop.first %}
-                <tr>
-                    <th colspan="15" class="border-0" data-a-h="center"><h3 class="text-center">NOURISH POULTRY AND
-                            HATCHERY LTD</h3></th>
-                </tr>
-                <tr>
-                    <th colspan="15" class="border-0" data-a-h="center"><h5 class="text-center">UTTARA, DHAKA.</h5></th>
-                </tr>
-                <tr>
-                    <th colspan="15" class="border-0" data-a-h="center"><h6
-                                class="text-center">{{ report.name|default('') }}</h6></th>
-                </tr>
-            {% endif %}
-            <tr>
-                <th colspan="7" class="border-0"><h5>{{ 'Name Of CSO' }}: {{ entities[employeeId]['name'] }}</h5></th>
-                <th colspan="8" class="border-0 text-center"><h5>{{ 'Designation' }}
-                        : {{ entities[employeeId]['employeeDesignationName'] }}</h5></th>
-            </tr>
-            <tr class="data-header">
-                <th scope="col" rowspan="2" class="text-center">Month</th>
-                <th scope="col" rowspan="2" class="text-center">SL No.</th>
-                <th scope="col" rowspan="2" class="text-center">Name Of Farmers</th>
-                <th scope="col" rowspan="2" class="text-center">Address</th>
-                <th scope="col" rowspan="2" class="text-center">Mobile</th>
-                <th scope="col"
-                    colspan="{{ entities[employeeId]['species'] is defined?entities[employeeId]['species']|length:'0' }}"
-                    class="text-center">Capacity
-                </th>
-                <th scope="col" colspan="3" class="text-center">Present Agent Information</th>
-                <th scope="col" colspan="3" class="text-center">Previous Agent Information</th>
-                <th scope="col" rowspan="2" class="text-center">Remarks</th>
-            </tr>
-            <tr class="data-header">
-
-                {% if entities[employeeId]['species'] is defined %}
-                    {% for specie in entities[employeeId]['species'] %}
-                        <th class="text-center" scope="col">{{ specie.name }}</th>
-                    {% endfor %}
-                {% endif %}
-
-                <th scope="col">Name Of Agent</th>
-                <th scope="col">Address</th>
-                <th scope="col">Name Of Feed</th>
-
-                <th scope="col">Name Of Previous Agent</th>
-                <th scope="col">Address</th>
-                <th scope="col">Name Of Previous Feed</th>
-
-            </tr>
-            </thead>
-            <tbody>
-            {% for monthYear,details in employeesDetails['details'] %}
-                {% for detail in details %}
-                    {% set cultureSpeciesItemAndQty = detail['cultureSpeciesItemAndQty']|json_decode %}
-                    <tr>
-                        {% if loop.first %}
-                            <td valign="middle"
-                                rowspan="{{ details|length }}" data-a-v="middle">{{ monthYear }}</td>
-                        {% endif %}
-                        {#                        <td>{{ monthYear }}</td>#}
-                        <td>{{ loop.index }}</td>
-
-                        <td>{{ detail['customerName']|default('') }}</td>
-                        <td>{{ detail['customerAddress']|default('') }}</td>
-                        <td data-t="s">{{ detail['customerMobile']|default('') }}</td>
-
-                        {% if entities[employeeId]['species'] is defined %}
-                            {% for specie in entities[employeeId]['species'] %}
-                                <td data-t="n" class="text-center"
-                                    scope="col">{{ cultureSpeciesItemAndQty[specie.id]|default('') }}</td>
-                            {% endfor %}
-                        {% endif %}
-
-                        <td>{{ detail['agentName']|default('') }}</td>
-                        <td>{{ detail['agentAddress']|default('') }}</td>
-                        <td>{{ detail['feedName']|default('') }}</td>
-
-                        <td>{{ detail['otherAgentName']?detail['otherAgentName']:detail['subAgentName']|default('') }}</td>
-                        <td>{{ detail['otherAgentAddress']?detail['otherAgentAddress']:detail['subAgentAddress']|default('') }}</td>
-                        <td>{{ detail['otherFeedName']|default('') }}</td>
-                        <td>{{ detail['remarks']|default('') }}</td>
-                    </tr>
+            {% if entities['species'] is defined %}
+                {% for specie in entities['species'] %}
+                    <th class="text-center" scope="col">{{ specie.name }}</th>
                 {% endfor %}
-            {% endfor %}
-            <tr>
-                <td colspan="15" class="border-0"></td>
-            </tr>
+            {% endif %}
+
+            <th scope="col">Name Of Agent</th>
+            <th scope="col">Address</th>
+            <th scope="col">Name Of Feed</th>
+
+            <th scope="col">Name Of Previous Agent</th>
+            <th scope="col">Address</th>
+            <th scope="col">Name Of Previous Feed</th>
+
+        </tr>
+        </thead>
+
+            <tbody>
+            {% if entities['details'] is defined and entities['details'] is not empty %}
+                {% set totalRecordCount=1 %}
+                    {% for monthYear, regionDetails in entities['details'] %}
+                <tr>
+                    <td colspan="16">{{ monthYear }}</td>
+                </tr>
+                {% for regionId, employeesDetails in regionDetails %}
+                    {% set recordCount=1 %}
+                        {% for employeeId,details in employeesDetails %}
+                        {% for detail in details %}
+                            {% set cultureSpeciesItemAndQty = detail['cultureSpeciesItemAndQty']|json_decode %}
+                            <tr>
+                                {% if recordCount==1 %}
+                                    <td data-a-v="middle" valign="middle"
+                                        rowspan="{{ entities['regionRecord'][monthYear][regionId]|length }}">{{ detail['regionName']|default('') }}</td>
+                                {% endif %}
+                                {% if loop.first %}
+                                    <td data-a-v="middle" valign="middle"
+                                        rowspan="{{ details|length }}">{{ detail['employeeName']|default('') }}</td>
+                                {% endif %}
+                                {#                        <td>{{ monthYear }}</td>#}
+                                <td data-a-h="center" data-t="n">{{ totalRecordCount }}</td>
+
+                                <td>{{ detail['customerName']|default('') }}</td>
+                                <td>{{ detail['customerAddress']|default('') }}</td>
+                                <td data-t="s">{{ detail['customerMobile']|default('') }}</td>
+
+                                {% if entities['species'] is defined %}
+                                    {% for specie in entities['species'] %}
+                                        <td data-t="n" class="text-center"
+                                            scope="col">{{ cultureSpeciesItemAndQty[specie.id]|default('') }}</td>
+                                    {% endfor %}
+                                {% endif %}
+
+                                <td>{{ detail['agentName']|default('') }}</td>
+                                <td>{{ detail['agentAddress']|default('') }}</td>
+                                <td>{{ detail['feedName']|default('') }}</td>
+
+                                <td>{{ detail['otherAgentName']?detail['otherAgentName']:detail['subAgentName']|default('') }}</td>
+                                <td>{{ detail['otherAgentAddress']?detail['otherAgentAddress']:detail['subAgentAddress']|default('') }}</td>
+                                <td>{{ detail['otherFeedName']|default('') }}</td>
+                                <td>{{ detail['remarks']|default('') }}</td>
+                            </tr>
+                            {% set totalRecordCount=totalRecordCount+1 %}
+                            {% set recordCount=recordCount+1 %}
+                        {% endfor %}
+                    {% endfor %}
+                    {% endfor %}
+                    {% endfor %}
+            {% endif %}
+
             </tbody>
-        {% endfor %}
     </table>
 {% endif %}

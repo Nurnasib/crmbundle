@@ -60,6 +60,7 @@ class FarmerIntroduceDetailsRepository extends BaseRepository
             $qb = $this->createQueryBuilder('e');
             $qb->select('e.id as eId', 'e.cultureSpeciesItemAndQty', 'e.remarks', 'e.createdAt', 'e.introduceDate');
             $qb->addSelect('farmer.name AS customerName', 'farmer.address AS customerAddress', 'farmer.mobile AS customerMobile');
+            $qb->addSelect( 'customerRegion.id AS regionId', 'customerRegion.name AS regionName');
             $qb->addSelect('agent.name AS agentName','agent.address AS agentAddress');
             $qb->addSelect('otherAgent.name AS otherAgentName','otherAgent.address AS otherAgentAddress');
             $qb->addSelect('subAgent.name AS subAgentName','subAgent.address AS subAgentAddress');
@@ -71,6 +72,9 @@ class FarmerIntroduceDetailsRepository extends BaseRepository
 
 
             $qb->join('e.customer', 'farmer');
+            $qb->join('farmer.location','customerUpazila');
+            $qb->join('customerUpazila.parent', 'customerDistrict');
+            $qb->join('customerDistrict.parent', 'customerRegion');
             $qb->join('e.employee', 'employee');
             $qb->join('e.farmerType', 'farmerType');
             $qb->leftJoin('employee.designation', 'designation');
@@ -102,11 +106,19 @@ class FarmerIntroduceDetailsRepository extends BaseRepository
             if($results){
                 foreach ($results as $result){
                     $monthYear = $result['introduceDate']->format('F-Y');
-                    $returnArray[$result['employeeId']]['species']=$species;
-                    $returnArray[$result['employeeId']]['name']=$result['employeeName'];
+
+                    /*$returnArray[$result['employeeId']]['name']=$result['employeeName'];
                     $returnArray[$result['employeeId']]['employeeDesignationName']=$result['employeeDesignationName'];
-                    $returnArray[$result['employeeId']]['details'][$monthYear][]=$result;
+                    $returnArray[$result['employeeId']]['details'][$monthYear][]=$result;*/
+
+
+                    $returnArray['details'][$monthYear][$result['regionId']][$result['employeeId']][]=$result;
+                    $returnArray['regionRecord'][$monthYear][$result['regionId']][]=$result;
+                    $returnArray['monthRecord'][$monthYear][]=$result;
                 }
+                $returnArray['totalRecord']=$results;
+                $returnArray['species']=$species;
+
             }
         }
 //        dd($returnArray);
