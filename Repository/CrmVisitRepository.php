@@ -161,7 +161,7 @@ class CrmVisitRepository extends EntityRepository
             $data[$result['lineManagerUserId']]['teamMember'][$result['employeeUserId']]['employeeDetails']['id'] = $result['employeeId'];
             $data[$result['lineManagerUserId']]['teamMember'][$result['employeeUserId']]['employeeDetails']['employeeName'] = $result['employeeName'];
             $data[$result['lineManagerUserId']]['teamMember'][$result['employeeUserId']]['employeeDetails']['userId'] = $result['employeeUserId'];
-            $data[$result['lineManagerUserId']]['teamMember'][$result['employeeUserId']]['days'][$day]['status'] = $result['workingModeSlug'];
+            $data[$result['lineManagerUserId']]['teamMember'][$result['employeeUserId']]['days'][$day]['status'][] = $result['workingModeSlug'];
             $data[$result['lineManagerUserId']]['teamMember'][$result['employeeUserId']]['days'][$day]['visits'][] = $result;
         }
         return $data;
