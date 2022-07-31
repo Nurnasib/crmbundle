@@ -15,7 +15,8 @@
                                     <option value="">- Select Line Manager -</option>
 
                                     {% for lineManager in lineManagers %}
-                                        <option {{ selectedLineManagerUserId == lineManager.userId ? 'selected':'' }} value="{{ lineManager.userId }}">{{ '('~ lineManager.userId ~ ') ' ~ lineManager.name }}</option>
+                                        <option {{ selectedLineManagerUserId == lineManager.userId ? 'selected':'' }}
+                                                value="{{ lineManager.userId }}">{{ '('~ lineManager.userId ~ ') ' ~ lineManager.name }}</option>
                                     {% endfor %}
                                 </select>
                             </div>
@@ -66,7 +67,10 @@
                             <th rowspan="2">Line Manager</th>
                             <th rowspan="2">Employee ID</th>
                             <th rowspan="2">Name</th>
-                            <th colspan="31" class="text-center">{{ firstDayOfMonth is defined ? firstDayOfMonth|date('F') : '' }}(Days)</th>
+                            <th colspan="31"
+                                class="text-center">{{ firstDayOfMonth is defined ? firstDayOfMonth|date('F') : '' }}
+                                (Days)
+                            </th>
                         </tr>
                         <tr>
                             {% if lastDayOfMonth is defined and lastDayOfMonth is not null %}
@@ -77,112 +81,101 @@
                         </tr>
                         </thead>
                         <tbody>
-                        {% if employeesByLineManager is defined and employeesByLineManager is not empty %}
-                            {% for lineManagerUserId, details in employeesByLineManager %}
-                                {% for employeeUserId, teamMember in details['teamMember'] %}
-                                    <tr>
-                                        {% if loop.first %}
-                                            <td rowspan="{{ details['teamMember']|length }}">{{ loop.parent.loop.index }}</td>
-                                            <td rowspan="{{ details['teamMember']|length }}">{{ details['lineManager'].name }}</td>
-                                        {% endif %}
-                                        <td>{{ teamMember.userId }}</td>
-                                        <td>{{ teamMember.employeeName }}</td>
-                                        {% if lastDayOfMonth is defined and lastDayOfMonth is not null %}
-                                            {% for day in 1..lastDayOfMonth|date('d') %}
-                                                <td align="center" style="padding: 0 !important;">
-                                                    {% if visitStatus[lineManagerUserId] is defined and visitStatus[lineManagerUserId]['teamMember'][employeeUserId] is defined and visitStatus[lineManagerUserId]['teamMember'][employeeUserId]['days']["%02d"|format(day)] is defined %}
-                                                        {% if visitStatus[lineManagerUserId]['teamMember'][employeeUserId]['days']["%02d"|format(day)]['status'] is same as 'Working' %}
-                                                            <a style="text-decoration: underline;"
-                                                               href="{{ path('visit_details_report', {'mode': 'pdf', 'visitDate': day ~ '-' ~ firstDayOfMonth|date('m-Y'), 'employeeId': visitStatus[lineManagerUserId]['teamMember'][employeeUserId]['employeeDetails'].id }) }}"
-                                                               target="_blank"
-                                                               title="Total visits: {{ visitStatus[lineManagerUserId]['teamMember'][employeeUserId]['days']["%02d"|format(day)]['visits']|length }}">
-                                                                <div style="height:100%;width:100%">W</div>
-                                                            </a>
-                                                        {% elseif visitStatus[lineManagerUserId]['teamMember'][employeeUserId]['days']["%02d"|format(day)]['status'] is same as 'Leave' %}
-                                                            <div title="Leave" style="height:100%;width:100%">L</div>
-                                                        {% else %}
-                                                            <div title="Total visits: 0" style="height:100%;width:100%">-</div>
-                                                        {% endif %}
-                                                    {% else %}
-                                                        <div title="Total visits: 0" style="height:100%;width:100%">-</div>
-                                                    {% endif %}
-                                                </td>
-                                            {% endfor %}
-                                        {% endif %}
-                                    </tr>
-{#                                    {{ dump(teamMember) }}#}
-                                {% endfor %}
-                            {% endfor %}
-                        {% endif %}
-
-
-
-                        {#{% if selectedEmployee is defined and selectedEmployee is not null %}
-                            {% if visitStatus is defined and visitStatus is not null %}
-                                <tr>
-                                    <td>1</td>
-                                    <td>{{ selectedEmployee.userId }}</td>
-                                    <td>{{ selectedEmployee.name }}</td>
-
-                                    {% if lastDayOfMonth is defined and lastDayOfMonth is not null %}
-                                        {% for day in 1..lastDayOfMonth|date('d') %}
-                                            <td align="center" style="padding: 0 !important;">
-                                                {% if visitStatus[selectedEmployee.id] is defined and visitStatus[selectedEmployee.id]["%02d"|format(day)] is defined %}
-                                                    {% if visitStatus[selectedEmployee.id]["%02d"|format(day)]['status'] is same as 'Working' %}
-                                                        <a style="text-decoration: underline;"
-                                                           href="{{ path('visit_details_report', {'mode': 'pdf', 'visitDate': day ~ '-' ~ firstDayOfMonth|date('m-Y'), 'employeeId': selectedEmployee.id }) }}"
-                                                           target="_blank"
-                                                           title="Total visits: {{ visitStatus[selectedEmployee.id]["%02d"|format(day)]['visits']|length }}">
-                                                            <div style="height:100%;width:100%">W</div>
-                                                        </a>
-                                                    {% elseif visitStatus[selectedEmployee.id]["%02d"|format(day)]['status'] is same as 'Leave' %}
-                                                        <div title="Leave" style="height:100%;width:100%">L</div>
-                                                    {% else %}
-                                                        <div title="Total visits: 0" style="height:100%;width:100%">-</div>
-                                                    {% endif %}
+                        {% if selectedEmployee is defined and selectedEmployee is not null %}
+                            {% set lineManagerUserId = selectedEmployee.lineManager.userId %}
+                            {% set employeeUserId = selectedEmployee.userId %}
+                            <tr>
+                                <td>1</td>
+                                <td>{{ selectedEmployee.lineManager.name }}</td>
+                                <td>{{ employeeUserId }}</td>
+                                <td>{{ selectedEmployee.name }}</td>
+                                {% if lastDayOfMonth is defined and lastDayOfMonth is not null %}
+                                    {% for day in 1..lastDayOfMonth|date('d') %}
+                                        <td align="center" style="padding: 0 !important;">
+                                            {% if visitStatus[lineManagerUserId] is defined and visitStatus[lineManagerUserId]['teamMember'][employeeUserId] is defined and visitStatus[lineManagerUserId]['teamMember'][employeeUserId]['days']["%02d"|format(day)] is defined %}
+                                                {% if visitStatus[lineManagerUserId]['teamMember'][employeeUserId]['days']["%02d"|format(day)]['status'] is same as 'working' %}
+                                                    <a style="text-decoration: underline;"
+                                                       href="{{ path('visit_details_report', {'mode': 'pdf', 'visitDate': day ~ '-' ~ firstDayOfMonth|date('m-Y'), 'employeeId': visitStatus[lineManagerUserId]['teamMember'][employeeUserId]['employeeDetails'].id }) }}"
+                                                       target="_blank"
+                                                       title="Total visits: {{ visitStatus[lineManagerUserId]['teamMember'][employeeUserId]['days']["%02d"|format(day)]['visits']|length }}">
+                                                        <div style="height:100%;width:100%">W</div>
+                                                    </a>
+                                                {% elseif visitStatus[lineManagerUserId]['teamMember'][employeeUserId]['days']["%02d"|format(day)]['status'] is same as 'leave' %}
+                                                    <div title="Leave" style="height:100%;width:100%">L</div>
+                                                {% elseif visitStatus[lineManagerUserId]['teamMember'][employeeUserId]['days']["%02d"|format(day)]['status'] is same as 'training' %}
+                                                    <div title="Training" style="height:100%;width:100%">T</div>
+                                                {% elseif visitStatus[lineManagerUserId]['teamMember'][employeeUserId]['days']["%02d"|format(day)]['status'] is same as 'office-work' %}
+                                                    <div title="Office Work" style="height:100%;width:100%">OW</div>
+                                                {% elseif visitStatus[lineManagerUserId]['teamMember'][employeeUserId]['days']["%02d"|format(day)]['status'] is same as 'other-1' %}
+                                                    <div title="Other" style="height:100%;width:100%">O</div>
+                                                {% elseif visitStatus[lineManagerUserId]['teamMember'][employeeUserId]['days']["%02d"|format(day)]['status'] is same as 'workshop' %}
+                                                    <div title="Workshop" style="height:100%;width:100%">W</div>
                                                 {% else %}
                                                     <div title="Total visits: 0" style="height:100%;width:100%">-</div>
                                                 {% endif %}
-                                            </td>
-                                        {% endfor %}
-                                    {% endif %}
-
-                                </tr>
-                            {% endif %}
+                                            {% else %}
+                                                <div title="Total visits: 0" style="height:100%;width:100%">-</div>
+                                            {% endif %}
+                                        </td>
+                                    {% endfor %}
+                                {% endif %}
+                            </tr>
                         {% else %}
-                            {% if employees is defined and employees is not null %}
-                                {% for employee in employees %}
-                                    <tr>
-                                        <td>{{ loop.index }}</td>
-                                        <td>{{ employee.userId }}</td>
-                                        <td>{{ employee.name }}</td>
-
-                                        {% if lastDayOfMonth is defined and lastDayOfMonth is not null %}
-                                            {% for day in 1..lastDayOfMonth|date('d') %}
-                                                <td align="center" style="padding: 0 !important;">
-                                                    {% if visitStatus[employee.id] is defined and visitStatus[employee.id]["%02d"|format(day)] is defined %}
-                                                        {% if visitStatus[employee.id]["%02d"|format(day)]['status'] is same as 'Working' %}
-                                                            <a style="text-decoration: underline;"
-                                                               href="{{ path('visit_details_report', {'mode': 'pdf', 'visitDate': day ~ '-' ~ firstDayOfMonth|date('m-Y'), 'employeeId': employee.id }) }}"
-                                                               target="_blank"
-                                                               title="Total visits: {{ visitStatus[employee.id]["%02d"|format(day)]['visits']|length }}">
-                                                                <div style="height:100%;width:100%">W</div>
-                                                            </a>
-                                                        {% elseif visitStatus[employee.id]["%02d"|format(day)]['status'] is same as 'Leave' %}
-                                                            <div title="Leave" style="height:100%;width:100%">L</div>
+                            {% if employeesByLineManager is defined and employeesByLineManager is not empty %}
+                                {% for lineManagerUserId, details in employeesByLineManager %}
+                                    {% for employeeUserId, teamMember in details['teamMember'] %}
+                                        <tr>
+                                            {% if loop.first %}
+                                                <td rowspan="{{ details['teamMember']|length }}">{{ loop.parent.loop.index }}</td>
+                                                <td rowspan="{{ details['teamMember']|length }}">{{ details['lineManager'].name }}</td>
+                                            {% endif %}
+                                            <td>{{ teamMember.userId }}</td>
+                                            <td>{{ teamMember.employeeName }}</td>
+                                            {% if lastDayOfMonth is defined and lastDayOfMonth is not null %}
+                                                {% for day in 1..lastDayOfMonth|date('d') %}
+                                                    <td align="center" style="padding: 0 !important;">
+                                                        {% if visitStatus[lineManagerUserId] is defined and visitStatus[lineManagerUserId]['teamMember'][employeeUserId] is defined and visitStatus[lineManagerUserId]['teamMember'][employeeUserId]['days']["%02d"|format(day)] is defined %}
+                                                            {% if visitStatus[lineManagerUserId]['teamMember'][employeeUserId]['days']["%02d"|format(day)]['status'] is same as 'working' %}
+                                                                <a style="text-decoration: underline;"
+                                                                   href="{{ path('visit_details_report', {'mode': 'pdf', 'visitDate': day ~ '-' ~ firstDayOfMonth|date('m-Y'), 'employeeId': visitStatus[lineManagerUserId]['teamMember'][employeeUserId]['employeeDetails'].id }) }}"
+                                                                   target="_blank"
+                                                                   title="Total visits: {{ visitStatus[lineManagerUserId]['teamMember'][employeeUserId]['days']["%02d"|format(day)]['visits']|length }}">
+                                                                    <div style="height:100%;width:100%">W</div>
+                                                                </a>
+                                                            {% elseif visitStatus[lineManagerUserId]['teamMember'][employeeUserId]['days']["%02d"|format(day)]['status'] is same as 'leave' %}
+                                                                <div title="Leave" style="height:100%;width:100%">L
+                                                                </div>
+                                                            {% elseif visitStatus[lineManagerUserId]['teamMember'][employeeUserId]['days']["%02d"|format(day)]['status'] is same as 'training' %}
+                                                                <div title="Training" style="height:100%;width:100%">T
+                                                                </div>
+                                                            {% elseif visitStatus[lineManagerUserId]['teamMember'][employeeUserId]['days']["%02d"|format(day)]['status'] is same as 'office-work' %}
+                                                                <div title="Office Work" style="height:100%;width:100%">
+                                                                    OW
+                                                                </div>
+                                                            {% elseif visitStatus[lineManagerUserId]['teamMember'][employeeUserId]['days']["%02d"|format(day)]['status'] is same as 'other-1' %}
+                                                                <div title="Other" style="height:100%;width:100%">O
+                                                                </div>
+                                                            {% elseif visitStatus[lineManagerUserId]['teamMember'][employeeUserId]['days']["%02d"|format(day)]['status'] is same as 'workshop' %}
+                                                                <div title="Workshop" style="height:100%;width:100%">W
+                                                                </div>
+                                                            {% else %}
+                                                                <div title="Total visits: 0"
+                                                                     style="height:100%;width:100%">-
+                                                                </div>
+                                                            {% endif %}
                                                         {% else %}
-                                                            <div title="Total visits: 0" style="height:100%;width:100%">-</div>
+                                                            <div title="Total visits: 0" style="height:100%;width:100%">
+                                                                -
+                                                            </div>
                                                         {% endif %}
-                                                    {% else %}
-                                                        <div title="Total visits: 0" style="height:100%;width:100%">-</div>
-                                                    {% endif %}
-                                                </td>
-                                            {% endfor %}
-                                        {% endif %}
-                                    </tr>
+                                                    </td>
+                                                {% endfor %}
+                                            {% endif %}
+                                        </tr>
+                                    {% endfor %}
                                 {% endfor %}
                             {% endif %}
-                        {% endif %}#}
+                        {% endif %}
                         </tbody>
                         <tfoot>
                     </table>

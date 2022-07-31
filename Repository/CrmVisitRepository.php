@@ -134,7 +134,7 @@ class CrmVisitRepository extends EntityRepository
         $qb->leftJoin('e.workingMode', 'working_mode');
 
         $qb->select('e.created AS visitDate');
-        $qb->addSelect('working_mode.id AS workingModeId', 'working_mode.name AS workingModeName');
+        $qb->addSelect('working_mode.id AS workingModeId', 'working_mode.name AS workingModeName', 'working_mode.slug AS workingModeSlug');
         $qb->addSelect('employee.id AS employeeId', 'employee.userId AS employeeUserId', 'employee.name AS employeeName');
         $qb->addSelect('lineManager.id AS lineManagerAutoIncId', 'lineManager.userId AS lineManagerUserId', 'lineManager.name AS lineManagerName');
 
@@ -161,7 +161,7 @@ class CrmVisitRepository extends EntityRepository
             $data[$result['lineManagerUserId']]['teamMember'][$result['employeeUserId']]['employeeDetails']['id'] = $result['employeeId'];
             $data[$result['lineManagerUserId']]['teamMember'][$result['employeeUserId']]['employeeDetails']['employeeName'] = $result['employeeName'];
             $data[$result['lineManagerUserId']]['teamMember'][$result['employeeUserId']]['employeeDetails']['userId'] = $result['employeeUserId'];
-            $data[$result['lineManagerUserId']]['teamMember'][$result['employeeUserId']]['days'][$day]['status'] = $result['workingModeName'];
+            $data[$result['lineManagerUserId']]['teamMember'][$result['employeeUserId']]['days'][$day]['status'] = $result['workingModeSlug'];
             $data[$result['lineManagerUserId']]['teamMember'][$result['employeeUserId']]['days'][$day]['visits'][] = $result;
         }
         return $data;
