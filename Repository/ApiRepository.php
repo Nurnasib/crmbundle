@@ -1098,8 +1098,8 @@ class ApiRepository extends BaseRepository
         $qb->join('e.location', 'location');
         $qb->join('e.customerGroup', 's');
         $qb->join('e.agent', 'a');
-        $qb->leftJoin('e.farmerIntroduce', 'fi');
-        $qb->leftJoin('fi.farmerType', 'farmerType');
+        $qb->join('e.farmerIntroduce', 'fi');
+        $qb->join('fi.farmerType', 'farmerType');
 
         $qb->select('e.id as id', 'e.name as name', 'e.address as address', 'e.mobile as mobile');
         $qb->addSelect('a.id as agentId', 'a.name as agentName', 'farmerType.name AS farmerTypeName');
