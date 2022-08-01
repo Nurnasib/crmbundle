@@ -92,30 +92,48 @@
                                 {% if lastDayOfMonth is defined and lastDayOfMonth is not null %}
                                     {% for day in 1..lastDayOfMonth|date('d') %}
                                         <td align="center" style="padding: 0 !important;">
-                                            {% if visitStatus[lineManagerUserId] is defined and visitStatus[lineManagerUserId]['teamMember'][employeeUserId] is defined and visitStatus[lineManagerUserId]['teamMember'][employeeUserId]['days']["%02d"|format(day)] is defined %}
-                                                {% if visitStatus[lineManagerUserId]['teamMember'][employeeUserId]['days']["%02d"|format(day)]['status'] is same as 'working' %}
-                                                    <a style="text-decoration: underline;"
-                                                       href="{{ path('visit_details_report', {'mode': 'pdf', 'visitDate': day ~ '-' ~ firstDayOfMonth|date('m-Y'), 'employeeId': visitStatus[lineManagerUserId]['teamMember'][employeeUserId]['employeeDetails'].id }) }}"
-                                                       target="_blank"
-                                                       title="Total visits: {{ visitStatus[lineManagerUserId]['teamMember'][employeeUserId]['days']["%02d"|format(day)]['visits']|length }}">
-                                                        <div style="height:100%;width:100%">W</div>
-                                                    </a>
-                                                {% elseif visitStatus[lineManagerUserId]['teamMember'][employeeUserId]['days']["%02d"|format(day)]['status'] is same as 'leave' %}
-                                                    <div title="Leave" style="height:100%;width:100%">L</div>
-                                                {% elseif visitStatus[lineManagerUserId]['teamMember'][employeeUserId]['days']["%02d"|format(day)]['status'] is same as 'training' %}
-                                                    <div title="Training" style="height:100%;width:100%">T</div>
-                                                {% elseif visitStatus[lineManagerUserId]['teamMember'][employeeUserId]['days']["%02d"|format(day)]['status'] is same as 'office-work' %}
-                                                    <div title="Office Work" style="height:100%;width:100%">OW</div>
-                                                {% elseif visitStatus[lineManagerUserId]['teamMember'][employeeUserId]['days']["%02d"|format(day)]['status'] is same as 'other-1' %}
-                                                    <div title="Other" style="height:100%;width:100%">O</div>
-                                                {% elseif visitStatus[lineManagerUserId]['teamMember'][employeeUserId]['days']["%02d"|format(day)]['status'] is same as 'workshop' %}
-                                                    <div title="Workshop" style="height:100%;width:100%">W</div>
-                                                {% else %}
-                                                    <div title="Total visits: 0" style="height:100%;width:100%">-</div>
+                                            <div class="btn-group">
+                                                {% if visitStatus[lineManagerUserId] is defined and visitStatus[lineManagerUserId]['teamMember'][employeeUserId] is defined and visitStatus[lineManagerUserId]['teamMember'][employeeUserId]['days']["%02d"|format(day)] is defined %}
+                                                    {% set workingStatus = visitStatus[lineManagerUserId]['teamMember'][employeeUserId]['days']["%02d"|format(day)]['status'] %}
+                                                    {% if 'working' in workingStatus %}
+                                                        <a style="text-decoration: underline;"
+                                                           class="btn btn-mini btn-transparent font-white"
+                                                           href="{{ path('visit_details_report', {'mode': 'pdf', 'visitDate': day ~ '-' ~ firstDayOfMonth|date('m-Y'), 'employeeId': selectedEmployee.id }) }}"
+                                                           target="_blank"
+                                                           title="Total visits: {{ visitStatus[lineManagerUserId]['teamMember'][employeeUserId]['days']["%02d"|format(day)]['visits']|length }}">
+                                                            {#                                                                        <div style="height:100%;width:100%">W</div>#}
+                                                            W
+                                                        </a>
+                                                    {% endif %}
+
+                                                    {% if 'leave' in workingStatus %}
+                                                        <span class="btn btn-mini btn-transparent" title="Leave" style="cursor: default">L
+                                                                    </span>
+                                                    {% endif %}
+
+                                                    {% if 'training' in workingStatus %}
+                                                        <span class="btn btn-mini btn-transparent" title="Training" style="cursor: default">T
+                                                                    </span>
+                                                    {% endif %}
+
+                                                    {% if 'office-work' in workingStatus %}
+                                                        <span class="btn btn-mini btn-transparent" title="Office Work" style="cursor: default">
+                                                                        OW
+                                                                    </span>
+                                                    {% endif %}
+
+                                                    {% if 'other-1' in workingStatus %}
+                                                        <span class="btn btn-mini btn-transparent" title="Other" style="cursor: default">O
+                                                                    </span>
+                                                    {% endif %}
+
+                                                    {% if 'workshop' in workingStatus %}
+                                                        <span class="btn btn-mini btn-transparent" title="Workshop" style="cursor: default">W
+                                                                    </span>
+                                                    {% endif %}
+
                                                 {% endif %}
-                                            {% else %}
-                                                <div title="Total visits: 0" style="height:100%;width:100%">-</div>
-                                            {% endif %}
+                                            </div>
                                         </td>
                                     {% endfor %}
                                 {% endif %}
