@@ -120,8 +120,8 @@ class ApiRepository extends BaseRepository
         $em = $this->_em;
         $qb = $em->createQueryBuilder();
         $qb->from(CrmCustomer::class, 'e');
-        $qb->Join('e.customerGroup', 'cg');
-        $qb->leftJoin('e.farmerIntroduce', 'fi');
+        $qb->join('e.customerGroup', 'cg');
+        $qb->join('e.farmerIntroduce', 'fi');
         $qb->leftJoin('fi.feed', 'feed');
         $qb->leftJoin('fi.otherFeed', 'otherFeed');
         $qb->leftJoin('fi.farmerType', 'farmerTypes');
