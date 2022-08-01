@@ -120,8 +120,8 @@ class ApiRepository extends BaseRepository
         $em = $this->_em;
         $qb = $em->createQueryBuilder();
         $qb->from(CrmCustomer::class, 'e');
-        $qb->Join('e.customerGroup', 'cg');
-        $qb->leftJoin('e.farmerIntroduce', 'fi');
+        $qb->join('e.customerGroup', 'cg');
+        $qb->join('e.farmerIntroduce', 'fi');
         $qb->leftJoin('fi.feed', 'feed');
         $qb->leftJoin('fi.otherFeed', 'otherFeed');
         $qb->leftJoin('fi.farmerType', 'farmerTypes');
@@ -1098,8 +1098,8 @@ class ApiRepository extends BaseRepository
         $qb->join('e.location', 'location');
         $qb->join('e.customerGroup', 's');
         $qb->join('e.agent', 'a');
-        $qb->leftJoin('e.farmerIntroduce', 'fi');
-        $qb->leftJoin('fi.farmerType', 'farmerType');
+        $qb->join('e.farmerIntroduce', 'fi');
+        $qb->join('fi.farmerType', 'farmerType');
 
         $qb->select('e.id as id', 'e.name as name', 'e.address as address', 'e.mobile as mobile');
         $qb->addSelect('a.id as agentId', 'a.name as agentName', 'farmerType.name AS farmerTypeName');
