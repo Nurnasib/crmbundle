@@ -5,7 +5,7 @@
         <th data-b-a-s="thin" data-b-a-c="#000000" class="text-right border"
             style="border-color: #b5b5b5!important">{{ entities['totalRecord'] is defined?entities['totalRecord']:'' }}</th>
         <th data-b-a-s="thin" data-b-a-c="#000000" class="text-right border" style="border-color: #b5b5b5!important">%</th>
-        <th colspan="25" class="border-0" data-a-h="center"><h3 class="text-center">NOURISH POULTRY AND HATCHERY
+        <th colspan="26" class="border-0" data-a-h="center"><h3 class="text-center">NOURISH POULTRY AND HATCHERY
                 LTD</h3></th>
     </tr>
     <tr>
@@ -14,7 +14,7 @@
             style="border-color: #b5b5b5!important">{{ entities['bodyWtGatterThanStandard'] is defined?entities['bodyWtGatterThanStandard']:'' }}</th>
         <th data-b-a-s="thin" data-b-a-c="#000000" class="text-right border"
             style="border-color: #b5b5b5!important">{{ entities['bodyWtGatterThanStandard'] is defined and entities['totalRecord'] is defined and entities['totalRecord']>0?((entities['bodyWtGatterThanStandard']*100)/entities['totalRecord'])|number_format(0):'' }}</th>
-        <th colspan="25" class="border-0" data-a-h="center"><h5 class="text-center">UTTARA, DHAKA.</h5></th>
+        <th colspan="26" class="border-0" data-a-h="center"><h5 class="text-center">UTTARA, DHAKA.</h5></th>
     </tr>
 
     <tr>
@@ -23,40 +23,41 @@
             style="border-color: #b5b5b5!important">{{ entities['bodyWtLessThanStandard'] is defined?entities['bodyWtLessThanStandard']:'' }}</th>
         <th data-b-a-s="thin" data-b-a-c="#000000" class="text-right border"
             style="border-color: #b5b5b5!important">{{ entities['bodyWtLessThanStandard'] is defined and entities['totalRecord'] is defined and entities['totalRecord']>0?((entities['bodyWtLessThanStandard']*100)/entities['totalRecord'])|number_format(0):'' }}</th>
-        <th colspan="25" class="border-0 text-center"
+        <th colspan="26" class="border-0 text-center"
             data-a-h="center"><h6>{{ report.name|default('') }} {{ filterBy['startDate']?filterBy['startDate']:'' }} {{ filterBy['startDate']?' to '~filterBy['endDate']:'' }}</h6></th>
     </tr>
     <tr>
         <th colspan="2" class="border-0"></th>
         <th class="border-0"></th>
         <th class="border-0"></th>
-        <th colspan="25" class="border-0 text-center" data-a-h="center"><h6>Reporting Date : {{ "now"|date('d-m-Y') }}</h6></th>
+        <th colspan="26" class="border-0 text-center" data-a-h="center"><h6>Reporting Date : {{ "now"|date('d-m-Y') }}</h6></th>
     </tr>
 
     <tr style="position: sticky; top: -2px; background-color: #dbdee3" class="data-header">
-        <th class="text-center" style="width: 150px;" scope="col" rowspan="2">Region</th>
-        <th class="text-center" style="width: 150px;" scope="col" rowspan="2">Name Of CSO</th>
-        <th class="text-center" style="width: 150px;" scope="col" rowspan="2">Name Of Agent</th>
-        <th class="text-center" style="width: 150px;" scope="col" rowspan="2">District</th>
+        <th data-a-v="middle" class="text-center" style="width: 150px;" scope="col" rowspan="2">Region</th>
+        <th data-a-v="middle" class="text-center" style="width: 150px;" scope="col" rowspan="2">Name Of CSO</th>
+        <th data-a-v="middle" class="text-center"  scope="col" rowspan="2">SL No.</th>
+        <th data-a-v="middle" class="text-center" style="width: 150px;" scope="col" rowspan="2">Name Of Agent</th>
+        <th data-a-v="middle" class="text-center" style="width: 150px;" scope="col" rowspan="2">District</th>
         {#        <th style="width: 150px;" scope="col" rowspan="2">Address</th>#}
-        <th class="text-center" style="width: 150px;" scope="col" rowspan="2">Name Of Farmer</th>
-        <th class="text-center" style="width: 150px;" scope="col" rowspan="2">Address</th>
-        <th class="text-center" style="width: 150px;" scope="col" rowspan="2">Mobile</th>
-        <th class="text-center" style="width: 105px" scope="col" rowspan="2">Hatching date</th>
-        <th class="text-center" scope="col" rowspan="2">Total Birds</th>
-        <th class="text-center" scope="col" rowspan="2">Age (Day)</th>
+        <th data-a-v="middle" class="text-center" style="width: 150px;" scope="col" rowspan="2">Name Of Farmer</th>
+        <th data-a-v="middle" class="text-center" style="width: 150px;" scope="col" rowspan="2">Address</th>
+        <th data-a-v="middle" class="text-center" style="width: 150px;" scope="col" rowspan="2">Mobile</th>
+        <th data-a-v="middle" class="text-center" style="width: 105px" scope="col" rowspan="2">Hatching date</th>
+        <th data-a-v="middle" class="text-center" scope="col" rowspan="2">Total Birds</th>
+        <th data-a-v="middle" class="text-center" scope="col" rowspan="2">Age (Day)</th>
         <th class="text-center" data-a-h="center" scope="col" colspan="2">Mortality</th>
         <th class="text-center" data-a-h="center" scope="col" colspan="3">Weight (gm)</th>
         <th class="text-center" data-a-h="center" scope="col" colspan="3">Feed Consumption</th>
         <th class="text-center" data-a-h="center" scope="col" colspan="3">FCR</th>
-        <th class="text-center" style="width: 150px;" scope="col" rowspan="2">Hatchery</th>
-        <th class="text-center" style="width: 150px;" scope="col" rowspan="2">Breed</th>
-        <th class="text-center" style="width: 150px;" scope="col" rowspan="2">Feed</th>
-        <th class="text-center" style="width: 150px;" scope="col" rowspan="2">FeedMill</th>
-        <th class="text-center" style="width: 150px;" scope="col" rowspan="2">FeedType</th>
-        <th class="text-center" style="width: 150px;" style="width: 105px" scope="col" rowspan="2">Pro. Date</th>
-        <th class="text-center" style="width: 200px;" scope="col" rowspan="2">Batch No.</th>
-        <th class="text-center" style="width: 300px;" scope="col" rowspan="2">Remarks</th>
+        <th data-a-v="middle" class="text-center" style="width: 150px;" scope="col" rowspan="2">Hatchery</th>
+        <th data-a-v="middle" class="text-center" style="width: 150px;" scope="col" rowspan="2">Breed</th>
+        <th data-a-v="middle" class="text-center" style="width: 150px;" scope="col" rowspan="2">Feed</th>
+        <th data-a-v="middle" class="text-center" style="width: 150px;" scope="col" rowspan="2">FeedMill</th>
+        <th data-a-v="middle" class="text-center" style="width: 150px;" scope="col" rowspan="2">FeedType</th>
+        <th data-a-v="middle" class="text-center" style="width: 150px;" style="width: 105px" scope="col" rowspan="2">Pro. Date</th>
+        <th data-a-v="middle" class="text-center" style="width: 200px;" scope="col" rowspan="2">Batch No.</th>
+        <th data-a-v="middle" class="text-center" style="width: 300px;" scope="col" rowspan="2">Remarks</th>
     </tr>
     <tr style="position: sticky; top: 28px; background-color: #dbdee3" class="data-header">
         <th class="text-center" scope="col">Pcs</th>
@@ -80,10 +81,11 @@
 
 
     {% if entities is not empty %}
+        {% set totalRecordCount=1 %}
         {% for monthYear, regionFcrDetails in entities %}
             {% if monthYear is not same as 'fcrSonaliStandard' and monthYear is not same as 'totalRecord' and monthYear is not same as 'bodyWtGatterThanStandard' and monthYear is not same as 'bodyWtLessThanStandard' %}
                 <tr>
-                    <td data-t="s" colspan="29">{{ monthYear }}</td>
+                    <td data-t="s" colspan="30">{{ monthYear }}</td>
                 </tr>
                 {% for regionId, employeesFcrDetails in regionFcrDetails %}
                     {% if regionId is not same as 'monthRecordCount' %}
@@ -100,7 +102,7 @@
                                             <td data-a-v="middle" data-t="s" valign="middle"
                                                 rowspan="{{ fcrDetails['details']|length }}">{{ fcrDetail['employeeName'] }}</td>
                                         {% endif %}
-
+                                        <td data-a-h="center" data-t="n">{{ totalRecordCount }}</td>
                                         <td data-t="s">{{ fcrDetail['agentName']|default('') }}</td>
                                         <td data-t="s">{{ fcrDetail['agentDistrictName']|default('') }}</td>
                                         {#                        <td>{{ fcrDetail['agentAddress']|default('') }}</td>#}
@@ -131,6 +133,7 @@
                                         <td data-t="s">{{ fcrDetail['batchNo'] }}</td>
                                         <td data-t="s">{{ fcrDetail['remarks'] }}</td>
                                     </tr>
+                                    {% set totalRecordCount=totalRecordCount+1 %}
                                     {% set recordCount=recordCount+1 %}
                                 {% endfor %}
                             {% endif %}
