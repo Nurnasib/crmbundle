@@ -334,13 +334,13 @@ VALUES (:crm_visit_id, :farmCapacity, :updated, :comments, :created, :customer_i
                 $stmt->bindValue('repoting_month', $repotingMonth->format('Y-m-d'));
                 $stmt->bindValue('total_birds', $performance['total_birds']);
                 $stmt->bindValue('age_week', $performance['age_week']);
-                $stmt->bindValue('bird_weight_achieved', $performance['bird_weight_achieved']);
+                $stmt->bindValue('bird_weight_achieved', $performance['bird_weight_achieved']!=""?$performance['bird_weight_achieved']:0);
                 $stmt->bindValue('bird_weight_target', $performance['bird_weight_target']);
                 $stmt->bindValue('feed_intake_per_bird', $performance['feed_intake_per_bird']);
                 $stmt->bindValue('feed_Target', $performance['feed_Target']);
-                $stmt->bindValue('egg_production_achieved', $performance['egg_production_achieved']);
+                $stmt->bindValue('egg_production_achieved', $performance['egg_production_achieved']!=""?$performance['egg_production_achieved']:0);
                 $stmt->bindValue('egg_production_target', $performance['egg_production_target']);
-                $stmt->bindValue('egg_weight_achieved', $performance['egg_weight_achieved']);
+                $stmt->bindValue('egg_weight_achieved', $performance['egg_weight_achieved']!=""?$performance['egg_weight_achieved']:0);
                 $stmt->bindValue('egg_weight_stand', $performance['egg_weight_stand']);
                 $stmt->bindValue('production_date', $productionDate->format('Y-m-d'));
                 $stmt->bindValue('batch_no', $performance['batch_no']);
@@ -1789,7 +1789,7 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
                         $stmt->bindValue('crm_daily_chick_price_id', $parentId);
                         $stmt->bindValue('chick_type_id', $item['id']);
                         $stmt->bindValue('feed_id', $report['feed_id']);
-                        $stmt->bindValue('price', $item['price']);
+                        $stmt->bindValue('price', (float)$item['price']);
                         $stmt->bindValue('created_at', $createdAt);
 
                         $stmt->execute();
