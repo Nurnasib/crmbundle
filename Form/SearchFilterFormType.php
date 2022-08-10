@@ -342,6 +342,14 @@ class SearchFilterFormType extends AbstractType
                     'Complete' => 'COMPLETE',
                 ],
             ])
+            ->add('feedCompany', ChoiceType::class,[
+                'choices' => [
+                    'Nourish' => 'NOURISH',
+                    'Others' => 'OTHERS',
+                ],
+                'placeholder' => '- Select Feed -',
+                'required' => false,
+            ])
             ->add('filter', SubmitType::class,[
                 'attr'=>[
                     'class' => 'btn btn-primary btn-block'

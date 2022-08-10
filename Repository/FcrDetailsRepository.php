@@ -127,8 +127,18 @@ class FcrDetailsRepository extends BaseRepository
             }
 
 
+            $feedCompany = isset($filterBy['feedCompany'])&& $filterBy['feedCompany']!=''? $filterBy['feedCompany']: '';
+            if (!empty($feedCompany)){
+                if($feedCompany=='NOURISH'){
+                    $qb->andWhere('feed.name = :feed_name')->setParameter('feedId','Nourish');
+                }elseif ($feedCompany=='OTHERS'){
+                    $qb->andWhere('feed.name != :feed_name')->setParameter('feed_name','Nourish');
+                }
+            }
+
+
             $results = $qb->getQuery()->getArrayResult();
-//            dd(count($results));
+//            dd($results);
             $bodyWtGatterThanStandard=[];
             $bodyWtLessThanStandard=[];
             $fcrWithMortalitySummery=[];
