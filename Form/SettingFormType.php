@@ -93,6 +93,7 @@ class SettingFormType extends AbstractType
                     'Nourish Hatchery'=>'HATCHERY_NOURISH',
                     'Complain Type'=>'COMPLAIN_TYPE',
                     'Working Mode'=>'WORKING_MODE',
+                    'Challenge Name'=>'CHALLENGE_NAME',
 
                 ],
                 'attr' => [

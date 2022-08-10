@@ -33,6 +33,7 @@
                         <tr>
 
                             <th width="50">{{ 'S/N'|trans }}</th>
+                            <th>{{ 'Id'| trans }}</th>
                             <th>{{ 'Employee Id'| trans }}</th>
                             <th>{{ 'Employee Name'| trans }}</th>
                             <th>{{ 'Service Mode'| trans }}</th>
@@ -48,7 +49,7 @@
 {#                                {% set count = loop.index + (records.itemNumberPerPage * records.currentPageNumber) - records.itemNumberPerPage %}#}
                                 <tr>
                                     <td>{{ loop.index }}</td>
-{#                                    <td>{{ count }}</td>#}
+                                    <td>{{ record.id }}</td>
                                     <td>{{ record.employee ? record.employee.userId : '' }}</td>
                                     <td>{{ record.employee.name|default('') }}</td>
                                     <td>{{ record.employee.serviceMode.name|default('') }}</td>

@@ -2155,4 +2155,27 @@ class ApiRepository extends BaseRepository
 
         }
     }
+
+
+    /**
+     * Challenge Name
+     */
+    public function challengeName()
+    {
+        $em = $this->_em;
+        $qb = $em->createQueryBuilder();
+        $qb->from(Setting::class, 's');
+        $qb->select('s.id as id', 's.name as challengeName');
+        $qb->where("s.settingType = 'CHALLENGE_NAME'");
+        $qb->andWhere('s.status = 1');
+
+        $qb->orderBy('s.id', 'ASC');
+        $result = $qb->getQuery()->getArrayResult();
+        $data = array();
+        foreach ($result as $key => $row) {
+            $data[$key]['id'] = (int)$row['id'];
+            $data[$key]['name'] = (string)$row['challengeName'];
+        }
+        return $data;
+    }
 }
