@@ -130,7 +130,7 @@ class FcrDetailsRepository extends BaseRepository
             $feedCompany = isset($filterBy['feedCompany'])&& $filterBy['feedCompany']!=''? $filterBy['feedCompany']: '';
             if (!empty($feedCompany)){
                 if($feedCompany=='NOURISH'){
-                    $qb->andWhere('feed.name = :feed_name')->setParameter('feedId','Nourish');
+                    $qb->andWhere('feed.name = :feed_name')->setParameter('feed_name','Nourish');
                 }elseif ($feedCompany=='OTHERS'){
                     $qb->andWhere('feed.name != :feed_name')->setParameter('feed_name','Nourish');
                 }
