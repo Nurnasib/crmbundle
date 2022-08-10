@@ -436,6 +436,8 @@ VALUES (:employee_id, :report_id, :agent_id, :customer_id, :breed_type, :feed_ty
         foreach ($frcDetails as $frcDetail) {
             $findVisit = $this->getDoctrine()->getRepository(CrmVisit::class)->findOneBy(['appId' => $frcDetail['crm_visit_id'], 'appBatch' => $batch]);
             if ($findVisit){
+                $agent=null;
+                $customer = $this->getDoctrine()->getRepository(CrmCustomer::class)->find($frcDetail['customer_id']);
                 $sql = "INSERT INTO `crm_fcr_details`(`report_id`, `employee_id`, `agent_id`, `customer_id`, `hatchery_id`, `breed_id`, `feed_id`, `feed_mill_id`, `feed_type_id`, `fcr_of_feed`, `reporting_month`, `hatching_date`, `total_birds`, `age_day`, `mortality_pes`, `mortality_percent`, `weight_standard`, `weight`, `feed_consumption_total_kg`, `feed_consumption_per_bird`, `feed_consumption_standard`, `fcr_without_mortality`, `fcr_with_mortality`, `pro_date`, `batch_no`, `remarks`, `created_at`, `visit_id`) 
 VALUES (:report_id, :employee_id, :agent_id, :customer_id, :hatchery_id, :breed_id, :feed_id, :feed_mill_id, :feed_type_id, :fcr_of_feed, :reporting_month, :hatching_date, :total_birds, :age_day, :mortality_pes, :mortality_percent, :weight_standard, :weight, :feed_consumption_total_kg, :feed_consumption_per_bird, :feed_consumption_standard, :fcr_without_mortality, :fcr_with_mortality, :pro_date, :batch_no, :remarks, :created_at, :visit_id)";
                 $repotingMonth = new \DateTime($frcDetail['reporting_month']);
@@ -443,10 +445,14 @@ VALUES (:report_id, :employee_id, :agent_id, :customer_id, :hatchery_id, :breed_
                 $createdAt = new \DateTime($frcDetail['created_at']);
                 $proDate = new \DateTime($frcDetail['pro_date']);
 
+                if($customer && $customer->getAgent()){
+                    $agent=$customer->getAgent()->getId();
+                }
+
                 $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
                 $stmt->bindValue('report_id', $frcDetail['report_id']);
                 $stmt->bindValue('employee_id', $frcDetail['employee_id']);
-                $stmt->bindValue('agent_id', $frcDetail['agent_id']);
+                $stmt->bindValue('agent_id', $frcDetail['agent_id']>0?$frcDetail['agent_id']:$agent);
                 $stmt->bindValue('customer_id', $frcDetail['customer_id']);
                 $stmt->bindValue('hatchery_id', $frcDetail['hatchery_id']);
                 $stmt->bindValue('breed_id', $frcDetail['breed_id']);
@@ -1241,12 +1247,22 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
             $stmt->execute();
             $expenseId = $stmt->fetch()['id'];
             if ($expenseId){
-                $sql = "INSERT INTO `crm_expence_vehicle`(`expense_id`, `setting_id`) VALUES (:expense_id, :setting_id)";
-                $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
-                $stmt->bindValue('expense_id', $expenseId);
-                $stmt->bindValue('setting_id', $report['setting_id']);
+                $sql1 = "SELECT * FROM `crm_expence_vehicle` WHERE crm_expence_vehicle.expense_id = :expenseId AND crm_expence_vehicle.setting_id = :settingId";
+                $stmt1 = $this->getDoctrine()->getConnection()->prepare($sql1);
+                $stmt1->bindValue('expenseId', $expenseId);
+                $stmt1->bindValue('settingId', $report['setting_id']);
+                $stmt1->execute();
+                $expenseVehicle = $stmt1->fetch();
+                if(!$expenseVehicle){
 
-                $stmt->execute();
+                    $sql = "INSERT INTO `crm_expence_vehicle`(`expense_id`, `setting_id`) VALUES (:expense_id, :setting_id)";
+                    $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
+                    $stmt->bindValue('expense_id', $expenseId);
+                    $stmt->bindValue('setting_id', $report['setting_id']);
+
+                    $stmt->execute();
+                }
+
             }
         }
     }
