@@ -1742,7 +1742,7 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
             $stmt->bindValue('fish_size_id', $report['fish_size_id']);
             $stmt->bindValue('month_name', $report['month_name']);
             $stmt->bindValue('year', $report['year']);
-            $stmt->bindValue('price', $report['price']);
+            $stmt->bindValue('price', $report['price']?$report['price']:'0');
             $stmt->bindValue('created_at', $createdAt);
 
             $stmt->execute();
