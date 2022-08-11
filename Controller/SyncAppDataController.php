@@ -330,6 +330,16 @@ VALUES (:crm_visit_id, :farmCapacity, :updated, :comments, :created, :customer_i
                 $stmtDelete->bindValue('app_id', $performance['id']);
                 $stmtDelete->execute();
 
+                $agent=null;
+                $customer=null;
+
+                if(isset($performance['customer_id']) && !empty($performance['customer_id'])){
+                    $customer = $this->getDoctrine()->getRepository(CrmCustomer::class)->find($performance['customer_id']);
+                    if($customer && $customer->getAgent()){
+                        $agent=$customer->getAgent()->getId();
+                    }
+                }
+
                 $sql = "INSERT INTO 
 `crm_layer_performance_details`
 (`employee_id`, `report_id`, `agent_id`, `customer_id`, `hatchery_id`, `breed_id`, `feed_id`, `feed_mill_id`, `feed_type_id`, `color_id`, `repoting_month`, `total_birds`, `age_week`, `bird_weight_achieved`, `bird_weight_target`, `feed_intake_per_bird`, `feed_Target`, `egg_production_achieved`, `egg_production_target`, `egg_weight_achieved`, `egg_weight_stand`, `production_date`, `batch_no`, `disease`, `remarks`, `created`, `updated`, `visit_id`, `app_batch_id`, `app_id`) VALUES 
@@ -343,7 +353,7 @@ VALUES (:crm_visit_id, :farmCapacity, :updated, :comments, :created, :customer_i
                 $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
                 $stmt->bindValue('employee_id', $performance['employee_id']);
                 $stmt->bindValue('report_id', $performance['report_id']);
-                $stmt->bindValue('agent_id', $performance['agent_id']);
+                $stmt->bindValue('agent_id', $performance['agent_id']&&$performance['agent_id']>0?$performance['agent_id']:$agent);
                 $stmt->bindValue('customer_id', $performance['customer_id']);
                 $stmt->bindValue('hatchery_id', $performance['hatchery_id']);
                 $stmt->bindValue('breed_id', $performance['breed_id']);
