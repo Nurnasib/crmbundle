@@ -532,9 +532,9 @@ VALUES (:report_id, :employee_id, :agent_id, :customer_id, :hatchery_id, :breed_
                 $stmt->bindValue('mortality_percent', $frcDetail['mortality_percent']);
                 $stmt->bindValue('weight_standard', $frcDetail['weight_standard']!='null'?$frcDetail['weight_standard']:$weight_standard);
                 $stmt->bindValue('weight', $frcDetail['weight']);
-                $stmt->bindValue('feed_consumption_total_kg', $frcDetail['feed_consumption_total_kg']);
-                $stmt->bindValue('feed_consumption_per_bird', $frcDetail['feed_consumption_per_bird']);
-                $stmt->bindValue('feed_consumption_standard', $frcDetail['feed_consumption_standard'] != 'null' ? $frcDetail['feed_consumption_standard'] : $feed_consumption_standard);
+                $stmt->bindValue('feed_consumption_total_kg', (float)$frcDetail['feed_consumption_total_kg']);
+                $stmt->bindValue('feed_consumption_per_bird', (float)$frcDetail['feed_consumption_per_bird']);
+                $stmt->bindValue('feed_consumption_standard', (float)$frcDetail['feed_consumption_standard'] != 'null' ? $frcDetail['feed_consumption_standard'] : $feed_consumption_standard);
                 $stmt->bindValue('fcr_without_mortality', $frcDetail['fcr_without_mortality']);
                 $stmt->bindValue('fcr_with_mortality', $frcDetail['fcr_with_mortality']);
                 $stmt->bindValue('pro_date', $proDate!=''?$proDate->format('Y-m-d'):null);
@@ -1233,7 +1233,7 @@ VALUES (:total_birds, :hatchery_date, :created, :updated, :customer_id, :employe
                     $findDetails->setDeadBird($report['dead_bird']);
                     $findDetails->setAvgWeight($report['avg_weight']);
                     $findDetails->setTargetWeight($report['target_weight']);
-                    $findDetails->setUniformity($report['uniformity']);
+                    $findDetails->setUniformity((float)$report['uniformity']);
                     $findDetails->setFeedPerBird($report['feed_per_bird']);
                     $findDetails->setTargetFeedPerBird($report['target_feed_per_bird']);
                     $findDetails->setTotalEggs($report['total_eggs']);
