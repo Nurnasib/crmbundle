@@ -437,7 +437,10 @@ VALUES (:employee_id, :report_id, :agent_id, :customer_id, :breed_type, :feed_ty
             $findVisit = $this->getDoctrine()->getRepository(CrmVisit::class)->findOneBy(['appId' => $frcDetail['crm_visit_id'], 'appBatch' => $batch]);
             if ($findVisit){
                 $agent=null;
-                $customer = $this->getDoctrine()->getRepository(CrmCustomer::class)->find($frcDetail['customer_id']);
+                $customer=null;
+                if(isset($frcDetail['customer_id']) && !empty($frcDetail['customer_id'])){
+                    $customer = $this->getDoctrine()->getRepository(CrmCustomer::class)->find($frcDetail['customer_id']);
+                }
                 $sql = "INSERT INTO `crm_fcr_details`(`report_id`, `employee_id`, `agent_id`, `customer_id`, `hatchery_id`, `breed_id`, `feed_id`, `feed_mill_id`, `feed_type_id`, `fcr_of_feed`, `reporting_month`, `hatching_date`, `total_birds`, `age_day`, `mortality_pes`, `mortality_percent`, `weight_standard`, `weight`, `feed_consumption_total_kg`, `feed_consumption_per_bird`, `feed_consumption_standard`, `fcr_without_mortality`, `fcr_with_mortality`, `pro_date`, `batch_no`, `remarks`, `created_at`, `visit_id`) 
 VALUES (:report_id, :employee_id, :agent_id, :customer_id, :hatchery_id, :breed_id, :feed_id, :feed_mill_id, :feed_type_id, :fcr_of_feed, :reporting_month, :hatching_date, :total_birds, :age_day, :mortality_pes, :mortality_percent, :weight_standard, :weight, :feed_consumption_total_kg, :feed_consumption_per_bird, :feed_consumption_standard, :fcr_without_mortality, :fcr_with_mortality, :pro_date, :batch_no, :remarks, :created_at, :visit_id)";
                 $repotingMonth = new \DateTime($frcDetail['reporting_month']);
