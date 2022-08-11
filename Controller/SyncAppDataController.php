@@ -368,7 +368,7 @@ VALUES (:crm_visit_id, :farmCapacity, :updated, :comments, :created, :customer_i
                 $stmt->bindValue('bird_weight_target', $performance['bird_weight_target']);
                 $stmt->bindValue('feed_intake_per_bird', $performance['feed_intake_per_bird']);
                 $stmt->bindValue('feed_Target', $performance['feed_Target']);
-                $stmt->bindValue('egg_production_achieved', $performance['egg_production_achieved']!=""?$performance['egg_production_achieved']:0);
+                $stmt->bindValue('egg_production_achieved', (float)$performance['egg_production_achieved']!=""?$performance['egg_production_achieved']:0);
                 $stmt->bindValue('egg_production_target', $performance['egg_production_target']);
                 $stmt->bindValue('egg_weight_achieved', $performance['egg_weight_achieved']!=""?$performance['egg_weight_achieved']:0);
                 $stmt->bindValue('egg_weight_stand', $performance['egg_weight_stand']);
