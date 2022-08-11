@@ -20,6 +20,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Terminalbd\CrmBundle\Entity\AgentUpgradationReport;
 use Terminalbd\CrmBundle\Entity\Api;
 use Terminalbd\CrmBundle\Entity\ApiDetails;
+use Terminalbd\CrmBundle\Entity\BroilerStandard;
 use Terminalbd\CrmBundle\Entity\CattleLifeCycle;
 use Terminalbd\CrmBundle\Entity\ChickLifeCycle;
 use Terminalbd\CrmBundle\Entity\ChickLifeCycleDetails;
@@ -40,6 +41,7 @@ use Terminalbd\CrmBundle\Entity\NewFarmerIntroduce\FarmerIntroduceDetails;
 use Terminalbd\CrmBundle\Entity\PoultryMeatEggPrice;
 use Terminalbd\CrmBundle\Entity\Setting;
 use Terminalbd\CrmBundle\Entity\SettingLifeCycle;
+use Terminalbd\CrmBundle\Entity\SonaliStandard;
 
 
 /**
@@ -96,11 +98,12 @@ class SyncAppDataController extends AbstractController
         }
 
         foreach ($batches as $batch) {
-            $findVisit = $this->getDoctrine()->getRepository(CrmVisit::class)->findOneBy(['appBatch' => $batch]);
-            if (!$findVisit){
+            /*$findVisit = $this->getDoctrine()->getRepository(CrmVisit::class)->findOneBy(['appBatch' => $batch]);
+            if (!$findVisit){*/
 //                $details = $batch->getApiDetails();
                 $details = $this->getDoctrine()->getRepository(ApiDetails::class)->findBy(['batch' => $batch,'status' => 0]);
-
+                $detailsArrayLength = sizeof($details);
+                $loopCount = 0;
                 foreach ($details as $detail) {
 
                     $jsonToArray = json_decode($detail->getJsonData(), true);
@@ -224,11 +227,15 @@ class SyncAppDataController extends AbstractController
                     $detail->setStatus(true);
                     $em->persist($detail);
                     $em->flush();
+
+                    $loopCount+=1;
                 }
+//            }
+            if($detailsArrayLength==$loopCount){
+                $batch->setStatus(true);
+                $em->persist($batch);
+                $em->flush();
             }
-            $batch->setStatus(true);
-            $em->persist($batch);
-            $em->flush();
         }
         $this->addFlash('success', 'Synchronization Completed!');
         return $this->redirectToRoute('crm_sync_app_data_index');
@@ -239,6 +246,10 @@ class SyncAppDataController extends AbstractController
     {
         $em = $this->getDoctrine()->getManager();
         foreach ($visits as $visitKey => $visit) {
+
+            $findVisit = $this->getDoctrine()->getRepository(CrmVisit::class)->findOneBy(['appBatch' => $batch, 'appId' => $visit['id']]);
+            if (!$findVisit){
+            
             $createdAt = new \DateTime($visit['created_at']);
             $findEmployee = $this->getDoctrine()->getRepository(User::class)->find($visit['employee_id']);
             $findLocation = $visit['location_id'] ? $this->getDoctrine()->getRepository(Location::class)->find($visit['location_id']) : null;
@@ -260,6 +271,8 @@ class SyncAppDataController extends AbstractController
 
                 $em->persist($newVisit);
                 $em->flush();
+            }
+            
             }
         }
     }
@@ -310,15 +323,22 @@ VALUES (:crm_visit_id, :farmCapacity, :updated, :comments, :created, :customer_i
         foreach ($performances as $performance) {
             $findVisit = $this->getDoctrine()->getRepository(CrmVisit::class)->findOneBy(['appId' => $performance['crm_visit_id'], 'appBatch' => $batch]);
             if ($findVisit){
+
+                $deleteSql = "DELETE FROM `crm_layer_performance_details` WHERE `app_batch_id`= :app_batch_id AND `app_id`= :app_id";
+                $stmtDelete = $this->getDoctrine()->getConnection()->prepare($deleteSql);
+                $stmtDelete->bindValue('app_batch_id', $batch->getId());
+                $stmtDelete->bindValue('app_id', $performance['id']);
+                $stmtDelete->execute();
+
                 $sql = "INSERT INTO 
 `crm_layer_performance_details`
-(`employee_id`, `report_id`, `agent_id`, `customer_id`, `hatchery_id`, `breed_id`, `feed_id`, `feed_mill_id`, `feed_type_id`, `color_id`, `repoting_month`, `total_birds`, `age_week`, `bird_weight_achieved`, `bird_weight_target`, `feed_intake_per_bird`, `feed_Target`, `egg_production_achieved`, `egg_production_target`, `egg_weight_achieved`, `egg_weight_stand`, `production_date`, `batch_no`, `disease`, `remarks`, `created`, `updated`, `visit_id`) VALUES 
-(:employee_id, :report_id, :agent_id, :customer_id, :hatchery_id, :breed_id, :feed_id, :feed_mill_id, :feed_type_id, :color_id, :repoting_month, :total_birds, :age_week, :bird_weight_achieved, :bird_weight_target, :feed_intake_per_bird, :feed_Target, :egg_production_achieved, :egg_production_target, :egg_weight_achieved, :egg_weight_stand, :production_date, :batch_no, :disease, :remarks, :created, :updated, :visit_id)";
+(`employee_id`, `report_id`, `agent_id`, `customer_id`, `hatchery_id`, `breed_id`, `feed_id`, `feed_mill_id`, `feed_type_id`, `color_id`, `repoting_month`, `total_birds`, `age_week`, `bird_weight_achieved`, `bird_weight_target`, `feed_intake_per_bird`, `feed_Target`, `egg_production_achieved`, `egg_production_target`, `egg_weight_achieved`, `egg_weight_stand`, `production_date`, `batch_no`, `disease`, `remarks`, `created`, `updated`, `visit_id`, `app_batch_id`, `app_id`) VALUES 
+(:employee_id, :report_id, :agent_id, :customer_id, :hatchery_id, :breed_id, :feed_id, :feed_mill_id, :feed_type_id, :color_id, :repoting_month, :total_birds, :age_week, :bird_weight_achieved, :bird_weight_target, :feed_intake_per_bird, :feed_Target, :egg_production_achieved, :egg_production_target, :egg_weight_achieved, :egg_weight_stand, :production_date, :batch_no, :disease, :remarks, :created, :updated, :visit_id, :app_batch_id, :app_id)";
 
-                $repotingMonth = new \DateTime($performance['repoting_month']);
+                $repotingMonth = new \DateTime($performance['repoting_month']?$performance['repoting_month']:$performance['created']);
                 $createdAt = new \DateTime($performance['created']);
                 $updatedAt = new \DateTime($performance['updated']);
-                $productionDate = new \DateTime($performance['production_date']);
+                $productionDate = $performance['production_date']? new \DateTime($performance['production_date']):'';
 
                 $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
                 $stmt->bindValue('employee_id', $performance['employee_id']);
@@ -342,13 +362,15 @@ VALUES (:crm_visit_id, :farmCapacity, :updated, :comments, :created, :customer_i
                 $stmt->bindValue('egg_production_target', $performance['egg_production_target']);
                 $stmt->bindValue('egg_weight_achieved', $performance['egg_weight_achieved']!=""?$performance['egg_weight_achieved']:0);
                 $stmt->bindValue('egg_weight_stand', $performance['egg_weight_stand']);
-                $stmt->bindValue('production_date', $productionDate->format('Y-m-d'));
+                $stmt->bindValue('production_date', $productionDate!=""?$productionDate->format('Y-m-d'):null);
                 $stmt->bindValue('batch_no', $performance['batch_no']);
                 $stmt->bindValue('disease', $performance['disease']);
                 $stmt->bindValue('remarks', $performance['remarks']);
                 $stmt->bindValue('created', $createdAt->format('Y-m-d H:i:s'));
                 $stmt->bindValue('updated', $updatedAt->format('Y-m-d H:i:s'));
                 $stmt->bindValue('visit_id', $findVisit->getId());
+                $stmt->bindValue('app_batch_id', $batch->getId());
+                $stmt->bindValue('app_id', $performance['id']);
 
                 $stmt->execute();
             }
@@ -360,10 +382,17 @@ VALUES (:crm_visit_id, :farmCapacity, :updated, :comments, :created, :customer_i
         foreach ($performances as $performance) {
             $findVisit = $this->getDoctrine()->getRepository(CrmVisit::class)->findOneBy(['appId' => $performance['crm_visit_id'], 'appBatch' => $batch]);
             if ($findVisit){
-                $sql = "INSERT INTO `crm_cattle_performance_details`(`employee_id`, `report_id`, `agent_id`, `customer_id`, `breed_type`, `feed_type`, `repoting_month`, `visiting_date`, `age_of_cattle_month`, `previous_body_weight`, `present_body_weight`, `body_weight_difference`, `duration_of_bwt_difference`, `lactation_no`, `age_of_lactation`, `average_weight_per_day`, `average_weight_per_kg_consumption_feed`, `average_weight_per_kg_dm`, `milk_fat_percentage`, `consumption_feed_intake_ready_feed`, `consumption_feed_intake_conventional`, `consumption_feed_intake_total`, `fodder_green_grass_kg`, `fodder_straw_kg`, `dm_of_fodder_green_grass_kg`, `dm_of_fodder_straw_kg`, `total_dm_kg`, `dm_requirement_by_bwt_kg`, `remarks`, `created_at`, `updated_at`, `visit_id`) 
-VALUES (:employee_id, :report_id, :agent_id, :customer_id, :breed_type, :feed_type, :repoting_month, :visiting_date, :age_of_cattle_month, :previous_body_weight, :present_body_weight, :body_weight_difference, :duration_of_bwt_difference, :lactation_no, :age_of_lactation, :average_weight_per_day, :average_weight_per_kg_consumption_feed, :average_weight_per_kg_dm, :milk_fat_percentage, :consumption_feed_intake_ready_feed, :consumption_feed_intake_conventional, :consumption_feed_intake_total, :fodder_green_grass_kg, :fodder_straw_kg, :dm_of_fodder_green_grass_kg, :dm_of_fodder_straw_kg, :total_dm_kg, :dm_requirement_by_bwt_kg, :remarks, :created_at, :updated_at, :visit_id)";
 
-                $repotingMonth = new \DateTime($performance['repoting_month']);
+                $deleteSql = "DELETE FROM `crm_cattle_performance_details` WHERE `app_batch_id`= :app_batch_id AND `app_id`= :app_id";
+                $stmtDelete = $this->getDoctrine()->getConnection()->prepare($deleteSql);
+                $stmtDelete->bindValue('app_batch_id', $batch->getId());
+                $stmtDelete->bindValue('app_id', $performance['id']);
+                $stmtDelete->execute();
+
+                $sql = "INSERT INTO `crm_cattle_performance_details`(`employee_id`, `report_id`, `agent_id`, `customer_id`, `breed_type`, `feed_type`, `repoting_month`, `visiting_date`, `age_of_cattle_month`, `previous_body_weight`, `present_body_weight`, `body_weight_difference`, `duration_of_bwt_difference`, `lactation_no`, `age_of_lactation`, `average_weight_per_day`, `average_weight_per_kg_consumption_feed`, `average_weight_per_kg_dm`, `milk_fat_percentage`, `consumption_feed_intake_ready_feed`, `consumption_feed_intake_conventional`, `consumption_feed_intake_total`, `fodder_green_grass_kg`, `fodder_straw_kg`, `dm_of_fodder_green_grass_kg`, `dm_of_fodder_straw_kg`, `total_dm_kg`, `dm_requirement_by_bwt_kg`, `remarks`, `created_at`, `updated_at`, `visit_id`, `app_batch_id`, `app_id`) 
+VALUES (:employee_id, :report_id, :agent_id, :customer_id, :breed_type, :feed_type, :repoting_month, :visiting_date, :age_of_cattle_month, :previous_body_weight, :present_body_weight, :body_weight_difference, :duration_of_bwt_difference, :lactation_no, :age_of_lactation, :average_weight_per_day, :average_weight_per_kg_consumption_feed, :average_weight_per_kg_dm, :milk_fat_percentage, :consumption_feed_intake_ready_feed, :consumption_feed_intake_conventional, :consumption_feed_intake_total, :fodder_green_grass_kg, :fodder_straw_kg, :dm_of_fodder_green_grass_kg, :dm_of_fodder_straw_kg, :total_dm_kg, :dm_requirement_by_bwt_kg, :remarks, :created_at, :updated_at, :visit_id, :app_batch_id, :app_id)";
+
+                $repotingMonth = new \DateTime($performance['repoting_month']?$performance['repoting_month']:$performance['created_at']);
                 $visitingDate = new \DateTime($performance['visiting_date']);
                 $createdAt = new \DateTime($performance['created_at']);
                 $updatedAt = new \DateTime($performance['updated_at']);
@@ -426,6 +455,8 @@ VALUES (:employee_id, :report_id, :agent_id, :customer_id, :breed_type, :feed_ty
                 $stmt->bindValue('created_at', $createdAt->format('Y-m-d H:i:s'));
                 $stmt->bindValue('updated_at', $updatedAt->format('Y-m-d H:i:s'));
                 $stmt->bindValue('visit_id', $findVisit->getId());
+                $stmt->bindValue('app_batch_id', $batch->getId());
+                $stmt->bindValue('app_id', $performance['id']);
 
                 $stmt->execute();
             }
@@ -436,17 +467,47 @@ VALUES (:employee_id, :report_id, :agent_id, :customer_id, :breed_type, :feed_ty
         foreach ($frcDetails as $frcDetail) {
             $findVisit = $this->getDoctrine()->getRepository(CrmVisit::class)->findOneBy(['appId' => $frcDetail['crm_visit_id'], 'appBatch' => $batch]);
             if ($findVisit){
+                $deleteSql = "DELETE FROM `crm_fcr_details` WHERE `app_batch_id`= :app_batch_id AND `app_id`= :app_id";
+                $stmtDelete = $this->getDoctrine()->getConnection()->prepare($deleteSql);
+                $stmtDelete->bindValue('app_batch_id', $batch->getId());
+                $stmtDelete->bindValue('app_id', $frcDetail['id']);
+                $stmtDelete->execute();
+
                 $agent=null;
                 $customer=null;
+                $standard=null;
+                $weight_standard=0;
+                $feed_consumption_standard=0;
                 if(isset($frcDetail['customer_id']) && !empty($frcDetail['customer_id'])){
                     $customer = $this->getDoctrine()->getRepository(CrmCustomer::class)->find($frcDetail['customer_id']);
                 }
-                $sql = "INSERT INTO `crm_fcr_details`(`report_id`, `employee_id`, `agent_id`, `customer_id`, `hatchery_id`, `breed_id`, `feed_id`, `feed_mill_id`, `feed_type_id`, `fcr_of_feed`, `reporting_month`, `hatching_date`, `total_birds`, `age_day`, `mortality_pes`, `mortality_percent`, `weight_standard`, `weight`, `feed_consumption_total_kg`, `feed_consumption_per_bird`, `feed_consumption_standard`, `fcr_without_mortality`, `fcr_with_mortality`, `pro_date`, `batch_no`, `remarks`, `created_at`, `visit_id`) 
-VALUES (:report_id, :employee_id, :agent_id, :customer_id, :hatchery_id, :breed_id, :feed_id, :feed_mill_id, :feed_type_id, :fcr_of_feed, :reporting_month, :hatching_date, :total_birds, :age_day, :mortality_pes, :mortality_percent, :weight_standard, :weight, :feed_consumption_total_kg, :feed_consumption_per_bird, :feed_consumption_standard, :fcr_without_mortality, :fcr_with_mortality, :pro_date, :batch_no, :remarks, :created_at, :visit_id)";
-                $repotingMonth = new \DateTime($frcDetail['reporting_month']);
+                if($frcDetail['report_id']){
+                    $report= $this->getDoctrine()->getRepository(Setting::class)->find($frcDetail['report_id']);
+                    if(in_array($report->getSlug(),['fcr-before-sale-sonali','fcr-after-sale-sonali'])){
+
+                        /* @var SonaliStandard $sonaliStandard*/
+                        $sonaliStandard= $this->getDoctrine()->getRepository(SonaliStandard::class)->findOneBy(array('age'=>$frcDetail['age_day']));
+                        if($sonaliStandard){
+                            $weight_standard=$sonaliStandard->getTargetBodyWeight();
+                            $feed_consumption_standard=$sonaliStandard->getCumulativeFeedIntake();
+                        }
+                    }
+                    if(in_array($report->getSlug(),['fcr-before-sale-boiler','fcr-after-sale-boiler'])){
+
+                        /* @var BroilerStandard $broilerStandard*/
+                        $broilerStandard= $this->getDoctrine()->getRepository(BroilerStandard::class)->findOneBy(array('age'=>$frcDetail['age_day']));
+                        if($broilerStandard){
+                            $weight_standard=$broilerStandard->getTargetBodyWeight();
+                            $feed_consumption_standard=$broilerStandard->getTargetFeedConsumption();
+                        }
+                    }
+                }
+                $sql = "INSERT INTO `crm_fcr_details`(`report_id`, `employee_id`, `agent_id`, `customer_id`, `hatchery_id`, `breed_id`, `feed_id`, `feed_mill_id`, `feed_type_id`, `fcr_of_feed`, `reporting_month`, `hatching_date`, `total_birds`, `age_day`, `mortality_pes`, `mortality_percent`, `weight_standard`, `weight`, `feed_consumption_total_kg`, `feed_consumption_per_bird`, `feed_consumption_standard`, `fcr_without_mortality`, `fcr_with_mortality`, `pro_date`, `batch_no`, `remarks`, `created_at`, `visit_id`, `app_batch_id`, `app_id`) 
+VALUES (:report_id, :employee_id, :agent_id, :customer_id, :hatchery_id, :breed_id, :feed_id, :feed_mill_id, :feed_type_id, :fcr_of_feed, :reporting_month, :hatching_date, :total_birds, :age_day, :mortality_pes, :mortality_percent, :weight_standard, :weight, :feed_consumption_total_kg, :feed_consumption_per_bird, :feed_consumption_standard, :fcr_without_mortality, :fcr_with_mortality, :pro_date, :batch_no, :remarks, :created_at, :visit_id, :app_batch_id, :app_id)";
+                $repotingMonth = new \DateTime($frcDetail['reporting_month']?$frcDetail['reporting_month']:$frcDetail['created_at']);
                 $hatchingDate = new \DateTime($frcDetail['hatching_date']);
                 $createdAt = new \DateTime($frcDetail['created_at']);
-                $proDate = new \DateTime($frcDetail['pro_date']);
+                $proDate =$frcDetail['pro_date']? new \DateTime($frcDetail['pro_date']):'';
 
                 if($customer && $customer->getAgent()){
                     $agent=$customer->getAgent()->getId();
@@ -469,18 +530,20 @@ VALUES (:report_id, :employee_id, :agent_id, :customer_id, :hatchery_id, :breed_
                 $stmt->bindValue('age_day', $frcDetail['age_day']);
                 $stmt->bindValue('mortality_pes', $frcDetail['mortality_pes']);
                 $stmt->bindValue('mortality_percent', $frcDetail['mortality_percent']);
-                $stmt->bindValue('weight_standard', $frcDetail['weight_standard']);
+                $stmt->bindValue('weight_standard', $frcDetail['weight_standard']!='null'?$frcDetail['weight_standard']:$weight_standard);
                 $stmt->bindValue('weight', $frcDetail['weight']);
                 $stmt->bindValue('feed_consumption_total_kg', $frcDetail['feed_consumption_total_kg']);
                 $stmt->bindValue('feed_consumption_per_bird', $frcDetail['feed_consumption_per_bird']);
-                $stmt->bindValue('feed_consumption_standard', $frcDetail['feed_consumption_standard'] != null ? $frcDetail['feed_consumption_standard'] : 0);
+                $stmt->bindValue('feed_consumption_standard', $frcDetail['feed_consumption_standard'] != 'null' ? $frcDetail['feed_consumption_standard'] : $feed_consumption_standard);
                 $stmt->bindValue('fcr_without_mortality', $frcDetail['fcr_without_mortality']);
                 $stmt->bindValue('fcr_with_mortality', $frcDetail['fcr_with_mortality']);
-                $stmt->bindValue('pro_date', $proDate->format('Y-m-d'));
+                $stmt->bindValue('pro_date', $proDate!=''?$proDate->format('Y-m-d'):null);
                 $stmt->bindValue('batch_no', $frcDetail['batch_no']);
                 $stmt->bindValue('remarks', $frcDetail['remarks']);
                 $stmt->bindValue('created_at', $createdAt->format('Y-m-d H:i:s'));
                 $stmt->bindValue('visit_id', $findVisit->getId());
+                $stmt->bindValue('app_batch_id', $batch->getId());
+                $stmt->bindValue('app_id', $frcDetail['id']);
 
                 $stmt->execute();
             }
