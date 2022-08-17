@@ -125,7 +125,7 @@ class CrmVisitRepository extends EntityRepository
         return $data;
     }
 
-    public function getVisitsStatus($firstDayOfMonth, $lastDayOfMonth, $selectedEmployee, $lineManagersId)
+    public function getVisitsStatus($firstDayOfMonth, $lastDayOfMonth, $selectedEmployee, $lineManagersId, $employeeIds)
     {
         $qb = $this->createQueryBuilder('e');
 
@@ -148,6 +148,7 @@ class CrmVisitRepository extends EntityRepository
             $qb->andWhere('lineManager.userId IN (:lineManagersId)')->setParameter('lineManagersId', $lineManagersId);
 
         }
+        $qb->andWhere('employee.id IN (:employeeIds)')->setParameter('employeeIds', $employeeIds);
         $results = $qb->getQuery()->getArrayResult();
         $data = [];
         foreach ($results as $result) {

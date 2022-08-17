@@ -14,9 +14,9 @@
                                 <select class="form-control select2" name="lineManager">
                                     <option value="">- Select Line Manager -</option>
 
-                                    {% for lineManager in lineManagers %}
-                                        <option {{ selectedLineManagerUserId == lineManager.userId ? 'selected':'' }}
-                                                value="{{ lineManager.userId }}">{{ '('~ lineManager.userId ~ ') ' ~ lineManager.name }}</option>
+                                    {% for lineManagerId, lineManagerName in lineManagers %}
+                                        <option {{ selectedLineManagerUserId == lineManagerId ? 'selected':'' }}
+                                                value="{{ lineManagerId }}">{{ '('~ lineManagerId ~ ') ' ~ lineManagerName }}</option>
                                     {% endfor %}
                                 </select>
                             </div>

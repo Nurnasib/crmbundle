@@ -123,6 +123,7 @@ class VisitReportController extends AbstractController
         foreach ($this->getUser()->getRoles() as $role) {
             $roleSplitArray = array_merge(explode('_', $role), $roleSplitArray);
         }
+
         if (in_array('ADMIN', $roleSplitArray)) {
             if (in_array('ROLE_CRM_POULTRY_ADMIN', $this->getUser()->getRoles())) {
                 array_push($userRoles, 'ROLE_CRM_POULTRY_USER');
@@ -137,11 +138,24 @@ class VisitReportController extends AbstractController
                 array_push($userRoles, 'ROLE_CRM_SALES_MARKETING_USER');
             }
         }
-
-        $lineManagers = $this->getDoctrine()->getRepository(User::class)->getAdminWiseLineManagers($userRoles);
-        foreach ($lineManagers as $lineManager){
-            $lineManagersId[] = $lineManager['userId'];
+        
+        $employees = $this->getDoctrine()->getRepository(User::class)->getRoleWiseEmployees($userRoles);
+        $employeeIds=[];
+        if($employees && isset($employees['employee'])){
+            foreach ($employees['employee'] as $employee){
+                $employeeIds[]=$employee['id'];
+            }
         }
+        if($employees && isset($employees['lineManager'])){
+            foreach ($employees['lineManager'] as $lineManagerId=>$lineManagerName){
+                $lineManagersId[]=$lineManagerId;
+            }
+        }
+//        $lineManagers = $this->getDoctrine()->getRepository(User::class)->getAdminWiseLineManagers($userRoles);
+        $lineManagers = $employees && isset($employees['lineManager'])?$employees['lineManager']:[];
+        /*foreach ($lineManagers as $lineManager){
+            $lineManagersId[] = $lineManager['userId'];
+        }*/
 
         $form = $this->createForm(SearchFilterFormType::class, null, ['loggedUser' => $this->getUser()]);
         $form->handleRequest($request);
@@ -182,7 +196,7 @@ class VisitReportController extends AbstractController
 
         $employeesByLineManager = $this->getDoctrine()->getRepository(User::class)->getLineManagerTeamMember($lineManagersId, $userRoles);
 //        $employees = $this->getDoctrine()->getRepository(User::class)->getServiceModeWiseEmployee($lineManagersId, $userRoles);
-        $visitStatus = $this->getDoctrine()->getRepository(CrmVisit::class)->getVisitsStatus($firstDayOfMonth, $lastDayOfMonth, $selectedEmployee, $lineManagersId);
+        $visitStatus = $this->getDoctrine()->getRepository(CrmVisit::class)->getVisitsStatus($firstDayOfMonth, $lastDayOfMonth, $selectedEmployee, $lineManagersId, $employeeIds);
 
         return $this->render("@TerminalbdCrm/report/visit-status/index.html.twig",[
             'employeesByLineManager' => $employeesByLineManager,
