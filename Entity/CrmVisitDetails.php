@@ -115,6 +115,20 @@ class CrmVisitDetails
     private $updated;
 
     /**
+     * @var Api
+     * @ORM\ManyToOne(targetEntity="Terminalbd\CrmBundle\Entity\Api", inversedBy="appBatch")
+     * @ORM\JoinColumn(referencedColumnName="id", nullable=true)
+     */
+    private $appBatch;
+
+    /**
+     * @var integer
+     * @ORM\Column(type="integer", nullable=true)
+     */
+
+    private $appId;
+
+    /**
      * @return int
      */
     public function getId()
@@ -321,6 +335,38 @@ class CrmVisitDetails
     public function setPurposeMultiple($purposeMultiple)
     {
         $this->purposeMultiple = $purposeMultiple;
+    }
+
+    /**
+     * @return Api
+     */
+    public function getAppBatch()
+    {
+        return $this->appBatch;
+    }
+
+    /**
+     * @param Api $appBatch
+     */
+    public function setAppBatch(Api $appBatch): void
+    {
+        $this->appBatch = $appBatch;
+    }
+
+    /**
+     * @return int
+     */
+    public function getAppId()
+    {
+        return $this->appId;
+    }
+
+    /**
+     * @param int $appId
+     */
+    public function setAppId(int $appId): void
+    {
+        $this->appId = $appId;
     }
 
 

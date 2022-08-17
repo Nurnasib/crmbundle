@@ -284,6 +284,12 @@ class SyncAppDataController extends AbstractController
             $findVisit = $this->getDoctrine()->getRepository(CrmVisit::class)->findOneBy(['appId' => $visitDetail['crm_visit_id'], 'appBatch' => $batch]);
             if ($findVisit){
 
+                $deleteSql = "DELETE FROM `crm_visit_details` WHERE `app_batch_id`= :app_batch_id AND `app_id`= :app_id";
+                $stmtDelete = $this->getDoctrine()->getConnection()->prepare($deleteSql);
+                $stmtDelete->bindValue('app_batch_id', $batch->getId());
+                $stmtDelete->bindValue('app_id', $visitDetail['id']);
+                $stmtDelete->execute();
+
                 $purposeMultipleJson= json_decode($visitDetail['purposeName']);
                 $purposeMultiple=[];
                 if($purposeMultipleJson){
@@ -292,8 +298,8 @@ class SyncAppDataController extends AbstractController
                     }
                 }
 
-                $sql = "INSERT INTO `crm_visit_details`(`crm_visit_id`, `farmCapacity`, `updated`, `comments`, `created`, `customer_id`, `process`, `agent_id`, `purpose_id`, `firm_type_id`, `report_id`, `purpose_multiple`)
-VALUES (:crm_visit_id, :farmCapacity, :updated, :comments, :created, :customer_id, :process, :agent_id, :purpose_id, :firm_type_id, :report_id, :purpose_multiple)";
+                $sql = "INSERT INTO `crm_visit_details`(`crm_visit_id`, `farmCapacity`, `updated`, `comments`, `created`, `customer_id`, `process`, `agent_id`, `purpose_id`, `firm_type_id`, `report_id`, `purpose_multiple`, `app_batch_id`, `app_id`)
+VALUES (:crm_visit_id, :farmCapacity, :updated, :comments, :created, :customer_id, :process, :agent_id, :purpose_id, :firm_type_id, :report_id, :purpose_multiple, :app_batch_id, :app_id)";
 
                 $createdAt = new \DateTime($visitDetail['created']);
                 $updatedAt = new \DateTime($visitDetail['updated']);
@@ -314,6 +320,9 @@ VALUES (:crm_visit_id, :farmCapacity, :updated, :comments, :created, :customer_i
                 $stmt->bindValue('firm_type_id', $visitDetail['firm_type_id']);
                 $stmt->bindValue('report_id', $visitDetail['report_id']);
                 $stmt->bindValue('purpose_multiple', json_encode($purposeMultiple));
+
+                $stmt->bindValue('app_batch_id', $batch->getId());
+                $stmt->bindValue('app_id', $visitDetail['id']);
 
                 $stmt->execute();
             }
