@@ -121,7 +121,7 @@
                                         <td data-t="n">{{ fcrDetail['feedConsumptionPerBird']|number_format(2,'.','') }}</td>
                                         <td data-t="n">{{ fcrDetail['feedConsumptionStandard'] }}</td>
                                         <td data-t="n">{{ fcrDetail['fcrWithoutMortality']|number_format(2,'.','') }}</td>
-                                        <td data-t="n">{{ fcrDetail['fcrWithMortality']|number_format(2,'.','') }}</td>
+                                        <td data-t="n">{{ fcrDetail['fcrWithMortality']|number_format(3,'.','') }}</td>
                                         <td data-t="n">{{ entities['fcrBoilerStandard'] is defined and entities['fcrBoilerStandard'][fcrDetail['ageDay']] is defined and entities['fcrBoilerStandard'][fcrDetail['ageDay']]['targetBodyWeight']>0?(entities['fcrBoilerStandard'][fcrDetail['ageDay']]['targetFeedConsumption']/entities['fcrBoilerStandard'][fcrDetail['ageDay']]['targetBodyWeight'])|number_format(3,'.',''):'' }}</td>
                                         <td>{{ fcrDetail['hatcheryName']|default('') }}</td>
                                         <td>{{ fcrDetail['breedBame']|default('') }}</td>

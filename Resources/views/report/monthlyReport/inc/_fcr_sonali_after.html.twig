@@ -140,7 +140,7 @@
                                         <td data-t="n">{{ fcrDetail['feedConsumptionPerBird']|number_format(2,'.','') }}</td>
                                         <td data-t="n">{{ fcrDetail['feedConsumptionStandard']|number_format(2,'.','') }}</td>
                                         <td data-t="n">{{ fcrDetail['fcrWithoutMortality']|number_format(2,'.','') }}</td>
-                                        <td data-t="n">{{ fcrDetail['fcrWithMortality']|number_format(2,'.','') }}</td>
+                                        <td data-t="n">{{ fcrDetail['fcrWithMortality']|number_format(3,'.','') }}</td>
                                         <td data-t="n">{{ fcrDetail['weightStandard']>0?(fcrDetail['feedConsumptionStandard']/fcrDetail['weightStandard'])|number_format(2,'.',''):'' }}</td>
 
                                         {#                            <td>{{ entities['fcrSonaliStandard'] and entities['fcrSonaliStandard'][fcrDetail['ageDay']]?(entities['fcrSonaliStandard'][fcrDetail['ageDay']]['cumulativeFeedIntake']/entities['fcrSonaliStandard'][fcrDetail['ageDay']]['targetBodyWeight'])|number_format(2,'.',''):'' }}</td>#}
@@ -186,7 +186,7 @@
             <th data-t="n">{{ entities['totalRecord'] is defined and entities['totalRecord']['countRecord'] is defined and entities['totalRecord']['arrayData'] is defined and entities['totalRecord']['countRecord']>0?(entities['totalRecord']['arrayData']|arraySumColWise('feedConsumptionPerBird')/entities['totalRecord']['countRecord'])|number_format(2,'.',''):'0' }}</th>
             <th data-t="n">{{ averageCumilitiveFeedStandard|number_format(2,'.','') }}</th>
             <th data-t="n">{{ entities['totalRecord'] is defined and entities['totalRecord']['countRecord'] is defined and entities['totalRecord']['arrayData'] is defined and entities['totalRecord']['countRecord']>0?(entities['totalRecord']['arrayData']|arraySumColWise('fcrWithoutMortality')/entities['totalRecord']['countRecord'])|number_format(2,'.',''):'0' }}</th>
-            <th data-t="n">{{ entities['totalRecord'] is defined and entities['totalRecord']['countRecord'] is defined and entities['totalRecord']['arrayData'] is defined and entities['totalRecord']['countRecord']>0?(entities['totalRecord']['arrayData']|arraySumColWise('fcrWithMortality')/entities['totalRecord']['countRecord'])|number_format(2,'.',''):'0' }}</th>
+            <th data-t="n">{{ entities['totalRecord'] is defined and entities['totalRecord']['countRecord'] is defined and entities['totalRecord']['arrayData'] is defined and entities['totalRecord']['countRecord']>0?(entities['totalRecord']['arrayData']|arraySumColWise('fcrWithMortality')/entities['totalRecord']['countRecord'])|number_format(3,'.',''):'0' }}</th>
             <th data-t="n">{{ averageFcrStandard|number_format(3,'.','') }}</th>
             <th></th>
             <th></th>

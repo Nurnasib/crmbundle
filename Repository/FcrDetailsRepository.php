@@ -178,7 +178,7 @@ class FcrDetailsRepository extends BaseRepository
                     if(in_array($report->getSlug(),['fcr-after-sale-boiler'])){
                         if($result['fcrWithMortality']<=1.45){
                             $fcrWithMortalitySummery['excellent'][]=$result;
-                        }elseif ($result['fcrWithMortality']>=1.46 && $result['fcrWithMortality']<1.50){
+                        }elseif ($result['fcrWithMortality']>1.45 && $result['fcrWithMortality']<1.50){
                             $fcrWithMortalitySummery['very_good'][]=$result;
                         }elseif ($result['fcrWithMortality']>=1.50 && $result['fcrWithMortality']<1.53){
                             $fcrWithMortalitySummery['good'][]=$result;
