@@ -36,7 +36,7 @@ class CrmCustomerRepository extends EntityRepository
         }
         $qb = $this->createQueryBuilder('e');
 
-        $qb->join('e.location','location');
+        $qb->leftJoin('e.location','location');
         $qb->join('e.customerGroup','s');
         $qb->leftJoin('e.agent','agent');
         $qb->leftJoin('e.farmerIntroduce','farmerIntroduce');
@@ -49,6 +49,8 @@ class CrmCustomerRepository extends EntityRepository
         if (!str_contains($rolesString, 'ADMIN')){
             $qb->andWhere('location.id IN (:upozilas)')->setParameter('upozilas',$locationsId);
         }
+        $qb->andWhere('e.deletedAt IS NULL');
+        $qb->andWhere('e.deletedBy IS NULL');
         return $qb->getQuery()->getArrayResult();
 
     }

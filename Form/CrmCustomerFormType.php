@@ -60,11 +60,16 @@ class CrmCustomerFormType extends AbstractType{
             ])
             ->add('agent', EntityType::class, [
                 'class' => Agent::class,
-                'attr'=>['class'=>'span12'],
+                'attr'=>['class'=>'span12 m-wrap select2'],
                 'required'    => false,
-                'choice_label' => 'name',
+                'choice_label' => 'idName',
                 'placeholder' => 'Choose a agent',
-                'choices'   => $options['agentRepo']->getLocationWiseAgentForm($options['user'])
+                'query_builder' => function(EntityRepository $er){
+                    return $er->createQueryBuilder('e')
+                        ->join("e.agentGroup","agentGroup")
+                        ->orderBy('e.name', 'ASC');
+                },
+//                'choices'   => $options['agentRepo']->getLocationWiseAgentForm($options['user'])
             ])
             ->add('customerGroup', EntityType::class, array(
                 'required'    => false,
@@ -83,12 +88,14 @@ class CrmCustomerFormType extends AbstractType{
                 'class' => Location::class,
                 'placeholder' => 'Choose a  upozila name',
                 'choice_label' => 'name',
-                'attr'=>array('class'=>'span12 m-wrap'),
+                'group_by'  => 'parent.name',
+                'attr'=>array('class'=>'span12 m-wrap select2'),
                 'query_builder' => function(EntityRepository $er)use($user){
                     return $er->createQueryBuilder('e')
                         ->join("e.user","u")
-                        ->andWhere("u.id ='{$user}'")
-                        ->orderBy('e.name', 'ASC');
+                        ->join("e.parent","p")
+                        ->andWhere("e.level =5")
+                        ->orderBy('p.name', 'ASC');
                 },
             ))
 

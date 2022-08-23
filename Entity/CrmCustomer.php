@@ -218,6 +218,21 @@ class CrmCustomer
 
 
     /**
+     * @var \DateTime
+     * @ORM\Column(name="deleted_at", type="datetime", nullable = true)
+     */
+
+    private $deletedAt;
+
+    /**
+     * @var User
+     * @ORM\ManyToOne(targetEntity="App\Entity\User" , inversedBy="crmCustomer")
+     * @ORM\JoinColumn(name="deleted_by", referencedColumnName="id")
+     */
+    private $deletedBy;
+
+
+    /**
      *@return string
      *
      */
@@ -298,6 +313,38 @@ class CrmCustomer
     public function getFarmerIntroduce()
     {
         return $this->farmerIntroduce;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDeletedAt()
+    {
+        return $this->deletedAt;
+    }
+
+    /**
+     * @param \DateTime $deletedAt
+     */
+    public function setDeletedAt(\DateTime $deletedAt): void
+    {
+        $this->deletedAt = $deletedAt;
+    }
+
+    /**
+     * @return User
+     */
+    public function getDeletedBy()
+    {
+        return $this->deletedBy;
+    }
+
+    /**
+     * @param User $deletedBy
+     */
+    public function setDeletedBy(User $deletedBy): void
+    {
+        $this->deletedBy = $deletedBy;
     }
 
 

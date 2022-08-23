@@ -93,10 +93,17 @@ class CrmCustomerController extends AbstractController
             ->add('SaveAndCreate', SubmitType::class);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+
+            $this->getDoctrine()->getManager()->flush();
+            $farmerIntroduce = $entity->getFarmerIntroduce();
+            if($farmerIntroduce){
+                $farmerIntroduce->setAgent($entity->getAgent());
+                $this->getDoctrine()->getManager()->persist($farmerIntroduce);
+            }
             $this->getDoctrine()->getManager()->flush();
             $this->addFlash('success', 'post.updated_successfully');
             if ($form->get('SaveAndCreate')->isClicked()) {
-                return $this->redirectToRoute('crm_customer', ['id' => $entity->getId()]);
+                return $this->redirectToRoute('crm_customer_edit', ['id' => $entity->getId()]);
             }
             return $this->redirectToRoute('crm_customer');
         }
@@ -250,7 +257,7 @@ class CrmCustomerController extends AbstractController
 
     /**
      * Deletes a CrmCustomer entity.
-     * @Route("/{id}/delete", methods={"GET"}, name="customer_delete")
+     * @Route("/{id}/delete", methods={"GET"}, name="customer_delete", options={"expose"=true})
      * @Security("is_granted('ROLE_CRM_POULTRY_ADMIN') or is_granted('ROLE_CRM_CATTLE_ADMIN') or is_granted('ROLE_CRM_AQUA_ADMIN') or is_granted('ROLE_CRM_SALES_MARKETING_ADMIN') or is_granted('ROLE_DEVELOPER')")
      * @param $id
      * @return Response
@@ -260,13 +267,18 @@ class CrmCustomerController extends AbstractController
         $customer = $this->getDoctrine()->getRepository(CrmCustomer::class)->find($id);
         $visit = $this->getDoctrine()->getRepository(CrmVisitDetails::class)->findOneBy(['crmCustomer' => $customer]);
         if ($visit){
-            return new Response('failed');
+            return new JsonResponse(['status'=>501,'message'=>'Failed']);
+        }
+
+        if($customer){
+            $customer->setMobile(null);
+            $customer->setDeletedBy($this->getUser());
+            $customer->setDeletedAt(new \DateTime('now'));
         }
         $em = $this->getDoctrine()->getManager();
-        $em->remove($customer);
+        $em->persist($customer);
         $em->flush();
-        $this->addFlash('success', 'post.deleted_successfully');
-        return new Response('Success');
+        return new JsonResponse(['status'=>200,'message'=>'Success']);
     }
 
 
