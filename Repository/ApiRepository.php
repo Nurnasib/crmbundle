@@ -137,6 +137,8 @@ class ApiRepository extends BaseRepository
         $qb->addSelect('dis.name as district', 'dis.id as districtId');
         $qb->addSelect('fi.cultureSpeciesItemAndQty', 'otherAgent.name AS otherAgentName', 'otherAgent.address AS otherAgentAddress', 'subAgent.name AS subAgentName', 'subAgent.address AS subAgentAddress', 'feed.name AS feedName', 'feed.id AS feed_id', 'otherFeed.name AS previousFeedName', 'otherFeed.id AS other_feed_id', 'farmerTypes.id AS farmerType', 'farmerTypes.name AS farmerTypeName');
         $qb->where("cg.slug =:slug")->setParameter('slug', $mode);
+        $qb->andWhere('e.deletedAt IS NULL');
+        $qb->andWhere('e.deletedBy IS NULL');
         if ($locations) {
             $locations = explode(',', $locations);
             $qb->andWhere('e.location IN (:upozila)')->setParameter('upozila', $locations);
