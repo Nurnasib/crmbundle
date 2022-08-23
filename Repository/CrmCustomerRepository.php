@@ -74,6 +74,8 @@ class CrmCustomerRepository extends EntityRepository
         $qb->where('s.slug = :slug')->setParameter('slug',$pram);
         $qb->andWhere('l.id = :locationId')->setParameter('locationId',$agent->getUpozila()->getId());
         $qb->andWhere('farmerType.slug = :farmerTypeSlug')->setParameter('farmerTypeSlug',$lastElement.'-breed');
+        $qb->andWhere('e.deletedAt IS NULL');
+        $qb->andWhere('e.deletedBy IS NULL');
         $results = $qb->getQuery()->getArrayResult();
 
         $returnArray = [];
