@@ -193,6 +193,23 @@
                                                                     </span>
                                                                 {% endif %}
 
+                                                                {% if 'meeting' in workingStatus %}
+                                                                    <span class="btn btn-mini btn-transparent" title="Meeting" style="cursor: default">M
+                                                                    </span>
+                                                                {% endif %}
+                                                                {% if 'traveling' in workingStatus %}
+                                                                    <span class="btn btn-mini btn-transparent" title="Traveling" style="cursor: default">T
+                                                                    </span>
+                                                                {% endif %}
+                                                                {% if 'conference' in workingStatus %}
+                                                                    <span class="btn btn-mini btn-transparent" title="Conference" style="cursor: default">C
+                                                                    </span>
+                                                                {% endif %}
+                                                                {% if 'holiday' in workingStatus %}
+                                                                    <span class="btn btn-mini btn-transparent" title="Holiday" style="cursor: default">H
+                                                                    </span>
+                                                                {% endif %}
+
                                                             {% endif %}
                                                         </div>
                                                     </td>

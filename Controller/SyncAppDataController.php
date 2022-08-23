@@ -973,12 +973,22 @@ VALUES (:hatching_date, :remarks, :reporting_date, :customer_id, :agent_id, :emp
                 $reportingDate = new \DateTime($report['reporting_date']);
                 $createdAt = new \DateTime($report['created_at']);
 
+                $agent=null;
+                $agentId=null;
+                $customer=null;
+                if(isset($report['customer_id']) && !empty($report['customer_id'])){
+                    $customer = $this->getDoctrine()->getRepository(CrmCustomer::class)->find($report['customer_id']);
+                }
+                if($customer && $customer->getAgent()){
+                    $agentId=$customer->getAgent()->getId();
+                }
+
                 $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
                 $stmt->bindValue('hatching_date', $hatchingDate->format('Y-m-d'));
                 $stmt->bindValue('remarks', $report['remarks']);
                 $stmt->bindValue('reporting_date', $reportingDate->format('Y-m-d'));
                 $stmt->bindValue('customer_id', $report['customer_id']);
-                $stmt->bindValue('agent_id', $report['agent_id']);
+                $stmt->bindValue('agent_id', isset($report['agent_id'])&&$report['agent_id']>0?$report['agent_id']:$agentId);
                 $stmt->bindValue('employee_id', $report['employee_id']);
                 $stmt->bindValue('report_id', $report['report_id']);
                 $stmt->bindValue('life_cycle_state', $report['life_cycle_state']);
