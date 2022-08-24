@@ -48,7 +48,6 @@ class DiseaseMappingController extends AbstractController
 
         $form = $this->createForm(DiseaseMappingFormType::class, $entity,array('report' => $report));
         if($report->getSlug()!='disease-mapping-report-fish'){
-            $form->remove('hatchery');
             $form->remove('remarks');
             $form->remove('cultureAreaForFish');
             $form->remove('treatment');
@@ -57,6 +56,9 @@ class DiseaseMappingController extends AbstractController
         if($report->getSlug()=='disease-mapping-report-fish'){
             $form->remove('ageDays');
             $form->remove('ageUnitType');
+        }
+        if($report->getSlug()=='disease-mapping-report-cattle'){
+            $form->remove('hatchery');
         }
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
