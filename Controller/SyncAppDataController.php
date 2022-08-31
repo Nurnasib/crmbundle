@@ -1056,11 +1056,11 @@ WHERE `customer_id` = :customer_id AND `employee_id` = :employee_id AND `report_
                     $findDetails->setMortalityPercent($report['mortality_percent']);
                     $findDetails->setWeightStandard($report['weight_standard']);
                     $findDetails->setWeightAchieved($report['weight_achieved']);
-                    $findDetails->setPerBird($report['per_bird']);
+                    $findDetails->setPerBird($report['per_bird']&&$report['per_bird']!=''?(float)$report['per_bird']:0);
                     $findDetails->setFeedStandard($report['feed_standard']);
                     $findDetails->setFeedTotalKg($report['feed_total_kg']);
                     $findDetails->setWithoutMortality($report['without_mortality']);
-                    $findDetails->setWithMortality($report['with_mortality']);
+                    $findDetails->setWithMortality($report['with_mortality']&&$report['with_mortality']!=''?(float)$report['with_mortality']:0);
                     $findDetails->setProDate($proDate);
                     $findDetails->setBatchNo($report['batch_no']);
                     $findDetails->setRemarks($report['remarks']);
