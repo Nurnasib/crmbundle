@@ -102,135 +102,135 @@ class SyncAppDataController extends AbstractController
             /*$findVisit = $this->getDoctrine()->getRepository(CrmVisit::class)->findOneBy(['appBatch' => $batch]);
             if (!$findVisit){*/
 //                $details = $batch->getApiDetails();
-                $details = $this->getDoctrine()->getRepository(ApiDetails::class)->findBy(['batch' => $batch,'status' => 0]);
-                $detailsArrayLength = sizeof($details);
-                $loopCount = 0;
-                foreach ($details as $detail) {
+            $details = $this->getDoctrine()->getRepository(ApiDetails::class)->findBy(['batch' => $batch,'status' => 0]);
+            $detailsArrayLength = sizeof($details);
+            $loopCount = 0;
+            foreach ($details as $detail) {
 
-                    $jsonToArray = json_decode($detail->getJsonData(), true);
+                $jsonToArray = json_decode($detail->getJsonData(), true);
 
-                    switch ($detail->getProcess()){
-                        case "crm_visit":
-                            $this->processVisit($jsonToArray, $batch);
-                            break;
-                        case "crm_visit_details":
-                            $this->processVisitDetail($jsonToArray, $batch);
-                            break;
-                        case "crm_layer_performance_details":
-                            $this->processLayerPerformance($jsonToArray, $batch);
-                            break;
-                        case "crm_cattle_performance_details":
-                            $this->processCattlePerformance($jsonToArray, $batch);
-                            break;
-                        case "crm_fcr_details":
-                            $this->processFcrDetail($jsonToArray, $batch);
-                            break;
-                        case "crm_antibiotic_free_farm":
-                            $this->processAntibioticFreeFarm($jsonToArray, $batch);
-                            break;
-                        case "crm_cost_benefit_analysis_for_less_costing_farm":
-                            $this->processCostBenefitAnalysis($jsonToArray, $batch);
-                            break;
-                        case "crm_disease_mapping":
-                            $this->processDiseaseMapping($jsonToArray, $batch);
-                            break;
-                        case "crm_complain_different_product":
-                            $this->processComplain($jsonToArray, $batch);
-                            break;
-                        case "crm_broiler_life_cycle":
-                            $this->processBroilerLifeCycle($jsonToArray, $batch);
-                            break;
-                        case "crm_broiler_life_cycle_details":
-                            $this->processBroilerLifeCycleDetail($jsonToArray, $batch);
-                            break;
-                        case "crm_cattle_life_cycle":
-                            $this->processCattleLifeCycle($jsonToArray, $batch);
-                            break;
-                        case "crm_cattle_life_cycle_details":
-                            $this->processCattleLifeCycleDetail($jsonToArray, $batch);
-                            break;
-                        case "crm_layer_life_cycle":
-                            $this->processLayerLifeCycle($jsonToArray, $batch);
-                            break;
-                        case "crm_layer_life_cycle_details":
-                            $this->processLayerLifeCycleDetail($jsonToArray, $batch);
-                            break;
-                        case "crm_expense":
-                            $this->processExpense($jsonToArray, $batch);
-                            break;
-                        case "crm_expense_purpose":
-                            $this->processExpensePurpose($jsonToArray, $batch);
-                            break;
-                        case "crm_expense_vehicle":
-                            $this->processExpenseVehicle($jsonToArray, $batch);
-                            break;
-                        case "crm_doc_complain_details":
-                            $this->processDocComplain($jsonToArray, $batch);
-                            break;
-                        case "crm_feed_complain_details":
-                            $this->processFeedComplain($jsonToArray, $batch);
-                            break;
-                        case "crm_customer":
-                            $this->processFarmer($jsonToArray, $batch);
-                            break;
-                        case "crm_customer_introduce_details":
-                            $this->processFarmerIntroduce($jsonToArray, $batch);
-                            break;
-                        case "crm_cattle_farm_visit_details":
-                            $this->processCattleFarmVisitDetails($jsonToArray, $batch);
-                            break;
-                        case "crm_poultry_meat_egg_price":
-                            $this->processPoultryMeatEggPrice($jsonToArray, $batch);
-                            break;
-                        case "crm_company_wise_feed_sale":
-                            $this->processCompanyWiseFeedSale($jsonToArray, $batch);
-                            break;
-                        case "crm_fcr_different_companies":
-                            $this->processFcrDifferentCompanies($jsonToArray, $batch);
-                            break;
-                        case "crm_lab_services":
-                            $this->processLabServices($jsonToArray, $batch);
-                            break;
-                        case "crm_fish_sales_price":
-                            $this->processFishSalesPrice($jsonToArray, $batch);
-                            break;
-                        case "crm_fish_tilapia_fry_sales":
-                            $this->processFishTilapiaFrySales($jsonToArray, $batch);
-                            break;
-                        case "crm_fish_company_species_wise_average_fcr":
-                            $this->processFishCompanySpeciesWiseAverageFcr($jsonToArray, $batch);
-                            break;
-                        case "crm_fish_company_species_wise_average_fcr_details":
-                            $this->processFishCompanySpeciesWiseAverageFcrDetails($jsonToArray, $batch);
-                            break;
-                        case "crm_doc_price":
-                            $this->processDocPrice($jsonToArray, $batch);
-                            break;
-                        case "crm_fish_life_cycle":
-                            $this->processFishLifeCycle($jsonToArray, $batch);
-                            break;
-                        case "crm_fish_life_cycle_details":
-                            $this->processFishLifeCycleDetails($jsonToArray, $batch);
-                            break;
-                        case "crm_fish_life_cycle_detail_species":
-                            $this->processFishLifeCycleDetailsSpecies($jsonToArray, $batch);
-                            break;
-                        case "crm_agent_upgradation_report":
-                            $this->processAgentUpgradtion($jsonToArray, $batch);
-                            break;
-                        case "crm_farmer_training_report":
-                            $this->processFarmerTraining($jsonToArray, $batch);
-                            break;
-                        case "crm_farmer_training_report_details":
-                            $this->processFarmerTrainingDetails($jsonToArray, $batch);
-                            break;
-                    }
-                    $detail->setStatus(true);
-                    $em->persist($detail);
-                    $em->flush();
-
-                    $loopCount+=1;
+                switch ($detail->getProcess()){
+                    case "crm_visit":
+                        $this->processVisit($jsonToArray, $batch);
+                        break;
+                    case "crm_visit_details":
+                        $this->processVisitDetail($jsonToArray, $batch);
+                        break;
+                    case "crm_layer_performance_details":
+                        $this->processLayerPerformance($jsonToArray, $batch);
+                        break;
+                    case "crm_cattle_performance_details":
+                        $this->processCattlePerformance($jsonToArray, $batch);
+                        break;
+                    case "crm_fcr_details":
+                        $this->processFcrDetail($jsonToArray, $batch);
+                        break;
+                    case "crm_antibiotic_free_farm":
+                        $this->processAntibioticFreeFarm($jsonToArray, $batch);
+                        break;
+                    case "crm_cost_benefit_analysis_for_less_costing_farm":
+                        $this->processCostBenefitAnalysis($jsonToArray, $batch);
+                        break;
+                    case "crm_disease_mapping":
+                        $this->processDiseaseMapping($jsonToArray, $batch);
+                        break;
+                    case "crm_complain_different_product":
+                        $this->processComplain($jsonToArray, $batch);
+                        break;
+                    case "crm_broiler_life_cycle":
+                        $this->processBroilerLifeCycle($jsonToArray, $batch);
+                        break;
+                    case "crm_broiler_life_cycle_details":
+                        $this->processBroilerLifeCycleDetail($jsonToArray, $batch);
+                        break;
+                    case "crm_cattle_life_cycle":
+                        $this->processCattleLifeCycle($jsonToArray, $batch);
+                        break;
+                    case "crm_cattle_life_cycle_details":
+                        $this->processCattleLifeCycleDetail($jsonToArray, $batch);
+                        break;
+                    case "crm_layer_life_cycle":
+                        $this->processLayerLifeCycle($jsonToArray, $batch);
+                        break;
+                    case "crm_layer_life_cycle_details":
+                        $this->processLayerLifeCycleDetail($jsonToArray, $batch);
+                        break;
+                    case "crm_expense":
+                        $this->processExpense($jsonToArray, $batch);
+                        break;
+                    case "crm_expense_purpose":
+                        $this->processExpensePurpose($jsonToArray, $batch);
+                        break;
+                    case "crm_expense_vehicle":
+                        $this->processExpenseVehicle($jsonToArray, $batch);
+                        break;
+                    case "crm_doc_complain_details":
+                        $this->processDocComplain($jsonToArray, $batch);
+                        break;
+                    case "crm_feed_complain_details":
+                        $this->processFeedComplain($jsonToArray, $batch);
+                        break;
+                    case "crm_customer":
+                        $this->processFarmer($jsonToArray, $batch);
+                        break;
+                    case "crm_customer_introduce_details":
+                        $this->processFarmerIntroduce($jsonToArray, $batch);
+                        break;
+                    case "crm_cattle_farm_visit_details":
+                        $this->processCattleFarmVisitDetails($jsonToArray, $batch);
+                        break;
+                    case "crm_poultry_meat_egg_price":
+                        $this->processPoultryMeatEggPrice($jsonToArray, $batch);
+                        break;
+                    case "crm_company_wise_feed_sale":
+                        $this->processCompanyWiseFeedSale($jsonToArray, $batch);
+                        break;
+                    case "crm_fcr_different_companies":
+                        $this->processFcrDifferentCompanies($jsonToArray, $batch);
+                        break;
+                    case "crm_lab_services":
+                        $this->processLabServices($jsonToArray, $batch);
+                        break;
+                    case "crm_fish_sales_price":
+                        $this->processFishSalesPrice($jsonToArray, $batch);
+                        break;
+                    case "crm_fish_tilapia_fry_sales":
+                        $this->processFishTilapiaFrySales($jsonToArray, $batch);
+                        break;
+                    case "crm_fish_company_species_wise_average_fcr":
+                        $this->processFishCompanySpeciesWiseAverageFcr($jsonToArray, $batch);
+                        break;
+                    case "crm_fish_company_species_wise_average_fcr_details":
+                        $this->processFishCompanySpeciesWiseAverageFcrDetails($jsonToArray, $batch);
+                        break;
+                    case "crm_doc_price":
+                        $this->processDocPrice($jsonToArray, $batch);
+                        break;
+                    case "crm_fish_life_cycle":
+                        $this->processFishLifeCycle($jsonToArray, $batch);
+                        break;
+                    case "crm_fish_life_cycle_details":
+                        $this->processFishLifeCycleDetails($jsonToArray, $batch);
+                        break;
+                    case "crm_fish_life_cycle_detail_species":
+                        $this->processFishLifeCycleDetailsSpecies($jsonToArray, $batch);
+                        break;
+                    case "crm_agent_upgradation_report":
+                        $this->processAgentUpgradtion($jsonToArray, $batch);
+                        break;
+                    case "crm_farmer_training_report":
+                        $this->processFarmerTraining($jsonToArray, $batch);
+                        break;
+                    case "crm_farmer_training_report_details":
+                        $this->processFarmerTrainingDetails($jsonToArray, $batch);
+                        break;
                 }
+                $detail->setStatus(true);
+                $em->persist($detail);
+                $em->flush();
+
+                $loopCount+=1;
+            }
 //            }
             if($detailsArrayLength==$loopCount){
                 $batch->setStatus(true);
@@ -250,30 +250,30 @@ class SyncAppDataController extends AbstractController
 
             $findVisit = $this->getDoctrine()->getRepository(CrmVisit::class)->findOneBy(['appBatch' => $batch, 'appId' => $visit['id']]);
             if (!$findVisit){
-            
-            $createdAt = new \DateTime($visit['created_at']);
-            $findEmployee = $this->getDoctrine()->getRepository(User::class)->find($visit['employee_id']);
-            $findLocation = $visit['location_id'] ? $this->getDoctrine()->getRepository(Location::class)->find($visit['location_id']) : null;
-            $mode = $visit['modeId'] ? $this->getDoctrine()->getRepository(Setting::class)->find((int)$visit['modeId']) : null;
 
-            if ($findEmployee){
-                $newVisit = new CrmVisit();
-                $newVisit->setEmployee($findEmployee);
-                $newVisit->setAppId($visit['id']);
-                $newVisit->setAppBatch($batch);
-                if ($findLocation){
-                    $newVisit->setLocation($findLocation);
+                $createdAt = new \DateTime($visit['created_at']);
+                $findEmployee = $this->getDoctrine()->getRepository(User::class)->find($visit['employee_id']);
+                $findLocation = $visit['location_id'] ? $this->getDoctrine()->getRepository(Location::class)->find($visit['location_id']) : null;
+                $mode = $visit['modeId'] ? $this->getDoctrine()->getRepository(Setting::class)->find((int)$visit['modeId']) : null;
+
+                if ($findEmployee){
+                    $newVisit = new CrmVisit();
+                    $newVisit->setEmployee($findEmployee);
+                    $newVisit->setAppId($visit['id']);
+                    $newVisit->setAppBatch($batch);
+                    if ($findLocation){
+                        $newVisit->setLocation($findLocation);
+                    }
+                    $newVisit->setWorkingDuration($visit['duration_from']);
+                    $newVisit->setWorkingDurationTo($visit['duration_to']);
+                    $newVisit->setCreated($createdAt);
+                    $newVisit->setWorkingMode($mode);
+                    $newVisit->setRemarks($visit['remarks']);
+
+                    $em->persist($newVisit);
+                    $em->flush();
                 }
-                $newVisit->setWorkingDuration($visit['duration_from']);
-                $newVisit->setWorkingDurationTo($visit['duration_to']);
-                $newVisit->setCreated($createdAt);
-                $newVisit->setWorkingMode($mode);
-                $newVisit->setRemarks($visit['remarks']);
 
-                $em->persist($newVisit);
-                $em->flush();
-            }
-            
             }
         }
     }
@@ -1735,18 +1735,18 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
                 $stmt->bindValue('employee_id', $report['employee_id']);
                 $stmt->bindValue('hatchery_id', $report['hatchery_id']);
                 $stmt->bindValue('breed_name', strtolower($report['breed_name']));
-                $stmt->bindValue('january', $report['january'] ?(float)$report['january']: 0);
-                $stmt->bindValue('february', $report['february'] ?(float)$report['february']: 0);
-                $stmt->bindValue('march', $report['march'] ?(float)$report['march']: 0);
-                $stmt->bindValue('april', $report['april'] ?(float)$report['april']: 0);
-                $stmt->bindValue('may', $report['may'] ?(float)$report['may']: 0);
-                $stmt->bindValue('june', $report['june'] ?(float)$report['june']: 0);
-                $stmt->bindValue('july', $report['july'] ?(float)$report['july']: 0);
-                $stmt->bindValue('august', $report['august'] ?(float)$report['august']: 0);
-                $stmt->bindValue('september', $report['september'] ?(float)$report['september']: 0);
-                $stmt->bindValue('october', $report['october'] ?(float)$report['october']: 0);
-                $stmt->bindValue('november', $report['november'] ?(float)$report['november']: 0);
-                $stmt->bindValue('december', $report['december'] ?(float)$report['december']: 0);
+                $stmt->bindValue('january', $report['january'] && $report['january']!=''?(float)$report['january']: 0);
+                $stmt->bindValue('february', $report['february'] && $report['february']!=''?(float)$report['february']: 0);
+                $stmt->bindValue('march', $report['march'] && $report['march']!=''?(float)$report['march']: 0);
+                $stmt->bindValue('april', $report['april'] && $report['april']!=''?(float)$report['april']: 0);
+                $stmt->bindValue('may', $report['may'] && $report['may']!=''?(float)$report['may']: 0);
+                $stmt->bindValue('june', $report['june'] && $report['june']!=''?(float)$report['june']: 0);
+                $stmt->bindValue('july', $report['july'] && $report['july']!=''?(float)$report['july']: 0);
+                $stmt->bindValue('august', $report['august'] && $report['august']!=''?(float)$report['august']: 0);
+                $stmt->bindValue('september', $report['september'] && $report['september']!=''?(float)$report['september']: 0);
+                $stmt->bindValue('october', $report['october'] && $report['october']!=''?(float)$report['october']: 0);
+                $stmt->bindValue('november', $report['november'] && $report['november']!=''?(float)$report['november']: 0);
+                $stmt->bindValue('december', $report['december'] && $report['december']!=''?(float)$report['december']: 0);
                 $stmt->bindValue('created_at', $createdAt);
 
                 $stmt->execute();
