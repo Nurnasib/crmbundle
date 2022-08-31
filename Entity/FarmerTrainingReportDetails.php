@@ -29,8 +29,7 @@ class FarmerTrainingReportDetails
     /**
      * @var FarmerTrainingReport
      * @ORM\ManyToOne(targetEntity="Terminalbd\CrmBundle\Entity\FarmerTrainingReport", inversedBy="farmerTrainingReportDetails")
-     * @ORM\JoinColumn(name="farmer_training_report_id", referencedColumnName="id")
-     * @ORM\JoinColumn(onDelete="CASCADE")
+     * @ORM\JoinColumn(name="farmer_training_report_id", referencedColumnName="id", onDelete="CASCADE")
      */
 
     private $farmerTrainingReport;

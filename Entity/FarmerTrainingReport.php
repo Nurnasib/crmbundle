@@ -41,7 +41,7 @@ class FarmerTrainingReport
 
     /**
      * @var FarmerTrainingReportDetails
-     * @ORM\OneToMany(targetEntity="Terminalbd\CrmBundle\Entity\FarmerTrainingReportDetails", mappedBy="farmerTrainingReport")
+     * @ORM\OneToMany(targetEntity="Terminalbd\CrmBundle\Entity\FarmerTrainingReportDetails", mappedBy="farmerTrainingReport", cascade={"remove"})
      */
     private $farmerTrainingReportDetails;
 
@@ -72,7 +72,7 @@ class FarmerTrainingReport
 
     /**
      * @var string
-     * @Orm\Column(type="string", nullable=true)
+     * @Orm\Column(type="text", nullable=true)
      */
 
     private $trainingTopics;
