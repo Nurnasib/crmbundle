@@ -11,6 +11,7 @@
 
 namespace Terminalbd\CrmBundle\Repository;
 
+use App\Entity\User;
 use Doctrine\ORM\EntityRepository;
 use Terminalbd\KpiBundle\Entity\EmployeeBoard;
 
@@ -63,9 +64,10 @@ class FcrDetailsRepository extends BaseRepository
     }
 
 
-    public function getFcrDetailsByEmployee($report, $filterBy)
+    public function getFcrDetailsByEmployee($report, $filterBy, User $loggedUser)
     {
         $returnArray=[];
+
         if(!empty($report)){
             $qb = $this->createQueryBuilder('e');
 
@@ -109,6 +111,30 @@ class FcrDetailsRepository extends BaseRepository
             $employee = isset($filterBy['employeeId'])? $filterBy['employeeId']: '';
             if (!empty($employee)){
                 $qb->andWhere('employee.id = :employee')->setParameter('employee', $employee);
+            }
+
+            $rolesString = implode('_', $loggedUser->getRoles());
+            if (!str_contains($rolesString, 'ADMIN') && !in_array('ROLE_LINE_MANAGER', $loggedUser->getRoles())){
+                $qb->andWhere('employee.id = :employeeId')->setParameter('employeeId', $loggedUser->getId());
+            }elseif (in_array('ROLE_LINE_MANAGER', $loggedUser->getRoles())){
+                $employeeDistricts = $loggedUser->getDistrict();
+
+                $employeeIs=[];
+                if($employeeDistricts){
+                    foreach ($employeeDistricts as $employeeDistrict) {
+                        $districtUsers = $employeeDistrict->getUserDistricts();
+                        if($districtUsers){
+                            /* @var User $districtUser*/
+                            foreach ($districtUsers as $districtUser) {
+                                if(!in_array($districtUser->getId(), $employeeIs)){
+                                    $employeeIs[]=$districtUser->getId();
+                                }
+                            }
+                        }
+
+                    }
+                }
+                $qb->andWhere('employee.id IN (:employeeIds)')->setParameter('employeeIds', $employeeIs);
             }
 
             $feedMill = isset($filterBy['feedMill'])? $filterBy['feedMill']: '';

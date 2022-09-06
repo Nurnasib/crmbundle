@@ -67,7 +67,7 @@ class MonthlyReportController extends AbstractController
                 case 'fcr-after-sale-boiler':
                 case 'fcr-before-sale-sonali':
                 case 'fcr-after-sale-sonali':
-                    $entities = $this->getDoctrine()->getRepository(FcrDetails::class)->getFcrDetailsByEmployee($report, $filterBy);
+                    $entities = $this->getDoctrine()->getRepository(FcrDetails::class)->getFcrDetailsByEmployee($report, $filterBy, $this->getUser());
                     break;
                 case 'layer-performance-brown':
                 case 'layer-performance-white':
