@@ -2180,4 +2180,26 @@ class ApiRepository extends BaseRepository
         }
         return $data;
     }
+
+    /**
+     * AREA
+     */
+    public function area()
+    {
+        $em = $this->_em;
+        $qb = $em->createQueryBuilder();
+        $qb->from(Setting::class, 's');
+        $qb->select('s.id as id', 's.name');
+        $qb->where("s.settingType = 'AREA'");
+        $qb->andWhere('s.status = 1');
+
+        $qb->orderBy('s.id', 'ASC');
+        $result = $qb->getQuery()->getArrayResult();
+        $data = array();
+        foreach ($result as $key => $row) {
+            $data[$key]['id'] = (int)$row['id'];
+            $data[$key]['name'] = (string)$row['name'];
+        }
+        return $data;
+    }
 }

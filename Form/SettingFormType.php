@@ -94,6 +94,7 @@ class SettingFormType extends AbstractType
                     'Complain Type'=>'COMPLAIN_TYPE',
                     'Working Mode'=>'WORKING_MODE',
                     'Challenge Name'=>'CHALLENGE_NAME',
+                    'Area'=>'AREA',
 
                 ],
                 'attr' => [
