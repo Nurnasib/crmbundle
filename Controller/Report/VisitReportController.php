@@ -120,6 +120,8 @@ class VisitReportController extends AbstractController
         $userRoles = [];
         $lineManagersId = [];
 
+        $employees=[];
+
         foreach ($this->getUser()->getRoles() as $role) {
             $roleSplitArray = array_merge(explode('_', $role), $roleSplitArray);
         }
@@ -137,9 +139,11 @@ class VisitReportController extends AbstractController
             if (in_array('ROLE_CRM_SALES_MARKETING_ADMIN', $this->getUser()->getRoles())) {
                 array_push($userRoles, 'ROLE_CRM_SALES_MARKETING_USER');
             }
+            $employees = $this->getDoctrine()->getRepository(User::class)->getRoleWiseEmployees($userRoles);
+        }elseif (in_array('ROLE_LINE_MANAGER', $this->getUser()->getRoles())){
+            $employees = $this->getDoctrine()->getRepository(User::class)->getLogInUserLocationsWiseEmployees($this->getUser());
         }
-        
-        $employees = $this->getDoctrine()->getRepository(User::class)->getRoleWiseEmployees($userRoles);
+
         $employeeIds=[];
         if($employees && isset($employees['employee'])){
             foreach ($employees['employee'] as $employee){
