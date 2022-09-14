@@ -255,6 +255,13 @@ class SyncAppDataController extends AbstractController
                 $findEmployee = $this->getDoctrine()->getRepository(User::class)->find($visit['employee_id']);
                 $findLocation = $visit['location_id'] ? $this->getDoctrine()->getRepository(Location::class)->find($visit['location_id']) : null;
                 $mode = $visit['modeId'] ? $this->getDoctrine()->getRepository(Setting::class)->find((int)$visit['modeId']) : null;
+                $area = null;
+                if(isset($visit['areaId'])&&$visit['areaId']!=''){
+                   $findArea = $this->getDoctrine()->getRepository(Setting::class)->find((int)$visit['areaId']);
+                   if($findArea){
+                       $area = $findArea;
+                   }
+                }
 
                 if ($findEmployee){
                     $newVisit = new CrmVisit();
@@ -268,6 +275,7 @@ class SyncAppDataController extends AbstractController
                     $newVisit->setWorkingDurationTo($visit['duration_to']);
                     $newVisit->setCreated($createdAt);
                     $newVisit->setWorkingMode($mode);
+                    $newVisit->setArea($area);
                     $newVisit->setRemarks($visit['remarks']);
 
                     $em->persist($newVisit);

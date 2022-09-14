@@ -109,6 +109,13 @@ class CrmVisit
     private $workingMode;
 
     /**
+     * @var Setting
+     * @ORM\ManyToOne(targetEntity="Setting", inversedBy="crmVisits")
+     * @ORM\JoinColumn(name="area_id", referencedColumnName="id", onDelete="SET NULL", nullable=true)
+     */
+    private $area;
+
+    /**
      * @var string
      * @ORM\Column(name="remarks" , type="text", nullable=true)
      */
@@ -320,6 +327,22 @@ class CrmVisit
     public function setRemarks(string $remarks): void
     {
         $this->remarks = $remarks;
+    }
+
+    /**
+     * @return Setting
+     */
+    public function getArea()
+    {
+        return $this->area;
+    }
+
+    /**
+     * @param Setting $area
+     */
+    public function setArea($area): void
+    {
+        $this->area = $area;
     }
 
 
