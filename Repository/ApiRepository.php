@@ -962,7 +962,7 @@ class ApiRepository extends BaseRepository
         $qb->from(Setting::class, 's');
         $qb->leftJoin('s.parent', 'p');
 
-        $qb->select('s.id as id', 's.name as name', 's.settingType as settingType');
+        $qb->select('s.id as id', 's.name as name','s.slug', 's.settingType as settingType');
         $qb->addselect('p.name as breedName');
 
         $qb->where("s.settingType = 'FARM_TYPE'");
@@ -975,6 +975,7 @@ class ApiRepository extends BaseRepository
 
             $data[$key]['id'] = (string)$row['id'];
             $data[$key]['name'] = (string)$row['name'];
+            $data[$key]['slug'] = (string)$row['slug'];
             $data[$key]['breedName'] = (string)$row['breedName'];
 
             /*$data[$row['breedName']][]= array(
