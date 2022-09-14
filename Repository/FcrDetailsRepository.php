@@ -116,23 +116,12 @@ class FcrDetailsRepository extends BaseRepository
             $rolesString = implode('_', $loggedUser->getRoles());
             if (!str_contains($rolesString, 'ADMIN') && !in_array('ROLE_LINE_MANAGER', $loggedUser->getRoles())){
                 $qb->andWhere('employee.id = :employeeId')->setParameter('employeeId', $loggedUser->getId());
-            }elseif (in_array('ROLE_LINE_MANAGER', $loggedUser->getRoles())){
-                $employeeDistricts = $loggedUser->getDistrict();
+            }elseif (!str_contains($rolesString, 'ADMIN') && in_array('ROLE_LINE_MANAGER', $loggedUser->getRoles())){
 
+                $employeeIdsByLineManager = $this->_em->getRepository(User::class)->getEmployeesByLineManager($loggedUser);
                 $employeeIs=[];
-                if($employeeDistricts){
-                    foreach ($employeeDistricts as $employeeDistrict) {
-                        $districtUsers = $employeeDistrict->getUserDistricts();
-                        if($districtUsers){
-                            /* @var User $districtUser*/
-                            foreach ($districtUsers as $districtUser) {
-                                if(!in_array($districtUser->getId(), $employeeIs)){
-                                    $employeeIs[]=$districtUser->getId();
-                                }
-                            }
-                        }
-
-                    }
+                if($employeeIdsByLineManager){
+                    $employeeIs=$employeeIdsByLineManager;
                 }
                 $qb->andWhere('employee.id IN (:employeeIds)')->setParameter('employeeIds', $employeeIs);
             }

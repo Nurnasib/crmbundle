@@ -36,7 +36,9 @@ class VisitReportController extends AbstractController
         $startDate = null;
         $endDate = null;
         $employee = null;
-        $form = $this->createForm(SearchFilterFormType::class, null, ['loggedUser' => $this->getUser()]);
+        $userRepo = $this->getDoctrine()->getRepository(User::class);
+        $form = $this->createForm(SearchFilterFormType::class, null, ['loggedUser' => $this->getUser(),'userRepo'=>$userRepo]);
+//        $form = $this->createForm(SearchFilterFormType::class, null, ['loggedUser' => $this->getUser()]);
         $form->handleRequest($request);
         if ($form->isSubmitted()){
             $startDate = $form->getData()['startDate'] ? new \DateTime($form->getData()['startDate']) : new \DateTime('now');
@@ -141,7 +143,7 @@ class VisitReportController extends AbstractController
             }
             $employees = $this->getDoctrine()->getRepository(User::class)->getRoleWiseEmployees($userRoles);
         }elseif (in_array('ROLE_LINE_MANAGER', $this->getUser()->getRoles())){
-            $employees = $this->getDoctrine()->getRepository(User::class)->getLogInUserLocationsWiseEmployees($this->getUser());
+            $employees = $this->getDoctrine()->getRepository(User::class)->getEmployeesByEmployeeIds($this->getUser());
         }
 
         $employeeIds=[];
@@ -160,8 +162,8 @@ class VisitReportController extends AbstractController
         /*foreach ($lineManagers as $lineManager){
             $lineManagersId[] = $lineManager['userId'];
         }*/
-
-        $form = $this->createForm(SearchFilterFormType::class, null, ['loggedUser' => $this->getUser()]);
+        $userRepo = $this->getDoctrine()->getRepository(User::class);
+        $form = $this->createForm(SearchFilterFormType::class, null, ['loggedUser' => $this->getUser(),'userRepo'=>$userRepo]);
         $form->handleRequest($request);
         if ($form->isSubmitted()){
             $selectedLineManagerUserId = $request->request->get('lineManager');

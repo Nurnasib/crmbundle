@@ -14,6 +14,7 @@ namespace Terminalbd\CrmBundle\Form;
 
 use App\Entity\Admin\Location;
 use App\Entity\User;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -42,6 +43,7 @@ class SearchFilterFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $user = $options['loggedUser'];
+        $userRepo = $options['userRepo'];
         $builder
             ->add('otherReport', ChoiceType::class,[
                 'choices' => $this->otherReportUserWise($user),
@@ -253,7 +255,7 @@ class SearchFilterFormType extends AbstractType
             ])
             ->add('employee', EntityType::class,[
                 'class' => User::class,
-                'query_builder' => function(EntityRepository $repository) use($user){
+                'query_builder' => function(EntityRepository $repository) use($user, $userRepo){
                     $qb = $repository->createQueryBuilder('e');
                     $qb->join('e.userGroup', 'userGroup');
                     $qb->where("userGroup.slug = 'employee'");
@@ -265,7 +267,9 @@ class SearchFilterFormType extends AbstractType
                         if (!in_array('ROLE_LINE_MANAGER', $user->getRoles())){
                             $qb->andWhere('e.id = :employeeId')->setParameter('employeeId', $user->getId());
                         }else{
-                            $qb->andWhere("e.lineManager = :lineManager")->setParameter('lineManager', $user);
+                            $employeeIds=$userRepo->getEmployeesByLineManager($user);
+                                $qb->andWhere('e.id IN (:employeeIds)')->setParameter('employeeIds', $employeeIds);
+//                            $qb->andWhere("e.lineManager = :lineManager")->setParameter('lineManager', $user);
                         }
                     }else{
                         $userRole = [];
@@ -444,6 +448,7 @@ class SearchFilterFormType extends AbstractType
         $resolver->setDefaults([
             'data_class' => null,
             'loggedUser' => User::class,
+            'userRepo' => UserRepository::class,
         ]);
     }
 }

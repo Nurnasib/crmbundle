@@ -13,7 +13,6 @@
                             <div class="col-md-9 p-0">
                                 <select class="form-control select2" name="lineManager">
                                     <option value="">- Select Line Manager -</option>
-
                                     {% for lineManagerId, lineManagerName in lineManagers %}
                                         <option {{ selectedLineManagerUserId == lineManagerId ? 'selected':'' }}
                                                 value="{{ lineManagerId }}">{{ '('~ lineManagerId ~ ') ' ~ lineManagerName }}</option>

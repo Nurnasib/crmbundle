@@ -4,6 +4,7 @@
 namespace Terminalbd\CrmBundle\Controller\Report;
 
 
+use App\Entity\User;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
@@ -47,7 +48,9 @@ class MonthlyReportController extends AbstractController
         $species = [];
         $employee = null;
         $report = null;
-        $form = $this->createForm(SearchFilterFormType::class, null, ['loggedUser' => $this->getUser()]);
+//        $form = $this->createForm(SearchFilterFormType::class, null, ['loggedUser' => $this->getUser()]);
+        $userRepo = $this->getDoctrine()->getRepository(User::class);
+        $form = $this->createForm(SearchFilterFormType::class, null, ['loggedUser' => $this->getUser(),'userRepo'=>$userRepo]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {
