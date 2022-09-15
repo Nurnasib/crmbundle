@@ -12,6 +12,7 @@
 namespace Terminalbd\CrmBundle\Controller;
 
 use App\Entity\Admin\Location;
+use App\Entity\User;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -97,6 +98,27 @@ class ExpenseController extends AbstractController
         return $this->render('@TerminalbdCrm/expense/new.html.twig', [
             'entity' => $entity,
             'form' => $form->createView(),
+        ]);
+    }
+
+    /**
+     * Displays a form to edit an existing Post entity.
+     *
+     * @Route("/{employee}/details", methods={"GET", "POST"}, name="crm_expense_details")
+     * @param Request $request
+     * @param User $employee
+     * @return Response
+     */
+    public function details(Request $request, User $employee): Response
+    {
+        $data=$request->query->all();
+        
+        $yearMonth = isset($data['monthYear'])&&$data['monthYear']!=''?$data['monthYear']:date('Y-m');
+
+        $entities = $this->getDoctrine()->getRepository(Expense::class)->getExpensesByEmployeeAndYearMonth($employee , $yearMonth);
+//        dd($entities);
+        return $this->render('@TerminalbdCrm/expense/details.html.twig', [
+            'entities' => $entities,
         ]);
     }
 

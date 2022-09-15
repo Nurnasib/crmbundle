@@ -58,15 +58,6 @@
                             <td>{{ loop.index }}</td>
                             <td>{{ entity.employeeName }}</td>
                             <td>{{ entity.expenseMonthYear|date('M Y')}}</td>
-                            {#<td>
-                                {% if entity.purpose is defined and entity.purpose is not empty %}
-                                    {% for purpose in entity.purpose %}
-                                    {{ purpose.name }}
-                                    {% endfor %}
-                                {% endif%}
-                            </td>#}
-{#                            <td>{{ entity.visitingArea.name }}</td>#}
-{#                            <td>{% if entity.setting is defined and  entity.setting is not empty %}{{ entity.setting.name }}{% endif %}</td>#}
                             <td>{{ entity.totalConveyance }}</td>
                             <td>{{ entity.totalDailyAllowance }}</td>
                             <td>{{ entity.totalHotelRent }}</td>
@@ -77,8 +68,7 @@
                             <td>{{ entity.totalServiceCharge }}</td>
                             <td>{{ entity.totalOthers }}</td>
                             <td>
-{#                                <a class="btn btn-mini yellow-bg white-font" href="{{ path('crm_expense_details',{'employee':entity.employeeAutoId, 'monthYear':entity.expenseMonthYear}) }}"><i class="feather icon-edit"></i> Edit</a>#}
-{#                                <a class="btn  btn-transparent btn-mini red-font remove" href="javascript:" data-action="{{ path('crm_expense_delete',{'id':entity.id}) }}"><i class="fa fa-remove"></i></a>#}
+                                <a class="btn btn-mini yellow-bg white-font" href="{{ path('crm_expense_details',{'employee':entity.employeeAutoId, 'monthYear':entity.expenseMonthYear}) }}"><i class="feather icon-edit"></i> Edit</a>
                             </td>
 
                         </tr>

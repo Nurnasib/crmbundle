@@ -119,4 +119,26 @@ class ExpenseRepository extends EntityRepository
         return $result;
     }
 
+    public function getExpensesByEmployeeAndYearMonth($employee , $yearMonth){
+        $qb = $this->createQueryBuilder('e');
+        /*$qb->select('e.id','e.conveyance','e.mobile','e.dailyAllowance','e.hotelRent','e.tollBill','e.food','e.courier','e.maintenace','e.serviceCharge','e.photostate','e.others');
+        $qb->addSelect("DATE_FORMAT(e.expenseDate,'%Y-%m') as expenseMonthYear", 'YEAR(e.expenseDate) as expenseYear', 'e.expenseDate');
+        $qb->addSelect('employee.id as employeeAutoId','employee.userId as employeeId','employee.name as employeeName');*/
+        $qb->join('e.employee','employee');
+
+        $qb->where('e.status =:status')->setParameter('status',1);
+        $qb->andWhere('e.expenseDate IS NOT NULL');
+        $qb->andWhere("DATE_FORMAT(e.expenseDate,'%Y-%m') =:yearMonth")->setParameter('yearMonth', $yearMonth);
+
+        /*$rolesString = implode('_', $user->getRoles());
+        if (!str_contains($rolesString, 'ADMIN')){
+            $qb->andWhere('employee.id = :employeeId')->setParameter('employeeId', $user->getId());
+        }*/
+        $qb->andWhere('employee.id =:employeeId')->setParameter('employeeId', $employee->getId());
+
+        $results= $qb->getQuery()->getResult();
+
+        return $results;
+    }
+
 }
