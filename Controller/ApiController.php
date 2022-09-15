@@ -280,6 +280,24 @@ class ApiController extends AbstractController
     }
 
     /**
+     * @Route("/nourish-agent", name="crm_api_rourish_agent" , methods={"POST","GET"}, options={"expose"=true})
+     */
+    public function apiNourishAgent()
+    {
+        set_time_limit(0);
+        ignore_user_abort(true);
+        $locations = isset($_REQUEST['locations']) ? $_REQUEST['locations'] : "";
+        //$terminal = $this->getUser()->getTerminal()->getId();
+        $entities = $this->getDoctrine()->getRepository(Api::class)->apiOnlyNourishAgent(1, $locations);
+
+        $response = new Response();
+        $response->headers->set('Content-Type', 'application/json');
+        $response->setContent(json_encode($entities));
+        $response->setStatusCode(Response::HTTP_OK);
+        return $response;
+    }
+
+    /**
      * @Route("/customer", name="customerApi")
      */
     public function customerApi()
