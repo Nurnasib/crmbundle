@@ -33,6 +33,10 @@ function formSubmitExpenseForm() {
         contentType : false,
         success: function(response){
 
+            console.log(response);
+            $('.remodal').find( ".portlet-title" ).after('<div class="alert alert-dismissible alert-success fade in show" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>'+ response.message+'</div>');
+
+
             // $('form#expense_form')[0].reset();
 
         }

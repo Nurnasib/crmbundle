@@ -8,7 +8,33 @@
         <div class="row form-body expense_form_body">
             <div class="form-inner-no-space">
                 <div class="row">
-                    <div class="col-md-8">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            {{ form_label(form.schedule_visit, 'Schedule Visit'|trans, {'label_attr': {'class': 'col-md-2'}}) }}
+                            <div class="col-md-10">
+                                <span class="not-blank"> *</span>
+
+                                {{ form_widget(form.schedule_visit) }}
+                                {{ form_errors(form.schedule_visit) }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            {{ form_label(form.expenseDate, 'Date'|trans, {'label_attr': {'class': 'col-md-2'}}) }}
+                            <div class="col-md-10">
+                                <span class="not-blank"> *</span>
+                                <div class="date_section">
+                                {{ form_widget(form.expenseDate) }}
+                                {{ form_errors(form.expenseDate) }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
                         <div class="form-group">
                             {{ form_label(form.purpose, 'Purpose'|trans, {'label_attr': {'class': 'col-md-1'}}) }}
                             <div class="col-md-11">
@@ -19,19 +45,6 @@
                             </div>
                         </div>
                     </div>
-
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            {{ form_label(form.schedule_visit, 'Schedule Visit'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
-                            <div class="col-md-8">
-                                <span class="not-blank"> *</span>
-
-                                {{ form_widget(form.schedule_visit) }}
-                                {{ form_errors(form.schedule_visit) }}
-                            </div>
-                        </div>
-                    </div>
-
                 </div>
                 <div class="row">
                     <div class="col-md-12">

@@ -16,7 +16,9 @@ use App\Entity\Admin\Location;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\DataTransformer\DateTimeToStringTransformer;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -46,48 +48,48 @@ class ExpenseFormType extends AbstractType
                 'required' => true
             ])
 
-            ->add('conveyance', TextType::class, [
+            ->add('conveyance', NumberType::class, [
                 'attr' => ['autofocus' => true],
                 'label' => 'label.conveyance',
                 'required' => false
             ])
-            ->add('daily_allowance', TextType::class, [
+            ->add('daily_allowance', NumberType::class, [
                 'attr' => ['autofocus' => true,'autocomplete' => 'off'],
                 'label' => 'label.daily_allowance',
                 'required' => false
-            ])->add('hotel_rent', TextType::class, [
+            ])->add('hotel_rent', NumberType::class, [
                 'attr' => ['autofocus' => true,'autocomplete' => 'off'],
                 'label' => 'label.hotel_rent',
                 'required' => false
-            ])->add('photostate', TextType::class, [
+            ])->add('photostate', NumberType::class, [
                 'attr' => ['autofocus' => true],
                 'label' => 'label.photostate',
                 'required' => false
-            ])->add('courier', TextType::class, [
+            ])->add('courier', NumberType::class, [
                 'attr' => ['autofocus' => true],
                 'label' => 'label.courier',
                 'required' => false
-            ])->add('food', TextType::class, [
+            ])->add('food', NumberType::class, [
                 'attr' => ['autofocus' => true],
                 'label' => 'label.food',
                 'required' => false
-            ])->add('mobile', TextType::class, [
+            ])->add('mobile', NumberType::class, [
                 'attr' => ['autofocus' => true],
                 'label' => 'label.mobile',
                 'required' => false
-            ])->add('maintenace', TextType::class, [
+            ])->add('maintenace', NumberType::class, [
                 'attr' => ['autofocus' => true,'autocomplete' => 'off'],
                 'label' => 'label.maintenace',
                 'required' => false
-            ])->add('toll_bill', TextType::class, [
+            ])->add('toll_bill', NumberType::class, [
                 'attr' => ['autofocus' => true,'autocomplete' => 'off'],
                 'label' => 'label.toll_bill',
                 'required' => false
-            ])->add('service_charge', TextType::class, [
+            ])->add('service_charge', NumberType::class, [
                 'attr' => ['autofocus' => true,'autocomplete' => 'off'],
                 'label' => 'label.service_charge',
                 'required' => false
-            ])->add('others', TextType::class, [
+            ])->add('others', NumberType::class, [
                 'attr' => ['autofocus' => true],
                 'label' => 'label.others',
                 'required' => false
@@ -117,6 +119,18 @@ class ExpenseFormType extends AbstractType
                 'multiple' => true,
                 'expanded' => true,
             ])
+            ->add($builder->create('expenseDate', TextType::class, array(
+                'label' => 'Date',
+                'required' => true,
+                'attr' => array(
+                    'class' => 'datePicker expense_date',
+                    'autocomplete' => 'off',
+                    'placeholder' => 'd-m-Y'
+                ),
+                'empty_data' => new \DateTime(),
+            ))->addViewTransformer(new DateTimeToStringTransformer(null, null, 'd-m-Y')))
+
+
         ;
     }
 

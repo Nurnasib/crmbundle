@@ -37,36 +37,35 @@ class ExpenseController extends AbstractController
      * @Route("/", methods={"GET"}, name="crm_expense")
      * @return Response
      */
-/*    public function index(): Response
+    public function index(): Response
     {
-        $entities = $this->getDoctrine()->getRepository(Expense::class)->getExpense($this->getUser());
+        $entities = $this->getDoctrine()->getRepository(Expense::class)->getExpenses($this->getUser());
         return $this->render('@TerminalbdCrm/expense/index.html.twig',[
             'entities' => $entities
         ]);
-    }*/
+    }
 
     /**
-     * @Route("/{crmVisit}/{location}/new", methods={"GET", "POST"}, name="crm_expense_new")
-     * @param CrmVisit $crmVisit
-     * @param Location $location
+     * @Route("/new", methods={"GET", "POST"}, name="crm_expense_new")
      * @return Response
      */
-    public function new(CrmVisit $crmVisit, Location $location): Response
+    public function new(Request $request): Response
     {
 
         $entity = new Expense();
 
-        $exitingExpense = $this->getDoctrine()->getRepository(Expense::class)->findOneBy(array('crmVisit'=>$crmVisit));
+        /*$exitingExpense = $this->getDoctrine()->getRepository(Expense::class)->findOneBy(array('crmVisit'=>$crmVisit));
         if($exitingExpense){
             return $this->redirectToRoute('crm_expense_edit', ['id'=>$exitingExpense->getId()]);
         }
 
         $entity->setVisitingArea($location);
-        $entity->setCrmVisit($crmVisit);
+        $entity->setCrmVisit($crmVisit);*/
+        $entity->setEmployee($this->getUser());
         $em = $this->getDoctrine()->getManager();
         $em->persist($entity);
         $em->flush();
-        $this->addFlash('success', 'post.created_successfully');
+//        $this->addFlash('success', 'post.created_successfully');
         return $this->redirectToRoute('crm_expense_edit', ['id'=>$entity->getId()]);
     }
 
@@ -91,12 +90,11 @@ class ExpenseController extends AbstractController
 
             $em->persist($entity);
             $em->flush();
-            $this->addFlash('success', 'post.updated_successfully');
-            if ($form->get('SaveAndCreate')->isClicked()) {
-                return new Response('success');
-            }
+            $this->addFlash('success', 'Expense has been updated successfully');
+//            return new JsonResponse(['status'=>200,'message'=>'Expense has been updated successfully']);
+            return $this->redirectToRoute('crm_expense_edit', ['id'=>$entity->getId()]);
         }
-        return $this->render('@TerminalbdCrm/expense/new-modal.html.twig', [
+        return $this->render('@TerminalbdCrm/expense/new.html.twig', [
             'entity' => $entity,
             'form' => $form->createView(),
         ]);

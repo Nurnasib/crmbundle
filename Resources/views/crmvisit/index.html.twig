@@ -20,6 +20,10 @@
                 <div class="card-header">
                     <h5>{{ 'Crm Visit'|trans }}</h5>
                     <div class="card-header-right">
+                        <div class="btn-group btn-group-sm" role="group" aria-label="Button group with nested dropdown">
+{#                            <a style="margin-right: 5px" class="btn btn-primary btn-sm" data-action='{{ path('crm_expense_new') }}' href='?process=postView_crm_expense_new&report={{ '' }}&check=show#modal' id='postView_crm_expense_new' >{{ 'Expense' }}</a>#}
+                            <a style="margin-right: 5px" class="btn btn-primary btn-sm" href='{{ path('crm_expense_new') }}' id='' >{{ 'Add Expense' }}</a>
+                        </div>
                         {% if is_granted('ROLE_CRM_POULTRY_USER') or is_granted('ROLE_CRM_CATTLE_USER') or is_granted('ROLE_CRM_AQUA_USER') or is_granted('ROLE_CRM_SALES_MARKETING_USER')  %}
                         <div class="btn-group btn-group-sm" role="group" aria-label="Button group with nested dropdown">
                             <a href="{{ path('new_visit') }}" class="btn btn-sm  green-bg white-font"><i class="fas fa-plus"></i>{{ 'Add New'|trans }}</a>
@@ -86,6 +90,8 @@
     <script type="application/javascript" src="{{ asset('assets/module/js/app.js') }}"></script>
     <script type="application/javascript" src="{{ asset('bundles/terminalbdcrm/js/crm/script.js') }}"></script>
     <script type="application/javascript" src="{{ asset('bundles/terminalbdcrm/js/crm/fcr.js') }}"></script>
+    <script type="application/javascript" src="{{ asset('bundles/terminalbdcrm/js/crm/expense.js') }}"></script>
+
 
 {% endblock  %}
 

@@ -22,7 +22,7 @@
                     <h5>{{ 'Manage Daily Activies'|trans }}</h5>
                     <div class="card-header-right">
                         <div class="btn-group btn-group-sm" role="group" aria-label="Button group with nested dropdown">
-                            <a style="margin-right: 5px" class="btn btn-primary btn-sm" data-action='{{ path('crm_expense_new',{'crmVisit':entity.id, 'location':entity.location.id}) }}' href='?process=postView_crm_expense_new&report={{ '' }}&check=show#modal' id='postView_crm_expense_new'>{{ 'Expense' }}</a>
+{#                            <a style="margin-right: 5px" class="btn btn-primary btn-sm" data-action='{{ path('crm_expense_new') }}' href='?process=postView_crm_expense_new&report={{ '' }}&check=show#modal' id='postView_crm_expense_new'>{{ 'Expense' }}</a>#}
 
                             <a href="{{ path('crm_visit') }}" class="btn btn-sm gray-bg white-font"><i class="fa fa-th-list"></i>{{ 'CRM VISIT'|trans }}</a>
                         </div>

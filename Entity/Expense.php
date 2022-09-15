@@ -11,6 +11,7 @@
 
 namespace Terminalbd\CrmBundle\Entity;
 
+use App\Entity\User;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -38,6 +39,12 @@ class Expense
     private $scheduleVisit;
 
     /**
+     * @var User
+     * @ORM\ManyToOne(targetEntity="App\Entity\User" , inversedBy="expense")
+     */
+    private $employee;
+
+    /**
      * @var string
      * @ORM\ManyToOne(targetEntity="App\Entity\Admin\Location" , inversedBy="expense")
      */
@@ -60,6 +67,19 @@ class Expense
      * @ORM\JoinTable(name="crm_expence_purpose")
      */
     private $purpose;
+    /**
+     * @var \DateTime
+     * @ORM\Column(name="expense_date", type="date", nullable=true)
+     */
+    private $expenseDate;
+    
+    /**
+     * @var \DateTime
+     * @Gedmo\Timestampable(on="create")
+     * @ORM\Column(name="created_at", type="datetime", nullable=true)
+     */
+    private $createdAt;
+    
     public function __construct()
     {
         $this->purpose = new ArrayCollection();
@@ -454,6 +474,54 @@ class Expense
     public function setStatus(bool $status): void
     {
         $this->status = $status;
+    }
+
+    /**
+     * @return User
+     */
+    public function getEmployee()
+    {
+        return $this->employee;
+    }
+
+    /**
+     * @param User $employee
+     */
+    public function setEmployee(User $employee): void
+    {
+        $this->employee = $employee;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getExpenseDate()
+    {
+        return $this->expenseDate;
+    }
+
+    /**
+     * @param \DateTime $expenseDate
+     */
+    public function setExpenseDate(\DateTime $expenseDate): void
+    {
+        $this->expenseDate = $expenseDate;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getCreatedAt()
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * @param \DateTime $createdAt
+     */
+    public function setCreatedAt(\DateTime $createdAt): void
+    {
+        $this->createdAt = $createdAt;
     }
 
 }

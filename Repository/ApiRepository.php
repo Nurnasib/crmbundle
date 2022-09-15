@@ -1032,7 +1032,7 @@ class ApiRepository extends BaseRepository
         $qb->leftJoin('s.parent', 'p');
 
         $qb->select('s.id as id', 's.name as name', 's.slug as slug');
-        $qb->addSelect('p.name as farmType');
+        $qb->addSelect('p.name as farmType', 'p.slug as farmTypeSlug');
 
         $qb->where("s.settingType = 'FARMER_REPORT'");
         $qb->andWhere('s.status = 1');
@@ -1048,8 +1048,9 @@ class ApiRepository extends BaseRepository
 //            if(!in_array($row['slug'],$exceptSlug)){
             $data[$key]['id'] = (string)$row['id'];
             $data[$key]['name'] = (string)$row['name'];
-            $data[$key]['farmType'] = (string)$row['farmType'];
             $data[$key]['slug'] = (string)$row['slug'];
+            $data[$key]['farmType'] = (string)$row['farmType'];
+            $data[$key]['farmTypeSlug'] = (string)$row['farmTypeSlug'];
 //            }
 
         }
