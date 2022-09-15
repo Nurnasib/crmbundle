@@ -94,7 +94,9 @@
                                     <td>{{ entity.serviceCharge|number_format(2,'.',',') }}</td>
                                     <td>{{ entity.others|number_format(2,'.',',') }}</td>
                                     <td>
-                                        <a class="btn  btn-transparent btn-mini red-font remove" href="javascript:" data-action="{{ path('crm_expense_delete',{'id':entity.id}) }}"><i class="fa fa-remove"></i></a>
+                                        {% if entity.status==1 %}
+                                        <a class="btn btn-danger btn-mini white-font remove" href="javascript:" data-action="{{ path('crm_expense_delete',{'id':entity.id}) }}"><i class="fa fa-remove"></i></a>
+                                        {% endif %}
                                     </td>
                                 </tr>
                                 {% endfor %}
