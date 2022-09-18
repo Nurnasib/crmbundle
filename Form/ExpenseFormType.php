@@ -47,6 +47,11 @@ class ExpenseFormType extends AbstractType
                 'label' => 'label.schedule_visit',
                 'required' => true
             ])
+            ->add('visitLocation', TextType::class, [
+                'attr' => ['autofocus' => true],
+                'label' => 'label.visitLocation',
+                'required' => true
+            ])
 
             ->add('conveyance', NumberType::class, [
                 'attr' => ['autofocus' => true],
@@ -94,6 +99,11 @@ class ExpenseFormType extends AbstractType
                 'label' => 'label.others',
                 'required' => false
 
+            ])->add('riding', NumberType::class, [
+                'attr' => ['autofocus' => true],
+                'label' => 'label.riding',
+                'required' => false
+
             ])
             ->add('purpose', EntityType::class, [
                 'class' => Setting::class,
@@ -123,7 +133,7 @@ class ExpenseFormType extends AbstractType
                 'label' => 'Date',
                 'required' => true,
                 'attr' => array(
-                    'class' => 'datePicker expense_date',
+                    'class' => 'expense_date',
                     'autocomplete' => 'off',
                     'placeholder' => 'd-m-Y'
                 ),

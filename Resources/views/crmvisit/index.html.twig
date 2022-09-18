@@ -22,7 +22,7 @@
                     <div class="card-header-right">
                         <div class="btn-group btn-group-sm" role="group" aria-label="Button group with nested dropdown">
 {#                            <a style="margin-right: 5px" class="btn btn-primary btn-sm" data-action='{{ path('crm_expense_new') }}' href='?process=postView_crm_expense_new&report={{ '' }}&check=show#modal' id='postView_crm_expense_new' >{{ 'Expense' }}</a>#}
-                            <a style="margin-right: 5px" class="btn btn-primary btn-sm" href='{{ path('crm_expense_new') }}' id='' >{{ 'Add Expense' }}</a>
+                            <a href="{{ path('crm_expense') }}" class="btn btn-sm gray-bg white-font"><i class="fa fa-th-list"></i>{{ 'Expense'|trans }}</a>
                         </div>
                         {% if is_granted('ROLE_CRM_POULTRY_USER') or is_granted('ROLE_CRM_CATTLE_USER') or is_granted('ROLE_CRM_AQUA_USER') or is_granted('ROLE_CRM_SALES_MARKETING_USER')  %}
                         <div class="btn-group btn-group-sm" role="group" aria-label="Button group with nested dropdown">

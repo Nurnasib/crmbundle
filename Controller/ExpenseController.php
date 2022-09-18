@@ -13,6 +13,7 @@ namespace Terminalbd\CrmBundle\Controller;
 
 use App\Entity\Admin\Location;
 use App\Entity\User;
+use DoctrineExtensions\Query\Mysql\Date;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -23,7 +24,9 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Terminalbd\CrmBundle\Entity\CrmVisit;
+use Terminalbd\CrmBundle\Entity\DmsFile;
 use Terminalbd\CrmBundle\Entity\Expense;
+use Terminalbd\CrmBundle\Entity\ExpenseBatch;
 use Terminalbd\CrmBundle\Entity\Setting;
 use Terminalbd\CrmBundle\Form\ExpenseFormType;
 use Terminalbd\CrmBundle\Form\SettingFormType;
@@ -85,18 +88,37 @@ class ExpenseController extends AbstractController
             ->add('SaveAndCreate', SubmitType::class);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+            $formData=$form->getData();
+            $expenseDate=$formData->getExpenseDate()->format('Y-m-d');
+            $existingExpenseCheck=$this->getDoctrine()->getRepository(Expense::class)->getExpenseByEmployeeAndDate($entity, $this->getUser(),$expenseDate);
+            if($existingExpenseCheck && sizeof($existingExpenseCheck)>0) {
+
+                $this->addFlash('error', $expenseDate.' date expense already exist.');
+                return $this->redirectToRoute('crm_expense_edit', ['id'=>$entity->getId()]);
+            }
+
+
+
+            $data = $request->request->all();
             $em = $this->getDoctrine()->getManager();
 
             $entity->setStatus(1);
 
             $em->persist($entity);
+
+            if($_FILES['files']['size'][0] != 0 && $_FILES['files']['error'][0] == 0){
+                $files = empty($_FILES['files']) ? '' : $_FILES['files'];
+                $this->getDoctrine()->getRepository(DmsFile::class)->insertAttachmentFile($entity, $data, $files, 'CRM','Expense');
+            }
+
             $em->flush();
             $this->addFlash('success', 'Expense has been updated successfully');
-//            return new JsonResponse(['status'=>200,'message'=>'Expense has been updated successfully']);
             return $this->redirectToRoute('crm_expense_edit', ['id'=>$entity->getId()]);
         }
+        $attchments = $this->getDoctrine()->getRepository(DmsFile::class)->getDmsAttchmentFile($entity,'CRM','Expense');
         return $this->render('@TerminalbdCrm/expense/new.html.twig', [
             'entity' => $entity,
+            'attchments' => $attchments,
             'form' => $form->createView(),
         ]);
     }
@@ -116,10 +138,68 @@ class ExpenseController extends AbstractController
         $yearMonth = isset($data['monthYear'])&&$data['monthYear']!=''?$data['monthYear']:date('Y-m');
 
         $entities = $this->getDoctrine()->getRepository(Expense::class)->getExpensesByEmployeeAndYearMonth($employee , $yearMonth);
-//        dd($entities);
+        $expenseMonth = date('Y-m-d',strtotime($yearMonth.'-01'));
+        $expenseBatch= $this->getDoctrine()->getRepository(ExpenseBatch::class)->findOneBy(['employee'=>$employee, 'expenseMonth'=>new \DateTime($expenseMonth)]);
+
         return $this->render('@TerminalbdCrm/expense/details.html.twig', [
             'entities' => $entities,
+            'employee' => $employee,
+            'yearMonth' => $yearMonth,
+            'expenseBatch' => $expenseBatch,
         ]);
+    }
+
+    /**
+     * Displays a form to edit an existing Post entity.
+     *
+     * @Route("/{employee}/process", methods={"GET", "POST"}, name="crm_expense_process")
+     * @param Request $request
+     * @param User $employee
+     * @return Response
+     */
+    public function process(Request $request, User $employee): Response
+    {
+        $requestData=$request->request->all();
+        $yearMonth = isset($requestData['monthYear'])&&$requestData['monthYear']!=''?$requestData['monthYear']:date('Y-m');
+        $expenseMonth = date('Y-m-d',strtotime($yearMonth.'-01'));
+
+        $existingExpenseBatch= $this->getDoctrine()->getRepository(ExpenseBatch::class)->findOneBy(['employee'=>$employee, 'expenseMonth'=>new \DateTime($expenseMonth)]);
+
+        if($existingExpenseBatch){
+            $this->addFlash('error', $yearMonth.' month expense already process.');
+            return $this->redirectToRoute('crm_expense_details', ['employee'=>$employee->getId(),'monthYear'=>$yearMonth]);
+        }
+
+        $expenseBatch= new ExpenseBatch();
+
+        $expenseBatch->setEmployee($employee);
+        $expenseBatch->setStatus(1);
+        $expenseBatch->setExpenseMonth(new \DateTime($expenseMonth));
+        $expenseBatch->setTotalRiding(isset($requestData['totalRiding'])&&$requestData['totalRiding']!=''&&$requestData['totalRiding']>0?$requestData['totalRiding']:'0');
+        $expenseBatch->setMaintenace(isset($requestData['monthlyMaintenace'])&&$requestData['monthlyMaintenace']!=''&&$requestData['monthlyMaintenace']>0?$requestData['monthlyMaintenace']:'0');
+        $expenseBatch->setOthers(isset($requestData['monthlyOthers'])&&$requestData['monthlyOthers']!=''&&$requestData['monthlyOthers']>0?$requestData['monthlyOthers']:'0');
+
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($expenseBatch);
+        $em->flush();
+
+        if ($requestData && isset($requestData['expense']) && sizeof($requestData['expense'])>0){
+            foreach ($requestData['expense'] as $expenseId=>$expense) {
+                /* @var Expense $expenseObj*/
+                $expenseObj = $this->getDoctrine()->getRepository(Expense::class)->find($expense);
+
+                $expenseObj->setExpenseBatch($expenseBatch);
+                $expenseObj->setStatus(2);
+
+                $em->persist($expenseObj);
+                $em->flush();
+            }
+
+        }
+
+
+        return $this->redirectToRoute('crm_expense_details', ['employee'=>$employee->getId(),'monthYear'=>$yearMonth]);
+
     }
 
     /**
@@ -136,5 +216,20 @@ class ExpenseController extends AbstractController
         $em->flush();
         $this->addFlash('success', 'post.deleted_successfully');
         return new Response('Success');
+    }
+
+
+    /**
+     * Displays a form to edit an existing Post entity.
+     *
+     * @Route("/attachment/{id}/delete", methods={"GET"}, name="crm_expense_attachment_delete", options={"expose"=true})
+     */
+    public function attachmentDelete(DmsFile $entity): Response
+    {
+        $em = $this->getDoctrine()->getManager();
+        $em->remove($entity);
+        $em->flush();
+
+        return new JsonResponse(['status'=>200, 'message'=>'Success']);
     }
 }

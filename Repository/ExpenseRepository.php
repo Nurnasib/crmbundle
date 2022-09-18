@@ -13,6 +13,8 @@ namespace Terminalbd\CrmBundle\Repository;
 
 use App\Entity\User;
 use Doctrine\ORM\EntityRepository;
+use Terminalbd\CrmBundle\Entity\DmsFile;
+use Terminalbd\CrmBundle\Entity\Expense;
 use function Doctrine\ORM\QueryBuilder;
 
 /**
@@ -25,6 +27,7 @@ use function Doctrine\ORM\QueryBuilder;
  */
 class ExpenseRepository extends EntityRepository
 {
+
     public function getExpenseReport($filterBy, User $loggedUser)
     {
         $start = isset($filterBy['startDate']) ? (new \DateTime($filterBy['startDate']))->format('Y-m-d 00:00:00') : null;
@@ -101,7 +104,7 @@ class ExpenseRepository extends EntityRepository
         $qb->addSelect('employee.id as employeeAutoId','employee.userId as employeeId','employee.name as employeeName');
         $qb->join('e.employee','employee');
 
-        $qb->where('e.status =:status')->setParameter('status',1);
+        $qb->where('e.status >=:status')->setParameter('status',1);
         $qb->andWhere('e.expenseDate IS NOT NULL');
 
         /*$rolesString = implode('_', $user->getRoles());
@@ -121,24 +124,35 @@ class ExpenseRepository extends EntityRepository
 
     public function getExpensesByEmployeeAndYearMonth($employee , $yearMonth){
         $qb = $this->createQueryBuilder('e');
-        /*$qb->select('e.id','e.conveyance','e.mobile','e.dailyAllowance','e.hotelRent','e.tollBill','e.food','e.courier','e.maintenace','e.serviceCharge','e.photostate','e.others');
-        $qb->addSelect("DATE_FORMAT(e.expenseDate,'%Y-%m') as expenseMonthYear", 'YEAR(e.expenseDate) as expenseYear', 'e.expenseDate');
-        $qb->addSelect('employee.id as employeeAutoId','employee.userId as employeeId','employee.name as employeeName');*/
         $qb->join('e.employee','employee');
-
-        $qb->where('e.status =:status')->setParameter('status',1);
+        $qb->where('e.status >=:status')->setParameter('status',1);
         $qb->andWhere('e.expenseDate IS NOT NULL');
         $qb->andWhere("DATE_FORMAT(e.expenseDate,'%Y-%m') =:yearMonth")->setParameter('yearMonth', $yearMonth);
 
-        /*$rolesString = implode('_', $user->getRoles());
-        if (!str_contains($rolesString, 'ADMIN')){
-            $qb->andWhere('employee.id = :employeeId')->setParameter('employeeId', $user->getId());
-        }*/
         $qb->andWhere('employee.id =:employeeId')->setParameter('employeeId', $employee->getId());
+        $qb->orderBy('e.expenseDate','ASC');
 
         $results= $qb->getQuery()->getResult();
 
         return $results;
     }
+    
+    public function getExpenseByEmployeeAndDate(Expense $entity, User $employee, $expenseDate){
+        $qb = $this->createQueryBuilder('e');
+        $qb->select('e.id');
+        $qb->join('e.employee','employee');
+
+        $qb->where('e.status >=:status')->setParameter('status',1);
+        $qb->andWhere('e.id !=:entityId')->setParameter('entityId', $entity->getId());
+        $qb->andWhere('e.expenseDate IS NOT NULL');
+        $qb->andWhere('e.expenseDate =:expenseDate')->setParameter('expenseDate',$expenseDate);
+        $qb->andWhere('employee.id =:employeeId')->setParameter('employeeId', $employee->getId());
+
+        $results= $qb->getQuery()->getArrayResult();
+
+        return $results;
+    }
+
+
 
 }

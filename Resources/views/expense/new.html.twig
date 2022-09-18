@@ -20,7 +20,7 @@
         <div class="row">
             <div class="card">
                 <div class="card-header">
-                    <h5>{{ 'Expense'|trans }}</h5>
+                    <h5>{{ 'Daily Expense'|trans }}</h5>
                     <div class="card-header-right">
                         <div class="btn-group btn-group-sm" role="group" aria-label="Button group with nested dropdown">
                             <a href="{{ path('crm_expense_new') }}" class="btn btn-sm  green-bg white-font"><i class="fas fa-plus"></i>{{ 'Add New'|trans }}</a>
@@ -34,11 +34,11 @@
             <div class="card">
                 <div class="portlet box ">
                     <div class="portlet-title">
-                        <div class="caption">{{ 'Expense'|trans }} </div>
+                        <div class="caption">{{ 'Daily Expense'|trans }} </div>
                     </div>
 
                     <div class="portlet-body form expense_form_section" id="expense_form_section">
-                        {{ form_start(form, {'attr': {'action': path('crm_expense_edit',{'id':entity.id}), 'id':'expense_form','method':'post','class': 'form-horizontal right'}}) }}
+                        {{ form_start(form, {'attr': {'action': path('crm_expense_edit',{'id':entity.id}), 'id':'expense_form','method':'post','class': 'form-horizontal right','enctype':'multipart/form-data'}}) }}
                         <div class="row form-body expense_form_body">
                             <div class="form-inner-no-space">
                                 <div class="row">
@@ -68,6 +68,26 @@
 
                                 </div>
                                 <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            {{ form_label(form.visitLocation, 'Location'|trans, {'label_attr': {'class': 'col-md-2'}}) }}
+                                            <div class="col-md-10">
+                                                {{ form_widget(form.visitLocation) }}
+                                                {{ form_errors(form.visitLocation) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            {{ form_label(form.riding, 'Bike Riding'|trans, {'label_attr': {'class': 'col-md-2'}}) }}
+                                            <div class="col-md-10">
+                                                {{ form_widget(form.riding) }}
+                                                {{ form_errors(form.riding) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
                                     <div class="col-md-12">
                                         <div class="form-group">
                                             {{ form_label(form.purpose, 'Purpose'|trans, {'label_attr': {'class': 'col-md-1'}}) }}
@@ -80,6 +100,7 @@
                                         </div>
                                     </div>
                                 </div>
+
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="form-group">
@@ -91,6 +112,7 @@
                                         </div>
                                     </div>
                                 </div>
+
 
                                 <div class="clearfix"></div>
                                 <div class="card-header grey-bg inner-header">
@@ -216,7 +238,71 @@
                                             </div>
                                         </div>
                                     </div>
+                                </div>
 
+                                <div class="card-header grey-bg inner-header">
+                                    <h5>Attachments</h5>
+                                    <div class="card-header-right">
+                                        <div class="btn-group btn-group-sm" role="group" aria-label="Button group with nested dropdown">
+                                            <button type="button" id="" class="btn btn-sm  blue-bg white-font addFile"><i class="feather icon-plus"></i>Add More</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-body card-body-inner">
+                                    <div class="col-md-12 clone-block" id="clone-block">
+                                        <div class="clone">
+                                            <div class="row">
+                                                <label class="col-md-2 control-label" for="job_requisition_form_attachFile">File Label</label>
+                                                <div class="col-md-4">
+                                                    <input type="text" name="labelName[]" id="labelName" class="form-control form-control-sm" placeholder="Enter file description" value="">
+                                                    <input type="hidden" name="metaId[]" id="metaId" value="">
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="input-group">
+                                                        <div class="custom-file">
+                                                            <input type="file" name="files[]" class="custom-file-input" style="z-index: 0;" id="file" aria-describedby="file">
+                                                            <label class="custom-file-label" for="file">Choose file</label>
+                                                        </div>
+                                                        <div class="input-group-append">
+                                                            <div class="btn btn-sm btn-transparent red-font row-remove hidden">
+                                                                <i class="fa fa-remove"></i>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        {% if attchments is defined and attchments is not empty %}
+
+                                            {% for attchment in attchments %}
+                                                <div class="row addedAttachmentItem">
+                                                    <label class="col-md-2 control-label" for="job_requisition_form_attachFile_{{ attchment.id }}">File Label</label>
+                                                    <div class="col-md-4">
+                                                        <p class="form-control">{{ attchment.name }}</p>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="input-group">
+                                                            <div class="custom-file">
+                                                                {% if attchment.fileName is defined and attchment.filePath is not empty %}
+                                                                    <a href="{{ asset(attchment.filePath~attchment.fileName) }}" download>Download</a>
+                                                                {% endif %}
+
+                                                            </div>
+                                                            <div class="input-group-append">
+                                                                <button data-entity-id="{{ attchment.id }}" type="button" class="btn btn-sm btn-transparent red-font existing-row-remove">
+                                                                    <i class="fa fa-remove"></i>
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% endfor %}
+                                        {% endif %}
+
+                                    </div>
+                                    <div class="clearfix"></div>
                                 </div>
 
                                 <div class="form-actions">
@@ -250,8 +336,70 @@
 {% endblock %}
  {% block cssBlock %}
      <link rel="stylesheet" href="{{ asset('assets/module/css/app.css') }}">
+     <style type="text/css">
+         .hidden{
+             display: none!important;
+         }
+     </style>
  {% endblock  %}
 {% block javascripts %}
     {{ parent() }}
     <script type="application/javascript" src="{{ asset('assets/module/js/app.js') }}"></script>
+
+    <script type="text/javascript">
+        jQuery(document).ready(function () {
+
+            $('.expense_date').datepicker({
+                changeMonth: true,
+                changeYear: true,
+                dateFormat: "dd-mm-yy",
+                yearRange: "2020:" + new Date().getFullYear(),
+                showOn: "both",
+                showButtonPanel: true,
+                buttonImage: "/assets/images/icon-calendar-green.png",
+                buttonImageOnly: true,
+                maxDate: 0,
+                autoclose: true,
+                orientation: "bottom",
+            });
+
+            var count = 0;
+            var countId = 1;
+            var countIdx = 1;
+            $('.addFile').click(function(e){
+                var $el = $(this);
+                var $cloneBlock = $('#clone-block');
+                var $clone = $cloneBlock.find('.clone:eq(0)').clone();
+                $clone.find('.custom-file-input').attr('id', "file-"+(countId++));
+                $clone.find('.custom-file-label').attr('for', "file-"+(countIdx++));
+                $clone.find(':text,textarea,file' ).val("");
+                $clone.find('.custom-file-label' ).html("Choose file");
+                $clone.attr('id', "added"+(++count));
+                $clone.find('.row-remove').removeClass('hidden');
+                $cloneBlock.append($clone);
+            });
+
+            $('#clone-block').on('click', '.row-remove', function(){
+                $(this).closest('.clone').remove();
+            });
+
+            $(document).on('click', '.existing-row-remove', function () {
+                var element=$(this);
+                var entityId=$(element).attr('data-entity-id');
+                if(entityId==''){
+                    return false;
+                }
+
+                $.get(Routing.generate('crm_expense_attachment_delete',{'id':entityId}),{'status':status})
+                    .done(function(response){
+                        console.log(response)
+                        if(response.status==200){
+                            $(element).closest('.addedAttachmentItem').remove();
+                        }
+
+                    });
+            })
+
+        });
+    </script>
 {% endblock  %}

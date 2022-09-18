@@ -45,6 +45,15 @@ class Expense
     private $employee;
 
     /**
+     * @var ExpenseBatch
+     * @ORM\ManyToOne(targetEntity="Terminalbd\CrmBundle\Entity\ExpenseBatch", inversedBy="expenses")
+     * @ORM\JoinColumn(name="expense_batch_id", referencedColumnName="id", nullable=true)
+     * @ORM\JoinColumn(onDelete="SET NULL")
+     */
+
+    private $expenseBatch;
+
+    /**
      * @var string
      * @ORM\ManyToOne(targetEntity="App\Entity\Admin\Location" , inversedBy="expense")
      */
@@ -92,6 +101,28 @@ class Expense
      * @ORM\JoinTable(name="crm_expence_vehicle")
      */
     private $vehicle;
+
+    /**
+     * @return ExpenseBatch
+     */
+    public function getExpenseBatch()
+    {
+        return $this->expenseBatch;
+    }
+
+    /**
+     * @param ExpenseBatch $expenseBatch
+     */
+    public function setExpenseBatch(ExpenseBatch $expenseBatch): void
+    {
+        $this->expenseBatch = $expenseBatch;
+    }
+
+    /**
+     * @var string
+     * @ORM\Column(name="visit_location", type="text", nullable=true)
+     */
+    private $visitLocation;
 
     /**
      * @var string
@@ -166,11 +197,19 @@ class Expense
     private $others;
 
     /**
-     * @var boolean
+     * @var float
      *
-     * @ORM\Column(type="boolean", nullable=true)
+     * @ORM\Column(name="riding", type="float", nullable=true)
      */
-    private $status = false;
+
+    private $riding;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(type="smallint", nullable=true)
+     */
+    private $status = 0;
 
     /**
      * @return int
@@ -461,17 +500,17 @@ class Expense
     }
 
     /**
-     * @return bool
+     * @return int
      */
-    public function isStatus(): bool
+    public function getStatus()
     {
         return $this->status;
     }
 
     /**
-     * @param bool $status
+     * @param int $status
      */
-    public function setStatus(bool $status): void
+    public function setStatus(int $status): void
     {
         $this->status = $status;
     }
@@ -523,5 +562,38 @@ class Expense
     {
         $this->createdAt = $createdAt;
     }
+
+    /**
+     * @return float
+     */
+    public function getRiding()
+    {
+        return $this->riding;
+    }
+
+    /**
+     * @param float $riding
+     */
+    public function setRiding(float $riding): void
+    {
+        $this->riding = $riding;
+    }
+
+    /**
+     * @return string
+     */
+    public function getVisitLocation()
+    {
+        return $this->visitLocation;
+    }
+
+    /**
+     * @param string $visitLocation
+     */
+    public function setVisitLocation(string $visitLocation): void
+    {
+        $this->visitLocation = $visitLocation;
+    }
+
 
 }

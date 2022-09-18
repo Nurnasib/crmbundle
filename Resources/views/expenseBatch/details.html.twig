@@ -8,7 +8,7 @@
                 <div class="row align-items-center">
                     <ul class="breadcrumb">
                         <li class="breadcrumb-item"><a href="/"><i class="feather icon-home"></i></a></li>
-                        <li class="breadcrumb-item"> <a href="{{ path('crm_expense') }}">  {{ 'Expense'|trans }}</a></li>
+                        <li class="breadcrumb-item"> <a href="{{ path('crm_expense_batch') }}">  {{ 'Expense Batch'|trans }}</a></li>
                         <li class="breadcrumb-item"> <a href="javascript:">{{ 'Details'|trans }}</a></li>
                     </ul>
                 </div>
@@ -19,11 +19,10 @@
         <div class="row">
             <div class="card">
                 <div class="card-header">
-                    <h5>{{ 'Monthly Expense'|trans }}</h5>
+                    <h5>{{ 'Expense Batch'|trans }}</h5>
                     <div class="card-header-right">
                         <div class="btn-group btn-group-sm" role="group" aria-label="Button group with nested dropdown">
-                            <a href="{{ path('crm_expense_new') }}" class="btn btn-sm  green-bg white-font"><i class="fas fa-plus"></i>{{ 'Add New'|trans }}</a>
-                            <a href="{{ path('crm_expense') }}" class="btn btn-sm gray-bg white-font"><i class="fa fa-th-list"></i>{{ 'Expense'|trans }}</a>
+                            <a href="{{ path('crm_expense_batch') }}" class="btn btn-sm gray-bg white-font"><i class="fa fa-th-list"></i>{{ 'Expense Batch'|trans }}</a>
                         </div>
                     </div>
                 </div>
@@ -33,14 +32,11 @@
             <div class="card">
                 <div class="portlet box ">
                     <div class="portlet-title">
-                        <div class="caption">{{ 'Monthly Expense'|trans }} </div>
+                        <div class="caption">{{'Monthly Expense Details'|trans}} </div>
                     </div>
 
                     <div class="portlet-body form expense_form_section" id="expense_form_section">
-                        {% if expenseBatch is null %}
-                        <form class="form-horizontal right" method="post" action="{{ path('crm_expense_process',{'employee':employee.id}) }}">
-                            <input type="hidden" name="monthYear" value="{{ yearMonth }}">
-                            {% endif %}
+
                         <table class="table">
                             <thead>
                             <tr>
@@ -57,16 +53,15 @@
                                 <th title="Photo Copy">Photo Copy (TK)</th>
                                 <th title="Courier">Courier (TK)</th>
                                 <th title="Food">Food (TK)</th>
-                                <th title="Maintenace">Maintenace (TK)</th>
+                                <th title="Maintenance">Maintenance (TK)</th>
                                 <th title="Toll Bill">Toll Bill (TK)</th>
                                 <th title="Service Charge">Service Charge (TK)</th>
                                 <th title="Others">Others (TK)</th>
                                 <th title="Total">Total (TK.)</th>
-                                <th scope="col text-center"><i class="feather icon-settings"></i></th>
                             </tr>
                             </thead>
-                            {% if entities is defined %}
-                            <tbody>
+                            {% if expenseBatch is defined and expenseBatch.expenses is not empty %}
+                                <tbody>
 
                                 {% set totalConveyance=0 %}
                                 {% set totalDailyAllowance=0 %}
@@ -80,7 +75,7 @@
                                 {% set totalServiceCharge=0 %}
                                 {% set totalOthers=0 %}
                                 {% set totalLineTotal=0 %}
-                                {% for entity in entities %}
+                                {% for entity in expenseBatch.expenses %}
                                     {% set totalConveyance=totalConveyance+entity.conveyance %}
                                     {% set totalDailyAllowance=totalDailyAllowance+entity.dailyAllowance %}
                                     {% set totalMobile=totalMobile+entity.mobile %}
@@ -130,123 +125,53 @@
                                     <td class="text-right">{{ entity.serviceCharge|number_format(2,'.',',') }}</td>
                                     <td class="text-right">{{ entity.others|number_format(2,'.',',') }}</td>
                                     <th class="text-right">{{ lineTotal|number_format(2,'.',',') }}</th>
-                                    <td>
-                                        {% if entity.status==1 %}
-                                            <input type="hidden" name="expense[{{ entity.id }}]" value="{{ entity.id }}">
-                                        <div class="btn-group">
-                                        <a style="margin-right: 2px" class="btn btn-primary btn-mini white-font" href="{{ path('crm_expense_edit',{'id':entity.id}) }}"><i class="fa fa-edit"></i></a>
-                                        <a class="btn btn-danger btn-mini white-font remove" href="javascript:" data-action="{{ path('crm_expense_delete',{'id':entity.id}) }}"><i class="fa fa-remove"></i></a>
-                                        </div>
-                                        {% endif %}
-                                    </td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
                                 <tfoot>
-                                <tr class="text-right">
-                                    <th class="text-right" colspan="6">Total</th>
-                                    <th>{{ totalConveyance|number_format(2,'.',',') }}</th>
-                                    <th>{{ totalDailyAllowance|number_format(2,'.',',') }}</th>
-                                    <th>{{ totalMobile|number_format(2,'.',',') }}</th>
-                                    <th>{{ totalHotelRent|number_format(2,'.',',') }}</th>
-                                    <th>{{ totalPhotostate|number_format(2,'.',',') }}</th>
-                                    <th>{{ totalCourier|number_format(2,'.',',') }}</th>
-                                    <th>{{ totalFood|number_format(2,'.',',') }}</th>
-                                    <th>{{ totalMaintenace|number_format(2,'.',',') }}</th>
-                                    <th>{{ totalTollBill|number_format(2,'.',',') }}</th>
-                                    <th>{{ totalServiceCharge|number_format(2,'.',',') }}</th>
-                                    <th>{{ totalOthers|number_format(2,'.',',') }}</th>
-                                    <th>{{ totalLineTotal|number_format(2,'.',',') }}</th>
-                                    <th></th>
-
-                                </tr>
+                                    <tr class="text-right">
+                                        <th class="text-right" colspan="6">Total</th>
+                                        <th>{{ totalConveyance|number_format(2,'.',',') }}</th>
+                                        <th>{{ totalDailyAllowance|number_format(2,'.',',') }}</th>
+                                        <th>{{ totalMobile|number_format(2,'.',',') }}</th>
+                                        <th>{{ totalHotelRent|number_format(2,'.',',') }}</th>
+                                        <th>{{ totalPhotostate|number_format(2,'.',',') }}</th>
+                                        <th>{{ totalCourier|number_format(2,'.',',') }}</th>
+                                        <th>{{ totalFood|number_format(2,'.',',') }}</th>
+                                        <th>{{ totalMaintenace|number_format(2,'.',',') }}</th>
+                                        <th>{{ totalTollBill|number_format(2,'.',',') }}</th>
+                                        <th>{{ totalServiceCharge|number_format(2,'.',',') }}</th>
+                                        <th>{{ totalOthers|number_format(2,'.',',') }}</th>
+                                        <th>{{ totalLineTotal|number_format(2,'.',',') }}</th>
+                                    </tr>
                                 <tr>
                                     <th colspan="17" class="text-right">Maintenance</th>
                                     <th class="text-right">{{ expenseBatch.maintenace|number_format(2,'.',',') }}</th>
-                                    <td></td>
                                 </tr>
                                 <tr>
                                     <th colspan="17" class="text-right">Others</th>
                                     <th class="text-right">{{ expenseBatch.others|number_format(2,'.',',') }}</th>
-                                    <td></td>
                                 </tr>
                                 <tr>
                                     <th colspan="17" class="text-right">Grand Total</th>
                                     <th class="text-right">{{ (totalLineTotal+expenseBatch.maintenace+expenseBatch.others)|number_format(2,'.',',') }}</th>
-                                    <td></td>
                                 </tr>
-
                                 </tfoot>
                             {% endif %}
 
                         </table>
-                            {% if expenseBatch is null %}
-
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label class="col-md-6 control-label" for="monthlyMaintenance">Monthly Maintenance</label>
-                                        <div class="col-md-6">
-                                            <input type="number" id="monthlyMaintenance" class="form-control" min="0" name="monthlyMaintenace">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label class="col-md-6 control-label" for="monthlyOthers">Monthly Others</label>
-                                        <div class="col-md-6">
-                                            <input type="number" id="monthlyOthers" class="form-control" min="0" name="monthlyOthers">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <label class="col-md-3 control-label" for="monthlyOhers">Riding</label>
-                                        <div class="col-md-3">
-                                            <span style="text-align: left"> {{ 'From'|trans }}</span>
-                                            <p class="form-control">
-                                                {% set startRiding=0 %}
-                                                {% set endRiding=0 %}
-                                                {% if entities is defined and entities|length>0 %}
-                                                    {% set startRiding=entities[0].riding %}
-                                                    {{ entities[0].riding }}
-                                                {% endif %}
-                                            </p>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <span style="text-align: left;"> {{ 'To'|trans }}</span>
-                                            <p class="form-control">
-                                                {% if entities is defined and entities|length>1 %}
-                                                    {% set endRiding=entities[entities|length-1].riding %}
-                                                    {{entities[entities|length-1].riding}}
-                                                {% endif%}
-                                            </p>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <span style="text-align: left;"> {{ 'Total'|trans }}</span>
-                                            <p class="form-control">
-                                                {{ endRiding-startRiding }}
-                                                <input type="hidden" name="totalRiding" value="{{ endRiding-startRiding }}">
-                                            </p>
-                                        </div>
-
-                                    </div>
-                                </div>
-
-                            </div>
-
-                            <div class="" style="padding-bottom: 20px">
-
+                        {% if expenseBatch.status<2 %}
+                            <div style="padding-bottom: 20px">
                                 <div class="col-md-12 text-right">
                                     <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
-
-                                        <button type="submit" value="process" class="btn btn-sm btn-primary">Process</button>
+                                        <a class="btn btn-sm btn-primary" href="{{ path('crm_expense_batch_approved',{'id':expenseBatch.id}) }}">Approved</a>
                                     </div>
                                 </div>
                                 <div class="clearfix"></div>
                             </div>
-                        </form>
                         {% endif %}
+
+
                     </div>
                 </div>
 

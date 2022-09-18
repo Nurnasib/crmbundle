@@ -38,19 +38,7 @@
                             <th scope="col">S/N</th>
                             <th scope="col">Employee Name</th>
                             <th scope="col">Expense Month</th>
-{#                            <th scope="col">Purpose</th>#}
-                            <th scope="col">Conveyance</th>
-                            <th scope="col">Daily Allowance</th>
-                            <th scope="col">Mobile</th>
-                            <th scope="col">Hotel Rent</th>
-                            <th scope="col">Photo Copy</th>
-                            <th scope="col">Courier</th>
-                            <th scope="col">Food</th>
-                            <th scope="col">Maintenace</th>
-                            <th scope="col">Toll Bill</th>
-                            <th scope="col">Service Charge</th>
-                            <th scope="col">Others</th>
-
+                            <th scope="col">Status</th>
                             <th scope="col text-center"><i class="feather icon-settings"></i></th>
                         </tr>
                         </thead>
@@ -58,21 +46,11 @@
                         {% for entity in entities %}
                         <tr>
                             <td>{{ loop.index }}</td>
-                            <td>{{ entity.employeeName }}</td>
-                            <td>{{ entity.expenseMonthYear|date('M Y')}}</td>
-                            <td>{{ entity.totalConveyance }}</td>
-                            <td>{{ entity.totalDailyAllowance }}</td>
-                            <td>{{ entity.totalMobile }}</td>
-                            <td>{{ entity.totalHotelRent }}</td>
-                            <td>{{ entity.totalPhotostate }}</td>
-                            <td>{{ entity.totalCourier }}</td>
-                            <td>{{ entity.totalFood }}</td>
-                            <td>{{ entity.totalMaintenace }}</td>
-                            <td>{{ entity.totalTollBill }}</td>
-                            <td>{{ entity.totalServiceCharge }}</td>
-                            <td>{{ entity.totalOthers }}</td>
+                            <td>{{ entity.employee.userId }} {{ entity.employee.name }}</td>
+                            <td>{{ entity.expenseMonth|date('M Y')}}</td>
+                            <td>{{ entity.status==2?'Approved':'Created' }}</td>
                             <td>
-                                <a title="Details" class="btn btn-mini blue-bg white-font" href="{{ path('crm_expense_details',{'employee':entity.employeeAutoId, 'monthYear':entity.expenseMonthYear}) }}"><i class="feather icon-eye"></i> Details</a>
+                                <a title="Details" class="btn btn-mini blue-bg white-font" href="{{ path('crm_expense_batch_details',{'id':entity.id}) }}"><i class="feather icon-eye"></i> Details</a>
                             </td>
 
                         </tr>

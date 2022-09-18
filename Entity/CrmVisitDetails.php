@@ -34,7 +34,7 @@ class CrmVisitDetails
 
     /**
      * @var string
-     * @ORM\Column(name="comments" , type="string",nullable=true)
+     * @ORM\Column(name="comments" , type="text", nullable=true)
      */
     private $comments;
 
