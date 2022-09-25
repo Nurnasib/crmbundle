@@ -162,17 +162,19 @@
                                 </tr>
                                 <tr>
                                     <th colspan="17" class="text-right">Maintenance</th>
-                                    <th class="text-right">{{ expenseBatch.maintenace|number_format(2,'.',',') }}</th>
+                                    {% set maintenanceCost = expenseBatch?expenseBatch.maintenace:0 %}
+                                    <th class="text-right">{{ maintenanceCost|number_format(2,'.',',') }}</th>
                                     <td></td>
                                 </tr>
                                 <tr>
                                     <th colspan="17" class="text-right">Others</th>
-                                    <th class="text-right">{{ expenseBatch.others|number_format(2,'.',',') }}</th>
+                                    {% set otherCost= expenseBatch?expenseBatch.others:0 %}
+                                    <th class="text-right">{{ otherCost|number_format(2,'.',',') }}</th>
                                     <td></td>
                                 </tr>
                                 <tr>
                                     <th colspan="17" class="text-right">Grand Total</th>
-                                    <th class="text-right">{{ (totalLineTotal+expenseBatch.maintenace+expenseBatch.others)|number_format(2,'.',',') }}</th>
+                                    <th class="text-right">{{ (totalLineTotal + maintenanceCost + maintenanceCost)|number_format(2,'.',',') }}</th>
                                     <td></td>
                                 </tr>
 
