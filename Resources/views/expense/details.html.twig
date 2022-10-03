@@ -139,7 +139,7 @@
                             </tbody>
                                 <tfoot>
                                 <tr class="text-right">
-                                    <th class="text-right" colspan="7">Total</th>
+                                    <th class="text-right" colspan="8">Total</th>
                                     {% if expenseParticularAttributes is defined and expenseParticularAttributes is iterable %}
                                         {% for expenseParticularAttribute in expenseParticularAttributes %}
                                             <td class="text-right">{{ expensePaticularAmount['grandTolalPerColumn'][expenseParticularAttribute.id]|arraySumColWise('amount')|number_format(2,'.',',') }}</td>
@@ -153,7 +153,7 @@
                                 {% if monthlyExpenseParticularAttributes is defined and monthlyExpenseParticularAttributes is not empty %}
                                     {% for monthlyExpenseParticularAttribute in monthlyExpenseParticularAttributes %}
                                         <tr>
-                                            <th colspan="{{ expenseParticularAttributes|length + 7 }}" class="text-right">{{ monthlyExpenseParticularAttribute.name }}</th>
+                                            <th colspan="{{ expenseParticularAttributes|length + 8 }}" class="text-right">{{ monthlyExpenseParticularAttribute.name }}</th>
                                             <td class="text-right">{{ monthlyExpensePaticularAmount['inLine'] is defined and  monthlyExpensePaticularAmount['inLine'][employee.id][monthlyExpenseParticularAttribute.id] is defined? monthlyExpensePaticularAmount['inLine'][employee.id][monthlyExpenseParticularAttribute.id]['amount']|number_format(2,'.',','):'0.00' }}</td>
                                             <td></td>
                                         </tr>
@@ -165,14 +165,14 @@
                                 {% if expenseBatch %}
                                     {% set milesAmount=milesAmount+expenseBatch.totalMilesAmount %}
                                 <tr>
-                                    <th colspan="18" class="text-right">Bike Miles Amount ({{ expenseBatch.totalRiding }} KM per KM {{ expenseBatch.perMilesAmount }} Tk.) </th>
+                                    <th colspan="19" class="text-right">Bike Miles Amount ({{ expenseBatch.totalRiding }} KM per KM {{ expenseBatch.perMilesAmount }} Tk.) </th>
                                     <th class="text-right">{{ expenseBatch.totalMilesAmount|number_format(2,'.',',') }}</th>
                                 </tr>
                                 {% endif %}
 
                                 {% set monthlyExpensePaticularTotalAmount= monthlyExpensePaticularAmount['grandTolalPerColumn'] is defined and  monthlyExpensePaticularAmount['grandTolalPerColumn'] is not empty? monthlyExpensePaticularAmount['grandTolalPerColumn']|arraySumColWise('amount')|number_format(2,'.',','):'0.00'  %}
                                 <tr>
-                                    <th colspan="18" class="text-right">Grand Total</th>
+                                    <th colspan="19" class="text-right">Grand Total</th>
                                     <th class="text-right">{{ (totalLineTotal+monthlyExpensePaticularTotalAmount+milesAmount)|number_format(2,'.',',') }}</th>
                                     <td></td>
                                 </tr>

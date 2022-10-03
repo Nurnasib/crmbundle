@@ -127,7 +127,7 @@
                             </tbody>
                                 <tfoot>
                                     <tr class="text-right">
-                                        <th class="text-right" colspan="7">Total</th>
+                                        <th class="text-right" colspan="8">Total</th>
                                         {% if dailyExpenseParticularAttributes is defined and dailyExpenseParticularAttributes is iterable %}
                                             {% for dailyExpenseParticularAttribute in dailyExpenseParticularAttributes %}
                                                 <td class="text-right">{{ expensePaticularAmount['grandTolalPerColumn'] is defined?expensePaticularAmount['grandTolalPerColumn'][dailyExpenseParticularAttribute.id]|arraySumColWise('amount')|number_format(2,'.',','):'0.00' }}</td>
@@ -141,7 +141,7 @@
                                         {% for expenseParticular in expenseBatch.expenseParticulars %}
                                             {% set monthlyAttrAmount=monthlyAttrAmount+ expenseParticular.amount%}
                                             <tr>
-                                                <th colspan="18" class="text-right">{{ expenseParticular.particular.name|default('') }}</th>
+                                                <th colspan="19" class="text-right">{{ expenseParticular.particular.name|default('') }}</th>
                                                 <th class="text-right">{{ expenseParticular.amount|number_format(2,'.',',') }}</th>
                                             </tr>
                                         {% endfor %}
@@ -149,12 +149,12 @@
                                     {% endif %}
 
                                     <tr>
-                                        <th colspan="18" class="text-right">Bike Miles Amount ({{ expenseBatch.totalRiding }} KM per KM {{ expenseBatch.perMilesAmount }} Tk.) </th>
+                                        <th colspan="19" class="text-right">Bike Miles Amount ({{ expenseBatch.totalRiding }} KM per KM {{ expenseBatch.perMilesAmount }} Tk.) </th>
                                         <th class="text-right">{{ expenseBatch.totalMilesAmount|number_format(2,'.',',') }}</th>
                                     </tr>
 
                                 <tr>
-                                    <th colspan="18" class="text-right">Grand Total</th>
+                                    <th colspan="19" class="text-right">Grand Total</th>
                                     <th class="text-right">{{ (totalLineTotal+monthlyAttrAmount+expenseBatch.totalMilesAmount)|number_format(2,'.',',') }}</th>
                                 </tr>
                                 </tfoot>
