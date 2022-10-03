@@ -44,8 +44,8 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            {{ form_label(form.schedule_visit, 'Schedule Visit'|trans, {'label_attr': {'class': 'col-md-2'}}) }}
-                                            <div class="col-md-10">
+                                            {{ form_label(form.schedule_visit, 'Schedule Visit'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
+                                            <div class="col-md-8">
                                                 <span class="not-blank"> *</span>
 
                                                 {{ form_widget(form.schedule_visit) }}
@@ -55,8 +55,8 @@
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            {{ form_label(form.expenseDate, 'Date'|trans, {'label_attr': {'class': 'col-md-2'}}) }}
-                                            <div class="col-md-10">
+                                            {{ form_label(form.expenseDate, 'Date'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
+                                            <div class="col-md-8">
                                                 <span class="not-blank"> *</span>
                                                 <div class="date_section">
                                                     {{ form_widget(form.expenseDate) }}
@@ -70,17 +70,18 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            {{ form_label(form.visitLocation, 'Location'|trans, {'label_attr': {'class': 'col-md-2'}}) }}
-                                            <div class="col-md-10">
+                                            {{ form_label(form.visitLocation, 'Location'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
+                                            <div class="col-md-8">
                                                 {{ form_widget(form.visitLocation) }}
                                                 {{ form_errors(form.visitLocation) }}
+                                                <span>Enter your locations (,) separate</span>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            {{ form_label(form.riding, 'Bike Riding'|trans, {'label_attr': {'class': 'col-md-2'}}) }}
-                                            <div class="col-md-10">
+                                            {{ form_label(form.riding, 'Bike Meter Reading'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
+                                            <div class="col-md-8">
                                                 {{ form_widget(form.riding) }}
                                                 {{ form_errors(form.riding) }}
                                             </div>
@@ -88,10 +89,23 @@
                                     </div>
                                 </div>
                                 <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            {{ form_label(form.workingArea, 'Area'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
+                                            <div class="col-md-8">
+                                                <span class="not-blank"> *</span>
+
+                                                {{ form_widget(form.workingArea) }}
+                                                {{ form_errors(form.workingArea) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
                                     <div class="col-md-12">
                                         <div class="form-group">
-                                            {{ form_label(form.purpose, 'Purpose'|trans, {'label_attr': {'class': 'col-md-1'}}) }}
-                                            <div class="col-md-11">
+                                            {{ form_label(form.purpose, 'Purpose'|trans, {'label_attr': {'class': 'col-md-2'}}) }}
+                                            <div class="col-md-10">
                                                 <span class="not-blank"> *</span>
 
                                                 {{ form_widget(form.purpose) }}
@@ -104,8 +118,8 @@
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="form-group">
-                                            {{ form_label(form.vehicle, 'Vehicle: '|trans, {'label_attr': {'class': 'col-md-1','style': 'margin-top: -10px; text-align:left'}}) }}
-                                            <div class="col-md-11">
+                                            {{ form_label(form.vehicle, 'Vehicle: '|trans, {'label_attr': {'class': 'col-md-2','style': 'margin-top: -10px;'}}) }}
+                                            <div class="col-md-10">
                                                 {{ form_widget(form.vehicle) }}
                                                 {{ form_errors(form.vehicle) }}
                                             </div>
@@ -122,187 +136,60 @@
                                 </div>
                                 <div class="card-body card-body-inner">
                                     <div class="row">
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                {{ form_label(form.conveyance, 'Conveyance '|trans, {'label_attr': {'class': 'col-md-4'}}) }}
-                                                <div class="col-md-8">
-                                                    {#<span class="not-blank"> *</span>#}
-                                                    {{ form_widget(form.conveyance) }}
-                                                    {{ form_errors(form.conveyance) }}
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                {{ form_label(form.daily_allowance, 'Daily Allowance '|trans, {'label_attr': {'class': 'col-md-4'}}) }}
-                                                <div class="col-md-8">
-                                                    {{ form_widget(form.daily_allowance) }}
-                                                    {{ form_errors(form.daily_allowance) }}
-                                                </div>
-                                            </div>
-                                        </div>
+                                        {% if dailyExpenseParticulars is defined and dailyExpenseParticulars is not empty %}
+                                            {% set arrayLength= dailyExpenseParticulars|length %}
+                                            {% set arrayLengthHalf= arrayLength/2 %}
+                                            {% set arraySplits = dailyExpenseParticulars|batch(arrayLengthHalf|number_format(0), '') %}
 
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                {{ form_label(form.hotel_rent, 'Hotel Rent '|trans, {'label_attr': {'class': 'col-md-4'}}) }}
-                                                <div class="col-md-8">
-                                                    {{ form_widget(form.hotel_rent) }}
-                                                    {{ form_errors(form.hotel_rent) }}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                            {% if arraySplits|length>0 %}
 
-                                    <div class="row">
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                {{ form_label(form.photostate, 'Photostate '|trans, {'label_attr': {'class': 'col-md-4'}}) }}
-                                                <div class="col-md-8">
-                                                    {{ form_widget(form.photostate) }}
-                                                    {{ form_errors(form.photostate) }}
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                {{ form_label(form.courier, 'Courier '|trans, {'label_attr': {'class': 'col-md-4'}}) }}
-                                                <div class="col-md-8">
-                                                    {#<span class="not-blank"> *</span>#}
-
-                                                    {{ form_widget(form.courier) }}
-                                                    {{ form_errors(form.courier) }}
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                {{ form_label(form.food, 'Food '|trans, {'label_attr': {'class': 'col-md-4'}}) }}
-                                                <div class="col-md-8">
-                                                    {{ form_widget(form.food) }}
-                                                    {{ form_errors(form.food) }}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                {{ form_label(form.mobile, 'Mobile '|trans, {'label_attr': {'class': 'col-md-4'}}) }}
-                                                <div class="col-md-8">
-                                                    {{ form_widget(form.mobile) }}
-                                                    {{ form_errors(form.mobile) }}
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                {{ form_label(form.maintenace, 'Maintenace '|trans, {'label_attr': {'class': 'col-md-4'}}) }}
-                                                <div class="col-md-8">
-                                                    {{ form_widget(form.maintenace) }}
-                                                    {{ form_errors(form.maintenace) }}
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                {{ form_label(form.toll_bill, 'Toll bill '|trans, {'label_attr': {'class': 'col-md-4'}}) }}
-                                                <div class="col-md-8">
-                                                    {{ form_widget(form.toll_bill) }}
-                                                    {{ form_errors(form.toll_bill) }}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-
-                                    <div class="row">
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                {{ form_label(form.service_charge, 'Service charge '|trans, {'label_attr': {'class': 'col-md-4'}}) }}
-                                                <div class="col-md-8">
-                                                    {{ form_widget(form.service_charge) }}
-                                                    {{ form_errors(form.service_charge) }}
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                                {{ form_label(form.others, 'Others '|trans, {'label_attr': {'class': 'col-md-4'}}) }}
-                                                <div class="col-md-8">
-                                                    {{ form_widget(form.others) }}
-                                                    {{ form_errors(form.others) }}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="card-header grey-bg inner-header">
-                                    <h5>Attachments</h5>
-                                    <div class="card-header-right">
-                                        <div class="btn-group btn-group-sm" role="group" aria-label="Button group with nested dropdown">
-                                            <button type="button" id="" class="btn btn-sm  blue-bg white-font addFile"><i class="feather icon-plus"></i>Add More</button>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="card-body card-body-inner">
-                                    <div class="col-md-12 clone-block" id="clone-block">
-                                        <div class="clone">
-                                            <div class="row">
-                                                <label class="col-md-2 control-label" for="job_requisition_form_attachFile">File Label</label>
-                                                <div class="col-md-4">
-                                                    <input type="text" name="labelName[]" id="labelName" class="form-control form-control-sm" placeholder="Enter file description" value="">
-                                                    <input type="hidden" name="metaId[]" id="metaId" value="">
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <div class="input-group">
-                                                        <div class="custom-file">
-                                                            <input type="file" name="files[]" class="custom-file-input" style="z-index: 0;" id="file" aria-describedby="file">
-                                                            <label class="custom-file-label" for="file">Choose file</label>
-                                                        </div>
-                                                        <div class="input-group-append">
-                                                            <div class="btn btn-sm btn-transparent red-font row-remove hidden">
-                                                                <i class="fa fa-remove"></i>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-12">
-                                        {% if attchments is defined and attchments is not empty %}
-
-                                            {% for attchment in attchments %}
-                                                <div class="row addedAttachmentItem">
-                                                    <label class="col-md-2 control-label" for="job_requisition_form_attachFile_{{ attchment.id }}">File Label</label>
-                                                    <div class="col-md-4">
-                                                        <p class="form-control">{{ attchment.name }}</p>
-                                                    </div>
+                                                {% for arraySplit in arraySplits %}
                                                     <div class="col-md-6">
-                                                        <div class="input-group">
-                                                            <div class="custom-file">
-                                                                {% if attchment.fileName is defined and attchment.filePath is not empty %}
-                                                                    <a href="{{ asset(attchment.filePath~attchment.fileName) }}" download>Download</a>
-                                                                {% endif %}
-
-                                                            </div>
-                                                            <div class="input-group-append">
-                                                                <button data-entity-id="{{ attchment.id }}" type="button" class="btn btn-sm btn-transparent red-font existing-row-remove">
-                                                                    <i class="fa fa-remove"></i>
-                                                                </button>
-                                                            </div>
-                                                        </div>
+                                                        <table class="table table-bordered">
+                                                            <thead>
+                                                            <tr>
+                                                                <th width="20%">Particular Name</th>
+                                                                <th width="20%">Amount (TK)</th>
+                                                                <th>Attachment (pdf/image)</th>
+                                                                <th></th>
+                                                            </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                {% for dailyExpenseParticular in arraySplit %}
+                                                                    {% if dailyExpenseParticular is iterable %}
+                                                                    <tr>
+                                                                        <td>
+                                                                            {{ dailyExpenseParticular.name }}
+                                                                            <input type="hidden" name="particular_id[{{ entity.id }}][{{ dailyExpenseParticular.id }}]" value="{{ dailyExpenseParticular.id }}">
+                                                                        </td>
+                                                                        <td>
+                                                                            <input class="form-control" type="number" min="0" step=".01" name="amount[{{ entity.id }}][{{ dailyExpenseParticular.id }}]" value="{{ expenseParticulars[dailyExpenseParticular.id]['amount']|default('') }}">
+                                                                        </td>
+                                                                        <td style="vertical-align: middle">
+                                                                            <div style="height: 30px" class="custom-file">
+                                                                                <input type="file" name="files[{{ entity.id }}][{{ dailyExpenseParticular.id }}]" class="custom-file-input" style="z-index: 0; height: 30px" id="file_{{ dailyExpenseParticular.id }}" aria-describedby="file">
+                                                                                <label style="margin-bottom: 0px; height: 30px" class="custom-file-label" for="file_{{ dailyExpenseParticular.id }}">Choose file</label>
+                                                                            </div>
+                                                                        </td>
+                                                                        <td>
+                                                                            {% if expenseParticulars[dailyExpenseParticular.id]['path'] is defined and expenseParticulars[dailyExpenseParticular.id]['path'] is not empty %}
+                                                                                <a href="{{ asset('uploads/expense/'~expenseParticulars[dailyExpenseParticular.id]['path']|default('')) }}" download>Download</a>
+                                                                            {% endif %}
+                                                                        </td>
+                                                                    </tr>
+                                                                    {% endif %}
+                                                                {% endfor %}
+                                                            </tbody>
+                                                        </table>
                                                     </div>
-                                                </div>
-                                            {% endfor %}
+                                                {% endfor %}
+
+                                            {% endif %}
+
                                         {% endif %}
 
                                     </div>
-                                    <div class="clearfix"></div>
+
                                 </div>
 
                                 <div class="form-actions">

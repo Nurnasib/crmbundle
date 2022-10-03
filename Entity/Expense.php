@@ -53,17 +53,18 @@ class Expense
 
     private $expenseBatch;
 
-    /**
-     * @var string
-     * @ORM\ManyToOne(targetEntity="App\Entity\Admin\Location" , inversedBy="expense")
-     */
-    private $visitingArea;
 
     /**
-     * @var CrmVisit
-     * @ORM\ManyToOne(targetEntity="Terminalbd\CrmBundle\Entity\CrmVisit" , inversedBy="expense")
+     * @var ExpenseParticular
+     * @ORM\OneToMany(targetEntity="Terminalbd\CrmBundle\Entity\ExpenseParticular", mappedBy="expense",  cascade={"persist", "remove"}, orphanRemoval=true)
      */
-    private $crmVisit;
+    private $expenseParticulars;
+
+    /**
+     * @var Setting
+     * @ORM\ManyToOne(targetEntity="Terminalbd\CrmBundle\Entity\Setting" , inversedBy="expense")
+     */
+    private $workingArea;
 
     /**
      * @ORM\Column(type="string", nullable=true)
@@ -123,78 +124,6 @@ class Expense
      * @ORM\Column(name="visit_location", type="text", nullable=true)
      */
     private $visitLocation;
-
-    /**
-     * @var string
-     * @ORM\Column(name="conveyance", nullable=true)
-     */
-    private $conveyance;
-
-    /**
-     * @var string
-     * @ORM\Column(name="daily_allowance", nullable=true)
-     */
-    private $dailyAllowance;
-
-    /**
-     * @var string
-     * @ORM\Column(name="hotel_rent", nullable=true)
-     */
-    private $hotelRent;
-
-    /**
-     * @var string
-     * @ORM\Column(name="photostate", nullable=true)
-     */
-    private $photostate;
-
-
-    /**
-     * @var string
-     * @ORM\Column(name="courier", nullable=true)
-     */
-    private $courier;
-
-
-    /**
-     * @var string
-     * @ORM\Column(name="food", nullable=true)
-     */
-    private $food;
-
-
-    /**
-     * @var string
-     * @ORM\Column(name="mobile", nullable=true)
-     */
-    private $mobile;
-
-
-
-    /**
-     * @var string
-     * @ORM\Column(name="maintenace", nullable=true)
-     */
-    private $maintenace;
-
-
-    /**
-     * @var string
-     * @ORM\Column(name="toll_bill", nullable=true)
-     */
-    private $tollBill;
-
-    /**
-     * @var string
-     * @ORM\Column(name="service_charge", nullable=true)
-     */
-    private $serviceCharge;
-
-    /**
-     * @var string
-     * @ORM\Column(name="others", nullable=true)
-     */
-    private $others;
 
     /**
      * @var float
@@ -273,182 +202,6 @@ class Expense
     public function setVehicle($vehicle)
     {
         $this->vehicle = $vehicle;
-    }
-
-    /**
-     * @return string
-     */
-    public function getConveyance()
-    {
-        return $this->conveyance;
-    }
-
-    /**
-     * @param string $conveyance
-     */
-    public function setConveyance($conveyance)
-    {
-        $this->conveyance = $conveyance;
-    }
-
-    /**
-     * @return string
-     */
-    public function getDailyAllowance()
-    {
-        return $this->dailyAllowance;
-    }
-
-    /**
-     * @param string $dailyAllowance
-     */
-    public function setDailyAllowance($dailyAllowance)
-    {
-        $this->dailyAllowance = $dailyAllowance;
-    }
-
-    /**
-     * @return string
-     */
-    public function getHotelRent()
-    {
-        return $this->hotelRent;
-    }
-
-    /**
-     * @param string $hotelRent
-     */
-    public function setHotelRent($hotelRent)
-    {
-        $this->hotelRent = $hotelRent;
-    }
-
-    /**
-     * @return string
-     */
-    public function getPhotostate()
-    {
-        return $this->photostate;
-    }
-
-    /**
-     * @param string $photostate
-     */
-    public function setPhotostate($photostate)
-    {
-        $this->photostate = $photostate;
-    }
-
-    /**
-     * @return string
-     */
-    public function getCourier()
-    {
-        return $this->courier;
-    }
-
-    /**
-     * @param string $courier
-     */
-    public function setCourier($courier)
-    {
-        $this->courier = $courier;
-    }
-
-    /**
-     * @return string
-     */
-    public function getFood()
-    {
-        return $this->food;
-    }
-
-    /**
-     * @param string $food
-     */
-    public function setFood($food)
-    {
-        $this->food = $food;
-    }
-
-    /**
-     * @return string
-     */
-    public function getMobile()
-    {
-        return $this->mobile;
-    }
-
-    /**
-     * @param string $mobile
-     */
-    public function setMobile($mobile)
-    {
-        $this->mobile = $mobile;
-    }
-
-    /**
-     * @return string
-     */
-    public function getMaintenace()
-    {
-        return $this->maintenace;
-    }
-
-    /**
-     * @param string $maintenace
-     */
-    public function setMaintenace($maintenace)
-    {
-        $this->maintenace = $maintenace;
-    }
-
-    /**
-     * @return string
-     */
-    public function getTollBill()
-    {
-        return $this->tollBill;
-    }
-
-    /**
-     * @param string $tollBill
-     */
-    public function setTollBill($tollBill)
-    {
-        $this->tollBill = $tollBill;
-    }
-
-    /**
-     * @return string
-     */
-    public function getServiceCharge()
-    {
-        return $this->serviceCharge;
-    }
-
-    /**
-     * @param string $serviceCharge
-     */
-    public function setServiceCharge($serviceCharge)
-    {
-        $this->serviceCharge = $serviceCharge;
-    }
-
-    /**
-     * @return string
-     */
-    public function getOthers()
-    {
-        return $this->others;
-    }
-
-    /**
-     * @param string $others
-     */
-    public function setOthers($others)
-    {
-        $this->others = $others;
     }
 
     /**
@@ -593,6 +346,38 @@ class Expense
     public function setVisitLocation(string $visitLocation): void
     {
         $this->visitLocation = $visitLocation;
+    }
+
+    /**
+     * @return Setting
+     */
+    public function getWorkingArea()
+    {
+        return $this->workingArea;
+    }
+
+    /**
+     * @param Setting $workingArea
+     */
+    public function setWorkingArea( $workingArea): void
+    {
+        $this->workingArea = $workingArea;
+    }
+
+    /**
+     * @return ExpenseParticular
+     */
+    public function getExpenseParticulars()
+    {
+        return $this->expenseParticulars;
+    }
+
+    /**
+     * @param ExpenseParticular $expenseParticulars
+     */
+    public function setExpenseParticulars($expenseParticulars): void
+    {
+        $this->expenseParticulars = $expenseParticulars;
     }
 
 

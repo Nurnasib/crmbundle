@@ -210,4 +210,55 @@ class SettingRepository extends EntityRepository
         return $data;
     }
 
+
+    public function getDailyExpenseParticular()
+    {
+        $qb = $this->createQueryBuilder('e');
+
+        $qb->select('e.id', 'e.name', 'e.slug');
+        $qb->where("e.settingType = 'DAILY_EXPENSE_PARTICULAR'");
+        $qb->andWhere('e.status = 1');
+
+        $results = $qb->getQuery()->getArrayResult();
+
+        $data = [];
+
+        if($results){
+            foreach ($results as $result) {
+                $data[] = [
+                    'id' => $result['id'],
+                    'name' => $result['name'],
+                    'slug' => $result['slug'],
+                ];
+            }
+        }
+
+        return $data;
+    }
+
+    public function getMonthlyExpenseParticular()
+    {
+        $qb = $this->createQueryBuilder('e');
+
+        $qb->select('e.id', 'e.name', 'e.slug');
+        $qb->where("e.settingType = 'MONTHLY_EXPENSE_PARTICULAR'");
+        $qb->andWhere('e.status = 1');
+
+        $results = $qb->getQuery()->getArrayResult();
+
+        $data = [];
+
+        if($results){
+            foreach ($results as $result) {
+                $data[] = [
+                    'id' => $result['id'],
+                    'name' => $result['name'],
+                    'slug' => $result['slug'],
+                ];
+            }
+        }
+
+        return $data;
+    }
+
 }

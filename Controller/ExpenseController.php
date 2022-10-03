@@ -23,10 +23,12 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Terminalbd\CrmBundle\Entity\CrmConfig;
 use Terminalbd\CrmBundle\Entity\CrmVisit;
 use Terminalbd\CrmBundle\Entity\DmsFile;
 use Terminalbd\CrmBundle\Entity\Expense;
 use Terminalbd\CrmBundle\Entity\ExpenseBatch;
+use Terminalbd\CrmBundle\Entity\ExpenseParticular;
 use Terminalbd\CrmBundle\Entity\Setting;
 use Terminalbd\CrmBundle\Form\ExpenseFormType;
 use Terminalbd\CrmBundle\Form\SettingFormType;
@@ -44,8 +46,12 @@ class ExpenseController extends AbstractController
     public function index(): Response
     {
         $entities = $this->getDoctrine()->getRepository(Expense::class)->getExpenses($this->getUser());
+        $dailyExpenseParticularAttributes = $this->getDoctrine()->getRepository(Setting::class)->getDailyExpenseParticular();
+        $expensePaticularTotalAmount = $this->getDoctrine()->getRepository(ExpenseParticular::class)->getTotalAmountExpenseParticular($this->getUser());
         return $this->render('@TerminalbdCrm/expense/index.html.twig',[
-            'entities' => $entities
+            'entities' => $entities,
+            'expensePaticularTotalAmount' => $expensePaticularTotalAmount,
+            'expenseParticularAttributes' => $dailyExpenseParticularAttributes,
         ]);
     }
 
@@ -90,6 +96,18 @@ class ExpenseController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $formData=$form->getData();
             $expenseDate=$formData->getExpenseDate()->format('Y-m-d');
+
+            $employee= $this->getUser();
+            $yearMonth = $formData->getExpenseDate()->format('Y-m');
+            $expenseMonth = date('Y-m-d',strtotime($yearMonth.'-01'));
+
+            $existingExpenseBatch= $this->getDoctrine()->getRepository(ExpenseBatch::class)->findOneBy(['employee'=>$employee, 'expenseMonth'=>new \DateTime($expenseMonth)]);
+
+            if($existingExpenseBatch){
+                $this->addFlash('error', $yearMonth.' month expense already process.');
+                return $this->redirectToRoute('crm_expense_details', ['employee'=>$employee->getId(),'monthYear'=>$yearMonth]);
+            }
+
             $existingExpenseCheck=$this->getDoctrine()->getRepository(Expense::class)->getExpenseByEmployeeAndDate($entity, $this->getUser(),$expenseDate);
             if($existingExpenseCheck && sizeof($existingExpenseCheck)>0) {
 
@@ -106,19 +124,61 @@ class ExpenseController extends AbstractController
 
             $em->persist($entity);
 
-            if($_FILES['files']['size'][0] != 0 && $_FILES['files']['error'][0] == 0){
-                $files = empty($_FILES['files']) ? '' : $_FILES['files'];
-                $this->getDoctrine()->getRepository(DmsFile::class)->insertAttachmentFile($entity, $data, $files, 'CRM','Expense');
+            if(isset($data['particular_id']) && sizeof($data['particular_id'])>0){
+                foreach ($data['particular_id'] as $expenseId=>$particulars) {
+                    foreach ($particulars as $particularId=>$particular) {
+                        $particularObj=$this->getDoctrine()->getRepository(Setting::class)->find($particularId);
+                        $requestAmount = $data['amount'][$expenseId][$particularId];
+                        $amount = $requestAmount && $requestAmount!=''?$requestAmount:null;
+
+                        $existingExpenseParticular=$this->getDoctrine()->getRepository(ExpenseParticular::class)->findOneBy(['expense'=>$entity, 'particular'=>$particularObj]);
+
+                        if($existingExpenseParticular){
+                            $expenseParticular=$existingExpenseParticular;
+                        }else{
+                            $expenseParticular= new ExpenseParticular();
+                        }
+
+                        $expenseParticular->setAmount($amount);
+                        $expenseParticular->setExpense($entity);
+                        $expenseParticular->setParticular($particularObj?$particularObj:null);
+
+                        if($_FILES['files']['size'][$expenseId][$particularId] != 0 && $_FILES['files']['error'][$expenseId][$particularId] == 0){
+
+                            $files = empty($_FILES['files']) ? '' : $_FILES['files'];
+
+                            $fileName = $entity->getId() . '-' .$particularId . '-' . time() . "-" . $files['name'][$expenseId][$particularId];
+
+                            $file_tmp = $files['tmp_name'][$expenseId][$particularId];
+                            if (is_dir('uploads/expense/') == false) {
+                                mkdir('uploads/expense/', 0777);        // Create directory if it does not exist
+                            }
+                            if (is_dir('uploads/expense/' . $fileName) == false) {
+                                move_uploaded_file($file_tmp, 'uploads/expense/' . $fileName);
+
+                                $expenseParticular->setPath($fileName);
+                            }
+                        }
+
+                        $em->persist($expenseParticular);
+                    }
+
+                }
             }
 
             $em->flush();
             $this->addFlash('success', 'Expense has been updated successfully');
             return $this->redirectToRoute('crm_expense_edit', ['id'=>$entity->getId()]);
         }
+        $dailyExpenseParticulars = $this->getDoctrine()->getRepository(Setting::class)->getDailyExpenseParticular();
+
+        $expenseParticularByExpense = $this->getDoctrine()->getRepository(ExpenseParticular::class)->getExpenseParticularsByExpense($entity);
         $attchments = $this->getDoctrine()->getRepository(DmsFile::class)->getDmsAttchmentFile($entity,'CRM','Expense');
         return $this->render('@TerminalbdCrm/expense/new.html.twig', [
             'entity' => $entity,
+            'dailyExpenseParticulars' => $dailyExpenseParticulars,
             'attchments' => $attchments,
+            'expenseParticulars' => $expenseParticularByExpense,
             'form' => $form->createView(),
         ]);
     }
@@ -140,12 +200,24 @@ class ExpenseController extends AbstractController
         $entities = $this->getDoctrine()->getRepository(Expense::class)->getExpensesByEmployeeAndYearMonth($employee , $yearMonth);
         $expenseMonth = date('Y-m-d',strtotime($yearMonth.'-01'));
         $expenseBatch= $this->getDoctrine()->getRepository(ExpenseBatch::class)->findOneBy(['employee'=>$employee, 'expenseMonth'=>new \DateTime($expenseMonth)]);
+        $dailyExpenseParticularAttributes = $this->getDoctrine()->getRepository(Setting::class)->getDailyExpenseParticular();
+        $monthlyExpenseParticularAttributes = $this->getDoctrine()->getRepository(Setting::class)->getMonthlyExpenseParticular();
 
+        $expensePaticularAmount = $this->getDoctrine()->getRepository(ExpenseParticular::class)->getDailyExpenseParticularAmount($this->getUser(),$yearMonth);
+
+        $monthlyExpensePaticularAmount = $this->getDoctrine()->getRepository(ExpenseParticular::class)->getMonthlyExpenseParticularAmount($this->getUser(),$yearMonth);
+        $crmConfig= $this->getDoctrine()->getRepository(CrmConfig::class)->findOneBy(['slug'=>'bike-miles-per-km','status'=>1]);
+//dd($monthlyExpensePaticularAmount);
         return $this->render('@TerminalbdCrm/expense/details.html.twig', [
             'entities' => $entities,
             'employee' => $employee,
             'yearMonth' => $yearMonth,
             'expenseBatch' => $expenseBatch,
+            'expenseParticularAttributes' => $dailyExpenseParticularAttributes,
+            'monthlyExpenseParticularAttributes' => $monthlyExpenseParticularAttributes,
+            'expensePaticularAmount' => $expensePaticularAmount,
+            'monthlyExpensePaticularAmount' => $monthlyExpensePaticularAmount,
+            'crmConfig' => $crmConfig,
         ]);
     }
 
@@ -169,19 +241,67 @@ class ExpenseController extends AbstractController
             $this->addFlash('error', $yearMonth.' month expense already process.');
             return $this->redirectToRoute('crm_expense_details', ['employee'=>$employee->getId(),'monthYear'=>$yearMonth]);
         }
+        $crmConfig= $this->getDoctrine()->getRepository(CrmConfig::class)->findOneBy(['slug'=>'bike-miles-per-km','status'=>1]);
 
         $expenseBatch= new ExpenseBatch();
 
         $expenseBatch->setEmployee($employee);
         $expenseBatch->setStatus(1);
         $expenseBatch->setExpenseMonth(new \DateTime($expenseMonth));
-        $expenseBatch->setTotalRiding(isset($requestData['totalRiding'])&&$requestData['totalRiding']!=''&&$requestData['totalRiding']>0?$requestData['totalRiding']:'0');
-        $expenseBatch->setMaintenace(isset($requestData['monthlyMaintenace'])&&$requestData['monthlyMaintenace']!=''&&$requestData['monthlyMaintenace']>0?$requestData['monthlyMaintenace']:'0');
-        $expenseBatch->setOthers(isset($requestData['monthlyOthers'])&&$requestData['monthlyOthers']!=''&&$requestData['monthlyOthers']>0?$requestData['monthlyOthers']:'0');
+        $totalReading = isset($requestData['totalRiding'])&&$requestData['totalRiding']!=''&&$requestData['totalRiding']>0?$requestData['totalRiding']:'0';
+        $expenseBatch->setTotalRiding($totalReading);
+
+        $perMilesAmount = $crmConfig && $crmConfig->getValue() && $crmConfig->getValue()>0?$crmConfig->getValue():0;
+
+        $expenseBatch->setPerMilesAmount($perMilesAmount);
+
+        $expenseBatch->setTotalMilesAmount($totalReading*$perMilesAmount);
+
 
         $em = $this->getDoctrine()->getManager();
         $em->persist($expenseBatch);
         $em->flush();
+
+        if(isset($requestData['particular_id']) && sizeof($requestData['particular_id'])>0){
+            foreach ($requestData['particular_id'] as $particularId=>$particular) {
+                $particularObj=$this->getDoctrine()->getRepository(Setting::class)->find($particularId);
+                $requestAmount = $requestData['amount'][$particularId];
+                $amount = $requestAmount && $requestAmount!=''?$requestAmount:null;
+
+                $existingExpenseParticular=$this->getDoctrine()->getRepository(ExpenseParticular::class)->findOneBy(['expenseBatch'=>$expenseBatch, 'particular'=>$particularObj]);
+
+                if($existingExpenseParticular){
+                    $expenseParticular=$existingExpenseParticular;
+                }else{
+                    $expenseParticular= new ExpenseParticular();
+                }
+
+                $expenseParticular->setAmount($amount);
+                $expenseParticular->setExpenseBatch($expenseBatch);
+                $expenseParticular->setParticular($particularObj?$particularObj:null);
+
+                if($_FILES['files']['size'][$particularId] != 0 && $_FILES['files']['error'][$particularId] == 0){
+
+                    $files = empty($_FILES['files']) ? '' : $_FILES['files'];
+
+                    $fileName = $expenseBatch->getId() . '-' .$particularId . '-' . time() . "-" . $files['name'][$particularId];
+
+                    $file_tmp = $files['tmp_name'][$particularId];
+                    if (is_dir('uploads/expense/') == false) {
+                        mkdir('uploads/expense/', 0777);        // Create directory if it does not exist
+                    }
+                    if (is_dir('uploads/expense/' . $fileName) == false) {
+                        move_uploaded_file($file_tmp, 'uploads/expense/' . $fileName);
+
+                        $expenseParticular->setPath($fileName);
+                    }
+                }
+
+                $em->persist($expenseParticular);
+
+            }
+        }
+
 
         if ($requestData && isset($requestData['expense']) && sizeof($requestData['expense'])>0){
             foreach ($requestData['expense'] as $expenseId=>$expense) {

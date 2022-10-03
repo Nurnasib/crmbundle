@@ -27,6 +27,7 @@ use Terminalbd\CrmBundle\Entity\CrmVisit;
 use Terminalbd\CrmBundle\Entity\DmsFile;
 use Terminalbd\CrmBundle\Entity\Expense;
 use Terminalbd\CrmBundle\Entity\ExpenseBatch;
+use Terminalbd\CrmBundle\Entity\ExpenseParticular;
 use Terminalbd\CrmBundle\Entity\Setting;
 use Terminalbd\CrmBundle\Form\ExpenseFormType;
 use Terminalbd\CrmBundle\Form\SettingFormType;
@@ -59,9 +60,17 @@ class ExpenseBatchController extends AbstractController
      */
     public function details(Request $request, ExpenseBatch $entity): Response
     {
+        $dailyExpenseParticularAttributes = $this->getDoctrine()->getRepository(Setting::class)->getDailyExpenseParticular();
+        $monthlyExpenseParticularAttributes = $this->getDoctrine()->getRepository(Setting::class)->getMonthlyExpenseParticular();
+//dd($entity->getId());
+        $expensePaticularAmount = $this->getDoctrine()->getRepository(ExpenseParticular::class)->getDailyExpenseParticularAmount($entity->getEmployee(),null, $entity);
+//dd($expensePaticularAmount);
 
         return $this->render('@TerminalbdCrm/expenseBatch/details.html.twig', [
             'expenseBatch' => $entity,
+            'dailyExpenseParticularAttributes' => $dailyExpenseParticularAttributes,
+            'monthlyExpenseParticularAttributes' => $monthlyExpenseParticularAttributes,
+            'expensePaticularAmount' => $expensePaticularAmount,
         ]);
     }
 

@@ -95,6 +95,8 @@ class SettingFormType extends AbstractType
                     'Working Mode'=>'WORKING_MODE',
                     'Challenge Name'=>'CHALLENGE_NAME',
                     'Area'=>'AREA',
+                    'Daily Expense Particular'=>'DAILY_EXPENSE_PARTICULAR',
+                    'Monthly Expense Particular'=>'MONTHLY_EXPENSE_PARTICULAR',
 
                 ],
                 'attr' => [

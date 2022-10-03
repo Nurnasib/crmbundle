@@ -3,7 +3,7 @@
 
     <div class="pcoded-inner-content">
         <!-- [ breadcrumb ] start -->
-        <div class="page-header">
+        <div class="page-header hidden-print">
             <div class="page-block">
                 <div class="row align-items-center">
                     <ul class="breadcrumb">
@@ -16,10 +16,10 @@
         </div>
         <!-- [ breadcrumb ] end -->
         <!-- [ Main Content ] start -->
-        <div class="row">
+        <div class="row hidden-print">
             <div class="card">
                 <div class="card-header">
-                    <h5>{{ 'Expense Batch'|trans }}</h5>
+                    <h5>{{ 'Monthly Expense'|trans }}</h5>
                     <div class="card-header-right">
                         <div class="btn-group btn-group-sm" role="group" aria-label="Button group with nested dropdown">
                             <a href="{{ path('crm_expense_batch') }}" class="btn btn-sm gray-bg white-font"><i class="fa fa-th-list"></i>{{ 'Expense Batch'|trans }}</a>
@@ -33,61 +33,61 @@
                 <div class="portlet box ">
                     <div class="portlet-title">
                         <div class="caption">{{'Monthly Expense Details'|trans}} </div>
+                        {% if expenseBatch.status>1 %}
+                            <div style="float: right; padding-right: 15px" class="caption hidden-print">
+                                <div class="pull-right">
+                                    <button class="btn btn-info btn-sm" id="windowPrint"><i class="fa fa-print"></i> </button>
+                                </div>
+                            </div>
+                        {% endif %}
                     </div>
 
                     <div class="portlet-body form expense_form_section" id="expense_form_section">
 
-                        <table class="table">
+                        <div style="text-align: center">
+                            <h4>Nourish Poultry & Hatchery Ltd.</h4>
+                            <h6>Uttara, Dhaka</h6>
+                            <h6>Monthly TA DA Bill</h6>
+                            <h6>Month: {{ expenseBatch.expenseMonth|date('F Y') }}</h6>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6>Name: {{ expenseBatch.employee.name|default('')}}</h6>
+                                <h6>Designation: {{ expenseBatch.employee.designation.name|default('')}}</h6>
+
+                            </div>
+                            <div class="col-md-6 text-center">
+                                <h6>Employee Id: {{ expenseBatch.employee.userId|default('') }}</h6>
+                            </div>
+                        </div>
+
+                        <table class="table table-bordered">
                             <thead>
                             <tr>
                                 <th>SL</th>
                                 <th>Date</th>
                                 <th>Schedule</th>
+                                <th>Visiting Location</th>
+                                <th>Area</th>
                                 <th>Purpose</th>
                                 <th>Vehicle</th>
                                 <th title="Riding">Riding (KM)</th>
-                                <th title="Conveyance">Conv. (TK)</th>
-                                <th title="Daily Allowance">Daily Allow. (TK)</th>
-                                <th title=Mobile">Mobile (TK)</th>
-                                <th title="Hotel Rent">Hotel Rent (TK)</th>
-                                <th title="Photo Copy">Photo Copy (TK)</th>
-                                <th title="Courier">Courier (TK)</th>
-                                <th title="Food">Food (TK)</th>
-                                <th title="Maintenance">Maintenance (TK)</th>
-                                <th title="Toll Bill">Toll Bill (TK)</th>
-                                <th title="Service Charge">Service Charge (TK)</th>
-                                <th title="Others">Others (TK)</th>
+                                {% if dailyExpenseParticularAttributes is defined and dailyExpenseParticularAttributes is iterable %}
+                                    {% for dailyExpenseParticularAttribute in dailyExpenseParticularAttributes %}
+                                        <th scope="col">{{ dailyExpenseParticularAttribute.name }}</th>
+                                    {% endfor %}
+                                {% endif %}
                                 <th title="Total">Total (TK.)</th>
                             </tr>
                             </thead>
                             {% if expenseBatch is defined and expenseBatch.expenses is not empty %}
                                 <tbody>
 
-                                {% set totalConveyance=0 %}
-                                {% set totalDailyAllowance=0 %}
-                                {% set totalMobile=0 %}
-                                {% set totalHotelRent=0 %}
-                                {% set totalPhotostate=0 %}
-                                {% set totalCourier=0 %}
-                                {% set totalFood=0 %}
-                                {% set totalMaintenace=0 %}
-                                {% set totalTollBill=0 %}
-                                {% set totalServiceCharge=0 %}
-                                {% set totalOthers=0 %}
                                 {% set totalLineTotal=0 %}
                                 {% for entity in expenseBatch.expenses %}
-                                    {% set totalConveyance=totalConveyance+entity.conveyance %}
-                                    {% set totalDailyAllowance=totalDailyAllowance+entity.dailyAllowance %}
-                                    {% set totalMobile=totalMobile+entity.mobile %}
-                                    {% set totalHotelRent=totalHotelRent+entity.hotelRent %}
-                                    {% set totalPhotostate=totalPhotostate+entity.photostate %}
-                                    {% set totalCourier=totalCourier+entity.courier %}
-                                    {% set totalFood=totalFood+entity.food %}
-                                    {% set totalMaintenace=totalMaintenace+entity.maintenace %}
-                                    {% set totalTollBill=totalTollBill+entity.tollBill %}
-                                    {% set totalServiceCharge=totalServiceCharge+entity.serviceCharge %}
-                                    {% set totalOthers=totalOthers+entity.others %}
-                                    {% set lineTotal= entity.conveyance+entity.dailyAllowance+entity.mobile+entity.hotelRent+entity.photostate+entity.courier+entity.food+entity.maintenace+entity.tollBill+entity.serviceCharge+entity.others %}
+
+                                    {% set lineTotal= expensePaticularAmount['inLine'] is defined? expensePaticularAmount['inLine'][entity.employee.id][entity.id]|arraySumColWise('amount'):'0.00' %}
+
                                     {% set totalLineTotal=totalLineTotal+lineTotal %}
                                 <tr>
                                     <td>
@@ -96,6 +96,8 @@
                                     </td>
                                     <td>{{ entity.expenseDate|date('d-m-Y') }}</td>
                                     <td>{{ entity.scheduleVisit }}</td>
+                                    <td>{{ entity.visitLocation|default('') }}</td>
+                                    <td>{{ entity.workingArea.name|default('') }}</td>
                                     <td>
                                         {% if entity.purpose is defined and entity.purpose is not empty %}
                                             {% for purpose in entity.purpose %}
@@ -113,55 +115,54 @@
                                         {% endif%}
                                     </td>
                                     <td>{{ entity.riding|default('') }}</td>
-                                    <td class="text-right">{{ entity.conveyance|number_format(2,'.',',') }}</td>
-                                    <td class="text-right">{{ entity.dailyAllowance|number_format(2,'.',',') }}</td>
-                                    <td class="text-right">{{ entity.mobile|number_format(2,'.',',') }}</td>
-                                    <td class="text-right">{{ entity.hotelRent|number_format(2,'.',',') }}</td>
-                                    <td class="text-right">{{ entity.photostate|number_format(2,'.',',') }}</td>
-                                    <td class="text-right">{{ entity.courier|number_format(2,'.',',') }}</td>
-                                    <td class="text-right">{{ entity.food|number_format(2,'.',',') }}</td>
-                                    <td class="text-right">{{ entity.maintenace|number_format(2,'.',',') }}</td>
-                                    <td class="text-right">{{ entity.tollBill|number_format(2,'.',',') }}</td>
-                                    <td class="text-right">{{ entity.serviceCharge|number_format(2,'.',',') }}</td>
-                                    <td class="text-right">{{ entity.others|number_format(2,'.',',') }}</td>
+
+                                    {% if dailyExpenseParticularAttributes is defined and dailyExpenseParticularAttributes is iterable %}
+                                        {% for dailyExpenseParticularAttribute in dailyExpenseParticularAttributes %}
+                                            <td class="text-right">{{ expensePaticularAmount['inLine'] is defined? expensePaticularAmount['inLine'][entity.employee.id][entity.id][dailyExpenseParticularAttribute.id]['amount']|number_format(2,'.',','):'0.00' }}</td>
+                                        {% endfor %}
+                                    {% endif %}
                                     <th class="text-right">{{ lineTotal|number_format(2,'.',',') }}</th>
                                 </tr>
                                 {% endfor %}
                             </tbody>
                                 <tfoot>
                                     <tr class="text-right">
-                                        <th class="text-right" colspan="6">Total</th>
-                                        <th>{{ totalConveyance|number_format(2,'.',',') }}</th>
-                                        <th>{{ totalDailyAllowance|number_format(2,'.',',') }}</th>
-                                        <th>{{ totalMobile|number_format(2,'.',',') }}</th>
-                                        <th>{{ totalHotelRent|number_format(2,'.',',') }}</th>
-                                        <th>{{ totalPhotostate|number_format(2,'.',',') }}</th>
-                                        <th>{{ totalCourier|number_format(2,'.',',') }}</th>
-                                        <th>{{ totalFood|number_format(2,'.',',') }}</th>
-                                        <th>{{ totalMaintenace|number_format(2,'.',',') }}</th>
-                                        <th>{{ totalTollBill|number_format(2,'.',',') }}</th>
-                                        <th>{{ totalServiceCharge|number_format(2,'.',',') }}</th>
-                                        <th>{{ totalOthers|number_format(2,'.',',') }}</th>
+                                        <th class="text-right" colspan="7">Total</th>
+                                        {% if dailyExpenseParticularAttributes is defined and dailyExpenseParticularAttributes is iterable %}
+                                            {% for dailyExpenseParticularAttribute in dailyExpenseParticularAttributes %}
+                                                <td class="text-right">{{ expensePaticularAmount['grandTolalPerColumn'] is defined?expensePaticularAmount['grandTolalPerColumn'][dailyExpenseParticularAttribute.id]|arraySumColWise('amount')|number_format(2,'.',','):'0.00' }}</td>
+                                            {% endfor %}
+                                        {% endif %}
                                         <th>{{ totalLineTotal|number_format(2,'.',',') }}</th>
                                     </tr>
+                                    {% set monthlyAttrAmount=0 %}
+
+                                    {% if expenseBatch.expenseParticulars is defined and expenseBatch.expenseParticulars is not empty %}
+                                        {% for expenseParticular in expenseBatch.expenseParticulars %}
+                                            {% set monthlyAttrAmount=monthlyAttrAmount+ expenseParticular.amount%}
+                                            <tr>
+                                                <th colspan="18" class="text-right">{{ expenseParticular.particular.name|default('') }}</th>
+                                                <th class="text-right">{{ expenseParticular.amount|number_format(2,'.',',') }}</th>
+                                            </tr>
+                                        {% endfor %}
+
+                                    {% endif %}
+
+                                    <tr>
+                                        <th colspan="18" class="text-right">Bike Miles Amount ({{ expenseBatch.totalRiding }} KM per KM {{ expenseBatch.perMilesAmount }} Tk.) </th>
+                                        <th class="text-right">{{ expenseBatch.totalMilesAmount|number_format(2,'.',',') }}</th>
+                                    </tr>
+
                                 <tr>
-                                    <th colspan="17" class="text-right">Maintenance</th>
-                                    <th class="text-right">{{ expenseBatch.maintenace|number_format(2,'.',',') }}</th>
-                                </tr>
-                                <tr>
-                                    <th colspan="17" class="text-right">Others</th>
-                                    <th class="text-right">{{ expenseBatch.others|number_format(2,'.',',') }}</th>
-                                </tr>
-                                <tr>
-                                    <th colspan="17" class="text-right">Grand Total</th>
-                                    <th class="text-right">{{ (totalLineTotal+expenseBatch.maintenace+expenseBatch.others)|number_format(2,'.',',') }}</th>
+                                    <th colspan="18" class="text-right">Grand Total</th>
+                                    <th class="text-right">{{ (totalLineTotal+monthlyAttrAmount+expenseBatch.totalMilesAmount)|number_format(2,'.',',') }}</th>
                                 </tr>
                                 </tfoot>
                             {% endif %}
 
                         </table>
                         {% if expenseBatch.status<2 %}
-                            <div style="padding-bottom: 20px">
+                            <div class="hidden-print" style="padding-bottom: 20px">
                                 <div class="col-md-12 text-right">
                                     <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
                                         <a class="btn btn-sm btn-primary" href="{{ path('crm_expense_batch_approved',{'id':expenseBatch.id}) }}">Approved</a>
@@ -180,6 +181,11 @@
                         width: unset;
                         padding-right: 30px;
                     }
+                    @media print {
+                        .hidden-print {
+                            display: none!important;
+                        }
+                    }
                 </style>
             </div>
         </div>
@@ -192,4 +198,9 @@
 {% block javascripts %}
     {{ parent() }}
     <script type="application/javascript" src="{{ asset('assets/module/js/app.js') }}"></script>
+    <script>
+        $('#windowPrint').on('click', function () {
+            window.print();
+        })
+    </script>
 {% endblock  %}

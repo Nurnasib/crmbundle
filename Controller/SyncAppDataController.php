@@ -155,7 +155,7 @@ class SyncAppDataController extends AbstractController
                     case "crm_layer_life_cycle_details":
                         $this->processLayerLifeCycleDetail($jsonToArray, $batch);
                         break;
-                    case "crm_expense":
+                    /*case "crm_expense":
                         $this->processExpense($jsonToArray, $batch);
                         break;
                     case "crm_expense_purpose":
@@ -163,7 +163,7 @@ class SyncAppDataController extends AbstractController
                         break;
                     case "crm_expense_vehicle":
                         $this->processExpenseVehicle($jsonToArray, $batch);
-                        break;
+                        break;*/
                     case "crm_doc_complain_details":
                         $this->processDocComplain($jsonToArray, $batch);
                         break;

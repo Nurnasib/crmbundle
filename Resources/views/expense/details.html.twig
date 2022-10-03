@@ -3,7 +3,7 @@
 
     <div class="pcoded-inner-content">
         <!-- [ breadcrumb ] start -->
-        <div class="page-header">
+        <div class="page-header hidden-print">
             <div class="page-block">
                 <div class="row align-items-center">
                     <ul class="breadcrumb">
@@ -16,7 +16,7 @@
         </div>
         <!-- [ breadcrumb ] end -->
         <!-- [ Main Content ] start -->
-        <div class="row">
+        <div class="row hidden-print">
             <div class="card">
                 <div class="card-header">
                     <h5>{{ 'Monthly Expense'|trans }}</h5>
@@ -34,147 +34,146 @@
                 <div class="portlet box ">
                     <div class="portlet-title">
                         <div class="caption">{{ 'Monthly Expense'|trans }} </div>
+                        {% if expenseBatch%}
+                        <div style="float: right; padding-right: 15px" class="caption hidden-print">
+                            <div class="pull-right">
+                                <button class="btn btn-info btn-sm" id="windowPrint"><i class="fa fa-print"></i> </button>
+                            </div>
+                        </div>
+                        {% endif %}
                     </div>
 
                     <div class="portlet-body form expense_form_section" id="expense_form_section">
+
+                        <div style="text-align: center">
+                            <h4>Nourish Poultry & Hatchery Ltd.</h4>
+                            <h6>Uttara, Dhaka</h6>
+                            <h6>Monthly TA DA Bill</h6>
+                            <h6>Month: {{ yearMonth|date('F Y') }}</h6>
+                        </div>
+                        <div class="">
+                            <div class="col-md-6">
+                                <h6>Name: {{ employee.name|default('')}}</h6>
+                                <h6>Designation: {{employee.designation.name|default('')}}</h6>
+
+                            </div>
+                            <div class="col-md-6 text-center">
+                                <h6>Employee Id: {{ employee.userId|default('') }}</h6>
+                            </div>
+                        </div>
                         {% if expenseBatch is null %}
-                        <form class="form-horizontal right" method="post" action="{{ path('crm_expense_process',{'employee':employee.id}) }}">
+                        <form class="form-horizontal right" method="post" enctype="multipart/form-data" action="{{ path('crm_expense_process',{'employee':employee.id}) }}">
                             <input type="hidden" name="monthYear" value="{{ yearMonth }}">
                             {% endif %}
-                        <table class="table">
+                        <table class="table table-bordered">
                             <thead>
                             <tr>
                                 <th>SL</th>
                                 <th>Date</th>
                                 <th>Schedule</th>
+                                <th>Visiting Location</th>
+                                <th>Area</th>
                                 <th>Purpose</th>
                                 <th>Vehicle</th>
-                                <th title="Riding">Riding (KM)</th>
-                                <th title="Conveyance">Conv. (TK)</th>
-                                <th title="Daily Allowance">Daily Allow. (TK)</th>
-                                <th title=Mobile">Mobile (TK)</th>
-                                <th title="Hotel Rent">Hotel Rent (TK)</th>
-                                <th title="Photo Copy">Photo Copy (TK)</th>
-                                <th title="Courier">Courier (TK)</th>
-                                <th title="Food">Food (TK)</th>
-                                <th title="Maintenace">Maintenace (TK)</th>
-                                <th title="Toll Bill">Toll Bill (TK)</th>
-                                <th title="Service Charge">Service Charge (TK)</th>
-                                <th title="Others">Others (TK)</th>
+                                <th title="Riding">Bike Meter Reading (KM)</th>
+                                {% if expenseParticularAttributes is defined and expenseParticularAttributes is iterable %}
+                                    {% for expenseParticularAttribute in expenseParticularAttributes %}
+                                        <th scope="col">{{ expenseParticularAttribute.name }}</th>
+                                    {% endfor %}
+                                {% endif %}
                                 <th title="Total">Total (TK.)</th>
-                                <th scope="col text-center"><i class="feather icon-settings"></i></th>
+                                <th class="hidden-print" scope="col text-center"><i class="feather icon-settings"></i></th>
                             </tr>
                             </thead>
                             {% if entities is defined %}
                             <tbody>
-
-                                {% set totalConveyance=0 %}
-                                {% set totalDailyAllowance=0 %}
-                                {% set totalMobile=0 %}
-                                {% set totalHotelRent=0 %}
-                                {% set totalPhotostate=0 %}
-                                {% set totalCourier=0 %}
-                                {% set totalFood=0 %}
-                                {% set totalMaintenace=0 %}
-                                {% set totalTollBill=0 %}
-                                {% set totalServiceCharge=0 %}
-                                {% set totalOthers=0 %}
                                 {% set totalLineTotal=0 %}
-                                {% for entity in entities %}
-                                    {% set totalConveyance=totalConveyance+entity.conveyance %}
-                                    {% set totalDailyAllowance=totalDailyAllowance+entity.dailyAllowance %}
-                                    {% set totalMobile=totalMobile+entity.mobile %}
-                                    {% set totalHotelRent=totalHotelRent+entity.hotelRent %}
-                                    {% set totalPhotostate=totalPhotostate+entity.photostate %}
-                                    {% set totalCourier=totalCourier+entity.courier %}
-                                    {% set totalFood=totalFood+entity.food %}
-                                    {% set totalMaintenace=totalMaintenace+entity.maintenace %}
-                                    {% set totalTollBill=totalTollBill+entity.tollBill %}
-                                    {% set totalServiceCharge=totalServiceCharge+entity.serviceCharge %}
-                                    {% set totalOthers=totalOthers+entity.others %}
-                                    {% set lineTotal= entity.conveyance+entity.dailyAllowance+entity.mobile+entity.hotelRent+entity.photostate+entity.courier+entity.food+entity.maintenace+entity.tollBill+entity.serviceCharge+entity.others %}
+                                {% if entities is defined and entities is not empty %}
+                                    {% for entity in entities %}
+                                    {% set lineTotal= expensePaticularAmount['inLine'] is defined? expensePaticularAmount['inLine'][entity.employee.id][entity.id]|arraySumColWise('amount'):'0.00' %}
                                     {% set totalLineTotal=totalLineTotal+lineTotal %}
-                                <tr>
-                                    <td>
-                                        {{ loop.index }}
+                                        <tr class="expense_id_{{ entity.id }}">
+                                            <td>
+                                                {{ loop.index }}
 
-                                    </td>
-                                    <td>{{ entity.expenseDate|date('d-m-Y') }}</td>
-                                    <td>{{ entity.scheduleVisit }}</td>
-                                    <td>
-                                        {% if entity.purpose is defined and entity.purpose is not empty %}
-                                            {% for purpose in entity.purpose %}
-                                            {{ purpose.name }}
-                                                {% if loop.last == false  %}{{ '; ' }} {% endif%}
-                                            {% endfor %}
-                                        {% endif%}
-                                    </td>
-                                    <td>
-                                        {% if entity.vehicle is defined and entity.vehicle is not empty %}
-                                            {% for vehicle in entity.vehicle %}
-                                            {{ vehicle.name }}
-                                                {% if loop.last == false  %}{{ '; ' }} {% endif%}
-                                            {% endfor %}
-                                        {% endif%}
-                                    </td>
-                                    <td>{{ entity.riding|default('') }}</td>
-                                    <td class="text-right">{{ entity.conveyance|number_format(2,'.',',') }}</td>
-                                    <td class="text-right">{{ entity.dailyAllowance|number_format(2,'.',',') }}</td>
-                                    <td class="text-right">{{ entity.mobile|number_format(2,'.',',') }}</td>
-                                    <td class="text-right">{{ entity.hotelRent|number_format(2,'.',',') }}</td>
-                                    <td class="text-right">{{ entity.photostate|number_format(2,'.',',') }}</td>
-                                    <td class="text-right">{{ entity.courier|number_format(2,'.',',') }}</td>
-                                    <td class="text-right">{{ entity.food|number_format(2,'.',',') }}</td>
-                                    <td class="text-right">{{ entity.maintenace|number_format(2,'.',',') }}</td>
-                                    <td class="text-right">{{ entity.tollBill|number_format(2,'.',',') }}</td>
-                                    <td class="text-right">{{ entity.serviceCharge|number_format(2,'.',',') }}</td>
-                                    <td class="text-right">{{ entity.others|number_format(2,'.',',') }}</td>
-                                    <th class="text-right">{{ lineTotal|number_format(2,'.',',') }}</th>
-                                    <td>
-                                        {% if entity.status==1 %}
-                                            <input type="hidden" name="expense[{{ entity.id }}]" value="{{ entity.id }}">
-                                        <div class="btn-group">
-                                        <a style="margin-right: 2px" class="btn btn-primary btn-mini white-font" href="{{ path('crm_expense_edit',{'id':entity.id}) }}"><i class="fa fa-edit"></i></a>
-                                        <a class="btn btn-danger btn-mini white-font remove" href="javascript:" data-action="{{ path('crm_expense_delete',{'id':entity.id}) }}"><i class="fa fa-remove"></i></a>
-                                        </div>
-                                        {% endif %}
-                                    </td>
-                                </tr>
-                                {% endfor %}
+                                            </td>
+                                            <td>{{ entity.expenseDate|date('d-m-Y') }}</td>
+                                            <td>{{ entity.scheduleVisit }}</td>
+                                            <td>{{ entity.visitLocation|default('') }}</td>
+                                            <td>{{ entity.workingArea.name|default('') }}</td>
+                                            <td>
+                                                {% if entity.purpose is defined and entity.purpose is not empty %}
+                                                    {% for purpose in entity.purpose %}
+                                                    {{ purpose.name }}
+                                                        {% if loop.last == false  %}{{ '; ' }} {% endif%}
+                                                    {% endfor %}
+                                                {% endif%}
+                                            </td>
+                                            <td>
+                                                {% if entity.vehicle is defined and entity.vehicle is not empty %}
+                                                    {% for vehicle in entity.vehicle %}
+                                                    {{ vehicle.name }}
+                                                        {% if loop.last == false  %}{{ '; ' }} {% endif%}
+                                                    {% endfor %}
+                                                {% endif%}
+                                            </td>
+                                            <td>{{ entity.riding|default('') }}</td>
+                                            {% if expenseParticularAttributes is defined and expenseParticularAttributes is iterable %}
+                                                {% for expenseParticularAttribute in expenseParticularAttributes %}
+                                                    <td class="text-right">{{ expensePaticularAmount['inLine'][entity.employee.id][entity.id][expenseParticularAttribute.id]['amount']|number_format(2,'.',',') }}</td>
+                                                {% endfor %}
+                                            {% endif %}
+                                            <td class="text-right">{{ lineTotal|number_format(2,'.',',') }}</td>
+                                            <td class="hidden-print">
+                                                {% if entity.status==1 %}
+                                                    <input type="hidden" name="expense[{{ entity.id }}]" value="{{ entity.id }}">
+                                                <div class="btn-group">
+                                                <a style="margin-right: 2px" class="btn btn-primary btn-mini white-font" href="{{ path('crm_expense_edit',{'id':entity.id}) }}"><i class="fa fa-edit"></i></a>
+                                                <a class="btn btn-danger btn-mini white-font remove" href="javascript:" data-action="{{ path('crm_expense_delete',{'id':entity.id}) }}"><i class="fa fa-remove"></i></a>
+                                                </div>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                {% endif %}
                             </tbody>
                                 <tfoot>
                                 <tr class="text-right">
-                                    <th class="text-right" colspan="6">Total</th>
-                                    <th>{{ totalConveyance|number_format(2,'.',',') }}</th>
-                                    <th>{{ totalDailyAllowance|number_format(2,'.',',') }}</th>
-                                    <th>{{ totalMobile|number_format(2,'.',',') }}</th>
-                                    <th>{{ totalHotelRent|number_format(2,'.',',') }}</th>
-                                    <th>{{ totalPhotostate|number_format(2,'.',',') }}</th>
-                                    <th>{{ totalCourier|number_format(2,'.',',') }}</th>
-                                    <th>{{ totalFood|number_format(2,'.',',') }}</th>
-                                    <th>{{ totalMaintenace|number_format(2,'.',',') }}</th>
-                                    <th>{{ totalTollBill|number_format(2,'.',',') }}</th>
-                                    <th>{{ totalServiceCharge|number_format(2,'.',',') }}</th>
-                                    <th>{{ totalOthers|number_format(2,'.',',') }}</th>
-                                    <th>{{ totalLineTotal|number_format(2,'.',',') }}</th>
+                                    <th class="text-right" colspan="7">Total</th>
+                                    {% if expenseParticularAttributes is defined and expenseParticularAttributes is iterable %}
+                                        {% for expenseParticularAttribute in expenseParticularAttributes %}
+                                            <td class="text-right">{{ expensePaticularAmount['grandTolalPerColumn'][expenseParticularAttribute.id]|arraySumColWise('amount')|number_format(2,'.',',') }}</td>
+                                        {% endfor %}
+                                    {% endif %}
+                                    <th class="text-right">{{ totalLineTotal|number_format(2,'.',',') }}</th>
                                     <th></th>
 
                                 </tr>
+
+                                {% if monthlyExpenseParticularAttributes is defined and monthlyExpenseParticularAttributes is not empty %}
+                                    {% for monthlyExpenseParticularAttribute in monthlyExpenseParticularAttributes %}
+                                        <tr>
+                                            <th colspan="{{ expenseParticularAttributes|length + 7 }}" class="text-right">{{ monthlyExpenseParticularAttribute.name }}</th>
+                                            <td class="text-right">{{ monthlyExpensePaticularAmount['inLine'] is defined and  monthlyExpensePaticularAmount['inLine'][employee.id][monthlyExpenseParticularAttribute.id] is defined? monthlyExpensePaticularAmount['inLine'][employee.id][monthlyExpenseParticularAttribute.id]['amount']|number_format(2,'.',','):'0.00' }}</td>
+                                            <td></td>
+                                        </tr>
+                                    {% endfor %}
+
+                                {% endif %}
+
+                                {% set milesAmount=0 %}
+                                {% if expenseBatch %}
+                                    {% set milesAmount=milesAmount+expenseBatch.totalMilesAmount %}
                                 <tr>
-                                    <th colspan="17" class="text-right">Maintenance</th>
-                                    {% set maintenanceCost = expenseBatch?expenseBatch.maintenace:0 %}
-                                    <th class="text-right">{{ maintenanceCost|number_format(2,'.',',') }}</th>
-                                    <td></td>
+                                    <th colspan="18" class="text-right">Bike Miles Amount ({{ expenseBatch.totalRiding }} KM per KM {{ expenseBatch.perMilesAmount }} Tk.) </th>
+                                    <th class="text-right">{{ expenseBatch.totalMilesAmount|number_format(2,'.',',') }}</th>
                                 </tr>
+                                {% endif %}
+
+                                {% set monthlyExpensePaticularTotalAmount= monthlyExpensePaticularAmount['grandTolalPerColumn'] is defined and  monthlyExpensePaticularAmount['grandTolalPerColumn'] is not empty? monthlyExpensePaticularAmount['grandTolalPerColumn']|arraySumColWise('amount')|number_format(2,'.',','):'0.00'  %}
                                 <tr>
-                                    <th colspan="17" class="text-right">Others</th>
-                                    {% set otherCost= expenseBatch?expenseBatch.others:0 %}
-                                    <th class="text-right">{{ otherCost|number_format(2,'.',',') }}</th>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <th colspan="17" class="text-right">Grand Total</th>
-                                    <th class="text-right">{{ (totalLineTotal + maintenanceCost + maintenanceCost)|number_format(2,'.',',') }}</th>
+                                    <th colspan="18" class="text-right">Grand Total</th>
+                                    <th class="text-right">{{ (totalLineTotal+monthlyExpensePaticularTotalAmount+milesAmount)|number_format(2,'.',',') }}</th>
                                     <td></td>
                                 </tr>
 
@@ -183,56 +182,91 @@
 
                         </table>
                             {% if expenseBatch is null %}
+                            <div class="card-body card-body-inner">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label class="col-md-3 control-label" for="meterReading">Meter Reading</label>
+                                            <div class="col-md-3">
+                                                <span style="text-align: left"> {{ 'From'|trans }}</span>
+                                                <p class="form-control">
+                                                    {% set startRiding=0 %}
+                                                    {% set endRiding=0 %}
+                                                    {% if entities is defined and entities|length>0 %}
+                                                        {% set startRiding=entities[0].riding %}
+                                                        {{ entities[0].riding }}
+                                                    {% endif %}
+                                                </p>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <span style="text-align: left;"> {{ 'To'|trans }}</span>
+                                                <p class="form-control">
+                                                    {% if entities is defined and entities|length>1 %}
+                                                        {% set endRiding=entities[entities|length-1].riding %}
+                                                        {{entities[entities|length-1].riding}}
+                                                    {% endif%}
+                                                </p>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <span style="text-align: left;"> {{ 'Total'|trans }}</span>
+                                                <p class="form-control">
+                                                    {% set reading = endRiding-startRiding %}
+                                                    {{ reading>0?reading:0 }}
+                                                    <input type="hidden" name="totalRiding" value="{{ reading>0?reading:0 }}">
+                                                </p>
+                                            </div>
 
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label class="col-md-6 control-label" for="monthlyMaintenance">Monthly Maintenance</label>
-                                        <div class="col-md-6">
-                                            <input type="number" id="monthlyMaintenance" class="form-control" min="0" name="monthlyMaintenace">
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label class="col-md-6 control-label" for="monthlyOthers">Monthly Others</label>
-                                        <div class="col-md-6">
-                                            <input type="number" id="monthlyOthers" class="form-control" min="0" name="monthlyOthers">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <label class="col-md-3 control-label" for="monthlyOhers">Riding</label>
-                                        <div class="col-md-3">
-                                            <span style="text-align: left"> {{ 'From'|trans }}</span>
-                                            <p class="form-control">
-                                                {% set startRiding=0 %}
-                                                {% set endRiding=0 %}
-                                                {% if entities is defined and entities|length>0 %}
-                                                    {% set startRiding=entities[0].riding %}
-                                                    {{ entities[0].riding }}
-                                                {% endif %}
-                                            </p>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <span style="text-align: left;"> {{ 'To'|trans }}</span>
-                                            <p class="form-control">
-                                                {% if entities is defined and entities|length>1 %}
-                                                    {% set endRiding=entities[entities|length-1].riding %}
-                                                    {{entities[entities|length-1].riding}}
-                                                {% endif%}
-                                            </p>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <span style="text-align: left;"> {{ 'Total'|trans }}</span>
-                                            <p class="form-control">
-                                                {{ endRiding-startRiding }}
-                                                <input type="hidden" name="totalRiding" value="{{ endRiding-startRiding }}">
-                                            </p>
-                                        </div>
+                                <div class="row">
+                                    {% if monthlyExpenseParticularAttributes is defined and monthlyExpenseParticularAttributes is not empty %}
+                                        {% set arrayLength= monthlyExpenseParticularAttributes|length %}
+                                        {% set arrayLengthHalf= arrayLength/2 %}
+                                        {% set arraySplits = monthlyExpenseParticularAttributes|batch(arrayLengthHalf|number_format(0), '') %}
 
-                                    </div>
+                                        {% if arraySplits|length>0 %}
+
+                                            {% for arraySplit in arraySplits %}
+                                                <div class="col-md-6">
+                                                    <table class="table table-bordered">
+                                                        <thead>
+                                                        <tr>
+                                                            <th width="20%">Particular Name</th>
+                                                            <th width="20%">Amount (TK)</th>
+                                                            <th>Attachment (pdf/image)</th>
+                                                        </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                        {% for monthlyExpenseParticular in arraySplit %}
+                                                            {% if monthlyExpenseParticular is iterable %}
+                                                                <tr>
+                                                                    <td>
+                                                                        {{ monthlyExpenseParticular.name }}
+                                                                        <input type="hidden" name="particular_id[{{ monthlyExpenseParticular.id }}]" value="{{ monthlyExpenseParticular.id }}">
+                                                                    </td>
+                                                                    <td>
+                                                                        <input class="form-control" type="number" min="0" step=".01" name="amount[{{ monthlyExpenseParticular.id }}]">
+                                                                    </td>
+                                                                    <td style="vertical-align: middle">
+                                                                        <div style="height: 30px" class="custom-file">
+                                                                            <input type="file" name="files[{{ monthlyExpenseParticular.id }}]" class="custom-file-input" style="z-index: 0; height: 30px" id="file_{{ monthlyExpenseParticular.id }}" aria-describedby="file">
+                                                                            <label style="margin-bottom: 0px; height: 30px" class="custom-file-label" for="file_{{ monthlyExpenseParticular.id }}">Choose file</label>
+                                                                        </div>
+                                                                    </td>
+
+                                                                </tr>
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            {% endfor %}
+
+                                        {% endif %}
+
+                                    {% endif %}
+
                                 </div>
 
                             </div>
@@ -265,8 +299,20 @@
 {% endblock %}
  {% block cssBlock %}
      <link rel="stylesheet" href="{{ asset('assets/module/css/app.css') }}">
+     <style>
+         @media print {
+             .hidden-print {
+                 display: none!important;
+             }
+         }
+     </style>
  {% endblock  %}
 {% block javascripts %}
     {{ parent() }}
     <script type="application/javascript" src="{{ asset('assets/module/js/app.js') }}"></script>
+    <script>
+        $('#windowPrint').on('click', function () {
+            window.print();
+        })
+    </script>
 {% endblock  %}

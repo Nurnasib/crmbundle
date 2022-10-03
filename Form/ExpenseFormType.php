@@ -52,58 +52,24 @@ class ExpenseFormType extends AbstractType
                 'label' => 'label.visitLocation',
                 'required' => true
             ])
-
-            ->add('conveyance', NumberType::class, [
-                'attr' => ['autofocus' => true],
-                'label' => 'label.conveyance',
-                'required' => false
-            ])
-            ->add('daily_allowance', NumberType::class, [
-                'attr' => ['autofocus' => true,'autocomplete' => 'off'],
-                'label' => 'label.daily_allowance',
-                'required' => false
-            ])->add('hotel_rent', NumberType::class, [
-                'attr' => ['autofocus' => true,'autocomplete' => 'off'],
-                'label' => 'label.hotel_rent',
-                'required' => false
-            ])->add('photostate', NumberType::class, [
-                'attr' => ['autofocus' => true],
-                'label' => 'label.photostate',
-                'required' => false
-            ])->add('courier', NumberType::class, [
-                'attr' => ['autofocus' => true],
-                'label' => 'label.courier',
-                'required' => false
-            ])->add('food', NumberType::class, [
-                'attr' => ['autofocus' => true],
-                'label' => 'label.food',
-                'required' => false
-            ])->add('mobile', NumberType::class, [
-                'attr' => ['autofocus' => true],
-                'label' => 'label.mobile',
-                'required' => false
-            ])->add('maintenace', NumberType::class, [
-                'attr' => ['autofocus' => true,'autocomplete' => 'off'],
-                'label' => 'label.maintenace',
-                'required' => false
-            ])->add('toll_bill', NumberType::class, [
-                'attr' => ['autofocus' => true,'autocomplete' => 'off'],
-                'label' => 'label.toll_bill',
-                'required' => false
-            ])->add('service_charge', NumberType::class, [
-                'attr' => ['autofocus' => true,'autocomplete' => 'off'],
-                'label' => 'label.service_charge',
-                'required' => false
-            ])->add('others', NumberType::class, [
-                'attr' => ['autofocus' => true],
-                'label' => 'label.others',
-                'required' => false
-
-            ])->add('riding', NumberType::class, [
+            ->add('riding', NumberType::class, [
                 'attr' => ['autofocus' => true],
                 'label' => 'label.riding',
                 'required' => false
 
+            ])
+            ->add('workingArea', EntityType::class, [
+                'class' => Setting::class,
+                'required' => true,
+                'query_builder' => function (EntityRepository $er) {
+                    return $er->createQueryBuilder('e')
+                        ->where('e.settingType = :sType')
+                        ->setParameter('sType','AREA')
+                        ->orderBy('e.name','ASC');
+                },
+                'attr'=>['class'=>'span12 select2'],
+                'choice_label' => 'name',
+                'placeholder' => 'Choose Area',
             ])
             ->add('purpose', EntityType::class, [
                 'class' => Setting::class,

@@ -51,6 +51,12 @@ class ExpenseBatch
     private $expenses;
 
     /**
+     * @var ExpenseParticular
+     * @ORM\OneToMany(targetEntity="Terminalbd\CrmBundle\Entity\ExpenseParticular", mappedBy="expenseBatch",  cascade={"persist", "remove"}, orphanRemoval=true)
+     */
+    private $expenseParticulars;
+
+    /**
      * @var \DateTime
      * @ORM\Column(name="expense_month", type="date", nullable=true)
      */
@@ -67,18 +73,6 @@ class ExpenseBatch
      * @ORM\Column(name="approved_at", type="datetime", nullable=true)
      */
     private $approvedAt;
-    
-    /**
-     * @var float
-     * @ORM\Column(name="maintenace", type="float", nullable=true)
-     */
-    private $maintenace;
-
-    /**
-     * @var float
-     * @ORM\Column(name="others", type="float", nullable=true)
-     */
-    private $others;
 
     /**
      * @var float
@@ -87,6 +81,22 @@ class ExpenseBatch
      */
 
     private $totalRiding;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="per_miles_amount", type="float", nullable=true)
+     */
+
+    private $perMilesAmount;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="total_miles_amount", type="float", nullable=true)
+     */
+
+    private $totalMilesAmount;
 
     /**
      * @var integer
@@ -210,38 +220,6 @@ class ExpenseBatch
     /**
      * @return float
      */
-    public function getMaintenace()
-    {
-        return $this->maintenace;
-    }
-
-    /**
-     * @param float $maintenace
-     */
-    public function setMaintenace(float $maintenace): void
-    {
-        $this->maintenace = $maintenace;
-    }
-
-    /**
-     * @return float
-     */
-    public function getOthers()
-    {
-        return $this->others;
-    }
-
-    /**
-     * @param float $others
-     */
-    public function setOthers(float $others): void
-    {
-        $this->others = $others;
-    }
-
-    /**
-     * @return float
-     */
     public function getTotalRiding()
     {
         return $this->totalRiding;
@@ -271,6 +249,52 @@ class ExpenseBatch
         $this->status = $status;
     }
 
+    /**
+     * @return ExpenseParticular
+     */
+    public function getExpenseParticulars()
+    {
+        return $this->expenseParticulars;
+    }
 
+    /**
+     * @param ExpenseParticular $expenseParticulars
+     */
+    public function setExpenseParticulars($expenseParticulars): void
+    {
+        $this->expenseParticulars = $expenseParticulars;
+    }
+
+    /**
+     * @return float
+     */
+    public function getPerMilesAmount()
+    {
+        return $this->perMilesAmount;
+    }
+
+    /**
+     * @param float $perMilesAmount
+     */
+    public function setPerMilesAmount($perMilesAmount): void
+    {
+        $this->perMilesAmount = $perMilesAmount;
+    }
+
+    /**
+     * @return float
+     */
+    public function getTotalMilesAmount()
+    {
+        return $this->totalMilesAmount;
+    }
+
+    /**
+     * @param float $totalMilesAmount
+     */
+    public function setTotalMilesAmount($totalMilesAmount): void
+    {
+        $this->totalMilesAmount = $totalMilesAmount;
+    }
 
 }
