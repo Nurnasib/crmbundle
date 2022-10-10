@@ -60,15 +60,12 @@ class ExpenseBatchController extends AbstractController
      */
     public function details(Request $request, ExpenseBatch $entity): Response
     {
-        $dailyExpenseParticularAttributes = $this->getDoctrine()->getRepository(Setting::class)->getDailyExpenseParticular();
         $monthlyExpenseParticularAttributes = $this->getDoctrine()->getRepository(Setting::class)->getMonthlyExpenseParticular();
-//dd($entity->getId());
         $expensePaticularAmount = $this->getDoctrine()->getRepository(ExpenseParticular::class)->getDailyExpenseParticularAmount($entity->getEmployee(),null, $entity);
-//dd($expensePaticularAmount);
 
         return $this->render('@TerminalbdCrm/expenseBatch/details.html.twig', [
             'expenseBatch' => $entity,
-            'dailyExpenseParticularAttributes' => $dailyExpenseParticularAttributes,
+            'dailyExpenseParticularAttributes' => isset($expensePaticularAmount['expenseParticularAttributes']) && sizeof($expensePaticularAmount['expenseParticularAttributes'])>0?$expensePaticularAmount['expenseParticularAttributes']:[],
             'monthlyExpenseParticularAttributes' => $monthlyExpenseParticularAttributes,
             'expensePaticularAmount' => $expensePaticularAmount,
         ]);

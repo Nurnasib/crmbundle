@@ -64,14 +64,14 @@
                         <table class="table table-bordered">
                             <thead>
                             <tr>
-                                <th>SL</th>
+                                <th class="hidden-print">SL</th>
                                 <th>Date</th>
-                                <th>Schedule</th>
-                                <th>Visiting Location</th>
+                                <th class="hidden-print">Schedule</th>
+                                <th>Visiting Area</th>
                                 <th>Area</th>
-                                <th>Purpose</th>
-                                <th>Vehicle</th>
-                                <th title="Riding">Riding (KM)</th>
+                                <th class="hidden-print">Purpose</th>
+                                <th class="hidden-print">Vehicle</th>
+                                <th class="hidden-print" title="Riding">Riding (KM)</th>
                                 {% if dailyExpenseParticularAttributes is defined and dailyExpenseParticularAttributes is iterable %}
                                     {% for dailyExpenseParticularAttribute in dailyExpenseParticularAttributes %}
                                         <th scope="col">{{ dailyExpenseParticularAttribute.name }}</th>
@@ -90,15 +90,15 @@
 
                                     {% set totalLineTotal=totalLineTotal+lineTotal %}
                                 <tr>
-                                    <td>
+                                    <td class="hidden-print">
                                         {{ loop.index }}
 
                                     </td>
                                     <td>{{ entity.expenseDate|date('d-m-Y') }}</td>
-                                    <td>{{ entity.scheduleVisit }}</td>
+                                    <td class="hidden-print">{{ entity.scheduleVisit }}</td>
                                     <td>{{ entity.visitLocation|default('') }}</td>
                                     <td>{{ entity.workingArea.name|default('') }}</td>
-                                    <td>
+                                    <td class="hidden-print">
                                         {% if entity.purpose is defined and entity.purpose is not empty %}
                                             {% for purpose in entity.purpose %}
                                             {{ purpose.name }}
@@ -106,7 +106,7 @@
                                             {% endfor %}
                                         {% endif%}
                                     </td>
-                                    <td>
+                                    <td class="hidden-print">
                                         {% if entity.vehicle is defined and entity.vehicle is not empty %}
                                             {% for vehicle in entity.vehicle %}
                                             {{ vehicle.name }}
@@ -114,11 +114,17 @@
                                             {% endfor %}
                                         {% endif%}
                                     </td>
-                                    <td>{{ entity.riding|default('') }}</td>
+                                    <td class="hidden-print">{{ entity.riding|default('') }}</td>
 
                                     {% if dailyExpenseParticularAttributes is defined and dailyExpenseParticularAttributes is iterable %}
                                         {% for dailyExpenseParticularAttribute in dailyExpenseParticularAttributes %}
-                                            <td class="text-right">{{ expensePaticularAmount['inLine'] is defined? expensePaticularAmount['inLine'][entity.employee.id][entity.id][dailyExpenseParticularAttribute.id]['amount']|number_format(2,'.',','):'0.00' }}</td>
+                                            <td class="text-right">
+                                                {% if expensePaticularAmount['inLine'] is defined and expensePaticularAmount['inLine'][entity.employee.id][entity.id][dailyExpenseParticularAttribute.id]['path'] is not empty%}
+                                                    <a title="Attachment Available" href="{{ asset('uploads/expense/'~expensePaticularAmount['inLine'][entity.employee.id][entity.id][dailyExpenseParticularAttribute.id]['path']) }}" download>{{ expensePaticularAmount['inLine'] is defined? expensePaticularAmount['inLine'][entity.employee.id][entity.id][dailyExpenseParticularAttribute.id]['amount']|number_format(2,'.',','):'0.00' }}</a>
+                                                {% else %}
+                                                    {{ expensePaticularAmount['inLine'] is defined? expensePaticularAmount['inLine'][entity.employee.id][entity.id][dailyExpenseParticularAttribute.id]['amount']|number_format(2,'.',','):'0.00' }}
+                                                {% endif %}
+                                            </td>
                                         {% endfor %}
                                     {% endif %}
                                     <th class="text-right">{{ lineTotal|number_format(2,'.',',') }}</th>
@@ -127,7 +133,9 @@
                             </tbody>
                                 <tfoot>
                                     <tr class="text-right">
-                                        <th class="text-right" colspan="8">Total</th>
+                                        <th class="text-right hidden show-print" colspan="3">Total</th>
+                                        <th class="text-right hidden-print" colspan="8">Total</th>
+
                                         {% if dailyExpenseParticularAttributes is defined and dailyExpenseParticularAttributes is iterable %}
                                             {% for dailyExpenseParticularAttribute in dailyExpenseParticularAttributes %}
                                                 <td class="text-right">{{ expensePaticularAmount['grandTolalPerColumn'] is defined?expensePaticularAmount['grandTolalPerColumn'][dailyExpenseParticularAttribute.id]|arraySumColWise('amount')|number_format(2,'.',','):'0.00' }}</td>
@@ -141,7 +149,8 @@
                                         {% for expenseParticular in expenseBatch.expenseParticulars %}
                                             {% set monthlyAttrAmount=monthlyAttrAmount+ expenseParticular.amount%}
                                             <tr>
-                                                <th colspan="19" class="text-right">{{ expenseParticular.particular.name|default('') }}</th>
+                                                <th colspan="{{ dailyExpenseParticularAttributes|length +3 }}" class="text-right hidden show-print">{{ expenseParticular.particular.name|default('') }}</th>
+                                                <th colspan="{{ dailyExpenseParticularAttributes|length +8 }}" class="hidden-print text-right">{{ expenseParticular.particular.name|default('') }}</th>
                                                 <th class="text-right">{{ expenseParticular.amount|number_format(2,'.',',') }}</th>
                                             </tr>
                                         {% endfor %}
@@ -149,12 +158,14 @@
                                     {% endif %}
 
                                     <tr>
-                                        <th colspan="19" class="text-right">Bike Miles Amount ({{ expenseBatch.totalRiding }} KM per KM {{ expenseBatch.perMilesAmount }} Tk.) </th>
+                                        <th colspan="{{ dailyExpenseParticularAttributes|length +3 }}" class="text-right hidden show-print">Bike Miles Amount ({{ expenseBatch.totalRiding }} KM per KM {{ expenseBatch.perMilesAmount }} Tk.) </th>
+                                        <th colspan="{{ dailyExpenseParticularAttributes|length +8 }}" class="text-right hidden-print">Bike Miles Amount ({{ expenseBatch.totalRiding }} KM per KM {{ expenseBatch.perMilesAmount }} Tk.) </th>
                                         <th class="text-right">{{ expenseBatch.totalMilesAmount|number_format(2,'.',',') }}</th>
                                     </tr>
 
                                 <tr>
-                                    <th colspan="19" class="text-right">Grand Total</th>
+                                    <th class="text-right hidden show-print" colspan="{{ dailyExpenseParticularAttributes|length +3 }}">Grand Total</th>
+                                    <th colspan="{{ dailyExpenseParticularAttributes|length +8 }}" class="text-right hidden-print">Grand Total</th>
                                     <th class="text-right">{{ (totalLineTotal+monthlyAttrAmount+expenseBatch.totalMilesAmount)|number_format(2,'.',',') }}</th>
                                 </tr>
                                 </tfoot>
@@ -181,11 +192,6 @@
                         width: unset;
                         padding-right: 30px;
                     }
-                    @media print {
-                        .hidden-print {
-                            display: none!important;
-                        }
-                    }
                 </style>
             </div>
         </div>
@@ -194,6 +200,16 @@
 {% endblock %}
  {% block cssBlock %}
      <link rel="stylesheet" href="{{ asset('assets/module/css/app.css') }}">
+     <style>
+         @media print {
+             .hidden-print {
+                 display: none!important;
+             }
+             .show-print {
+                 display: table-cell!important;
+             }
+         }
+     </style>
  {% endblock  %}
 {% block javascripts %}
     {{ parent() }}

@@ -200,7 +200,6 @@ class ExpenseController extends AbstractController
         $entities = $this->getDoctrine()->getRepository(Expense::class)->getExpensesByEmployeeAndYearMonth($employee , $yearMonth);
         $expenseMonth = date('Y-m-d',strtotime($yearMonth.'-01'));
         $expenseBatch= $this->getDoctrine()->getRepository(ExpenseBatch::class)->findOneBy(['employee'=>$employee, 'expenseMonth'=>new \DateTime($expenseMonth)]);
-        $dailyExpenseParticularAttributes = $this->getDoctrine()->getRepository(Setting::class)->getDailyExpenseParticular();
         $monthlyExpenseParticularAttributes = $this->getDoctrine()->getRepository(Setting::class)->getMonthlyExpenseParticular();
 
         $expensePaticularAmount = $this->getDoctrine()->getRepository(ExpenseParticular::class)->getDailyExpenseParticularAmount($this->getUser(),$yearMonth);
@@ -213,7 +212,7 @@ class ExpenseController extends AbstractController
             'employee' => $employee,
             'yearMonth' => $yearMonth,
             'expenseBatch' => $expenseBatch,
-            'expenseParticularAttributes' => $dailyExpenseParticularAttributes,
+            'expenseParticularAttributes' => isset($expensePaticularAmount['expenseParticularAttributes']) && sizeof($expensePaticularAmount['expenseParticularAttributes'])>0?$expensePaticularAmount['expenseParticularAttributes']:[],
             'monthlyExpenseParticularAttributes' => $monthlyExpenseParticularAttributes,
             'expensePaticularAmount' => $expensePaticularAmount,
             'monthlyExpensePaticularAmount' => $monthlyExpensePaticularAmount,
