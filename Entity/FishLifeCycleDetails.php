@@ -667,7 +667,7 @@ class FishLifeCycleDetails
     }
 
     public function calculateWeightGainKg(){
-        return ($this->getWeightGainGm()*$this->getNoOfInitialFish())/1000;
+        return ($this->getWeightGainGm()*$this->getNoOfFinalFish())/1000;
     }
 
     /**

@@ -72,6 +72,13 @@ class Setting
     private $status = true;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="sort_order", type="integer", nullable=true)
+     */
+    private $sortOrder;
+
+    /**
      * Get id
      * @return integer
      */
@@ -186,6 +193,22 @@ class Setting
     public function getNameType()
     {
         return Setting::settingNameType($this->getName(), $this->getSettingType());
+    }
+
+    /**
+     * @return int
+     */
+    public function getSortOrder()
+    {
+        return $this->sortOrder;
+    }
+
+    /**
+     * @param int $sortOrder
+     */
+    public function setSortOrder($sortOrder): void
+    {
+        $this->sortOrder = $sortOrder;
     }
 
 

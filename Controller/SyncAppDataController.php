@@ -23,6 +23,7 @@ use Terminalbd\CrmBundle\Entity\Api;
 use Terminalbd\CrmBundle\Entity\ApiDetails;
 use Terminalbd\CrmBundle\Entity\BroilerStandard;
 use Terminalbd\CrmBundle\Entity\CattleLifeCycle;
+use Terminalbd\CrmBundle\Entity\Challenger;
 use Terminalbd\CrmBundle\Entity\ChickLifeCycle;
 use Terminalbd\CrmBundle\Entity\ChickLifeCycleDetails;
 use Terminalbd\CrmBundle\Entity\CompanyWiseFeedSale;
@@ -223,6 +224,9 @@ class SyncAppDataController extends AbstractController
                         break;
                     case "crm_farmer_training_report_details":
                         $this->processFarmerTrainingDetails($jsonToArray, $batch);
+                        break;
+                    case "crm_challenges":
+                        $this->processChallengers($jsonToArray, $batch);
                         break;
                 }
                 $detail->setStatus(true);
@@ -2199,6 +2203,37 @@ VALUES (
                 $stmt->execute();
             }
 
+        }
+    }
+
+    private function processChallengers($reports, Api $batch)
+    {
+        foreach ($reports as $report) {
+            if(isset($report['employee_id']) && $report['employee_id']){
+
+                $deleteSql = "DELETE FROM `crm_challenger` WHERE `app_batch_id`= :app_batch_id AND `app_id`= :app_id";
+                $stmtDelete = $this->getDoctrine()->getConnection()->prepare($deleteSql);
+                $stmtDelete->bindValue('app_batch_id', $batch->getId());
+                $stmtDelete->bindValue('app_id', $report['id']);
+                $stmtDelete->execute();
+
+                $createdAt = $report['created_at'] ? (new \DateTime($report['created_at']))->format('Y-m-d H:i:s') : null;
+
+                $sql = "INSERT INTO `crm_challenger`(`employee_id`, `challenger_feed_name_id`, `name`, `challenger_type`, `description`, `created_at`, `app_batch_id`, `app_id`) VALUES (:employee_id, :challenges_feed_type_id, :feed_name, :challenger_type, :description, :created_at, :app_batch_id, :app_id)";
+
+                $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
+
+                $stmt->bindValue('employee_id', $report['employee_id']);
+                $stmt->bindValue('challenger_feed_name_id', $report['challenges_feed_type_id']);
+                $stmt->bindValue('feed_name', $report['name']);
+                $stmt->bindValue('challenger_type', $report['challenger_type']);
+                $stmt->bindValue('description', $report['description']);
+                $stmt->bindValue('created_at', $createdAt);
+                $stmt->bindValue('app_batch_id', $batch->getId());
+                $stmt->bindValue('app_id', $report['id']);
+
+                $stmt->execute();
+            }
         }
     }
 

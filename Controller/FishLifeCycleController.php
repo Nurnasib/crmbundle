@@ -73,7 +73,7 @@ class FishLifeCycleController extends AbstractController
                     return $er->createQueryBuilder('e')
                         ->where("e.settingType ='FEED_NAME'")
                         ->andWhere("e.status=1")
-                        ->orderBy('e.name', 'ASC');
+                        ->orderBy('e.sortOrder', 'ASC');
                 },
             ))->add('Save', SubmitType::class)
             ->getForm();

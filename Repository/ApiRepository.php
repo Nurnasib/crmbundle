@@ -1828,7 +1828,7 @@ class ApiRepository extends BaseRepository
         $qb->where("s.settingType = 'FEED_NAME'");
         $qb->andWhere('s.status = 1');
 
-        $qb->orderBy('s.id', 'ASC');
+        $qb->orderBy('s.sortOrder', 'ASC');
         $result = $qb->getQuery()->getArrayResult();
 
         $data = [];
