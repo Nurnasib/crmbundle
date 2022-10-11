@@ -2226,7 +2226,7 @@ VALUES (
                 $stmt->bindValue('employee_id', $report['employee_id']);
                 $stmt->bindValue('challenger_feed_name_id', $report['challenges_feed_type_id']);
                 $stmt->bindValue('feed_name', $report['name']);
-                $stmt->bindValue('challenger_type', $report['challenger_type']);
+                $stmt->bindValue('challenger_type', $report['challenge_type']);
                 $stmt->bindValue('description', $report['description']);
                 $stmt->bindValue('created_at', $createdAt);
                 $stmt->bindValue('app_batch_id', $batch->getId());
