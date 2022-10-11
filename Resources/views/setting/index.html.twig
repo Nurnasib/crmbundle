@@ -39,6 +39,7 @@
                             <th scope="col">Slug</th>
                             <th scope="col">Setting Type</th>
                             <th scope="col">Parent</th>
+                            <th scope="col">Sort Order</th>
                             <th scope="col">Status</th>
                             <th scope="col text-center"><i class="feather icon-settings"></i></th>
                         </tr>
@@ -51,6 +52,17 @@
                             <td>{{ entity.slug|default('') }}</td>
                             <td>{{ entity.settingType }}</td>
                             <td>{{ entity.parent.name|default('') }} - {{entity.parent.settingType|default('')  }}</td>
+                            <td>
+                                <a
+                                        data-type="number"
+                                        class="editable"
+                                        id="sort_order-{{ entity.id }}"
+                                        data-name="sort_order"
+                                        href="javascript:"
+                                        data-url="{{ path('crm_setting_sort_order_update',{'id':entity.id}) }}"
+                                        data-pk="{{ entity.id }}"
+                                        data-value="">{{ entity.sortOrder }}</a>
+                                </td>
                             {#<td>{% if entity.settingType is defined and  entity.settingType is not empty %}{{ entity.settingType.name }}{% endif %}</td>#}
                             <td>{% if entity.status is not empty %}Yes {% else %}No {% endif %}</td>
                             <td>
@@ -74,9 +86,15 @@
 {% block javascripts %}
     {{ parent() }}
     <script type="application/javascript" src="{{ asset('assets/module/js/app.js') }}"></script>
+    <script type="application/javascript" src="{{ asset('assets/plugins/bootstrap-editable/js/bootstrap4-editable.js') }}"></script>
 {% endblock  %}
 {% block documentready %}
     {{ parent() }}
+
+    $.fn.editable.defaults.mode ='inline';
+    {#    $.fn.editable.defaults.mode = 'popover';#}
+    $('.editable').editable();
+
     $('#datatable').DataTable( {
     "pageLength": 25,
     'columnDefs': [ {

@@ -121,6 +121,27 @@ class SettingController extends AbstractController
 
 
     /**
+     * @param Request $request
+     * @return JsonResponse
+     * @Route("/sort-order-update/{id}", name="crm_setting_sort_order_update", options={"expose"=true})
+     */
+    public function inlineUpdateReportMode(Request $request, Setting $setting)
+    {
+
+        $data = $request->request->all();
+        
+//        $reportMode = $this->getDoctrine()->getRepository(Setting::class)->find($data['value']);
+
+        $setting->setSortOrder($data['value']);
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($setting);
+        $em->flush();
+        return new JsonResponse(['status' => 200]);
+
+    }
+
+
+    /**
      * @Route("/life-cycle", methods={"GET"}, name="crm_setting_life_cycle")
      * @return Response
      */

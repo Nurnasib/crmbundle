@@ -67,7 +67,7 @@
                         <td>{{ details.feed.name|default('') }}</td>
                         <td>{{ details.feedItemName }}</td>
                         <td>{{ details.mainCultureSpecies }}</td>
-                        <td>{{ details.cultureAreaDecimal|number_format(2) }}</td>
+                        <td>{{ details.cultureAreaDecimal|number_format(2,'.','') }}</td>
                         <td>{{ details.hatchery.name|default('') }}</td>
                         <td data-t="s">{{ details.stockingDate ? details.stockingDate|date('d-m-Y') : '' }}</td>
                         <td data-t="n">{{ details.noOfInitialFish|number_format(2,'.','') }}</td>
