@@ -2219,7 +2219,7 @@ VALUES (
 
                 $createdAt = $report['created_at'] ? (new \DateTime($report['created_at']))->format('Y-m-d H:i:s') : null;
 
-                $sql = "INSERT INTO `crm_challenger`(`employee_id`, `challenger_feed_name_id`, `name`, `challenger_type`, `description`, `created_at`, `app_batch_id`, `app_id`) VALUES (:employee_id, :challenges_feed_type_id, :name, :challenger_type, :description, :created_at, :app_batch_id, :app_id)";
+                $sql = "INSERT INTO `crm_challenger`(`employee_id`, `challenger_feed_name_id`, `name`, `challenger_type`, `description`, `created_at`, `app_batch_id`, `app_id`) VALUES (:employee_id, :challenger_feed_name_id, :name, :challenger_type, :description, :created_at, :app_batch_id, :app_id)";
 
                 $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
 
