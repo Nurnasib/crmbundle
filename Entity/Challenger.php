@@ -106,7 +106,7 @@ class Challenger
     /**
      * @param User $employee
      */
-    public function setEmployee(User $employee): void
+    public function setEmployee($employee): void
     {
         $this->employee = $employee;
     }
@@ -122,7 +122,7 @@ class Challenger
     /**
      * @param \Terminalbd\CrmBundle\Entity\Setting $challengerFeedName
      */
-    public function setChallengerFeedName(\Terminalbd\CrmBundle\Entity\Setting $challengerFeedName): void
+    public function setChallengerFeedName($challengerFeedName): void
     {
         $this->challengerFeedName = $challengerFeedName;
     }
@@ -138,7 +138,7 @@ class Challenger
     /**
      * @param string $name
      */
-    public function setName(string $name): void
+    public function setName($name): void
     {
         $this->name = $name;
     }
@@ -154,7 +154,7 @@ class Challenger
     /**
      * @param string $challengerType
      */
-    public function setChallengerType(string $challengerType): void
+    public function setChallengerType($challengerType): void
     {
         $this->challengerType = $challengerType;
     }
@@ -170,7 +170,7 @@ class Challenger
     /**
      * @param string $description
      */
-    public function setDescription(string $description): void
+    public function setDescription($description): void
     {
         $this->description = $description;
     }

@@ -2219,13 +2219,13 @@ VALUES (
 
                 $createdAt = $report['created_at'] ? (new \DateTime($report['created_at']))->format('Y-m-d H:i:s') : null;
 
-                $sql = "INSERT INTO `crm_challenger`(`employee_id`, `challenger_feed_name_id`, `name`, `challenger_type`, `description`, `created_at`, `app_batch_id`, `app_id`) VALUES (:employee_id, :challenges_feed_type_id, :feed_name, :challenger_type, :description, :created_at, :app_batch_id, :app_id)";
+                $sql = "INSERT INTO `crm_challenger`(`employee_id`, `challenger_feed_name_id`, `name`, `challenger_type`, `description`, `created_at`, `app_batch_id`, `app_id`) VALUES (:employee_id, :challenges_feed_type_id, :name, :challenger_type, :description, :created_at, :app_batch_id, :app_id)";
 
                 $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
 
                 $stmt->bindValue('employee_id', $report['employee_id']);
-                $stmt->bindValue('challenger_feed_name_id', $report['challenges_feed_type_id']);
-                $stmt->bindValue('feed_name', $report['name']);
+                $stmt->bindValue('challenger_feed_name_id', $report['challenges_feed_type_id']&&$report['challenges_feed_type_id']!=''?$report['challenges_feed_type_id']:null);
+                $stmt->bindValue('name', $report['name']);
                 $stmt->bindValue('challenger_type', $report['challenge_type']);
                 $stmt->bindValue('description', $report['description']);
                 $stmt->bindValue('created_at', $createdAt);
