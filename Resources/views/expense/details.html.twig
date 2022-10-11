@@ -184,8 +184,8 @@
                                 {% if expenseBatch %}
                                     {% set milesAmount=milesAmount+expenseBatch.totalMilesAmount %}
                                 <tr>
-                                    <th class="text-right hidden show-print" colspan="{{ expenseParticularAttributes|length +3 }}">Bike Miles Amount ({{ expenseBatch.totalRiding }} KM per KM {{ expenseBatch.perMilesAmount }} Tk.) </th>
-                                    <th colspan="{{ expenseParticularAttributes|length + 8 }}" class="text-right hidden-print">Bike Miles Amount ({{ expenseBatch.totalRiding }} KM per KM {{ expenseBatch.perMilesAmount }} Tk.) </th>
+                                    <th class="text-right hidden show-print" colspan="{{ expenseParticularAttributes|length +3 }}">Bike Miles Amount (Total reading {{ expenseBatch.totalRiding }} KM, Per KM = {{ expenseBatch.perMilesAmount }} Tk.) </th>
+                                    <th colspan="{{ expenseParticularAttributes|length + 8 }}" class="text-right hidden-print">Bike Miles Amount (Total reading {{ expenseBatch.totalRiding }} KM, Per KM = {{ expenseBatch.perMilesAmount }} Tk.) </th>
                                     <th class="text-right">{{ expenseBatch.totalMilesAmount|number_format(2,'.',',') }}</th>
                                     <td class="hidden-print"></td>
                                 </tr>

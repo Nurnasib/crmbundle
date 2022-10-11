@@ -158,8 +158,8 @@
                                     {% endif %}
 
                                     <tr>
-                                        <th colspan="{{ dailyExpenseParticularAttributes|length +3 }}" class="text-right hidden show-print">Bike Miles Amount ({{ expenseBatch.totalRiding }} KM per KM {{ expenseBatch.perMilesAmount }} Tk.) </th>
-                                        <th colspan="{{ dailyExpenseParticularAttributes|length +8 }}" class="text-right hidden-print">Bike Miles Amount ({{ expenseBatch.totalRiding }} KM per KM {{ expenseBatch.perMilesAmount }} Tk.) </th>
+                                        <th colspan="{{ dailyExpenseParticularAttributes|length +3 }}" class="text-right hidden show-print">Bike Miles Amount (Total reading {{ expenseBatch.totalRiding }} KM, Per KM = {{ expenseBatch.perMilesAmount }} Tk.) </th>
+                                        <th colspan="{{ dailyExpenseParticularAttributes|length +8 }}" class="text-right hidden-print">Bike Miles Amount (Total reading {{ expenseBatch.totalRiding }} KM, Per KM = {{ expenseBatch.perMilesAmount }} Tk.) </th>
                                         <th class="text-right">{{ expenseBatch.totalMilesAmount|number_format(2,'.',',') }}</th>
                                     </tr>
 
