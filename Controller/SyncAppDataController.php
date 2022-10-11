@@ -2224,8 +2224,8 @@ VALUES (
                 $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
 
                 $stmt->bindValue('employee_id', $report['employee_id']);
-                $stmt->bindValue('challenger_feed_name_id', $report['challenges_feed_type_id']&&$report['challenges_feed_type_id']!=''?$report['challenges_feed_type_id']:null);
-                $stmt->bindValue('name', $report['name']);
+                $stmt->bindValue('challenger_feed_name_id', isset($report['challenges_feed_type_id']) && $report['challenges_feed_type_id']!=''?$report['challenges_feed_type_id']:null);
+                $stmt->bindValue('name', isset($report['name']) && $report['name']!=''?$report['name']:null);
                 $stmt->bindValue('challenger_type', $report['challenge_type']);
                 $stmt->bindValue('description', $report['description']);
                 $stmt->bindValue('created_at', $createdAt);
