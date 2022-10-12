@@ -93,8 +93,9 @@ class CattlePerformanceRepository extends EntityRepository
             }
             $qb->andWhere('employee.id IN (:employeeIds)')->setParameter('employeeIds', $employeeIs);
         }
-        if (isset($filterBy['employee']) && $filterBy['employee'] !== null){
-            $qb->andWhere('employee.id = :employeeId')->setParameter('employeeId', $employeeId);
+        $employee = isset($filterBy['employeeId'])? $filterBy['employeeId']: '';
+        if (!empty($employee)){
+            $qb->andWhere('employee.id = :employee')->setParameter('employee', $employee);
         }
         $region = isset($filterBy['region'])? $filterBy['region']: '';
         if (!empty($region)){
