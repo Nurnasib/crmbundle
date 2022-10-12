@@ -18,6 +18,7 @@ use App\Repository\UserRepository;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\DataTransformer\DateTimeToStringTransformer;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -52,6 +53,25 @@ class SearchFilterFormForSalesAndMarketingType extends AbstractType
                     'class' => 'select2'
                 ]
             ])*/
+            ->add($builder->create('startMonth', TextType::class, array(
+                'label' => 'Start Month',
+                'attr' => array(
+                    'class' => 'monthYearPicker',
+                    'autocomplete' => 'off',
+                    'placeholder' => 'mm-YYYY'
+                ),
+                'required' => false
+            ))->addViewTransformer(new DateTimeToStringTransformer(null, null, 'm-Y')))
+
+            ->add($builder->create('endMonth', TextType::class, array(
+                'label' => 'End Month',
+                'attr' => array(
+                    'class' => 'monthYearPicker',
+                    'autocomplete' => 'off',
+                    'placeholder' => 'mm-YYYY'
+                ),
+                'required' => false
+            ))->addViewTransformer(new DateTimeToStringTransformer(null, null, 'm-Y')))
 
             ->add('startDate', TextType::class,[
                 'attr'=>[

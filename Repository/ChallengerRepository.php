@@ -28,7 +28,7 @@ class ChallengerRepository extends EntityRepository
     public function getChallengerByEmployee($report, $filterBy, User $loggedUser)
     {
         $returnArray=[];
-
+//dd($filterBy);
         if(!empty($report)){
             $qb = $this->createQueryBuilder('e');
 
@@ -36,8 +36,12 @@ class ChallengerRepository extends EntityRepository
 
             $qb->addSelect('employee.id AS employeeId');
             $qb->addSelect('employee.name AS employeeName');
+            $qb->addSelect('designation.name AS designationName');
+            $qb->addSelect('challengerFeed.name AS feedName');
 
             $qb->join('e.employee','employee');
+            $qb->join('employee.designation','designation');
+            $qb->leftJoin('e.challengerFeedName','challengerFeed');
 
             if($report=='challenges-problem'){
                 $qb->where('e.challengerType =:challengerType')->setParameter('challengerType','Problems');
@@ -47,8 +51,8 @@ class ChallengerRepository extends EntityRepository
                 $qb->where('e.challengerType =:challengerType')->setParameter('challengerType','Competitor Activity');
             }
 
-            $startDate = isset($filterBy['startDate'])? (new \DateTime($filterBy['startDate']))->format('Y-m-d') . ' 00:00:00': '';
-            $endDate = isset($filterBy['endDate'])? (new \DateTime($filterBy['endDate']))->format('Y-m-d') . ' 23:59:59': '';
+            $startDate = isset($filterBy['startMonth'])&&$filterBy['startMonth']!=''? (new \DateTime($filterBy['startMonth']))->format('Y-m-d') . ' 00:00:00': '';
+            $endDate = isset($filterBy['endMonth'])&&$filterBy['endMonth']!=''? (new \DateTime($filterBy['endMonth']))->format('Y-m-d') . ' 23:59:59': '';
 
             $employee = isset($filterBy['employeeId'])? $filterBy['employeeId']: '';
             if (!empty($employee)){
@@ -76,10 +80,19 @@ class ChallengerRepository extends EntityRepository
             $results = $qb->getQuery()->getArrayResult();
             if($results){
                 foreach ($results as $result){
-                    $returnArray[]=$result;
+                    $reportingMonth = $result['createdAt']->format('m-Y');
+                    if($report=='challenges-problem'){
+                        $returnArray[$reportingMonth][]=$result;
+                    }elseif ($report=='challenges-idea'){
+                        $returnArray[$reportingMonth][]=$result;
+                    }elseif ($report=='competitors-activity'){
+                        $returnArray[$reportingMonth][]=$result;
+                    }
+
                 }
             }
         }
+//        dd($returnArray);
         return $returnArray;
     }
 }

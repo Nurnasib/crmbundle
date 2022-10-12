@@ -22,25 +22,16 @@
                     <thead class="thead-dark">
                     {{ form_start(form) }}
                     <tr>
-
-                        <th style="min-width: 200px">
-                        <div class="form-group">
-                            {{ form_label(form.employee, 'Employee:', { 'label_attr': {'class': 'col-md-4 text-right'} })}}
-                            <div class="col-md-8 p-0">
-                            {{ form_widget(form.employee) }}
-                            </div>
-                        </div>
-                        </th>
                         <th>
-                            {{ form_label(form.startDate, 'Start Date:', { 'label_attr': {'class': 'col-md-4 text-right'} }) }}
+                            {{ form_label(form.startMonth, 'Start Date:', { 'label_attr': {'class': 'col-md-4 text-right'} }) }}
                             <div class="col-md-8 p-0">
-                            {{ form_widget(form.startDate,{'id':'start-date', 'attr':{'placeholder': 'dd-mm-YYYY'}}) }}
+                            {{ form_widget(form.startMonth,{'id':'start-date', 'attr':{'placeholder': 'mm-YYYY'}}) }}
                             </div>
                         </th>
                         <th>
-                            {{ form_label(form.endDate, 'End Date:', { 'label_attr': {'class': 'col-md-4 text-right'} }) }}
+                            {{ form_label(form.endMonth, 'End Date:', { 'label_attr': {'class': 'col-md-4 text-right'} }) }}
                             <div class="col-md-8 p-0">
-                            {{ form_widget(form.endDate,{'id':'end-date', 'attr':{'placeholder': 'dd-mm-YYYY'}}) }}
+                            {{ form_widget(form.endMonth,{'id':'end-date', 'attr':{'placeholder': 'mm-YYYY'}}) }}
                             </div>
                         </th>
                         <th>
@@ -106,6 +97,10 @@
             border: 2px solid #b5b5b5 !important;
             border-bottom-color: #b5b5b5 !important;
         }
+
+        .ui-datepicker-calendar {
+            display: none
+        }
 /*        table.filter thead th{
             border: 0 !important;
         }*/
@@ -135,14 +130,34 @@
             })
         })
 
-        $('#start-date, #end-date').datepicker(
-            {
-                changeMonth: true,
-                changeYear: true,
-                yearRange: "2020:" + new Date().getFullYear(),
-                dateFormat: 'dd-mm-yy'
+
+        $('.monthYearPicker').datepicker({
+            changeMonth: true,
+            changeYear: true,
+            dateFormat: 'mm-yy',
+            autoClose:true,
+            onClose: function() {
+                $("#ui-datepicker-div").removeClass('monthYearPicker');
+                var iMonth = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
+                var iYear = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
+                $(this).datepicker('setDate', new Date(iYear, iMonth, 1));
+            },
+
+            beforeShow: function() {
+                $("#ui-datepicker-div").addClass('monthYearPicker');
+                // console.log($(this).val());
+                if ((selDate = $(this).val()).length > 0)
+                {
+                    iYear = selDate.substring(selDate.length - 4, selDate.length);
+                    iMonth = selDate.substring(0, 2);
+                    // iMonth = jQuery.inArray(selDate.substring(1, 2), $(this).datepicker('option', 'monthNames'));
+                    // console.log(iMonth);
+                    iMonth = iMonth-1;
+                    $(this).datepicker('option', 'defaultDate', new Date(iYear, iMonth, 1));
+                    $(this).datepicker('setDate', new Date(iYear, iMonth, 1));
+                }
             }
-        );
+        });
 
         let button = document.querySelector("#button-excel");
 

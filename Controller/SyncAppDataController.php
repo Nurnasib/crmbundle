@@ -2219,7 +2219,7 @@ VALUES (
 
                 $createdAt = $report['created_at'] ? (new \DateTime($report['created_at']))->format('Y-m-d H:i:s') : null;
 
-                $sql = "INSERT INTO `crm_challenger`(`employee_id`, `challenger_feed_name_id`, `name`, `challenger_type`, `description`, `created_at`, `app_batch_id`, `app_id`) VALUES (:employee_id, :challenger_feed_name_id, :name, :challenger_type, :description, :created_at, :app_batch_id, :app_id)";
+                $sql = "INSERT INTO `crm_challenger`(`employee_id`, `challenger_feed_name_id`, `name`, `challenger_type`, `description`, `created_at`, `app_batch_id`, `app_id`, `feed_company_id`) VALUES (:employee_id, :challenger_feed_name_id, :name, :challenger_type, :description, :created_at, :app_batch_id, :app_id, :feed_company_id)";
 
                 $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
 
@@ -2231,6 +2231,7 @@ VALUES (
                 $stmt->bindValue('created_at', $createdAt);
                 $stmt->bindValue('app_batch_id', $batch->getId());
                 $stmt->bindValue('app_id', $report['id']);
+                $stmt->bindValue('feed_company_id', isset( $report['companyId']) &&  $report['companyId']!='' &&  $report['companyId']!=0? $report['companyId']:null);
 
                 $stmt->execute();
             }

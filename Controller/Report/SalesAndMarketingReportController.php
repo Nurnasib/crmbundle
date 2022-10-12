@@ -58,6 +58,8 @@ class SalesAndMarketingReportController extends AbstractController
         if ($form->isSubmitted()) {
 //            $report = $form->getData()['monthlyReport'];
 
+            $filterBy['startMonth'] = $form->getData()['startMonth']->format('Y-m-d');
+            $filterBy['endMonth'] = $form->getData()['endMonth']->format('Y-m-t');
             $filterBy['startDate'] = $form->getData()['startDate'];
             $filterBy['endDate'] = $form->getData()['endDate'];
             $filterBy['employeeId'] = $form->getData()['employee'] ? $form->getData()['employee']->getId() : '';

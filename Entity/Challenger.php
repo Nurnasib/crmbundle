@@ -39,6 +39,13 @@ class Challenger
      * @ORM\JoinColumn(name="challenger_feed_name_id", referencedColumnName="id", onDelete="SET NULL", nullable=true)
      */
     private $challengerFeedName;
+    
+    /**
+     * @var Setting
+     * @ORM\ManyToOne(targetEntity="Terminalbd\CrmBundle\Entity\Setting", inversedBy="challenger")
+     * @ORM\JoinColumn(name="feed_company_id", referencedColumnName="id", onDelete="SET NULL", nullable=true)
+     */
+    private $feedCompany;
 
     /**
      * @var string
@@ -221,6 +228,22 @@ class Challenger
     public function setAppId($appId): void
     {
         $this->appId = $appId;
+    }
+
+    /**
+     * @return \Terminalbd\CrmBundle\Entity\Setting
+     */
+    public function getFeedCompany()
+    {
+        return $this->feedCompany;
+    }
+
+    /**
+     * @param \Terminalbd\CrmBundle\Entity\Setting $feedCompany
+     */
+    public function setFeedCompany($feedCompany): void
+    {
+        $this->feedCompany = $feedCompany;
     }
 
 
