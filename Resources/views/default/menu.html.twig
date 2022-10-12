@@ -40,6 +40,15 @@
                 <li><a class="" href="{{ path('life_cycle_report_index') }}"><span>{{ 'Life Cycle Report'|trans }}</span></a></li>
                 <li><a class="" href="{{ path('monthly_report_index') }}"><span>{{ 'Monthly Report'|trans }}</span></a></li>
                 <li><a class="" href="{{ path('others_report_index') }}"><span>{{ 'Others Report'|trans }}</span></a></li>
+                <li>
+                    <a class="dropdown-item" href="javascript:">{{ 'Sales & Marketing'|trans }}</a>
+                    <ul>
+                        <li><a class="dropdown-item" href="{{ path('sales_marketing_report_index',{'report':'challenges-problem'}) }}">{{ 'Problems'|trans }}</a>
+                        <li><a class="dropdown-item" href="{{ path('sales_marketing_report_index',{'report':'challenges-idea'}) }}">{{ 'Ideas'|trans }}</a>
+                        <li><a class="dropdown-item" href="{{ path('sales_marketing_report_index',{'report':'competitors-activity'}) }}">{{ 'Competitors Activity'|trans }}</a>
+                        </li>
+                    </ul>
+                </li>
             </ul>
 
         </li>

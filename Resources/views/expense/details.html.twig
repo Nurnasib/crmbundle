@@ -43,7 +43,7 @@
                         {% endif %}
                     </div>
 
-                    <div class="portlet-body form expense_form_section" id="expense_form_section">
+                    <div class="portlet-body form expense_form_section expense_body" id="expense_form_section">
 
                         <div style="text-align: center">
                             <h4>Nourish Poultry & Hatchery Ltd.</h4>
@@ -306,6 +306,27 @@
                         </form>
                         {% endif %}
                     </div>
+
+                    {% if expenseBatch is not null and expenseBatch.status>1 %}
+                        <table width="100%" class="no-bordered" style="margin-bottom: 20px">
+                            <tr>
+                                <th style="text-align: center; color: #000">{{ expenseBatch.employee.name|default('') }}</th>
+                                <th style="text-align: center; color: #000">{{ expenseBatch.approvedBy.name|default('') }}</th>
+                                <th style="text-align: center; color: #000"></th>
+                                <th style="text-align: center; color: #000"></th>
+                                <th style="text-align: center; color: #000"></th>
+                                <th style="text-align: center; color: #000"></th>
+                            </tr>
+                            <tr>
+                                <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">Submited by</span></th>
+                                <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">Supervisor/ Authorized Official</span></th>
+                                <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">Sr. Manager</span></th>
+                                <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">DGM (S&S)</span></th>
+                                <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">Sr. DGM (S&M)</span></th>
+                                <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">GM (S&M)</span></th>
+                            </tr>
+                        </table>
+                    {% endif %}
                 </div>
 
                 <style>
@@ -328,6 +349,10 @@
              }
              .show-print {
                  display: table-cell!important;
+             }
+
+             .expense_body{
+                 min-height: 1250px!important;
              }
          }
      </style>

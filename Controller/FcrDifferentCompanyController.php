@@ -28,7 +28,7 @@ use Terminalbd\CrmBundle\Form\DiseaseMappingFormType;
 
 
 /**
- * @Route("/crm/fcr/differnt/company")
+ * @Route("/crm/differnt/company/fcr")
  * @Security("is_granted('ROLE_CRM_POULTRY_USER') or is_granted('ROLE_DEVELOPER')")
  */
 class FcrDifferentCompanyController extends AbstractController
