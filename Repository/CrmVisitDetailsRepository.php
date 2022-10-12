@@ -227,13 +227,13 @@ class CrmVisitDetailsRepository extends EntityRepository
         $data = [];
         foreach ($results as $result) {
             if ($result['process'] == 'farmer'){
-                $data[$result['userId']]['farmer'][] = $result;
+                $data[$result['userId']]['farmer'][$result['visitDate']->format('d-m-Y')][] = $result;
             }elseif ($result['process'] == 'agent'){
-                $data[$result['userId']]['agent'][] = $result;
+                $data[$result['userId']]['agent'][$result['visitDate']->format('d-m-Y')][] = $result;
             }elseif ($result['process'] == 'other-agent'){
-                $data[$result['userId']]['other-agent'][] = $result;
+                $data[$result['userId']]['other-agent'][$result['visitDate']->format('d-m-Y')][] = $result;
             }elseif ($result['process'] == 'sub-agent'){
-                $data[$result['userId']]['sub-agent'][] = $result;
+                $data[$result['userId']]['sub-agent'][$result['visitDate']->format('d-m-Y')][] = $result;
             }
             $data[$result['userId']]['employeeName']= $result['employeeName'];
             $data['visitDate']= ['begin' => $begin,'end' => $end];

@@ -60,27 +60,33 @@
                         </tr>
                         </thead>
                         <tbody>
-                        {% for data in entity %}
+                        {% for dateMonthYear, dateWiseRecord in entity %}
                             <tr>
-                                <td align="center">{{ loop.index }}</td>
-                                <td>{{ data.farmerName }}</td>
-                                <td>{{ data.farmerAddress }}</td>
-                                <td>{{ data.farmerMobile }}</td>
-                                <td>
-                                    {% if data.purposeMultiple is not empty %}
-                                        {% set purposes=data.purposeMultiple|json_decode %}
-                                        <ol>
-                                            {% for purpose in purposes %}
-                                                <li>{{ purpose }}</li>
-                                            {% endfor %}
-                                        </ol>
-                                    {% else %}
-                                        {{ data.purposeName }}
-                                    {% endif %}
-                                </td>
-                                <td>{{ data.farmCapacity }}</td>
-                                <td>{{ data.comments }}</td>
+                                <th colspan="7">{{ dateMonthYear }}</th>
                             </tr>
+                            {% for data in dateWiseRecord %}
+                                <tr>
+
+                                    <td align="center">{{ loop.index }}</td>
+                                    <td>{{ data.farmerName }}</td>
+                                    <td>{{ data.farmerAddress }}</td>
+                                    <td>{{ data.farmerMobile }}</td>
+                                    <td>
+                                        {% if data.purposeMultiple is not empty %}
+                                            {% set purposes=data.purposeMultiple|json_decode %}
+                                            <ol>
+                                                {% for purpose in purposes %}
+                                                    <li>{{ purpose }}</li>
+                                                {% endfor %}
+                                            </ol>
+                                        {% else %}
+                                            {{ data.purposeName }}
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ data.farmCapacity }}</td>
+                                    <td>{{ data.comments }}</td>
+                                </tr>
+                            {% endfor %}
                         {% endfor %}
                         </tbody>
                     </table>
@@ -101,15 +107,20 @@
                         </tr>
                         </thead>
                         <tbody>
-                        {% for data in entity %}
+                        {% for dateMonthYear, dateWiseRecord in entity %}
                             <tr>
-                                <td align="center">{{ loop.index }}</td>
-                                <td>{{ data.agentName }}</td>
-                                <td>{{ data.agentAddress }}</td>
-                                <td>{{ data.agentMobile }}</td>
-                                <td>{{ data.purposeName }}</td>
-                                <td>{{ data.comments }}</td>
+                                <th colspan="6">{{ dateMonthYear }}</th>
                             </tr>
+                            {% for data in dateWiseRecord %}
+                                <tr>
+                                    <td align="center">{{ loop.index }}</td>
+                                    <td>{{ data.agentName }}</td>
+                                    <td>{{ data.agentAddress }}</td>
+                                    <td>{{ data.agentMobile }}</td>
+                                    <td>{{ data.purposeName }}</td>
+                                    <td>{{ data.comments }}</td>
+                                </tr>
+                            {% endfor %}
                         {% endfor %}
                         </tbody>
                     </table>
@@ -131,16 +142,21 @@
                         </tr>
                         </thead>
                         <tbody>
-                        {% for data in entity %}
+                        {% for dateMonthYear, dateWiseRecord in entity %}
                             <tr>
-                                <td align="center">{{ loop.index }}</td>
-                                <td>{{ data.agentName }}</td>
-                                <td>{{ data.agentAddress }}</td>
-                                <td>{{ data.nourishAgentName }}</td>
-                                <td>{{ data.agentMobile }}</td>
-                                <td>{{ data.purposeName }}</td>
-                                <td>{{ data.comments }}</td>
+                                <th colspan="7">{{ dateMonthYear }}</th>
                             </tr>
+                            {% for data in dateWiseRecord %}
+                                <tr>
+                                    <td align="center">{{ loop.index }}</td>
+                                    <td>{{ data.agentName }}</td>
+                                    <td>{{ data.agentAddress }}</td>
+                                    <td>{{ data.nourishAgentName }}</td>
+                                    <td>{{ data.agentMobile }}</td>
+                                    <td>{{ data.purposeName }}</td>
+                                    <td>{{ data.comments }}</td>
+                                </tr>
+                            {% endfor %}
                         {% endfor %}
                         </tbody>
                     </table>
@@ -161,15 +177,20 @@
                         </tr>
                         </thead>
                         <tbody>
-                        {% for data in entity %}
+                        {% for dateMonthYear, dateWiseRecord in entity %}
                             <tr>
-                                <td align="center">{{ loop.index }}</td>
-                                <td>{{ data.agentName }}</td>
-                                <td>{{ data.agentAddress }}</td>
-                                <td>{{ data.agentMobile }}</td>
-                                <td>{{ data.purposeName }}</td>
-                                <td>{{ data.comments }}</td>
+                                <th colspan="6">{{ dateMonthYear }}</th>
                             </tr>
+                            {% for data in dateWiseRecord %}
+                                <tr>
+                                    <td align="center">{{ loop.index }}</td>
+                                    <td>{{ data.agentName }}</td>
+                                    <td>{{ data.agentAddress }}</td>
+                                    <td>{{ data.agentMobile }}</td>
+                                    <td>{{ data.purposeName }}</td>
+                                    <td>{{ data.comments }}</td>
+                                </tr>
+                            {% endfor %}
                         {% endfor %}
                         </tbody>
                     </table>

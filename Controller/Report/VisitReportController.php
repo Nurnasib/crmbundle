@@ -79,7 +79,7 @@ class VisitReportController extends AbstractController
             $end = $request->query->get('endDate');
         }
         $entities = $this->getDoctrine()->getRepository(CrmVisitDetails::class)->getVisitDetails($begin,$end,$employeeId);
-//        dd($employeeId);
+//        dd($entities);
         if ($mode == 'pdf'){
 
             // Configure Dompdf according to your needs
