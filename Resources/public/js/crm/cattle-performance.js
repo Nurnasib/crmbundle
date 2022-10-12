@@ -27,6 +27,7 @@ $(document).on('keypress','.cattle_performance_report input[type=text], .cattle_
 function fatteningDataInsertUsingAjax(element) {
     var cattle_performance_report_id = $('.cattle_performance_report_id').val();
     var customerId=$('.customer_id').val();
+    var visit_id=$('.visit_id').val();
     var parentElement = element.closest('tr');
     var breed_type=parentElement.find('.breed_type').val();
     var feed_type=parentElement.find('.feed_type').val();
@@ -48,7 +49,7 @@ function fatteningDataInsertUsingAjax(element) {
     }
 
     $.ajax({
-        url    : Routing.generate('crm_fattening_performance_detail_report_add',{'id':cattle_performance_report_id}),
+        url    : Routing.generate('crm_fattening_performance_detail_report_add',{'id':cattle_performance_report_id, 'visit':visit_id}),
         type   : 'post',
         data   : {
             'customerId':customerId,
@@ -82,6 +83,7 @@ function fatteningDataInsertUsingAjax(element) {
 function dairyDataInsertUsingAjax(element) {
     var cattle_performance_report_id = $('.cattle_performance_report_id').val();
     var customerId=$('.customer_id').val();
+    var visit_id=$('.visit_id').val();
     var parentElement = element.closest('tr');
     var breed_type=parentElement.find('.breed_type').val();
     var feed_type=parentElement.find('.feed_type').val();
@@ -106,7 +108,7 @@ function dairyDataInsertUsingAjax(element) {
     }
 
     $.ajax({
-        url    : Routing.generate('crm_dairy_performance_detail_report_add',{'id':cattle_performance_report_id}),
+        url    : Routing.generate('crm_dairy_performance_detail_report_add',{'id':cattle_performance_report_id, 'visit':visit_id}),
         type   : 'post',
         data   : {
             'customerId':customerId,

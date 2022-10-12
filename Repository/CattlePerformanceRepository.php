@@ -54,6 +54,12 @@ class CattlePerformanceRepository extends EntityRepository
 
         $qb->join('e.employee', 'employee');
         $qb->leftJoin('employee.designation', 'designation');
+
+        $qb->leftJoin('e.visit','visit');
+        $qb->leftJoin('visit.location','location');
+        $qb->leftJoin('location.parent','dist');
+        $qb->leftJoin('dist.parent','region');
+
         $qb->join('e.report', 'report');
         $qb->leftJoin('e.agent', 'agent');
         $qb->join('e.customer', 'farmer');
@@ -61,11 +67,14 @@ class CattlePerformanceRepository extends EntityRepository
         $qb->leftJoin('e.feedType', 'feed_type');
 
         $qb->select('e AS details');
-        $qb->addSelect('employee.userId', 'employee.name', 'designation.name AS designationName');
-        $qb->addSelect('agent.id AS agentId', 'agent.name AS agentName');
+//        $qb->select('e.id as cpId','e.visitingDate', 'e.reportingMonth','e.ageOfCattleMonth');
+//        $qb->addSelect('e.previousBodyWeight','e.presentBodyWeight','e.bodyWeightDifference');
+        $qb->addSelect('employee.id as employeeAutoId', 'employee.userId', 'employee.name', 'designation.name AS designationName');
+        $qb->addSelect('agent.id AS agentId', 'agent.name AS agentName', 'agent.address AS agentAddress');
         $qb->addSelect('farmer.id AS farmerId', 'farmer.name AS farmerName', 'farmer.address AS farmerAddress', 'farmer.mobile AS farmerMobile');
         $qb->addSelect('breed_type.id AS breedTypeId', 'breed_type.name AS breedTypeName');
         $qb->addSelect('feed_type.id AS feedTypeId', 'feed_type.name AS feedTypeName');
+        $qb->addSelect('region.id AS regionId', 'region.name AS regionName');
 
         $qb->where('e.visitingDate >= :start')->setParameter('start', $start);
         $qb->andWhere('e.visitingDate <= :end')->setParameter('end', $end);
@@ -75,12 +84,25 @@ class CattlePerformanceRepository extends EntityRepository
 
         if (!str_contains($rolesString, 'ADMIN') && !in_array('ROLE_LINE_MANAGER', $loggedUser->getRoles())){
             $qb->andWhere('employee.id = :employeeId')->setParameter('employeeId', $loggedUser->getId());
+        }elseif (!str_contains($rolesString, 'ADMIN') && in_array('ROLE_LINE_MANAGER', $loggedUser->getRoles())){
+
+            $employeeIdsByLineManager = $this->_em->getRepository(User::class)->getEmployeesByLineManager($loggedUser);
+            $employeeIs=[];
+            if($employeeIdsByLineManager){
+                $employeeIs=$employeeIdsByLineManager;
+            }
+            $qb->andWhere('employee.id IN (:employeeIds)')->setParameter('employeeIds', $employeeIs);
         }
         if (isset($filterBy['employee']) && $filterBy['employee'] !== null){
             $qb->andWhere('employee.id = :employeeId')->setParameter('employeeId', $employeeId);
         }
+        $region = isset($filterBy['region'])? $filterBy['region']: '';
+        if (!empty($region)){
+            $qb->andWhere('region.id = :regionId')->setParameter('regionId', $region);
+        }
 
         $results = $qb->getQuery()->getArrayResult();
+
         $data = [];
 
         foreach ($results as $result) {
@@ -94,20 +116,25 @@ class CattlePerformanceRepository extends EntityRepository
             $result['details']['breedTypeName'] = $result['breedTypeName'];
             $result['details']['feedTypeId'] = $result['feedTypeId'];
             $result['details']['feedTypeName'] = $result['feedTypeName'];
+            $result['details']['regionId'] = $result['regionId'];
+            $result['details']['regionName'] = $result['regionName'];
+            $result['details']['employeeName'] = $result['name'];
 
 
-            $month = $result['details']['visitingDate']->format('m-F');
-            $year = $result['details']['visitingDate']->format('Y');
-            $data[$year][$result['userId']]['employeeDetails'] = [
+            $month = $result['details']['visitingDate']->format('F-Y');
+//            $year = $result['details']['visitingDate']->format('Y');
+            /*$data[$month][$result['regionId']][$result['employeeAutoId']]['employeeDetails'] = [
                 'userId' => $result['userId'],
                 'name' => $result['name'],
                 'designation' => $result['designationName'],
-            ];
-            $data[$year][$result['userId']]['data'][$month][] = $result['details'];
+            ];*/
+            $data['records'][$month][$result['regionId']][$result['employeeAutoId']]['data'][] = $result['details'];
+            $data['regionRecords'][$month][$result['regionId']][]=$result['details'];
 
-            ksort($data);
-            ksort($data[$year][$result['userId']]['data']);
+            /*ksort($data);
+            ksort($data[$year][$result['employeeAutoId']]['data']);*/
         }
+//        dd($data);
         return $data;
     }
 

@@ -191,7 +191,7 @@
                                 </tr>
                                 {% endif %}
 
-                                {% set monthlyExpensePaticularTotalAmount= monthlyExpensePaticularAmount['grandTolalPerColumn'] is defined and  monthlyExpensePaticularAmount['grandTolalPerColumn'] is not empty? monthlyExpensePaticularAmount['grandTolalPerColumn']|arraySumColWise('amount')|number_format(2,'.',','):'0.00'  %}
+                                {% set monthlyExpensePaticularTotalAmount= monthlyExpensePaticularAmount['grandTolalPerColumn'] is defined and  monthlyExpensePaticularAmount['grandTolalPerColumn'] is not empty? monthlyExpensePaticularAmount['grandTolalPerColumn']|arraySumColWise('amount')|number_format(2,'.',''):'0.00'  %}
                                 <tr>
                                     <th class="text-right hidden show-print" colspan="{{ expenseParticularAttributes|length +3 }}">Grand Total</th>
                                     <th colspan="{{ expenseParticularAttributes|length + 8 }}" class="text-right hidden-print">Grand Total</th>

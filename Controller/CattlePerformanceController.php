@@ -27,6 +27,7 @@ use Terminalbd\CrmBundle\Entity\CattleLifeCycleDetails;
 use Terminalbd\CrmBundle\Entity\CattlePerformance;
 use Terminalbd\CrmBundle\Entity\CattlePerformanceDetails;
 use Terminalbd\CrmBundle\Entity\CrmCustomer;
+use Terminalbd\CrmBundle\Entity\CrmVisit;
 use Terminalbd\CrmBundle\Entity\SettingLifeCycle;
 use Terminalbd\CrmBundle\Form\CattleLifeCycleDetailsFormType;
 use Terminalbd\CrmBundle\Form\CattleLifeCycleFormType;
@@ -45,11 +46,12 @@ class CattlePerformanceController extends AbstractController
     /**
      * @param CrmCustomer $crmCustomer
      * @param Setting $report
+     * @param CrmVisit $visit
      * @return Response
      * @ParamConverter("crmCustomer", class="Terminalbd\CrmBundle\Entity\CrmCustomer")
-     * @Route("/customer/{id}/report/{report}/new/modal", methods={"GET", "POST"}, name="cattle_performance_new_modal", options={"expose"=true})
+     * @Route("/customer/{id}/report/{report}/new/modal/{visit}", methods={"GET", "POST"}, name="cattle_performance_new_modal", options={"expose"=true})
      */
-    public function newModal(CrmCustomer $crmCustomer, Setting $report): Response
+    public function newModal(CrmCustomer $crmCustomer, Setting $report, CrmVisit $visit): Response
     {
         $breedTypes = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('status'=>1,'settingType'=>'BREED_TYPE','parent'=>$report->getParent()));
         $feedTypes = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('status'=>1,'settingType'=>'FEED_TYPE','parent'=>$report->getParent()));
@@ -63,6 +65,7 @@ class CattlePerformanceController extends AbstractController
                 'breedTypes' => $breedTypes,
                 'feedTypes' => $feedTypes,
                 'crmCattlePerformanceDetails' => $allCattlePerformances,
+                'visit'=>$visit
             ]);
         }
 
@@ -73,20 +76,22 @@ class CattlePerformanceController extends AbstractController
             'breedTypes' => $breedTypes,
             'feedTypes' => $feedTypes,
             'crmCattlePerformanceDetails' => $allCattlePerformances,
+            'visit'=>$visit
         ]);
     }
 
 
     /**
      * Displays a form to edit an existing ChickLifeCycle entity.
-     * @Route("/{id}/fattening/details/add", methods={"POST"}, name="crm_fattening_performance_detail_report_add", options={"expose"=true})
+     * @Route("/{id}/fattening/details/add/{visit}", methods={"POST"}, name="crm_fattening_performance_detail_report_add", options={"expose"=true})
      * @param Request $request
      * @param Setting $report
+     * @param CrmVisit $visit
      * @return Response
      * @throws \Exception
      */
 
-    public function addFatteningPerformanceDetailsReport(Request $request, Setting $report): Response
+    public function addFatteningPerformanceDetailsReport(Request $request, Setting $report, CrmVisit $visit): Response
     {
         $data = $request->request->all();
 
@@ -139,6 +144,7 @@ class CattlePerformanceController extends AbstractController
         $entity->setDmOfFodderStrawKg($entity->calculateDmOfFodderStrawKg());
         $entity->setTotalDmKg($entity->calculateTotalDmKg());
         $entity->setDmRequirementByBwtKg($entity->calculateDmRequirementByBwtKg());
+        $entity->setVisit($visit);
 
 
         $em = $this->getDoctrine()->getManager();
@@ -157,14 +163,15 @@ class CattlePerformanceController extends AbstractController
 
     /**
      * Displays a form to edit an existing ChickLifeCycle entity.
-     * @Route("/{id}/dairy/details/add", methods={"POST"}, name="crm_dairy_performance_detail_report_add", options={"expose"=true})
+     * @Route("/{id}/dairy/details/add/{visit}", methods={"POST"}, name="crm_dairy_performance_detail_report_add", options={"expose"=true})
      * @param Request $request
      * @param Setting $report
+     * @param CrmVisit $visit
      * @return Response
      * @throws \Exception
      */
 
-    public function addDairyPerformanceDetailsReport(Request $request, Setting $report): Response
+    public function addDairyPerformanceDetailsReport(Request $request, Setting $report, CrmVisit $visit): Response
     {
         $data = $request->request->all();
 
@@ -220,6 +227,8 @@ class CattlePerformanceController extends AbstractController
         $entity->setDmOfFodderStrawKg($entity->calculateDmOfFodderStrawKg());
         $entity->setTotalDmKg($entity->calculateTotalDmKg());
         $entity->setDmRequirementByBwtKg($entity->calculateDmRequirementByBwtKgForDairy());
+        
+        $entity->setVisit($visit);
 
         $em = $this->getDoctrine()->getManager();
         $em->persist($entity);
