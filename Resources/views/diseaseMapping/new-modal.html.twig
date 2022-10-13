@@ -15,7 +15,7 @@
                     </div>
                 </div>
                 <div class="disease_mapping_section">
-                    {{ form_start(form, {'attr': {'method':'post','action': path('disease_mapping_new_modal',{'id':crmCustomer.id,'report':report.id }),'class': 'form-horizontal right','id':'disease_mapping_form'}}) }}
+                    {{ form_start(form, {'attr': {'method':'post','action': path('disease_mapping_new_modal',{'id':crmCustomer.id,'report':report.id,'visit':visit.id }),'class': 'form-horizontal right','id':'disease_mapping_form'}}) }}
                     <table class="table table-bordered disease_mapping_table" id="datatable">
                         <thead>
                         <tr>

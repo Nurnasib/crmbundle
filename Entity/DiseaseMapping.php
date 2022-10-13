@@ -156,7 +156,27 @@ class DiseaseMapping
      * @ORM\Column(name="created_at", type="datetime")
      */
     private $createdAt;
-    
+
+    /**
+     * @var Api
+     * @ORM\ManyToOne(targetEntity="Terminalbd\CrmBundle\Entity\Api", inversedBy="diseaseMapping")
+     * @ORM\JoinColumn(referencedColumnName="id", nullable=true)
+     */
+    private $appBatch;
+
+    /**
+     * @var integer
+     * @ORM\Column(type="integer", nullable=true)
+     */
+
+    private $appId;
+
+    /**
+     * @var CrmVisit
+     * @ORM\ManyToOne(targetEntity="Terminalbd\CrmBundle\Entity\CrmVisit" , inversedBy="diseaseMapping")
+     * @ORM\JoinColumn(referencedColumnName="id", onDelete="SET NULL", nullable=true)
+     */
+    private $visit;
 
     /**
      * @return int
@@ -185,7 +205,7 @@ class DiseaseMapping
     /**
      * @param \Terminalbd\CrmBundle\Entity\Setting $report
      */
-    public function setReport(\Terminalbd\CrmBundle\Entity\Setting $report): void
+    public function setReport($report): void
     {
         $this->report = $report;
     }
@@ -217,7 +237,7 @@ class DiseaseMapping
     /**
      * @param \Terminalbd\CrmBundle\Entity\CrmCustomer $customer
      */
-    public function setCustomer(\Terminalbd\CrmBundle\Entity\CrmCustomer $customer): void
+    public function setCustomer($customer): void
     {
         $this->customer = $customer;
     }
@@ -249,7 +269,7 @@ class DiseaseMapping
     /**
      * @param \Terminalbd\CrmBundle\Entity\Setting $hatchery
      */
-    public function setHatchery(\Terminalbd\CrmBundle\Entity\Setting $hatchery): void
+    public function setHatchery($hatchery): void
     {
         $this->hatchery = $hatchery;
     }
@@ -265,7 +285,7 @@ class DiseaseMapping
     /**
      * @param \Terminalbd\CrmBundle\Entity\Setting $farmType
      */
-    public function setFarmType(\Terminalbd\CrmBundle\Entity\Setting $farmType): void
+    public function setFarmType($farmType): void
     {
         $this->farmType = $farmType;
     }
@@ -281,7 +301,7 @@ class DiseaseMapping
     /**
      * @param \Terminalbd\CrmBundle\Entity\Setting $feed
      */
-    public function setFeed(\Terminalbd\CrmBundle\Entity\Setting $feed): void
+    public function setFeed($feed): void
     {
         $this->feed = $feed;
     }
@@ -297,7 +317,7 @@ class DiseaseMapping
     /**
      * @param \Terminalbd\CrmBundle\Entity\Setting $disease
      */
-    public function setDisease(\Terminalbd\CrmBundle\Entity\Setting $disease): void
+    public function setDisease($disease): void
     {
         $this->disease = $disease;
     }
@@ -310,7 +330,7 @@ class DiseaseMapping
     /**
      * @param \Terminalbd\CrmBundle\Entity\Setting $breed
      */
-    public function setBreed(\Terminalbd\CrmBundle\Entity\Setting $breed): void
+    public function setBreed($breed): void
     {
         $this->breed = $breed;
     }
@@ -360,7 +380,7 @@ class DiseaseMapping
     /**
      * @param float $ageDays
      */
-    public function setAgeDays(float $ageDays): void
+    public function setAgeDays($ageDays): void
     {
         $this->ageDays = $ageDays;
     }
@@ -376,7 +396,7 @@ class DiseaseMapping
     /**
      * @param string $ageUnitType
      */
-    public function setAgeUnitType(string $ageUnitType): void
+    public function setAgeUnitType($ageUnitType): void
     {
         $this->ageUnitType = $ageUnitType;
     }
@@ -394,7 +414,7 @@ class DiseaseMapping
     /**
      * @param string $remarks
      */
-    public function setRemarks(string $remarks): void
+    public function setRemarks($remarks): void
     {
         $this->remarks = $remarks;
     }
@@ -418,7 +438,7 @@ class DiseaseMapping
     /**
      * @return string
      */
-    public function getTreatment(): string
+    public function getTreatment()
     {
         return $this->treatment;
     }
@@ -426,7 +446,7 @@ class DiseaseMapping
     /**
      * @param string $treatment
      */
-    public function setTreatment(string $treatment): void
+    public function setTreatment($treatment): void
     {
         $this->treatment = $treatment;
     }
@@ -434,7 +454,7 @@ class DiseaseMapping
     /**
      * @return float
      */
-    public function getCultureAreaForFish(): float
+    public function getCultureAreaForFish()
     {
         return $this->cultureAreaForFish;
     }
@@ -442,7 +462,7 @@ class DiseaseMapping
     /**
      * @param float $cultureAreaForFish
      */
-    public function setCultureAreaForFish(float $cultureAreaForFish): void
+    public function setCultureAreaForFish($cultureAreaForFish): void
     {
         $this->cultureAreaForFish = $cultureAreaForFish;
     }
@@ -450,7 +470,7 @@ class DiseaseMapping
     /**
      * @return float
      */
-    public function getDencityForFish(): float
+    public function getDencityForFish()
     {
         return $this->dencityForFish;
     }
@@ -458,7 +478,7 @@ class DiseaseMapping
     /**
      * @param float $dencityForFish
      */
-    public function setDencityForFish(float $dencityForFish): void
+    public function setDencityForFish($dencityForFish): void
     {
         $this->dencityForFish = $dencityForFish;
     }
@@ -475,7 +495,7 @@ class DiseaseMapping
     /**
      * @return float
      */
-    public function getAverageWeightForFish(): float
+    public function getAverageWeightForFish()
     {
         return $this->averageWeightForFish;
     }
@@ -483,11 +503,58 @@ class DiseaseMapping
     /**
      * @param float $averageWeightForFish
      */
-    public function setAverageWeightForFish(float $averageWeightForFish): void
+    public function setAverageWeightForFish($averageWeightForFish): void
     {
         $this->averageWeightForFish = $averageWeightForFish;
     }
-    
-    
 
+    /**
+     * @return Api
+     */
+    public function getAppBatch()
+    {
+        return $this->appBatch;
+    }
+
+    /**
+     * @param Api $appBatch
+     */
+    public function setAppBatch($appBatch): void
+    {
+        $this->appBatch = $appBatch;
+    }
+
+    /**
+     * @return int
+     */
+    public function getAppId()
+    {
+        return $this->appId;
+    }
+
+    /**
+     * @param int $appId
+     */
+    public function setAppId($appId): void
+    {
+        $this->appId = $appId;
+    }
+
+    /**
+     * @return CrmVisit
+     */
+    public function getVisit()
+    {
+        return $this->visit;
+    }
+
+    /**
+     * @param CrmVisit $visit
+     */
+    public function setVisit($visit): void
+    {
+        $this->visit = $visit;
+    }
+    
+    
 }

@@ -69,6 +69,7 @@ class DiseaseMappingRepository extends EntityRepository
             $qb->addSelect('customer.id AS customerId', 'customer.name AS customerName', 'customer.mobile AS customerMobile', 'customer.address AS customerAddress');
 
             $qb->addSelect( 'district.name AS agentDistrictName');
+            $qb->addSelect( 'region.id AS agentRegionId', 'region.name AS agentRegionName');
 
             $qb->addSelect('hatchery.name AS hatcheryName');
             $qb->addSelect('feed.name AS feedName');
@@ -80,6 +81,7 @@ class DiseaseMappingRepository extends EntityRepository
             $qb->leftJoin('e.customer','customer');
             $qb->leftJoin('e.agent', 'agent');
             $qb->leftJoin('agent.district', 'district');
+            $qb->leftJoin('district.parent', 'region');
             $qb->leftJoin('e.hatchery', 'hatchery');
             $qb->leftJoin('e.feed', 'feed');
             $qb->leftJoin('e.farmType', 'farmType');
@@ -115,9 +117,14 @@ class DiseaseMappingRepository extends EntityRepository
             if($results){
                 foreach ($results as $result){
                     $monthYear = $result['visitingDate']->format('F-Y');
-                    $returnArray[$monthYear][$result['employeeId']]['name']=$result['employeeName'];
+
+                    $returnArray['records'][$monthYear][$result['agentRegionId']][$result['employeeId']]['details'][] = $result;
+                    $returnArray['regionRecords'][$monthYear][$result['agentRegionId']][]=$result;
+
+
+                    /*$returnArray[$monthYear][$result['employeeId']]['name']=$result['employeeName'];
                     $returnArray[$monthYear][$result['employeeId']]['employeeDesignationName']=$result['employeeDesignationName'];
-                    $returnArray[$monthYear][$result['employeeId']]['details'][]=$result;
+                    $returnArray[$monthYear][$result['employeeId']]['details'][]=$result;*/
                 }
             }
         }

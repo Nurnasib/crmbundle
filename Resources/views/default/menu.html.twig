@@ -35,11 +35,6 @@
         <li class=""><a class="" href="javascript:"><i class="feather icon-file-text"></i>{{ 'Report'|trans }}</a>
 
             <ul class="sub-menu">
-                <li><a class="dropdown-item" href="{{ path('visit_report') }}">{{ 'Visit Report'|trans }}</a></li>
-                <li><a class="dropdown-item" href="{{ path('visit_status') }}">{{ 'Visit Status'|trans }}</a></li>
-                <li><a class="" href="{{ path('life_cycle_report_index') }}"><span>{{ 'Life Cycle Report'|trans }}</span></a></li>
-                <li><a class="" href="{{ path('monthly_report_index') }}"><span>{{ 'Monthly Report'|trans }}</span></a></li>
-                <li><a class="" href="{{ path('others_report_index') }}"><span>{{ 'Others Report'|trans }}</span></a></li>
                 <li>
                     <a class="dropdown-item" href="javascript:">{{ 'Sales & Marketing'|trans }}</a>
                     <ul>
@@ -49,6 +44,12 @@
                         </li>
                     </ul>
                 </li>
+                <li><a class="dropdown-item" href="{{ path('visit_report') }}">{{ 'Visit Report'|trans }}</a></li>
+                <li><a class="dropdown-item" href="{{ path('visit_status') }}">{{ 'Visit Status'|trans }}</a></li>
+                <li><a class="" href="{{ path('life_cycle_report_index') }}"><span>{{ 'Life Cycle Report'|trans }}</span></a></li>
+                <li><a class="" href="{{ path('monthly_report_index') }}"><span>{{ 'Monthly Report'|trans }}</span></a></li>
+                <li><a class="" href="{{ path('others_report_index') }}"><span>{{ 'Others Report'|trans }}</span></a></li>
+
             </ul>
 
         </li>

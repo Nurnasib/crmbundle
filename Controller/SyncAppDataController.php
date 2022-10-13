@@ -881,7 +881,15 @@ VALUES (:report_id, :report_parent_parent_id, :agent_id, :customer_id, :employee
     {
         foreach ($reports as $report) {
 
-            $sql = "INSERT INTO `crm_disease_mapping`(`report_id`, `agent_id`, `customer_id`, `employee_id`, `hatchery_id`, `farm_type_id`, `feed_id`, `disease_id`, `visiting_date`, `flock_size_or_capacity`, `age_days`, `age_unit_type`, `remarks`, `created_at`, `breed_id`, `culture_area_for_fish`, `dencity_for_fish`, `average_weight_for_fish`, `treatment`) VALUES (:report_id, :agent_id, :customer_id, :employee_id, :hatchery_id, :farm_type_id, :feed_id, :disease_id, :visiting_date, :flock_size_or_capacity, :age_days, :age_unit_type, :remarks, :created_at, :breed_id, :culture_area_for_fish, :dencity_for_fish, :average_weight_for_fish, :treatment)";
+            $findVisit = $this->getDoctrine()->getRepository(CrmVisit::class)->findOneBy(['appBatch' => $batch, 'appId' => $report['crm_visit_id']]);
+
+            $deleteSql = "DELETE FROM `crm_disease_mapping` WHERE `app_batch_id`= :app_batch_id AND `app_id`= :app_id";
+            $stmtDelete = $this->getDoctrine()->getConnection()->prepare($deleteSql);
+            $stmtDelete->bindValue('app_batch_id', $batch->getId());
+            $stmtDelete->bindValue('app_id', $report['id']);
+            $stmtDelete->execute();
+
+            $sql = "INSERT INTO `crm_disease_mapping`(`report_id`, `agent_id`, `customer_id`, `employee_id`, `hatchery_id`, `farm_type_id`, `feed_id`, `disease_id`, `visiting_date`, `flock_size_or_capacity`, `age_days`, `age_unit_type`, `remarks`, `created_at`, `breed_id`, `culture_area_for_fish`, `dencity_for_fish`, `average_weight_for_fish`, `treatment`, `app_batch_id`, `app_id`, `visit_id`) VALUES (:report_id, :agent_id, :customer_id, :employee_id, :hatchery_id, :farm_type_id, :feed_id, :disease_id, :visiting_date, :flock_size_or_capacity, :age_days, :age_unit_type, :remarks, :created_at, :breed_id, :culture_area_for_fish, :dencity_for_fish, :average_weight_for_fish, :treatment, :app_batch_id, :app_id, :visit_id)";
 
             $visitingDate = new \DateTime($report['visiting_date']);
             $createdAt = new \DateTime($report['created_at']);
@@ -895,6 +903,11 @@ VALUES (:report_id, :report_parent_parent_id, :agent_id, :customer_id, :employee
             $stmt->bindValue('farm_type_id', $report['farm_type_id']);
             $stmt->bindValue('feed_id', $report['feed_id']);
             $stmt->bindValue('disease_id', $report['disease_id']);
+
+            $stmt->bindValue('app_batch_id', $batch->getId());
+            $stmt->bindValue('app_id', $report['id']);
+            $stmt->bindValue('visit_id', $findVisit?$findVisit->getId():null);
+
             $stmt->bindValue('visiting_date', $visitingDate->format('Y-m-d'));
             if ($report['flock_size_or_capacity']){
                 $stmt->bindValue('flock_size_or_capacity', $report['flock_size_or_capacity']);

@@ -17,6 +17,7 @@ use Terminalbd\CrmBundle\Entity\AntibioticFreeFarm;
 use Terminalbd\CrmBundle\Entity\AntibioticFreeFarmMedicineOrVaccineCost;
 use Terminalbd\CrmBundle\Entity\BroilerLifeCycle;
 use Terminalbd\CrmBundle\Entity\CrmCustomer;
+use Terminalbd\CrmBundle\Entity\CrmVisit;
 use Terminalbd\CrmBundle\Entity\DiseaseMapping;
 use Terminalbd\CrmBundle\Form\AntibioticFreeFarmFormType;
 use Terminalbd\CrmBundle\Form\BroilerLifeCycleFormType;
@@ -34,11 +35,12 @@ class DiseaseMappingController extends AbstractController
      * @param Request $request
      * @param CrmCustomer $crmCustomer
      * @param Setting $report
+     * @param CrmVisit $visit
      * @return Response
      * @ParamConverter("crmCustomer", class="Terminalbd\CrmBundle\Entity\CrmCustomer")
-     * @Route("/customer/{id}/report/{report}/new/modal", methods={"GET", "POST"}, name="disease_mapping_new_modal", options={"expose"=true})
+     * @Route("/customer/{id}/report/{report}/new/modal/{visit}", methods={"GET", "POST"}, name="disease_mapping_new_modal", options={"expose"=true})
      */
-    public function newModal(Request $request, CrmCustomer $crmCustomer, Setting $report): Response
+    public function newModal(Request $request, CrmCustomer $crmCustomer, Setting $report, CrmVisit $visit): Response
     {
         $em = $this->getDoctrine()->getManager();
 
@@ -68,6 +70,7 @@ class DiseaseMappingController extends AbstractController
             $entity->setAgent($crmCustomer->getAgent());
             $entity->setEmployee($this->getUser());
             $entity->setDencityForFish($entity->calculateDencityForFish());
+            $entity->setVisit($visit);
             $em->persist($entity);
             $em->flush();
             return new JsonResponse(array(
@@ -81,6 +84,7 @@ class DiseaseMappingController extends AbstractController
             'entity' => $entity,
             'diseasesMapping' => $diseasesMapping,
             'form' => $form->createView(),
+            'visit'=>$visit
         ]);
     }
 
