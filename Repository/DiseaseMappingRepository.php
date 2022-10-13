@@ -92,9 +92,27 @@ class DiseaseMappingRepository extends EntityRepository
             $startDate = isset($filterBy['startDate'])&&$filterBy['startDate']!=''? (new \DateTime($filterBy['startDate']))->format('Y-m-d') . ' 00:00:00': '';
             $endDate = isset($filterBy['endDate']) && $filterBy['endDate']!=''? (new \DateTime($filterBy['endDate']))->format('Y-m-d') . ' 23:59:59': '';
 
-            $employee = isset($filterBy['employeeId'])&&$filterBy['employeeId']!=''? $filterBy['employeeId']: '';
+            $rolesString = implode('_', $loggedUser->getRoles());
+
+            if (!str_contains($rolesString, 'ADMIN') && !in_array('ROLE_LINE_MANAGER', $loggedUser->getRoles())){
+                $qb->andWhere('employee.id = :employeeId')->setParameter('employeeId', $loggedUser->getId());
+            }elseif (!str_contains($rolesString, 'ADMIN') && in_array('ROLE_LINE_MANAGER', $loggedUser->getRoles())){
+
+                $employeeIdsByLineManager = $this->_em->getRepository(User::class)->getEmployeesByLineManager($loggedUser);
+                $employeeIs=[];
+                if($employeeIdsByLineManager){
+                    $employeeIs=$employeeIdsByLineManager;
+                }
+                $qb->andWhere('employee.id IN (:employeeIds)')->setParameter('employeeIds', $employeeIs);
+            }
+            $employee = isset($filterBy['employeeId'])? $filterBy['employeeId']: '';
             if (!empty($employee)){
                 $qb->andWhere('employee.id = :employee')->setParameter('employee', $employee);
+            }
+
+            $region = isset($filterBy['region'])? $filterBy['region']: '';
+            if (!empty($region)){
+                $qb->andWhere('region.id = :regionId')->setParameter('regionId', $region);
             }
 
             if (!empty($startDate) && !empty($endDate)){
@@ -102,16 +120,6 @@ class DiseaseMappingRepository extends EntityRepository
                 $qb->andWhere('e.visitingDate <= :visitingDateEnd')->setParameter('visitingDateEnd', $endDate);
             }
 
-
-            $rolesString = implode('_', $loggedUser->getRoles());
-
-            if (!str_contains($rolesString, 'ADMIN') && !in_array('ROLE_LINE_MANAGER', $loggedUser->getRoles())){
-                $qb->andWhere('employee.id = :employeeId')->setParameter('employeeId', $loggedUser->getId());
-            }
-            if (isset($filterBy['employee']) && $filterBy['employee'] !== null){
-                $qb->andWhere('employee.id = :employeeId')->setParameter('employeeId', $employeeId);
-            }
-            
             $qb->orderBy('e.visitingDate','ASC');
             $results = $qb->getQuery()->getArrayResult();
             if($results){

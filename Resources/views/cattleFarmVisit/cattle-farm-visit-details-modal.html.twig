@@ -21,7 +21,7 @@
                 </div>
                 <div class="card-body-inner" style="padding: 0 5px; overflow-x: scroll">
                     <div class="cattleFarmVisitSection">
-                        {{ form_start(form, {'attr': {'method':'post','action': path('cattle_farm_visit_details_modal',{'id':report.id, 'customer':customer }),'class': 'form-horizontal right','id':'cattle_farm_visit_form'}}) }}
+                        {{ form_start(form, {'attr': {'method':'post','action': path('cattle_farm_visit_details_modal',{'id':report.id, 'customer':customer, 'visit':visit.id }),'class': 'form-horizontal right','id':'cattle_farm_visit_form'}}) }}
                         <table class="table table-striped table-bordered table-hover cattle_farm_visit_report" id="datatable">
                             <thead class="thead-dark">
                             <tr>

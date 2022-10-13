@@ -154,6 +154,27 @@ class CattleFarmVisitDetails
     private $updatedAt;
 
     /**
+     * @var Api
+     * @ORM\ManyToOne(targetEntity="Terminalbd\CrmBundle\Entity\Api", inversedBy="diseaseMapping")
+     * @ORM\JoinColumn(referencedColumnName="id", nullable=true)
+     */
+    private $appBatch;
+
+    /**
+     * @var integer
+     * @ORM\Column(type="integer", nullable=true)
+     */
+
+    private $appId;
+
+    /**
+     * @var CrmVisit
+     * @ORM\ManyToOne(targetEntity="Terminalbd\CrmBundle\Entity\CrmVisit" , inversedBy="diseaseMapping")
+     * @ORM\JoinColumn(referencedColumnName="id", onDelete="SET NULL", nullable=true)
+     */
+    private $visit;
+
+    /**
      * @return int
      */
     public function getId(): int
@@ -471,6 +492,54 @@ class CattleFarmVisitDetails
     public function setUpdatedAt(\DateTime $updatedAt): void
     {
         $this->updatedAt = $updatedAt;
+    }
+
+    /**
+     * @return Api
+     */
+    public function getAppBatch()
+    {
+        return $this->appBatch;
+    }
+
+    /**
+     * @param Api $appBatch
+     */
+    public function setAppBatch($appBatch): void
+    {
+        $this->appBatch = $appBatch;
+    }
+
+    /**
+     * @return int
+     */
+    public function getAppId()
+    {
+        return $this->appId;
+    }
+
+    /**
+     * @param int $appId
+     */
+    public function setAppId($appId): void
+    {
+        $this->appId = $appId;
+    }
+
+    /**
+     * @return CrmVisit
+     */
+    public function getVisit()
+    {
+        return $this->visit;
+    }
+
+    /**
+     * @param CrmVisit $visit
+     */
+    public function setVisit($visit): void
+    {
+        $this->visit = $visit;
     }
 
 }

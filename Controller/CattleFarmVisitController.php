@@ -29,6 +29,7 @@ use Terminalbd\CrmBundle\Entity\CattleLifeCycleDetails;
 use Terminalbd\CrmBundle\Entity\CattlePerformance;
 use Terminalbd\CrmBundle\Entity\CattlePerformanceDetails;
 use Terminalbd\CrmBundle\Entity\CrmCustomer;
+use Terminalbd\CrmBundle\Entity\CrmVisit;
 use Terminalbd\CrmBundle\Entity\SettingLifeCycle;
 use Terminalbd\CrmBundle\Form\CattleFarmVisitDetailsFormType;
 use Terminalbd\CrmBundle\Form\CattleLifeCycleDetailsFormType;
@@ -47,25 +48,27 @@ class CattleFarmVisitController extends AbstractController
 
     /**
      * @param CrmCustomer $crmCustomer
+     * @param CrmVisit $visit
      * @ParamConverter("crmCustomer", class="Terminalbd\CrmBundle\Entity\CrmCustomer")
-     * @Route("/customer/{id}/report/{report}/new/modal", methods={"GET", "POST"}, name="cattle_farm_visit_new_modal", options={"expose"=true})
+     * @Route("/customer/{id}/report/{report}/new/modal/{visit}", methods={"GET", "POST"}, name="cattle_farm_visit_new_modal", options={"expose"=true})
      * @return Response
      */
-    public function newModal(Request $request, CrmCustomer $crmCustomer, Setting $report): Response
+    public function newModal(Request $request, CrmCustomer $crmCustomer, Setting $report, CrmVisit $visit): Response
     {
 
-        return $this->redirectToRoute('cattle_farm_visit_details_modal', ['id'=>$report->getId(), 'customerId'=>$crmCustomer->getId()]);
+        return $this->redirectToRoute('cattle_farm_visit_details_modal', ['id'=>$report->getId(), 'customerId'=>$crmCustomer->getId(), 'visit'=>$visit->getId()]);
 
     }
 
     /**
      * @param Request $request
      * @param Setting $report
+     * @param CrmVisit $visit
      * @return Response
      * @throws \Exception
-     * @Route("/report/{id}/modal", methods={"GET", "POST"}, name="cattle_farm_visit_details_modal", options={"expose"=true})
+     * @Route("/report/{id}/modal/{visit}", methods={"GET", "POST"}, name="cattle_farm_visit_details_modal", options={"expose"=true})
      */
-    public function cattleFarmVisitDetailsModal( Request $request, Setting $report ): Response
+    public function cattleFarmVisitDetailsModal( Request $request, Setting $report, CrmVisit $visit ): Response
     {
         $customer = null;
         $entity = new CattleFarmVisitDetails();
@@ -90,6 +93,7 @@ class CattleFarmVisitController extends AbstractController
             $entity->setCustomer($customer);
             $entity->setAgent($customer->getAgent());
             $entity->setEmployee($this->getUser());
+            $entity->setVisit($visit);
 
             $em = $this->getDoctrine()->getManager();
             $em->persist($entity);
@@ -102,7 +106,8 @@ class CattleFarmVisitController extends AbstractController
             'report' => $report,
             'cattleFarmVisitDetails' => $cattleFarmVisitDetails,
             'form' => $form->createView(),
-            'customer'=>$request->query->get('customerId')
+            'customer'=>$request->query->get('customerId'),
+            'visit'=>$visit
         ]);
     }
 

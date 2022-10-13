@@ -1626,11 +1626,22 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
     public function processCattleFarmVisitDetails($reports, Api $batch)
     {
         foreach ($reports as $report) {
+
+            $findVisit = $this->getDoctrine()->getRepository(CrmVisit::class)->findOneBy(['appBatch' => $batch, 'appId' => $report['crm_visit_id']]);
+
+            $deleteSql = "DELETE FROM `crm_cattle_farm_visit_details` WHERE `app_batch_id`= :app_batch_id AND `app_id`= :app_id";
+            $stmtDelete = $this->getDoctrine()->getConnection()->prepare($deleteSql);
+            $stmtDelete->bindValue('app_batch_id', $batch->getId());
+            $stmtDelete->bindValue('app_id', $report['id']);
+            $stmtDelete->execute();
+
+
+
             $reportingMonth = $report['reporting_month'] ? (new \DateTime($report['reporting_month']))->format('Y-m-d') : null;
             $visitingDate = $report['visiting_date'] ? (new \DateTime($report['visiting_date']))->format('Y-m-d') : null;
             $createdAt = $report['created_at'] ? (new \DateTime($report['created_at']))->format('Y-m-d H:i:s') : null;
 
-            $sql = "INSERT INTO `crm_cattle_farm_visit_details`(`agent_id`, `customer_id`, `visiting_date`, `cattlePopulationOx`, `cattlePopulationCow`, `cattlePopulationCalf`, `avgMilkYieldPerDay`, `conceptionRate`, `fodder_green_grass_kg`, `fodder_straw_kg`, `typeOfConcentrateFeed`, `marketPriceMilkPerLiter`, `marketPriceMeatPerKg`, `remarks`, `created_at`, `employee_id`, `repoting_month`, `report_id`) VALUES (:agent_id, :customer_id, :visiting_date, :cattlePopulationOx, :cattlePopulationCow, :cattlePopulationCalf, :avgMilkYieldPerDay, :conceptionRate, :fodder_green_grass_kg, :fodder_straw_kg, :typeOfConcentrateFeed, :marketPriceMilkPerLiter, :marketPriceMeatPerKg, :remarks, :created_at, :employee_id, :repoting_month, :report_id)";
+            $sql = "INSERT INTO `crm_cattle_farm_visit_details`(`agent_id`, `customer_id`, `visiting_date`, `cattlePopulationOx`, `cattlePopulationCow`, `cattlePopulationCalf`, `avgMilkYieldPerDay`, `conceptionRate`, `fodder_green_grass_kg`, `fodder_straw_kg`, `typeOfConcentrateFeed`, `marketPriceMilkPerLiter`, `marketPriceMeatPerKg`, `remarks`, `created_at`, `employee_id`, `repoting_month`, `report_id`, `app_batch_id`, `app_id`, `visit_id`) VALUES (:agent_id, :customer_id, :visiting_date, :cattlePopulationOx, :cattlePopulationCow, :cattlePopulationCalf, :avgMilkYieldPerDay, :conceptionRate, :fodder_green_grass_kg, :fodder_straw_kg, :typeOfConcentrateFeed, :marketPriceMilkPerLiter, :marketPriceMeatPerKg, :remarks, :created_at, :employee_id, :repoting_month, :report_id, :app_batch_id, :app_id, :visit_id)";
 
             $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
             $stmt->bindValue('agent_id', $report['agent_id']);
@@ -1651,6 +1662,10 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
             $stmt->bindValue('repoting_month', $reportingMonth);
             $stmt->bindValue('report_id', $report['report_id']);
             $stmt->bindValue('created_at', $createdAt);
+
+            $stmt->bindValue('app_batch_id', $batch->getId());
+            $stmt->bindValue('app_id', $report['id']);
+            $stmt->bindValue('visit_id', $findVisit?$findVisit->getId():null);
 
             $stmt->execute();
         }
