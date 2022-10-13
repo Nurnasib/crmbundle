@@ -55,12 +55,12 @@
                     <tr>
                         {% if recordCount==1 %}
                             <td data-a-v="middle" valign="middle"
-                                rowspan="{{ entities['regionRecords'][monthYear][regionId]|length }}">{{ detail.agentRegionName|default('') }}</td>
+                                rowspan="{{ entities['regionRecords'][monthYear][regionId]|length }}">{{ item.regionName|default('') }}</td>
                         {% endif %}
 
                         {% if loop.first %}
                             <td data-a-v="middle" valign="middle"
-                                rowspan="{{ employeeRecords['data']|length }}">{{ detail.employeeName|default('') }}</td>
+                                rowspan="{{ employeeRecords['data']|length }}">{{ item.employeeName|default('') }}</td>
                         {% endif %}
                         <td data-t="n">{{ totalRecordCount }}</td>
                         <td data-t="s">{{ item.visitingDate|date('d-m-Y') }}</td>
