@@ -74,14 +74,14 @@ class MonthlyReportController extends AbstractController
                     break;
                 case 'layer-performance-brown':
                 case 'layer-performance-white':
-                    $entities = $this->getDoctrine()->getRepository(LayerPerformanceDetails::class)->getLayerPerformanceReportByEmployeeAndDate($report, $filterBy);
+                    $entities = $this->getDoctrine()->getRepository(LayerPerformanceDetails::class)->getLayerPerformanceReportByEmployeeAndDate($report, $filterBy, $this->getUser());
                     break;
                 case 'antibiotic-free-farm-poultry':
-                    $entities = $this->getDoctrine()->getRepository(AntibioticFreeFarm::class)->getAntibioticFreeFarmByEmployeeAndDate($report, $filterBy);
+                    $entities = $this->getDoctrine()->getRepository(AntibioticFreeFarm::class)->getAntibioticFreeFarmByEmployeeAndDate($report, $filterBy, $this->getUser());
                     break;
                 case 'less-costing-farm-poultry':
                 case 'less-costing-farm-fish':
-                    $entities = $this->getDoctrine()->getRepository(CostBenefitAnalysisForLessCostingFarm::class)->getLessCostingFarmByEmployeeAndDate($report, $filterBy);
+                    $entities = $this->getDoctrine()->getRepository(CostBenefitAnalysisForLessCostingFarm::class)->getLessCostingFarmByEmployeeAndDate($report, $filterBy, $this->getUser());
                     break;
                 case 'disease-mapping-report-poultry':
                 case 'disease-mapping-report-cattle':

@@ -63,7 +63,7 @@ class LayerPerformanceDetailsRepository extends BaseRepository
         return $results['totalReport'];
     }
 
-    public function getLayerPerformanceReportByEmployeeAndDate($report, $filterBy)
+    public function getLayerPerformanceReportByEmployeeAndDate($report, $filterBy, User $loggedUser)
     {
         $returnArray=[];
         if(!empty($report)){
@@ -112,13 +112,26 @@ class LayerPerformanceDetailsRepository extends BaseRepository
             $qb->leftJoin('e.color', 'color');
             $qb->where('e.report =:report')->setParameter('report',$report);
 
-            $startDate = isset($filterBy['startDate'])&&$filterBy['startDate']!=''? (new \DateTime($filterBy['startDate']))->format('Y-m-d') . ' 00:00:00': '';
-            $endDate = isset($filterBy['endDate']) && $filterBy['endDate']!=''? (new \DateTime($filterBy['endDate']))->format('Y-m-d') . ' 23:59:59': '';
-
             $employee = isset($filterBy['employeeId'])&&$filterBy['employeeId']!=''? $filterBy['employeeId']: '';
             if (!empty($employee)){
                 $qb->andWhere('employee.id = :employee')->setParameter('employee', $employee);
             }
+
+            $rolesString = implode('_', $loggedUser->getRoles());
+            if (!str_contains($rolesString, 'ADMIN') && !in_array('ROLE_LINE_MANAGER', $loggedUser->getRoles())){
+                $qb->andWhere('employee.id = :employeeId')->setParameter('employeeId', $loggedUser->getId());
+            }elseif (!str_contains($rolesString, 'ADMIN') && in_array('ROLE_LINE_MANAGER', $loggedUser->getRoles())){
+
+                $employeeIdsByLineManager = $this->_em->getRepository(User::class)->getEmployeesByLineManager($loggedUser);
+                $employeeIs=[];
+                if($employeeIdsByLineManager){
+                    $employeeIs=$employeeIdsByLineManager;
+                }
+                $qb->andWhere('employee.id IN (:employeeIds)')->setParameter('employeeIds', $employeeIs);
+            }
+
+            $startDate = isset($filterBy['startDate'])&&$filterBy['startDate']!=''? (new \DateTime($filterBy['startDate']))->format('Y-m-d') . ' 00:00:00': '';
+            $endDate = isset($filterBy['endDate']) && $filterBy['endDate']!=''? (new \DateTime($filterBy['endDate']))->format('Y-m-d') . ' 23:59:59': '';
 
             if (!empty($startDate) && !empty($endDate)){
                 $qb->andWhere('e.reportingMonth >= :reportingMonthStart')->setParameter('reportingMonthStart', $startDate);
