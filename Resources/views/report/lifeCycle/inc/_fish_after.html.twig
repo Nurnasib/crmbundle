@@ -1,119 +1,122 @@
-
+{% if entities is defined and entities['records'] is not empty %}
     <div class="row">
         <div class="card" style="height: 550px; overflow: scroll">
 
 {#            <h4 class="bg-secondary text-center p-1">{{ monthYear[1]~'-'~monthYear[2] }}</h4>#}
             <table class="table table-striped table-bordered table-hover filter-result download-excel" width="100%">
-                {% for month, entity in entities %}
+                {% for month, monthWiseRecords in entities['records'] %}
                 {% set monthYear = month|split('-') %}
-                <thead class="thead-dark">
-                <tr>
-                    <td data-a-h="center" colspan="31" align="center"><h3>NOURISH POULTRY AND HATCHERY LTD</h3></td>
-                </tr>
-                <tr>
-                    <td data-a-h="center" colspan="31" align="center"><h5>UTTARA, DHAKA.</h5></td>
-                </tr>
-                <tr>
-                    <td data-a-h="center" colspan="31" align="center"><h6>{{ lifeCycleSlug=='fish-life-cycle-after-sale-report'?'Fish Life Cycle (Harvest) Report':'' }}</h6></td>
-                </tr>
-                <tr>
-                    <th colspan="6">Officer's ID: {{ employee ? employee.userId : '' }}</th>
-                    <th colspan="6">Officer's Name: {{ employee ? employee.name : '' }}</th>
-                    <th colspan="6">Designation: {{ employee and employee.designation ? employee.designation.name : '' }}</th>
-                    <th colspan="6">Region: {{ employee and employee.regional ? employee.regional.name : '' }}</th>
-                    <th colspan="7">Month: {{ monthYear[1] }}</th>
-                </tr>
-                <tr>
-                    <th data-a-h="center" scope="col" colspan="2" style="text-align: center">Farmer</th>
-                    <th scope="col" data-a-v="middle" rowspan="2">Feed Used</th>
-                    <th scope="col" data-a-v="middle" rowspan="2">Species</th>
-{#                    <th scope="col" data-a-v="middle" rowspan="2">Feed Item Name</th>#}
-                    <th scope="col" data-a-v="middle" rowspan="2">Feed Company</th>
-                    <th scope="col" data-a-v="middle" rowspan="2">Hatchery Name</th>
-                    <th scope="col" data-a-v="middle" rowspan="2">Stocking date</th>
-                    <th scope="col" data-a-v="middle" rowspan="2">Harvest date</th>
-                    <th scope="col" data-a-v="middle" rowspan="2">Culture area (m2)</th>
-                    <th scope="col" data-a-v="middle" rowspan="2">No.of initial fish (pcs.)</th>
-                    <th scope="col" data-a-v="middle" rowspan="2">Total initial weight (kg)</th>
-                    <th scope="col" data-a-v="middle" rowspan="2">Average initial weight (g)</th>
-                    <th scope="col" data-a-v="middle" rowspan="2">No.of final fish (pcs.)</th>
-                    <th scope="col" data-a-v="middle" rowspan="2">No. of final (kg)</th>
-                    <th scope="col" data-a-v="middle" rowspan="2">Average final weight (g)</th>
-                    <th scope="col" data-a-v="middle" rowspan="2">Total feed consumption (kg)</th>
-                    <th scope="col" data-a-v="middle" rowspan="2">DOC</th>
-                    <th scope="col" data-a-v="middle" rowspan="2">ADG (g/fish/day)</th>
-                    <th scope="col" data-a-v="middle" rowspan="2">FCR</th>
-                    <th scope="col" data-a-v="middle" rowspan="2">SR(%)</th>
-                    <th scope="col" data-a-v="middle" rowspan="2">Total seed cost (Taka)</th>
-                    <th scope="col" data-a-v="middle" rowspan="2">Total feed cost (tk.)</th>
-                    <th scope="col" data-a-v="middle" rowspan="2">Feed Cost/kg fish (tk.)</th>
-                    <th scope="col" data-a-v="middle" rowspan="2">Total Others Cost (tk.)</th>
-                    <th scope="col" data-a-v="middle" rowspan="2">Total Cost  (tk.)</th>
-                    <th scope="col" data-a-v="middle" rowspan="2">Production Cost/Kg fish (tk.)</th>
-                    <th scope="col" data-a-v="middle" rowspan="2">Total income  (tk.)</th>
-                    <th scope="col" data-a-v="middle" rowspan="2">Profit/ Loss (tk.)</th>
-                    <th scope="col" data-a-v="middle" rowspan="2">ROI (Retune Over Investment) %</th>
-                    <th scope="col" data-a-v="middle" rowspan="2">Farmer Comments</th>
-                    <th scope="col" data-a-v="middle" rowspan="2">Visitor's Comments</th>
-                </tr>
-                <tr>
-                    <th scope="col">Farmer Name</th>
-                    <th scope="col">Mobile No.</th>
-                </tr>
-                </thead>
 
-                <tbody>
-                {% for details in entity %}
-                    <tr>
-                        <td>{{ details.customer.name }}</td>
-                        <td>{{ details.customer.mobile }}</td>
-                        <td>{{ details.feedType }}</td>
-{#                        <td>{{ details.feedItemName }}</td>#}
-                        <td>{{ details.mainCultureSpecies }}</td>
-                        <td>{{ details.feed.name|default('') }}</td>
-                        <td>{{ details.hatchery.name|default('') }}</td>
-                        <td data-t="s">{{ details.stockingDate ? details.stockingDate|date('d-m-Y') : '' }}</td>
-                        <td data-t="s">{{ details.harvestDate ? details.harvestDate|date('d-m-Y') : '' }}</td>
-                        <td data-t="n">{{ details.cultureAreaDecimal|number_format(2,'.','') }}</td>
-                        <td data-t="n">{{ details.noOfInitialFish|number_format(2,'.','') }}</td>
-                        <td data-t="n">{{ details.totalInitialWeight|number_format(2,'.','') }}</td>
-                        <td data-t="n">{{ details.averageInitialWeight|number_format(2,'.','') }}</td>
-                        <td data-t="n">{{ details.noOfFinalFish|number_format(2,'.','') }}</td>
-                        <td data-t="n">{{ details.finalWeightKg|number_format(2,'.','') }}</td>
-                        <td data-t="n">{{ details.finalWeightGm|number_format(2,'.','') }}</td>
-                        <td data-t="n">{{ details.totalFeedConsumptionKg|number_format(2,'.','') }}</td>
-                        <td data-t="n">{{ details.totalDayOfCulture|number_format(2,'.','') }}</td>
-                        <td data-t="n">{{ details.finalAdg|number_format(2,'.','') }}</td>
-                        <td data-t="n">{{ details.finalFcr|number_format(2,'.','') }}</td>
-                        <td data-t="n">{{ details.srPercentage|number_format(2,'.','') }}</td>
-                        <td data-t="n">{{ details.totalSeedCost|number_format(2,'.','') }}</td>
-                        <td data-t="n">{{ details.totalFeedCost|number_format(2,'.','') }}</td>
-                        <td data-t="n">{{ details.feedCostPerKgFish|number_format(2,'.','') }}</td>
-                        <td data-t="n">{{ details.totalOtherCost|number_format(2,'.','') }}</td>
-                        <td data-t="n">{{ details.totalCost|number_format(2,'.','') }}</td>
-                        <td data-t="n">{{ details.productionCostPerKgFish|number_format(2,'.','') }}</td>
-                        <td data-t="n">{{ details.totalIncome|number_format(2,'.','') }}</td>
-                        <td data-t="n">{{ details.netProfitOrLoss|number_format(2,'.','') }}</td>
-                        <td data-t="n">{{ details.retuneOverInvestment|number_format(2,'.','') }}</td>
-                        <td>{{ details.farmerRemarks }}</td>
-                        <td>{{ details.employeeRemarks }}</td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-                    <tfoot style="display: none">
-                    <tr>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                    </tr>
-                    </tfoot>
+                    {% for employeeId, employeeWiseRecords in monthWiseRecords %}
+                        <thead class="thead-dark">
+                        <tr>
+                            <td data-a-h="center" colspan="31" align="center"><h3>NOURISH POULTRY AND HATCHERY LTD</h3></td>
+                        </tr>
+                        <tr>
+                            <td data-a-h="center" colspan="31" align="center"><h5>UTTARA, DHAKA.</h5></td>
+                        </tr>
+                        <tr>
+                            <td data-a-h="center" colspan="31" align="center"><h6>{{ lifeCycleSlug=='fish-life-cycle-after-sale-report'?'Fish Life Cycle (Harvest) Report':'' }}</h6></td>
+                        </tr>
+                        <tr>
+                            <th colspan="6">Officer's ID: {{ entities['employeeInfo'] is not empty ? entities['employeeInfo'][month][employeeId]['employeeUserId'] : '' }}</th>
+                            <th colspan="6">Officer's Name: {{ entities['employeeInfo'] is not empty ? entities['employeeInfo'][month][employeeId]['name'] : '' }}</th>
+                            <th colspan="6">Designation: {{ entities['employeeInfo'] is not empty ? entities['employeeInfo'][month][employeeId]['designationName'] : '' }}</th>
+                            <th colspan="6">Region: {{ entities['employeeInfo'] is not empty ? entities['employeeInfo'][month][employeeId]['regionName'] : '' }}</th>
+                            <th colspan="7">Month: {{ monthYear[1] }}</th>
+                        </tr>
+                        <tr>
+                            <th data-a-h="center" scope="col" colspan="2" style="text-align: center">Farmer</th>
+                            <th scope="col" data-a-v="middle" rowspan="2">Feed Used</th>
+                            <th scope="col" data-a-v="middle" rowspan="2">Species</th>
+        {#                    <th scope="col" data-a-v="middle" rowspan="2">Feed Item Name</th>#}
+                            <th scope="col" data-a-v="middle" rowspan="2">Feed Company</th>
+                            <th scope="col" data-a-v="middle" rowspan="2">Hatchery Name</th>
+                            <th scope="col" data-a-v="middle" rowspan="2">Stocking date</th>
+                            <th scope="col" data-a-v="middle" rowspan="2">Harvest date</th>
+                            <th scope="col" data-a-v="middle" rowspan="2">Culture area (m2)</th>
+                            <th scope="col" data-a-v="middle" rowspan="2">No.of initial fish (pcs.)</th>
+                            <th scope="col" data-a-v="middle" rowspan="2">Total initial weight (kg)</th>
+                            <th scope="col" data-a-v="middle" rowspan="2">Average initial weight (g)</th>
+                            <th scope="col" data-a-v="middle" rowspan="2">No.of final fish (pcs.)</th>
+                            <th scope="col" data-a-v="middle" rowspan="2">No. of final (kg)</th>
+                            <th scope="col" data-a-v="middle" rowspan="2">Average final weight (g)</th>
+                            <th scope="col" data-a-v="middle" rowspan="2">Total feed consumption (kg)</th>
+                            <th scope="col" data-a-v="middle" rowspan="2">DOC</th>
+                            <th scope="col" data-a-v="middle" rowspan="2">ADG (g/fish/day)</th>
+                            <th scope="col" data-a-v="middle" rowspan="2">FCR</th>
+                            <th scope="col" data-a-v="middle" rowspan="2">SR(%)</th>
+                            <th scope="col" data-a-v="middle" rowspan="2">Total seed cost (Taka)</th>
+                            <th scope="col" data-a-v="middle" rowspan="2">Total feed cost (tk.)</th>
+                            <th scope="col" data-a-v="middle" rowspan="2">Feed Cost/kg fish (tk.)</th>
+                            <th scope="col" data-a-v="middle" rowspan="2">Total Others Cost (tk.)</th>
+                            <th scope="col" data-a-v="middle" rowspan="2">Total Cost  (tk.)</th>
+                            <th scope="col" data-a-v="middle" rowspan="2">Production Cost/Kg fish (tk.)</th>
+                            <th scope="col" data-a-v="middle" rowspan="2">Total income  (tk.)</th>
+                            <th scope="col" data-a-v="middle" rowspan="2">Profit/ Loss (tk.)</th>
+                            <th scope="col" data-a-v="middle" rowspan="2">ROI (Retune Over Investment) %</th>
+                            <th scope="col" data-a-v="middle" rowspan="2">Farmer Comments</th>
+                            <th scope="col" data-a-v="middle" rowspan="2">Visitor's Comments</th>
+                        </tr>
+                        <tr>
+                            <th scope="col">Farmer Name</th>
+                            <th scope="col">Mobile No.</th>
+                        </tr>
+                        </thead>
+
+                        <tbody>
+                        {% for details in employeeWiseRecords %}
+                         <tr>
+                            <td>{{ details.customer.name }}</td>
+                            <td>{{ details.customer.mobile }}</td>
+                            <td>{{ details.feedType }}</td>
+    {#                        <td>{{ details.feedItemName }}</td>#}
+                            <td>{{ details.mainCultureSpecies }}</td>
+                            <td>{{ details.feed.name|default('') }}</td>
+                            <td>{{ details.hatchery.name|default('') }}</td>
+                            <td data-t="s">{{ details.stockingDate ? details.stockingDate|date('d-m-Y') : '' }}</td>
+                            <td data-t="s">{{ details.harvestDate ? details.harvestDate|date('d-m-Y') : '' }}</td>
+                            <td data-t="n">{{ details.cultureAreaDecimal|number_format(2,'.','') }}</td>
+                            <td data-t="n">{{ details.noOfInitialFish|number_format(2,'.','') }}</td>
+                            <td data-t="n">{{ details.totalInitialWeight|number_format(2,'.','') }}</td>
+                            <td data-t="n">{{ details.averageInitialWeight|number_format(2,'.','') }}</td>
+                            <td data-t="n">{{ details.noOfFinalFish|number_format(2,'.','') }}</td>
+                            <td data-t="n">{{ details.finalWeightKg|number_format(2,'.','') }}</td>
+                            <td data-t="n">{{ details.finalWeightGm|number_format(2,'.','') }}</td>
+                            <td data-t="n">{{ details.totalFeedConsumptionKg|number_format(2,'.','') }}</td>
+                            <td data-t="n">{{ details.totalDayOfCulture|number_format(2,'.','') }}</td>
+                            <td data-t="n">{{ details.finalAdg|number_format(2,'.','') }}</td>
+                            <td data-t="n">{{ details.finalFcr|number_format(2,'.','') }}</td>
+                            <td data-t="n">{{ details.srPercentage|number_format(2,'.','') }}</td>
+                            <td data-t="n">{{ details.totalSeedCost|number_format(2,'.','') }}</td>
+                            <td data-t="n">{{ details.totalFeedCost|number_format(2,'.','') }}</td>
+                            <td data-t="n">{{ details.feedCostPerKgFish|number_format(2,'.','') }}</td>
+                            <td data-t="n">{{ details.totalOtherCost|number_format(2,'.','') }}</td>
+                            <td data-t="n">{{ details.totalCost|number_format(2,'.','') }}</td>
+                            <td data-t="n">{{ details.productionCostPerKgFish|number_format(2,'.','') }}</td>
+                            <td data-t="n">{{ details.totalIncome|number_format(2,'.','') }}</td>
+                            <td data-t="n">{{ details.netProfitOrLoss|number_format(2,'.','') }}</td>
+                            <td data-t="n">{{ details.retuneOverInvestment|number_format(2,'.','') }}</td>
+                            <td>{{ details.farmerRemarks }}</td>
+                            <td>{{ details.employeeRemarks }}</td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                        <tfoot style="display: none">
+                        <tr>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                        </tr>
+                        </tfoot>
+                    {% endfor %}
                 {% endfor %}
             </table>
 
         </div>
     </div>
-
+{% endif %}

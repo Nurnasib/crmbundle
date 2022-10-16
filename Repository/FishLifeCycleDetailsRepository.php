@@ -11,6 +11,7 @@
 
 namespace Terminalbd\CrmBundle\Repository;
 
+use App\Entity\User;
 use Doctrine\ORM\EntityRepository;
 use Terminalbd\CrmBundle\Entity\FishLifeCycleDetails;
 
@@ -83,11 +84,11 @@ class FishLifeCycleDetailsRepository extends EntityRepository
         return $arrayReturn;
     }
 
-    public function getFishLifeCycleDetails($lifeCycleSlug, $filterBy)
+    public function getFishLifeCycleDetails($lifeCycleSlug, $filterBy, User $loggedUser)
     {
-        $startDate = $filterBy['startDate'] ? (new \DateTime($filterBy['startDate']))->format('Y-m-d') : null;
-        $endDate = $filterBy['endDate'] ? (new \DateTime($filterBy['endDate']))->format('Y-m-d') : null;
-
+        $startDate = $filterBy['startDate'] ? (new \DateTime($filterBy['startDate']))->format('Y-m-d') : date('Y-m-01');
+        $endDate = $filterBy['endDate'] ? (new \DateTime($filterBy['endDate']))->format('Y-m-d') : date('Y-m-t');
+//dd($startDate);
         $qb = $this->createQueryBuilder('e');
         $qb->join('e.fishLifeCycle', 'fish_life_cycle');
 //        $qb->leftJoin('e.fishLifeCycleDetailSpecies', 'fish_life_cycle_detail_species');
@@ -99,20 +100,29 @@ class FishLifeCycleDetailsRepository extends EntityRepository
         $qb->join('fish_life_cycle.report', 'report');
         $qb->join('fish_life_cycle.customer', 'customer');
 
-        /*$qb->select('e AS details');
-        $qb->addSelect('customer.id AS customerId', 'customer.name AS customerName', 'customer.address AS customerAddress', 'customer.mobile AS customerMobile');
-        $qb->addSelect('report.name AS reportName');
-        $qb->addSelect('fish_life_cycle.reportingMonth','fish_life_cycle.id AS lifeCycleId');
-        $qb->addSelect('feed_type.name AS feedTypeName');
-        $qb->addSelect('feed.name AS feedCompanyName');
-        $qb->addSelect('main_culture_species.name AS speciesName');
-        $qb->addSelect('hatchery.name AS hatcheryName');*/
 
+        $qb->where('report.slug = :reportSlug')->setParameter('reportSlug', $lifeCycleSlug);
 
-        $qb->where('employee.id = :employeeId')->setParameter('employeeId', $filterBy['employeeId']);
+        $employee = isset($filterBy['employeeId'])? $filterBy['employeeId']: '';
+        if (!empty($employee)){
+            $qb->andWhere('employee.id = :employee')->setParameter('employee', $employee);
+        }
+
+        $rolesString = implode('_', $loggedUser->getRoles());
+        if (!str_contains($rolesString, 'ADMIN') && !in_array('ROLE_LINE_MANAGER', $loggedUser->getRoles())){
+            $qb->andWhere('employee.id = :employeeId')->setParameter('employeeId', $loggedUser->getId());
+        }elseif (!str_contains($rolesString, 'ADMIN') && in_array('ROLE_LINE_MANAGER', $loggedUser->getRoles())){
+
+            $employeeIdsByLineManager = $this->_em->getRepository(User::class)->getEmployeesByLineManager($loggedUser);
+            $employeeIs=[];
+            if($employeeIdsByLineManager){
+                $employeeIs=$employeeIdsByLineManager;
+            }
+            $qb->andWhere('employee.id IN (:employeeIds)')->setParameter('employeeIds', $employeeIs);
+        }
+//        $qb->where('employee.id = :employeeId')->setParameter('employeeId', $filterBy['employeeId']);
         $qb->andWhere('fish_life_cycle.reportingMonth >= :startDate')->setParameter('startDate', $startDate);
         $qb->andWhere('fish_life_cycle.reportingMonth <= :endDate')->setParameter('endDate', $endDate);
-        $qb->andWhere('report.slug = :reportSlug')->setParameter('reportSlug', $lifeCycleSlug);
 
 
         $results = $qb->getQuery()->getResult();
@@ -122,16 +132,14 @@ class FishLifeCycleDetailsRepository extends EntityRepository
         /* @var FishLifeCycleDetails $result*/
         foreach ($results as $result) {
             $month = $result->getFishLifeCycle()->getReportingMonth()->format('m-F-Y');
+            $employeeId = $result->getFishLifeCycle()->getEmployee()->getId();
+            $employeeUserId = $result->getFishLifeCycle()->getEmployee()->getUserId();
+            $employeeName = $result->getFishLifeCycle()->getEmployee()->getName();
+            $employeeDesignation = $result->getFishLifeCycle()->getEmployee()->getDesignation()?$result->getFishLifeCycle()->getEmployee()->getDesignation()->getName():'';
+            $employeeRegion = $result->getFishLifeCycle()->getEmployee()->getRegional()?$result->getFishLifeCycle()->getEmployee()->getRegional()->getName():'';
 
-            /*$result['details']['feedTypeName'] = $result['feedTypeName'];
-            $result['details']['feedCompanyName'] = $result['feedCompanyName'];
-            $result['details']['customerName'] = $result['customerName'];
-            $result['details']['customerAddress'] = $result['customerAddress'];
-            $result['details']['customerMobile'] = $result['customerMobile'];
-            $result['details']['speciesName'] = $result['speciesName'];
-            $result['details']['hatcheryName'] = $result['hatcheryName'];*/
-
-            $data[$month][] = $result;
+            $data['employeeInfo'][$month][$employeeId] = ['name'=>$employeeName, 'employeeUserId'=>$employeeUserId, 'designationName'=>$employeeDesignation, 'regionName'=>$employeeRegion];
+            $data['records'][$month][$employeeId][] = $result;
         }
 
         return $data;

@@ -71,7 +71,7 @@ class LifeCycleReportController extends AbstractController
                 break;
                 case 'fish-life-cycle-report':
                 case 'fish-life-cycle-after-sale-report':
-                    $entities = $this->getDoctrine()->getRepository(FishLifeCycleDetails::class)->getFishLifeCycleDetails($lifeCycleSlug,$filterBy);
+                    $entities = $this->getDoctrine()->getRepository(FishLifeCycleDetails::class)->getFishLifeCycleDetails($lifeCycleSlug,$filterBy, $this->getUser());
                 break;
                 default:
                     $entities = [];
@@ -114,7 +114,7 @@ class LifeCycleReportController extends AbstractController
             break;
             case 'fish-life-cycle-report':
             case 'fish-life-cycle-after-sale-report':
-            $entities = $this->getDoctrine()->getRepository(FishLifeCycleDetails::class)->getFishLifeCycleDetails($filterBy['lifeCycle'],$filterBy);
+            $entities = $this->getDoctrine()->getRepository(FishLifeCycleDetails::class)->getFishLifeCycleDetails($filterBy['lifeCycle'],$filterBy, $this->getUser());
             break;
             default:
                 $entities = [];
@@ -175,7 +175,7 @@ class LifeCycleReportController extends AbstractController
             break;
             case 'fish-life-cycle-report':
             case 'fish-life-cycle-after-sale-report':
-                $entities = $this->getDoctrine()->getRepository(FishLifeCycleDetails::class)->getFishLifeCycleDetails($filterBy['lifeCycle'],$filterBy);
+                $entities = $this->getDoctrine()->getRepository(FishLifeCycleDetails::class)->getFishLifeCycleDetails($filterBy['lifeCycle'],$filterBy, $this->getUser());
             break;
             default:
                 $entities = [];
