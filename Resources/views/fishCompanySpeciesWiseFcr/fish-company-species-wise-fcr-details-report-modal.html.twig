@@ -35,49 +35,76 @@
                                 <table class="table table-striped table-bordered table-hover company_species_wise_fcr" id="datatable">
                                     <thead class="thead-dark">
                                     <tr>
-                                        <th>SL</th>
-                                        <th scope="col">Feed Company Name</th>
-                                        {% if mainCultureSpecies is not empty %}
-                                            {% for index, Species in mainCultureSpecies %}
-                                                <th>{{ Species.name }}</th>
+                                        <th style="width: 150px" scope="col" rowspan="2">Culture Species Name</th>
+                                        {% if companySpeciesWiseFcrs is not empty  %}
+                                            {% for companySpeciesWiseFcr in companySpeciesWiseFcrs %}
+                                                <th class="text-center">{{ companySpeciesWiseFcr.feed.name|default('') }}</th>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </tr>
+                                    <tr>
+                                        {% if companySpeciesWiseFcrs is not empty  %}
+                                            {% for companySpeciesWiseFcr in companySpeciesWiseFcrs %}
+                                                <td style="padding: 0!important;" class="text-center">
+                                                    <table width="100%" border="1">
+                                                        <tr>
+                                                            <td style="width: 15%;" scope="col">No of fish</td>
+                                                            <td style="width: 20%" scope="col">Total Feed Used (kg)</td>
+                                                            <td style="width: 20%" scope="col">Initial Weigh (gm)</td>
+                                                            <td style="width: 20%" scope="col">Present Weigh (gm)</td>
+                                                            <td style="width: 20%" scope="col">Survivability (%)</td>
+                                                            <td style="width: 5%" scope="col">FCR</td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
                                             {% endfor %}
                                         {% endif %}
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    {% if companySpeciesWiseFcrs is not empty  %}
-                                        {% for companySpeciesWiseFcr in companySpeciesWiseFcrs %}
 
+                                    {% if mainCultureSpecies is not empty %}
+                                        {% for index, species in mainCultureSpecies %}
                                             <tr>
-                                                <td>{{ loop.index }}</td>
-                                                <td>{{ companySpeciesWiseFcr.feed.name|default('') }}</td>
-                                                {% if mainCultureSpecies is not empty %}
-                                                    {% for index, species in mainCultureSpecies %}
-                                                        <td>
-                                                            <input type="number" class="form-control quantity" data-entity-id="{{ companySpeciesDetails[companySpeciesWiseFcr.id][species.id].id }}" value="{{ companySpeciesDetails[companySpeciesWiseFcr.id][species.id].quantity|default(0) }}">
-                                                        </td>
-                                                    {% endfor %}
-                                                {% endif %}
+                                                <td>
+                                                    {{ species.name }}
+                                                </td>
+                                                {% for companySpeciesWiseFcr in companySpeciesWiseFcrs %}
+                                                    <td style="padding-right: 0px!important;padding-left: 0px!important;">
+                                                        <table width="100%" border="0">
+                                                            <tr>
+                                                                <td style="width: 15%; padding: 0px!important;"><input data-key="NoOfFish" data-entity-id="{{ companySpeciesDetails[companySpeciesWiseFcr.id][species.id].id }}" value="{{ companySpeciesDetails[companySpeciesWiseFcr.id][species.id].noOfFish|default(0) }}" type="number" min="0" class="form-control noOfFish"></td>
+                                                                <td style=" padding: 0px!important;"><input data-key="FeedUsedKg" data-entity-id="{{ companySpeciesDetails[companySpeciesWiseFcr.id][species.id].id }}" value="{{ companySpeciesDetails[companySpeciesWiseFcr.id][species.id].feedUsedKg|default(0) }}" type="number" min="0" class="form-control feedUsedKg"></td>
+                                                                <td style=" padding: 0px!important;"><input data-key="InitialWeightGm" data-entity-id="{{ companySpeciesDetails[companySpeciesWiseFcr.id][species.id].id }}" value="{{ companySpeciesDetails[companySpeciesWiseFcr.id][species.id].initialWeightGm|default(0) }}" type="number" min="0" class="form-control initialWeightGm"></td>
+                                                                <td style=" padding: 0px!important;"><input data-key="PresentWeightGm" data-entity-id="{{ companySpeciesDetails[companySpeciesWiseFcr.id][species.id].id }}" value="{{ companySpeciesDetails[companySpeciesWiseFcr.id][species.id].presentWeightGm|default(0) }}" type="number" min="0" class="form-control presentWeightGm"></td>
+                                                                <td style=" padding: 0px!important;"><input data-key="Survivability" data-entity-id="{{ companySpeciesDetails[companySpeciesWiseFcr.id][species.id].id }}" value="{{ companySpeciesDetails[companySpeciesWiseFcr.id][species.id].survivability|default(0) }}" type="number" min="0" class="form-control survivability"></td>
+                                                                <td class="text-center fcrQuantity" style="padding: 0px!important; width: 6%">{{ companySpeciesDetails[companySpeciesWiseFcr.id][species.id].quantity|default(0)|number_format(3,'.','') }}</td>
+                                                            </tr>
+                                                        </table>
+
+                                                    </td>
+                                                {% endfor %}
+
                                             </tr>
 
                                         {% endfor %}
-
                                     {% endif %}
+
                                     </tbody>
 
                                 </table>
 
 
                             </div>
-                            <div class="fullMonthCompanySpeciesWiseFcrSection">
+                            {#<div class="fullMonthCompanySpeciesWiseFcrSection">
                                 <h5>Reporting Month: {{ companySpeciesWiseFcrs[0].reportingMonth?companySpeciesWiseFcrs[0].reportingMonth|date("F' Y"):'' }}</h5>
                                 <table class="table table-striped table-bordered table-hover " id="datatable">
                                     <thead class="thead-dark">
                                     <tr>
                                         <th>SL</th>
                                         <th scope="col">Company Name</th>
-                                        <th scope="col">Feed Type</th>
-                                        {% if mainCultureSpecies is not empty %}
+                                        <th scope="col">Created Date</th>
+                                        {% if mainCultureSpecies is defined and mainCultureSpecies is not empty %}
                                             {% for index, Species in mainCultureSpecies %}
                                                 <th>{{ Species.name }}</th>
                                             {% endfor %}
@@ -85,31 +112,43 @@
                                     </tr>
                                     </thead>
                                     <tbody class="fullMonthCompanySpeciesWiseFcrBody">
-                                    {% if fcrMonthWise is not empty  %}
-                                        {% for entity in fcrMonthWise %}
 
+                                    {% if companyWiseFcrs is defined and companyWiseFcrs['records'] is not empty %}
+                                        {% set feedTypeId=companySpeciesWiseFcrs[0].feedType?companySpeciesWiseFcrs[0].feedType.id:'' %}
+                                        {% set reportingMonth=companySpeciesWiseFcrs[0].reportingMonth?companySpeciesWiseFcrs[0].reportingMonth|date("F Y"):'' %}
+#}{#{{ dump(feedTypeId) }}#}{#
+                                        {% if companyWiseFcrs['records'][feedTypeId] is defined and companyWiseFcrs['records'][feedTypeId] is not empty %}
+
+                                            {% for monthYear, monthWiseFcrs in companyWiseFcrs['records'][feedTypeId] %}
                                             <tr>
-                                                <td>{{ loop.index }}</td>
-                                                <td>{{ entity.feed.name|default('') }}</td>
-                                                <td>{{ entity.feedType.name|default('') }}</td>
-                                                {% if mainCultureSpecies is not empty %}
-                                                    {% for index, species in mainCultureSpecies %}
-                                                        <td>
-                                                            {{ fcrDetailsMonthWise[entity.feed.id][entity.feedType.id][species.id] is defined? fcrDetailsMonthWise[entity.feed.id][entity.feedType.id][species.id]['avgQty']|number_format(2,'.',''):'' }}
-                                                        </td>
-                                                    {% endfor %}
-                                                {% endif %}
+                                                <th colspan="4">{{ monthYear }}</th>
                                             </tr>
+                                            {% set recordCount=1 %}
+                                            {% for fcrId, fcrDetails in monthWiseFcrs %}
+                                                <tr>
+                                                    <td>{{ recordCount }}</td>
+                                                    <td>{{ companyWiseFcrs['fcrInfo'][feedTypeId][monthYear][fcrId]['feedName'] }}</td>
+                                                    <td>{{ companyWiseFcrs['fcrInfo'][feedTypeId][monthYear][fcrId]['createdAt'] }}</td>
+                                                    {% if mainCultureSpecies is defined and mainCultureSpecies is not empty %}
+                                                        {% for index, Species in mainCultureSpecies %}
+                                                            <td>{{ fcrDetails[Species.id].quantity|number_format(3,'.','') }}</td>
+                                                        {% endfor %}
+                                                    {% endif %}
+                                                </tr>
 
+                                                {% set recordCount=recordCount+1 %}
+                                            {% endfor %}
                                         {% endfor %}
 
+                                        {% endif %}
                                     {% endif %}
+
                                     </tbody>
 
                                 </table>
 
 
-                            </div>
+                            </div>#}
 
                         </div>
                     </div>

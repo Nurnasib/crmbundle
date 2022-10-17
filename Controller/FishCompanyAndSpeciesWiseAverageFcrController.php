@@ -125,11 +125,18 @@ class FishCompanyAndSpeciesWiseAverageFcrController extends AbstractController
 
         }
 
+        $companyWiseFcrs = $this->getDoctrine()->getRepository(FishCompanyAndSpeciesWiseAverageFcrDetails::class)->getCompanyAndSpeciesWiseFcrByEmployee($report,'BEFORE', $this->getUser());
+
+        $feedTypes = $this->getDoctrine()->getRepository(Setting::class)->findBy(['settingType'=>'FEED_TYPE', 'parent'=>$report->getParent()]);
+        $speciesName = $this->getDoctrine()->getRepository(Setting::class)->getSpeciesNameByFeedTypes($feedTypes);
 
         return $this->render('@TerminalbdCrm/fishCompanySpeciesWiseFcr/fish-company-species-wise-fcr.html.twig', [
             'customer' => $crmCustomer,
             'report' => $report,
             'form' => $form->createView(),
+            'feedTypes' => $feedTypes,
+            'mainCultureSpecies' => $speciesName,
+            'companyWiseFcrs' => $companyWiseFcrs,
         ]);
     }
 
@@ -164,15 +171,13 @@ class FishCompanyAndSpeciesWiseAverageFcrController extends AbstractController
             }
         }
 
-        $fcrDetailsMonthWise = $this->getDoctrine()->getRepository(FishCompanyAndSpeciesWiseAverageFcrDetails::class)->getCompanySpeciesWiseFcrDetailsByReportingMonth($beforeAfter, $feedType->getId(), $reportingDate, $this->getUser()->getId());
-        $fcrMonthWise = $this->getDoctrine()->getRepository(FishCompanyAndSpeciesWiseAverageFcr::class)->getFishCompanySpeciesWiseFcrByReportingMonth($beforeAfter, $feedType, $reportingDate, $this->getUser());
-
+//        $companyWiseFcrs = $this->getDoctrine()->getRepository(FishCompanyAndSpeciesWiseAverageFcrDetails::class)->getCompanyAndSpeciesWiseFcrByEmployee($beforeAfter, $this->getUser());
+        
         return $this->render('@TerminalbdCrm/fishCompanySpeciesWiseFcr/fish-company-species-wise-fcr-details-report-modal.html.twig', [
             'companySpeciesWiseFcrs' => $companySpeciesWiseFcrs,
             'companySpeciesDetails' => $returnDetails,
             'mainCultureSpecies' => $mainCultureSpecies,
-            'fcrDetailsMonthWise' => $fcrDetailsMonthWise,
-            'fcrMonthWise' => $fcrMonthWise,
+//            'companyWiseFcrs' => $companyWiseFcrs,
         ]);
     }
 
@@ -188,12 +193,18 @@ class FishCompanyAndSpeciesWiseAverageFcrController extends AbstractController
     {
         $data = $request->request->all();
         $metaValue = $data['dataMetaValue'];
+        $dataMetaKey = $data['dataMetaKey'];
 
 
         if($metaValue!=''){
-            $entity->setQuantity($metaValue);
+
+            $set = 'set'.$dataMetaKey;
+
+            $entity->$set($metaValue);
 
         }
+
+        $entity->setQuantity($entity->calculateFcrQuantity());
 
         $em = $this->getDoctrine()->getManager();
         $em->persist($entity);
@@ -204,7 +215,7 @@ class FishCompanyAndSpeciesWiseAverageFcrController extends AbstractController
                 'success'=>'Success',
                 'data'=>$data,
                 'id'=>$entity->getId(),
-                'quantity'=>$entity->getQuantity(),
+                'quantity'=>number_format($entity->getQuantity(),3,'.',''),
                 'status'=>200,
             )
         );
@@ -308,9 +319,19 @@ class FishCompanyAndSpeciesWiseAverageFcrController extends AbstractController
         }
 
 
+        $companyWiseFcrs = $this->getDoctrine()->getRepository(FishCompanyAndSpeciesWiseAverageFcrDetails::class)->getCompanyAndSpeciesWiseFcrByEmployee($report,'AFTER', $this->getUser());
+
+        $feedTypes = $this->getDoctrine()->getRepository(Setting::class)->findBy(['settingType'=>'FEED_TYPE', 'parent'=>$report->getParent()]);
+        $speciesName = $this->getDoctrine()->getRepository(Setting::class)->getSpeciesNameByFeedTypes($feedTypes);
+
+
+
         return $this->render('@TerminalbdCrm/fishCompanySpeciesWiseFcr/after/fish-company-species-wise-fcr.html.twig', [
             'report' => $report,
             'form' => $form->createView(),
+            'feedTypes' => $feedTypes,
+            'mainCultureSpecies' => $speciesName,
+            'companyWiseFcrs' => $companyWiseFcrs,
         ]);
     }
 
@@ -331,29 +352,6 @@ class FishCompanyAndSpeciesWiseAverageFcrController extends AbstractController
         return new Response('Success');
     }
 
-
-    /**
-     * @param $report
-     * @Route("/life/cycle/{report}", methods={"GET"}, name="crm_fish_report")
-     * @return Response
-     */
-    public function indexReport( string $report): Response
-    {
-
-        $entities = $this->getDoctrine()->getRepository(FishLifeCycle::class)->getFishLifeCycleByReportType($report);
-        return $this->render('@TerminalbdCrm/cattleLifecycle/report/report.html.twig',['entities' => $entities]);
-    }
-
-    /**
-     * @param FishLifeCycle $cattleLifeCycle
-     * @Route("/life/cycle/{id}/report", methods={"GET"}, name="crm_fish_report_detail")
-     * @return Response
-     */
-    public function reportDetails( FishLifeCycle $cattleLifeCycle): Response
-    {
-
-        return $this->render('@TerminalbdCrm/cattleLifecycle/report/report-details.html.twig',['cattleLifeCycle' => $cattleLifeCycle]);
-    }
 
 
 }

@@ -23,6 +23,7 @@ function fishCompanySpeciesWiseFcrDetailDataUpdateUsingAjax(element) {
     var parentElement = element.closest('tr');
     var detailId=element.attr('data-entity-id');
     var dataMetaValue=element.val();
+    var dataMetaKey=element.attr('data-key');
 
     if(detailId===''){
         return false;
@@ -33,13 +34,16 @@ function fishCompanySpeciesWiseFcrDetailDataUpdateUsingAjax(element) {
         type   : 'post',
         data   : {
             'dataMetaValue':dataMetaValue,
+            'dataMetaKey':dataMetaKey,
         },
         dataType : 'json',
         success: function(response){
             if(response.status===200){
+                
+                $(parentElement).find('.fcrQuantity').text(response.quantity);
 
-                var refreshUrl = Routing.generate('crm_fish_company_species_wise_fcr_refresh',{'id':fishCompanySpeciesWiseFcr_id});
-                $(".fullMonthCompanySpeciesWiseFcrBody").load(refreshUrl);
+                // var refreshUrl = Routing.generate('crm_fish_company_species_wise_fcr_refresh',{'id':fishCompanySpeciesWiseFcr_id});
+                // $(".fullMonthCompanySpeciesWiseFcrBody").load(refreshUrl);
 
             }
 

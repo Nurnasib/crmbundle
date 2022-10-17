@@ -49,6 +49,36 @@ class FishCompanyAndSpeciesWiseAverageFcrDetails
     private $quantity=0;
 
     /**
+     * @var float
+     * @Orm\Column( type="float", nullable=true)
+     */
+    private $noOfFish;
+
+    /**
+     * @var float
+     * @Orm\Column( type="float", nullable=true)
+     */
+    private $initialWeightGm;
+
+    /**
+     * @var float
+     * @Orm\Column( type="float", nullable=true)
+     */
+    private $presentWeightGm;
+
+    /**
+     * @var float
+     * @Orm\Column( type="float", nullable=true)
+     */
+    private $feedUsedKg;
+
+    /**
+     * @var float
+     * @Orm\Column( type="float", nullable=true)
+     */
+    private $survivability;
+
+    /**
      * @var \DateTime
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(name="created_at", type="datetime")
@@ -133,6 +163,111 @@ class FishCompanyAndSpeciesWiseAverageFcrDetails
     public function setCreatedAt(\DateTime $createdAt): void
     {
         $this->createdAt = $createdAt;
+    }
+
+    /**
+     * @return float
+     */
+    public function getNoOfFish()
+    {
+        return $this->noOfFish;
+    }
+
+    /**
+     * @param float $noOfFish
+     */
+    public function setNoOfFish($noOfFish): void
+    {
+        $this->noOfFish = $noOfFish;
+    }
+
+    /**
+     * @return float
+     */
+    public function getInitialWeightGm()
+    {
+        return $this->initialWeightGm;
+    }
+
+    /**
+     * @param float $initialWeightGm
+     */
+    public function setInitialWeightGm($initialWeightGm): void
+    {
+        $this->initialWeightGm = $initialWeightGm;
+    }
+
+    public function calculateTotalInitialWeightGm(){
+        return $this->getInitialWeightGm()*$this->getNoOfFish();
+    }
+    public function calculateTotalInitialWeightKg(){
+        return ($this->getInitialWeightGm()*$this->getNoOfFish())/1000;
+    }
+
+    /**
+     * @return float
+     */
+    public function getPresentWeightGm()
+    {
+        return $this->presentWeightGm;
+    }
+
+    /**
+     * @param float $presentWeightGm
+     */
+    public function setPresentWeightGm($presentWeightGm): void
+    {
+        $this->presentWeightGm = $presentWeightGm;
+    }
+
+
+    public function calculateTotalPresentWeightGm(){
+        $presentNoOfFish= ($this->getNoOfFish()*$this->getSurvivability())/100;
+        return $this->getPresentWeightGm()*$presentNoOfFish;
+    }
+    public function calculateTotalPresentWeightKg(){
+        $presentNoOfFish= ($this->getNoOfFish()*$this->getSurvivability())/100;
+        return ($this->getPresentWeightGm()*$presentNoOfFish)/1000;
+    }
+
+    /**
+     * @return float
+     */
+    public function getFeedUsedKg()
+    {
+        return $this->feedUsedKg;
+    }
+
+    /**
+     * @param float $feedUsedKg
+     */
+    public function setFeedUsedKg($feedUsedKg): void
+    {
+        $this->feedUsedKg = $feedUsedKg;
+    }
+
+    /**
+     * @return float
+     */
+    public function getSurvivability()
+    {
+        return $this->survivability;
+    }
+
+    /**
+     * @param float $survivability
+     */
+    public function setSurvivability($survivability): void
+    {
+        $this->survivability = $survivability;
+    }
+    
+    public function calculateFcrQuantity(){
+        $weightGain = $this->calculateTotalPresentWeightKg()-$this->calculateTotalInitialWeightKg();
+        if($weightGain>0){
+            return $this->getFeedUsedKg()/$weightGain;
+        }
+        return 0;
     }
 
 

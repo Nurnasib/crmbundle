@@ -11,6 +11,7 @@
 
 namespace Terminalbd\CrmBundle\Repository;
 
+use App\Entity\User;
 use Doctrine\ORM\EntityRepository;
 use Terminalbd\CrmBundle\Entity\Fcr;
 
@@ -24,6 +25,46 @@ use Terminalbd\CrmBundle\Entity\Fcr;
  */
 class FishCompanyAndSpeciesWiseAverageFcrDetailsRepository extends EntityRepository
 {
+    public function getCompanyAndSpeciesWiseFcrByEmployee($report, $fcrOfFeed, User $employee){
+        $startDate = date('Y-m-01', strtotime("-1 month"));
+        $endDate = date('Y-m-t');
+
+        $qb = $this->createQueryBuilder('e');
+        $qb->join('e.fishCompanyAndSpeciesWiseAverageFcr', 'parent');
+        $qb->join('parent.employee', 'employee');
+        $qb->join('parent.feedType', 'feed_type');
+        $qb->join('parent.feed', 'feed');
+        $qb->leftJoin('employee.designation', 'designation');
+        $qb->join('e.speciesName', 'species_name');
+
+        $qb->select('e.quantity',);
+        $qb->addSelect('parent.id as fcrId','parent.createdAt as fcrCreatedAt');
+        $qb->addSelect('employee.id as employeeId','employee.userId', 'employee.name as employeeName');
+        $qb->addSelect( 'designation.name AS designationName');
+        $qb->addSelect('species_name.id AS speciesId', 'species_name.name AS speciesName');
+        $qb->addSelect('feed.id AS feedId', 'feed.name AS feedName');
+        $qb->addSelect('feed_type.id AS feedTypeId', 'feed_type.name AS feedTypeName');
+        $qb->addSelect('MONTH(parent.reportingMonth) AS month', 'YEAR(parent.reportingMonth) AS year', 'parent.reportingMonth as reportingMonth');
+
+        $qb->where('parent.reportingMonth >= :start')->setParameter('start', $startDate);
+        $qb->andWhere('parent.reportingMonth <= :end')->setParameter('end', $endDate);
+        $qb->andWhere('parent.fcrOfFeed = :fcrOfFeed')->setParameter('fcrOfFeed', $fcrOfFeed);
+        $qb->andWhere('employee.id =:employee')->setParameter('employee', $employee->getId());
+        $qb->andWhere('parent.report =:report')->setParameter('report', $report);
+
+        $results = $qb->getQuery()->getArrayResult();
+
+        $returnArray=[];
+        if($results){
+            foreach ($results as $result) {
+                $reportingMonth=$result['reportingMonth']->format('F Y');
+                $returnArray['records'][$result['feedTypeId']][$reportingMonth][$result['fcrId']][$result['speciesId']]=$result;
+                $returnArray['fcrInfo'][$result['feedTypeId']][$reportingMonth][$result['fcrId']]=['feedName'=>$result['feedName'],'createdAt'=>$result['fcrCreatedAt']->format('d-m-Y')];
+            }
+        }
+        return $returnArray;
+
+    }
     
     public function getCompanySpeciesWiseFcrDetailsByReportingMonth($beforeAfter, $feedType, $reportingMonth, $employee){
         $startDate = date('Y-m-01', strtotime($reportingMonth));

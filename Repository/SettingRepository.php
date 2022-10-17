@@ -261,4 +261,38 @@ class SettingRepository extends EntityRepository
         return $data;
     }
 
+    public function getSpeciesNameByFeedTypes($feedTypes)
+    {
+        $feedTypeIds=[];
+        if($feedTypes){
+            foreach ($feedTypes as $feedType) {
+                $feedTypeIds[]=$feedType->getId();
+            }
+        }
+        $qb = $this->createQueryBuilder('e');
+        $qb->join('e.parent', 'parent');
+        $qb->select('e.id', 'e.name', 'e.slug', 'parent.name as parentName', 'parent.id as feedTypeId');
+        $qb->where("e.settingType = 'SPECIES_NAME'");
+        $qb->andWhere('e.status = 1');
+        if(sizeof($feedTypeIds)>0){
+            $qb->andWhere('parent.id IN (:feedTypeIds)')->setParameter('feedTypeIds',$feedTypeIds);
+        }
+
+        $results = $qb->getQuery()->getArrayResult();
+
+        $data = [];
+
+        if($results){
+            foreach ($results as $result) {
+                $data[$result['feedTypeId']][] = [
+                    'id' => $result['id'],
+                    'name' => $result['name'],
+                    'slug' => $result['slug'],
+                ];
+            }
+        }
+
+        return $data;
+    }
+
 }
