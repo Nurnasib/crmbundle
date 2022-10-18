@@ -90,6 +90,7 @@ class CompanyWiseFeedSaleRepository extends BaseRepository
         $qb->addSelect('feedCompany.id AS feedCompanyId', 'feedCompany.name AS feedCompanyName');
 
         $qb->where('e.employee = :employee')->setParameter('employee', $filterBy['employee']);
+        $qb->andWhere('e.totalQty >0');
         $qb->andWhere('e.createdAt >= :start')->setParameter('start', $start);
         $qb->andWhere('e.createdAt <= :end')->setParameter('end', $end);
         $qb->andWhere('e.breedName = :breedName')->setParameter('breedName', $breedName);

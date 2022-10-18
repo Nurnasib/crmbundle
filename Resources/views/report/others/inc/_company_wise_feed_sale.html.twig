@@ -124,7 +124,7 @@
                 {% endfor %}
             {% endif %}
 {#            <th align="right" style="text-align: right">{{ fullTotal }}</th>#}
-            <th align="right" style="text-align: right">{{ totalPercentage }}</th>
+            <th align="right" style="text-align: right">{{ totalPercentage|number_format(0) }}</th>
 
         </tr>
         </tbody>

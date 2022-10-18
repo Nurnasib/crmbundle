@@ -1338,8 +1338,7 @@ class ApiRepository extends BaseRepository
 
         $qb->where("s.settingType = 'HATCHERY'");
         $qb->andWhere('s.status = 1');
-
-        $qb->orderBy('s.name', 'ASC');
+        $qb->orderBy('s.sortOrder', 'ASC');
         $result = $qb->getQuery()->getArrayResult();
         $data = array();
         foreach ($result as $key => $row) {
@@ -1367,8 +1366,7 @@ class ApiRepository extends BaseRepository
         $qb->where("s.settingType = 'HATCHERY'");
         $qb->andWhere('s.status = 1');
         $qb->andWhere('s.slug IN (:slug)')->setParameter('slug', ['nourish', 'cp', 'ag', 'new-hope', 'kazi', 'aftab', 'aci-godrej', 'paragon', 'provita', 'quality', 'aman', 'rrp']);
-
-        $qb->orderBy('s.name', 'ASC');
+        $qb->orderBy('s.sortOrder', 'ASC');
         return $qb->getQuery()->getArrayResult();
 
     }
@@ -1469,8 +1467,7 @@ class ApiRepository extends BaseRepository
 
         $qb->where("s.settingType = 'FEED_NAME'");
         $qb->andWhere('s.status = 1');
-
-        $qb->orderBy('s.name', 'ASC');
+        $qb->orderBy('s.sortOrder', 'ASC');
         $result = $qb->getQuery()->getArrayResult();
         $data = array();
         foreach ($result as $key => $row) {

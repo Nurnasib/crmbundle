@@ -331,6 +331,25 @@ class SearchFilterFormType extends AbstractType
                 'required' => false,
                 'data' => date('m')
             ])
+            ->add('monthName', ChoiceType::class,[
+                'choices' => [
+                    'January' => 'January',
+                    'February' => 'February',
+                    'March' => 'March',
+                    'April' => 'April',
+                    'May' => 'May',
+                    'June' => 'June',
+                    'July' => 'July',
+                    'August' => 'August',
+                    'September' => 'September',
+                    'October' => 'October',
+                    'November' => 'November',
+                    'December' => 'December',
+                ],
+                'placeholder' => '- Select month -',
+                'required' => false,
+                'data' => date('F')
+            ])
             ->add('year', ChoiceType::class,[
                 'choices' => $this->getYears(2020),
                 'placeholder' => '- Select year -',

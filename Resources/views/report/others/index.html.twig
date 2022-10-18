@@ -24,9 +24,10 @@
         </div>
         <div class="row">
             <div class="col-md-12">
+                {{ form_start(form) }}
                 <table class="table ">
                     <thead class="thead-dark">
-                    {{ form_start(form) }}
+
                     <tr>
                         <th style="min-width: 200px">
                             {{ form_label(form.otherReport, 'Report:') }}
@@ -49,8 +50,8 @@
                             {{ form_widget(form.year) }}
                         </th>
                         <th>
-                            {{ form_label(form.lab, 'Lab:') }}
-                            {{ form_widget(form.lab) }}
+                            {{ form_label(form.monthName, 'Month:') }}
+                            {{ form_widget(form.monthName) }}
                         </th>
                     </tr>
                     <tr>
@@ -70,7 +71,11 @@
                             {{ form_label(form.breed, 'Breed:') }}
                             {{ form_widget(form.breed) }}
                         </th>
-                        <th colspan="2">
+                        <th>
+                            {{ form_label(form.lab, 'Lab:') }}
+                            {{ form_widget(form.lab) }}
+                        </th>
+                        <th colspan="1">
                             <div class="btn-group" style="margin-top: 25px">
                                 <button type="submit" name="search" class="btn btn-primary btn-sm" title="Search" value="search"><i class="fa fa-search" aria-hidden="true"></i></button>
                                 <a href="{{ path('others_report_index') }}" class="btn purple-bg btn-sm white-font" title="Reset" value="reset"><i class="fa fa-refresh" aria-hidden="true"></i></a>
@@ -82,9 +87,10 @@
                             </div>
                         </th>
                     </tr>
-                    </form>
+
                     </thead>
                 </table>
+                </form>
             </div>
         </div>
         {% if entities is defined and entities is not empty %}
