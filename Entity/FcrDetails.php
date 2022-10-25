@@ -543,7 +543,7 @@ class FcrDetails
     /**
      * @param string $batchNo
      */
-    public function setBatchNo(string $batchNo): void
+    public function setBatchNo($batchNo)
     {
         $this->batchNo = $batchNo;
     }
