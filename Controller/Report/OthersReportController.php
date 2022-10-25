@@ -71,6 +71,8 @@ class OthersReportController extends AbstractController
 
             $employee = $form->getData()['employee'];
 
+            $filterBy['employeeId'] = $form->getData()['employee'] ? $form->getData()['employee']->getId() : '';
+
             switch ($filterBy['otherReport']){
                 case 'farmer-survey-poultry':
                     $breed = $this->getDoctrine()->getRepository(Setting::class)->findBy(['status' => 1, 'slug' => 'poultry-breed', 'settingType' => 'BREED_NAME']);
@@ -101,31 +103,31 @@ class OthersReportController extends AbstractController
                 case 'company-wise-feed-sale-poultry':
                     $breed = $this->getDoctrine()->getRepository(Setting::class)->findBy(['status' => 1, 'slug' => 'poultry-breed', 'settingType' => 'BREED_NAME']);
                     $species = $this->getDoctrine()->getRepository(Setting::class)->getProductType($breed);
-                    $entities = $this->getDoctrine()->getRepository(CompanyWiseFeedSale::class)->getCompanyWiseFeedSaleReport('poultry', $filterBy);
+                    $entities = $this->getDoctrine()->getRepository(CompanyWiseFeedSale::class)->getCompanyWiseFeedSaleReport('poultry', $filterBy, $this->getUser());
                     break;
 
                 case 'company-wise-boiler-chick':
                     $breed = $this->getDoctrine()->getRepository(Setting::class)->findBy(['status' => 1, 'slug' => 'poultry-breed', 'settingType' => 'BREED_NAME']);
                     $species = $this->getDoctrine()->getRepository(Setting::class)->getProductTypeForBoilerChick($breed);
-                    $entities = $this->getDoctrine()->getRepository(CompanyWiseFeedSale::class)->getCompanyWiseFeedSaleReport('poultry-boiler-chicks', $filterBy);
+                    $entities = $this->getDoctrine()->getRepository(CompanyWiseFeedSale::class)->getCompanyWiseFeedSaleReport('poultry-boiler-chicks', $filterBy, $this->getUser());
                     break;
 
                 case 'company-wise-layer-chick':
                     $breed = $this->getDoctrine()->getRepository(Setting::class)->findBy(['status' => 1, 'slug' => 'poultry-breed', 'settingType' => 'BREED_NAME']);
                     $species = $this->getDoctrine()->getRepository(Setting::class)->getProductTypeForLayerChick($breed);
-                    $entities = $this->getDoctrine()->getRepository(CompanyWiseFeedSale::class)->getCompanyWiseFeedSaleReport('poultry-layer-chicks', $filterBy);
+                    $entities = $this->getDoctrine()->getRepository(CompanyWiseFeedSale::class)->getCompanyWiseFeedSaleReport('poultry-layer-chicks', $filterBy, $this->getUser());
                     break;
 
                 case 'company-wise-feed-sale-cattle':
                     $breed = $this->getDoctrine()->getRepository(Setting::class)->findBy(['status' => 1, 'slug' => 'cattle-breed', 'settingType' => 'BREED_NAME']);
                     $species = $this->getDoctrine()->getRepository(Setting::class)->getProductType($breed);
-                    $entities = $this->getDoctrine()->getRepository(CompanyWiseFeedSale::class)->getCompanyWiseFeedSaleReport('cattle', $filterBy);
+                    $entities = $this->getDoctrine()->getRepository(CompanyWiseFeedSale::class)->getCompanyWiseFeedSaleReport('cattle', $filterBy, $this->getUser());
                     break;
 
                 case 'company-wise-feed-sale-fish':
                     $breed = $this->getDoctrine()->getRepository(Setting::class)->findBy(['status' => 1, 'slug' => 'fish-breed', 'settingType' => 'BREED_NAME']);
                     $species = $this->getDoctrine()->getRepository(Setting::class)->getProductType($breed);
-                    $entities = $this->getDoctrine()->getRepository(CompanyWiseFeedSale::class)->getCompanyWiseFeedSaleReport('fish', $filterBy);
+                    $entities = $this->getDoctrine()->getRepository(CompanyWiseFeedSale::class)->getCompanyWiseFeedSaleReport('fish', $filterBy, $this->getUser());
                     break;
 
                 case 'farmer-training-poultry':
@@ -241,6 +243,7 @@ class OthersReportController extends AbstractController
                 'speciesTypes' => $speciesTypesByParent,
                 'fishSizes' => $arrFishSizes,
                 'arrayMonth' => $arrayMonth,
+                'report' => isset($filterBy['otherReport']) &&$filterBy['otherReport']!=''?$filterBy['otherReport']:'',
             ]);
 
             $fileName = $filterBy['otherReport'] .'_'.time().".xls";
@@ -264,6 +267,7 @@ class OthersReportController extends AbstractController
             'speciesTypes' => $speciesTypesByParent,
             'fishSizes' => $arrFishSizes,
             'arrayMonth' => $arrayMonth,
+            'report' => isset($filterBy['otherReport']) &&$filterBy['otherReport']!=''?$filterBy['otherReport']:'',
         ]);
     }
 

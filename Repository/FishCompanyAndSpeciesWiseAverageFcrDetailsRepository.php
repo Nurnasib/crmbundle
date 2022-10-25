@@ -96,7 +96,7 @@ WHERE fcrDetails.quantity>0 and fcr.employee_id = :employee_id and fcr.feed_type
     {
         $start = isset($filterBy['startDate']) ? (new \DateTime($filterBy['startDate']))->format('Y-m-d') : null;
         $end = isset($filterBy['endDate']) ? (new \DateTime($filterBy['endDate']))->format('Y-m-d') : null;
-        $employeeId = isset($filterBy['employeeId']) ?: null;
+        $employeeId = isset($filterBy['employeeId']) && $filterBy['employeeId']!=''?$filterBy['employeeId']: null;
 
         $qb = $this->createQueryBuilder('e');
         $qb->join('e.fishCompanyAndSpeciesWiseAverageFcr', 'parent');
@@ -107,49 +107,58 @@ WHERE fcrDetails.quantity>0 and fcr.employee_id = :employee_id and fcr.feed_type
         $qb->leftJoin('employee.designation', 'designation');
         $qb->join('e.speciesName', 'species_name');
 
-        $qb->select('AVG(e.quantity) AS avgQuantity','e.quantity');
-        $qb->addSelect('parent.createdAt');
-        $qb->addSelect('employee.userId', 'employee.name');
+        $qb->select('e.quantity');
+        $qb->addSelect('parent.id as fcrId','parent.createdAt as fcrCreatedAt');
+        $qb->addSelect('employee.id as employeeId','employee.userId', 'employee.name as employeeName');
         $qb->addSelect( 'designation.name AS designationName');
         $qb->addSelect('species_name.id AS speciesId', 'species_name.name AS speciesName');
         $qb->addSelect('feed.id AS feedId', 'feed.name AS feedName');
         $qb->addSelect('feed_type.id AS feedTypeId', 'feed_type.name AS feedTypeName');
         $qb->addSelect('MONTH(parent.reportingMonth) AS month', 'YEAR(parent.reportingMonth) AS year', 'parent.reportingMonth');
 
-
         $qb->where('parent.reportingMonth >= :start')->setParameter('start', $start);
         $qb->andWhere('parent.reportingMonth <= :end')->setParameter('end', $end);
         $qb->andWhere('user_group.slug = :userGroupSlug')->setParameter('userGroupSlug', 'employee');
         $qb->andWhere('parent.fcrOfFeed = :fcrOfFeed')->setParameter('fcrOfFeed', $fcrOfFeed);
+        $qb->andWhere('e.quantity >:quantity')->setParameter('quantity',0);
 
-        $qb->groupBy('species_name.id');
-        $qb->addGroupBy('feedId');
-        $qb->addGroupBy('month');
-        $qb->addGroupBy('year');
 
         $rolesString = implode('_', $loggedUser->getRoles());
 
+        if ($employeeId){
+            $qb->andWhere('employee.id = :employeeId')->setParameter('employeeId', $employeeId);
+        }
+
+        $rolesString = implode('_', $loggedUser->getRoles());
         if (!str_contains($rolesString, 'ADMIN') && !in_array('ROLE_LINE_MANAGER', $loggedUser->getRoles())){
             $qb->andWhere('employee.id = :employeeId')->setParameter('employeeId', $loggedUser->getId());
-        }
-        if (isset($filterBy['employee']) && $filterBy['employee'] !== null){
-            $qb->andWhere('employee.id = :employeeId')->setParameter('employeeId', $employeeId);
+        }elseif (!str_contains($rolesString, 'ADMIN') && in_array('ROLE_LINE_MANAGER', $loggedUser->getRoles())){
+
+            $employeeIdsByLineManager = $this->_em->getRepository(User::class)->getEmployeesByLineManager($loggedUser);
+            $employeeIs=[];
+            if($employeeIdsByLineManager){
+                $employeeIs=$employeeIdsByLineManager;
+            }
+            $qb->andWhere('employee.id IN (:employeeIds)')->setParameter('employeeIds', $employeeIs);
         }
 
         $results = $qb->getQuery()->getArrayResult();
 
         $data = [];
         foreach ($results as $result) {
-            $month = $result['reportingMonth']->format('m-F');
-            $data[$result['reportingMonth']->format('Y')][$month][$result['userId']]['employee'] = [
+            $month = $result['reportingMonth']->format('m-F-Y');
+
+            $data['employeeInfo'][$result['employeeId']] = [
                 'userId' => $result['userId'],
-                'name' => $result['name'],
+                'name' => $result['employeeName'],
                 'designation' => $result['designationName']
             ];
-            $data[$result['reportingMonth']->format('Y')][$month][$result['userId']]['data'][$result['feedName']][$result['feedTypeName']][$result['speciesId']] = $result;
-
-            ksort($data);
+            $data['feedTypeInfo'][$result['employeeId']][$month][$result['feedTypeId']]=$result['feedTypeName'];
+            $data['records'][$result['employeeId']][$month][$result['feedTypeId']][$result['fcrId']][$result['speciesId']]=$result;
+            $data['fcrInfo'][$result['employeeId']][$month][$result['feedTypeId']][$result['fcrId']]=['feedName'=>$result['feedName'],'createdAt'=>$result['fcrCreatedAt']->format('d-m-Y')];
+            ksort($data['records'][$result['employeeId']]);
         }
+
         return $data;
 
 

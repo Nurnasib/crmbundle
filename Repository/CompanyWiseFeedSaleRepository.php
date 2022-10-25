@@ -11,6 +11,7 @@
 
 namespace Terminalbd\CrmBundle\Repository;
 
+use App\Entity\User;
 use Doctrine\ORM\EntityRepository;
 use Terminalbd\CrmBundle\Entity\CompanyWiseFeedSale;
 
@@ -78,35 +79,69 @@ class CompanyWiseFeedSaleRepository extends BaseRepository
     }
 
 
-    public function getCompanyWiseFeedSaleReport($breedName, $filterBy)
+    public function getCompanyWiseFeedSaleReport($breedName, $filterBy, User $loggedUser)
     {
+
+        $monthNum= isset($filterBy['month']) && $filterBy['month']!=''?$filterBy['month']:'';
+        $monthName='';
+        if($monthNum){
+            $monthName = date("F", mktime(0, 0, 0, $monthNum, 10));
+        }
+
+        $year = isset($filterBy['year']) && $filterBy['year']!=''?$filterBy['year']:date('Y');
+
         $start = isset($filterBy['startDate']) ? (new \DateTime($filterBy['startDate']))->format('Y-m-d') . ' 00:00:00' : null;
         $end = isset($filterBy['endDate']) ? (new \DateTime($filterBy['endDate']))->format('Y-m-d') . ' 23:59:59' : null;
 
         $qb = $this->createQueryBuilder('e');
         $qb->join('e.feedCompany', 'feedCompany');
+        $qb->join('e.employee', 'employee');
 
         $qb->select('e.monthName', 'e.year', 'e.breedName', 'e.productWiseQty', 'e.totalQty', 'e.createdAt');
         $qb->addSelect('feedCompany.id AS feedCompanyId', 'feedCompany.name AS feedCompanyName');
+        $qb->addSelect('employee.id AS employeeId','employee.userId','employee.name AS employeeName');
 
-        $qb->where('e.employee = :employee')->setParameter('employee', $filterBy['employee']);
-        $qb->andWhere('e.totalQty >0');
-        $qb->andWhere('e.createdAt >= :start')->setParameter('start', $start);
-        $qb->andWhere('e.createdAt <= :end')->setParameter('end', $end);
+        $qb->where('e.totalQty >0');
+
+        if($monthName && $monthName!=''){
+            $qb->andWhere('e.monthName =:monthName')->setParameter('monthName', $monthName);
+        }
+
+        $qb->andWhere('e.year = :year')->setParameter('year', $year);
+
         $qb->andWhere('e.breedName = :breedName')->setParameter('breedName', $breedName);
+
+        $employee = isset($filterBy['employeeId'])? $filterBy['employeeId']: '';
+        if (!empty($employee)){
+            $qb->andWhere('employee.id = :employee')->setParameter('employee', $employee);
+        }
+
+        $rolesString = implode('_', $loggedUser->getRoles());
+        if (!str_contains($rolesString, 'ADMIN') && !in_array('ROLE_LINE_MANAGER', $loggedUser->getRoles())){
+            $qb->andWhere('employee.id = :employeeId')->setParameter('employeeId', $loggedUser->getId());
+        }elseif (!str_contains($rolesString, 'ADMIN') && in_array('ROLE_LINE_MANAGER', $loggedUser->getRoles())){
+
+            $employeeIdsByLineManager = $this->_em->getRepository(User::class)->getEmployeesByLineManager($loggedUser);
+            $employeeIs=[];
+            if($employeeIdsByLineManager){
+                $employeeIs=$employeeIdsByLineManager;
+            }
+            $qb->andWhere('employee.id IN (:employeeIds)')->setParameter('employeeIds', $employeeIs);
+        }
 
         $results = $qb->getQuery()->getArrayResult();
         $data = [];
 
         foreach ($results as $result) {
-            $data[$result['monthName'] . '-' . $result['year']]['details'][] = $result;
-            if (array_key_exists('companyTotalQty', $data[$result['monthName'] . '-' . $result['year']])){
-                $data[$result['monthName'] . '-' . $result['year']]['companyTotalQty'] += $result['totalQty'];
+            $data[$result['monthName'] . '-' . $result['year']][$result['employeeId']]['details'][] = $result;
+            if (array_key_exists('companyTotalQty', $data[$result['monthName'] . '-' . $result['year']][$result['employeeId']])){
+                $data[$result['monthName'] . '-' . $result['year']][$result['employeeId']]['companyTotalQty'] += $result['totalQty'];
             }else{
-                $data[$result['monthName'] . '-' . $result['year']]['companyTotalQty'] = $result['totalQty'];
+                $data[$result['monthName'] . '-' . $result['year']][$result['employeeId']]['companyTotalQty'] = $result['totalQty'];
 
             }
         }
+        
         return $data;
     }
 

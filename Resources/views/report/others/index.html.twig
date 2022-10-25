@@ -50,8 +50,8 @@
                             {{ form_widget(form.year) }}
                         </th>
                         <th>
-                            {{ form_label(form.monthName, 'Month:') }}
-                            {{ form_widget(form.monthName) }}
+                            {{ form_label(form.month, 'Month:') }}
+                            {{ form_widget(form.month) }}
                         </th>
                     </tr>
                     <tr>
@@ -80,7 +80,9 @@
                                 <button type="submit" name="search" class="btn btn-primary btn-sm" title="Search" value="search"><i class="fa fa-search" aria-hidden="true"></i></button>
                                 <a href="{{ path('others_report_index') }}" class="btn purple-bg btn-sm white-font" title="Reset" value="reset"><i class="fa fa-refresh" aria-hidden="true"></i></a>
                                 {% if entities is defined and entities is not empty %}
-                                    <button type="submit" name="excel" class="btn blue-bg btn-sm white-font" title="Excel" value="excel"><i class="fa fa-file-excel" aria-hidden="true"></i> {{ 'Excel'|trans }}</button>
+                                    <button type="submit" name="excel" class="btn blue-bg btn-sm white-font" title="Excel" value="excel" id="button-excel"><i class="fa fa-file-excel" aria-hidden="true"></i> {{ 'Excel'|trans }}</button>
+
+{#                                    <button type="submit" name="excel" class="btn blue-bg btn-sm white-font" title="Excel" value="excel"><i class="fa fa-file-excel" aria-hidden="true"></i> {{ 'Excel'|trans }}</button>#}
 {#                                    <a target="_blank" href="{{ path('life_cycle_pdf', {filterBy: filterBy}) }}" class="btn blue-bg btn-sm white-font"><i class="fa fa-download" aria-hidden="true"></i> {{ 'PDF'|trans }}</a>#}
 {#                                    <a target="_blank" href="{{ path('life_cycle_excel', {filterBy: filterBy}) }}" class="btn blue-bg btn-sm white-font"><i class="fa fa-file-excel" aria-hidden="true"></i> {{ 'Excel'|trans }}</a>#}
                                 {% endif %}
@@ -147,7 +149,7 @@
 {% block cssBlock %}
     {{ parent() }}
     <link rel="stylesheet" href="{{ asset('assets/module/css/app.css') }}">
-
+    <script src="{{ asset('assets/js/tableToExcel.js') }}"></script>
 {% endblock  %}
 {% block javascripts %}
     {{ parent() }}
@@ -178,6 +180,20 @@
                 dateFormat: 'dd-mm-yy'
             }
         );
+
+
+        let button = document.querySelector("#button-excel");
+
+        button.addEventListener("click", e => {
+            e.preventDefault();
+            let table = document.querySelector(".download-excel");
+            TableToExcel.convert(table, {
+                name: "{{ report is defined and report is not null ? report : ''}} ({{ filterBy['year'] is defined ? filterBy['year']:'' }}).xlsx",
+                sheet: {
+                    name: "Sheet 1"
+                }
+            });
+        });
     </script>
 {% endblock  %}
 {% block documentready %}

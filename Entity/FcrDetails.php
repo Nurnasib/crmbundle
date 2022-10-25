@@ -196,7 +196,7 @@ class FcrDetails
 
     /**
      * @var string
-     * @Orm\Column(name="batch_no", type="string", nullable=true)
+     * @Orm\Column(name="batch_no", type="text", nullable=true)
      */
 
     private $batchNo;
