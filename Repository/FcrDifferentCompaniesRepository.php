@@ -11,6 +11,7 @@
 
 namespace Terminalbd\CrmBundle\Repository;
 
+use App\Entity\User;
 use Doctrine\ORM\EntityRepository;
 use Terminalbd\CrmBundle\Entity\FcrDifferentCompanies;
 
@@ -78,34 +79,66 @@ class FcrDifferentCompaniesRepository extends EntityRepository
         return array();
     }
 
-    public function getFcrDifferentCompaniesReport($filterBy)
+    public function getFcrDifferentCompaniesReport($filterBy, User $loggedUser)
     {
+        $year = isset($filterBy['year']) && $filterBy['year']!=''?$filterBy['year']:date('Y');
+        $startDate = date('Y-01-01');
+        $endDate = date('Y-12-31');
+        
         $start = isset($filterBy['startDate']) ? (new \DateTime($filterBy['startDate']))->format('Y-m-d') . ' 00:00:00' : null;
         $end = isset($filterBy['endDate']) ? (new \DateTime($filterBy['endDate']))->format('Y-m-d') . ' 23:59:59' : null;
+
 
         $qb = $this->createQueryBuilder('e');
 
         $qb->join('e.hatchery', 'hatchery');
+        $qb->join('e.employee', 'employee');
+        $qb->leftJoin('employee.designation', 'designation');
 
         $qb->select('e AS details');
         $qb->addSelect('hatchery.id AS companyId', 'hatchery.name AS companyName');
+        $qb->addSelect('employee.id AS employeeId','employee.userId', 'employee.name AS employeeName');
+        $qb->addSelect('designation.name AS employeeDesignationName');
 
-        $qb->where('e.employee = :employee')->setParameter('employee', $filterBy['employee']);
-        $qb->andWhere('e.createdAt >= :start')->setParameter('start', $start);
-        $qb->andWhere('e.createdAt <= :end')->setParameter('end', $end);
+        $qb->andWhere('e.january > 0 OR e.february > 0 OR e.march > 0 OR e.april > 0 OR e.may > 0 
+        OR e.june > 0 OR e.july > 0 OR e.august > 0 OR e.september > 0 OR e.october > 0 OR e.november > 0 OR e.december > 0');
+
+        $employee = isset($filterBy['employeeId'])? $filterBy['employeeId']: '';
+        if (!empty($employee)){
+            $qb->andWhere('employee.id = :employee')->setParameter('employee', $employee);
+        }
+
+        $rolesString = implode('_', $loggedUser->getRoles());
+        if (!str_contains($rolesString, 'ADMIN') && !in_array('ROLE_LINE_MANAGER', $loggedUser->getRoles())){
+            $qb->andWhere('employee.id = :employeeId')->setParameter('employeeId', $loggedUser->getId());
+        }elseif (!str_contains($rolesString, 'ADMIN') && in_array('ROLE_LINE_MANAGER', $loggedUser->getRoles())){
+
+            $employeeIdsByLineManager = $this->_em->getRepository(User::class)->getEmployeesByLineManager($loggedUser);
+            $employeeIs=[];
+            if($employeeIdsByLineManager){
+                $employeeIs=$employeeIdsByLineManager;
+            }
+            $qb->andWhere('employee.id IN (:employeeIds)')->setParameter('employeeIds', $employeeIs);
+        }
+
+        $qb->andWhere('YEAR(e.createdAt) =:year')->setParameter('year',$year);
 
         $results = $qb->getQuery()->getArrayResult();
-
         $data = [];
 
         foreach ($results as $result) {
-            $month = $result['details']['createdAt']->format('Y-m-F');
+//            $month = $result['details']['createdAt']->format('Y-m-F');
 
             $result['details']['companyId'] = $result['companyId'];
             $result['details']['companyName'] = $result['companyName'];
-            $data[$month][] = $result['details'];
+            $result['details']['employeeId'] = $result['employeeId'];
+            $result['details']['employeeName'] = $result['employeeName'];
+            $result['details']['employeeDesignationName'] = $result['employeeDesignationName'];
+            $data['records'][$result['employeeId']][] = $result['details'];
+            $data['employeeInfo'][$result['employeeId']] = ['userId'=>$result['userId'], 'employeeName'=>$result['employeeName'], 'designationName'=>$result['employeeDesignationName']];
         }
-        ksort($data);
+//        dd($data);
+//        ksort($data);
         return $data;
     }
 

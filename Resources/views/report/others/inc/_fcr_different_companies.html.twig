@@ -1,59 +1,60 @@
+{% if entities is defined and entities['records'] is not empty %}
 
-{% for monthYear, entity in entities %}
-
-<table width="100%">
-    <tr>
-        <th colspan="14"><h3 class="text-center">NOURISH POULTRY AND HATCHERY LTD</h3></th>
-    </tr>
-    <tr>
-        <th colspan="14"><h5 class="text-center">UTTARA, DHAKA.</h5></th>
-    </tr>
-
-    <tr>
-        <td colspan="14" align="center"><h6>{{ 'FCR Different Companies (Poultry)'|upper }}</h6></td>
-    </tr>
-</table>
-<table width="100%" class="table table-bordered">
+<table class="table table-striped table-bordered table-hover download-excel">
     <thead class="thead-dark">
     <tr>
-        <th>Officer's ID: {{ employee ? employee.userId : '' }}</th>
-        <th>Officer's Name: {{ employee ? employee.name : '' }}</th>
-        <th>Designation: {{ employee and employee.designation ? employee.designation.name : '' }}</th>
-        <th>Region: {{ employee and employee.regional ? employee.regional.name : '' }}</th>
-        <th>Month: {{ monthYear|split('-')[2] ~ '-' ~ monthYear|split('-')[0] }}</th>
-
+        <th data-a-h="center" class="border-0" colspan="14"><h3 class="text-center">NOURISH POULTRY AND HATCHERY LTD</h3></th>
     </tr>
-    </thead>
-</table>
-<table class="table table-striped table-bordered table-hover">
-    <thead class="thead-dark">
     <tr>
-        <th scope="col">Company</th>
-        {% for month in 1..12 %}
-            {% set date = '01-' ~ month ~ '-2021' %}
-            <th scope="col" style="text-align: center">{{ date|date('F') }}</th>
-        {% endfor %}
-        <th scope="col" style="text-align: center">Total</th>
+        <th data-a-h="center" class="border-0" colspan="14"><h5 class="text-center">UTTARA, DHAKA.</h5></th>
     </tr>
+
+    <tr>
+        <th data-a-h="center" class="border-0" colspan="14" align="center"><h6 class="text-center">{{ 'FCR Different Companies (Poultry)'|upper }}</h6></th>
+    </tr>
+
     </thead>
     <tbody>
-    {% for data in entity %}
+    {% for employeeId, employeeRecord in entities['records'] %}
+
+        <tr>
+            <th colspan="4">Officer's ID: {{ entities['employeeInfo'] is defined and entities['employeeInfo'][employeeId] is defined ? entities['employeeInfo'][employeeId]['userId'] : '' }}</th>
+            <th colspan="5">Officer's Name: {{ entities['employeeInfo'] is defined and entities['employeeInfo'][employeeId] is defined ? entities['employeeInfo'][employeeId]['employeeName'] : '' }}</th>
+            <th colspan="5">Designation: {{ entities['employeeInfo'] is defined and entities['employeeInfo'][employeeId] is defined ? entities['employeeInfo'][employeeId]['designationName'] : '' }}</th>
+{#            <th>Region: {{ employee and employee.regional ? employee.regional.name : '' }}</th>#}
+{#            <th>Month: {{ monthYear|split('-')[2] ~ '-' ~ monthYear|split('-')[0] }}</th>#}
+        </tr>
+        <tr>
+            <th scope="col">Company</th>
+            {% for month in 1..12 %}
+                {% set date = '01-' ~ month ~ '-2021' %}
+                <th scope="col" style="text-align: center">{{ date|date('F') }}</th>
+            {% endfor %}
+            <th scope="col" style="text-align: center">Average</th>
+        </tr>
+    {% for data in employeeRecord %}
         {% set yearTotal = 0 %}
         <tr>
             <td>{{ data.companyName }}</td>
+            {% set count=0 %}
             {% for month in 1..12 %}
                 {% set date = '01-' ~ month ~ '-2021' %}
                 {% set monthName = date|date('F')|lower %}
                 {% set value =  data[monthName]|default(0) %}
+                {% if value>0 %}
+                {% set count=count+1 %}
+                {% endif %}
                 {% set yearTotal = yearTotal + value %}
-                <td align="center">{{ value }}</td>
+                <td data-t="n" align="center">{{ value|number_format(2,'.','') }}</td>
             {% endfor %}
-            <td align="right">{{ yearTotal }}</td>
+            <td data-t="n" align="right">{{ (yearTotal/count)|number_format(2,'.','') }}</td>
         </tr>
     {% endfor %}
-{#    <tr>#}
-{#        <td colspan="14"></td>#}
-{#    </tr>#}
+    <tr>
+        <td colspan="14"></td>
+    </tr>
+
+    {% endfor %}
     </tbody>
 </table>
-{% endfor %}
+{% endif %}

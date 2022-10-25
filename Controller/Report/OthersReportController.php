@@ -97,7 +97,7 @@ class OthersReportController extends AbstractController
                     break;
 
                 case 'fcr-different-companies-poultry':
-                    $entities = $this->getDoctrine()->getRepository(FcrDifferentCompanies::class)->getFcrDifferentCompaniesReport($filterBy);
+                    $entities = $this->getDoctrine()->getRepository(FcrDifferentCompanies::class)->getFcrDifferentCompaniesReport($filterBy, $this->getUser());
                     break;
 
                 case 'company-wise-feed-sale-poultry':

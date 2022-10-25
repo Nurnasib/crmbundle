@@ -185,7 +185,7 @@ class ApiRepository extends BaseRepository
         $qb->andWhere('e.deletedBy IS NULL');
         if ($locations) {
             $locations = explode(',', $locations);
-            $qb->andWhere('e.location IN (:upozila)')->setParameter('upozila', $locations);
+            $qb->andWhere('l.id IN (:upozila)')->setParameter('upozila', $locations);
         }
         $qb->orderBy('e.id', 'ASC');
         $result = $qb->getQuery()->getArrayResult();
@@ -1155,6 +1155,8 @@ class ApiRepository extends BaseRepository
 
         $qb->where('s.slug = :slug')->setParameter('slug', 'farmer');
         $qb->andWhere('location.id IN (:upozils)')->setParameter('upozils', $arrs);
+        $qb->andWhere('e.deletedAt IS NULL');
+        $qb->andWhere('e.deletedBy IS NULL');
         $result = $qb->getQuery()->getArrayResult();
 
         $data = array();
