@@ -16,9 +16,12 @@ use Omines\DataTablesBundle\Adapter\Doctrine\ORMAdapter;
 use Omines\DataTablesBundle\Column\TextColumn;
 use Omines\DataTablesBundle\Column\TwigStringColumn;
 use Omines\DataTablesBundle\DataTableFactory;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -393,6 +396,83 @@ class CrmCustomerController extends AbstractController
             'speciesTypes' => $speciesTypes,
             'farmerType' => $farmerType,
         ]);
+    }
+
+    /**
+     * Displays a form to edit an existing CrmVisit entity.
+     * @Route("/agent/change/chick/to/feed", methods={"GET"}, name="farmer_aget_change_chick_to_feed")
+     * @return Response
+     */
+
+    public function farmerAgentChangeChickToFeedAgent( ParameterBagInterface $parameterBag): Response
+    {
+
+        $em=$this->getDoctrine()->getManager();
+        $customers = $this->getDoctrine()->getRepository(CrmCustomer::class)->getCustomerByChickAgent();
+    $returnArray=[];
+        foreach ($customers as $customer) {
+
+            $agentGroup = $this->getDoctrine()->getRepository(\App\Entity\Core\Setting::class)->findOneBy(['slug'=>'feed']);
+
+            $findFeedAgentByChickAgent = $this->getDoctrine()->getRepository(Agent::class)->findOneBy(['upozila'=>$customer['customerUpozilaId'], 'name'=>$customer['agentName'], 'agentGroup'=>$agentGroup]);
+
+//            $findFeedAgentByChickAgent = $this->getDoctrine()->getRepository(Agent::class)->findOneBy(['upozila'=>$customer['customerUpozilaId'], 'mobile'=>$customer['mobile'], 'agentGroup'=>$agentGroup]);
+
+            if($findFeedAgentByChickAgent){
+                $farmer = $this->getDoctrine()->getRepository(CrmCustomer::class)->find($customer['id']);
+
+                $farmer->setAgent($findFeedAgentByChickAgent);
+
+                $em->persist($farmer);
+
+
+                $farmerIntroduce = $this->getDoctrine()->getRepository(FarmerIntroduceDetails::class)->findOneBy(['customer'=>$farmer]);
+
+                $farmerIntroduce->setAgent($findFeedAgentByChickAgent);
+
+                $em->persist($farmerIntroduce);
+                $em->flush();
+
+
+                $returnArray['changes'][]=['id'=>$findFeedAgentByChickAgent->getId(), 'agentCode'=>$findFeedAgentByChickAgent->getAgentId(), 'name'=>$findFeedAgentByChickAgent->getName()];
+            }else{
+                $returnArray['notChanges'][]=['customer_id'=>$customer['id'], 'customerName'=>$customer['name'], 'agentAutoId'=>$customer['agent_id'], 'agentCode'=>$customer['agentCode'], 'agentName'=>$customer['agentName']];
+            }
+        }
+
+        if($returnArray && isset($returnArray['notChanges']) && sizeof($returnArray['notChanges'])>0){
+            $spreadsheet = new Spreadsheet();
+            $sheet = $spreadsheet->getActiveSheet();
+
+            foreach ($returnArray['notChanges'] as $key => $data) {
+                if ($key === array_key_first($returnArray['notChanges'])){ //header
+                    $sheet->setCellValue("A1", "Customer ID");
+                    $sheet->setCellValue("B1", "Customer Name");
+                    $sheet->setCellValue("C1", "Agent Auto Id");
+                    $sheet->setCellValue("D1", "Agent Name");
+                    $sheet->setCellValue("E1", "Agent Code");
+                }
+
+                $cellCoordinate = $key + 2;
+
+                $sheet->setCellValue("A" . $cellCoordinate, $data['customer_id']);
+                $sheet->setCellValue("B" . $cellCoordinate, $data['customerName']);
+                $sheet->setCellValue("C" . $cellCoordinate, $data['agentAutoId']);
+                $sheet->setCellValue("D" . $cellCoordinate, $data['agentName']);
+                $sheet->setCellValue("E" . $cellCoordinate, $data['agentCode']);
+
+            }
+
+            // Create xlsx file
+            $filePath = $parameterBag->get('projectRoot') . '/public/uploads/farmer_agent_update_problem_'. date('d-m-Y_H-s-i') .'_.xlsx';
+            $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
+            $writer->setIncludeCharts(true);
+            $writer->save($filePath);
+
+            return $this->file($filePath)->deleteFileAfterSend();
+        }
+
+        dd($returnArray);
     }
 
 

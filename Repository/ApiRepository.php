@@ -82,7 +82,7 @@ class ApiRepository extends BaseRepository
         $qb->addSelect('dis.name as district', 'dis.id as districtId');
 
 //        $qb->where('e.terminal = :terminal')->setParameter('terminal',$terminal);
-//        $qb->where('ag.slug IN (:slug)')->setParameter('slug', ['feed', 'chick']);
+        $qb->where('ag.slug NOT IN (:slug)')->setParameter('slug', ['chick']);
         $qb->andWhere('e.status =:status')->setParameter('status', 1);
         if ($locations) {
             $locations = explode(',', $locations);
@@ -126,7 +126,7 @@ class ApiRepository extends BaseRepository
         $qb->addSelect('dis.name as district', 'dis.id as districtId');
 
 //        $qb->where('e.terminal = :terminal')->setParameter('terminal',$terminal);
-        $qb->where('ag.slug IN (:slug)')->setParameter('slug', ['feed', 'chick']);
+        $qb->where('ag.slug IN (:slug)')->setParameter('slug', ['feed']);
         $qb->andWhere('e.status =:status')->setParameter('status', 1);
         if ($locations) {
             $locations = explode(',', $locations);

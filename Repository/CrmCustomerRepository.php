@@ -106,6 +106,20 @@ class CrmCustomerRepository extends EntityRepository
 
     }
 
+    public function getCustomerByChickAgent(){
+        $sql ="SELECT c.id, c.name, c.agent_id, ca.mobile, ca.agentId as agentCode, ca.name as agentName, ca.upozila_id as agentUpozilaId, c.location_id as customerUpozilaId FROM `crm_customers` c 
+JOIN crm_customer_introduce_details i on i.customer_id=c.id 
+JOIN core_agent ca on ca.id=i.agent_id 
+WHERE ca.agent_group_id=11 
+HAVING ca.upozila_id=c.location_id
+ORDER BY `c`.`agent_id` ASC";
+        $stmt = $this->_em->getConnection()->prepare($sql);
+        $stmt->execute();
+
+        return $stmt->fetchAll();
+
+    }
+
 //    public function broilerLifeCycleReport()
 //    {
 //        $qb = $this->_em->createQueryBuilder();
