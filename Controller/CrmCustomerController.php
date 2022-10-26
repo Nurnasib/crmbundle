@@ -401,6 +401,7 @@ class CrmCustomerController extends AbstractController
     /**
      * Displays a form to edit an existing CrmVisit entity.
      * @Route("/agent/change/chick/to/feed", methods={"GET"}, name="farmer_aget_change_chick_to_feed")
+     * @Security("is_granted('ROLE_DEVELOPER')")
      * @return Response
      */
 
@@ -471,8 +472,7 @@ class CrmCustomerController extends AbstractController
 
             return $this->file($filePath)->deleteFileAfterSend();
         }
-
-        dd($returnArray);
+        
     }
 
 
