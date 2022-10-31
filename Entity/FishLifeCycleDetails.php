@@ -47,12 +47,6 @@ class FishLifeCycleDetails
     private $fishLifeCycle;
 
     /**
-     * @var FishLifeCycleDetailSpecies
-     * @ORM\OneToMany(targetEntity="Terminalbd\CrmBundle\Entity\FishLifeCycleDetailSpecies", mappedBy="fishLifeCycleDetails", cascade={"persist", "remove"})
-     */
-    private $fishLifeCycleDetailSpecies;
-
-    /**
      * @var Agent
      * @ORM\ManyToOne(targetEntity="App\Entity\Core\Agent" , inversedBy="fishLifeCycleDetails")
      */
@@ -65,6 +59,28 @@ class FishLifeCycleDetails
     private $customer;
 
     /**
+     * @var Setting
+     * @ORM\ManyToOne(targetEntity="Setting", inversedBy="fishLifeCycleDetails")
+     * @ORM\JoinColumn(name="feed_type_id", referencedColumnName="id", onDelete="SET NULL", nullable=true)
+     */
+    private $feedType;
+
+    /**
+     * @var Setting
+     * @ORM\ManyToOne(targetEntity="Setting", inversedBy="fishLifeCycleDetails")
+     * @ORM\JoinColumn(name="mainCultureSpecies", referencedColumnName="id", onDelete="SET NULL", nullable=true)
+     */
+    private $mainCultureSpecies;
+
+    /**
+     * @var Setting
+     * @ORM\ManyToOne(targetEntity="Setting", inversedBy="fishLifeCycleDetails")
+     * @ORM\JoinColumn(name="otherCultureSpecies", referencedColumnName="id", onDelete="SET NULL", nullable=true)
+     */
+    private $otherCultureSpecies;
+
+
+    /**
      * @var \DateTime
      * @ORM\Column(name="reporting_date", type="date", nullable=true)
      */
@@ -72,16 +88,10 @@ class FishLifeCycleDetails
 
     /**
      * @var string
-     * @Orm\Column(name="feed_item_name", type="string", nullable=true)
+     * @Orm\Column(name="feed_item_name", type="text", nullable=true)
      */
 
     private $feedItemName;
-
-    /**
-     * @var string
-     * @Orm\Column(name="other_culture_species", type="string", nullable=true)
-     */
-    private $otherCultureSpecies;
 
     /**
      * @var string
@@ -142,6 +152,12 @@ class FishLifeCycleDetails
 
     /**
      * @var float
+     * @Orm\Column(name="current_sr_percentage", type="float")
+     */
+    private $currentSrPercentage=0; //Current Survival Rate (C_SR)
+
+    /**
+     * @var float
      * @Orm\Column(name="weightGainGm", type="float")
      */
 
@@ -160,6 +176,13 @@ class FishLifeCycleDetails
      */
 
     private $previousFinalWeightGm=0;
+
+    /**
+     * @var float
+     * @Orm\Column( type="float")
+     */
+
+    private $finalAverageWeightGm=0;
 
     /**
      * @var float
@@ -480,6 +503,43 @@ class FishLifeCycleDetails
         $this->feedItemName = $feedItemName;
     }
 
+    public function getFormattedFeedItemName(){
+        $returnData = '';
+        if($this->feedItemName){
+
+            $feedItemNameJsonDate = (array)json_decode($this->feedItemName, true);
+            $x = 1;
+            $length = sizeof($feedItemNameJsonDate);
+            if($feedItemNameJsonDate && sizeof($feedItemNameJsonDate)>0){
+                foreach ($feedItemNameJsonDate as $item) {
+                    $returnData.= $item['name'];
+                    if($length!=$x){
+                        $returnData.=' + ';
+                    }
+                    $x++;
+                }
+            }
+        }
+        return $returnData;
+
+    }
+    public function getFeedItemNameIds(){
+        $returnData = [];
+        if($this->feedItemName){
+
+            $feedItemNameJsonDate = (array)json_decode($this->feedItemName, true);
+            $x = 1;
+            $length = sizeof($feedItemNameJsonDate);
+            if($feedItemNameJsonDate && sizeof($feedItemNameJsonDate)>0){
+                foreach ($feedItemNameJsonDate as $item) {
+                    $returnData[]= $item['id'];
+                }
+            }
+        }
+        return $returnData;
+
+    }
+
     /**
      * @return string
      */
@@ -544,13 +604,13 @@ class FishLifeCycleDetails
         $this->stockingDensity = $stockingDensity;
     }
 
-    /*public function getCalculateStockingDensity(){
+    public function getCalculateStockingDensity(){
         $returnResult = 0;
         if($this->getCultureAreaDecimal()>0){
             $returnResult = $this->getNoOfInitialFish()/$this->getCultureAreaDecimal();
         }
         return $returnResult;
-    }*/
+    }
     /**
      * @return float
      */
@@ -633,6 +693,22 @@ class FishLifeCycleDetails
     /**
      * @return float
      */
+    public function getCurrentSrPercentage()
+    {
+        return $this->currentSrPercentage;
+    }
+
+    /**
+     * @param float $currentSrPercentage
+     */
+    public function setCurrentSrPercentage($currentSrPercentage): void
+    {
+        $this->currentSrPercentage = $currentSrPercentage;
+    }
+
+    /**
+     * @return float
+     */
     public function getWeightGainGm()
     {
         return $this->weightGainGm;
@@ -667,7 +743,7 @@ class FishLifeCycleDetails
     }
 
     public function calculateWeightGainKg(){
-        return ($this->getWeightGainGm()*$this->getNoOfFinalFish())/1000;
+        return ((($this->getAveragePresentWeight()-$this->getAverageInitialWeight())*(($this->getNoOfInitialFish()*$this->getCurrentSrPercentage())/100))/1000);
     }
 
     /**
@@ -686,20 +762,6 @@ class FishLifeCycleDetails
         $this->currentFeedConsumptionKg = $currentFeedConsumptionKg;
     }
 
-    public function getSpeciesFeedConsumptionKg()
-    {
-        $totalFeed=0;
-
-        if($this->fishLifeCycleDetailSpecies){
-           
-            /* @var FishLifeCycleDetailSpecies $fishLifeCycleDetailSpecie*/
-            foreach ($this->fishLifeCycleDetailSpecies as $fishLifeCycleDetailSpecie){
-                $totalFeed+= $fishLifeCycleDetailSpecie->getFeedConsumptionKg();
-               
-            }
-        }
-        return $totalFeed;
-    }
 
     /**
      * @return float
@@ -768,7 +830,7 @@ class FishLifeCycleDetails
      */
     public function getCurrentAdg()
     {
-        return number_format($this->currentAdg,2,'.','');
+        return number_format($this->currentAdg,3,'.','');
     }
 
     /**
@@ -806,34 +868,21 @@ class FishLifeCycleDetails
     }
 
     /**
-     * @return FishLifeCycleDetailSpecies
+     * @return Setting
      */
-    public function getFishLifeCycleDetailSpecies()
-    {
-        return $this->fishLifeCycleDetailSpecies;
-    }
-
-
-
     public function getMainCultureSpecies()
     {
-        $speciesName='';
-
-        if($this->fishLifeCycleDetailSpecies){
-            $x = 1;
-            $length = sizeof($this->fishLifeCycleDetailSpecies);
-            /* @var FishLifeCycleDetailSpecies $fishLifeCycleDetailSpecie*/
-            foreach ($this->fishLifeCycleDetailSpecies as $fishLifeCycleDetailSpecie){
-                $speciesName.= $fishLifeCycleDetailSpecie->getMainCultureSpecies()->getName();
-                if($length!=$x){
-                    $speciesName.=' + ';
-                }
-                $x++;
-            }
-        }
-        
-        return $speciesName;
+        return $this->mainCultureSpecies;
     }
+
+    /**
+     * @param Setting $mainCultureSpecies
+     */
+    public function setMainCultureSpecies(Setting $mainCultureSpecies): void
+    {
+        $this->mainCultureSpecies = $mainCultureSpecies;
+    }
+
 
     /**
      * @return Setting
@@ -851,25 +900,22 @@ class FishLifeCycleDetails
         $this->feed = $feed;
     }
 
+    /**
+     * @return Setting
+     */
     public function getFeedType()
     {
-        $feedTypeName='';
-
-        if($this->fishLifeCycleDetailSpecies){
-            $x = 1;
-            $length = sizeof($this->fishLifeCycleDetailSpecies);
-            /* @var FishLifeCycleDetailSpecies $fishLifeCycleDetailSpecie*/
-            foreach ($this->fishLifeCycleDetailSpecies as $fishLifeCycleDetailSpecie){
-                $feedTypeName.= $fishLifeCycleDetailSpecie->getFeedType()->getName();
-                if($length!=$x){
-                    $feedTypeName.=' + ';
-                }
-                $x++;
-            }
-        }
-
-        return $feedTypeName;
+        return $this->feedType;
     }
+
+    /**
+     * @param Setting $feedType
+     */
+    public function setFeedType(Setting $feedType): void
+    {
+        $this->feedType = $feedType;
+    }
+
 
     /**
      * @return \DateTime
@@ -999,6 +1045,15 @@ class FishLifeCycleDetails
         $this->noOfFinalFish = $noOfFinalFish;
     }
 
+    public function calculateNoOfFinalFish(){
+        $returnResult = 0;
+        if($this->getNoOfInitialFish()>0){
+            $returnResult = ($this->getNoOfInitialFish()*$this->getSrPercentage())/100;
+        }
+
+        return $returnResult;
+    }
+
     /**
      * @return float
      */
@@ -1056,6 +1111,22 @@ class FishLifeCycleDetails
     /**
      * @return float
      */
+    public function getFinalAverageWeightGm()
+    {
+        return $this->finalAverageWeightGm;
+    }
+
+    /**
+     * @param float $finalAverageWeightGm
+     */
+    public function setFinalAverageWeightGm(float $finalAverageWeightGm): void
+    {
+        $this->finalAverageWeightGm = $finalAverageWeightGm;
+    }
+
+    /**
+     * @return float
+     */
     public function getFinalWeightGm()
     {
         return $this->finalWeightGm;
@@ -1070,7 +1141,7 @@ class FishLifeCycleDetails
     }
 
     public function calculateFinalWeightGm(){
-        return $this->getPreviousFinalWeightGm()+$this->getWeightGainGm();
+        return $this->getFinalAverageWeightGm()-$this->getAverageInitialWeight();
     }
 
     /**
@@ -1091,6 +1162,10 @@ class FishLifeCycleDetails
 
     public function calculateFinalWeightKg(){
        return ($this->getNoOfFinalFish()*$this->getFinalWeightGm())/1000;
+    }
+
+    public function calculateFinalWeightKgForHarvest(){
+       return ($this->getNoOfFinalFish()*$this->getFinalAverageWeightGm())/1000;
     }
 
     /**
@@ -1121,9 +1196,9 @@ class FishLifeCycleDetails
 
     public function calculateFinalFcrForAfterSale(){
         $returnResult = 0;
-        $finalWeightKg=$this->calculateFinalWeightKg()-$this->calculateTotalInitialWeight();
+        $finalWeightKg=$this->getFinalWeightKg()-$this->getTotalInitialWeight();
         if($finalWeightKg>0){
-            $returnResult = $this->calculateTotalFeedConsumptionKg()/$finalWeightKg;
+            $returnResult = $this->getTotalFeedConsumptionKg()/$finalWeightKg;
         }
 
         return $returnResult;
@@ -1148,7 +1223,7 @@ class FishLifeCycleDetails
     public function calculateFinalAdg(){
         $returnResult = 0;
         if($this->calculateTotalDayOfCulture()>0){
-            $returnResult = ($this->calculateFinalWeightGm()-$this->getAverageInitialWeight())/$this->calculateTotalDayOfCulture();
+            $returnResult = $this->calculateFinalWeightGm()/$this->calculateTotalDayOfCulture();
         }
 
         return $returnResult;
@@ -1157,7 +1232,7 @@ class FishLifeCycleDetails
     public function calculateFinalAdgForAfterSale(){
         $returnResult = 0;
         if($this->calculateDayOfCultureForAfterSale()>0){
-            $returnResult = ($this->getFinalWeightGm()-$this->getAverageInitialWeight())/$this->calculateDayOfCultureForAfterSale();
+            $returnResult = ($this->getFinalAverageWeightGm()-$this->getAverageInitialWeight())/$this->calculateDayOfCultureForAfterSale();
         }
 
         return $returnResult;
@@ -1179,7 +1254,7 @@ class FishLifeCycleDetails
         $this->srPercentage = $srPercentage;
     }
 
-    public function calculateSrPercentage(){
+    public function calculateSrPercentageForHarvest(){
         $returnResult = 0;
         if($this->getNoOfInitialFish()>0){
             $returnResult = ($this->getNoOfFinalFish()*100)/$this->getNoOfInitialFish();
@@ -1279,8 +1354,9 @@ class FishLifeCycleDetails
     public function calculateFeedCostPerKgFish()
     {
         $result=0;
-        if($this->calculateFinalWeightKg()>0){
-            $result = $this->getTotalFeedCost()/$this->calculateFinalWeightKg();
+        $finalWeightKg=$this->getFinalWeightKg()-$this->getTotalInitialWeight();
+        if($finalWeightKg>0){
+            $result = $this->getTotalFeedCost()/$finalWeightKg;
         }
         return $result;
     }
@@ -1318,7 +1394,7 @@ class FishLifeCycleDetails
     }
 
     public function calculateTotalCost(){
-        return $this->getTotalFeedCost()+$this->getTotalSeedCost()+$this->getFeedCostPerKgFish()+$this->getTotalOtherCost();
+        return $this->getTotalFeedCost()+$this->getTotalSeedCost()+$this->getTotalOtherCost();
     }
 
     /**
@@ -1341,8 +1417,8 @@ class FishLifeCycleDetails
     public function calculateProductionCostPerKgFish()
     {
         $result=0;
-        if($this->calculateFinalWeightKg()>0){
-            $result = $this->calculateTotalCost()/$this->calculateFinalWeightKg();
+        if($this->getFinalWeightKg()>0){
+            $result = $this->calculateTotalCost()/$this->getFinalWeightKg();
         }
         return $result;
     }
@@ -1381,7 +1457,7 @@ class FishLifeCycleDetails
 
     public function calculateTotalIncome()
     {
-        $result = $this->calculateFinalWeightKg()*$this->getSalesPricePerKg();
+        $result = $this->getFinalWeightKg()*$this->getSalesPricePerKg();
         return $result;
     }
 

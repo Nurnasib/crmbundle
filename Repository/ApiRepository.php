@@ -86,7 +86,7 @@ class ApiRepository extends BaseRepository
         $qb->andWhere('e.status =:status')->setParameter('status', 1);
         if ($locations) {
             $locations = explode(',', $locations);
-            $qb->andWhere('e.upozila IN (:upozila)')->setParameter('upozila', $locations);
+            $qb->andWhere('up.id IN (:upozila)')->setParameter('upozila', $locations);
         }
         $qb->orderBy('e.name', 'ASC');
         $result = $qb->getQuery()->getArrayResult();
@@ -130,7 +130,7 @@ class ApiRepository extends BaseRepository
         $qb->andWhere('e.status =:status')->setParameter('status', 1);
         if ($locations) {
             $locations = explode(',', $locations);
-            $qb->andWhere('e.upozila IN (:upozila)')->setParameter('upozila', $locations);
+            $qb->andWhere('up.id IN (:upozila)')->setParameter('upozila', $locations);
         }
         $qb->orderBy('e.name', 'ASC');
         $result = $qb->getQuery()->getArrayResult();
@@ -257,7 +257,7 @@ class ApiRepository extends BaseRepository
         $qb->andWhere('e.status =:status')->setParameter('status', 1);
         if ($locations) {
             $locations = explode(',', $locations);
-            $qb->andWhere('e.upozila IN (:upozila)')->setParameter('upozila', $locations);
+            $qb->andWhere('up.id IN (:upozila)')->setParameter('upozila', $locations);
         }
         $qb->orderBy('e.name', 'ASC');
         $result = $qb->getQuery()->getArrayResult();
@@ -1288,6 +1288,30 @@ class ApiRepository extends BaseRepository
         foreach ($result as $key => $row) {
             $data[$key]['id'] = (int)$row['id'];
             $data[$key]['feedTypeName'] = (string)$row['feedTypeName'];
+        }
+
+        return $data;
+    }
+
+    /**
+     * Feed Type
+     */
+    public function fishFeedTypeForLifeCycle()
+    {
+        $em = $this->_em;
+        $qb = $em->createQueryBuilder();
+        $qb->from(Setting::class, 's');
+
+        $qb->select('s.id as id', 's.name');
+
+        $qb->where("s.settingType = 'FEED_TYPE_FISH_LIFE_CYCLE'");
+        $qb->andWhere('s.status = 1');
+        $qb->orderBy('s.sortOrder', 'ASC');
+        $result = $qb->getQuery()->getArrayResult();
+        $data = array();
+        foreach ($result as $key => $row) {
+            $data[$key]['id'] = (int)$row['id'];
+            $data[$key]['name'] = (string)$row['name'];
         }
 
         return $data;

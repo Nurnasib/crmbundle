@@ -415,9 +415,9 @@ class CrmCustomerController extends AbstractController
 
             $agentGroup = $this->getDoctrine()->getRepository(\App\Entity\Core\Setting::class)->findOneBy(['slug'=>'feed']);
 
-            $findFeedAgentByChickAgent = $this->getDoctrine()->getRepository(Agent::class)->findOneBy(['upozila'=>$customer['customerUpozilaId'], 'name'=>$customer['agentName'], 'agentGroup'=>$agentGroup]);
+            $findFeedAgentByChickAgent = $this->getDoctrine()->getRepository(Agent::class)->findOneBy(['upozila'=>$customer['customerUpozilaId'], 'name'=>$customer['agentName'], 'agentGroup'=>$agentGroup, 'status'=>1]);
 
-//            $findFeedAgentByChickAgent = $this->getDoctrine()->getRepository(Agent::class)->findOneBy(['upozila'=>$customer['customerUpozilaId'], 'mobile'=>$customer['mobile'], 'agentGroup'=>$agentGroup]);
+//            $findFeedAgentByChickAgent = $this->getDoctrine()->getRepository(Agent::class)->findOneBy(['upozila'=>$customer['customerUpozilaId'], 'mobile'=>$customer['mobile'], 'agentGroup'=>$agentGroup, 'status'=>1]);
 
             if($findFeedAgentByChickAgent){
                 $farmer = $this->getDoctrine()->getRepository(CrmCustomer::class)->find($customer['id']);

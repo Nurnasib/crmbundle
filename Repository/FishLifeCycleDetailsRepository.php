@@ -78,9 +78,10 @@ class FishLifeCycleDetailsRepository extends EntityRepository
         $arrayReturn = [];
 
         foreach ($results as $result){
+
             $arrayReturn[$result['feedId']]= $result[0];
         }
-
+        
         return $arrayReturn;
     }
 
