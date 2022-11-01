@@ -93,7 +93,7 @@
                                         {% endif %}
                                     </tr>
                                     <tr>
-                                        <td>Main Culture Species </td>
+                                        <td>Culture Species (Main)</td>
                                         {% if feedCompanies is not empty %}
                                             {% for index, feedCompany in feedCompanies %}
                                                 <th>
@@ -102,6 +102,23 @@
                                                         {% if mainCultureSpecies is not empty %}
                                                             {% for mainCultureSpecie in mainCultureSpecies %}
                                                                 <option value="{{ mainCultureSpecie.id }}" {{fishLifeCycleDetails[index].mainCultureSpecies is not empty and fishLifeCycleDetails[index].mainCultureSpecies.id==mainCultureSpecie.id?'selected="selected"':'' }}>{{ mainCultureSpecie.name }}</option>
+                                                            {% endfor %}
+                                                        {% endif %}
+                                                    </select>
+                                                </th>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </tr>
+                                    <tr>
+                                        <td>Culture Species (Optional)</td>
+                                        {% if feedCompanies is not empty %}
+                                            {% for index, feedCompany in feedCompanies %}
+                                                <th>
+                                                    <select data-input-type="select" data-meta-key="OtherCultureSpecies"  data-entity-id="{{ fishLifeCycleDetails[index].id }}" name="other_culture_species" class="form-control other_culture_species">
+                                                        <option value="">Choose Culture Species</option>
+                                                        {% if otherCultureSpecies is not empty %}
+                                                            {% for otherCultureSpecie in otherCultureSpecies %}
+                                                                <option value="{{ otherCultureSpecie.id }}" {{fishLifeCycleDetails[index].otherCultureSpecies is not empty and fishLifeCycleDetails[index].otherCultureSpecies.id==otherCultureSpecie.id?'selected="selected"':'' }}>{{ otherCultureSpecie.name }}</option>
                                                             {% endfor %}
                                                         {% endif %}
                                                     </select>
@@ -441,7 +458,8 @@
                                         <th style="width: 150px" scope="col">Feed Company</th>
                                         <th scope="col">{{ 'Farmar Name'|trans }}</th>
                                         <th scope="col">{{ 'Mobile No.'|trans }}</th>
-                                        <th style="width: 150px" scope="col">MainCulture Species</th>
+                                        <th style="width: 150px" scope="col">Culture Species (Main)</th>
+                                        <th style="width: 150px" scope="col">Culture Species (Other)</th>
                                         <th style="width: 150px" scope="col">Culturearea (m2) or decimal</th>
                                         <th style="width: 150px" scope="col">Hatchery Name</th>
                                         <th style="width: 120px" scope="col">StockingDate</th>
