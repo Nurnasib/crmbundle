@@ -53,6 +53,44 @@
                                     </thead>
                                     <tbody>
                                     <tr>
+                                        <td>Hatchery Name</td>
+                                        {% if feedCompanies is not empty %}
+                                            {% for index, feedCompany in feedCompanies %}
+                                                <th>
+                                                    <select data-input-type="select" data-meta-key="Hatchery"  data-entity-id="{{ fishLifeCycleDetails[index].id }}" name="hatchery" class="form-control hatchery">
+                                                        <option value="">Choose Hatchery</option>
+                                                        {% if hatcheries is not empty %}
+                                                            {% for hatchery in hatcheries %}
+                                                                <option value="{{ hatchery.id }}" {{fishLifeCycleDetails[index].hatchery is not empty and fishLifeCycleDetails[index].hatchery.id==hatchery.id?'selected="selected"':'' }}>{{ hatchery.name }}</option>
+                                                            {% endfor %}
+                                                        {% endif %}
+                                                    </select>
+                                                </th>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </tr>
+                                    <tr>
+                                        <td>Feed Used Item</td>
+                                        {% if feedCompanies is not empty %}
+                                            {% for index, feedCompany in feedCompanies %}
+                                                <th style="vertical-align: top">
+                                                    {#                                                    {{ dump(fishLifeCycleDetails[index].getFeedItemNameIds) }}#}
+                                                    <select id="feedItemName_{{ fishLifeCycleDetails[index].id }}" data-input-type="json" data-meta-key="FeedItemName"  data-entity-id="{{ fishLifeCycleDetails[index].id }}" name="feedItemName" class="form-control select2 feedItemName" multiple>
+                                                        <option value="">Choose Feed Type</option>
+                                                        {% if productsName is not empty %}
+                                                            {% for productName in productsName %}
+                                                                <option value="{{ productName.id }}" {{fishLifeCycleDetails[index].getFeedItemNameIds is not empty and productName.id in fishLifeCycleDetails[index].getFeedItemNameIds?'selected="selected"':'' }}>{{ productName.name }}</option>
+                                                            {% endfor %}
+                                                        {% endif %}
+                                                    </select>
+                                                    {#<input type="text" data-input-type="text" data-entity-id="{{ fishLifeCycleDetails[index].id }}"
+                                                           data-meta-key="FeedItemName" class="form-control"
+                                                           value="{{ fishLifeCycleDetails[index].feedItemName }}">#}
+                                                </th>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </tr>
+                                    <tr>
                                         <td>Feed Type</td>
                                         {% if feedCompanies is not empty %}
                                             {% for index, feedCompany in feedCompanies %}
@@ -71,27 +109,7 @@
                                         {% endif %}
                                     </tr>
 
-                                    <tr>
-                                        <td>Feed Item Name</td>
-                                        {% if feedCompanies is not empty %}
-                                            {% for index, feedCompany in feedCompanies %}
-                                                <th style="vertical-align: top">
-{#                                                    {{ dump(fishLifeCycleDetails[index].getFeedItemNameIds) }}#}
-                                                    <select id="feedItemName_{{ fishLifeCycleDetails[index].id }}" data-input-type="json" data-meta-key="FeedItemName"  data-entity-id="{{ fishLifeCycleDetails[index].id }}" name="feedItemName" class="form-control select2 feedItemName" multiple>
-                                                        <option value="">Choose Feed Type</option>
-                                                        {% if productsName is not empty %}
-                                                            {% for productName in productsName %}
-                                                                <option value="{{ productName.id }}" {{fishLifeCycleDetails[index].getFeedItemNameIds is not empty and productName.id in fishLifeCycleDetails[index].getFeedItemNameIds?'selected="selected"':'' }}>{{ productName.name }}</option>
-                                                            {% endfor %}
-                                                        {% endif %}
-                                                    </select>
-                                                    {#<input type="text" data-input-type="text" data-entity-id="{{ fishLifeCycleDetails[index].id }}"
-                                                           data-meta-key="FeedItemName" class="form-control"
-                                                           value="{{ fishLifeCycleDetails[index].feedItemName }}">#}
-                                                </th>
-                                            {% endfor %}
-                                        {% endif %}
-                                    </tr>
+
                                     <tr>
                                         <td>Culture Species (Main)</td>
                                         {% if feedCompanies is not empty %}
@@ -127,6 +145,20 @@
                                         {% endif %}
                                     </tr>
                                     <tr>
+                                        <td>Stocking date</td>
+                                        {% if feedCompanies is not empty %}
+                                            {% for index, feedCompany in feedCompanies %}
+                                                <td>
+                                                    <div class="date_section">
+                                                        <input type="text" data-input-type="datetime" data-entity-id="{{ fishLifeCycleDetails[index].id }}"
+                                                               data-meta-key="StockingDate" class="form-control datePicker"
+                                                               value="{{ fishLifeCycleDetails[index].stockingDate?fishLifeCycleDetails[index].stockingDate|date('d-m-Y'):'' }}" autocomplete="off">
+                                                    </div>
+                                                </td>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </tr>
+                                    <tr>
                                         <td>Culture area (m2) or decimal</td>
                                         {% if feedCompanies is not empty %}
                                             {% for index, feedCompany in feedCompanies %}
@@ -138,37 +170,8 @@
                                             {% endfor %}
                                         {% endif %}
                                     </tr>
-                                    <tr>
-                                        <td>Hatchery Name</td>
-                                        {% if feedCompanies is not empty %}
-                                            {% for index, feedCompany in feedCompanies %}
-                                                <th>
-                                                    <select data-input-type="select" data-meta-key="Hatchery"  data-entity-id="{{ fishLifeCycleDetails[index].id }}" name="hatchery" class="form-control hatchery">
-                                                        <option value="">Choose Hatchery</option>
-                                                        {% if hatcheries is not empty %}
-                                                            {% for hatchery in hatcheries %}
-                                                                <option value="{{ hatchery.id }}" {{fishLifeCycleDetails[index].hatchery is not empty and fishLifeCycleDetails[index].hatchery.id==hatchery.id?'selected="selected"':'' }}>{{ hatchery.name }}</option>
-                                                            {% endfor %}
-                                                        {% endif %}
-                                                    </select>
-                                                </th>
-                                            {% endfor %}
-                                        {% endif %}
-                                    </tr>
-                                    <tr>
-                                        <td>Stocking date</td>
-                                        {% if feedCompanies is not empty %}
-                                            {% for index, feedCompany in feedCompanies %}
-                                                <td>
-                                                    <div class="date_section">
-                                                        <input type="text" data-input-type="datetime" data-entity-id="{{ fishLifeCycleDetails[index].id }}"
-                                                               data-meta-key="StockingDate" class="form-control datePicker"
-                                                               value="{{ fishLifeCycleDetails[index].stockingDate?fishLifeCycleDetails[index].stockingDate|date('d-m-Y'):'' }}">
-                                                    </div>
-                                                </td>
-                                            {% endfor %}
-                                        {% endif %}
-                                    </tr>
+
+
                                     <tr>
                                         <td>No.of initial fish (pcs.)</td>
                                         {% if feedCompanies is not empty %}
@@ -178,6 +181,14 @@
                                                            data-meta-key="NoOfInitialFish" class="form-control"
                                                            value="{{ fishLifeCycleDetails[index].noOfInitialFish }}" min="0">
                                                 </td>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </tr>
+                                    <tr>
+                                        <td>Density /decimal (pcs)</td>
+                                        {% if feedCompanies is not empty %}
+                                            {% for index, feedCompany in feedCompanies %}
+                                                <td class="{{ fishLifeCycleDetails[index].id }}_stockingDensity">{{ fishLifeCycleDetails[index].stockingDensity }}</td>
                                             {% endfor %}
                                         {% endif %}
                                     </tr>
@@ -193,6 +204,7 @@
                                             {% endfor %}
                                         {% endif %}
                                     </tr>
+
                                     <tr>
                                         <td>Total initial weight (kg)</td>
                                         {% if feedCompanies is not empty %}
@@ -209,7 +221,7 @@
                                                     <div class="date_section">
                                                         <input name="previous_sampling_date" type="text" data-input-type="datetime" data-entity-id="{{ fishLifeCycleDetails[index].id }}"
                                                                data-meta-key="PreviousSamplingDate" class="form-control datePicker"
-                                                               value="{{ fishLifeCycleDetails[index].previousSamplingDate?fishLifeCycleDetails[index].previousSamplingDate|date('d-m-Y'):'' }}">
+                                                               value="{{ fishLifeCycleDetails[index].previousSamplingDate?fishLifeCycleDetails[index].previousSamplingDate|date('d-m-Y'):'' }}" autocomplete="off">
                                                     </div>
                                                 </td>
                                             {% endfor %}
@@ -223,7 +235,7 @@
                                                     <div class="date_section">
                                                         <input name="present_sampling_date" type="text" data-input-type="datetime" data-entity-id="{{ fishLifeCycleDetails[index].id }}"
                                                                data-meta-key="PresentSamplingDate" class="form-control datePicker"
-                                                               value="{{ fishLifeCycleDetails[index].presentSamplingDate?fishLifeCycleDetails[index].presentSamplingDate|date('d-m-Y'):'' }}">
+                                                               value="{{ fishLifeCycleDetails[index].presentSamplingDate?fishLifeCycleDetails[index].presentSamplingDate|date('d-m-Y'):'' }}" autocomplete="off">
                                                     </div>
                                                 </td>
                                             {% endfor %}
@@ -412,7 +424,7 @@
                                         {% endif %}
                                     </tr>
                                     <tr>
-                                        <td>Final ADG (g/fish/day)</td>
+                                        <td>Cumulative ADG (g/fish/day)</td>
                                         {% if feedCompanies is not empty %}
                                             {% for index, feedCompany in feedCompanies %}
                                                 <td class="{{ fishLifeCycleDetails[index].id }}_finalAdg">{{ fishLifeCycleDetails[index].finalAdg|number_format(2,'.',',') }}</td>
@@ -480,9 +492,9 @@
                                         <th scope="col">Final weight (kg)</th>
                                         <th scope="col">Total DOC (Day Of Culture)</th>
                                         <th scope="col">Total feed consumption (kg)</th>
-                                        <th scope="col">Final FCR</th>
-                                        <th scope="col">Final ADG (g/fish/day)</th>
-                                        <th scope="col">SR (%)</th>
+                                        <th scope="col">Cumulative FCR</th>
+                                        <th scope="col">Cumulative ADG (g/fish/day)</th>
+                                        <th scope="col">Final Survival Rate (%)</th>
                                         <th style="width: 200px" scope="col">Farmer's Comments</th>
                                         <th style="width: 200px" scope="col">Visitor's Comments</th>
                                         <th scope="col"></th>

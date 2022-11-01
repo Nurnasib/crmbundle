@@ -1,3 +1,19 @@
+
+$('.datePicker').datepicker({
+    changeMonth: true,
+    changeYear: true,
+    dateFormat: "dd-mm-yy",
+    yearRange: "-90:+00",
+    showOn: "both",
+    showButtonPanel: true,
+    buttonImage: "/assets/images/icon-calendar-green.png",
+    buttonImageOnly: true,
+    autoClose:true,
+    onClose: function(formattedDate, date, inst) {
+        fishLifeCycleDetailDataUpdateUsingAjax($(this));
+    }
+
+    });
 $('.fishLifeCycleSection').on('keypress','.fish_life_cycle input[type=text], .fish_life_cycle input[type=number], .fish_life_cycle select',function (e) {
     if (e.which === 13) {
         e.preventDefault();
@@ -121,16 +137,4 @@ $(document).on('click', '.remove', function(){
         });
 
     }
-});
-
-
-$('.datePicker').datepicker({
-    changeMonth: true,
-    changeYear: true,
-    dateFormat: "dd-mm-yy",
-    yearRange: "-90:+00",
-    showOn: "both",
-    showButtonPanel: true,
-    buttonImage: "/assets/images/icon-calendar-green.png",
-    buttonImageOnly: true
 });
