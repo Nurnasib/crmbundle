@@ -261,10 +261,10 @@ class SyncAppDataController extends AbstractController
                 $mode = $visit['modeId'] ? $this->getDoctrine()->getRepository(Setting::class)->find((int)$visit['modeId']) : null;
                 $area = null;
                 if(isset($visit['areaId'])&&$visit['areaId']!=''){
-                   $findArea = $this->getDoctrine()->getRepository(Setting::class)->find((int)$visit['areaId']);
-                   if($findArea){
-                       $area = $findArea;
-                   }
+                    $findArea = $this->getDoctrine()->getRepository(Setting::class)->find((int)$visit['areaId']);
+                    if($findArea){
+                        $area = $findArea;
+                    }
                 }
 
                 if ($findEmployee){
@@ -2108,7 +2108,8 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
                     $entity->setSrPercentage(isset($report['final_survival_rate']) && $report['final_survival_rate']!=''?$report['final_survival_rate']:0);
                 }
                 if(strtoupper($entity->getFishLifeCycle()->getReportType())==FishLifeCycle::REPORT_TYPE_AFTER){
-                    $entity->setFinalAverageWeightGm(isset($report['final_avg_weight_gm']) && $report['final_avg_weight_gm']!=''?$report['final_avg_weight_gm']:$report['final_weight_gm']);
+                    $finalWeightGm = isset($report['final_weight_gm']) && $report['final_weight_gm']!=''?$report['final_weight_gm']:0;
+                    $entity->setFinalAverageWeightGm(isset($report['final_avg_weight_gm']) && $report['final_avg_weight_gm']!=''?$report['final_avg_weight_gm']:$finalWeightGm);
                     $entity->setTotalFeedConsumptionKg(isset($report['total_feed_consumption_kg']) && $report['total_feed_consumption_kg']!=''?(float)$report['total_feed_consumption_kg']:0);
                 }
 
