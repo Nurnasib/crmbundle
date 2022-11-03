@@ -367,6 +367,12 @@ class FishLifeCycleDetails
      * @Orm\Column(name="employee_remarks", type="text", nullable=true)
      */
     private $employeeRemarks;
+    
+    /**
+     * @var string
+     * @Orm\Column(name="species_description", type="text", nullable=true)
+     */
+    private $speciesDescription;
 
     /**
      * @var \DateTime
@@ -1519,5 +1525,22 @@ class FishLifeCycleDetails
         }
         return $result;
     }
+
+    /**
+     * @return string
+     */
+    public function getSpeciesDescription()
+    {
+        return $this->speciesDescription;
+    }
+
+    /**
+     * @param string $speciesDescription
+     */
+    public function setSpeciesDescription($speciesDescription): void
+    {
+        $this->speciesDescription = $speciesDescription;
+    }   
+    
 
 }

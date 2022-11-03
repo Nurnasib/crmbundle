@@ -2143,6 +2143,7 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
 
                 $entity->setFarmerRemarks(isset($report['farmer_remarks']) && $report['farmer_remarks']!=''?$report['farmer_remarks']:null);
                 $entity->setEmployeeRemarks(isset($report['employee_remarks']) && $report['employee_remarks']!=''?$report['employee_remarks']:null);
+                $entity->setSpeciesDescription(isset($report['species_description']) && $report['species_description']!=''?$report['species_description']:null);
 
 
                 $em->persist($entity);
