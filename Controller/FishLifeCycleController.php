@@ -251,18 +251,19 @@ class FishLifeCycleController extends AbstractController
 
                 $entity->setFinalWeightGm($entity->calculateFinalWeightGm());
                 $entity->setTotalDayOfCulture($entity->calculateTotalDayOfCulture());
+                $entity->setFinalWeightKg($entity->calculateFinalWeightKg());
+                $entity->setTotalFeedConsumptionKg($entity->calculateTotalFeedConsumptionKg());
+
                 $entity->setFinalFcr($entity->calculateFinalFcr());
                 $entity->setFinalAdg($entity->calculateFinalAdg());
 
-                $entity->setTotalFeedConsumptionKg($entity->calculateTotalFeedConsumptionKg());
 
-                $entity->setFinalWeightKg($entity->calculateFinalWeightKg());
             }
             if(strtoupper($entity->getFishLifeCycle()->getReportType())==FishLifeCycle::REPORT_TYPE_AFTER){
                 $entity->setTotalDayOfCulture($entity->calculateDayOfCultureForAfterSale());
+                $entity->setFinalWeightKg($entity->calculateFinalWeightKgForHarvest());
                 $entity->setFinalFcr($entity->calculateFinalFcrForAfterSale());
                 $entity->setFinalAdg($entity->calculateFinalAdgForAfterSale());
-                $entity->setFinalWeightKg($entity->calculateFinalWeightKgForHarvest());
             }
 
 
