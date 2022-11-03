@@ -1934,7 +1934,7 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
             if ($findParent){
                 $createdAt = $report['created_at'] ? (new \DateTime($report['created_at']))->format('Y-m-d H:i:s') : null;
 
-                $sql = "INSERT INTO `crm_fish_company_species_wise_average_fcr_details` (`fish_company_and_species_wise_fcr_id`, `species_name_id`, `quantity`,`created_at`,`no_of_fish`,`initial_weight_gm`,`present_weight_gm`,`feed_used_kg`) VALUES (:fish_company_and_species_wise_fcr_id, :species_name_id, :quantity, :created_at, :no_of_fish, :initial_weight_gm, :present_weight_gm, :feed_used_kg)";
+                $sql = "INSERT INTO `crm_fish_company_species_wise_average_fcr_details` (`fish_company_and_species_wise_fcr_id`, `species_name_id`, `quantity`,`created_at`,`no_of_fish`,`initial_weight_gm`,`present_weight_gm`,`feed_used_kg`,`survivability`) VALUES (:fish_company_and_species_wise_fcr_id, :species_name_id, :quantity, :created_at, :no_of_fish, :initial_weight_gm, :present_weight_gm, :feed_used_kg, :survivability)";
 
                 $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
 
@@ -1944,8 +1944,8 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
                 $stmt->bindValue('feed_used_kg', $report['total_feed_used_kg']);
                 $stmt->bindValue('initial_weight_gm', $report['initial_weight_gm']);
                 $stmt->bindValue('present_weight_gm', $report['present_weight_gm']);
-                $stmt->bindValue('survive_ability_percent', $report['survive_ability_percent']);
-                
+                $stmt->bindValue('survivability', $report['survive_ability_percent']);
+
                 $totalInitialWeightGm = (float)$report['initial_weight_gm']*(float)$report['no_of_fish'];
                 $totalInitialWeightKg = (float)$totalInitialWeightGm/1000;
 
