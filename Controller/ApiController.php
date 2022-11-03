@@ -1325,37 +1325,39 @@ class ApiController extends AbstractController
         $data = $request->request->all();
 
         if ($data) {
-            $em = $this->getDoctrine()->getManager();
-            $findEmployee = $this->getDoctrine()->getRepository(User::class)->find($data['employee_id']);
-            $findParent = $this->getDoctrine()->getRepository(Api::class)->findOneBy(['batchNo' => $data['batch_id'], 'employee' => $findEmployee]);
-            if (!$findParent) {
-                $api = new Api();
-                $api->setBatchNo($data['batch_id'] ?: null);
-                $api->setEmployee($findEmployee);
-                $api->setStatus(0);
-                $api->setCreatedAt(new \DateTime('now'));
+            if(!in_array($data['process'],['crm_fish_life_cycle_detail_species'])){
+                $em = $this->getDoctrine()->getManager();
+                $findEmployee = $this->getDoctrine()->getRepository(User::class)->find($data['employee_id']);
+                $findParent = $this->getDoctrine()->getRepository(Api::class)->findOneBy(['batchNo' => $data['batch_id'], 'employee' => $findEmployee]);
+                if (!$findParent) {
+                    $api = new Api();
+                    $api->setBatchNo($data['batch_id'] ?: null);
+                    $api->setEmployee($findEmployee);
+                    $api->setStatus(0);
+                    $api->setCreatedAt(new \DateTime('now'));
 
-                $apiDetails = new ApiDetails();
-                $apiDetails->setBatch($api);
-                $apiDetails->setProcess($data['process']);
-                $apiDetails->setJsonData($data['json_body']);
-                $apiDetails->setStatus(0);
-                $api->addApiDetails($apiDetails);
-                $em->persist($api);
-                $em->flush();
+                    $apiDetails = new ApiDetails();
+                    $apiDetails->setBatch($api);
+                    $apiDetails->setProcess($data['process']);
+                    $apiDetails->setJsonData($data['json_body']);
+                    $apiDetails->setStatus(0);
+                    $api->addApiDetails($apiDetails);
+                    $em->persist($api);
+                    $em->flush();
 
-            } else {
-                $apiDetails = new ApiDetails();
-                $apiDetails->setBatch($findParent);
-                $apiDetails->setProcess($data['process']);
-                $apiDetails->setJsonData($data['json_body']);
-                $apiDetails->setStatus(0);
-                $em->persist($apiDetails);
-                $em->flush();
+                } else {
+                    $apiDetails = new ApiDetails();
+                    $apiDetails->setBatch($findParent);
+                    $apiDetails->setProcess($data['process']);
+                    $apiDetails->setJsonData($data['json_body']);
+                    $apiDetails->setStatus(0);
+                    $em->persist($apiDetails);
+                    $em->flush();
+                }
+                return new JsonResponse([
+                    'status' => 200,
+                ]);
             }
-            return new JsonResponse([
-                'status' => 200,
-            ]);
         } else {
             return new JsonResponse([
                 'status' => false,

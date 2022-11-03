@@ -541,7 +541,7 @@ class FishLifeCycleDetails
     }
 
     /**
-     * @return string
+     * @return Setting
      */
     public function getOtherCultureSpecies()
     {
@@ -549,9 +549,9 @@ class FishLifeCycleDetails
     }
 
     /**
-     * @param string $otherCultureSpecies
+     * @param Setting $otherCultureSpecies
      */
-    public function setOtherCultureSpecies($otherCultureSpecies)
+    public function setOtherCultureSpecies($otherCultureSpecies): void
     {
         $this->otherCultureSpecies = $otherCultureSpecies;
     }
@@ -743,7 +743,14 @@ class FishLifeCycleDetails
     }
 
     public function calculateWeightGainKg(){
-        return ((($this->getAveragePresentWeight()-$this->getAverageInitialWeight())*(($this->getNoOfInitialFish()*$this->getCurrentSrPercentage())/100))/1000);
+        $noOfFish=0;
+        if($this->getCurrentSrPercentage()&&$this->getCurrentSrPercentage()>0){
+            $noOfFish= (($this->getNoOfInitialFish()*$this->getCurrentSrPercentage())/100);
+        }else{
+            $noOfFish=$this->getNoOfInitialFish();
+        }
+
+        return ((($this->getAveragePresentWeight()-$this->getAverageInitialWeight())*$noOfFish)/1000);
     }
 
     /**
@@ -878,7 +885,7 @@ class FishLifeCycleDetails
     /**
      * @param Setting $mainCultureSpecies
      */
-    public function setMainCultureSpecies(Setting $mainCultureSpecies): void
+    public function setMainCultureSpecies($mainCultureSpecies): void
     {
         $this->mainCultureSpecies = $mainCultureSpecies;
     }
@@ -911,7 +918,7 @@ class FishLifeCycleDetails
     /**
      * @param Setting $feedType
      */
-    public function setFeedType(Setting $feedType): void
+    public function setFeedType($feedType): void
     {
         $this->feedType = $feedType;
     }
@@ -928,7 +935,7 @@ class FishLifeCycleDetails
     /**
      * @param \DateTime $stockingDate
      */
-    public function setStockingDate(\DateTime $stockingDate)
+    public function setStockingDate( $stockingDate)
     {
         $this->stockingDate = $stockingDate;
     }
@@ -944,7 +951,7 @@ class FishLifeCycleDetails
     /**
      * @param \DateTime $harvestDate
      */
-    public function setHarvestDate(\DateTime $harvestDate)
+    public function setHarvestDate($harvestDate)
     {
         $this->harvestDate = $harvestDate;
     }
@@ -960,7 +967,7 @@ class FishLifeCycleDetails
     /**
      * @param \DateTime $previousSamplingDate
      */
-    public function setPreviousSamplingDate(\DateTime $previousSamplingDate)
+    public function setPreviousSamplingDate($previousSamplingDate)
     {
         $this->previousSamplingDate = $previousSamplingDate;
     }
@@ -976,7 +983,7 @@ class FishLifeCycleDetails
     /**
      * @param \DateTime $presentSamplingDate
      */
-    public function setPresentSamplingDate(\DateTime $presentSamplingDate)
+    public function setPresentSamplingDate($presentSamplingDate)
     {
         $this->presentSamplingDate = $presentSamplingDate;
     }
@@ -1048,7 +1055,8 @@ class FishLifeCycleDetails
     public function calculateNoOfFinalFish(){
         $returnResult = 0;
         if($this->getNoOfInitialFish()>0){
-            $returnResult = ($this->getNoOfInitialFish()*$this->getSrPercentage())/100;
+            $srPer = $this->getSrPercentage() && $this->getSrPercentage()>0?$this->getSrPercentage():100;
+            $returnResult = ($this->getNoOfInitialFish()*$srPer)/100;
         }
 
         return $returnResult;
@@ -1243,7 +1251,7 @@ class FishLifeCycleDetails
      */
     public function getSrPercentage()
     {
-        return number_format($this->srPercentage,2,'.','');
+        return number_format($this->srPercentage,4,'.','');
     }
 
     /**
