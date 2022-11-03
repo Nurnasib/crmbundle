@@ -1358,6 +1358,9 @@ class ApiController extends AbstractController
                     'status' => 200,
                 ]);
             }
+            return new JsonResponse([
+                'status' => 200,
+            ]);
         } else {
             return new JsonResponse([
                 'status' => false,

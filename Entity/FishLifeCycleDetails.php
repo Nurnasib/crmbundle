@@ -1055,8 +1055,14 @@ class FishLifeCycleDetails
     public function calculateNoOfFinalFish(){
         $returnResult = 0;
         if($this->getNoOfInitialFish()>0){
-            $srPer = $this->getSrPercentage() && $this->getSrPercentage()>0?$this->getSrPercentage():100;
-            $returnResult = ($this->getNoOfInitialFish()*$srPer)/100;
+            $noOfFish=0;
+            if($this->getSrPercentage()&&$this->getSrPercentage()>0){
+                $srPer = $this->getSrPercentage();
+                $returnResult = ($this->getNoOfInitialFish()*$srPer)/100;
+            }else{
+                $returnResult=$this->getNoOfInitialFish();
+            }
+            
         }
 
         return $returnResult;

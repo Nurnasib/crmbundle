@@ -2097,16 +2097,18 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
                 $entity->setNoOfInitialFish(isset($report['no_of_initial_fish']) && $report['no_of_initial_fish']!=''?$report['no_of_initial_fish']:0);
                 $entity->setAverageInitialWeight(isset($report['average_initial_weight']) && $report['average_initial_weight']!=''?$report['average_initial_weight']:0);
                 $entity->setAveragePresentWeight(isset($report['average_present_weight']) && $report['average_present_weight']!=''?$report['average_present_weight']:0);
-                $entity->setCurrentSrPercentage(isset($report['current_survival_rate']) && $report['current_survival_rate']!=''?$report['current_survival_rate']:100);
-                $entity->setFinalAverageWeightGm(isset($report['final_avg_weight_gm']) && $report['final_avg_weight_gm']!=''?$report['final_avg_weight_gm']:0);
+                $entity->setCurrentSrPercentage(isset($report['current_survival_rate']) && $report['current_survival_rate']!=''?$report['current_survival_rate']:0);
+
 
                 $entity->setCurrentFeedConsumptionKg(isset($report['current_feed_consumption_kg']) && $report['current_feed_consumption_kg']!=''?(float)$report['current_feed_consumption_kg']:0);
                 $entity->setPreviousTotalFeedConsumptionKg(isset($report['previous_total_feed_consumption_kg']) && $report['previous_total_feed_consumption_kg']!=''?(float)$report['previous_total_feed_consumption_kg']:0);
 
                 if(strtoupper($entity->getFishLifeCycle()->getReportType())==FishLifeCycle::REPORT_TYPE_BEFORE){
-                    $entity->setSrPercentage(isset($report['final_survival_rate']) && $report['final_survival_rate']!=''?$report['final_survival_rate']:100);
+                    $entity->setFinalAverageWeightGm(isset($report['final_avg_weight_gm']) && $report['final_avg_weight_gm']!=''?$report['final_avg_weight_gm']:0);
+                    $entity->setSrPercentage(isset($report['final_survival_rate']) && $report['final_survival_rate']!=''?$report['final_survival_rate']:0);
                 }
                 if(strtoupper($entity->getFishLifeCycle()->getReportType())==FishLifeCycle::REPORT_TYPE_AFTER){
+                    $entity->setFinalAverageWeightGm(isset($report['final_avg_weight_gm']) && $report['final_avg_weight_gm']!=''?$report['final_avg_weight_gm']:$report['final_weight_gm']);
                     $entity->setTotalFeedConsumptionKg(isset($report['total_feed_consumption_kg']) && $report['total_feed_consumption_kg']!=''?(float)$report['total_feed_consumption_kg']:0);
                 }
 
