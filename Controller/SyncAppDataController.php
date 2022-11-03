@@ -2108,6 +2108,7 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
                     $entity->setSrPercentage(isset($report['final_survival_rate']) && $report['final_survival_rate']!=''?$report['final_survival_rate']:0);
                 }
                 if(strtoupper($entity->getFishLifeCycle()->getReportType())==FishLifeCycle::REPORT_TYPE_AFTER){
+                    $entity->setNoOfFinalFish(isset($report['no_of_final_fish']) && $report['no_of_final_fish']!=''?$report['no_of_final_fish']:0);
                     $finalWeightGm = isset($report['final_weight_gm']) && $report['final_weight_gm']!=''?$report['final_weight_gm']:0;
                     $entity->setFinalAverageWeightGm(isset($report['final_avg_weight_gm']) && $report['final_avg_weight_gm']!=''?$report['final_avg_weight_gm']:$finalWeightGm);
                     $entity->setTotalFeedConsumptionKg(isset($report['total_feed_consumption_kg']) && $report['total_feed_consumption_kg']!=''?(float)$report['total_feed_consumption_kg']:0);
