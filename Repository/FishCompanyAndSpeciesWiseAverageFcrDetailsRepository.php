@@ -155,7 +155,7 @@ WHERE fcrDetails.quantity>0 and fcr.employee_id = :employee_id and fcr.feed_type
             ];
             $data['feedTypeInfo'][$result['employeeId']][$month][$result['feedTypeId']]=$result['feedTypeName'];
             $data['records'][$result['employeeId']][$month][$result['feedTypeId']][$result['fcrId']][$result['speciesId']]=$result;
-            $data['fcrInfo'][$result['employeeId']][$month][$result['feedTypeId']][$result['fcrId']]=['feedName'=>$result['feedName'],'createdAt'=>$result['fcrCreatedAt']->format('d-m-Y')];
+            $data['fcrInfo'][$result['employeeId']][$month][$result['feedTypeId']][$result['fcrId']]=['feedName'=>$result['feedName'],'createdAt'=>$result['fcrCreatedAt']->format('d-m-Y'),'reportingMonth'=>$result['reportingMonth']->format('d-m-Y')];
             ksort($data['records'][$result['employeeId']]);
         }
 

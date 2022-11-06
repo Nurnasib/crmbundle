@@ -2106,6 +2106,8 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
                 $entity->setFeedType($feedType?$feedType:null);
                 $entity->setMainCultureSpecies($mainCultureSpecies?$mainCultureSpecies:null);
                 $entity->setOtherCultureSpecies($otherCultureSpecies?$otherCultureSpecies:null);
+                
+                $entity->setFeedItemName(isset($report['feed_item_name']) && $report['feed_item_name']!=''?$report['feed_item_name']:null);
 
                 $entity->setCreatedAt($createdAt? new \DateTime($createdAt):null);
                 $entity->setReportingDate($reportingDate? new \DateTime($reportingDate):null);
