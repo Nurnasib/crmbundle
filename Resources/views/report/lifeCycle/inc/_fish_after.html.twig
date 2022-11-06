@@ -6,13 +6,13 @@
             <table class="table table-striped table-bordered table-hover filter-result download-excel" width="100%">
                 <thead>
                 <tr>
-                    <td data-a-h="center" colspan="37" align="center"><h3>NOURISH POULTRY AND HATCHERY LTD</h3></td>
+                    <td data-a-h="center" colspan="38" align="center"><h3>NOURISH POULTRY AND HATCHERY LTD</h3></td>
                 </tr>
                 <tr>
-                    <td data-a-h="center" colspan="37" align="center"><h5>UTTARA, DHAKA.</h5></td>
+                    <td data-a-h="center" colspan="38" align="center"><h5>UTTARA, DHAKA.</h5></td>
                 </tr>
                 <tr>
-                    <td data-a-h="center" colspan="37" align="center"><h6>{{ lifeCycleSlug=='fish-life-cycle-after-sale-report'?'Fish Life Cycle (Harvest) Report':'' }}</h6></td>
+                    <td data-a-h="center" colspan="38" align="center"><h6>{{ lifeCycleSlug=='fish-life-cycle-after-sale-report'?'Fish Life Cycle (Harvest) Report':'' }}</h6></td>
                 </tr>
                 </thead>
                 {% for month, monthWiseRecords in entities['records'] %}
@@ -24,7 +24,7 @@
                         <tr>
                             <th colspan="7">Officer's ID: {{ entities['employeeInfo'] is not empty ? entities['employeeInfo'][month][employeeId]['employeeUserId'] : '' }}</th>
                             <th colspan="7">Officer's Name: {{ entities['employeeInfo'] is not empty ? entities['employeeInfo'][month][employeeId]['name'] : '' }}</th>
-                            <th colspan="7">Designation: {{ entities['employeeInfo'] is not empty ? entities['employeeInfo'][month][employeeId]['designationName'] : '' }}</th>
+                            <th colspan="8">Designation: {{ entities['employeeInfo'] is not empty ? entities['employeeInfo'][month][employeeId]['designationName'] : '' }}</th>
                             <th colspan="8">Region: {{ entities['employeeInfo'] is not empty ? entities['employeeInfo'][month][employeeId]['regionName'] : '' }}</th>
                             <th colspan="8">Month: {{ monthYear[1] }}</th>
                         </tr>
@@ -67,6 +67,7 @@
                             <th scope="col" data-a-v="middle" rowspan="2">Total income  (tk.)</th>
                             <th scope="col" data-a-v="middle" rowspan="2">Profit/ Loss (tk.)</th>
                             <th scope="col" data-a-v="middle" rowspan="2">ROI (Retune Over Investment) %</th>
+                            <th scope="col" data-a-v="middle" rowspan="2">Culture Species Description</th>
                             <th scope="col" data-a-v="middle" rowspan="2">Farmer Comments</th>
                             <th scope="col" data-a-v="middle" rowspan="2">Visitor's Comments</th>
                         </tr>
@@ -117,6 +118,7 @@
                             <td data-t="n">{{ details.totalIncome|number_format(2,'.','') }}</td>
                             <td data-t="n">{{ details.netProfitOrLoss|number_format(2,'.','') }}</td>
                             <td data-t="n">{{ details.retuneOverInvestment|number_format(2,'.','') }}</td>
+                            <td>{{ details.speciesDescription }}</td>
                             <td>{{ details.farmerRemarks }}</td>
                             <td>{{ details.employeeRemarks }}</td>
                         </tr>
