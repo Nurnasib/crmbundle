@@ -2106,8 +2106,14 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
                 $entity->setFeedType($feedType?$feedType:null);
                 $entity->setMainCultureSpecies($mainCultureSpecies?$mainCultureSpecies:null);
                 $entity->setOtherCultureSpecies($otherCultureSpecies?$otherCultureSpecies:null);
-                
-                $entity->setFeedItemName(isset($report['feed_item_name']) && $report['feed_item_name']!=''?$report['feed_item_name']:null);
+                $feedItemName=null;
+                if(isset($report['feed_item_name']) && $report['feed_item_name']!=''){
+                    $feedItemJsonData = json_decode($report['feed_item_name']);
+                    $feedItemNameUnique= array_map("unserialize", array_unique(array_map("serialize", $feedItemJsonData)));
+                    $feedItemName=json_encode($feedItemNameUnique);
+                }
+
+                $entity->setFeedItemName($feedItemName);
 
                 $entity->setCreatedAt($createdAt? new \DateTime($createdAt):null);
                 $entity->setReportingDate($reportingDate? new \DateTime($reportingDate):null);
