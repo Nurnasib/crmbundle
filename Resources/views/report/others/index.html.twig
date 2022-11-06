@@ -149,11 +149,28 @@
 {% block cssBlock %}
     {{ parent() }}
     <link rel="stylesheet" href="{{ asset('assets/module/css/app.css') }}">
-    <script src="{{ asset('assets/js/tableToExcel.js') }}"></script>
+
+    <style>
+        /*        table.filter-result thead {
+                    position: sticky;
+                    top: -1px;
+                    background-color: #dbdee3 !important;
+                    border-bottom: 2px solid #4C9EE7!important;
+                }*/
+        table thead tr.data-header th{
+
+            border: 2px solid #b5b5b5 !important;
+            border-bottom-color: #b5b5b5 !important;
+        }
+        /*        table.filter thead th{
+                    border: 0 !important;
+                }*/
+    </style>
 {% endblock  %}
 {% block javascripts %}
     {{ parent() }}
     <script type="application/javascript" src="{{ asset('assets/module/js/app.js') }}"></script>
+    <script src="{{ asset('assets/js/tableToExcel.js') }}"></script>
     <script>
         $("#search_filter_form_employee").on('change', function () {
             var employeeId = $(this).val();

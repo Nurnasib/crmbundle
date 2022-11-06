@@ -11,6 +11,7 @@
 
 namespace Terminalbd\CrmBundle\Repository;
 
+use App\Entity\User;
 use Doctrine\ORM\EntityRepository;
 use Terminalbd\KpiBundle\Entity\EmployeeBoard;
 
@@ -24,7 +25,7 @@ use Terminalbd\KpiBundle\Entity\EmployeeBoard;
  */
 class FarmerTrainingReportRepository extends BaseRepository
 {
-    public function getFarmerTrainingReport($breedSlug, $filterBy)
+    public function getFarmerTrainingReport($breedSlug, $filterBy, User $loggedUser)
     {
         $start = isset($filterBy['startDate']) ? (new \DateTime($filterBy['startDate']))->format('Y-m-d') : null;
         $end = isset($filterBy['endDate']) ? (new \DateTime($filterBy['endDate']))->format('Y-m-d') : null;
@@ -39,6 +40,7 @@ class FarmerTrainingReportRepository extends BaseRepository
 
         $qb->select('e.farmerCapacity', 'e.trainingMaterialQty');
         $qb->addSelect('farmer.id AS farmerId', 'farmer.name AS farmerName', 'farmer.address AS farmerAddress', 'farmer.mobile AS farmerMobile');
+        $qb->addSelect('employee.id AS employeeAutoId', 'employee.name AS employeeName', 'employee.userId AS employeeId');
         $qb->addSelect('agent.name AS agentName', 'agent.address AS agentAddress', 'agent.mobile AS agentMobile', 'agent.agentId');
         $qb->addSelect('farmer_training_report.id AS trainingId','farmer_training_report.trainingTopics', 'farmer_training_report.remarks', 'farmer_training_report.trainingDate');
 
@@ -46,8 +48,22 @@ class FarmerTrainingReportRepository extends BaseRepository
         $qb->andWhere('farmer_training_report.trainingDate >= :start')->setParameter('start', $start);
         $qb->andWhere('farmer_training_report.trainingDate <= :end')->setParameter('end', $end);
 
-        if ($employeeId){
-            $qb->andWhere('employee.id = :employeeId')->setParameter('employeeId', $employeeId);
+        $employee = isset($filterBy['employeeId'])? $filterBy['employeeId']: '';
+        if (!empty($employee)){
+            $qb->andWhere('employee.id = :employee')->setParameter('employee', $employee);
+        }
+
+        $rolesString = implode('_', $loggedUser->getRoles());
+        if (!str_contains($rolesString, 'ADMIN') && !in_array('ROLE_LINE_MANAGER', $loggedUser->getRoles())){
+            $qb->andWhere('employee.id = :employeeId')->setParameter('employeeId', $loggedUser->getId());
+        }elseif (!str_contains($rolesString, 'ADMIN') && in_array('ROLE_LINE_MANAGER', $loggedUser->getRoles())){
+
+            $employeeIdsByLineManager = $this->_em->getRepository(User::class)->getEmployeesByLineManager($loggedUser);
+            $employeeIs=[];
+            if($employeeIdsByLineManager){
+                $employeeIs=$employeeIdsByLineManager;
+            }
+            $qb->andWhere('employee.id IN (:employeeIds)')->setParameter('employeeIds', $employeeIs);
         }
 
         $qb->orderBy('farmer_training_report.trainingDate', 'ASC');
@@ -61,6 +77,8 @@ class FarmerTrainingReportRepository extends BaseRepository
 
             $data[$month][$result['trainingId']]['trainingDetails'] = [
                 'id' => $result['trainingId'],
+                'employeeName' => $result['employeeName'],
+                'employeeId' => $result['employeeId'],
                 'trainingTopics' => $result['trainingTopics'],
                 'remarks' => $result['remarks'],
                 'trainingDate' => $result['trainingDate'],
