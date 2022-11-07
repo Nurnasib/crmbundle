@@ -1437,8 +1437,9 @@ class FishLifeCycleDetails
     public function calculateProductionCostPerKgFish()
     {
         $result=0;
-        if($this->getFinalWeightKg()>0){
-            $result = $this->calculateTotalCost()/$this->getFinalWeightKg();
+        $finalWeightKg=$this->getFinalWeightKg()-$this->getTotalInitialWeight();
+        if($finalWeightKg>0){
+            $result = $this->calculateTotalCost()/$finalWeightKg;
         }
         return $result;
     }
