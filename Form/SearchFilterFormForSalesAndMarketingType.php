@@ -150,6 +150,35 @@ class SearchFilterFormForSalesAndMarketingType extends AbstractType
                     'class' => 'select2'
                 ]
             ])
+            ->add('month', ChoiceType::class,[
+                'choices' => [
+                    'January' => '01',
+                    'February' => '02',
+                    'March' => '03',
+                    'April' => '04',
+                    'May' => '05',
+                    'June' => '06',
+                    'July' => '07',
+                    'August' => '08',
+                    'September' => '09',
+                    'October' => '10',
+                    'November' => '11',
+                    'December' => '12',
+                ],
+                'placeholder' => '- Select month -',
+                'required' => false,
+                'data' => date('m')
+            ])
+            
+            ->add('year', ChoiceType::class,[
+                'choices' => $this->getYears(2020),
+                'placeholder' => '- Select year -',
+                'required' => false,
+                'attr' => [
+                    'class' => 'select2'
+                ],
+                'data' => date('Y')
+            ])
             ->add('filter', SubmitType::class,[
                 'attr'=>[
                     'class' => 'btn btn-primary btn-block'

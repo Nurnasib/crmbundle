@@ -22,25 +22,29 @@
                     <thead class="thead-dark">
                     {{ form_start(form) }}
                     <tr>
+
                         <th>
-                            {{ form_label(form.employee, 'Employee:', { 'label_attr': {'class': 'col-md-4 text-right'} }) }}
-                            <div class="col-md-8 p-0">
-                            {{ form_widget(form.employee,{'id':'employee', 'attr':{'placeholder': 'Select Employee'}}) }}
-                            </div>
+                            {{ form_label(form.employee, 'Employee:') }}
+                            {{ form_widget(form.employee) }}
+                        </th>
+
+                        <th>
+                            {{ form_label(form.startDate, 'Start Date:') }}
+                            {{ form_widget(form.startDate) }}
                         </th>
                         <th>
-                            {{ form_label(form.startDate, 'Start Date:', { 'label_attr': {'class': 'col-md-4 text-right'} }) }}
-                            <div class="col-md-8 p-0">
-                            {{ form_widget(form.startDate,{'id':'start-date', 'attr':{'placeholder': 'dd-mm-YYYY'}}) }}
-                            </div>
+                            {{ form_label(form.endDate, 'End Date:') }}
+                            {{ form_widget(form.endDate) }}
                         </th>
                         <th>
-                            {{ form_label(form.endDate, 'End Date:', { 'label_attr': {'class': 'col-md-4 text-right'} }) }}
-                            <div class="col-md-8 p-0">
-                            {{ form_widget(form.endDate,{'id':'end-date', 'attr':{'placeholder': 'dd-mm-YYYY'}}) }}
-                            </div>
+                            {{ form_label(form.year, 'Year:') }}
+                            {{ form_widget(form.year) }}
                         </th>
                         <th>
+                            {{ form_label(form.month, 'Month:') }}
+                            {{ form_widget(form.month) }}
+                        </th>
+                        <th style="vertical-align: bottom!important;">
                             <div class="btn-group float-right">
                                 {{ form_widget(form._token) }}
                                 <button type="submit" name="search" class="btn btn-primary btn-sm" title="Search" value="search"><i class="fa fa-search" aria-hidden="true"></i></button>
@@ -79,6 +83,12 @@
                         {% elseif reportSlug is same as 'meat-egg-price' %}
                             {% include '@TerminalbdCrm/report/others/inc/_meat_egg_price.html.twig'%}
 
+
+                        {% elseif reportSlug in ['doc-complain', 'feed-complain'] %}
+                            {% include '@TerminalbdCrm/report/others/inc/_complain.html.twig'%}
+
+                        {% elseif reportSlug in ['company-wise-feed-sale-poultry','company-wise-boiler-chick','company-wise-layer-chick','company-wise-feed-sale-cattle','company-wise-feed-sale-fish'] %}
+                            {% include '@TerminalbdCrm/report/others/inc/_company_wise_feed_sale.html.twig'%}
 
                         {% endif %}
 

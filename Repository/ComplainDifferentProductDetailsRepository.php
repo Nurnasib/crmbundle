@@ -29,7 +29,6 @@ class ComplainDifferentProductDetailsRepository extends EntityRepository
     {
         $start = isset($filterBy['startDate']) ? (new \DateTime($filterBy['startDate']))->format('Y-m-d 00:00:00') : null;
         $end = isset($filterBy['endDate']) ? (new \DateTime($filterBy['endDate']))->format('Y-m-d 23:59:59') : null;
-        $employeeId = isset($filterBy['employee']) ? $filterBy['employee']->getId() : null;
 
         $qb = $this->createQueryBuilder('e');
 
@@ -41,21 +40,25 @@ class ComplainDifferentProductDetailsRepository extends EntityRepository
         $qb->addSelect('parent.observation', 'parent.ageDays', 'parent.createdAt');
         $qb->addSelect('parameter.item AS parameterName');
 
-        $rolesString = implode('_', $loggedUser->getRoles());
 
         $qb->where('parameter.type = :type')->setParameter('type', $type);
-        if ($employeeId){
-            $qb->andWhere('employee.id = :employeeId')->setParameter('employeeId', $employeeId);
-        }else{
-            if (!str_contains($rolesString, 'ADMIN') && !in_array('ROLE_LINE_MANAGER', $loggedUser->getRoles())){
-                $qb->andWhere('employee.id = :employeeId')->setParameter('employeeId', $loggedUser->getId());
-            }elseif (in_array('ROLE_LINE_MANAGER', $loggedUser->getRoles())){
-                if (isset($filterBy['employee']) && $filterBy['employee'] !== null){
-                    $qb->andWhere('lineManager.id = :lineManagerId')->setParameter('lineManagerId', $loggedUser->getId());
-                }
+
+        $rolesString = implode('_', $loggedUser->getRoles());
+        if (!str_contains($rolesString, 'ADMIN') && !in_array('ROLE_LINE_MANAGER', $loggedUser->getRoles())){
+            $qb->andWhere('employee.id = :employeeId')->setParameter('employeeId', $loggedUser->getId());
+        }elseif (!str_contains($rolesString, 'ADMIN') && in_array('ROLE_LINE_MANAGER', $loggedUser->getRoles())){
+
+            $employeeIdsByLineManager = $this->_em->getRepository(User::class)->getEmployeesByLineManager($loggedUser);
+            $employeeIs=[];
+            if($employeeIdsByLineManager){
+                $employeeIs=$employeeIdsByLineManager;
             }
+            $qb->andWhere('employee.id IN (:employeeIds)')->setParameter('employeeIds', $employeeIs);
         }
-//        $qb->andWhere($qb->expr()->like('parent.createdAt', ':startD'))->setParameter('startD', '%'.(new \DateTime($filterBy['startDate']))->format('Y-m-d').'%');
+        if (isset($filterBy['employeeId']) && $filterBy['employeeId'] !=''){
+            $qb->andWhere('employee.id = :employeeId')->setParameter('employeeId', $employeeId);
+        }
+
         $qb->andWhere('parent.createdAt >= :start')->setParameter('start', $start);
         $qb->andWhere('parent.createdAt <= :end')->setParameter('end', $end);
 
