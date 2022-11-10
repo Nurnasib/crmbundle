@@ -41,6 +41,8 @@ class VisitReportController extends AbstractController
 //        $form = $this->createForm(SearchFilterFormType::class, null, ['loggedUser' => $this->getUser()]);
         $form->handleRequest($request);
         if ($form->isSubmitted()){
+            $requestData = $request->request->all();
+
             $startDate = $form->getData()['startDate'] ? new \DateTime($form->getData()['startDate']) : new \DateTime('now');
             $endDate = $form->getData()['endDate'] ? new \DateTime($form->getData()['endDate']) : new \DateTime('now');
 
@@ -50,6 +52,31 @@ class VisitReportController extends AbstractController
             $employee = $form->getData()['employee'];
 
             $entities = $this->getDoctrine()->getRepository(CrmVisit::class)->getVisits($startDate, $endDate, $employee, $this->getUser());
+
+            if(isset($requestData['pdf_download'])&&$requestData['pdf_download']=='pdf_download'){
+                $pdfOptions = new Options();
+                $pdfOptions->set('defaultFont', 'Arial, sans-serif');
+
+                // Instantiate Dompdf with our options
+                $dompdf = new Dompdf($pdfOptions);
+
+                // Retrieve the HTML generated in our twig file
+                $html = $this->renderView('@TerminalbdCrm/report/visit/visit-pdf.html.twig',['entities' => $entities]);
+
+                // Load HTML to Dompdf
+                $dompdf->loadHtml($html);
+
+                // (Optional) Setup the paper size and orientation 'portrait' or 'landscape'
+                $dompdf->setPaper('A4', 'portrait');
+
+                // Render the HTML as PDF
+                $dompdf->render();
+
+                // Output the generated PDF to Browser (force download)
+                $dompdf->stream($request->get('_route') . ".pdf", [
+                    "Attachment" => false
+                ]);
+            }
         }
         return $this->render('@TerminalbdCrm/report/visit/index.html.twig',[
             'form' => $form->createView(),

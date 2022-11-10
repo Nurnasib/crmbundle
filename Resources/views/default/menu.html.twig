@@ -35,20 +35,27 @@
         <li class=""><a class="" href="javascript:"><i class="feather icon-file-text"></i>{{ 'Report'|trans }}</a>
 
             <ul class="sub-menu">
+
+                {% if is_granted('ROLE_CRM_SALES_MARKETING_ADMIN') or is_granted('ROLE_DEVELOPER') %}
                 <li>
                     <a class="dropdown-item" href="javascript:">{{ 'Sales & Marketing'|trans }}</a>
                     <ul>
                         <li><a class="dropdown-item" href="{{ path('sales_marketing_report_index',{'report':'challenges-problem'}) }}">{{ 'Problems'|trans }}</a>
                         <li><a class="dropdown-item" href="{{ path('sales_marketing_report_index',{'report':'challenges-idea'}) }}">{{ 'Ideas'|trans }}</a>
                         <li><a class="dropdown-item" href="{{ path('sales_marketing_report_index',{'report':'competitors-activity'}) }}">{{ 'Competitors Activity'|trans }}</a>
+                        <li><a class="dropdown-item" href="{{ path('sales_marketing_report_index',{'report':'doc-price'}) }}">{{ 'DOC Price'|trans }}</a>
+                        <li><a class="dropdown-item" href="{{ path('sales_marketing_report_index',{'report':'meat-egg-price'}) }}">{{ 'Meat & Egg Price'|trans }}</a>
                         </li>
                     </ul>
                 </li>
+                {% endif %}
                 <li><a class="dropdown-item" href="{{ path('visit_report') }}">{{ 'Visit Report'|trans }}</a></li>
                 <li><a class="dropdown-item" href="{{ path('visit_status') }}">{{ 'Visit Status'|trans }}</a></li>
+                {% if is_granted('ROLE_CRM_POULTRY_ADMIN') or is_granted('ROLE_CRM_CATTLE_ADMIN') or is_granted('ROLE_CRM_AQUA_ADMIN') or is_granted('ROLE_CRM_REPORT') or is_granted('ROLE_DEVELOPER')  %}
                 <li><a class="" href="{{ path('life_cycle_report_index') }}"><span>{{ 'Life Cycle Report'|trans }}</span></a></li>
                 <li><a class="" href="{{ path('monthly_report_index') }}"><span>{{ 'Monthly Report'|trans }}</span></a></li>
                 <li><a class="" href="{{ path('others_report_index') }}"><span>{{ 'Others Report'|trans }}</span></a></li>
+                {% endif %}
 
             </ul>
 

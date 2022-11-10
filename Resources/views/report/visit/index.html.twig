@@ -46,8 +46,11 @@
                             <div class="btn-group" style="margin-top: 25px">
                                 <button type="submit" name="search" class="btn btn-primary btn-sm" title="Search"
                                         value="search"><i class="fa fa-search" aria-hidden="true"></i></button>
+
                                 <a href="{{ path('visit_report') }}" class="btn purple-bg btn-sm white-font"
                                    title="Reset" value="reset"><i class="fa fa-refresh" aria-hidden="true"></i></a>
+                                <button type="submit" name="pdf_download" class="btn btn-primary btn-sm" title="Pdf Download"
+                                        value="pdf_download"><i class="fa fa-file-pdf" aria-hidden="true"></i></button>
                                 {% if entities is defined and entities is not empty %}
                                     <a href="{{ path('visit_details_report',{mode:'pdf', startDate: startDate, endDate: endDate, employeeId: employee?employee.id:null}) }}"
                                        target="_blank" class="btn blue-bg btn-sm white-font"><i class="fa fa-download"
@@ -63,13 +66,14 @@
             </div>
         </div>
         {% if entities is defined and entities is not empty %}
-            {% for employeeId, details in entities %}
+
                 <div class="row">
                     <div class="card">
                         <div class="card-block">
                             <h3 class="text-center">{{ 'NOURISH POULTRY AND HATCHERY LTD'|trans }}</h3>
                             <h5 class="text-center">{{ 'UTTARA, DHAKA.'|trans }}</h5>
                             <h6 class="text-center">{{ 'VISIT REPORT'|trans }}</h6>
+                        {% for employeeId, details in entities %}
                             <div style="max-height: 550px; overflow-y: auto">
                                 <table width="100%" class="" style="color: black">
                                     <thead class="thead-dark">
@@ -122,11 +126,11 @@
                                     </tbody>
                                 </table>
                             </div>
-
+                        {% endfor %}
                         </div>
                     </div>
                 </div>
-            {% endfor %}
+
         {% endif %}
         <!-- [ Main Content ] end -->
     </div>

@@ -114,14 +114,19 @@ class PoultryMeatEggPriceRepository extends EntityRepository
         $qb->addGroupBy('breedTypeId');
         $qb->addGroupBy('employee.userId');
 
-        $roleSplitArray = [];
-        foreach ($loggedUser->getRoles() as $role) {
-            $roleSplitArray = array_merge(explode('_', $role), $roleSplitArray);
-        }
-        if (!in_array('ADMIN', $roleSplitArray) && !in_array('ROLE_LINE_MANAGER', $loggedUser->getRoles())){
+        $rolesString = implode('_', $loggedUser->getRoles());
+        if (!str_contains($rolesString, 'ADMIN') && !in_array('ROLE_LINE_MANAGER', $loggedUser->getRoles())){
             $qb->andWhere('employee.id = :employeeId')->setParameter('employeeId', $loggedUser->getId());
+        }elseif (!str_contains($rolesString, 'ADMIN') && in_array('ROLE_LINE_MANAGER', $loggedUser->getRoles())){
+
+            $employeeIdsByLineManager = $this->_em->getRepository(User::class)->getEmployeesByLineManager($loggedUser);
+            $employeeIs=[];
+            if($employeeIdsByLineManager){
+                $employeeIs=$employeeIdsByLineManager;
+            }
+            $qb->andWhere('employee.id IN (:employeeIds)')->setParameter('employeeIds', $employeeIs);
         }
-        if (isset($filterBy['employee']) && $filterBy['employee'] !== null){
+        if (isset($filterBy['employeeId']) && $filterBy['employeeId'] !=''){
             $qb->andWhere('employee.id = :employeeId')->setParameter('employeeId', $employeeId);
         }
 

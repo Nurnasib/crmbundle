@@ -21,11 +21,13 @@ use Terminalbd\CrmBundle\Entity\CattleFarmVisitDetails;
 use Terminalbd\CrmBundle\Entity\CattlePerformanceDetails;
 use Terminalbd\CrmBundle\Entity\Challenger;
 use Terminalbd\CrmBundle\Entity\CostBenefitAnalysisForLessCostingFarm;
+use Terminalbd\CrmBundle\Entity\DailyChickPriceDetails;
 use Terminalbd\CrmBundle\Entity\DiseaseMapping;
 use Terminalbd\CrmBundle\Entity\FcrDetails;
 use Terminalbd\CrmBundle\Entity\FishCompanyAndSpeciesWiseAverageFcrDetails;
 use Terminalbd\CrmBundle\Entity\LayerPerformanceDetails;
 use Terminalbd\CrmBundle\Entity\NewFarmerIntroduce\FarmerIntroduceDetails;
+use Terminalbd\CrmBundle\Entity\PoultryMeatEggPrice;
 use Terminalbd\CrmBundle\Entity\Setting;
 use Terminalbd\CrmBundle\Form\SearchFilterFormForSalesAndMarketingType;
 use Terminalbd\CrmBundle\Form\SearchFilterFormType;
@@ -58,10 +60,12 @@ class SalesAndMarketingReportController extends AbstractController
         if ($form->isSubmitted()) {
 //            $report = $form->getData()['monthlyReport'];
 
-            $filterBy['startMonth'] = $form->getData()['startMonth']->format('Y-m-d');
-            $filterBy['endMonth'] = $form->getData()['endMonth']->format('Y-m-t');
+//            $filterBy['startMonth'] = $form->getData()['startMonth']->format('Y-m-d');
+//            $filterBy['endMonth'] = $form->getData()['endMonth']->format('Y-m-t');
+            $filterBy['otherReport'] = $report;
             $filterBy['startDate'] = $form->getData()['startDate'];
             $filterBy['endDate'] = $form->getData()['endDate'];
+//            $filterBy['employee'] = $form->getData()['employee'] ? $form->getData()['employee'] : '';
             $filterBy['employeeId'] = $form->getData()['employee'] ? $form->getData()['employee']->getId() : '';
 
             $employee = $form->getData()['employee'];
@@ -72,7 +76,15 @@ class SalesAndMarketingReportController extends AbstractController
                 case 'competitors-activity':
                     $entities = $this->getDoctrine()->getRepository(Challenger::class)->getChallengerByEmployee($report, $filterBy, $this->getUser());
                     break;
-
+                
+                case 'doc-price':
+                    $entities = $this->getDoctrine()->getRepository(DailyChickPriceDetails::class)->getDocPriceReport($filterBy, $this->getUser());
+                    break;
+                    
+                case 'meat-egg-price':
+                    $entities = $this->getDoctrine()->getRepository(PoultryMeatEggPrice::class)->getMeatEggPriceReport($filterBy, $this->getUser());
+                    break;
+                    
                 default:
                     $entities = [];
                     break;

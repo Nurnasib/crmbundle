@@ -11,6 +11,7 @@
 
 namespace Terminalbd\CrmBundle\Repository;
 
+use App\Entity\User;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
 
@@ -24,14 +25,14 @@ use Doctrine\ORM\NonUniqueResultException;
  */
 class DailyChickPriceDetailsRepository extends EntityRepository
 {
-    public function getDocPriceReport($filterBy, $loggedUser)
+    public function getDocPriceReport($filterBy, User $loggedUser)
     {
 
-        $start = isset($filterBy['startDate']) ? (new \DateTime($filterBy['startDate']))->format('Y-m-d') : null;
-        $end = isset($filterBy['endDate']) ? (new \DateTime($filterBy['endDate']))->format('Y-m-d') : null;
-        $employeeId = isset($filterBy['employee']) ? $filterBy['employee']->getId() : null;
+        $start = isset($filterBy['startDate']) ? (new \DateTime($filterBy['startDate']))->format('Y-m-d') : date('Y-01-01');
+        $end = isset($filterBy['endDate']) ? (new \DateTime($filterBy['endDate']))->format('Y-m-d') : date('Y-12-31');
+        $employeeId = isset($filterBy['employeeId']) ? $filterBy['employeeId'] : null;
 
-
+//        dd($start, $end);
         $qb = $this->createQueryBuilder('e');
         $qb->join('e.crmDailyChickPrice', 'parent');
         $qb->join('parent.employee', 'employee');
@@ -57,14 +58,19 @@ class DailyChickPriceDetailsRepository extends EntityRepository
         $qb->addGroupBy('feedId');
         $qb->orderBy('feed.name', 'ASC');
 
-        $roleSplitArray = [];
-        foreach ($loggedUser->getRoles() as $role) {
-            $roleSplitArray = array_merge(explode('_', $role), $roleSplitArray);
-        }
-        if (!in_array('ADMIN', $roleSplitArray) && !in_array('ROLE_LINE_MANAGER', $loggedUser->getRoles())){
+        $rolesString = implode('_', $loggedUser->getRoles());
+        if (!str_contains($rolesString, 'ADMIN') && !in_array('ROLE_LINE_MANAGER', $loggedUser->getRoles())){
             $qb->andWhere('employee.id = :employeeId')->setParameter('employeeId', $loggedUser->getId());
+        }elseif (!str_contains($rolesString, 'ADMIN') && in_array('ROLE_LINE_MANAGER', $loggedUser->getRoles())){
+
+            $employeeIdsByLineManager = $this->_em->getRepository(User::class)->getEmployeesByLineManager($loggedUser);
+            $employeeIs=[];
+            if($employeeIdsByLineManager){
+                $employeeIs=$employeeIdsByLineManager;
+            }
+            $qb->andWhere('employee.id IN (:employeeIds)')->setParameter('employeeIds', $employeeIs);
         }
-        if (isset($filterBy['employee']) && $filterBy['employee'] !== null){
+        if (isset($filterBy['employeeId']) && $filterBy['employeeId'] !=''){
             $qb->andWhere('employee.id = :employeeId')->setParameter('employeeId', $employeeId);
         }
 

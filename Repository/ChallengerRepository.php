@@ -51,9 +51,6 @@ class ChallengerRepository extends EntityRepository
                 $qb->where('e.challengerType =:challengerType')->setParameter('challengerType','Competitor Activity');
             }
 
-            $startDate = isset($filterBy['startMonth'])&&$filterBy['startMonth']!=''? (new \DateTime($filterBy['startMonth']))->format('Y-m-d') . ' 00:00:00': '';
-            $endDate = isset($filterBy['endMonth'])&&$filterBy['endMonth']!=''? (new \DateTime($filterBy['endMonth']))->format('Y-m-d') . ' 23:59:59': '';
-
             $employee = isset($filterBy['employeeId'])? $filterBy['employeeId']: '';
             if (!empty($employee)){
                 $qb->andWhere('employee.id = :employee')->setParameter('employee', $employee);
@@ -71,6 +68,9 @@ class ChallengerRepository extends EntityRepository
                 }
                 $qb->andWhere('employee.id IN (:employeeIds)')->setParameter('employeeIds', $employeeIs);
             }
+
+            $startDate = isset($filterBy['startDate'])&&$filterBy['startDate']!=''? (new \DateTime($filterBy['startDate']))->format('Y-m-d') . ' 00:00:00': '';
+            $endDate = isset($filterBy['endDate'])&&$filterBy['endDate']!=''? (new \DateTime($filterBy['endDate']))->format('Y-m-d') . ' 23:59:59': '';
 
             if (!empty($startDate) && !empty($endDate)){
                 $qb->andWhere('e.createdAt >= :reportingMonthStart')->setParameter('reportingMonthStart', $startDate);

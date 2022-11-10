@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Visit Report</title>
+    <style>
+        body {
+            font-size: 12px;
+        }
+        .text-center{
+            text-align: center;
+        }
+        .text-left{
+            text-align: left;
+        }
+        .table-bordered thead tr.header th, .table-bordered tbody td{
+            border: 1px solid #000000;
+        }
+    </style>
+</head>
+<body>
+{% if entities is defined and entities is not empty %}
+
+    <div class="row">
+        <div class="card">
+            <div class="card-block">
+                <h3 class="text-center">{{ 'NOURISH POULTRY AND HATCHERY LTD'|trans }}</h3>
+                <h5 class="text-center">{{ 'UTTARA, DHAKA.'|trans }}</h5>
+                <h6 class="text-center">{{ 'VISIT REPORT'|trans }}</h6>
+                {% for employeeId, details in entities %}
+                    <div style="margin-bottom: 30px">
+                        <table width="100%" cellpadding="5" cellspacing="0" class="table table-bordered filter-result">
+                            <thead class="thead-dark">
+                            <tr>
+                                <th class="text-left" colspan="2">{{ 'ID' }}: {{ details['userId'] }}</th>
+                                <th class="text-left" colspan="2">{{ 'Name of CSO' }}: {{ details['employeeName'] }}</th>
+                                <th class="text-left" colspan="2">{{ 'Designation' }}: {{ details['employeeDesignationName'] }}</th>
+                            </tr>
+                            <tr class="header">
+                                <th>{{ 'Visit Date'|trans }}</th>
+                                <th>{{ 'Working Mode'|trans }}</th>
+                                <th>{{ 'Location'|trans }}</th>
+                                <th>{{ 'Visit Begin'|trans }}</th>
+                                <th>{{ 'Visit End'|trans }}</th>
+                                <th>{{ 'Remarks'|trans }}</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for visitDate,entity in details['details'] %}
+                                {% for data in entity %}
+                                    <tr>
+                                        {#{% if loop.first %}
+                                            <td rowspan="{{ entity|length }}">{{ visitDate|date('d-m-Y') }}</td>
+                                        {% endif %}#}
+                                        <td>{{ visitDate|date('d-m-Y') }}</td>
+                                        <td>{{ data.workingModeName }}</td>
+                                        <td>{{ data.locationName }}</td>
+                                        <td>{{ data.visitBegin }}</td>
+                                        <td>{{ data.visitEnd }}</td>
+                                        <td>{{ data.remarks }}</td>
+                                    </tr>
+                                {% endfor %}
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+{% endif %}
+</body>
+</html>
