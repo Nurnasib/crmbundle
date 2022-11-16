@@ -183,6 +183,7 @@ class ApiRepository extends BaseRepository
         $qb->where("cg.slug =:slug")->setParameter('slug', $mode);
         $qb->andWhere('e.deletedAt IS NULL');
         $qb->andWhere('e.deletedBy IS NULL');
+        $qb->andWhere('ca.status =:caStatus')->setParameter('caStatus', 1);
         if ($locations) {
             $locations = explode(',', $locations);
             $qb->andWhere('l.id IN (:upozila)')->setParameter('upozila', $locations);
@@ -1157,6 +1158,7 @@ class ApiRepository extends BaseRepository
         $qb->andWhere('location.id IN (:upozils)')->setParameter('upozils', $arrs);
         $qb->andWhere('e.deletedAt IS NULL');
         $qb->andWhere('e.deletedBy IS NULL');
+        $qb->andWhere('a.status =:agentStatus')->setParameter('agentStatus',1);
         $result = $qb->getQuery()->getArrayResult();
 
         $data = array();
