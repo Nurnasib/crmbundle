@@ -1253,9 +1253,10 @@ VALUES (:crm_cattle_life_cycle_id, :visiting_date, :age_of_cattle_month, :previo
             $findEmployee = $this->getDoctrine()->getRepository(User::class)->find($report['employee_id']);
             $findReport = $this->getDoctrine()->getRepository(Setting::class)->find($report['report_id']);
 
-            $findLifeCycle = $this->getDoctrine()->getRepository(LayerLifeCycle::class)->findOneBy(['customer' => $findFarmer, 'employee' => $findEmployee, 'report' => $findReport]);
+            $findLifeCycle = $this->getDoctrine()->getRepository(LayerLifeCycle::class)->findOneBy(['customer' => $findFarmer, 'employee' => $findEmployee, 'report' => $findReport, 'lifeCycleState'=>LayerLifeCycle::LIFE_CYCLE_STATE_IN_PROGRESS]);
 
             if ($findLifeCycle){
+                $findLifeCycle->setAppBatch($batch);
                 $findLifeCycle->setLifeCycleState($report['life_cycle_state']);
                 $this->getDoctrine()->getManager()->persist($findLifeCycle);
                 $this->getDoctrine()->getManager()->flush();
@@ -1310,12 +1311,13 @@ VALUES (:total_birds, :hatchery_date, :created, :updated, :customer_id, :employe
     {
         foreach ($reports as $report) {
 
-            $sql = "SELECT id FROM `crm_layer_life_cycle` WHERE `customer_id` = :customer_id AND `employee_id` = :employee_id AND `report_id` = :report_id AND `life_cycle_state` = :life_cycle_state";
+            $sql = "SELECT id FROM `crm_layer_life_cycle` WHERE `customer_id` = :customer_id AND `employee_id` = :employee_id AND `report_id` = :report_id AND `app_batch_id` = :app_batch_id";
             $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
             $stmt->bindValue('customer_id', $report['customer_id']);
             $stmt->bindValue('employee_id', $report['employee_id']);
             $stmt->bindValue('report_id', $report['report_id']);
-            $stmt->bindValue('life_cycle_state', 'IN_PROGRESS');
+            $stmt->bindValue('app_batch_id', $batch->getId());
+//            $stmt->bindValue('life_cycle_state', 'IN_PROGRESS');
 
             $stmt->execute();
             $lifeCycleId = $stmt->fetch()['id'];
