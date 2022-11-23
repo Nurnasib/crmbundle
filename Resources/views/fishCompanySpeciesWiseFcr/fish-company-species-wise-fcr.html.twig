@@ -138,7 +138,7 @@
                                                     <td>{{ companyWiseFcrs['fcrInfo'][feedType.id][monthYear][fcrId]['createdAt'] }}</td>
                                                     {% if mainCultureSpecies is defined and mainCultureSpecies[feedType.id] is not empty %}
                                                         {% for index, Species in mainCultureSpecies[feedType.id] %}
-                                                            <td>{{ fcrDetails[Species.id] is defined? fcrDetails[Species.id].quantity|number_format(3,'.',''):'0.00' }}</td>
+                                                            <td>{{ fcrDetails[Species.id] is defined? fcrDetails[Species.id].quantity|number_format(3,'.',''):'' }}</td>
                                                         {% endfor %}
                                                     {% endif %}
                                                 </tr>
