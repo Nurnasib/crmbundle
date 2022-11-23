@@ -98,6 +98,8 @@ class SettingFormType extends AbstractType
                     'Area'=>'AREA',
                     'Daily Expense Particular'=>'DAILY_EXPENSE_PARTICULAR',
                     'Monthly Expense Particular'=>'MONTHLY_EXPENSE_PARTICULAR',
+                    'FCR Different Company for Sonali'=>'FCR_DIFF_COMPANY_SONALI',
+                    'FCR Different Company for Broiler'=>'FCR_DIFF_COMPANY_Broiler',
 
                 ],
                 'attr' => [
