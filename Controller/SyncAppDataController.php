@@ -2295,6 +2295,7 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
                         $fishLifeCycleCulture->setOtherCultureSpecies($otherMainCultureSpecies);
                         $fishLifeCycleCulture->setPondNumber($pond_number);
                         $fishLifeCycleCulture->setFeedItemName($report['feed_item_name']!=''?$report['feed_item_name']:null);
+                        $fishLifeCycleCulture->setFeedItemNameOther($report['feed_item_name_other']!=''?$report['feed_item_name_other']:null);
                         $fishLifeCycleCulture->setSpeciesDescription($report['culture_species_desc']!=''?$report['culture_species_desc']:null);
                         $fishLifeCycleCulture->setCultureAreaDecimal($culture_area_decimal);
                         $fishLifeCycleCulture->setNoOfInitialFish($no_of_initial_fish);

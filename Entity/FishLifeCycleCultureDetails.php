@@ -141,7 +141,7 @@ class FishLifeCycleCultureDetails
     /**
      * @return FishLifeCycleCulture
      */
-    public function getFishLifeCycleCulture(): FishLifeCycleCulture
+    public function getFishLifeCycleCulture()
     {
         return $this->fishLifeCycleCulture;
     }
@@ -157,7 +157,7 @@ class FishLifeCycleCultureDetails
     /**
      * @return float
      */
-    public function getAveragePresentWeight(): float
+    public function getAveragePresentWeight()
     {
         return $this->averagePresentWeight;
     }
@@ -173,7 +173,7 @@ class FishLifeCycleCultureDetails
     /**
      * @return \DateTime
      */
-    public function getSamplingDate(): \DateTime
+    public function getSamplingDate()
     {
         return $this->samplingDate;
     }
@@ -189,7 +189,7 @@ class FishLifeCycleCultureDetails
     /**
      * @return float
      */
-    public function getCurrentCultureDays(): float
+    public function getCurrentCultureDays()
     {
         return $this->currentCultureDays;
     }
@@ -205,7 +205,7 @@ class FishLifeCycleCultureDetails
     /**
      * @return float
      */
-    public function getAvgWeightGainGm(): float
+    public function getAvgWeightGainGm()
     {
         return $this->avgWeightGainGm;
     }
@@ -221,7 +221,7 @@ class FishLifeCycleCultureDetails
     /**
      * @return float
      */
-    public function getTotalWeightGainKg(): float
+    public function getTotalWeightGainKg()
     {
         return $this->totalWeightGainKg;
     }
@@ -237,7 +237,7 @@ class FishLifeCycleCultureDetails
     /**
      * @return float
      */
-    public function getCurrentFeedConsumptionKg(): float
+    public function getCurrentFeedConsumptionKg()
     {
         return $this->currentFeedConsumptionKg;
     }
@@ -253,7 +253,7 @@ class FishLifeCycleCultureDetails
     /**
      * @return float
      */
-    public function getCurrentFcr(): float
+    public function getCurrentFcr()
     {
         return $this->currentFcr;
     }
@@ -269,7 +269,7 @@ class FishLifeCycleCultureDetails
     /**
      * @return float
      */
-    public function getCurrentAdg(): float
+    public function getCurrentAdg()
     {
         return $this->currentAdg;
     }
@@ -285,7 +285,7 @@ class FishLifeCycleCultureDetails
     /**
      * @return float
      */
-    public function getSrPercentage(): float
+    public function getSrPercentage()
     {
         return $this->srPercentage;
     }
@@ -349,7 +349,7 @@ class FishLifeCycleCultureDetails
     /**
      * @return float
      */
-    public function getNoOfFinalFish(): float
+    public function getNoOfFinalFish()
     {
         return $this->noOfFinalFish;
     }
@@ -365,7 +365,7 @@ class FishLifeCycleCultureDetails
     /**
      * @return int
      */
-    public function getAppId(): int
+    public function getAppId()
     {
         return $this->appId;
     }

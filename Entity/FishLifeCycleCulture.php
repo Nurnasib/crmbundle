@@ -121,6 +121,12 @@ class FishLifeCycleCulture
      * @Orm\Column(name="feed_item_name", type="text", nullable=true)
      */
     private $feedItemName;
+    
+    /**
+     * @var string
+     * @Orm\Column(name="feed_item_name_other", type="text", nullable=true)
+     */
+    private $feedItemNameOther;
 
     /**
      * @var \DateTime
@@ -250,7 +256,7 @@ class FishLifeCycleCulture
     /**
      * @return FishLifeCycleCultureDetails
      */
-    public function getFishLifeCycleCultureDetails(): FishLifeCycleCultureDetails
+    public function getFishLifeCycleCultureDetails()
     {
         return $this->fishLifeCycleCultureDetails;
     }
@@ -266,7 +272,7 @@ class FishLifeCycleCulture
     /**
      * @return Setting
      */
-    public function getReport(): Setting
+    public function getReport()
     {
         return $this->report;
     }
@@ -346,7 +352,7 @@ class FishLifeCycleCulture
     /**
      * @return Setting
      */
-    public function getHatchery(): Setting
+    public function getHatchery()
     {
         return $this->hatchery;
     }
@@ -362,7 +368,7 @@ class FishLifeCycleCulture
     /**
      * @return Setting
      */
-    public function getFeed(): Setting
+    public function getFeed()
     {
         return $this->feed;
     }
@@ -378,7 +384,7 @@ class FishLifeCycleCulture
     /**
      * @return Setting
      */
-    public function getFeedType(): Setting
+    public function getFeedType()
     {
         return $this->feedType;
     }
@@ -394,7 +400,7 @@ class FishLifeCycleCulture
     /**
      * @return Setting
      */
-    public function getMainCultureSpecies(): Setting
+    public function getMainCultureSpecies()
     {
         return $this->mainCultureSpecies;
     }
@@ -410,7 +416,7 @@ class FishLifeCycleCulture
     /**
      * @return Setting
      */
-    public function getOtherCultureSpecies(): Setting
+    public function getOtherCultureSpecies()
     {
         return $this->otherCultureSpecies;
     }
@@ -426,7 +432,7 @@ class FishLifeCycleCulture
     /**
      * @return string
      */
-    public function getFeedItemName(): string
+    public function getFeedItemName()
     {
         return $this->feedItemName;
     }
@@ -440,9 +446,25 @@ class FishLifeCycleCulture
     }
 
     /**
+     * @return string
+     */
+    public function getFeedItemNameOther()
+    {
+        return $this->feedItemNameOther;
+    }
+
+    /**
+     * @param string $feedItemNameOther
+     */
+    public function setFeedItemNameOther($feedItemNameOther): void
+    {
+        $this->feedItemNameOther = $feedItemNameOther;
+    }
+    
+    /**
      * @return \DateTime
      */
-    public function getReportingDate(): \DateTime
+    public function getReportingDate()
     {
         return $this->reportingDate;
     }
@@ -458,7 +480,7 @@ class FishLifeCycleCulture
     /**
      * @return \DateTime
      */
-    public function getStockingDate(): \DateTime
+    public function getStockingDate()
     {
         return $this->stockingDate;
     }
@@ -474,7 +496,7 @@ class FishLifeCycleCulture
     /**
      * @return string
      */
-    public function getCultureAreaDecimal(): string
+    public function getCultureAreaDecimal()
     {
         return $this->cultureAreaDecimal;
     }
@@ -490,7 +512,7 @@ class FishLifeCycleCulture
     /**
      * @return float
      */
-    public function getNoOfInitialFish(): float
+    public function getNoOfInitialFish()
     {
         return $this->noOfInitialFish;
     }
@@ -506,7 +528,7 @@ class FishLifeCycleCulture
     /**
      * @return float
      */
-    public function getNoOfFinalFish(): float
+    public function getNoOfFinalFish()
     {
         return $this->noOfFinalFish;
     }
@@ -522,7 +544,7 @@ class FishLifeCycleCulture
     /**
      * @return float
      */
-    public function getStockingDensity(): float
+    public function getStockingDensity()
     {
         return $this->stockingDensity;
     }
@@ -538,7 +560,7 @@ class FishLifeCycleCulture
     /**
      * @return float
      */
-    public function getAverageInitialWeightGm(): float
+    public function getAverageInitialWeightGm()
     {
         return $this->averageInitialWeightGm;
     }
@@ -554,7 +576,7 @@ class FishLifeCycleCulture
     /**
      * @return float
      */
-    public function getTotalInitialWeightKg(): float
+    public function getTotalInitialWeightKg()
     {
         return $this->totalInitialWeightKg;
     }
@@ -570,7 +592,7 @@ class FishLifeCycleCulture
     /**
      * @return string
      */
-    public function getSpeciesDescription(): string
+    public function getSpeciesDescription()
     {
         return $this->speciesDescription;
     }
@@ -586,7 +608,7 @@ class FishLifeCycleCulture
     /**
      * @return string
      */
-    public function getStatus(): string
+    public function getStatus()
     {
         return $this->status;
     }
@@ -602,7 +624,7 @@ class FishLifeCycleCulture
     /**
      * @return \DateTime
      */
-    public function getCreatedAt(): \DateTime
+    public function getCreatedAt()
     {
         return $this->createdAt;
     }
@@ -650,7 +672,7 @@ class FishLifeCycleCulture
     /**
      * @return int
      */
-    public function getAppReportId(): int
+    public function getAppReportId()
     {
         return $this->appReportId;
     }
