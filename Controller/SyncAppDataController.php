@@ -2277,7 +2277,7 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
                 $lifeCycleReport = $this->getDoctrine()->getRepository(Setting::class)->find($report['report_type_id']);
                 $existingFishLifeCycleCulture=null;
                 if(isset($report['web_life_cycle_id']) && $report['web_life_cycle_id']!=""){
-                    $existingFishLifeCycleCulture = $this->getDoctrine()->getRepository(FishLifeCycleCulture::class)->find($report['']);
+                    $existingFishLifeCycleCulture = $this->getDoctrine()->getRepository(FishLifeCycleCulture::class)->find($report['web_life_cycle_id']);
                 }
                 if($lifeCycleReport){
                     if($existingFishLifeCycleCulture){
@@ -2306,6 +2306,7 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
                         $fishLifeCycleCulture->setCreatedAt(new \DateTime($createdAt));
 
                     }
+                    $fishLifeCycleCulture->setAppReportId($report['report_id']);
                     $fishLifeCycleCulture->setStatus($report['status']);
                     $fishLifeCycleCulture->setAppId($report['id']);
                     $fishLifeCycleCulture->setAppBatch($batch);

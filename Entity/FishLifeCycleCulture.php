@@ -37,6 +37,12 @@ class FishLifeCycleCulture
      * @ORM\Column(type="integer",nullable=true)
      */
     private $appId;
+    
+    /**
+     * @var integer
+     * @ORM\Column(type="bigint",nullable=true)
+     */
+    private $appReportId;
 
     /**
      * @var FishLifeCycleCultureDetails
@@ -639,6 +645,22 @@ class FishLifeCycleCulture
     public function setFinalAdg($finalAdg): void
     {
         $this->finalAdg = $finalAdg;
+    }
+
+    /**
+     * @return int
+     */
+    public function getAppReportId(): int
+    {
+        return $this->appReportId;
+    }
+
+    /**
+     * @param int $appReportId
+     */
+    public function setAppReportId(int $appReportId): void
+    {
+        $this->appReportId = $appReportId;
     }
 
 

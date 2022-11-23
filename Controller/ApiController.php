@@ -25,6 +25,7 @@ use Terminalbd\CrmBundle\Entity\CrmVisit;
 use Terminalbd\CrmBundle\Entity\FarmerComplain;
 use Terminalbd\CrmBundle\Entity\FarmerComplainDetails;
 use Terminalbd\CrmBundle\Entity\FcrDetails;
+use Terminalbd\CrmBundle\Entity\FishLifeCycleCulture;
 use Terminalbd\CrmBundle\Entity\NewFarmerIntroduce\FarmerIntroduceDetails;
 use Terminalbd\CrmBundle\Entity\Setting;
 use Terminalbd\CrmBundle\Entity\SonaliStandard;
@@ -2878,6 +2879,44 @@ class ApiController extends AbstractController
             'status' => 404,
             'message' => 'Not Found!'
         ]);
+
+    }
+
+
+
+    /**
+     * @Route("/fish-life-cycle-culture-in-progress", name="fish_life_cycle_culture_in_progress")
+     * @param Request $request
+     * @param ParameterBagInterface $parameterBag
+     * @return JsonResponse|Response
+     */
+    public function fishLifeCycleCultureInProgress(Request $request, ParameterBagInterface $parameterBag)
+    {
+        set_time_limit(0);
+        ignore_user_abort(true);
+        if ($request->getMethod() == 'POST' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')) {
+            $parameters = $request->request->all();
+
+            $entities = $this->getDoctrine()->getRepository(FishLifeCycleCulture::class)->findBy(['status'=>'IN_PROGRESS'],['id'=>'ASC']);
+            $arrayData=[];
+            if($entities){
+                foreach ($entities as $entity) {
+                    $arrayData[]=[
+
+                    ];
+                }
+            }
+            $response = new Response();
+            $response->headers->set('Content-Type', 'application/json');
+            $response->setContent(json_encode($entities));
+            $response->setStatusCode(Response::HTTP_OK);
+            return $response;
+        }
+        return new JsonResponse([
+            'status' => 404,
+            'message' => 'Not Found!'
+        ]);
+
 
     }
 }
