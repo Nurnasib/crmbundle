@@ -2822,4 +2822,62 @@ class ApiController extends AbstractController
             'message' => 'Not Found!'
         ]);
     }
+
+    /**
+     * @param Request $request
+     * @param ParameterBagInterface $parameterBag
+     * @return JsonResponse
+     * @Route("/fcr-different-feed-company-for-broiler", name="fcr_different_feed_company_for_broiler")
+     */
+    public function fcrDifferentFeedCompanyForBroiler(Request $request, ParameterBagInterface $parameterBag)
+    {
+        set_time_limit(0);
+        ignore_user_abort(true);
+        if ($request->getMethod() == 'GET' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')) {
+            $fcrCompanies = $this->getDoctrine()->getRepository(Api::class)->fcrDifferentFeedCompanyForBroiler();
+
+            $data = [];
+            foreach ($fcrCompanies as $company) {
+                $data[] = [
+                    'id' => $company['id'],
+                    'name' => $company['name'],
+                ];
+            }
+            return new JsonResponse($data);
+        }
+        return new JsonResponse([
+            'status' => 404,
+            'message' => 'Not Found!'
+        ]);
+
+    }
+
+    /**
+     * @param Request $request
+     * @param ParameterBagInterface $parameterBag
+     * @return JsonResponse
+     * @Route("/fcr-different-feed-company-for-sonali", name="fcr_different_feed_company_for_sonali")
+     */
+    public function fcrDifferentFeedCompanyForSonali(Request $request, ParameterBagInterface $parameterBag)
+    {
+        set_time_limit(0);
+        ignore_user_abort(true);
+        if ($request->getMethod() == 'GET' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')) {
+            $fcrCompanies = $this->getDoctrine()->getRepository(Api::class)->fcrDifferentFeedCompanyForSonali();
+
+            $data = [];
+            foreach ($fcrCompanies as $company) {
+                $data[] = [
+                    'id' => $company['id'],
+                    'name' => $company['name'],
+                ];
+            }
+            return new JsonResponse($data);
+        }
+        return new JsonResponse([
+            'status' => 404,
+            'message' => 'Not Found!'
+        ]);
+
+    }
 }

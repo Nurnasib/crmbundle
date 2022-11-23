@@ -2274,4 +2274,38 @@ class ApiRepository extends BaseRepository
         }
         return $data;
     }
+
+
+    /**
+     * fcrDifferentFeedCompanyForBroiler
+     */
+    public function fcrDifferentFeedCompanyForBroiler()
+    {
+        $em = $this->_em;
+        $qb = $em->createQueryBuilder();
+        $qb->from(Setting::class, 's');
+
+        $qb->select('s.id', 's.name');
+        $qb->where("s.settingType = 'FCR_DIFF_COMPANY_BROILER'");
+        $qb->andWhere('s.status = 1');
+        $qb->orderBy('s.sortOrder', 'ASC');
+        return $qb->getQuery()->getArrayResult();
+
+    }
+    /**
+     * fcrDifferentFeedCompanyForSonali
+     */
+    public function fcrDifferentFeedCompanyForSonali()
+    {
+        $em = $this->_em;
+        $qb = $em->createQueryBuilder();
+        $qb->from(Setting::class, 's');
+
+        $qb->select('s.id', 's.name');
+        $qb->where("s.settingType = 'FCR_DIFF_COMPANY_SONALI'");
+        $qb->andWhere('s.status = 1');
+        $qb->orderBy('s.sortOrder', 'ASC');
+        return $qb->getQuery()->getArrayResult();
+
+    }
 }
