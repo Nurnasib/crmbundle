@@ -2955,7 +2955,7 @@ class ApiController extends AbstractController
                             "avg_initial_weight_gm"=> (string)$entity->getAverageInitialWeightGm(),
                             "total_initial_weight_kg"=> (string)$entity->getTotalInitialWeightKg(),
                             "culture_species_desc"=> (string)$entity->getSpeciesDescription(),
-                            "life_cycle_details"=>sizeof($detailData)>0?$detailData:"",
+                            "life_cycle_details"=>sizeof($detailData)>0?json_encode($detailData):"",
                             "status"=> $entity->getStatus(),
                             "feed_item_name_other"=> $entity->getFeedItemNameOther(),
                             "web_life_cycle_id"=> (string)$entity->getId(),
