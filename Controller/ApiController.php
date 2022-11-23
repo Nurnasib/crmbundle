@@ -2959,7 +2959,7 @@ class ApiController extends AbstractController
                             "status"=> $entity->getStatus(),
                             "feed_item_name_other"=> $entity->getFeedItemNameOther(),
                             "web_life_cycle_id"=> (string)$entity->getId(),
-                            "employee_id"=> (string)$entity->getEmployee()?$entity->getEmployee()->getId():null
+                            "employee_id"=> $entity->getEmployee()?(string)$entity->getEmployee()->getId():null
                         ];
                     }
                 }
