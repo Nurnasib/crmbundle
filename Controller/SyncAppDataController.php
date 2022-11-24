@@ -36,6 +36,7 @@ use Terminalbd\CrmBundle\Entity\FcrDifferentCompanies;
 use Terminalbd\CrmBundle\Entity\FishCompanyAndSpeciesWiseAverageFcr;
 use Terminalbd\CrmBundle\Entity\FishLifeCycle;
 use Terminalbd\CrmBundle\Entity\FishLifeCycleCulture;
+use Terminalbd\CrmBundle\Entity\FishLifeCycleCultureDetails;
 use Terminalbd\CrmBundle\Entity\FishLifeCycleDetails;
 use Terminalbd\CrmBundle\Entity\LabService;
 use Terminalbd\CrmBundle\Entity\LayerLifeCycle;
@@ -2318,6 +2319,7 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
                         $detailsJsonData=json_decode($report['life_cycle_details'], true);
                         if(sizeof($detailsJsonData)>0){
                             static $finalFish=0;
+                            $last_key = array_key_last($detailsJsonData);
                             foreach ($detailsJsonData as $key=>$details) {
 
                                 if($key==0){
@@ -2332,17 +2334,48 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
 
                                 $dayOfCulture =  round($dateDiff / (60 * 60 * 24));
 
-                                if(is_null($details['web_life_cycle_details_id'])){
-                                    $samplingDate = $details['sampling_date'] ? (new \DateTime($details['sampling_date']))->format('Y-m-d') : null;
-                                    $created_at = isset($details['created_at'])&&$details['created_at'] ? (new \DateTime($details['created_at']))->format('Y-m-d H:i:s') : $createdAt;
-                                    $avg_present_weight_gm=$details['avg_present_weight_gm'];
-                                    $avgWeightGainGm=$avg_present_weight_gm-$avg_initial_weight_gm;
-                                    $totalWeightGainKg=($finalFish*$avgWeightGainGm)/1000;
-                                    $current_feed_consumption_kg=$details['cur_feed_consumption'];
-                                    $currentFcr=$totalWeightGainKg>0?$current_feed_consumption_kg/$totalWeightGainKg:0;
+                                $samplingDate = $details['sampling_date'] ? (new \DateTime($details['sampling_date']))->format('Y-m-d') : null;
+                                $created_at = isset($details['created_at'])&&$details['created_at'] ? (new \DateTime($details['created_at']))->format('Y-m-d H:i:s') : $createdAt;
+                                $avg_present_weight_gm=$details['avg_present_weight_gm'];
+                                $avgWeightGainGm=$avg_present_weight_gm-$avg_initial_weight_gm;
+                                $totalWeightGainKg=($finalFish*$avgWeightGainGm)/1000;
+                                $current_feed_consumption_kg=$details['cur_feed_consumption'];
+                                $currentFcr=$totalWeightGainKg>0?$current_feed_consumption_kg/$totalWeightGainKg:0;
 
-                                    $currentAdg = $dayOfCulture>0?$avgWeightGainGm/$dayOfCulture:0;
+                                $currentAdg = $dayOfCulture>0?$avgWeightGainGm/$dayOfCulture:0;
 
+                                $currentFeedConKg = $details['cur_feed_consumption'];
+
+
+
+                                if(isset($details['web_life_cycle_details_id']) && $details['web_life_cycle_details_id']!=""){
+
+                                    $existingLifeCycleDetails = $this->getDoctrine()->getRepository(FishLifeCycleCultureDetails::class)->findOneBy(['id'=>$details['web_life_cycle_details_id'], 'fishLifeCycleCulture'=>$fishLifeCycleCulture]);
+                                    if(!$existingLifeCycleDetails){
+                                        $sql = "INSERT INTO `crm_fish_life_cycle_culture_details` 
+(`fish_life_cycle_id`, `average_present_weight`, `avgWeightGainGm`, `totalWeightGainKg`, `current_fcr`, `current_adg`, `current_feed_consumption_kg`, `no_of_final_fish`, `sampling_date`, `current_culture_days`, `sr_percentage`, `farmer_remarks`, `employee_remarks`, `created_at`, `app_id` ) VALUES
+ (:fish_life_cycle_id, :average_present_weight, :avgWeightGainGm, :totalWeightGainKg, :current_fcr, :current_adg, :current_feed_consumption_kg, :no_of_final_fish, :sampling_date, :current_culture_days, :sr_percentage, :farmer_remarks, :employee_remarks, :created_at, :app_id )";
+
+                                        $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
+                                        $stmt->bindValue('fish_life_cycle_id', $fishLifeCycleCulture->getId());
+                                        $stmt->bindValue('average_present_weight', $details['avg_present_weight_gm']);
+                                        $stmt->bindValue('avgWeightGainGm', $avgWeightGainGm);
+                                        $stmt->bindValue('totalWeightGainKg', $totalWeightGainKg);
+                                        $stmt->bindValue('current_feed_consumption_kg', $currentFeedConKg);
+                                        $stmt->bindValue('sr_percentage', $details['cur_survival_rate']);
+                                        $stmt->bindValue('current_culture_days', $dayOfCulture>0?$dayOfCulture:0);
+                                        $stmt->bindValue('no_of_final_fish', $finalFish);
+                                        $stmt->bindValue('current_fcr', $currentFcr);
+                                        $stmt->bindValue('current_adg', $currentAdg);
+                                        $stmt->bindValue('sampling_date', $samplingDate);
+                                        $stmt->bindValue('farmer_remarks', $details['farmer_comment']);
+                                        $stmt->bindValue('employee_remarks', $details['visitor_comment']);
+                                        $stmt->bindValue('created_at', $created_at);
+                                        $stmt->bindValue('app_id', isset($details['id'])&&$details['id']!=""?$details['id']:null);
+                                        $stmt->execute();
+                                    }
+
+                                }else{
                                     $sql = "INSERT INTO `crm_fish_life_cycle_culture_details` 
 (`fish_life_cycle_id`, `average_present_weight`, `avgWeightGainGm`, `totalWeightGainKg`, `current_fcr`, `current_adg`, `current_feed_consumption_kg`, `no_of_final_fish`, `sampling_date`, `current_culture_days`, `sr_percentage`, `farmer_remarks`, `employee_remarks`, `created_at`, `app_id` ) VALUES
  (:fish_life_cycle_id, :average_present_weight, :avgWeightGainGm, :totalWeightGainKg, :current_fcr, :current_adg, :current_feed_consumption_kg, :no_of_final_fish, :sampling_date, :current_culture_days, :sr_percentage, :farmer_remarks, :employee_remarks, :created_at, :app_id )";
@@ -2352,7 +2385,7 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
                                     $stmt->bindValue('average_present_weight', $details['avg_present_weight_gm']);
                                     $stmt->bindValue('avgWeightGainGm', $avgWeightGainGm);
                                     $stmt->bindValue('totalWeightGainKg', $totalWeightGainKg);
-                                    $stmt->bindValue('current_feed_consumption_kg', $details['cur_feed_consumption']);
+                                    $stmt->bindValue('current_feed_consumption_kg', $currentFeedConKg);
                                     $stmt->bindValue('sr_percentage', $details['cur_survival_rate']);
                                     $stmt->bindValue('current_culture_days', $dayOfCulture>0?$dayOfCulture:0);
                                     $stmt->bindValue('no_of_final_fish', $finalFish);
@@ -2362,11 +2395,27 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
                                     $stmt->bindValue('farmer_remarks', $details['farmer_comment']);
                                     $stmt->bindValue('employee_remarks', $details['visitor_comment']);
                                     $stmt->bindValue('created_at', $created_at);
-                                    $stmt->bindValue('app_id', isset($details['id'])&& $details['id']!=""? $details['id']:null);
+                                    $stmt->bindValue('app_id', isset($details['id'])&&$details['id']!=""?$details['id']:null);
                                     $stmt->execute();
                                 }
 
+                                if($last_key==$key){
+                                    $previousDate=$stockingDate;
+                                    $dateDiff = strtotime($presentDate) - strtotime($previousDate);
+
+                                    $finalDayOfCulture =  round($dateDiff / (60 * 60 * 24));
+
+                                    $calculateFinalFcr = $totalWeightGainKg>0?$currentFeedConKg/$totalWeightGainKg:0;
+                                    $calculateFinalAdg = $finalDayOfCulture>0?$avgWeightGainGm/$finalDayOfCulture:0;
+                                    $fishLifeCycleCulture->setTotalDayOfCulture($finalDayOfCulture);
+                                    $fishLifeCycleCulture->setFinalFcr($calculateFinalFcr);
+                                    $fishLifeCycleCulture->setFinalAdg($calculateFinalAdg);
+                                    $em->persist($fishLifeCycleCulture);
+                                    $em->flush();
+                                }
+
                             }
+
                         }
                     }
                 }
