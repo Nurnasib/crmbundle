@@ -192,6 +192,13 @@ class FishLifeCycleCulture
     private $finalAdg=0;
 
     /**
+     * @var float
+     * @Orm\Column(name="total_day_of_culture", type="float", nullable=true)
+     */
+    private $totalDayOfCulture=0;
+
+
+    /**
      * @var string
      *
      * @ORM\Column(name="status", type="string", length=20, nullable=true)
@@ -683,6 +690,22 @@ class FishLifeCycleCulture
     public function setAppReportId(int $appReportId): void
     {
         $this->appReportId = $appReportId;
+    }
+
+    /**
+     * @return float
+     */
+    public function getTotalDayOfCulture()
+    {
+        return $this->totalDayOfCulture;
+    }
+
+    /**
+     * @param float $totalDayOfCulture
+     */
+    public function setTotalDayOfCulture($totalDayOfCulture): void
+    {
+        $this->totalDayOfCulture = $totalDayOfCulture;
     }
 
 

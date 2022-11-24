@@ -15,6 +15,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Terminalbd\CrmBundle\Entity\CattleLifeCycleDetails;
 use Terminalbd\CrmBundle\Entity\ChickLifeCycleDetails;
 use Terminalbd\CrmBundle\Entity\CrmCustomer;
+use Terminalbd\CrmBundle\Entity\FishLifeCycleCulture;
 use Terminalbd\CrmBundle\Entity\FishLifeCycleDetails;
 use Terminalbd\CrmBundle\Entity\LayerLifeCycleDetails;
 use Terminalbd\CrmBundle\Form\SearchFilterFormType;
@@ -69,9 +70,11 @@ class LifeCycleReportController extends AbstractController
                     $entities = $this->getDoctrine()->getRepository(CattleLifeCycleDetails::class)->getCattleLifeCycleDetails($lifeCycleSlug,$filterBy);
 
                 break;
-                case 'fish-life-cycle-report':
                 case 'fish-life-cycle-after-sale-report':
                     $entities = $this->getDoctrine()->getRepository(FishLifeCycleDetails::class)->getFishLifeCycleDetails($lifeCycleSlug,$filterBy, $this->getUser());
+                break;
+                case 'fish-life-cycle-report':
+                    $entities = $this->getDoctrine()->getRepository(FishLifeCycleCulture::class)->getFishLifeCycleCulture($lifeCycleSlug,$filterBy, $this->getUser());
                 break;
                 default:
                     $entities = [];
