@@ -14,7 +14,7 @@
                         <td data-a-h="center" colspan="37" align="center"><h6>{{ lifeCycleSlug=='fish-life-cycle-report'?'Fish Life Cycle (Culture) Report':'' }}</h6></td>
                     </tr>
                 </thead>
-                <tbody>
+
                 {% for month, monthWiseRecords in entities['records'] %}
                 {% set monthYear = month|split('-') %}
 
@@ -73,40 +73,64 @@
                             <th scope="col">Mobile No.</th>
                         </tr>
                         </thead>
+                <tbody>
                         {% for details in employeeWiseRecords %}
-                            <tr>
-                                <td>{{ details.customer.name }}</td>
-                                <td>{{ details.customer.mobile }}</td>
+                            {% if details.fishLifeCycleCultureDetails is not empty %}
+                                {% for index, cultureDetails in details.fishLifeCycleCultureDetails %}
+                                    <tr>
+                                        {% if loop.first %}
+                                        <td rowspan="{{ details.fishLifeCycleCultureDetails|length }}">{{ details.customer.name }}</td>
+                                        <td rowspan="{{ details.fishLifeCycleCultureDetails|length }}">{{ details.customer.mobile }}</td>
 
-                                <td>{{ details.feed.name|default('') }}</td>
-                                <td>{{ details.hatchery.name|default('') }}</td>
-                                <td>{{ '' }}</td>
-                                <td>{{ details.feedType.name|default('') }}</td>
-                                <td>{{ details.mainCultureSpecies.name|default('') }}</td>
-                                <td>{{ details.otherCultureSpecies.name|default('') }}</td>
-                                <td>{{ details.cultureAreaDecimal|number_format(2,'.','') }}</td>
+                                        <td rowspan="{{ details.fishLifeCycleCultureDetails|length }}">{{ details.feed.name|default('') }}</td>
+                                        <td rowspan="{{ details.fishLifeCycleCultureDetails|length }}">{{ details.hatchery.name|default('') }}</td>
+                                        <td rowspan="{{ details.fishLifeCycleCultureDetails|length }}">{{ '' }}</td>
+                                        <td rowspan="{{ details.fishLifeCycleCultureDetails|length }}">{{ details.feedType.name|default('') }}</td>
+                                        <td rowspan="{{ details.fishLifeCycleCultureDetails|length }}">{{ details.mainCultureSpecies.name|default('') }}</td>
+                                        <td rowspan="{{ details.fishLifeCycleCultureDetails|length }}">{{ details.otherCultureSpecies.name|default('') }}</td>
+                                        <td rowspan="{{ details.fishLifeCycleCultureDetails|length }}">{{ details.cultureAreaDecimal|number_format(2,'.','') }}</td>
 
-                                <td data-t="s">{{ details.stockingDate ? details.stockingDate|date('d-m-Y') : '' }}</td>
-                                <td data-t="n">{{ details.noOfInitialFish|number_format(2,'.','') }}</td>
-                                <td data-t="n">{{ details.stockingDensity|number_format(2,'.','') }}</td>
-                                <td data-t="n">{{ details.averageInitialWeightGm|number_format(2,'.','') }}</td>
-                                <td data-t="n">{{ details.totalInitialWeightKg|number_format(2,'.','') }}</td>
-                                <td data-t="s">{{ '' }}</td>
-                                <td data-t="s"></td>
-                                <td data-t="n"></td>
-                                <td data-t="n"></td>
-                                <td data-t="n"></td>
-                                <td data-t="n"></td>
-                                <td data-t="n"></td>
-                            </tr>
+                                        <td rowspan="{{ details.fishLifeCycleCultureDetails|length }}" data-t="s">{{ details.stockingDate ? details.stockingDate|date('d-m-Y') : '' }}</td>
+                                        <td rowspan="{{ details.fishLifeCycleCultureDetails|length }}" data-t="n">{{ details.noOfInitialFish|number_format(2,'.','') }}</td>
+                                        <td rowspan="{{ details.fishLifeCycleCultureDetails|length }}" data-t="n">{{ details.stockingDensity|number_format(2,'.','') }}</td>
+                                        <td rowspan="{{ details.fishLifeCycleCultureDetails|length }}" data-t="n">{{ details.averageInitialWeightGm|number_format(2,'.','') }}</td>
+                                        <td rowspan="{{ details.fishLifeCycleCultureDetails|length }}" data-t="n">{{ details.totalInitialWeightKg|number_format(2,'.','') }}</td>
+                                        {% endif %}
+                                        <td data-t="s">
+                                            {% if loop.first %}
+                                            {{ details.stockingDate|date('Y-m-d') }}
+                                                {% else %}
+                                             {{ details.fishLifeCycleCultureDetails[index-1].samplingDate|date('Y-m-d') }}
+                                            {% endif %}
+                                        </td>
+
+                                        <td data-t="s">{{ cultureDetails.samplingDate|date('Y-m-d') }}</td>
+                                        <td data-t="n">{{ cultureDetails.currentCultureDays|default('') }}</td>
+                                        <td data-t="n">{{ cultureDetails.averagePresentWeight|number_format(3,'.','')|default('') }}</td>
+                                        <td data-t="n">{{ cultureDetails.avgWeightGainGm|number_format(3,'.','')|default('') }}</td>
+                                        <td data-t="n">{{ cultureDetails.srPercentage|default('') }}</td>
+                                        <td data-t="n">{{ cultureDetails.totalWeightGainKg|number_format(3,'.','')|default('') }}</td>
+                                        <td data-t="n">{{ cultureDetails.currentFeedConsumptionKg|default('') }}</td>
+                                        <td data-t="n">{{ cultureDetails.currentFcr|number_format(3,'.','') }}</td>
+                                        <td data-t="n">{{ cultureDetails.currentAdg|number_format(3,'.','') }}</td>
+                                        <td data-t="n">{{ details.totalDayOfCulture|default("") }}</td>
+                                        <td data-t="n"></td>
+                                        <td data-t="n">{{ cultureDetails.noOfFinalFish|number_format(0) }}</td>
+                                        <td data-t="n"></td>
+                                        <td data-t="n"></td>
+                                        <td data-t="n"></td>
+                                        <td data-t="n"></td>
+                                        <td data-t="n"></td>
+                                        <td data-t="n"></td>
+                                    </tr>
+                                {% endfor %}
+                            {% endif %}
                         {% endfor %}
-
-                <tr><td></td></tr>
+                </tbody>
+                    {% endfor %}
 
                     {% endfor %}
 
-                {% endfor %}
-                </tbody>
             </table>
 
         </div>
