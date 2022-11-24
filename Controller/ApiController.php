@@ -2918,14 +2918,14 @@ class ApiController extends AbstractController
                                     "cur_feed_consumption"=>(string)$fishLifeCycleCultureDetail->getCurrentFeedConsumptionKg(),
                                     "farmer_comment"=>(string)$fishLifeCycleCultureDetail->getFarmerRemarks()?$fishLifeCycleCultureDetail->getFarmerRemarks():"",
                                     "visitor_comment"=>(string)$fishLifeCycleCultureDetail->getEmployeeRemarks()?$fishLifeCycleCultureDetail->getEmployeeRemarks():"",
-                                    "pond_number"=>(string)$entity->getPondNumber()?$entity->getPondNumber():1,
+                                    "pond_number"=>$entity->getPondNumber()?(string)$entity->getPondNumber():(string)1,
                                     "cur_fcr"=>(string)$fishLifeCycleCultureDetail->getCurrentFcr(),
                                     "web_life_cycle_details_id"=>(string)$fishLifeCycleCultureDetail->getId(),
                                     "created_at"=>$fishLifeCycleCultureDetail->getCreatedAt()->format('Y-m-d H:i:s')
                                 ];
                             }
                         }
-                        $customerGroup=$entity->getCustomer()->getCustomerGroup()?'('.$entity->getCustomer()->getCustomerGroup()->getName().')':null;
+                        $customerGroup=$entity->getCustomer()->getFarmerIntroduce() && $entity->getCustomer()->getFarmerIntroduce()->getFarmerType()?'('.$entity->getCustomer()->getFarmerIntroduce()->getFarmerType()->getName().')':null;
                         $arrayData[]=[
                             "id"=> $entity->getAppId(),
                             "report_id"=> (string)$entity->getAppReportId(),
