@@ -80,7 +80,7 @@
 
                                 <td>{{ details.feed.name|default('') }}</td>
                                 <td>{{ details.hatchery.name|default('') }}</td>
-                                <td>{{ details.getFormattedFeedItemName|default() }}</td>
+                                <td>{{ '' }}</td>
                                 <td>{{ details.feedType.name|default('') }}</td>
                                 <td>{{ details.mainCultureSpecies.name|default('') }}</td>
                                 <td>{{ details.otherCultureSpecies.name|default('') }}</td>
@@ -89,42 +89,21 @@
                                 <td data-t="s">{{ details.stockingDate ? details.stockingDate|date('d-m-Y') : '' }}</td>
                                 <td data-t="n">{{ details.noOfInitialFish|number_format(2,'.','') }}</td>
                                 <td data-t="n">{{ details.stockingDensity|number_format(2,'.','') }}</td>
-                                <td data-t="n">{{ details.averageInitialWeight|number_format(2,'.','') }}</td>
-                                <td data-t="n">{{ details.totalInitialWeight|number_format(2,'.','') }}</td>
-                                <td data-t="s">{{ details.previousSamplingDate ? details.previousSamplingDate|date('d-m-Y') : '' }}</td>
-                                <td data-t="s">{{ details.presentSamplingDate ? details.presentSamplingDate|date('d-m-Y') : '' }}</td>
-                                <td data-t="n">{{ details.currentCultureDays|number_format(0) }}</td>
-                                <td data-t="n">{{ details.averagePresentWeight|number_format(2,'.','') }}</td>
-                                <td data-t="n">{{ details.weightGainGm|number_format(2,'.','') }}</td>
-                                <td data-t="n">{{ details.currentSrPercentage|number_format(2,'.','') }}</td>
-                                <td data-t="n">{{ details.weightGainKg|number_format(2,'.','') }}</td>
-                                <td data-t="n">{{ details.currentFeedConsumptionKg|number_format(2,'.','') }}</td>
-                                <td data-t="n">{{ details.currentFcr|number_format(2,'.','') }}</td>
-                                <td data-t="n">{{ details.currentAdg|number_format(2,'.','') }}</td>
-                                <td data-t="n">{{ details.totalDayOfCulture|number_format(2,'.','') }}</td>
-                                <td data-t="n">{{ details.srPercentage|number_format(2,'.','') }}</td>
-                                <td data-t="n">{{ details.noOfFinalFish|number_format(2,'.','') }}</td>
-                                <td data-t="n">{{ details.finalAverageWeightGm|number_format(2,'.','') }}</td>
-                                <td data-t="n">{{ details.finalWeightGm|number_format(2,'.','') }}</td>
-                                <td data-t="n">{{ details.finalWeightKg|number_format(2,'.','') }}</td>
-
-                                <td data-t="n">{{ details.previousTotalFeedConsumptionKg|number_format(2,'.','') }}</td>
-                                <td data-t="n">{{ details.totalFeedConsumptionKg|number_format(2,'.','') }}</td>
-                                <td data-t="n">{{ details.finalFcr|number_format(2,'.','') }}</td>
-                                <td data-t="n">{{ details.finalAdg|number_format(2,'.','') }}</td>
-
-                                <td>{{ details.speciesDescription }}</td>
-                                <td>{{ details.farmerRemarks }}</td>
-                                <td>{{ details.employeeRemarks }}</td>
+                                <td data-t="n">{{ details.averageInitialWeightGm|number_format(2,'.','') }}</td>
+                                <td data-t="n">{{ details.totalInitialWeightKg|number_format(2,'.','') }}</td>
+                                <td data-t="s">{{ '' }}</td>
+                                <td data-t="s"></td>
+                                <td data-t="n"></td>
+                                <td data-t="n"></td>
+                                <td data-t="n"></td>
+                                <td data-t="n"></td>
+                                <td data-t="n"></td>
                             </tr>
                         {% endfor %}
 
                 <tr><td></td></tr>
 
                     {% endfor %}
-
-
-
 
                 {% endfor %}
                 </tbody>

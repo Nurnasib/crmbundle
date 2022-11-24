@@ -30,7 +30,7 @@ class FishLifeCycleCultureRepository extends EntityRepository
     public function getFishLifeCycleCulture($lifeCycleSlug, $filterBy, User $loggedUser){
         $startDate = $filterBy['startDate'] ? (new \DateTime($filterBy['startDate']))->format('Y-m-d') : date('Y-m-01');
         $endDate = $filterBy['endDate'] ? (new \DateTime($filterBy['endDate']))->format('Y-m-d') : date('Y-m-t');
-//dd($startDate);
+
         $qb = $this->createQueryBuilder('e');
         $qb->leftJoin('e.fishLifeCycleCultureDetails','details');
         $qb->leftJoin('e.feed', 'feed');
@@ -55,9 +55,47 @@ class FishLifeCycleCultureRepository extends EntityRepository
         $qb->addSelect('otherCultureSpecies');
         $qb->addSelect('report');
 
+        $employee = isset($filterBy['employeeId'])? $filterBy['employeeId']: '';
+        if (!empty($employee)){
+            $qb->andWhere('employee.id = :employee')->setParameter('employee', $employee);
+        }
+
+        $rolesString = implode('_', $loggedUser->getRoles());
+        if (!str_contains($rolesString, 'ADMIN') && !in_array('ROLE_LINE_MANAGER', $loggedUser->getRoles())){
+            $qb->andWhere('employee.id = :employeeId')->setParameter('employeeId', $loggedUser->getId());
+        }elseif (!str_contains($rolesString, 'ADMIN') && in_array('ROLE_LINE_MANAGER', $loggedUser->getRoles())){
+
+            $employeeIdsByLineManager = $this->_em->getRepository(User::class)->getEmployeesByLineManager($loggedUser);
+            $employeeIs=[];
+            if($employeeIdsByLineManager){
+                $employeeIs=$employeeIdsByLineManager;
+            }
+            $qb->andWhere('employee.id IN (:employeeIds)')->setParameter('employeeIds', $employeeIs);
+        }
+        $qb->andWhere('e.reportingDate >= :startDate')->setParameter('startDate', $startDate);
+        $qb->andWhere('e.reportingDate <= :endDate')->setParameter('endDate', $endDate);
+
 
         $results = $qb->getQuery()->getArrayResult();
-        dd($results);
+//dd($results);
+        $returnArray=[];
+        if($results){
+            foreach ($results as $result) {
+                $reportingMonth=$result['reportingDate']->format('m-F-Y');
+                $employeeId= $result['employee']['id'];
+
+                $employeeUserId = $result['employee']['userId'];
+                $employeeName = $result['employee']['name'];
+//                $employeeDesignation = $result->getFishLifeCycle()->getEmployee()->getDesignation()?$result->getFishLifeCycle()->getEmployee()->getDesignation()->getName():'';
+//                $employeeRegion = $result->getFishLifeCycle()->getEmployee()->getRegional()?$result->getFishLifeCycle()->getEmployee()->getRegional()->getName():'';
+
+                $returnArray['employeeInfo'][$reportingMonth][$employeeId] = ['name'=>$employeeName, 'employeeUserId'=>$employeeUserId, 'designationName'=>'', 'regionName'=>''];
+                $returnArray['records'][$reportingMonth][$employeeId][]=$result;
+
+            }
+        }
+//        dd($returnArray);
+        return $returnArray;
     }
 
 
