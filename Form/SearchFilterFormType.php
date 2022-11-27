@@ -409,7 +409,8 @@ class SearchFilterFormType extends AbstractType
 //                    'Complain' => 'complain-poultry',
                     'Farmer Survey' => 'farmer-survey-poultry',
                     'Farmer Training' => 'farmer-training-poultry',
-                    'FCR Different Companies' => 'fcr-different-companies-poultry',
+                    'FCR Different Companies (Broiler)' => 'fcr-different-companies-poultry',
+                    'FCR Different Companies (Sonali)' => 'fcr-different-companies-sonali',
                     'Lab Service' => 'lab-service-poultry',
                     'DOC Complain' => 'doc-complain',
                     ]

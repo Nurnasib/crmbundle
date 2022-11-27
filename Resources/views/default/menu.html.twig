@@ -99,8 +99,22 @@
 
 
     {% if is_granted('ROLE_CRM_POULTRY_USER') or is_granted('ROLE_DEVELOPER') %}
-        <li><a class="dropdown-item" href='{{ path('fcr_different_company_new_modal',{'breed_name': 'poultry'}) }}'><i
-                        class="feather icon-percent"></i>{{ 'FCR Different Company'|trans }}</a></li>
+        <li>
+            <a class="" href="javascript:"><i class="feather icon-percent"></i>{{ 'FCR Different Company'|trans }}</a>
+            <ul class="sub-menu">
+                <li>
+                    <a class="dropdown-item" href='{{ path('fcr_different_company_new_modal',{'breed_name': 'poultry'}) }}'>
+                        {{ 'Broiler'|trans }}
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item" href='{{ path('fcr_different_company_new_modal',{'breed_name': 'sonali'}) }}'>
+                        {{ 'Sonali'|trans }}
+                    </a>
+                </li>
+            </ul>
+
+        </li>
         <li><a class="dropdown-item" href='{{ path('lab_service_new_modal',{'breed_name': 'poultry'}) }}'><i
                         class="feather icon-filter"></i>{{ 'Lab Service'|trans }}</a></li>
     {% endif %}

@@ -103,6 +103,13 @@ class FcrDifferentCompaniesRepository extends EntityRepository
         $qb->andWhere('e.january > 0 OR e.february > 0 OR e.march > 0 OR e.april > 0 OR e.may > 0 
         OR e.june > 0 OR e.july > 0 OR e.august > 0 OR e.september > 0 OR e.october > 0 OR e.november > 0 OR e.december > 0');
 
+        if(isset($filterBy['otherReport']) && $filterBy['otherReport']=='fcr-different-companies-poultry'){
+            $qb->andWhere('e.breedName =:breedName')->setParameter('breedName','poultry');
+        }
+        if(isset($filterBy['otherReport']) && $filterBy['otherReport']=='fcr-different-companies-sonali'){
+            $qb->andWhere('e.breedName =:breedName')->setParameter('breedName','sonali');
+        }
+
         $employee = isset($filterBy['employeeId'])? $filterBy['employeeId']: '';
         if (!empty($employee)){
             $qb->andWhere('employee.id = :employee')->setParameter('employee', $employee);

@@ -68,6 +68,7 @@ class FcrDifferentCompanyController extends AbstractController
 
         return $this->render('@TerminalbdCrm/fcrDifferentCompany/new-modal.html.twig', [
             'hatcheries' => $hatcheries,
+            'breed_name' => $breed_name,
 //            'entity' => $entity,
             'fcrDifferentCompanies' => $fcrDifferentCompanies,
         ]);
