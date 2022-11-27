@@ -36,6 +36,8 @@ class FishLifeCycleCultureRepository extends EntityRepository
         $qb->leftJoin('e.feed', 'feed');
         $qb->leftJoin('e.hatchery', 'hatchery');
         $qb->join('e.employee', 'employee');
+        $qb->leftJoin('employee.designation', 'designation');
+        $qb->leftJoin('employee.regional', 'regional');
         $qb->join('e.report', 'report');
         $qb->join('e.customer', 'customer');
         $qb->leftJoin('e.agent', 'agent');
@@ -54,6 +56,8 @@ class FishLifeCycleCultureRepository extends EntityRepository
         $qb->addSelect('mainCultureSpecies');
         $qb->addSelect('otherCultureSpecies');
         $qb->addSelect('report');
+        $qb->addSelect('designation');
+        $qb->addSelect('regional');
 
         $employee = isset($filterBy['employeeId'])? $filterBy['employeeId']: '';
         if (!empty($employee)){
@@ -86,10 +90,10 @@ class FishLifeCycleCultureRepository extends EntityRepository
 
                 $employeeUserId = $result['employee']['userId'];
                 $employeeName = $result['employee']['name'];
-//                $employeeDesignation = $result->getFishLifeCycle()->getEmployee()->getDesignation()?$result->getFishLifeCycle()->getEmployee()->getDesignation()->getName():'';
-//                $employeeRegion = $result->getFishLifeCycle()->getEmployee()->getRegional()?$result->getFishLifeCycle()->getEmployee()->getRegional()->getName():'';
+                $employeeDesignation = $result['employee']&&$result['employee']['designation']?$result['employee']['designation']['name']:'';
+                $employeeRegion = $result['employee']&&$result['employee']['regional']?$result['employee']['regional']['name']:'';
 
-                $returnArray['employeeInfo'][$reportingMonth][$employeeId] = ['name'=>$employeeName, 'employeeUserId'=>$employeeUserId, 'designationName'=>'', 'regionName'=>''];
+                $returnArray['employeeInfo'][$reportingMonth][$employeeId] = ['name'=>$employeeName, 'employeeUserId'=>$employeeUserId, 'designationName'=>$employeeDesignation, 'regionName'=>$employeeRegion];
                 $returnArray['records'][$reportingMonth][$employeeId][]=$result;
 
             }
