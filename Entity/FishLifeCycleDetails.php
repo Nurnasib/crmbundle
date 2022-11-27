@@ -512,7 +512,6 @@ class FishLifeCycleDetails
     public function getFormattedFeedItemName(){
         $returnData = '';
         if($this->feedItemName){
-
             $feedItemNameJsonDate = (array)json_decode($this->feedItemName, true);
             $x = 1;
             $length = sizeof($feedItemNameJsonDate);
