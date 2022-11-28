@@ -45,42 +45,49 @@ class LabServiceController extends AbstractController
         $em = $this->getDoctrine()->getManager();
 
 //        $entity = new LabService();
+        $user = $this->getUser();
+        $userLabIds = $user->getLabs();
+        if($userLabIds && count($userLabIds)>0){
+            $labNames = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('status'=>1,'settingType'=>'LAB_NAME', 'id'=>$userLabIds));
+            $labServices = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('status'=>1,'settingType'=>'LAB_SERVICE_NAME'));
+            foreach ($labNames as $lab){
 
-        $labNames = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('status'=>1,'settingType'=>'LAB_NAME'));
-        $labServices = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('status'=>1,'settingType'=>'LAB_SERVICE_NAME'));
-        foreach ($labNames as $lab){
+                foreach ($labServices as $labService){
 
-            foreach ($labServices as $labService){
+                    $exitingFcrDifferentCompany = $this->getDoctrine()->getRepository(LabService::class)->getExitingCheckLabServiceByCreatedDateEmployeeAndCompany($this->getUser(), $lab, $labService, $breed_name);
 
-                $exitingFcrDifferentCompany = $this->getDoctrine()->getRepository(LabService::class)->getExitingCheckLabServiceByCreatedDateEmployeeAndCompany($this->getUser(), $lab, $labService, $breed_name);
+                    if(!$exitingFcrDifferentCompany){
 
-                if(!$exitingFcrDifferentCompany){
+                        $entity = new LabService();
 
-                    $entity = new LabService();
+                        $entity->setBreedName($breed_name);
+                        $entity->setLab($lab);
+                        $entity->setService($labService);
+                        $entity->setEmployee($this->getUser());
+                        $entity->setReportingYear(date('Y'));
 
-                    $entity->setBreedName($breed_name);
-                    $entity->setLab($lab);
-                    $entity->setService($labService);
-                    $entity->setEmployee($this->getUser());
-                    $entity->setReportingYear(date('Y'));
+                        $em->persist($entity);
+                        $em->flush();
 
-                    $em->persist($entity);
-                    $em->flush();
-
-                    $dataArray[]=$entity->getId();
+                        $dataArray[]=$entity->getId();
+                    }
                 }
+
             }
 
+            $allLabServices = $this->getDoctrine()->getRepository(LabService::class)->getLabServiceByCreatedDateAndEmployee($this->getUser(), $breed_name);
+
+            return $this->render('@TerminalbdCrm/labService/new-modal.html.twig', [
+                'services' => $labServices,
+                'labs' => $labNames,
+                'labServices' => $allLabServices,
+                'user' => $this->getUser(),
+            ]);
         }
+        $this->addFlash('error', 'This user is not available lab');
+        return $this->redirectToRoute('dashboard');
 
-        $allLabServices = $this->getDoctrine()->getRepository(LabService::class)->getLabServiceByCreatedDateAndEmployee($this->getUser(), $breed_name);
 
-        return $this->render('@TerminalbdCrm/labService/new-modal.html.twig', [
-            'services' => $labServices,
-            'labs' => $labNames,
-            'labServices' => $allLabServices,
-            'user' => $this->getUser(),
-        ]);
     }
 
 

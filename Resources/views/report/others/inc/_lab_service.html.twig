@@ -1,31 +1,32 @@
-{% for year, entity in entities %}
-    {% for employeeId, details in entity %}
-        <table width="100%">
-            <tr>
-                <th colspan="15"><h3 class="text-center">NOURISH POULTRY AND HATCHERY LTD</h3></th>
-            </tr>
-            <tr>
-                <th colspan="15"><h5 class="text-center">UTTARA, DHAKA.</h5></th>
-            </tr>
-            <tr>
-                <td colspan="15" align="center"><h6>{{ "Summery of Lab Service,"|trans }} {{ year }}</h6></td>
-            </tr>
-        </table>
 
-        <table width="100%" class="table table-striped table-bordered table-hover">
-            <thead class="thead-dark">
-            <tr>
-                <th>{{ 'ID' }}: {{ details['userId'] }}</th>
-                <th>{{ 'Name of CSO' }}: {{ details['employeeName'] }}</th>
-                <th>{{ 'Designation' }}: {{ details['employeeDesignationName'] }}</th>
-            </tr>
-            </thead>
-        </table>
+
         {#        Nourish section#}
+{% if entities is defined and entities is not empty %}
+                    <table class="table table-bordered tilapiaFrySales_nourish_table download-excel" id="datatable">
+                       <thead>
+                       <tr class="border-0">
+                           <th data-a-h="center" class="border-0" colspan="14"><h3 class="text-center">NOURISH POULTRY AND HATCHERY LTD</h3></th>
+                       </tr>
+                       <tr>
+                           <th data-a-h="center" class="border-0" colspan="14"><h5 class="text-center">UTTARA, DHAKA.</h5></th>
+                       </tr>
+                       <tr>
+                           <td data-a-h="center" class="border-0" colspan="14" align="center"><h6>{{ "Summery of Lab Service,"|trans }} {{ filterBy is defined and filterBy['year'] is defined and filterBy['year'] is not empty?filterBy['year']:"now"|date('Y') }}</h6></td>
+                       </tr>
+                       </thead>
+                        {% for year, entity in entities %}
+                            {% for employeeId, details in entity %}
+
+                        <thead class="thead-dark">
+                        <tr>
+                            <th colspan="5">{{ 'ID' }}: {{ details['userId'] }}</th>
+                            <th colspan="5">{{ 'Name of CSO' }}: {{ details['employeeName'] }}</th>
+                            <th colspan="4">{{ 'Designation' }}: {{ details['employeeDesignationName'] }}</th>
+                        </tr>
+                        </thead>
         {% if details['items'] is defined %}
             {% if details['labs'] is defined %}
                 {% for labId, lab in details['labs'] %}
-                    <table class="table table-bordered tilapiaFrySales_nourish_table" id="datatable">
                         <thead>
                         <tr>
                             <th colspan="14">{{ lab }}</th>
@@ -50,11 +51,11 @@
                                         {% set date = month ~ "/1" %}
                                         {% set quantity = details['items'][labId][serviceId][date|date("F")|lower]|default(0) %}
                                         {% set lineTotal=lineTotal+quantity %}
-                                        <td class="text-left">
+                                        <td data-t="n" class="text-left">
                                             {{ details['items'][labId][serviceId][date|date("F")|lower]|default(0) }}
                                         </td>
                                     {% endfor %}
-                                    <td>{{ lineTotal|default(0) }}</td>
+                                    <td data-t="n">{{ lineTotal|default(0) }}</td>
                                 </tr>
                             {% endfor %}
                         {% endif %}
@@ -70,19 +71,22 @@
                                     {% set totalQuantity = details['grandTotals'][labId]|arraySumColWise(calDate)|default(0) %}
 {#                                    {% set lineTotal=lineTotal+quantity %}#}
                                     {% set grandTotalQty=grandTotalQty+totalQuantity %}
-                                    <td class="text-left">
+                                    <td data-t="n" class="text-left">
                                         {{ totalQuantity|default(0) }}
                                     </td>
                                 {% endfor %}
-                                <td>
+                                <td data-t="n">
                                     {{ grandTotalQty|default(0) }}
                                 </td>
                             </tr>
                         </tfood>
-                    </table>
                 {% endfor %}
             {% endif %}
         {% endif %}
 
-    {% endfor %}
-{% endfor %}
+                        {% endfor %}
+                        {% endfor %}
+                    </table>
+
+
+{% endif %}

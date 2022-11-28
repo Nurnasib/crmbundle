@@ -106,7 +106,6 @@ class LabServiceRepository extends EntityRepository
     {
         $start = isset($filterBy['year']) && $filterBy['year'] ? (new \DateTime($filterBy['year'].'-01-01'))->format('Y-m-d') . ' 00:00:00' : date('Y-01-01'). ' 00:00:00';
         $end = isset($filterBy['year']) && $filterBy['year'] ? (new \DateTime($filterBy['year'].'-12-31'))->format('Y-m-d') . ' 23:59:59' : date('Y-12-31'). ' 23:59:59';
-        $employeeId = isset($filterBy['employee']) ? $filterBy['employee']->getId() : null;
 
         $year = isset($filterBy['year']) && $filterBy['year'] ?$filterBy['year']:date('Y');
 
@@ -125,16 +124,24 @@ class LabServiceRepository extends EntityRepository
         if(isset($filterBy['lab']) && $filterBy['lab']){
             $qb->andWhere('e.lab = :lab')->setParameter('lab', $filterBy['lab']);
         }
+        $qb->andWhere('YEAR(e.createdAt) =:year')->setParameter('year',$year);
 
-        $qb->andWhere('e.createdAt >= :start')->setParameter('start', $start);
-        $qb->andWhere('e.createdAt <= :end')->setParameter('end', $end);
+        $employee = isset($filterBy['employeeId'])? $filterBy['employeeId']: '';
+        if (!empty($employee)){
+            $qb->andWhere('employee.id = :employee')->setParameter('employee', $employee);
+        }
 
         $rolesString = implode('_', $loggedUser->getRoles());
         if (!str_contains($rolesString, 'ADMIN') && !in_array('ROLE_LINE_MANAGER', $loggedUser->getRoles())){
             $qb->andWhere('employee.id = :employeeId')->setParameter('employeeId', $loggedUser->getId());
-        }
-        if (isset($filterBy['employee']) && $filterBy['employee'] !== null){
-            $qb->andWhere('employee.id = :employeeId')->setParameter('employeeId', $employeeId);
+        }elseif (!str_contains($rolesString, 'ADMIN') && in_array('ROLE_LINE_MANAGER', $loggedUser->getRoles())){
+
+            $employeeIdsByLineManager = $this->_em->getRepository(User::class)->getEmployeesByLineManager($loggedUser);
+            $employeeIs=[];
+            if($employeeIdsByLineManager){
+                $employeeIs=$employeeIdsByLineManager;
+            }
+            $qb->andWhere('employee.id IN (:employeeIds)')->setParameter('employeeIds', $employeeIs);
         }
 
         $results = $qb->getQuery()->getArrayResult();
