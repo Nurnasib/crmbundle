@@ -1772,7 +1772,7 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
                     $month = date('F', strtotime($date));
                     $set = 'set' . $month;
                     $exist->$set($report[strtolower($month)] ?: 0);
-
+                    $this->getDoctrine()->getManager()->persist($exist);
                 }
                 $this->getDoctrine()->getManager()->flush();
             }else{

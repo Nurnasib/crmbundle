@@ -25,6 +25,7 @@ use Terminalbd\CrmBundle\Entity\CrmVisit;
 use Terminalbd\CrmBundle\Entity\FarmerComplain;
 use Terminalbd\CrmBundle\Entity\FarmerComplainDetails;
 use Terminalbd\CrmBundle\Entity\FcrDetails;
+use Terminalbd\CrmBundle\Entity\FcrDifferentCompanies;
 use Terminalbd\CrmBundle\Entity\FishLifeCycleCulture;
 use Terminalbd\CrmBundle\Entity\FishLifeCycleCultureDetails;
 use Terminalbd\CrmBundle\Entity\NewFarmerIntroduce\FarmerIntroduceDetails;
@@ -33,6 +34,7 @@ use Terminalbd\CrmBundle\Entity\SonaliStandard;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Terminalbd\CrmBundle\Repository\FcrDifferentCompaniesRepository;
 
 /**
  * Class ApiController
@@ -2976,6 +2978,40 @@ class ApiController extends AbstractController
             'message' => 'Not Found!'
         ]);
 
+
+    }
+
+
+    /**
+     * @param Request $request
+     * @param ParameterBagInterface $parameterBag
+     * @return JsonResponse
+     * @Route("/fcr-different-company-data", name="fcr_different_feed_company_data")
+     */
+    public function fcrDifferentFeedCompanyData(Request $request, ParameterBagInterface $parameterBag)
+    {
+        set_time_limit(0);
+        ignore_user_abort(true);
+
+        if ($request->getMethod() == 'POST' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')) {
+            $parameters = $request->request->all();
+            $fcrCompanies=[];
+            if(isset($parameters['employee_id'])&&$parameters['employee_id']!="") {
+                $employeeId = $parameters['employee_id'];
+                $year = isset($parameters['year'])&&$parameters['year']!=""?$parameters['year']:date('Y');
+                $fcrCompanies = $this->getDoctrine()->getRepository(FcrDifferentCompanies::class)->getFcrDifferentCompaniesApi($employeeId, $year);
+            }
+
+            $response = new Response();
+            $response->headers->set('Content-Type', 'application/json');
+            $response->setContent(json_encode($fcrCompanies));
+            $response->setStatusCode(Response::HTTP_OK);
+            return $response;
+        }
+        return new JsonResponse([
+            'status' => 404,
+            'message' => 'Not Found!'
+        ]);
 
     }
 }
