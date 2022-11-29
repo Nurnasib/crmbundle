@@ -28,6 +28,7 @@ use Terminalbd\CrmBundle\Entity\FcrDetails;
 use Terminalbd\CrmBundle\Entity\FcrDifferentCompanies;
 use Terminalbd\CrmBundle\Entity\FishLifeCycleCulture;
 use Terminalbd\CrmBundle\Entity\FishLifeCycleCultureDetails;
+use Terminalbd\CrmBundle\Entity\LabService;
 use Terminalbd\CrmBundle\Entity\NewFarmerIntroduce\FarmerIntroduceDetails;
 use Terminalbd\CrmBundle\Entity\Setting;
 use Terminalbd\CrmBundle\Entity\SonaliStandard;
@@ -2069,7 +2070,15 @@ class ApiController extends AbstractController
         set_time_limit(0);
         ignore_user_abort(true);
         if ($request->getMethod() == 'GET' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')) {
-            $entities = $this->getDoctrine()->getRepository(Api::class)->labName();
+            $entities=[];
+            $data = $request->query->all();
+            if(isset($data['employee_id']) && $data['employee_id']!=''){
+                $findEmployee = $this->getDoctrine()->getRepository(User::class)->find($data['employee_id']);
+                if($findEmployee && $findEmployee->getLabs()!=''){
+                    $entities = $this->getDoctrine()->getRepository(Api::class)->labName($findEmployee->getLabs());
+                }
+            }
+
             $response = new Response();
             $response->headers->set('Content-Type', 'application/json');
             $response->setContent(json_encode($entities));
@@ -3005,6 +3014,40 @@ class ApiController extends AbstractController
             $response = new Response();
             $response->headers->set('Content-Type', 'application/json');
             $response->setContent(json_encode($fcrCompanies));
+            $response->setStatusCode(Response::HTTP_OK);
+            return $response;
+        }
+        return new JsonResponse([
+            'status' => 404,
+            'message' => 'Not Found!'
+        ]);
+
+    }
+
+
+    /**
+     * @param Request $request
+     * @param ParameterBagInterface $parameterBag
+     * @return JsonResponse
+     * @Route("/lab-service-data", name="lab_service_data")
+     */
+    public function labServiceDataForApiImport(Request $request, ParameterBagInterface $parameterBag)
+    {
+        set_time_limit(0);
+        ignore_user_abort(true);
+
+        if ($request->getMethod() == 'POST' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')) {
+            $parameters = $request->request->all();
+            $labServicesData=[];
+            if(isset($parameters['employee_id'])&&$parameters['employee_id']!="") {
+                $employeeId = $parameters['employee_id'];
+                $year = isset($parameters['year'])&&$parameters['year']!=""?$parameters['year']:date('Y');
+                $labServicesData = $this->getDoctrine()->getRepository(LabService::class)->getLabServicesDataForApiImport($employeeId, $year);
+            }
+
+            $response = new Response();
+            $response->headers->set('Content-Type', 'application/json');
+            $response->setContent(json_encode($labServicesData));
             $response->setStatusCode(Response::HTTP_OK);
             return $response;
         }

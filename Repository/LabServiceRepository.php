@@ -185,4 +185,57 @@ class LabServiceRepository extends EntityRepository
         }
         return $returnArray;
     }
+
+
+    public function getLabServicesDataForApiImport($employeeId, $year)
+    {
+        $data = [];
+        if($employeeId){
+
+            $qb = $this->createQueryBuilder('e');
+
+            $qb->join('e.lab', 'lab');
+            $qb->join('e.service', 'service');
+            $qb->join('e.employee', 'employee');
+
+            $qb->select('e AS details');
+            $qb->addSelect('lab.id AS labId', 'lab.name AS labName');
+            $qb->addSelect('service.id AS serviceId', 'service.name AS serviceName');
+            $qb->addSelect('employee.id AS employeeId','employee.userId', 'employee.name AS employeeName');
+
+            $qb->andWhere('e.january > 0 OR e.february > 0 OR e.march > 0 OR e.april > 0 OR e.may > 0 
+        OR e.june > 0 OR e.july > 0 OR e.august > 0 OR e.september > 0 OR e.october > 0 OR e.november > 0 OR e.december > 0');
+
+            $qb->andWhere('employee.id = :employee')->setParameter('employee', $employeeId);
+
+            $qb->andWhere('YEAR(e.createdAt) =:year')->setParameter('year',$year);
+
+            $results = $qb->getQuery()->getArrayResult();
+
+            foreach ($results as $result) {
+                $data[] = [
+                    "id"=> $result['details']['id'],
+                    "employee_id"=> $result['employeeId'],
+                    "lab_id"=> $result['labId'],
+                    "service_id"=> $result['serviceId'],
+                    "breed_name"=> $result['details']['breedName'],
+                    "january"=> (string)$result['details']['january'],
+                    "february"=> (string)$result['details']['february'],
+                    "march"=> (string)$result['details']['march'],
+                    "april"=> (string)$result['details']['april'],
+                    "may"=> (string)$result['details']['may'],
+                    "june"=> (string)$result['details']['june'],
+                    "july"=> (string)$result['details']['july'],
+                    "august"=> (string)$result['details']['august'],
+                    "september"=> (string)$result['details']['september'],
+                    "october"=> (string)$result['details']['october'],
+                    "november"=> (string)$result['details']['november'],
+                    "december"=> (string)$result['details']['december'],
+                    "created_at"=> $result['details']['createdAt']->format('Y-m-d H:i:s')
+                ];
+            }
+        }
+        return $data;
+    }
+
 }

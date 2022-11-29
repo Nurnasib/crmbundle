@@ -2024,8 +2024,10 @@ class ApiRepository extends BaseRepository
 
     /**
      * Lab Name
+     * @param $userLabIds
+     * @return array
      */
-    public function labName()
+    public function labName($userLabIds)
     {
         $em = $this->_em;
         $qb = $em->createQueryBuilder();
@@ -2033,6 +2035,7 @@ class ApiRepository extends BaseRepository
         $qb->select('s.id as id', 's.name as labName');
         $qb->where("s.settingType = 'LAB_NAME'");
         $qb->andWhere('s.status = 1');
+        $qb->andWhere('s.id IN (:ids)')->setParameter('ids',$userLabIds);
 
         $qb->orderBy('s.id', 'ASC');
         $result = $qb->getQuery()->getArrayResult();
