@@ -2115,9 +2115,13 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
                 $entity->setOtherCultureSpecies($otherCultureSpecies?$otherCultureSpecies:null);
                 $feedItemName=null;
                 if(isset($report['feed_item_name']) && $report['feed_item_name']!=''){
-                    $feedItemJsonData = json_decode($report['feed_item_name']);
-                    $feedItemNameUnique= array_map("unserialize", array_unique(array_map("serialize", $feedItemJsonData)));
-                    $feedItemName=json_encode($feedItemNameUnique);
+                    if($feed&&$feed->getName()=='Nourish'){
+                        $feedItemJsonData = json_decode($report['feed_item_name']);
+                        $feedItemNameUnique= array_map("unserialize", array_unique(array_map("serialize", $feedItemJsonData)));
+                        $feedItemName=json_encode($feedItemNameUnique);
+                    }else{
+                        $feedItemName= trim($report['feed_item_name']);
+                    }
                 }
 
                 $entity->setFeedItemName($feedItemName);
@@ -2159,6 +2163,7 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
                 $entity->setFarmerRemarks(isset($report['farmer_remarks']) && $report['farmer_remarks']!=''?$report['farmer_remarks']:null);
                 $entity->setEmployeeRemarks(isset($report['employee_remarks']) && $report['employee_remarks']!=''?$report['employee_remarks']:null);
                 $entity->setSpeciesDescription(isset($report['species_description']) && $report['species_description']!=''?$report['species_description']:null);
+                $entity->setPondNumber( isset($report['pond_number'])&&$report['pond_number']!=''?$report['pond_number']:1);
 
 
                 $em->persist($entity);

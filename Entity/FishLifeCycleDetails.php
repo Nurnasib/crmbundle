@@ -382,6 +382,12 @@ class FishLifeCycleDetails
     private $createdAt;
 
     /**
+     * @var integer
+     * @Orm\Column(name="pond_number", type="integer", options={"default"="1"})
+     */
+    private $pondNumber=1;
+    
+    /**
      * @return int
      */
     public function getId()
@@ -1540,6 +1546,22 @@ class FishLifeCycleDetails
     public function setSpeciesDescription($speciesDescription): void
     {
         $this->speciesDescription = $speciesDescription;
+    }
+
+    /**
+     * @return int
+     */
+    public function getPondNumber()
+    {
+        return $this->pondNumber;
+    }
+
+    /**
+     * @param int $pondNumber
+     */
+    public function setPondNumber($pondNumber): void
+    {
+        $this->pondNumber = $pondNumber;
     }   
     
 
