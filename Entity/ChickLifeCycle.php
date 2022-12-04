@@ -65,6 +65,12 @@ class ChickLifeCycle
     private $appBatch;
 
     /**
+     * @var integer
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $appId;
+
+    /**
      * @var \DateTime
      * @ORM\Column(name="reporting_date", type="date", nullable=true)
      */
@@ -125,6 +131,12 @@ class ChickLifeCycle
      * @ORM\Column(name="created_at", type="datetime")
      */
     private $createdAt;
+
+    /**
+     * @var integer
+     * @Orm\Column(name="farm_number", type="integer", options={"default"="1"})
+     */
+    private $farmNumber=1;
 
     /**
      * @return int
@@ -380,6 +392,38 @@ class ChickLifeCycle
     public function setReportingDate(\DateTime $reportingDate): void
     {
         $this->reportingDate = $reportingDate;
+    }
+
+    /**
+     * @return int
+     */
+    public function getAppId()
+    {
+        return $this->appId;
+    }
+
+    /**
+     * @param int $appId
+     */
+    public function setAppId($appId): void
+    {
+        $this->appId = $appId;
+    }
+
+    /**
+     * @return int
+     */
+    public function getFarmNumber()
+    {
+        return $this->farmNumber;
+    }
+
+    /**
+     * @param int $farmNumber
+     */
+    public function setFarmNumber($farmNumber): void
+    {
+        $this->farmNumber = $farmNumber;
     }
 
 

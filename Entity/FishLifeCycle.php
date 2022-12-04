@@ -35,7 +35,7 @@ class FishLifeCycle
     private $appBatch;
 
     /**
-     * @var $appBatch
+     * @var integer
      * @ORM\Column(type="integer",nullable=true)
      */
     private $appId;
@@ -118,17 +118,17 @@ class FishLifeCycle
     }
 
     /**
-     * @return mixed
+     * @return int
      */
-    public function getAppId()
+    public function getAppId(): int
     {
         return $this->appId;
     }
 
     /**
-     * @param mixed $appId
+     * @param int $appId
      */
-    public function setAppId($appId): void
+    public function setAppId(int $appId): void
     {
         $this->appId = $appId;
     }
