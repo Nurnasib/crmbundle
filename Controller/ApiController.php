@@ -2244,8 +2244,9 @@ class ApiController extends AbstractController
                                     "customer_id"=> $entity->getCustomer()? $entity->getCustomer()->getId():null,
                                     "employee_id"=> $entity->getEmployee()? $entity->getEmployee()->getId():null,
                                     "report_id"=> $entity->getReport()? $entity->getReport()->getId():null,
-                                    "web_life_cycle_details_id"=>$lifeCycleDetail->getId(),
+                                    'visit_details_id'=> null,
                                     'life_cycle_state'=> $entity->getLifeCycleState(),
+                                    "web_life_cycle_details_id"=>$lifeCycleDetail->getId(),
                                     "web_life_cycle_id"=> $entity->getId(),
                                     "farm_number"=> $entity->getFarmNumber()?$entity->getFarmNumber():1,
                                 ];
