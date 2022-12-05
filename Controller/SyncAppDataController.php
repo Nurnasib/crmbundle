@@ -990,19 +990,32 @@ VALUES (:report_id, :report_parent_parent_id, :agent_id, :customer_id, :employee
             $findEmployee = $this->getDoctrine()->getRepository(User::class)->find($report['employee_id']);
             $findReport = $this->getDoctrine()->getRepository(Setting::class)->find($report['report_id']);
 
-            $findLifeCycle = $this->getDoctrine()->getRepository(ChickLifeCycle::class)->findOneBy(['customer' => $findFarmer, 'employee' => $findEmployee, 'report' => $findReport]);
+            $findLifeCycle=null;
+
+            if(isset($report['web_life_cycle_id']) && $report['web_life_cycle_id']!=''){
+
+                $findLifeCycle = $this->getDoctrine()->getRepository(ChickLifeCycle::class)->find($report['web_life_cycle_id']);
+
+            }elseif (isset($report['web_life_cycle_id']) && $report['web_life_cycle_id']=='' && isset($report['id']) && $report['id']!=''){
+                $findLifeCycle = $this->getDoctrine()->getRepository(ChickLifeCycle::class)->findOneBy(['customer' => $findFarmer, 'employee' => $findEmployee, 'report' => $findReport, 'appId'=>$report['id']]);
+            }else{
+                if(!$findLifeCycle){
+                    $findLifeCycle = $this->getDoctrine()->getRepository(ChickLifeCycle::class)->findOneBy(['customer' => $findFarmer, 'employee' => $findEmployee, 'report' => $findReport, 'lifeCycleState'=>ChickLifeCycle::LIFE_CYCLE_STATE_IN_PROGRESS]);
+                }
+            }
 
             if ($findLifeCycle){
                 $findLifeCycle->setLifeCycleState($report['life_cycle_state']);
+                $findLifeCycle->setAppBatch($batch);
                 $this->getDoctrine()->getManager()->persist($findLifeCycle);
                 $this->getDoctrine()->getManager()->flush();
             }else{
-                $sql = "INSERT INTO `crm_chick_life_cycle`(`hatching_date`, `remarks`, `reporting_date`, `customer_id`, `agent_id`, `employee_id`, `report_id`, `life_cycle_state`, `created_at`, `hatchery_id`, `breed_id`, `feed_id`, `total_birds`, `app_batch_id`) 
-VALUES (:hatching_date, :remarks, :reporting_date, :customer_id, :agent_id, :employee_id, :report_id, :life_cycle_state, :created_at, :hatchery_id, :breed_id, :feed_id, :total_birds, :app_batch_id)";
+                $sql = "INSERT INTO `crm_chick_life_cycle`(`hatching_date`, `remarks`, `reporting_date`, `customer_id`, `agent_id`, `employee_id`, `report_id`, `life_cycle_state`, `created_at`, `hatchery_id`, `breed_id`, `feed_id`, `total_birds`, `app_batch_id`, `app_id`, `farm_number`) 
+VALUES (:hatching_date, :remarks, :reporting_date, :customer_id, :agent_id, :employee_id, :report_id, :life_cycle_state, :created_at, :hatchery_id, :breed_id, :feed_id, :total_birds, :app_batch_id, :app_id, :farm_number)";
 
                 $hatchingDate = new \DateTime($report['hatching_date']);
                 $reportingDate = new \DateTime($report['reporting_date']);
-                $createdAt = new \DateTime($report['created_at']);
+                $createdAt = isset($report['created_at'])&&$report['created_at']!=""? new \DateTime($report['created_at']):new \DateTime('now');
 
                 $agent=null;
                 $agentId=null;
@@ -1023,13 +1036,15 @@ VALUES (:hatching_date, :remarks, :reporting_date, :customer_id, :agent_id, :emp
                 $stmt->bindValue('employee_id', $report['employee_id']);
                 $stmt->bindValue('report_id', $report['report_id']);
                 $stmt->bindValue('life_cycle_state', $report['life_cycle_state']);
-//                $stmt->bindValue('created_at', $createdAt->format('Y-m-d H:i:s'));
-                $stmt->bindValue('created_at', (new \DateTime('now'))->format('Y-m-d H:i:s'));
+                $stmt->bindValue('created_at', $createdAt->format('Y-m-d H:i:s'));
+//                $stmt->bindValue('created_at', (new \DateTime('now'))->format('Y-m-d H:i:s'));
                 $stmt->bindValue('hatchery_id', $report['hatchery_id']);
                 $stmt->bindValue('breed_id', $report['breed_id']);
                 $stmt->bindValue('feed_id', $report['feed_id']);
                 $stmt->bindValue('total_birds', $report['total_birds']);
                 $stmt->bindValue('app_batch_id', $batch->getId());
+                $stmt->bindValue('app_id', $report['id']);
+                $stmt->bindValue('farm_number', isset($report['farm_number'])&&$report['farm_number']!=''?$report['farm_number']:1);
 
                 $executeStatus = $stmt->execute();
                 if ($executeStatus){
@@ -1057,7 +1072,22 @@ VALUES (:hatching_date, :remarks, :reporting_date, :customer_id, :agent_id, :emp
     private function processBroilerLifeCycleDetail($reports, Api $batch)
     {
         foreach ($reports as $report) {
-            $sql = "SELECT id
+            $lifeCycle = null;
+
+            if(isset($report['web_life_cycle_id']) && $report['web_life_cycle_id']!=''){
+                $lifeCycle= $this->getDoctrine()->getRepository(ChickLifeCycle::class)->find($report['web_life_cycle_id']);
+            }elseif (isset($report['web_life_cycle_id']) && $report['web_life_cycle_id']=='' && isset($report['crm_chick_life_cycle_id']) && $report['crm_chick_life_cycle_id']!=''){
+                $lifeCycle= $this->getDoctrine()->getRepository(ChickLifeCycle::class)->findOneBy(['appId'=>$report['crm_chick_life_cycle_id']]);
+            }else{
+                if(!$lifeCycle){
+                    $findFarmer = $this->getDoctrine()->getRepository(CrmCustomer::class)->find($report['customer_id']);
+                    $findEmployee = $this->getDoctrine()->getRepository(User::class)->find($report['employee_id']);
+                    $findReport = $this->getDoctrine()->getRepository(Setting::class)->find($report['report_id']);
+                    $lifeCycle = $this->getDoctrine()->getRepository(ChickLifeCycle::class)->findOneBy(['customer' => $findFarmer, 'employee' => $findEmployee, 'report' => $findReport, 'appBatch'=>$batch]);
+                }
+            }
+
+            /*$sql = "SELECT id
 FROM `crm_chick_life_cycle`
 WHERE `customer_id` = :customer_id AND `employee_id` = :employee_id AND `report_id` = :report_id";
             $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
@@ -1069,16 +1099,17 @@ WHERE `customer_id` = :customer_id AND `employee_id` = :employee_id AND `report_
 //            $stmt->bindValue('employee_id', 23);
 //            $stmt->bindValue('report_id', 39);
             $stmt->execute();
-            $lifeCycleId = $stmt->fetch()['id'];
-            if ($lifeCycleId) {
+            $lifeCycleId = $stmt->fetch()['id'];*/
 
-                $proDate = new \DateTime($report['pro_date']);
+            if ($lifeCycle) {
+
+                $proDate = isset($report['pro_date']) && $report['pro_date']!=''? new \DateTime($report['pro_date']):null;
                 $reportingDate = new \DateTime($report['reporting_date']);
                 $createdAt = new \DateTime($report['created_at']);
                 $updatedAt = new \DateTime($report['updated_at']);
 
                 /* @var ChickLifeCycleDetails $findDetails*/
-                $findDetails = $this->getDoctrine()->getRepository(ChickLifeCycleDetails::class)->findOneBy(['crmChickLifeCycle' => $lifeCycleId, 'visitingWeek' =>  $report['visiting_week']]);
+                $findDetails = $this->getDoctrine()->getRepository(ChickLifeCycleDetails::class)->findOneBy(['crmChickLifeCycle' => $lifeCycle, 'visitingWeek' =>  $report['visiting_week']]);
                 if ($findDetails){
                     $feedType = $report['feed_type_id'] ? $this->getDoctrine()->getRepository(Setting::class)->find($report['feed_type_id']) : null;
 
@@ -1104,34 +1135,6 @@ WHERE `customer_id` = :customer_id AND `employee_id` = :employee_id AND `report_
                     $this->getDoctrine()->getManager()->flush();
 
                 }
-
-                /*else{
-                    $sql = "INSERT INTO `crm_chick_life_cycle_details`(`crm_chick_life_cycle_id`, `visiting_week`, `age_days`, `mortality_pes`, `mortality_percent`, `weight_standard`, `weight_achieved`, `feed_total_kg`, `per_bird`, `feed_standard`, `without_mortality`, `with_mortality`, `pro_date`, `batch_no`, `remarks`, `created_at`, `updated_at`, `feed_type_id`, `reporting_date`)
-VALUES (:crm_chick_life_cycle_id, :visiting_week, :age_days, :mortality_pes, :mortality_percent, :weight_standard, :weight_achieved, :feed_total_kg, :per_bird, :feed_standard, :without_mortality, :with_mortality, :pro_date, :batch_no, :remarks, :created_at, :updated_at, :feed_type_id, :reporting_date)";
-
-                    $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
-                    $stmt->bindValue('crm_chick_life_cycle_id', $lifeCycleId);
-                    $stmt->bindValue('visiting_week', $report['visiting_week']);
-                    $stmt->bindValue('age_days', $report['age_days']);
-                    $stmt->bindValue('mortality_pes', $report['mortality_pes']);
-                    $stmt->bindValue('mortality_percent', $report['mortality_percent']);
-                    $stmt->bindValue('weight_standard', $report['weight_standard']);
-                    $stmt->bindValue('weight_achieved', $report['weight_achieved']);
-                    $stmt->bindValue('feed_total_kg', $report['feed_total_kg']);
-                    $stmt->bindValue('per_bird', $report['per_bird']);
-                    $stmt->bindValue('feed_standard', $report['feed_standard']);
-                    $stmt->bindValue('without_mortality', $report['without_mortality']);
-                    $stmt->bindValue('with_mortality', $report['with_mortality']);
-                    $stmt->bindValue('pro_date', $proDate->format('Y-m-d H:i:s'));
-                    $stmt->bindValue('batch_no', $report['batch_no']);
-                    $stmt->bindValue('remarks', $report['remarks']);
-                    $stmt->bindValue('created_at', $createdAt->format('Y-m-d H:i:s'));
-                    $stmt->bindValue('updated_at', $updatedAt->format('Y-m-d H:i:s'));
-                    $stmt->bindValue('feed_type_id', $report['feed_type_id']);
-                    $stmt->bindValue('reporting_date', $reportingDate->format('Y-m-d'));
-
-                    $stmt->execute();
-                }*/
             }
         }
     }

@@ -467,7 +467,7 @@ class ChickLifeCycleDetails
     /**
      * @param \DateTime $proDate
      */
-    public function setProDate(\DateTime $proDate): void
+    public function setProDate($proDate): void
     {
         $this->proDate = $proDate;
     }

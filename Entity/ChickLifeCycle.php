@@ -84,24 +84,31 @@ class ChickLifeCycle
 
     /**
      * @var Setting
-     * @ORM\ManyToOne(targetEntity="Setting", inversedBy="crmChickLifeCycleDetails")
+     * @ORM\ManyToOne(targetEntity="Setting", inversedBy="chicklifecycle")
      * @ORM\JoinColumn(name="hatchery_id", referencedColumnName="id", onDelete="SET NULL", nullable=true)
      */
     private $hatchery;
 
     /**
      * @var Setting
-     * @ORM\ManyToOne(targetEntity="Setting", inversedBy="crmChickLifeCycleDetails")
+     * @ORM\ManyToOne(targetEntity="Setting", inversedBy="chicklifecycle")
      * @ORM\JoinColumn(name="breed_id", referencedColumnName="id", onDelete="SET NULL", nullable=true)
      */
     private $breed;
 
     /**
      * @var Setting
-     * @ORM\ManyToOne(targetEntity="Setting", inversedBy="crmChickLifeCycleDetails")
+     * @ORM\ManyToOne(targetEntity="Setting", inversedBy="chicklifecycle")
      * @ORM\JoinColumn(name="feed_id", referencedColumnName="id", onDelete="SET NULL", nullable=true)
      */
     private $feed;
+
+    /**
+     * @var Setting
+     * @ORM\ManyToOne(targetEntity="Setting", inversedBy="chicklifecycle")
+     * @ORM\JoinColumn(name="feed_mill_id", referencedColumnName="id", onDelete="SET NULL", nullable=true)
+     */
+    private $feedMill;
 
     /**
      * @var float
@@ -424,6 +431,22 @@ class ChickLifeCycle
     public function setFarmNumber($farmNumber): void
     {
         $this->farmNumber = $farmNumber;
+    }
+
+    /**
+     * @return Setting
+     */
+    public function getFeedMill()
+    {
+        return $this->feedMill;
+    }
+
+    /**
+     * @param Setting $feedMill
+     */
+    public function setFeedMill($feedMill): void
+    {
+        $this->feedMill = $feedMill;
     }
 
 
