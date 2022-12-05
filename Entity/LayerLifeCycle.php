@@ -53,6 +53,11 @@ class LayerLifeCycle
      */
     private $appBatch;
 
+    /**
+     * @var integer
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $appId;
 
     /**
      * @var CrmCustomer
@@ -109,6 +114,13 @@ class LayerLifeCycle
     private $feed;
 
     /**
+     * @var Setting
+     * @ORM\ManyToOne(targetEntity="Setting", inversedBy="crmLayerLifeCycleDetails")
+     * @ORM\JoinColumn(name="feed_mill_id", referencedColumnName="id", onDelete="SET NULL", nullable=true)
+     */
+    private $feedMill;
+
+    /**
      * @var \DateTime
      * @Gedmo\Timestampable(on="create")
      * @ORM\Column(name="created", type="datetime")
@@ -128,6 +140,12 @@ class LayerLifeCycle
      * @ORM\Column(name="life_cycle_state", type="string", length=20, nullable=true)
      */
     private $lifeCycleState;
+
+    /**
+     * @var integer
+     * @Orm\Column(name="farm_number", type="integer", options={"default"="1"})
+     */
+    private $farmNumber=1;
 
     /**
      * @return int
@@ -368,6 +386,56 @@ class LayerLifeCycle
     {
         $this->agent = $agent;
     }
+
+    /**
+     * @return int
+     */
+    public function getAppId()
+    {
+        return $this->appId;
+    }
+
+    /**
+     * @param int $appId
+     */
+    public function setAppId($appId): void
+    {
+        $this->appId = $appId;
+    }
+
+    /**
+     * @return Setting
+     */
+    public function getFeedMill()
+    {
+        return $this->feedMill;
+    }
+
+    /**
+     * @param Setting $feedMill
+     */
+    public function setFeedMill($feedMill): void
+    {
+        $this->feedMill = $feedMill;
+    }
+
+    /**
+     * @return int
+     */
+    public function getFarmNumber()
+    {
+        return $this->farmNumber;
+    }
+
+    /**
+     * @param int $farmNumber
+     */
+    public function setFarmNumber($farmNumber): void
+    {
+        $this->farmNumber = $farmNumber;
+    }
+    
+    
 
 
 }

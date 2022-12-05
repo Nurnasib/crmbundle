@@ -179,6 +179,12 @@ class LayerLifeCycleDetails
     private $updated;
 
     /**
+     * @var integer
+     * @ORM\Column(type="integer",nullable=true)
+     */
+    private $appId;
+    
+    /**
      * @return int
      */
     public function getId()
@@ -229,7 +235,7 @@ class LayerLifeCycleDetails
     /**
      * @param \DateTime $visitingDate
      */
-    public function setVisitingDate(\DateTime $visitingDate): void
+    public function setVisitingDate($visitingDate): void
     {
         $this->visitingDate = $visitingDate;
     }
@@ -605,6 +611,22 @@ class LayerLifeCycleDetails
     public function setUpdated(\DateTime $updated): void
     {
         $this->updated = $updated;
+    }
+
+    /**
+     * @return int
+     */
+    public function getAppId()
+    {
+        return $this->appId;
+    }
+
+    /**
+     * @param int $appId
+     */
+    public function setAppId($appId): void
+    {
+        $this->appId = $appId;
     }
 
 }

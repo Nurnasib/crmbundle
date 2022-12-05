@@ -2072,27 +2072,6 @@ class ApiRepository extends BaseRepository
         return $data;
     }
 
-
-    public function chickLifeCycleInProgress($parameters)
-    {
-        $qb = $this->_em->createQueryBuilder();
-        $qb->from(ChickLifeCycle::class, 'chickLifeCycle');
-        $qb->leftJoin('chickLifeCycle.crmChickLifeCycleDetails', 'crmChickLifeCycleDetails');
-        $qb->join('chickLifeCycle.customer', 'customer');
-        $qb->join('chickLifeCycle.employee', 'employee');
-        $qb->join('chickLifeCycle.report', 'report');
-        $qb->select('chickLifeCycle');
-        $qb->addSelect('chickLifeCycle.chickLifeCycleDetails as details');
-
-        $qb->where("chickLifeCycle.lifeCycleState = 'IN_PROGRESS'");
-//        $qb->andWhere('customer.id = :customerId')->setParameter('customerId', $parameters['customer_id']);
-        $qb->andWhere('employee.id = :employeeId')->setParameter('employeeId', $parameters['employee_id']);
-//        $qb->andWhere('report.id = :reportId')->setParameter('reportId', $parameters['report_id']);
-
-        return $qb->getQuery()->getArrayResult();
-
-    }
-
     public function layerLifeCycleInProgress($parameters)
     {
         $qb = $this->_em->createQueryBuilder();
@@ -2104,9 +2083,9 @@ class ApiRepository extends BaseRepository
         $qb->select('layerLifeCycleDetails');
 
         $qb->where("layerLifeCycle.lifeCycleState = 'IN_PROGRESS'");
-        $qb->andWhere('customer.id = :customerId')->setParameter('customerId', $parameters['customer_id']);
+//        $qb->andWhere('customer.id = :customerId')->setParameter('customerId', $parameters['customer_id']);
         $qb->andWhere('employee.id = :employeeId')->setParameter('employeeId', $parameters['employee_id']);
-        $qb->andWhere('report.id = :reportId')->setParameter('reportId', $parameters['report_id']);
+//        $qb->andWhere('report.id = :reportId')->setParameter('reportId', $parameters['report_id']);
 
         return $qb->getQuery()->getArrayResult();
 

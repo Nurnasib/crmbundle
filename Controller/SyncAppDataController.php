@@ -1010,8 +1010,8 @@ VALUES (:report_id, :report_parent_parent_id, :agent_id, :customer_id, :employee
                 $this->getDoctrine()->getManager()->persist($findLifeCycle);
                 $this->getDoctrine()->getManager()->flush();
             }else{
-                $sql = "INSERT INTO `crm_chick_life_cycle`(`hatching_date`, `remarks`, `reporting_date`, `customer_id`, `agent_id`, `employee_id`, `report_id`, `life_cycle_state`, `created_at`, `hatchery_id`, `breed_id`, `feed_id`, `total_birds`, `app_batch_id`, `app_id`, `farm_number`) 
-VALUES (:hatching_date, :remarks, :reporting_date, :customer_id, :agent_id, :employee_id, :report_id, :life_cycle_state, :created_at, :hatchery_id, :breed_id, :feed_id, :total_birds, :app_batch_id, :app_id, :farm_number)";
+                $sql = "INSERT INTO `crm_chick_life_cycle`(`hatching_date`, `remarks`, `reporting_date`, `customer_id`, `agent_id`, `employee_id`, `report_id`, `life_cycle_state`, `created_at`, `hatchery_id`, `breed_id`, `feed_id`, `feed_mill_id`, `total_birds`, `app_batch_id`, `app_id`, `farm_number`) 
+VALUES (:hatching_date, :remarks, :reporting_date, :customer_id, :agent_id, :employee_id, :report_id, :life_cycle_state, :created_at, :hatchery_id, :breed_id, :feed_id, :feed_mill_id, :total_birds, :app_batch_id, :app_id, :farm_number)";
 
                 $hatchingDate = new \DateTime($report['hatching_date']);
                 $reportingDate = new \DateTime($report['reporting_date']);
@@ -1041,6 +1041,7 @@ VALUES (:hatching_date, :remarks, :reporting_date, :customer_id, :agent_id, :emp
                 $stmt->bindValue('hatchery_id', $report['hatchery_id']);
                 $stmt->bindValue('breed_id', $report['breed_id']);
                 $stmt->bindValue('feed_id', $report['feed_id']);
+                $stmt->bindValue('feed_mill_id', $report['feed_mill_id']);
                 $stmt->bindValue('total_birds', $report['total_birds']);
                 $stmt->bindValue('app_batch_id', $batch->getId());
                 $stmt->bindValue('app_id', $report['id']);
@@ -1130,6 +1131,7 @@ WHERE `customer_id` = :customer_id AND `employee_id` = :employee_id AND `report_
                     $findDetails->setUpdatedAt($updatedAt);
                     $findDetails->setFeedType($feedType);
                     $findDetails->setReportingDate($reportingDate);
+                    $findDetails->setAppId($report['id']);
 
                     $this->getDoctrine()->getManager()->persist($findDetails);
                     $this->getDoctrine()->getManager()->flush();
@@ -1269,8 +1271,8 @@ VALUES (:crm_cattle_life_cycle_id, :visiting_date, :age_of_cattle_month, :previo
                 $this->getDoctrine()->getManager()->persist($findLifeCycle);
                 $this->getDoctrine()->getManager()->flush();
             }else{
-                $sql = "INSERT INTO `crm_layer_life_cycle`(`total_birds`, `hatchery_date`, `created`, `updated`, `customer_id`, `employee_id`, `report_id`, `agent_id`, `life_cycle_state`, `hatchery_id`, `breed_id`, `feed_id`, `app_batch_id`) 
-VALUES (:total_birds, :hatchery_date, :created, :updated, :customer_id, :employee_id, :report_id, :agent_id, :life_cycle_state, :hatchery_id, :breed_id, :feed_id, :app_batch_id)";
+                $sql = "INSERT INTO `crm_layer_life_cycle`(`total_birds`, `hatchery_date`, `created`, `updated`, `customer_id`, `employee_id`, `report_id`, `agent_id`, `life_cycle_state`, `hatchery_id`, `breed_id`, `feed_id`, `feed_mill_id`, `app_batch_id`) 
+VALUES (:total_birds, :hatchery_date, :created, :updated, :customer_id, :employee_id, :report_id, :agent_id, :life_cycle_state, :hatchery_id, :breed_id, :feed_id, :feed_mill_id, :app_batch_id)";
 
                 $hatchingDate = new \DateTime($report['hatchery_date']);
                 $createdAt = new \DateTime($report['created']);
@@ -1279,8 +1281,8 @@ VALUES (:total_birds, :hatchery_date, :created, :updated, :customer_id, :employe
                 $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
                 $stmt->bindValue('total_birds', $report['total_birds']);
                 $stmt->bindValue('hatchery_date', $hatchingDate->format('Y-m-d'));
-                $stmt->bindValue('created', $createdAt->format('Y-m-d'));
-                $stmt->bindValue('updated', $updatedAt->format('Y-m-d'));
+                $stmt->bindValue('created', $createdAt->format('Y-m-d H:i:s'));
+                $stmt->bindValue('updated', $updatedAt->format('Y-m-d H:i:s'));
                 $stmt->bindValue('customer_id', $report['customer_id']);
                 $stmt->bindValue('employee_id', $report['employee_id']);
                 $stmt->bindValue('report_id', $report['report_id']);
@@ -1289,6 +1291,7 @@ VALUES (:total_birds, :hatchery_date, :created, :updated, :customer_id, :employe
                 $stmt->bindValue('hatchery_id', $report['hatchery_id']);
                 $stmt->bindValue('breed_id', $report['breed_id']);
                 $stmt->bindValue('feed_id', $report['feed_id']);
+                $stmt->bindValue('feed_mill_id', $report['feed_mill_id']);
                 $stmt->bindValue('app_batch_id', $batch->getId());
 
                 $executeStatus = $stmt->execute();
