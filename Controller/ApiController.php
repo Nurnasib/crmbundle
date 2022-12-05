@@ -2371,7 +2371,7 @@ class ApiController extends AbstractController
                                     "id"=>$lifeCycleDetail->getAppId()?$lifeCycleDetail->getAppId():$lifeCycleDetail->getId(),
                                     "crm_layer_life_cycle_id"=> $entity->getAppId()?$entity->getAppId():$entity->getId(),
                                     "visiting_date"=> $lifeCycleDetail->getVisitingDate()?$lifeCycleDetail->getVisitingDate()->format('Y-m-d'):null,
-                                    "age_week"=> $lifeCycleDetail->getAgeWeek()?(string)$lifeCycleDetail->getAgeWeek():"",
+                                    "age_week"=> $lifeCycleDetail->getAgeWeek()?(string)$lifeCycleDetail->getAgeWeekOnlyNumber():"",
                                     "dead_bird"=> $lifeCycleDetail->getDeadBird()?(string)$lifeCycleDetail->getDeadBird():"",
                                     "avg_weight"=> $lifeCycleDetail->getAvgWeight()?(string)$lifeCycleDetail->getAvgWeight():"",
                                     "target_weight"=> $lifeCycleDetail->getTargetWeight()?(string)$lifeCycleDetail->getTargetWeight():"",
