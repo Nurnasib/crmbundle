@@ -998,10 +998,6 @@ VALUES (:report_id, :report_parent_parent_id, :agent_id, :customer_id, :employee
 
             }elseif (isset($report['web_life_cycle_id']) && $report['web_life_cycle_id']=='' && isset($report['id']) && $report['id']!=''){
                 $findLifeCycle = $this->getDoctrine()->getRepository(ChickLifeCycle::class)->findOneBy(['customer' => $findFarmer, 'employee' => $findEmployee, 'report' => $findReport, 'appId'=>$report['id']]);
-            }else{
-                if(!$findLifeCycle){
-                    $findLifeCycle = $this->getDoctrine()->getRepository(ChickLifeCycle::class)->findOneBy(['customer' => $findFarmer, 'employee' => $findEmployee, 'report' => $findReport, 'farmNumber'=>$report['farm_number'], 'lifeCycleState'=>ChickLifeCycle::LIFE_CYCLE_STATE_IN_PROGRESS]);
-                }
             }
 
             if ($findLifeCycle){
