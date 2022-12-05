@@ -1000,7 +1000,7 @@ VALUES (:report_id, :report_parent_parent_id, :agent_id, :customer_id, :employee
                 $findLifeCycle = $this->getDoctrine()->getRepository(ChickLifeCycle::class)->findOneBy(['customer' => $findFarmer, 'employee' => $findEmployee, 'report' => $findReport, 'appId'=>$report['id']]);
             }else{
                 if(!$findLifeCycle){
-                    $findLifeCycle = $this->getDoctrine()->getRepository(ChickLifeCycle::class)->findOneBy(['customer' => $findFarmer, 'employee' => $findEmployee, 'report' => $findReport, 'lifeCycleState'=>ChickLifeCycle::LIFE_CYCLE_STATE_IN_PROGRESS]);
+                    $findLifeCycle = $this->getDoctrine()->getRepository(ChickLifeCycle::class)->findOneBy(['customer' => $findFarmer, 'employee' => $findEmployee, 'report' => $findReport, 'farmNumber'=>$report['farm_number'], 'lifeCycleState'=>ChickLifeCycle::LIFE_CYCLE_STATE_IN_PROGRESS]);
                 }
             }
 
@@ -1074,15 +1074,15 @@ VALUES (:hatching_date, :remarks, :reporting_date, :customer_id, :agent_id, :emp
     {
         foreach ($reports as $report) {
             $lifeCycle = null;
-
+            $findEmployee = $this->getDoctrine()->getRepository(User::class)->find($report['employee_id']);
             if(isset($report['web_life_cycle_id']) && $report['web_life_cycle_id']!=''){
                 $lifeCycle= $this->getDoctrine()->getRepository(ChickLifeCycle::class)->find($report['web_life_cycle_id']);
             }elseif (isset($report['web_life_cycle_id']) && $report['web_life_cycle_id']=='' && isset($report['crm_chick_life_cycle_id']) && $report['crm_chick_life_cycle_id']!=''){
-                $lifeCycle= $this->getDoctrine()->getRepository(ChickLifeCycle::class)->findOneBy(['appId'=>$report['crm_chick_life_cycle_id']]);
+                $lifeCycle= $this->getDoctrine()->getRepository(ChickLifeCycle::class)->findOneBy(['employee' => $findEmployee,'appId'=>$report['crm_chick_life_cycle_id']]);
             }else{
                 if(!$lifeCycle){
                     $findFarmer = $this->getDoctrine()->getRepository(CrmCustomer::class)->find($report['customer_id']);
-                    $findEmployee = $this->getDoctrine()->getRepository(User::class)->find($report['employee_id']);
+
                     $findReport = $this->getDoctrine()->getRepository(Setting::class)->find($report['report_id']);
                     $lifeCycle = $this->getDoctrine()->getRepository(ChickLifeCycle::class)->findOneBy(['customer' => $findFarmer, 'employee' => $findEmployee, 'report' => $findReport, 'appBatch'=>$batch]);
                 }
