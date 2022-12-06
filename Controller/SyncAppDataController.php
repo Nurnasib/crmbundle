@@ -991,12 +991,9 @@ VALUES (:report_id, :report_parent_parent_id, :agent_id, :customer_id, :employee
             $findReport = $this->getDoctrine()->getRepository(Setting::class)->find($report['report_id']);
 
             $findLifeCycle=null;
-//            dd($report);
             if(array_key_exists('web_life_cycle_id', $report) && !empty($report['web_life_cycle_id'])){
                 $findLifeCycle = $this->getDoctrine()->getRepository(ChickLifeCycle::class)->find($report['web_life_cycle_id']);
-
             }elseif (array_key_exists('web_life_cycle_id', $report) && empty($report['web_life_cycle_id']) && array_key_exists('id', $report) && !empty($report['id'])){
-//                dd($report['web_life_cycle_id'],$report['id']);
                 $findLifeCycle = $this->getDoctrine()->getRepository(ChickLifeCycle::class)->findOneBy(['customer' => $findFarmer, 'employee' => $findEmployee, 'report' => $findReport, 'appId'=>$report['id']]);
             }
 
@@ -1085,19 +1082,6 @@ VALUES (:hatching_date, :remarks, :reporting_date, :customer_id, :agent_id, :emp
                 }
             }
 
-            /*$sql = "SELECT id
-FROM `crm_chick_life_cycle`
-WHERE `customer_id` = :customer_id AND `employee_id` = :employee_id AND `report_id` = :report_id";
-            $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
-            $stmt->bindValue('customer_id', $report['customer_id']);
-            $stmt->bindValue('employee_id', $report['employee_id']);
-            $stmt->bindValue('report_id', $report['report_id']);
-
-//            $stmt->bindValue('customer_id', 44);
-//            $stmt->bindValue('employee_id', 23);
-//            $stmt->bindValue('report_id', 39);
-            $stmt->execute();
-            $lifeCycleId = $stmt->fetch()['id'];*/
 
             if ($lifeCycle) {
 
@@ -1260,7 +1244,14 @@ VALUES (:crm_cattle_life_cycle_id, :visiting_date, :age_of_cattle_month, :previo
             $findEmployee = $this->getDoctrine()->getRepository(User::class)->find($report['employee_id']);
             $findReport = $this->getDoctrine()->getRepository(Setting::class)->find($report['report_id']);
 
-            $findLifeCycle = $this->getDoctrine()->getRepository(LayerLifeCycle::class)->findOneBy(['customer' => $findFarmer, 'employee' => $findEmployee, 'report' => $findReport, 'lifeCycleState'=>LayerLifeCycle::LIFE_CYCLE_STATE_IN_PROGRESS]);
+            $findLifeCycle=null;
+            if(array_key_exists('web_life_cycle_id', $report) && !empty($report['web_life_cycle_id'])){
+                $findLifeCycle = $this->getDoctrine()->getRepository(LayerLifeCycle::class)->find($report['web_life_cycle_id']);
+            }elseif (array_key_exists('web_life_cycle_id', $report) && empty($report['web_life_cycle_id']) && array_key_exists('id', $report) && !empty($report['id'])){
+                $findLifeCycle = $this->getDoctrine()->getRepository(LayerLifeCycle::class)->findOneBy(['customer' => $findFarmer, 'employee' => $findEmployee, 'report' => $findReport, 'appId'=>$report['id']]);
+            }else{
+                $findLifeCycle = $this->getDoctrine()->getRepository(LayerLifeCycle::class)->findOneBy(['customer' => $findFarmer, 'employee' => $findEmployee, 'report' => $findReport, 'lifeCycleState'=>LayerLifeCycle::LIFE_CYCLE_STATE_IN_PROGRESS]);
+            }
 
             if ($findLifeCycle){
                 $findLifeCycle->setAppBatch($batch);
@@ -1268,8 +1259,8 @@ VALUES (:crm_cattle_life_cycle_id, :visiting_date, :age_of_cattle_month, :previo
                 $this->getDoctrine()->getManager()->persist($findLifeCycle);
                 $this->getDoctrine()->getManager()->flush();
             }else{
-                $sql = "INSERT INTO `crm_layer_life_cycle`(`total_birds`, `hatchery_date`, `created`, `updated`, `customer_id`, `employee_id`, `report_id`, `agent_id`, `life_cycle_state`, `hatchery_id`, `breed_id`, `feed_id`, `feed_mill_id`, `app_batch_id`) 
-VALUES (:total_birds, :hatchery_date, :created, :updated, :customer_id, :employee_id, :report_id, :agent_id, :life_cycle_state, :hatchery_id, :breed_id, :feed_id, :feed_mill_id, :app_batch_id)";
+                $sql = "INSERT INTO `crm_layer_life_cycle`(`total_birds`, `hatchery_date`, `created`, `updated`, `customer_id`, `employee_id`, `report_id`, `agent_id`, `life_cycle_state`, `hatchery_id`, `breed_id`, `feed_id`, `feed_mill_id`, `app_batch_id`, `app_id`, `farm_number`) 
+VALUES (:total_birds, :hatchery_date, :created, :updated, :customer_id, :employee_id, :report_id, :agent_id, :life_cycle_state, :hatchery_id, :breed_id, :feed_id, :feed_mill_id, :app_batch_id, :app_id, :farm_number)";
 
                 $hatchingDate = new \DateTime($report['hatchery_date']);
                 $createdAt = new \DateTime($report['created']);
@@ -1290,6 +1281,8 @@ VALUES (:total_birds, :hatchery_date, :created, :updated, :customer_id, :employe
                 $stmt->bindValue('feed_id', $report['feed_id']);
                 $stmt->bindValue('feed_mill_id', $report['feed_mill_id']);
                 $stmt->bindValue('app_batch_id', $batch->getId());
+                $stmt->bindValue('app_id', $report['id']);
+                $stmt->bindValue('farm_number', isset($report['farm_number'])&&$report['farm_number']?$report['farm_number']:1);
 
                 $executeStatus = $stmt->execute();
 
@@ -1319,7 +1312,23 @@ VALUES (:total_birds, :hatchery_date, :created, :updated, :customer_id, :employe
     {
         foreach ($reports as $report) {
 
-            $sql = "SELECT id FROM `crm_layer_life_cycle` WHERE `customer_id` = :customer_id AND `employee_id` = :employee_id AND `report_id` = :report_id AND `app_batch_id` = :app_batch_id";
+            $lifeCycle = null;
+            $findEmployee = $this->getDoctrine()->getRepository(User::class)->find($report['employee_id']);
+            if(array_key_exists('web_life_cycle_id', $report) && !empty($report['web_life_cycle_id'])){
+                $lifeCycle= $this->getDoctrine()->getRepository(LayerLifeCycle::class)->find($report['web_life_cycle_id']);
+            }elseif (array_key_exists('web_life_cycle_id', $report) && empty($report['web_life_cycle_id']) && array_key_exists('crm_layer_life_cycle_id', $report) && !empty($report['crm_layer_life_cycle_id'])){
+                $lifeCycle= $this->getDoctrine()->getRepository(LayerLifeCycle::class)->findOneBy(['employee' => $findEmployee,'appId'=>$report['crm_layer_life_cycle_id']]);
+            }else{
+                if(!$lifeCycle){
+                    $findFarmer = $this->getDoctrine()->getRepository(CrmCustomer::class)->find($report['customer_id']);
+                    $farm_number = isset($report['farm_number'])&&$report['farm_number']?$report['farm_number']:1;
+
+                    $findReport = $this->getDoctrine()->getRepository(Setting::class)->find($report['report_id']);
+                    $lifeCycle = $this->getDoctrine()->getRepository(LayerLifeCycle::class)->findOneBy(['customer' => $findFarmer, 'employee' => $findEmployee, 'report' => $findReport, 'appBatch'=>$batch, 'farmNumber'=>$farm_number]);
+                }
+            }
+
+            /*$sql = "SELECT id FROM `crm_layer_life_cycle` WHERE `customer_id` = :customer_id AND `employee_id` = :employee_id AND `report_id` = :report_id AND `app_batch_id` = :app_batch_id";
             $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
             $stmt->bindValue('customer_id', $report['customer_id']);
             $stmt->bindValue('employee_id', $report['employee_id']);
@@ -1328,8 +1337,9 @@ VALUES (:total_birds, :hatchery_date, :created, :updated, :customer_id, :employe
 //            $stmt->bindValue('life_cycle_state', 'IN_PROGRESS');
 
             $stmt->execute();
-            $lifeCycleId = $stmt->fetch()['id'];
-            if ($lifeCycleId){
+            $lifeCycleId = $stmt->fetch()['id'];*/
+
+            if ($lifeCycle){
                 $visitingDate = new \DateTime($report['visiting_date']);
                 $productionDate = new \DateTime($report['production_date']);
                 $createdAt = new \DateTime($report['created']);
@@ -1338,7 +1348,7 @@ VALUES (:total_birds, :hatchery_date, :created, :updated, :customer_id, :employe
                 /**
                  * @var LayerLifeCycleDetails $findDetails
                  */
-                $findDetails = $this->getDoctrine()->getRepository(LayerLifeCycleDetails::class)->findOneBy(['crmLayerLifeCycle' => $lifeCycleId, 'ageWeek' => $report['age_week']]);
+                $findDetails = $this->getDoctrine()->getRepository(LayerLifeCycleDetails::class)->findOneBy(['crmLayerLifeCycle' => $lifeCycle, 'ageWeek' => $report['age_week']]);
                 if ($findDetails){
                     if ($report['feed_mill_id']){
                         $findFeedMill = $this->getDoctrine()->getRepository(Setting::class)->find($report['feed_mill_id']);
@@ -1371,6 +1381,7 @@ VALUES (:total_birds, :hatchery_date, :created, :updated, :customer_id, :employe
                     $findDetails->setFeedMill($findFeedMill);
                     $findDetails->setFeedType($findFeedType);
                     $findDetails->setUpdated($updatedAt);
+                    $findDetails->setAppId($report['id']);
                     $this->getDoctrine()->getManager()->persist($findDetails);
                     $this->getDoctrine()->getManager()->flush();
                 }
