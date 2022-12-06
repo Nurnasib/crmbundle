@@ -991,14 +991,15 @@ VALUES (:report_id, :report_parent_parent_id, :agent_id, :customer_id, :employee
             $findReport = $this->getDoctrine()->getRepository(Setting::class)->find($report['report_id']);
 
             $findLifeCycle=null;
-
-            if(isset($report['web_life_cycle_id']) && $report['web_life_cycle_id']!=''){
-
+//            dd($report);
+            if(array_key_exists('web_life_cycle_id', $report) && !empty($report['web_life_cycle_id'])){
                 $findLifeCycle = $this->getDoctrine()->getRepository(ChickLifeCycle::class)->find($report['web_life_cycle_id']);
 
-            }elseif (isset($report['web_life_cycle_id']) && $report['web_life_cycle_id']=='' && isset($report['id']) && $report['id']!=''){
+            }elseif (array_key_exists('web_life_cycle_id', $report) && empty($report['web_life_cycle_id']) && array_key_exists('id', $report) && !empty($report['id'])){
+//                dd($report['web_life_cycle_id'],$report['id']);
                 $findLifeCycle = $this->getDoctrine()->getRepository(ChickLifeCycle::class)->findOneBy(['customer' => $findFarmer, 'employee' => $findEmployee, 'report' => $findReport, 'appId'=>$report['id']]);
             }
+
 
             if ($findLifeCycle){
                 $findLifeCycle->setLifeCycleState($report['life_cycle_state']);
@@ -1071,9 +1072,9 @@ VALUES (:hatching_date, :remarks, :reporting_date, :customer_id, :agent_id, :emp
         foreach ($reports as $report) {
             $lifeCycle = null;
             $findEmployee = $this->getDoctrine()->getRepository(User::class)->find($report['employee_id']);
-            if(isset($report['web_life_cycle_id']) && $report['web_life_cycle_id']!=''){
+            if(array_key_exists('web_life_cycle_id', $report) && !empty($report['web_life_cycle_id'])){
                 $lifeCycle= $this->getDoctrine()->getRepository(ChickLifeCycle::class)->find($report['web_life_cycle_id']);
-            }elseif (isset($report['web_life_cycle_id']) && $report['web_life_cycle_id']=='' && isset($report['crm_chick_life_cycle_id']) && $report['crm_chick_life_cycle_id']!=''){
+            }elseif (array_key_exists('web_life_cycle_id', $report) && empty($report['web_life_cycle_id']) && array_key_exists('crm_chick_life_cycle_id', $report) && !empty($report['crm_chick_life_cycle_id'])){
                 $lifeCycle= $this->getDoctrine()->getRepository(ChickLifeCycle::class)->findOneBy(['employee' => $findEmployee,'appId'=>$report['crm_chick_life_cycle_id']]);
             }else{
                 if(!$lifeCycle){

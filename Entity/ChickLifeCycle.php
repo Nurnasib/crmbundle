@@ -66,7 +66,7 @@ class ChickLifeCycle
 
     /**
      * @var integer
-     * @ORM\Column(type="integer", nullable=true)
+     * @ORM\Column(type="bigint", nullable=true)
      */
     private $appId;
 
@@ -416,6 +416,8 @@ class ChickLifeCycle
     {
         $this->appId = $appId;
     }
+
+    
 
     /**
      * @return int
