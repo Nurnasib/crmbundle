@@ -225,7 +225,7 @@ class ChickLifeCycleDetails
     /**
      * @param \DateTime $reportingDate
      */
-    public function setReportingDate(\DateTime $reportingDate): void
+    public function setReportingDate($reportingDate): void
     {
         $this->reportingDate = $reportingDate;
     }
@@ -507,7 +507,7 @@ class ChickLifeCycleDetails
     /**
      * @return \DateTime
      */
-    public function getCreatedAt(): \DateTime
+    public function getCreatedAt()
     {
         return $this->createdAt;
     }
@@ -515,7 +515,7 @@ class ChickLifeCycleDetails
     /**
      * @param \DateTime $createdAt
      */
-    public function setCreatedAt(\DateTime $createdAt): void
+    public function setCreatedAt($createdAt): void
     {
         $this->createdAt = $createdAt;
     }
@@ -523,7 +523,7 @@ class ChickLifeCycleDetails
     /**
      * @return \DateTime
      */
-    public function getUpdatedAt(): \DateTime
+    public function getUpdatedAt()
     {
         return $this->updatedAt;
     }
@@ -531,7 +531,7 @@ class ChickLifeCycleDetails
     /**
      * @param \DateTime $updatedAt
      */
-    public function setUpdatedAt(\DateTime $updatedAt): void
+    public function setUpdatedAt($updatedAt): void
     {
         $this->updatedAt = $updatedAt;
     }

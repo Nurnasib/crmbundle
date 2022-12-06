@@ -1036,7 +1036,7 @@ VALUES (:hatching_date, :remarks, :reporting_date, :customer_id, :agent_id, :emp
                 $stmt->bindValue('breed_id', $report['breed_id']);
                 $stmt->bindValue('feed_id', $report['feed_id']);
                 $stmt->bindValue('feed_mill_id', $report['feed_mill_id']);
-                $stmt->bindValue('total_birds', $report['total_birds']);
+                $stmt->bindValue('total_birds', $report['total_birds']&&$report['total_birds']!=""?$report['total_birds']:0);
                 $stmt->bindValue('app_batch_id', $batch->getId());
                 $stmt->bindValue('app_id', $report['id']);
                 $stmt->bindValue('farm_number', isset($report['farm_number'])&&$report['farm_number']!=''?$report['farm_number']:1);
@@ -1086,9 +1086,9 @@ VALUES (:hatching_date, :remarks, :reporting_date, :customer_id, :agent_id, :emp
             if ($lifeCycle) {
 
                 $proDate = isset($report['pro_date']) && $report['pro_date']!=''? new \DateTime($report['pro_date']):null;
-                $reportingDate = new \DateTime($report['reporting_date']);
-                $createdAt = new \DateTime($report['created_at']);
-                $updatedAt = new \DateTime($report['updated_at']);
+                $reportingDate = $report['reporting_date'] && $report['reporting_date']!=""?new \DateTime($report['reporting_date']):null;
+                $createdAt = $report['created_at'] && $report['created_at']!=""?new \DateTime($report['created_at']):null;
+                $updatedAt = $report['updated_at'] && $report['updated_at']!=""?new \DateTime($report['updated_at']):null;
 
                 /* @var ChickLifeCycleDetails $findDetails*/
                 $findDetails = $this->getDoctrine()->getRepository(ChickLifeCycleDetails::class)->findOneBy(['crmChickLifeCycle' => $lifeCycle, 'visitingWeek' =>  $report['visiting_week']]);
@@ -1096,15 +1096,15 @@ VALUES (:hatching_date, :remarks, :reporting_date, :customer_id, :agent_id, :emp
                     $feedType = $report['feed_type_id'] ? $this->getDoctrine()->getRepository(Setting::class)->find($report['feed_type_id']) : null;
 
                     $findDetails->setAgeDays($report['age_days']);
-                    $findDetails->setMortalityPes($report['mortality_pes']);
-                    $findDetails->setMortalityPercent($report['mortality_percent']);
-                    $findDetails->setWeightStandard($report['weight_standard']);
-                    $findDetails->setWeightAchieved($report['weight_achieved']);
+                    $findDetails->setMortalityPes($report['mortality_pes']&&$report['mortality_pes']!=""?(float)$report['mortality_pes']:0);
+                    $findDetails->setMortalityPercent($report['mortality_percent']&&$report['mortality_percent']!=""?(float)$report['mortality_percent']:0);
+                    $findDetails->setWeightStandard($report['weight_standard']&&$report['weight_standard']!=""?(float)$report['weight_standard']:0);
+                    $findDetails->setWeightAchieved($report['weight_achieved']&&$report['weight_achieved']!=""?(float)$report['weight_achieved']:0);
                     $findDetails->setPerBird($report['per_bird']&&$report['per_bird']!=''?(float)$report['per_bird']:0);
-                    $findDetails->setFeedStandard($report['feed_standard']);
-                    $findDetails->setFeedTotalKg($report['feed_total_kg']);
-                    $findDetails->setWithoutMortality($report['without_mortality']);
-                    $findDetails->setWithMortality($report['with_mortality']&&$report['with_mortality']!=''?(float)$report['with_mortality']:0);
+                    $findDetails->setFeedStandard($report['feed_standard']&&$report['feed_standard']!=""?(float)$report['feed_standard']:0);
+                    $findDetails->setFeedTotalKg($report['feed_total_kg']&&$report['feed_total_kg']!=""?(float)$report['feed_total_kg']:0);
+                    $findDetails->setWithoutMortality($report['without_mortality']&&($report['without_mortality']!=''||$report['without_mortality']!='NaN')?(float)$report['without_mortality']:0);
+                    $findDetails->setWithMortality($report['with_mortality']&&($report['with_mortality']!=''||$report['with_mortality']!='NaN')?(float)$report['with_mortality']:0);
                     $findDetails->setProDate($proDate);
                     $findDetails->setBatchNo($report['batch_no']);
                     $findDetails->setRemarks($report['remarks']);
