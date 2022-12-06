@@ -2143,7 +2143,7 @@ class ApiController extends AbstractController
                     /** @var ChickLifeCycle  $entity */
                     foreach ($entities as $entity) {
                         $arrayData[]=[
-                            "id"=> $entity->getAppId()? $entity->getAppId():$entity->getId(),
+                            "id"=> $entity->getAppId()?(int)$entity->getAppId():$entity->getId(),
                             "hatching_date"=> $entity->getHatchingDate()?$entity->getHatchingDate()->format('Y-m-d'):"",
                             "remarks"=> $entity->getRemarks()?$entity->getRemarks():null,
                             "reporting_date"=> $entity->getReportingDate()?$entity->getReportingDate()->format('Y-m-d'):"",
@@ -2214,8 +2214,8 @@ class ApiController extends AbstractController
                             /* @var ChickLifeCycleDetails $lifeCycleDetail*/
                             foreach ($entity->getCrmChickLifeCycleDetails() as $lifeCycleDetail) {
                                 $arrayData[]=[
-                                    "id"=>$lifeCycleDetail->getAppId()?$lifeCycleDetail->getAppId():$lifeCycleDetail->getId(),
-                                    "crm_chick_life_cycle_id"=> $entity->getAppId()?$entity->getAppId():$entity->getId(),
+                                    "id"=>$lifeCycleDetail->getAppId()?(int)$lifeCycleDetail->getAppId():$lifeCycleDetail->getId(),
+                                    "crm_chick_life_cycle_id"=> $entity->getAppId()?(int)$entity->getAppId():$entity->getId(),
                                     "visiting_week"=> $lifeCycleDetail->getVisitingWeek()? (string)$lifeCycleDetail->getVisitingWeek():"",
                                     "age_days"=> $lifeCycleDetail->getAgeDays()? (string)$lifeCycleDetail->getAgeDays():"",
                                     "mortality_pes"=> $lifeCycleDetail->getMortalityPes()? (string)$lifeCycleDetail->getMortalityPes():"",
@@ -2289,7 +2289,7 @@ class ApiController extends AbstractController
                     /** @var LayerLifeCycle  $entity */
                     foreach ($entities as $entity) {
                         $arrayData[]=[
-                            "id"=> $entity->getAppId()? $entity->getAppId():$entity->getId(),
+                            "id"=> $entity->getAppId()?(int)$entity->getAppId():$entity->getId(),
                             "total_birds"=> $entity->getTotalBirds()?(string)$entity->getTotalBirds():"0",
                             "hatchery_date"=> $entity->getHatcheryDate()?$entity->getHatcheryDate()->format('Y-m-d'):null,
                             "created"=> $entity->getCreated()?$entity->getCreated()->format('Y-m-d H:i:s'):null,
@@ -2368,8 +2368,8 @@ class ApiController extends AbstractController
                             /* @var LayerLifeCycleDetails $lifeCycleDetail*/
                             foreach ($entity->getCrmLayerLifeCycleDetails() as $lifeCycleDetail) {
                                 $arrayData[]=[
-                                    "id"=>$lifeCycleDetail->getAppId()?$lifeCycleDetail->getAppId():$lifeCycleDetail->getId(),
-                                    "crm_layer_life_cycle_id"=> $entity->getAppId()?$entity->getAppId():$entity->getId(),
+                                    "id"=>$lifeCycleDetail->getAppId()?(int)$lifeCycleDetail->getAppId():$lifeCycleDetail->getId(),
+                                    "crm_layer_life_cycle_id"=> $entity->getAppId()?(int)$entity->getAppId():$entity->getId(),
                                     "visiting_date"=> $lifeCycleDetail->getVisitingDate()?$lifeCycleDetail->getVisitingDate()->format('Y-m-d'):null,
                                     "age_week"=> $lifeCycleDetail->getAgeWeek()?(string)$lifeCycleDetail->getAgeWeekOnlyNumber():"",
                                     "dead_bird"=> $lifeCycleDetail->getDeadBird()?(string)$lifeCycleDetail->getDeadBird():"",
@@ -3171,7 +3171,7 @@ class ApiController extends AbstractController
                             /* @var FishLifeCycleCultureDetails $fishLifeCycleCultureDetail*/
                             foreach ($entity->getFishLifeCycleCultureDetails() as $fishLifeCycleCultureDetail) {
                                 $detailData[]=[
-                                    "id"=>$fishLifeCycleCultureDetail->getAppId()?$fishLifeCycleCultureDetail->getAppId():"",
+                                    "id"=>$fishLifeCycleCultureDetail->getAppId()?(int)$fishLifeCycleCultureDetail->getAppId():"",
                                     "sampling_date"=>$fishLifeCycleCultureDetail->getSamplingDate()->format('Y-m-d'),
                                     "avg_present_weight_gm"=>$fishLifeCycleCultureDetail->getAveragePresentWeight()?(string)$fishLifeCycleCultureDetail->getAveragePresentWeight():"",
                                     "cur_survival_rate"=>$fishLifeCycleCultureDetail->getSrPercentage()?(string)$fishLifeCycleCultureDetail->getSrPercentage():"",

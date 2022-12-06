@@ -53,7 +53,7 @@ class ChickLifeCycleDetailsRepository extends BaseRepository
 
                     $qb->where('report.slug = :slug')->setParameter('slug', $lifeCycleSlug);
 //            $qb->andWhere('e.reportingDate >= :startDate')->setParameter('startDate', $startDate);
-                    $qb->andWhere('e.visitingWeek <= :visitingWeek')->setParameter('visitingWeek', (int)$item['maxWeek']);
+//                    $qb->andWhere('e.visitingWeek <= :visitingWeek')->setParameter('visitingWeek', (int)$item['maxWeek']);
                     $qb->andWhere('employee.id = :employeeId')->setParameter('employeeId', $filterBy['employeeId']);
                     $qb->andWhere('crm_chick_life_cycle.lifeCycleState = :reportStatus')->setParameter('reportStatus', $filterBy['reportStatus']);
                     if ($filterBy['farmerId']){
@@ -106,7 +106,7 @@ class ChickLifeCycleDetailsRepository extends BaseRepository
                 $qb->join('crm_chick_life_cycle.customer', 'customer');
                 $qb->leftJoin('crm_chick_life_cycle.employee', 'employee');
                 $qb->select('crm_chick_life_cycle.id');
-                $qb->addSelect('MAX(e.visitingWeek) as maxWeek');
+//                $qb->addSelect('MAX(e.visitingWeek) as maxWeek');
                 $qb->where('report.slug = :slug')->setParameter('slug', $lifeCycleSlug);
                 $qb->andWhere('e.reportingDate >= :startDate')->setParameter('startDate', $fromDate);
                 $qb->andWhere('e.reportingDate <= :endDate')->setParameter('endDate', $toDate);
