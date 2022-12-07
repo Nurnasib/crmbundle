@@ -2805,6 +2805,8 @@ class ApiController extends AbstractController
                     $this->getDoctrine()->getManager()->persist($newFarmer);
                     $this->getDoctrine()->getManager()->flush();
 
+                    $message = 'Customer is created successfully.';
+
                     // Introduce new Farmer
                     $introduceFarmer = new FarmerIntroduceDetails();
                     $introduceFarmer->setAgent($agent ?: ($subAgent ?: ($otherAgent ?: null)));
@@ -2822,6 +2824,10 @@ class ApiController extends AbstractController
 
                     if ((isset($parameters['agentId']) && !empty($parameters['agentId'])) && ($feed && $feed->getName() == 'Nourish')){
                         $introduceFarmer->setIntroduceDate(new \DateTime('now'));
+                        $message = 'Customer is created and introduced successfully.';
+                    }elseif ((isset($parameters['subAgentId']) && !empty($parameters['subAgentId'])) && ($feed && $feed->getName() == 'Nourish')){
+                        $introduceFarmer->setIntroduceDate(new \DateTime('now'));
+                        $message = 'Customer is created and introduced successfully.';
                     }else{
                         $introduceFarmer->setIntroduceDate(null);
                     }
@@ -2831,7 +2837,7 @@ class ApiController extends AbstractController
 
                     return new JsonResponse([
                         'statusCode' => 201,
-                        'message' => 'success'
+                        'message' => $message
                     ]);
                 }
             }else{
