@@ -38,6 +38,7 @@ class ChickLifeCycleDetailsRepository extends BaseRepository
                     $qb->join('crm_chick_life_cycle.customer', 'customer');
                     $qb->leftJoin('crm_chick_life_cycle.hatchery', 'hatchery');
                     $qb->leftJoin('crm_chick_life_cycle.feed', 'feed');
+                    $qb->leftJoin('crm_chick_life_cycle.feedMill', 'feedMill');
                     $qb->leftJoin('crm_chick_life_cycle.breed', 'breed');
                     $qb->leftJoin('crm_chick_life_cycle.employee', 'employee');
                     $qb->leftJoin('e.feedType', 'feed_type');
@@ -48,6 +49,7 @@ class ChickLifeCycleDetailsRepository extends BaseRepository
                     $qb->addSelect('crm_chick_life_cycle.id AS lifeCycleId','crm_chick_life_cycle.lifeCycleState', 'crm_chick_life_cycle.totalBirds', 'crm_chick_life_cycle.hatchingDate');
                     $qb->addSelect('hatchery.name AS hatcheryName');
                     $qb->addSelect('feed.name AS feedName');
+                    $qb->addSelect('feedMill.name AS feedMillName');
                     $qb->addSelect('breed.name AS breedName');
                     $qb->addSelect('feed_type.name AS feedTypeName');
 
@@ -77,6 +79,7 @@ class ChickLifeCycleDetailsRepository extends BaseRepository
                             'hatchingDate' => $result['hatchingDate'],
                             'hatcheryName' => $result['hatcheryName'],
                             'feedName' => $result['feedName'],
+                            'feedMillName' => $result['feedMillName'],
                             'breedName' => $result['breedName'],
                         ];
                     }

@@ -1095,7 +1095,7 @@ VALUES (:hatching_date, :remarks, :reporting_date, :customer_id, :agent_id, :emp
                 if ($findDetails){
                     $feedType = $report['feed_type_id'] ? $this->getDoctrine()->getRepository(Setting::class)->find($report['feed_type_id']) : null;
 
-                    $findDetails->setAgeDays($report['age_days']);
+                    $findDetails->setAgeDays($report['age_days']&&$report['age_days']!=""?(float)$report['age_days']:0);
                     $findDetails->setMortalityPes($report['mortality_pes']&&$report['mortality_pes']!=""?(float)$report['mortality_pes']:0);
                     $findDetails->setMortalityPercent($report['mortality_percent']&&$report['mortality_percent']!=""?(float)$report['mortality_percent']:0);
                     $findDetails->setWeightStandard($report['weight_standard']&&$report['weight_standard']!=""?(float)$report['weight_standard']:0);
