@@ -1341,9 +1341,9 @@ VALUES (:total_birds, :hatchery_date, :created, :updated, :customer_id, :employe
 
             if ($lifeCycle){
                 $visitingDate = new \DateTime($report['visiting_date']);
-                $productionDate = new \DateTime($report['production_date']);
-                $createdAt = new \DateTime($report['created']);
-                $updatedAt = new \DateTime($report['updated']);
+                $productionDate = $report['production_date']&&$report['production_date']!=""? new \DateTime($report['production_date']):null;
+                $createdAt = $report['created']&&$report['created']!=""?new \DateTime($report['created']):null;
+                $updatedAt = $report['updated']&&$report['updated']!=""?new \DateTime($report['updated']):null;
 
                 /**
                  * @var LayerLifeCycleDetails $findDetails
@@ -1363,23 +1363,24 @@ VALUES (:total_birds, :hatchery_date, :created, :updated, :customer_id, :employe
                     }
 
                     $findDetails->setVisitingDate($visitingDate);
-                    $findDetails->setAgeWeek($report['age_week']);
-                    $findDetails->setDeadBird($report['dead_bird']);
-                    $findDetails->setAvgWeight($report['avg_weight']);
-                    $findDetails->setTargetWeight($report['target_weight']);
-                    $findDetails->setUniformity((float)$report['uniformity']);
-                    $findDetails->setFeedPerBird($report['feed_per_bird']);
-                    $findDetails->setTargetFeedPerBird($report['target_feed_per_bird']);
-                    $findDetails->setTotalEggs($report['total_eggs']);
-                    $findDetails->setTargetEggProduction($report['target_egg_production']);
-                    $findDetails->setEggWeightActual($report['egg_weight_actual']);
-                    $findDetails->setEggWeightStandard($report['egg_weight_standard']);
+                    $findDetails->setAgeWeek($report['age_week']&&$report['age_week']!=""?(float)$report['age_week']:0);
+                    $findDetails->setDeadBird($report['dead_bird']&&$report['dead_bird']!=""?(float)$report['dead_bird']:0);
+                    $findDetails->setAvgWeight($report['avg_weight']&&$report['avg_weight']!=""?(float)$report['avg_weight']:0);
+                    $findDetails->setTargetWeight($report['target_weight']&&$report['target_weight']!=""?(float)$report['target_weight']:0);
+                    $findDetails->setUniformity($report['uniformity']&&$report['uniformity']!=""?(float)$report['uniformity']:0);
+                    $findDetails->setFeedPerBird($report['feed_per_bird']&&$report['feed_per_bird']!=""?$report['feed_per_bird']:0);
+                    $findDetails->setTargetFeedPerBird($report['target_feed_per_bird']&&$report['target_feed_per_bird']!=""?$report['target_feed_per_bird']:0);
+                    $findDetails->setTotalEggs($report['total_eggs']&&$report['total_eggs']!=""?$report['total_eggs']:0);
+                    $findDetails->setTargetEggProduction($report['target_egg_production']&&$report['target_egg_production']!=""?$report['target_egg_production']:0);
+                    $findDetails->setEggWeightActual($report['egg_weight_actual']&&$report['egg_weight_actual']!=""?$report['egg_weight_actual']:0);
+                    $findDetails->setEggWeightStandard($report['egg_weight_standard']&&$report['egg_weight_standard']!=""?$report['egg_weight_standard']:0);
                     $findDetails->setProductionDate($productionDate);
-                    $findDetails->setBatchNo($report['batch_no']);
-                    $findDetails->setMedicine($report['medicine']);
-                    $findDetails->setRemarks($report['remarks']);
+                    $findDetails->setBatchNo($report['batch_no']&&$report['batch_no']!=""?$report['batch_no']:null);
+                    $findDetails->setMedicine($report['medicine']&&$report['medicine']!=""?$report['medicine']:null);
+                    $findDetails->setRemarks($report['remarks']&&$report['remarks']!=""?$report['remarks']:null);
                     $findDetails->setFeedMill($findFeedMill);
                     $findDetails->setFeedType($findFeedType);
+                    $findDetails->setCreated($createdAt);
                     $findDetails->setUpdated($updatedAt);
                     $findDetails->setAppId($report['id']);
                     $this->getDoctrine()->getManager()->persist($findDetails);

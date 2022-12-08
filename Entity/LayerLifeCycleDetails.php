@@ -253,7 +253,7 @@ class LayerLifeCycleDetails
     /**
      * @param float $ageWeek
      */
-    public function setAgeWeek(float $ageWeek): void
+    public function setAgeWeek($ageWeek): void
     {
         $this->ageWeek = $ageWeek;
     }
@@ -277,7 +277,7 @@ class LayerLifeCycleDetails
     /**
      * @param float $deadBird
      */
-    public function setDeadBird(float $deadBird): void
+    public function setDeadBird($deadBird): void
     {
         $this->deadBird = $deadBird;
     }
@@ -304,7 +304,7 @@ class LayerLifeCycleDetails
     /**
      * @param float $avgWeight
      */
-    public function setAvgWeight(float $avgWeight): void
+    public function setAvgWeight($avgWeight): void
     {
         $this->avgWeight = $avgWeight;
     }
@@ -320,7 +320,7 @@ class LayerLifeCycleDetails
     /**
      * @param float $targetWeight
      */
-    public function setTargetWeight(float $targetWeight): void
+    public function setTargetWeight($targetWeight): void
     {
         $this->targetWeight = $targetWeight;
     }
@@ -336,7 +336,7 @@ class LayerLifeCycleDetails
     /**
      * @param float $uniformity
      */
-    public function setUniformity(float $uniformity): void
+    public function setUniformity($uniformity): void
     {
         $this->uniformity = $uniformity;
     }
@@ -352,7 +352,7 @@ class LayerLifeCycleDetails
     /**
      * @param float $feedPerBird
      */
-    public function setFeedPerBird(float $feedPerBird): void
+    public function setFeedPerBird($feedPerBird): void
     {
         $this->feedPerBird = $feedPerBird;
     }
@@ -368,7 +368,7 @@ class LayerLifeCycleDetails
     /**
      * @param float $targetFeedPerBird
      */
-    public function setTargetFeedPerBird(float $targetFeedPerBird): void
+    public function setTargetFeedPerBird($targetFeedPerBird): void
     {
         $this->targetFeedPerBird = $targetFeedPerBird;
     }
@@ -384,7 +384,7 @@ class LayerLifeCycleDetails
     /**
      * @param float $totalEggs
      */
-    public function setTotalEggs(float $totalEggs): void
+    public function setTotalEggs($totalEggs): void
     {
         $this->totalEggs = $totalEggs;
     }
@@ -416,7 +416,7 @@ class LayerLifeCycleDetails
     /**
      * @param float $targetEggProduction
      */
-    public function setTargetEggProduction(float $targetEggProduction): void
+    public function setTargetEggProduction($targetEggProduction): void
     {
         $this->targetEggProduction = $targetEggProduction;
     }
@@ -432,7 +432,7 @@ class LayerLifeCycleDetails
     /**
      * @param float $eggWeightActual
      */
-    public function setEggWeightActual(float $eggWeightActual): void
+    public function setEggWeightActual($eggWeightActual): void
     {
         $this->eggWeightActual = $eggWeightActual;
     }
@@ -448,7 +448,7 @@ class LayerLifeCycleDetails
     /**
      * @param float $eggWeightStandard
      */
-    public function setEggWeightStandard(float $eggWeightStandard): void
+    public function setEggWeightStandard($eggWeightStandard): void
     {
         $this->eggWeightStandard = $eggWeightStandard;
     }
@@ -464,7 +464,7 @@ class LayerLifeCycleDetails
     /**
      * @param \DateTime $productionDate
      */
-    public function setProductionDate(\DateTime $productionDate): void
+    public function setProductionDate($productionDate): void
     {
         $this->productionDate = $productionDate;
     }
@@ -480,7 +480,7 @@ class LayerLifeCycleDetails
     /**
      * @param string $batch_no
      */
-    public function setBatchNo(string $batch_no): void
+    public function setBatchNo($batch_no): void
     {
         $this->batch_no = $batch_no;
     }
@@ -576,7 +576,7 @@ class LayerLifeCycleDetails
     /**
      * @param string $remarks
      */
-    public function setRemarks(string $remarks): void
+    public function setRemarks($remarks): void
     {
         $this->remarks = $remarks;
     }
@@ -592,7 +592,7 @@ class LayerLifeCycleDetails
     /**
      * @param \DateTime $created
      */
-    public function setCreated(\DateTime $created): void
+    public function setCreated($created): void
     {
         $this->created = $created;
     }
@@ -608,7 +608,7 @@ class LayerLifeCycleDetails
     /**
      * @param \DateTime $updated
      */
-    public function setUpdated(\DateTime $updated): void
+    public function setUpdated($updated): void
     {
         $this->updated = $updated;
     }
