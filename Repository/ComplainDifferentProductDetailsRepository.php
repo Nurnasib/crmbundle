@@ -29,6 +29,7 @@ class ComplainDifferentProductDetailsRepository extends EntityRepository
     {
         $start = isset($filterBy['startDate']) ? (new \DateTime($filterBy['startDate']))->format('Y-m-d 00:00:00') : null;
         $end = isset($filterBy['endDate']) ? (new \DateTime($filterBy['endDate']))->format('Y-m-d 23:59:59') : null;
+        $employeeId=isset($filterBy['employeeId']) && $filterBy['employeeId'] !=''?$filterBy['employeeId']:null;
 
         $qb = $this->createQueryBuilder('e');
 
@@ -39,6 +40,7 @@ class ComplainDifferentProductDetailsRepository extends EntityRepository
         $qb->select('e.id','e.quantity');
         $qb->addSelect('parent.observation', 'parent.ageDays', 'parent.createdAt');
         $qb->addSelect('parameter.item AS parameterName');
+        $qb->addSelect('employee.name as employeeName');
 
 
         $qb->where('parameter.type = :type')->setParameter('type', $type);
@@ -55,8 +57,8 @@ class ComplainDifferentProductDetailsRepository extends EntityRepository
             }
             $qb->andWhere('employee.id IN (:employeeIds)')->setParameter('employeeIds', $employeeIs);
         }
-        if (isset($filterBy['employeeId']) && $filterBy['employeeId'] !=''){
-            $qb->andWhere('employee.id = :employeeId')->setParameter('employeeId', $employeeId);
+        if ($employeeId){
+            $qb->andWhere('employee.id =:employeeId')->setParameter('employeeId', $employeeId);
         }
 
         $qb->andWhere('parent.createdAt >= :start')->setParameter('start', $start);
