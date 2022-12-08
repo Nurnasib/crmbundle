@@ -560,7 +560,7 @@ class LayerLifeCycleDetails
     /**
      * @param string $medicine
      */
-    public function setMedicine(string $medicine): void
+    public function setMedicine($medicine): void
     {
         $this->medicine = $medicine;
     }
