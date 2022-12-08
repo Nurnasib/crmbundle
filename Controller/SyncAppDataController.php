@@ -1108,7 +1108,7 @@ VALUES (:hatching_date, :remarks, :reporting_date, :customer_id, :agent_id, :emp
                     $findDetails->setProDate($proDate);
                     $findDetails->setBatchNo($report['batch_no']&&$report['batch_no']!=''?$report['batch_no']:null);
                     $findDetails->setRemarks($report['remarks']&&$report['remarks']!=""?$report['remarks']:null);
-                    $findDetails->setCreatedAt($createdAt);
+//                    $findDetails->setCreatedAt($createdAt);
                     $findDetails->setUpdatedAt($updatedAt);
                     $findDetails->setFeedType($feedType);
                     $findDetails->setReportingDate($reportingDate);

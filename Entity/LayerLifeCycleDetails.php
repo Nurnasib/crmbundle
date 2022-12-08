@@ -167,7 +167,7 @@ class LayerLifeCycleDetails
     /**
      * @var \DateTime
      * @Gedmo\Timestampable(on="create")
-     * @ORM\Column(name="created", type="datetime")
+     * @ORM\Column(name="created", type="datetime", nullable=true)
      */
     private $created;
 
