@@ -244,7 +244,7 @@ class ChickLifeCycleDetails
     /**
      * @param string $visitingWeek
      */
-    public function setVisitingWeek(string $visitingWeek): void
+    public function setVisitingWeek($visitingWeek): void
     {
         $this->visitingWeek = $visitingWeek;
     }
@@ -268,7 +268,7 @@ class ChickLifeCycleDetails
     /**
      * @param float $ageDays
      */
-    public function setAgeDays(float $ageDays): void
+    public function setAgeDays($ageDays): void
     {
         $this->ageDays = $ageDays;
     }
@@ -284,7 +284,7 @@ class ChickLifeCycleDetails
     /**
      * @param float $mortalityPes
      */
-    public function setMortalityPes(float $mortalityPes): void
+    public function setMortalityPes($mortalityPes): void
     {
         $this->mortalityPes = $mortalityPes;
     }
@@ -324,7 +324,7 @@ class ChickLifeCycleDetails
     /**
      * @param float $weightStandard
      */
-    public function setWeightStandard(float $weightStandard): void
+    public function setWeightStandard($weightStandard): void
     {
         $this->weightStandard = $weightStandard;
     }
@@ -340,7 +340,7 @@ class ChickLifeCycleDetails
     /**
      * @param float $weightAchieved
      */
-    public function setWeightAchieved(float $weightAchieved): void
+    public function setWeightAchieved($weightAchieved): void
     {
         $this->weightAchieved = $weightAchieved;
     }
@@ -483,7 +483,7 @@ class ChickLifeCycleDetails
     /**
      * @param string $batchNo
      */
-    public function setBatchNo(string $batchNo): void
+    public function setBatchNo($batchNo): void
     {
         $this->batchNo = $batchNo;
     }
@@ -499,7 +499,7 @@ class ChickLifeCycleDetails
     /**
      * @param string $remarks
      */
-    public function setRemarks(string $remarks): void
+    public function setRemarks($remarks): void
     {
         $this->remarks = $remarks;
     }

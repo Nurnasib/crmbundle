@@ -1106,8 +1106,8 @@ VALUES (:hatching_date, :remarks, :reporting_date, :customer_id, :agent_id, :emp
                     $findDetails->setWithoutMortality($report['without_mortality']&&($report['without_mortality']!=''||$report['without_mortality']!='NaN')?(float)$report['without_mortality']:0);
                     $findDetails->setWithMortality($report['with_mortality']&&($report['with_mortality']!=''||$report['with_mortality']!='NaN')?(float)$report['with_mortality']:0);
                     $findDetails->setProDate($proDate);
-                    $findDetails->setBatchNo($report['batch_no']);
-                    $findDetails->setRemarks($report['remarks']);
+                    $findDetails->setBatchNo($report['batch_no']&&$report['batch_no']!=''?$report['batch_no']:null);
+                    $findDetails->setRemarks($report['remarks']&&$report['remarks']!=""?$report['remarks']:null);
                     $findDetails->setCreatedAt($createdAt);
                     $findDetails->setUpdatedAt($updatedAt);
                     $findDetails->setFeedType($feedType);
