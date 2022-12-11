@@ -1149,11 +1149,15 @@ class ApiRepository extends BaseRepository
         $qb->join('e.location', 'location');
         $qb->join('e.customerGroup', 's');
         $qb->join('e.agent', 'a');
+        $qb->join('a.agentGroup','agentGroup');
         $qb->join('e.farmerIntroduce', 'fi');
         $qb->join('fi.farmerType', 'farmerType');
+        $qb->leftJoin('fi.feed','feed');
 
         $qb->select('e.id as id', 'e.name as name', 'e.address as address', 'e.mobile as mobile');
         $qb->addSelect('a.id as agentId', 'a.name as agentName', 'farmerType.name AS farmerTypeName');
+        $qb->addSelect('feed.name as feedName');
+        $qb->addSelect('agentGroup.name as agentGroupName', 'agentGroup.slug as agentGroupSlug');
 
         $qb->where('s.slug = :slug')->setParameter('slug', 'farmer');
         $qb->andWhere('location.id IN (:upozils)')->setParameter('upozils', $arrs);
@@ -1166,12 +1170,22 @@ class ApiRepository extends BaseRepository
         foreach ($result as $key => $row) {
             $customerType = $row['farmerTypeName'] != '' ? ' (' . $row['farmerTypeName'] . ')' : '';
 
+            $isNew='Yes';
+            if($row['feedName']!='Nourish'){
+                $isNew='No';
+            }elseif ($row['agentGroupSlug']=='other-agent'){
+                $isNew='No';
+            }
+
+
             $data[$key]['id'] = (int)$row['id'];
             $data[$key]['name'] = (string)$row['name'] . '' . $customerType;;
             $data[$key]['address'] = (string)$row['address'];
             $data[$key]['mobile'] = (string)$row['mobile'];
             $data[$key]['agentId'] = (string)$row['agentId'];
             $data[$key]['agentName'] = (string)$row['agentName'];
+//            $data[$key]['feedName'] = (string)$row['feedName'];
+            $data[$key]['isIntroduce'] = (string)$isNew;
         }
         return $data;
     }

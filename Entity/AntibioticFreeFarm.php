@@ -82,6 +82,13 @@ class AntibioticFreeFarm
     private $feed;
 
     /**
+     * @var Setting
+     * @ORM\ManyToOne(targetEntity="Setting", inversedBy="antibioticFreeFarm")
+     * @ORM\JoinColumn(name="feed_mill_id", referencedColumnName="id", onDelete="SET NULL", nullable=true)
+     */
+    private $feedMill;
+
+    /**
      * @var \DateTime
      * @ORM\Column(type="date", nullable=true)
      */
@@ -332,7 +339,7 @@ class AntibioticFreeFarm
     /**
      * @param Agent $agent
      */
-    public function setAgent(Agent $agent): void
+    public function setAgent($agent): void
     {
         $this->agent = $agent;
     }
@@ -348,7 +355,7 @@ class AntibioticFreeFarm
     /**
      * @param CrmCustomer $customer
      */
-    public function setCustomer(CrmCustomer $customer): void
+    public function setCustomer($customer): void
     {
         $this->customer = $customer;
     }
@@ -364,7 +371,7 @@ class AntibioticFreeFarm
     /**
      * @param User $employee
      */
-    public function setEmployee(User $employee): void
+    public function setEmployee($employee): void
     {
         $this->employee = $employee;
     }
@@ -380,7 +387,7 @@ class AntibioticFreeFarm
     /**
      * @param Setting $hatchery
      */
-    public function setHatchery(Setting $hatchery): void
+    public function setHatchery($hatchery): void
     {
         $this->hatchery = $hatchery;
     }
@@ -396,7 +403,7 @@ class AntibioticFreeFarm
     /**
      * @param Setting $breed
      */
-    public function setBreed(Setting $breed): void
+    public function setBreed($breed): void
     {
         $this->breed = $breed;
     }
@@ -412,10 +419,28 @@ class AntibioticFreeFarm
     /**
      * @param Setting $feed
      */
-    public function setFeed(Setting $feed): void
+    public function setFeed($feed): void
     {
         $this->feed = $feed;
     }
+
+    /**
+     * @return Setting
+     */
+    public function getFeedMill()
+    {
+        return $this->feedMill;
+    }
+
+    /**
+     * @param Setting $feedMill
+     */
+    public function setFeedMill($feedMill): void
+    {
+        $this->feedMill = $feedMill;
+    }
+    
+    
 
     /**
      * @return \DateTime
@@ -428,7 +453,7 @@ class AntibioticFreeFarm
     /**
      * @param \DateTime $hatchingDate
      */
-    public function setHatchingDate(\DateTime $hatchingDate): void
+    public function setHatchingDate($hatchingDate): void
     {
         $this->hatchingDate = $hatchingDate;
     }
@@ -444,7 +469,7 @@ class AntibioticFreeFarm
     /**
      * @param \DateTime $reportingMonth
      */
-    public function setReportingMonth(\DateTime $reportingMonth): void
+    public function setReportingMonth($reportingMonth): void
     {
         $this->reportingMonth = $reportingMonth;
     }
@@ -567,7 +592,7 @@ class AntibioticFreeFarm
     /**
      * @param string $remarks
      */
-    public function setRemarks(string $remarks): void
+    public function setRemarks($remarks): void
     {
         $this->remarks = $remarks;
     }

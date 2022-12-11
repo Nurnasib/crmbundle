@@ -32,7 +32,9 @@ class FarmerIntroduceDetailsRepository extends BaseRepository
                 $entity->setSubAgent($subAgent);
             }
             $entity->setFeed($feed?$feed:null);
-            $entity->setOtherFeed($feed?$feed:null);
+            if ($feed->getName() != 'Nourish'){
+                $entity->setOtherFeed($feed?$feed:null);
+            }            
             $entity->setCultureSpeciesItemAndQty(json_encode($data['species_type']));
             /*$entity->setPreviousAgentName($data['previous_agent_name']);
             $entity->setPreviousAgentAddress($data['previous_agent_address']);

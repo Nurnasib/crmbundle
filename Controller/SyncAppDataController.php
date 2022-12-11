@@ -666,6 +666,7 @@ VALUES (:report_id, :employee_id, :agent_id, :customer_id, :hatchery_id, :breed_
                         `hatchery_id` = :hatchery_id, 
                         `breed_id` = :breed_id, 
                         `feed_id` = :feed_id, 
+                        `feed_mill_id` = :feed_mill_id, 
                         `hatching_date` = :hatching_date, 
                         `total_stocked_chicks_pcs` = :total_stocked_chicks_pcs, 
                         `total_feed_used_kg` = :total_feed_used_kg, 
@@ -682,6 +683,7 @@ VALUES (:report_id, :employee_id, :agent_id, :customer_id, :hatchery_id, :breed_
                 $stmt->bindValue('hatchery_id',$report['hatchery_id']);
                 $stmt->bindValue('breed_id',$report['breed_id']);
                 $stmt->bindValue('feed_id',$report['feed_id']);
+                $stmt->bindValue('feed_mill_id', isset($report['feed_mill_id'])?$report['feed_mill_id']:null);
                 $stmt->bindValue('hatching_date',$hatchingDate->format('Y-m-d'));
                 $stmt->bindValue('total_stocked_chicks_pcs',$report['total_stocked_chicks_pcs']);
                 $stmt->bindValue('total_feed_used_kg',$report['total_feed_used_kg']);
@@ -696,8 +698,8 @@ VALUES (:report_id, :employee_id, :agent_id, :customer_id, :hatchery_id, :breed_
                 $stmt->execute();
 
             }else{
-                $sql = "INSERT INTO `crm_antibiotic_free_farm`(`report_id`, `report_parent_parent_id`, `agent_id`, `customer_id`, `employee_id`, `hatchery_id`, `breed_id`, `feed_id`, `hatching_date`, `reporting_month`, `total_stocked_chicks_pcs`, `total_feed_used_kg`, `age_days`, `total_broiler_weight_kg`, `mortality`, `fcr`, `remarks`, `created_at`, `medicine_total_cost`, `vaccine_total_cost`) 
-VALUES (:report_id, :report_parent_parent_id, :agent_id, :customer_id, :employee_id, :hatchery_id, :breed_id, :feed_id, :hatching_date, :reporting_month, :total_stocked_chicks_pcs, :total_feed_used_kg, :age_days, :total_broiler_weight_kg, :mortality, :fcr, :remarks, :created_at, :medicine_total_cost, :vaccine_total_cost)";
+                $sql = "INSERT INTO `crm_antibiotic_free_farm`(`report_id`, `report_parent_parent_id`, `agent_id`, `customer_id`, `employee_id`, `hatchery_id`, `breed_id`, `feed_id`, `feed_mill_id`, `hatching_date`, `reporting_month`, `total_stocked_chicks_pcs`, `total_feed_used_kg`, `age_days`, `total_broiler_weight_kg`, `mortality`, `fcr`, `remarks`, `created_at`, `medicine_total_cost`, `vaccine_total_cost`) 
+VALUES (:report_id, :report_parent_parent_id, :agent_id, :customer_id, :employee_id, :hatchery_id, :breed_id, :feed_id, :feed_mill_id, :hatching_date, :reporting_month, :total_stocked_chicks_pcs, :total_feed_used_kg, :age_days, :total_broiler_weight_kg, :mortality, :fcr, :remarks, :created_at, :medicine_total_cost, :vaccine_total_cost)";
 
                 $hatchingDate = new \DateTime($report['hatching_date']);
                 $createdAt = new \DateTime($report['created_at']);
@@ -711,6 +713,7 @@ VALUES (:report_id, :report_parent_parent_id, :agent_id, :customer_id, :employee
                 $stmt->bindValue('hatchery_id',$report['hatchery_id']);
                 $stmt->bindValue('breed_id',$report['breed_id']);
                 $stmt->bindValue('feed_id',$report['feed_id']);
+                $stmt->bindValue('feed_mill_id',$report['feed_mill_id']);
                 $stmt->bindValue('hatching_date',$hatchingDate->format('Y-m-d'));
                 $stmt->bindValue('reporting_month',$report['reporting_month']);
                 $stmt->bindValue('total_stocked_chicks_pcs',$report['total_stocked_chicks_pcs']);
@@ -1605,44 +1608,53 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
     private function processFarmerIntroduce($farmers, Api $batch)
     {
         foreach ($farmers as $farmer) {
-            $findFarmer = $this->getDoctrine()->getRepository(CrmCustomer::class)->find($farmer['customer_id']);
-            /**
-             * @var FarmerIntroduceDetails $findIntroFarmer
-             */
-            $findIntroFarmer = $this->getDoctrine()->getRepository(FarmerIntroduceDetails::class)->findOneBy(['customer' => $findFarmer]);
+            if($farmer['agent_id']!=""){
+                $findAgent = $this->getDoctrine()->getRepository(Agent::class)->find($farmer['agent_id']);
+                
+                if($findAgent && $findAgent->getAgentGroup() && $findAgent->getAgentGroup()->getSlug()!="other-agent"){
 
-            if ($findIntroFarmer && $farmer['feed_id'] == 1){
-                if ($findIntroFarmer->getIntroduceDate()){ // if farmer already introduced
-                    continue;
+                    $findFarmer = $this->getDoctrine()->getRepository(CrmCustomer::class)->find($farmer['customer_id']);
+                    /**
+                     * @var FarmerIntroduceDetails $findIntroFarmer
+                     */
+                    $findIntroFarmer = $this->getDoctrine()->getRepository(FarmerIntroduceDetails::class)->findOneBy(['customer' => $findFarmer]);
+
+                    if ($findIntroFarmer && $farmer['feed_id'] == 1){
+                        if ($findIntroFarmer->getIntroduceDate()){ // if farmer already introduced
+                            continue;
+                        }
+                        $updateFarmer = "UPDATE `crm_customers` SET `updated`= :updated,`agent_id`= :agent_id WHERE id = :id";
+                        $updateFarmerStmt = $this->getDoctrine()->getConnection()->prepare($updateFarmer);
+                        $updateFarmerStmt->bindValue('agent_id', $farmer['agent_id']);
+                        $updateFarmerStmt->bindValue('id', $farmer['customer_id']);
+
+                        if ($farmer['created_at']){
+                            $updateFarmerStmt->bindValue('updated', (new \DateTime($farmer['created_at']))->format('Y-m-d H:i:s'));
+                        }else{
+                            $updateFarmerStmt->bindValue('updated', null);
+                        }
+                        $updateFarmerStmt->execute();
+
+                        $sql = "UPDATE `crm_customer_introduce_details` SET `agent_id`= :agentId,`culture_species_item_and_qty`= :culture_species_item_and_qty,`remarks`= :remarks,`feed_id`= :feed_id,`introduce_date`= :introduce_date WHERE customer_id = :farmerId";  // every time exits when create new farmer
+                        $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
+                        $stmt->bindValue('farmerId', $farmer['customer_id']);
+                        $stmt->bindValue('agentId', $farmer['agent_id']);
+                        $stmt->bindValue('culture_species_item_and_qty', $farmer['culture_species_item_and_qty']);
+                        $stmt->bindValue('remarks', $farmer['remarks']);
+                        if ($farmer['created_at']){
+                            $stmt->bindValue('introduce_date', (new \DateTime($farmer['created_at']))->format('Y-m-d H:i:s'));
+                        }else{
+                            $stmt->bindValue('introduce_date', (new \DateTime('now'))->format('Y-m-d H:i:s'));
+                        }
+
+                        $stmt->bindValue('feed_id', 55);
+
+                        $stmt->execute();
+                    }
                 }
-                $updateFarmer = "UPDATE `crm_customers` SET `updated`= :updated,`agent_id`= :agent_id WHERE id = :id";
-                $updateFarmerStmt = $this->getDoctrine()->getConnection()->prepare($updateFarmer);
-                $updateFarmerStmt->bindValue('agent_id', $farmer['agent_id']);
-                $updateFarmerStmt->bindValue('id', $farmer['customer_id']);
 
-                if ($farmer['created_at']){
-                    $updateFarmerStmt->bindValue('updated', (new \DateTime($farmer['created_at']))->format('Y-m-d H:i:s'));
-                }else{
-                    $updateFarmerStmt->bindValue('updated', null);
-                }
-                $updateFarmerStmt->execute();
-
-                $sql = "UPDATE `crm_customer_introduce_details` SET `agent_id`= :agentId,`culture_species_item_and_qty`= :culture_species_item_and_qty,`remarks`= :remarks,`feed_id`= :feed_id,`introduce_date`= :introduce_date WHERE customer_id = :farmerId";  // every time exits when create new farmer
-                $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
-                $stmt->bindValue('farmerId', $farmer['customer_id']);
-                $stmt->bindValue('agentId', $farmer['agent_id']);
-                $stmt->bindValue('culture_species_item_and_qty', $farmer['culture_species_item_and_qty']);
-                $stmt->bindValue('remarks', $farmer['remarks']);
-                if ($farmer['created_at']){
-                    $stmt->bindValue('introduce_date', (new \DateTime($farmer['created_at']))->format('Y-m-d H:i:s'));
-                }else{
-                    $stmt->bindValue('introduce_date', (new \DateTime('now'))->format('Y-m-d H:i:s'));
-                }
-
-                $stmt->bindValue('feed_id', 55);
-
-                $stmt->execute();
             }
+            
         }
     }
 
