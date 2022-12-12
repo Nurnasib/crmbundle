@@ -66,6 +66,12 @@ class CattleLifeCycle
     private $appBatch;
 
     /**
+     * @var integer
+     * @ORM\Column(type="bigint", nullable=true)
+     */
+    private $appId;
+
+    /**
      * @var \DateTime
      * @ORM\Column(name="reporting_date", type="date", nullable=true)
      */
@@ -106,6 +112,12 @@ class CattleLifeCycle
      */
     private $createdAt;
 
+    /**
+     * @var integer
+     * @Orm\Column(name="farm_number", type="integer", options={"default"="1"})
+     */
+    private $farmNumber=1;
+    
     /**
      * @return int
      */
@@ -312,6 +324,38 @@ class CattleLifeCycle
     public function setFeedType(Setting $feedType): void
     {
         $this->feedType = $feedType;
+    }
+
+    /**
+     * @return int
+     */
+    public function getAppId()
+    {
+        return $this->appId;
+    }
+
+    /**
+     * @param int $appId
+     */
+    public function setAppId($appId): void
+    {
+        $this->appId = $appId;
+    }
+
+    /**
+     * @return int
+     */
+    public function getFarmNumber()
+    {
+        return $this->farmNumber;
+    }
+
+    /**
+     * @param int $farmNumber
+     */
+    public function setFarmNumber($farmNumber): void
+    {
+        $this->farmNumber = $farmNumber;
     }
 
 }

@@ -203,6 +203,12 @@ class CattleLifeCycleDetails
     private $updatedAt;
 
     /**
+     * @var integer
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $appId;
+
+    /**
      * @return int
      */
     public function getId()
@@ -695,6 +701,22 @@ class CattleLifeCycleDetails
     public function setUpdatedAt(\DateTime $updatedAt): void
     {
         $this->updatedAt = $updatedAt;
+    }
+
+    /**
+     * @return int
+     */
+    public function getAppId()
+    {
+        return $this->appId;
+    }
+
+    /**
+     * @param int $appId
+     */
+    public function setAppId($appId): void
+    {
+        $this->appId = $appId;
     }
 
 
