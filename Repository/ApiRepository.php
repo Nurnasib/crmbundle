@@ -173,6 +173,7 @@ class ApiRepository extends BaseRepository
         $qb->leftJoin('fi.otherAgent', 'otherAgent');
         $qb->leftJoin('fi.subAgent', 'subAgent');
         $qb->leftJoin('e.agent', 'ca');
+        $qb->leftJoin('ca.agentGroup','agentGroup');
         $qb->Join('e.location', 'l');
         $qb->Join('l.parent', 'dis');
         $qb->select('e.id as id', 'e.name as name', 'e.mobile as mobile', 'e.address as address');
@@ -181,6 +182,7 @@ class ApiRepository extends BaseRepository
         $qb->addSelect('l.name as upozila', 'l.id as upozilaId');
         $qb->addSelect('dis.name as district', 'dis.id as districtId');
         $qb->addSelect('fi.cultureSpeciesItemAndQty', 'otherAgent.name AS otherAgentName', 'otherAgent.address AS otherAgentAddress', 'subAgent.name AS subAgentName', 'subAgent.address AS subAgentAddress', 'feed.name AS feedName', 'feed.id AS feed_id', 'otherFeed.name AS previousFeedName', 'otherFeed.id AS other_feed_id', 'farmerTypes.id AS farmerType', 'farmerTypes.name AS farmerTypeName');
+        $qb->addSelect('agentGroup.name as agentGroupName', 'agentGroup.slug as agentGroupSlug');
         $qb->where("cg.slug =:slug")->setParameter('slug', $mode);
         $qb->andWhere('e.deletedAt IS NULL');
         $qb->andWhere('e.deletedBy IS NULL');
@@ -209,6 +211,13 @@ class ApiRepository extends BaseRepository
             }
             $customerType = $row['farmerTypeName'] != '' ? ' (' . $row['farmerTypeName'] . ')' : '';
 
+            $isNew='Yes';
+            if($row['feedName']!='Nourish'){
+                $isNew='No';
+            }elseif ($row['agentGroupSlug']=='other-agent'){
+                $isNew='No';
+            }
+
             $data[$key]['id'] = (int)$row['id'];
             $data[$key]['name'] = (string)$row['name'] . '' . $customerType;
             $data[$key]['mobile'] = (string)$row['mobile'];
@@ -228,6 +237,7 @@ class ApiRepository extends BaseRepository
             $data[$key]['previousFeedId'] = (string)$row['other_feed_id'];
             $data[$key]['previousFeedName'] = (string)$row['previousFeedName'];
             $data[$key]['culture_species_item_and_qty'] = (string)$row['cultureSpeciesItemAndQty'];
+            $data[$key]['isIntroduce'] = (string)$isNew;
 
 
         }
