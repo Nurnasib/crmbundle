@@ -3394,7 +3394,7 @@ class ApiController extends AbstractController
             if(isset($parameters['employee_id'])&&$parameters['employee_id']!=""){
                 $employee = $this->getDoctrine()->getRepository(User::class)->find($parameters['employee_id']);
 
-                $entities = $this->getDoctrine()->getRepository(ChickLifeCycle::class)->findBy(['employee'=>$employee, 'lifeCycleState'=>'IN_PROGRESS'],['id'=>'ASC']);
+                $entities = $this->getDoctrine()->getRepository(CattleLifeCycle::class)->findBy(['employee'=>$employee, 'lifeCycleState'=>'IN_PROGRESS'],['id'=>'ASC']);
 
                 if($entities){
                     /** @var CattleLifeCycle  $entity */
