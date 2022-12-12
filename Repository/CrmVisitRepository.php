@@ -103,10 +103,20 @@ class CrmVisitRepository extends EntityRepository
             }
             $qb->andWhere($query);
 
-        } elseif ((in_array('ADMIN', $roleSplitArray) || in_array('ROLE_LINE_MANAGER', $loggedUser->getRoles())) && $employee) {
-            $qb->andWhere('e.employee = :employee')->setParameter('employee', $employee);
-        } elseif (!in_array('ADMIN', $roleSplitArray) && !$employee) {
+        } elseif (!in_array('ADMIN', $roleSplitArray) && in_array('ROLE_LINE_MANAGER', $loggedUser->getRoles()) && !$employee) {
+//            $qb->andWhere('e.employee = :employee')->setParameter('employee', $employee);
+            $employeeIdsByLineManager = $this->_em->getRepository(User::class)->getEmployeesByLineManager($loggedUser);
+            $employeeIs=[];
+            if($employeeIdsByLineManager){
+                $employeeIs=$employeeIdsByLineManager;
+            }
+            $qb->andWhere('employee.id IN (:employeeIds)')->setParameter('employeeIds', $employeeIs);
+        } elseif (!in_array('ADMIN', $roleSplitArray) && !in_array('ROLE_LINE_MANAGER', $loggedUser->getRoles())) {
             $qb->andWhere('e.employee = :employee')->setParameter('employee', $loggedUser);
+        }
+        
+        if($employee) {
+            $qb->andWhere('e.employee = :employee')->setParameter('employee', $employee);
         }
 
 
