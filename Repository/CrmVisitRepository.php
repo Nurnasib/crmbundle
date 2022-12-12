@@ -93,7 +93,6 @@ class CrmVisitRepository extends EntityRepository
                 array_push($userRole, 'ROLE_CRM_SALES_MARKETING_USER');
             }
             $query = '';
-//            dd($userRole);
             foreach ($userRole as $key => $role) {
                 if ($key !== 0) {
                     $query .= " OR ";
@@ -104,7 +103,6 @@ class CrmVisitRepository extends EntityRepository
             $qb->andWhere($query);
 
         } elseif (!in_array('ADMIN', $roleSplitArray) && in_array('ROLE_LINE_MANAGER', $loggedUser->getRoles()) && !$employee) {
-//            $qb->andWhere('e.employee = :employee')->setParameter('employee', $employee);
             $employeeIdsByLineManager = $this->_em->getRepository(User::class)->getEmployeesByLineManager($loggedUser);
             $employeeIs=[];
             if($employeeIdsByLineManager){
@@ -156,9 +154,10 @@ class CrmVisitRepository extends EntityRepository
             $qb->andWhere('employee.id = :employeeId')->setParameter('employeeId', $selectedEmployee->getId());
         }elseif (!empty($lineManagersId)){
             $qb->andWhere('lineManager.userId IN (:lineManagersId)')->setParameter('lineManagersId', $lineManagersId);
-
         }
-        $qb->andWhere('employee.id IN (:employeeIds)')->setParameter('employeeIds', $employeeIds);
+        if($employeeIds){
+            $qb->andWhere('employee.id IN (:employeeIds)')->setParameter('employeeIds', $employeeIds);
+        }
         $results = $qb->getQuery()->getArrayResult();
         $data = [];
         foreach ($results as $result) {
@@ -177,21 +176,6 @@ class CrmVisitRepository extends EntityRepository
         }
         return $data;
 
-
-
-
-
-
-/*
-
-        $data = [];
-        foreach ($results as $result) {
-            $day = $result['visitDate']->format('d');
-
-            $data[$result['employeeId']][$day]['status'] = $result['workingModeName'];
-            $data[$result['employeeId']][$day]['visits'][] = $result;
-        }
-        return $data;*/
 
     }
 }
