@@ -227,7 +227,7 @@ class CattleLifeCycleDetails
     /**
      * @return CattleLifeCycle
      */
-    public function getCrmCattleLifeCycle(): CattleLifeCycle
+    public function getCrmCattleLifeCycle()
     {
         return $this->crmCattleLifeCycle;
     }
@@ -666,7 +666,7 @@ class CattleLifeCycleDetails
     /**
      * @param string $remarks
      */
-    public function setRemarks(string $remarks): void
+    public function setRemarks($remarks): void
     {
         $this->remarks = $remarks;
     }
@@ -674,7 +674,7 @@ class CattleLifeCycleDetails
     /**
      * @return \DateTime
      */
-    public function getCreatedAt(): \DateTime
+    public function getCreatedAt()
     {
         return $this->createdAt;
     }
@@ -690,7 +690,7 @@ class CattleLifeCycleDetails
     /**
      * @return \DateTime
      */
-    public function getUpdatedAt(): \DateTime
+    public function getUpdatedAt()
     {
         return $this->updatedAt;
     }
