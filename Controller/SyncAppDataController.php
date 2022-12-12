@@ -1130,16 +1130,21 @@ VALUES (:hatching_date, :remarks, :reporting_date, :customer_id, :agent_id, :emp
             $findFarmer = $this->getDoctrine()->getRepository(CrmCustomer::class)->find($report['customer_id']);
             $findEmployee = $this->getDoctrine()->getRepository(User::class)->find($report['employee_id']);
             $findReport = $this->getDoctrine()->getRepository(Setting::class)->find($report['report_id']);
-
-            $findLifeCycle = $this->getDoctrine()->getRepository(CattleLifeCycle::class)->findOneBy(['customer' => $findFarmer, 'employee' => $findEmployee, 'report' => $findReport]);
+            $findLifeCycle=null;
+            if(array_key_exists('web_life_cycle_id', $report) && !empty($report['web_life_cycle_id'])){
+                $findLifeCycle = $this->getDoctrine()->getRepository(CattleLifeCycle::class)->find($report['web_life_cycle_id']);
+            }elseif (array_key_exists('web_life_cycle_id', $report) && empty($report['web_life_cycle_id']) && array_key_exists('id', $report) && !empty($report['id'])){
+                $findLifeCycle = $this->getDoctrine()->getRepository(CattleLifeCycle::class)->findOneBy(['customer' => $findFarmer, 'employee' => $findEmployee, 'report' => $findReport, 'appId'=>$report['id']]);
+            }
 
             if ($findLifeCycle){
                 $findLifeCycle->setLifeCycleState($report['life_cycle_state']);
+                $findLifeCycle->setAppBatch($batch);
                 $this->getDoctrine()->getManager()->persist($findLifeCycle);
                 $this->getDoctrine()->getManager()->flush();
             }else{
-                $sql = "INSERT INTO `crm_cattle_life_cycle`(`customer_id`, `report_id`, `agent_id`, `employee_id`, `reporting_date`, `breed_type`, `life_cycle_state`, `remarks`, `created_at`, `feed_type`, `app_batch_id`) 
-VALUES (:customer_id, :report_id, :agent_id, :employee_id, :reporting_date, :breed_type, :life_cycle_state, :remarks, :created_at, :feed_type, :app_batch_id)";
+                $sql = "INSERT INTO `crm_cattle_life_cycle`(`customer_id`, `report_id`, `agent_id`, `employee_id`, `reporting_date`, `breed_type`, `life_cycle_state`, `remarks`, `created_at`, `feed_type`, `app_batch_id`, `app_id`, `farm_number`) 
+VALUES (:customer_id, :report_id, :agent_id, :employee_id, :reporting_date, :breed_type, :life_cycle_state, :remarks, :created_at, :feed_type, :app_batch_id, :app_id, :farm_number)";
                 $reportingDate = new \DateTime($report['reporting_date']);
                 $createdAt = new \DateTime($report['created_at']);
 
@@ -1155,6 +1160,8 @@ VALUES (:customer_id, :report_id, :agent_id, :employee_id, :reporting_date, :bre
                 $stmt->bindValue('created_at', $createdAt->format('Y-m-d H:i:s'));
                 $stmt->bindValue('feed_type', $report['feed_type']);
                 $stmt->bindValue('app_batch_id', $batch->getId());
+                $stmt->bindValue('app_id', $report['id']);
+                $stmt->bindValue('farm_number', isset($report['farm_number'])&&$report['farm_number']!=''?$report['farm_number']:1);
 
                 $stmt->execute();
             }
@@ -1163,30 +1170,33 @@ VALUES (:customer_id, :report_id, :agent_id, :employee_id, :reporting_date, :bre
     private function processCattleLifeCycleDetail($reports, Api $batch)
     {
         foreach ($reports as $report) {
-            $sql = "SELECT id
-FROM `crm_cattle_life_cycle`
-WHERE `customer_id` = :customer_id AND `employee_id` = :employee_id AND `report_id` = :report_id";
-            $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
-            $stmt->bindValue('customer_id', $report['customer_id']);
-            $stmt->bindValue('employee_id', $report['employee_id']);
-            $stmt->bindValue('report_id', $report['report_id']);
 
-//            $stmt->bindValue('customer_id', 44);
-//            $stmt->bindValue('employee_id', 23);
-//            $stmt->bindValue('report_id', 39);
-            $stmt->execute();
-            $lifeCycleId = $stmt->fetch()['id'];
+            $lifeCycle = null;
+            $findEmployee = $this->getDoctrine()->getRepository(User::class)->find($report['employee_id']);
+            if(array_key_exists('web_life_cycle_id', $report) && !empty($report['web_life_cycle_id'])){
+                $lifeCycle= $this->getDoctrine()->getRepository(CattleLifeCycle::class)->find($report['web_life_cycle_id']);
+            }elseif (array_key_exists('web_life_cycle_id', $report) && empty($report['web_life_cycle_id']) && array_key_exists('crm_chick_life_cycle_id', $report) && !empty($report['crm_chick_life_cycle_id'])){
+                $lifeCycle= $this->getDoctrine()->getRepository(CattleLifeCycle::class)->findOneBy(['employee' => $findEmployee,'appId'=>$report['crm_chick_life_cycle_id']]);
+            }else{
+                if(!$lifeCycle){
+                    $findFarmer = $this->getDoctrine()->getRepository(CrmCustomer::class)->find($report['customer_id']);
+                    $findReport = $this->getDoctrine()->getRepository(Setting::class)->find($report['report_id']);
+                    
+                    $lifeCycle = $this->getDoctrine()->getRepository(CattleLifeCycle::class)->findOneBy(['customer' => $findFarmer, 'employee' => $findEmployee, 'report' => $findReport, 'appBatch'=>$batch]);
+                }
+            }
+            
 
-            if ($lifeCycleId){
-                $sql = "INSERT INTO `crm_cattle_life_cycle_details`(`crm_cattle_life_cycle_id`, `visiting_date`, `age_of_cattle_month`, `previous_body_weight`, `present_body_weight`, `body_weight_difference`, `duration_of_bwt_difference`, `lactation_no`, `age_of_lactation`, `average_weight_per_day`, `average_weight_per_kg_consumption_feed`, `average_weight_per_kg_dm`, `milk_fat_percentage`, `consumption_feed_intake_ready_feed`, `consumption_feed_intake_conventional`, `consumption_feed_intake_total`, `fodder_green_grass_kg`, `fodder_straw_kg`, `dm_of_fodder_green_grass_kg`, `dm_of_fodder_straw_kg`, `total_dm_kg`, `dm_requirement_by_bwt_kg`, `remarks`, `created_at`, `updated_at`) 
-VALUES (:crm_cattle_life_cycle_id, :visiting_date, :age_of_cattle_month, :previous_body_weight, :present_body_weight, :body_weight_difference, :duration_of_bwt_difference, :lactation_no, :age_of_lactation, :average_weight_per_day, :average_weight_per_kg_consumption_feed, :average_weight_per_kg_dm, :milk_fat_percentage, :consumption_feed_intake_ready_feed, :consumption_feed_intake_conventional, :consumption_feed_intake_total, :fodder_green_grass_kg, :fodder_straw_kg, :dm_of_fodder_green_grass_kg, :dm_of_fodder_straw_kg, :total_dm_kg, :dm_requirement_by_bwt_kg, :remarks, :created_at, :updated_at)";
+            if ($lifeCycle){
+                $sql = "INSERT INTO `crm_cattle_life_cycle_details`(`crm_cattle_life_cycle_id`, `visiting_date`, `age_of_cattle_month`, `previous_body_weight`, `present_body_weight`, `body_weight_difference`, `duration_of_bwt_difference`, `lactation_no`, `age_of_lactation`, `average_weight_per_day`, `average_weight_per_kg_consumption_feed`, `average_weight_per_kg_dm`, `milk_fat_percentage`, `consumption_feed_intake_ready_feed`, `consumption_feed_intake_conventional`, `consumption_feed_intake_total`, `fodder_green_grass_kg`, `fodder_straw_kg`, `dm_of_fodder_green_grass_kg`, `dm_of_fodder_straw_kg`, `total_dm_kg`, `dm_requirement_by_bwt_kg`, `remarks`, `created_at`, `updated_at`, `app_id`) 
+VALUES (:crm_cattle_life_cycle_id, :visiting_date, :age_of_cattle_month, :previous_body_weight, :present_body_weight, :body_weight_difference, :duration_of_bwt_difference, :lactation_no, :age_of_lactation, :average_weight_per_day, :average_weight_per_kg_consumption_feed, :average_weight_per_kg_dm, :milk_fat_percentage, :consumption_feed_intake_ready_feed, :consumption_feed_intake_conventional, :consumption_feed_intake_total, :fodder_green_grass_kg, :fodder_straw_kg, :dm_of_fodder_green_grass_kg, :dm_of_fodder_straw_kg, :total_dm_kg, :dm_requirement_by_bwt_kg, :remarks, :created_at, :updated_at, :app_id)";
 
                 $visitingDate = new \DateTime($report['visiting_date']);
                 $createdAt = new \DateTime($report['created_at']);
                 $updatedAt = new \DateTime($report['updated_at']);
 
                 $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
-                $stmt->bindValue('crm_cattle_life_cycle_id', $lifeCycleId);
+                $stmt->bindValue('crm_cattle_life_cycle_id', $lifeCycle->getId());
                 $stmt->bindValue('visiting_date', $visitingDate->format('Y-m-d'));
                 $stmt->bindValue('age_of_cattle_month', $report['age_of_cattle_month']);
                 if ($report['previous_body_weight'] === null){
@@ -1235,6 +1245,7 @@ VALUES (:crm_cattle_life_cycle_id, :visiting_date, :age_of_cattle_month, :previo
                 $stmt->bindValue('remarks', $report['remarks']);
                 $stmt->bindValue('created_at', $createdAt->format('Y-m-d H:i:s'));
                 $stmt->bindValue('updated_at', $updatedAt->format('Y-m-d H:i:s'));
+                $stmt->bindValue('app_id', $report['id']);
 
                 $stmt->execute();
             }
@@ -1330,17 +1341,7 @@ VALUES (:total_birds, :hatchery_date, :created, :updated, :customer_id, :employe
                     $lifeCycle = $this->getDoctrine()->getRepository(LayerLifeCycle::class)->findOneBy(['customer' => $findFarmer, 'employee' => $findEmployee, 'report' => $findReport, 'appBatch'=>$batch, 'farmNumber'=>$farm_number]);
                 }
             }
-
-            /*$sql = "SELECT id FROM `crm_layer_life_cycle` WHERE `customer_id` = :customer_id AND `employee_id` = :employee_id AND `report_id` = :report_id AND `app_batch_id` = :app_batch_id";
-            $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
-            $stmt->bindValue('customer_id', $report['customer_id']);
-            $stmt->bindValue('employee_id', $report['employee_id']);
-            $stmt->bindValue('report_id', $report['report_id']);
-            $stmt->bindValue('app_batch_id', $batch->getId());
-//            $stmt->bindValue('life_cycle_state', 'IN_PROGRESS');
-
-            $stmt->execute();
-            $lifeCycleId = $stmt->fetch()['id'];*/
+            
 
             if ($lifeCycle){
                 $visitingDate = new \DateTime($report['visiting_date']);
