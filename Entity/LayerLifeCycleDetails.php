@@ -183,6 +183,12 @@ class LayerLifeCycleDetails
      * @ORM\Column(type="integer",nullable=true)
      */
     private $appId;
+
+    /**
+     * @var integer
+     * @Orm\Column(name="is_visited", type="integer", options={"default"="0"})
+     */
+    private $isVisited=1;
     
     /**
      * @return int
@@ -628,5 +634,23 @@ class LayerLifeCycleDetails
     {
         $this->appId = $appId;
     }
+
+    /**
+     * @return int
+     */
+    public function getIsVisited()
+    {
+        return $this->isVisited;
+    }
+
+    /**
+     * @param int $isVisited
+     */
+    public function setIsVisited($isVisited): void
+    {
+        $this->isVisited = $isVisited;
+    }
+    
+    
 
 }

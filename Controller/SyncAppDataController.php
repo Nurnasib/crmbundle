@@ -1387,6 +1387,7 @@ VALUES (:total_birds, :hatchery_date, :created, :updated, :customer_id, :employe
                     $findDetails->setCreated($createdAt);
                     $findDetails->setUpdated($updatedAt);
                     $findDetails->setAppId($report['id']);
+                    $findDetails->setIsVisited(1);
                     $this->getDoctrine()->getManager()->persist($findDetails);
                     $this->getDoctrine()->getManager()->flush();
                 }
