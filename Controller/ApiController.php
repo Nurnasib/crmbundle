@@ -3484,19 +3484,19 @@ class ApiController extends AbstractController
 
         if ($request->getMethod() == 'POST' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')) {
             $parameters = $request->request->all();
-            $labServicesData=[];
+            $arrayData=[];
             if(isset($parameters['employee_id'])&&$parameters['employee_id']!="") {
                 $employeeId = $parameters['employee_id'];
                 $newDate = date('Y-F', strtotime('-1 month'));
                 $explodeDate = explode('-',$newDate);
                 $year= $explodeDate[0];
                 $month= $explodeDate[1];
-                $labServicesData = $this->getDoctrine()->getRepository(CompanyWiseFeedSale::class)->getCompanyWiseFeedSaleDataForApiImport($employeeId, $year, $month);
+                $arrayData = $this->getDoctrine()->getRepository(CompanyWiseFeedSale::class)->getCompanyWiseFeedSaleDataForApiImport($employeeId, $year, $month);
             }
 
             $response = new Response();
             $response->headers->set('Content-Type', 'application/json');
-            $response->setContent(json_encode($labServicesData));
+            $response->setContent(json_encode($arrayData));
             $response->setStatusCode(Response::HTTP_OK);
             return $response;
         }
