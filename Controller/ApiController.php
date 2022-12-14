@@ -24,6 +24,7 @@ use Terminalbd\CrmBundle\Entity\CattleLifeCycle;
 use Terminalbd\CrmBundle\Entity\CattleLifeCycleDetails;
 use Terminalbd\CrmBundle\Entity\ChickLifeCycle;
 use Terminalbd\CrmBundle\Entity\ChickLifeCycleDetails;
+use Terminalbd\CrmBundle\Entity\CompanyWiseFeedSale;
 use Terminalbd\CrmBundle\Entity\CrmCustomer;
 use Terminalbd\CrmBundle\Entity\CrmVisit;
 use Terminalbd\CrmBundle\Entity\FarmerComplain;
@@ -3466,6 +3467,43 @@ class ApiController extends AbstractController
             'message' => 'Not Found!'
         ]);
 
+
+    }
+
+
+    /**
+     * @param Request $request
+     * @param ParameterBagInterface $parameterBag
+     * @return JsonResponse
+     * @Route("/company-wise-feed-sale-data", name="company_wise_feed_sale_data")
+     */
+    public function companyWiseFeedSaleDataForApiImport(Request $request, ParameterBagInterface $parameterBag)
+    {
+        set_time_limit(0);
+        ignore_user_abort(true);
+
+        if ($request->getMethod() == 'POST' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')) {
+            $parameters = $request->request->all();
+            $labServicesData=[];
+            if(isset($parameters['employee_id'])&&$parameters['employee_id']!="") {
+                $employeeId = $parameters['employee_id'];
+                $newDate = date('Y-F', strtotime('-1 month'));
+                $explodeDate = explode('-',$newDate);
+                $year= $explodeDate[0];
+                $month= $explodeDate[1];
+                $labServicesData = $this->getDoctrine()->getRepository(CompanyWiseFeedSale::class)->getCompanyWiseFeedSaleDataForApiImport($employeeId, $year, $month);
+            }
+
+            $response = new Response();
+            $response->headers->set('Content-Type', 'application/json');
+            $response->setContent(json_encode($labServicesData));
+            $response->setStatusCode(Response::HTTP_OK);
+            return $response;
+        }
+        return new JsonResponse([
+            'status' => 404,
+            'message' => 'Not Found!'
+        ]);
 
     }
 }

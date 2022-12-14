@@ -144,5 +144,37 @@ class CompanyWiseFeedSaleRepository extends BaseRepository
         
         return $data;
     }
+    
+    public function getCompanyWiseFeedSaleDataForApiImport($employee, $year, $month){
+        $query = $this->createQueryBuilder('cwfs')
+            ->select('cwfs.id','cwfs.monthName', 'cwfs.year as yearName', 'cwfs.createdAt', 'cwfs.breedName', 'cwfs.productWiseQty', 'cwfs.totalQty')
+            ->addSelect('employee.id as employeeId')
+            ->addSelect('feedCompany.id as feedCompanyId')
+            ->join('cwfs.employee','employee')
+            ->join('cwfs.feedCompany','feedCompany')
+            ->where('cwfs.year =:year')
+            ->andWhere('cwfs.monthName =:month')
+            ->andWhere('employee.id =:employee')
+            ->setParameters(array('year'=>$year, 'month'=>$month, 'employee'=>$employee));
+
+        $resutls = $query->getQuery()->getArrayResult();
+        $returnArray=[];
+        if($resutls){
+            foreach ($resutls as $resutl) {
+                $returnArray[]=[
+                    "id"=> $resutl['id'],
+                    "employee_id"=> $resutl['employeeId'],
+                    "feed_company_id"=> $resutl['feedCompanyId'],
+                    "month_name"=> $resutl['monthName'],
+                    "year"=> $resutl['yearName'],
+                    "breed_name"=>$resutl['breedName'],
+                    "product_wise_qty"=> $resutl['productWiseQty'],
+                    "total_qty"=> (string)$resutl['totalQty'],
+                    "created_at"=> $resutl['createdAt']->format('Y-m-d H:i:s')
+                ];
+            }
+        }
+        return $returnArray;
+    }
 
 }
