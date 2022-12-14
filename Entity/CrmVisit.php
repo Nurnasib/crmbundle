@@ -307,7 +307,7 @@ class CrmVisit
     /**
      * @param Setting $workingMode
      */
-    public function setWorkingMode(Setting $workingMode): void
+    public function setWorkingMode($workingMode): void
     {
         $this->workingMode = $workingMode;
     }

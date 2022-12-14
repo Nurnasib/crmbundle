@@ -1365,6 +1365,7 @@ class ApiController extends AbstractController
                     $em->persist($apiDetails);
                     $em->flush();
                 }
+                
                 return new JsonResponse([
                     'status' => 200,
                 ]);

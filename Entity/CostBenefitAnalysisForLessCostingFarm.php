@@ -463,7 +463,7 @@ class CostBenefitAnalysisForLessCostingFarm
     /**
      * @param float $totalStockedChicksPcs
      */
-    public function setTotalStockedChicksPcs(float $totalStockedChicksPcs): void
+    public function setTotalStockedChicksPcs($totalStockedChicksPcs): void
     {
         $this->totalStockedChicksPcs = $totalStockedChicksPcs;
     }
@@ -479,7 +479,7 @@ class CostBenefitAnalysisForLessCostingFarm
     /**
      * @param float $totalFeedUsedKg
      */
-    public function setTotalFeedUsedKg(float $totalFeedUsedKg): void
+    public function setTotalFeedUsedKg($totalFeedUsedKg): void
     {
         $this->totalFeedUsedKg = $totalFeedUsedKg;
     }
@@ -495,7 +495,7 @@ class CostBenefitAnalysisForLessCostingFarm
     /**
      * @param float $totalBroilerWeightKg
      */
-    public function setTotalBroilerWeightKg(float $totalBroilerWeightKg): void
+    public function setTotalBroilerWeightKg($totalBroilerWeightKg): void
     {
         $this->totalBroilerWeightKg = $totalBroilerWeightKg;
     }
@@ -535,7 +535,7 @@ class CostBenefitAnalysisForLessCostingFarm
     /**
      * @param float $ageDays
      */
-    public function setAgeDays(float $ageDays): void
+    public function setAgeDays($ageDays): void
     {
         $this->ageDays = $ageDays;
     }
@@ -551,7 +551,7 @@ class CostBenefitAnalysisForLessCostingFarm
     /**
      * @param float $fcr
      */
-    public function setFcr(float $fcr): void
+    public function setFcr($fcr): void
     {
         $this->fcr = $fcr;
     }
@@ -577,7 +577,7 @@ class CostBenefitAnalysisForLessCostingFarm
     /**
      * @param float $itemPricePerPcs
      */
-    public function setItemPricePerPcs(float $itemPricePerPcs): void
+    public function setItemPricePerPcs($itemPricePerPcs): void
     {
         $this->itemPricePerPcs = $itemPricePerPcs;
     }
@@ -593,7 +593,7 @@ class CostBenefitAnalysisForLessCostingFarm
     /**
      * @param float $feedPricePerKg
      */
-    public function setFeedPricePerKg(float $feedPricePerKg): void
+    public function setFeedPricePerKg($feedPricePerKg): void
     {
         $this->feedPricePerKg = $feedPricePerKg;
     }
@@ -609,7 +609,7 @@ class CostBenefitAnalysisForLessCostingFarm
     /**
      * @param float $broilerOrFishPricePerKg
      */
-    public function setBroilerOrFishPricePerKg(float $broilerOrFishPricePerKg): void
+    public function setBroilerOrFishPricePerKg($broilerOrFishPricePerKg): void
     {
         $this->broilerOrFishPricePerKg = $broilerOrFishPricePerKg;
     }
@@ -625,7 +625,7 @@ class CostBenefitAnalysisForLessCostingFarm
     /**
      * @param float $totalMedicineCost
      */
-    public function setTotalMedicineCost(float $totalMedicineCost): void
+    public function setTotalMedicineCost($totalMedicineCost): void
     {
         $this->totalMedicineCost = $totalMedicineCost;
     }
@@ -641,7 +641,7 @@ class CostBenefitAnalysisForLessCostingFarm
     /**
      * @param float $totalVaccineCost
      */
-    public function setTotalVaccineCost(float $totalVaccineCost): void
+    public function setTotalVaccineCost($totalVaccineCost): void
     {
         $this->totalVaccineCost = $totalVaccineCost;
     }
@@ -657,7 +657,7 @@ class CostBenefitAnalysisForLessCostingFarm
     /**
      * @param float $totalPondPreparationCost
      */
-    public function setTotalPondPreparationCost(float $totalPondPreparationCost): void
+    public function setTotalPondPreparationCost($totalPondPreparationCost): void
     {
         $this->totalPondPreparationCost = $totalPondPreparationCost;
     }
@@ -673,7 +673,7 @@ class CostBenefitAnalysisForLessCostingFarm
     /**
      * @param float $usedBagPricePerPcs
      */
-    public function setUsedBagPricePerPcs(float $usedBagPricePerPcs): void
+    public function setUsedBagPricePerPcs($usedBagPricePerPcs): void
     {
         $this->usedBagPricePerPcs = $usedBagPricePerPcs;
     }
@@ -689,7 +689,7 @@ class CostBenefitAnalysisForLessCostingFarm
     /**
      * @param float $litterOrPondRentCost
      */
-    public function setLitterOrPondRentCost(float $litterOrPondRentCost): void
+    public function setLitterOrPondRentCost($litterOrPondRentCost): void
     {
         $this->litterOrPondRentCost = $litterOrPondRentCost;
     }
@@ -705,7 +705,7 @@ class CostBenefitAnalysisForLessCostingFarm
     /**
      * @param float $electricityAndFuelCost
      */
-    public function setElectricityAndFuelCost(float $electricityAndFuelCost): void
+    public function setElectricityAndFuelCost($electricityAndFuelCost): void
     {
         $this->electricityAndFuelCost = $electricityAndFuelCost;
     }
@@ -721,7 +721,7 @@ class CostBenefitAnalysisForLessCostingFarm
     /**
      * @param float $labourCost
      */
-    public function setLabourCost(float $labourCost): void
+    public function setLabourCost($labourCost): void
     {
         $this->labourCost = $labourCost;
     }
@@ -737,7 +737,7 @@ class CostBenefitAnalysisForLessCostingFarm
     /**
      * @param float $transportCost
      */
-    public function setTransportCost(float $transportCost): void
+    public function setTransportCost($transportCost): void
     {
         $this->transportCost = $transportCost;
     }
@@ -753,7 +753,7 @@ class CostBenefitAnalysisForLessCostingFarm
     /**
      * @param float $otherCost
      */
-    public function setOtherCost(float $otherCost): void
+    public function setOtherCost($otherCost): void
     {
         $this->otherCost = $otherCost;
     }
@@ -761,7 +761,7 @@ class CostBenefitAnalysisForLessCostingFarm
     /**
      * @param float $mortality
      */
-    public function setMortality(float $mortality): void
+    public function setMortality($mortality): void
     {
         $this->mortality = $mortality;
     }
@@ -777,7 +777,7 @@ class CostBenefitAnalysisForLessCostingFarm
     /**
      * @param string $remarks
      */
-    public function setRemarks(string $remarks): void
+    public function setRemarks($remarks): void
     {
         $this->remarks = $remarks;
     }
@@ -793,7 +793,7 @@ class CostBenefitAnalysisForLessCostingFarm
     /**
      * @param string $pondSize
      */
-    public function setPondSize(string $pondSize): void
+    public function setPondSize($pondSize): void
     {
         $this->pondSize = $pondSize;
     }
@@ -809,7 +809,7 @@ class CostBenefitAnalysisForLessCostingFarm
     /**
      * @param float $fingerlingSize
      */
-    public function setFingerlingSize(float $fingerlingSize): void
+    public function setFingerlingSize($fingerlingSize): void
     {
         $this->fingerlingSize = $fingerlingSize;
     }
@@ -825,7 +825,7 @@ class CostBenefitAnalysisForLessCostingFarm
     /**
      * @param float $harvestingSize
      */
-    public function setHarvestingSize(float $harvestingSize): void
+    public function setHarvestingSize($harvestingSize): void
     {
         $this->harvestingSize = $harvestingSize;
     }

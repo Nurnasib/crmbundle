@@ -385,7 +385,7 @@ VALUES (:crm_visit_id, :farmCapacity, :updated, :comments, :created, :customer_i
                 $stmt->bindValue('customer_id', $performance['customer_id']);
                 $stmt->bindValue('hatchery_id', $performance['hatchery_id']);
                 $stmt->bindValue('breed_id', $performance['breed_id']);
-                $stmt->bindValue('feed_id', $performance['feed_id']);
+                $stmt->bindValue('feed_id', isset($performance['selected_feed_id'])&&$performance['selected_feed_id']?$performance['selected_feed_id']:$performance['feed_id']);
                 $stmt->bindValue('feed_mill_id', $performance['feed_mill_id']);
                 $stmt->bindValue('feed_type_id', $performance['feed_type_id']);
                 $stmt->bindValue('color_id', $performance['color_id']);
