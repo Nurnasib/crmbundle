@@ -2218,7 +2218,7 @@ class ApiController extends AbstractController
                             /* @var ChickLifeCycleDetails $lifeCycleDetail*/
                             foreach ($entity->getCrmChickLifeCycleDetails() as $lifeCycleDetail) {
                                 if($lifeCycleDetail->getReportingDate()!=""){
-                                    $reportingMonth = $lifeCycleDetail->getReportingDate()?$lifeCycleDetail->getReportingDate()->format('Y-m-d'):null;
+                                    $lifeCycleDate = $entity->getCreatedAt()?$entity->getCreatedAt()->format('Y-m-d H:i:s'):null;
                                     $arrayData[]=[
                                         "id"=>$lifeCycleDetail->getAppId()?(int)$lifeCycleDetail->getAppId():$lifeCycleDetail->getId(),
                                         "crm_chick_life_cycle_id"=> $entity->getAppId()?(int)$entity->getAppId():$entity->getId(),
@@ -2236,7 +2236,7 @@ class ApiController extends AbstractController
                                         "pro_date"=> $lifeCycleDetail->getProDate()?$lifeCycleDetail->getProDate()->format('Y-m-d'):"",
                                         "batch_no"=> $lifeCycleDetail->getBatchNo(),
                                         "remarks"=> $lifeCycleDetail->getRemarks(),
-                                        "created_at"=> $lifeCycleDetail->getCreatedAt()&&$lifeCycleDetail->getCreatedAt()->format('Y-m-d H:i:s')!='-0001-11-30 00:00:00'?$lifeCycleDetail->getCreatedAt()->format('Y-m-d H:i:s'):$reportingMonth,
+                                        "created_at"=> $lifeCycleDetail->getCreatedAt()&&$lifeCycleDetail->getCreatedAt()->format('Y-m-d H:i:s')!='-0001-11-30 00:00:00'?$lifeCycleDetail->getCreatedAt()->format('Y-m-d H:i:s'):$lifeCycleDate,
                                         "updated_at"=> $lifeCycleDetail->getUpdatedAt()?$lifeCycleDetail->getUpdatedAt()->format('Y-m-d H:i:s'):"",
                                         "feed_type_id"=> $lifeCycleDetail->getFeedType()?$lifeCycleDetail->getFeedType()->getId():null,
                                         "reporting_date"=> $lifeCycleDetail->getReportingDate()?$lifeCycleDetail->getReportingDate()->format('Y-m-d'):"",
