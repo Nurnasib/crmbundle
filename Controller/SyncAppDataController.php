@@ -1175,8 +1175,8 @@ VALUES (:customer_id, :report_id, :agent_id, :employee_id, :reporting_date, :bre
             $findEmployee = $this->getDoctrine()->getRepository(User::class)->find($report['employee_id']);
             if(array_key_exists('web_life_cycle_id', $report) && !empty($report['web_life_cycle_id'])){
                 $lifeCycle= $this->getDoctrine()->getRepository(CattleLifeCycle::class)->find($report['web_life_cycle_id']);
-            }elseif (array_key_exists('web_life_cycle_id', $report) && empty($report['web_life_cycle_id']) && array_key_exists('crm_chick_life_cycle_id', $report) && !empty($report['crm_chick_life_cycle_id'])){
-                $lifeCycle= $this->getDoctrine()->getRepository(CattleLifeCycle::class)->findOneBy(['employee' => $findEmployee,'appId'=>$report['crm_chick_life_cycle_id']]);
+            }elseif (array_key_exists('web_life_cycle_id', $report) && empty($report['web_life_cycle_id']) && array_key_exists('crm_cattle_life_cycle_id', $report) && !empty($report['crm_cattle_life_cycle_id'])){
+                $lifeCycle= $this->getDoctrine()->getRepository(CattleLifeCycle::class)->findOneBy(['employee' => $findEmployee,'appId'=>$report['crm_cattle_life_cycle_id']]);
             }else{
                 if(!$lifeCycle){
                     $findFarmer = $this->getDoctrine()->getRepository(CrmCustomer::class)->find($report['customer_id']);
