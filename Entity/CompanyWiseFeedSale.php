@@ -102,7 +102,7 @@ class CompanyWiseFeedSale
     /**
      * @param User $employee
      */
-    public function setEmployee(User $employee): void
+    public function setEmployee($employee): void
     {
         $this->employee = $employee;
     }
