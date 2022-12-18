@@ -2161,7 +2161,7 @@ class ApiController extends AbstractController
                             "breed_id"=> $entity->getBreed()? $entity->getBreed()->getId():null,
                             "feed_id"=> $entity->getFeed()? $entity->getFeed()->getId():null,
                             "feed_mill_id"=> $entity->getFeedMill()? $entity->getFeedMill()->getId():null,
-                            "total_birds"=> $entity->getTotalBirds()? (string)$entity->getTotalBirds():"",
+                            "total_birds"=> $entity->getTotalBirds()? (string)$entity->getTotalBirds():"0",
                             "hatchery_name"=> $entity->getHatchery()? $entity->getHatchery()->getName():"",
                             "breed_name"=> $entity->getBreed()? $entity->getBreed()->getName():"",
                             "feed_name"=> $entity->getFeed()? $entity->getFeed()->getName():"",
@@ -2223,16 +2223,16 @@ class ApiController extends AbstractController
                                         "id"=>$lifeCycleDetail->getAppId()?(int)$lifeCycleDetail->getAppId():$lifeCycleDetail->getId(),
                                         "crm_chick_life_cycle_id"=> $entity->getAppId()?(int)$entity->getAppId():$entity->getId(),
                                         "visiting_week"=> $lifeCycleDetail->getVisitingWeek()? (string)$lifeCycleDetail->getVisitingWeek():"",
-                                        "age_days"=> $lifeCycleDetail->getAgeDays()? (string)$lifeCycleDetail->getAgeDays():"",
-                                        "mortality_pes"=> $lifeCycleDetail->getMortalityPes()? (string)$lifeCycleDetail->getMortalityPes():"",
-                                        "mortality_percent"=> $lifeCycleDetail->getMortalityPercent()? (string)$lifeCycleDetail->getMortalityPercent():"",
-                                        "weight_standard"=> $lifeCycleDetail->getWeightStandard()? (string)$lifeCycleDetail->getWeightStandard():"",
-                                        "weight_achieved"=> $lifeCycleDetail->getWeightAchieved()? (string)$lifeCycleDetail->getWeightAchieved():"",
-                                        "feed_total_kg"=> $lifeCycleDetail->getFeedTotalKg()? (string)$lifeCycleDetail->getFeedTotalKg():"",
-                                        "per_bird"=> $lifeCycleDetail->getPerBird()? (string)$lifeCycleDetail->getPerBird():"",
-                                        "feed_standard"=> $lifeCycleDetail->getFeedStandard()? (string)$lifeCycleDetail->getFeedStandard():"",
-                                        "without_mortality"=> $lifeCycleDetail->getWithoutMortality()? (string)$lifeCycleDetail->getWithoutMortality():"",
-                                        "with_mortality"=> $lifeCycleDetail->getWithMortality()? (string)$lifeCycleDetail->getWithMortality():"",
+                                        "age_days"=> $lifeCycleDetail->getAgeDays()? (string)$lifeCycleDetail->getAgeDays():"0",
+                                        "mortality_pes"=> $lifeCycleDetail->getMortalityPes()? (string)$lifeCycleDetail->getMortalityPes():"0",
+                                        "mortality_percent"=> $lifeCycleDetail->getMortalityPercent()? (string)$lifeCycleDetail->getMortalityPercent():"0",
+                                        "weight_standard"=> $lifeCycleDetail->getWeightStandard()? (string)$lifeCycleDetail->getWeightStandard():"0",
+                                        "weight_achieved"=> $lifeCycleDetail->getWeightAchieved()? (string)$lifeCycleDetail->getWeightAchieved():"0",
+                                        "feed_total_kg"=> $lifeCycleDetail->getFeedTotalKg()? (string)$lifeCycleDetail->getFeedTotalKg():"0",
+                                        "per_bird"=> $lifeCycleDetail->getPerBird()? (string)$lifeCycleDetail->getPerBird():"0",
+                                        "feed_standard"=> $lifeCycleDetail->getFeedStandard()? (string)$lifeCycleDetail->getFeedStandard():"0",
+                                        "without_mortality"=> $lifeCycleDetail->getWithoutMortality()? (string)$lifeCycleDetail->getWithoutMortality():"0",
+                                        "with_mortality"=> $lifeCycleDetail->getWithMortality()? (string)$lifeCycleDetail->getWithMortality():"0",
                                         "pro_date"=> $lifeCycleDetail->getProDate()?$lifeCycleDetail->getProDate()->format('Y-m-d'):"",
                                         "batch_no"=> $lifeCycleDetail->getBatchNo(),
                                         "remarks"=> $lifeCycleDetail->getRemarks(),
@@ -2380,16 +2380,16 @@ class ApiController extends AbstractController
                                         "crm_layer_life_cycle_id"=> $entity->getAppId()?(int)$entity->getAppId():$entity->getId(),
                                         "visiting_date"=> $lifeCycleDetail->getVisitingDate()?$lifeCycleDetail->getVisitingDate()->format('Y-m-d'):null,
                                         "age_week"=> $lifeCycleDetail->getAgeWeek()?(string)$lifeCycleDetail->getAgeWeekOnlyNumber():"",
-                                        "dead_bird"=> $lifeCycleDetail->getDeadBird()?(string)$lifeCycleDetail->getDeadBird():"",
-                                        "avg_weight"=> $lifeCycleDetail->getAvgWeight()?(string)$lifeCycleDetail->getAvgWeight():"",
-                                        "target_weight"=> $lifeCycleDetail->getTargetWeight()?(string)$lifeCycleDetail->getTargetWeight():"",
-                                        "uniformity"=> $lifeCycleDetail->getUniformity()?(string)$lifeCycleDetail->getUniformity():"",
-                                        "feed_per_bird"=> $lifeCycleDetail->getFeedPerBird()?(string)$lifeCycleDetail->getFeedPerBird():"",
-                                        "target_feed_per_bird"=> $lifeCycleDetail->getTargetFeedPerBird()?(string)$lifeCycleDetail->getTargetFeedPerBird():"",
-                                        "total_eggs"=> $lifeCycleDetail->getTotalEggs()?(string)$lifeCycleDetail->getTotalEggs():"",
-                                        "target_egg_production"=> $lifeCycleDetail->getTargetEggProduction()?(string)$lifeCycleDetail->getTargetEggProduction():"",
-                                        "egg_weight_actual"=> $lifeCycleDetail->getEggWeightActual()?(string)$lifeCycleDetail->getEggWeightActual():"",
-                                        "egg_weight_standard"=> $lifeCycleDetail->getEggWeightStandard()?(string)$lifeCycleDetail->getEggWeightStandard():"",
+                                        "dead_bird"=> $lifeCycleDetail->getDeadBird()?(string)$lifeCycleDetail->getDeadBird():"0",
+                                        "avg_weight"=> $lifeCycleDetail->getAvgWeight()?(string)$lifeCycleDetail->getAvgWeight():"0",
+                                        "target_weight"=> $lifeCycleDetail->getTargetWeight()?(string)$lifeCycleDetail->getTargetWeight():"0",
+                                        "uniformity"=> $lifeCycleDetail->getUniformity()?(string)$lifeCycleDetail->getUniformity():"0",
+                                        "feed_per_bird"=> $lifeCycleDetail->getFeedPerBird()?(string)$lifeCycleDetail->getFeedPerBird():"0",
+                                        "target_feed_per_bird"=> $lifeCycleDetail->getTargetFeedPerBird()?(string)$lifeCycleDetail->getTargetFeedPerBird():"0",
+                                        "total_eggs"=> $lifeCycleDetail->getTotalEggs()?(string)$lifeCycleDetail->getTotalEggs():"0",
+                                        "target_egg_production"=> $lifeCycleDetail->getTargetEggProduction()?(string)$lifeCycleDetail->getTargetEggProduction():"0",
+                                        "egg_weight_actual"=> $lifeCycleDetail->getEggWeightActual()?(string)$lifeCycleDetail->getEggWeightActual():"0",
+                                        "egg_weight_standard"=> $lifeCycleDetail->getEggWeightStandard()?(string)$lifeCycleDetail->getEggWeightStandard():"0",
                                         "production_date"=> $lifeCycleDetail->getProductionDate()?$lifeCycleDetail->getProductionDate()->format('Y-m-d'):"",
                                         "batch_no"=> $lifeCycleDetail->getBatchNo()?$lifeCycleDetail->getBatchNo():"",
                                         "medicine"=> $lifeCycleDetail->getMedicine()?$lifeCycleDetail->getMedicine():"",
@@ -3189,8 +3189,8 @@ class ApiController extends AbstractController
                                 $detailData[]=[
                                     "id"=>$fishLifeCycleCultureDetail->getAppId()?(int)$fishLifeCycleCultureDetail->getAppId():"",
                                     "sampling_date"=>$fishLifeCycleCultureDetail->getSamplingDate()->format('Y-m-d'),
-                                    "avg_present_weight_gm"=>$fishLifeCycleCultureDetail->getAveragePresentWeight()?(string)$fishLifeCycleCultureDetail->getAveragePresentWeight():"",
-                                    "cur_survival_rate"=>$fishLifeCycleCultureDetail->getSrPercentage()?(string)$fishLifeCycleCultureDetail->getSrPercentage():"",
+                                    "avg_present_weight_gm"=>$fishLifeCycleCultureDetail->getAveragePresentWeight()?(string)$fishLifeCycleCultureDetail->getAveragePresentWeight():"0",
+                                    "cur_survival_rate"=>$fishLifeCycleCultureDetail->getSrPercentage()?(string)$fishLifeCycleCultureDetail->getSrPercentage():"0",
                                     "cur_feed_consumption"=>(string)$fishLifeCycleCultureDetail->getCurrentFeedConsumptionKg(),
                                     "farmer_comment"=>(string)$fishLifeCycleCultureDetail->getFarmerRemarks()?$fishLifeCycleCultureDetail->getFarmerRemarks():"",
                                     "visitor_comment"=>(string)$fishLifeCycleCultureDetail->getEmployeeRemarks()?$fishLifeCycleCultureDetail->getEmployeeRemarks():"",
@@ -3414,26 +3414,26 @@ class ApiController extends AbstractController
                                     "id"=>$lifeCycleDetail->getAppId()?(int)$lifeCycleDetail->getAppId():$lifeCycleDetail->getId(),
                                     "crm_cattle_life_cycle_id"=> $entity->getAppId()?(int)$entity->getAppId():$entity->getId(),
                                     "visiting_date"=> $lifeCycleDetail->getVisitingDate()?$lifeCycleDetail->getVisitingDate()->format('Y-m-d'):"",
-                                    "age_of_cattle_month"=> $lifeCycleDetail->getAgeOfCattleMonth()?(string)$lifeCycleDetail->getAgeOfCattleMonth():"",
-                                    "previous_body_weight"=> $lifeCycleDetail->getPreviousBodyWeight()?(string)$lifeCycleDetail->getPreviousBodyWeight():"",
-                                    "present_body_weight"=> $lifeCycleDetail->getPresentBodyWeight()?(string)$lifeCycleDetail->getPresentBodyWeight():"",
-                                    "body_weight_difference"=> $lifeCycleDetail->getBodyWeightDifference()?(string)$lifeCycleDetail->getBodyWeightDifference():"",
-                                    "duration_of_bwt_difference"=> $lifeCycleDetail->getDurationOfBwtDifference()?(string)$lifeCycleDetail->getDurationOfBwtDifference():"",
-                                    "lactation_no"=> $lifeCycleDetail->getLactationNo()?(string)$lifeCycleDetail->getLactationNo():"",
-                                    "age_of_lactation"=> $lifeCycleDetail->getAgeOfLactation()?(string)$lifeCycleDetail->getAgeOfLactation():"",
-                                    "average_weight_per_day"=> $lifeCycleDetail->getAverageWeightPerDay()?(string)$lifeCycleDetail->getAverageWeightPerDay():"",
-                                    "average_weight_per_kg_consumption_feed"=> $lifeCycleDetail->getAverageWeightPerKgConsumptionFeed()?(string)$lifeCycleDetail->getAverageWeightPerKgConsumptionFeed():"",
-                                    "average_weight_per_kg_dm"=> $lifeCycleDetail->getAverageWeightPerKgDm()?(string)$lifeCycleDetail->getAverageWeightPerKgDm():"",
-                                    "milk_fat_percentage"=> $lifeCycleDetail->getMilkFatPercentage()?(string)$lifeCycleDetail->getMilkFatPercentage():"",
-                                    "consumption_feed_intake_ready_feed"=> $lifeCycleDetail->getConsumptionFeedIntakeReadyFeed()?(string)$lifeCycleDetail->getConsumptionFeedIntakeReadyFeed():"",
-                                    "consumption_feed_intake_conventional"=> $lifeCycleDetail->getConsumptionFeedIntakeConventional()?(string)$lifeCycleDetail->getConsumptionFeedIntakeConventional():"",
-                                    "consumption_feed_intake_total"=> $lifeCycleDetail->getConsumptionFeedIntakeTotal()?(string)$lifeCycleDetail->getConsumptionFeedIntakeTotal():"",
-                                    "fodder_green_grass_kg"=> $lifeCycleDetail->getFodderGreenGrassKg()?(string)$lifeCycleDetail->getFodderGreenGrassKg():"",
-                                    "fodder_straw_kg"=> $lifeCycleDetail->getFodderStrawKg()?(string)$lifeCycleDetail->getFodderStrawKg():"",
-                                    "dm_of_fodder_green_grass_kg"=> $lifeCycleDetail->getDmOfFodderGreenGrassKg()?(string)$lifeCycleDetail->getDmOfFodderGreenGrassKg():"",
-                                    "dm_of_fodder_straw_kg"=> $lifeCycleDetail->getDmOfFodderStrawKg()?(string)$lifeCycleDetail->getDmOfFodderStrawKg():"",
-                                    "total_dm_kg"=> $lifeCycleDetail->getTotalDmKg()?(string)$lifeCycleDetail->getTotalDmKg():"",
-                                    "dm_requirement_by_bwt_kg"=> $lifeCycleDetail->getDmRequirementByBwtKg()?(string)$lifeCycleDetail->getDmRequirementByBwtKg():"",
+                                    "age_of_cattle_month"=> $lifeCycleDetail->getAgeOfCattleMonth()?(string)$lifeCycleDetail->getAgeOfCattleMonth():"0",
+                                    "previous_body_weight"=> $lifeCycleDetail->getPreviousBodyWeight()?(string)$lifeCycleDetail->getPreviousBodyWeight():"0",
+                                    "present_body_weight"=> $lifeCycleDetail->getPresentBodyWeight()?(string)$lifeCycleDetail->getPresentBodyWeight():"0",
+                                    "body_weight_difference"=> $lifeCycleDetail->getBodyWeightDifference()?(string)$lifeCycleDetail->getBodyWeightDifference():"0",
+                                    "duration_of_bwt_difference"=> $lifeCycleDetail->getDurationOfBwtDifference()?(string)$lifeCycleDetail->getDurationOfBwtDifference():"0",
+                                    "lactation_no"=> $lifeCycleDetail->getLactationNo()?(string)$lifeCycleDetail->getLactationNo():"0",
+                                    "age_of_lactation"=> $lifeCycleDetail->getAgeOfLactation()?(string)$lifeCycleDetail->getAgeOfLactation():"0",
+                                    "average_weight_per_day"=> $lifeCycleDetail->getAverageWeightPerDay()?(string)$lifeCycleDetail->getAverageWeightPerDay():"0",
+                                    "average_weight_per_kg_consumption_feed"=> $lifeCycleDetail->getAverageWeightPerKgConsumptionFeed()?(string)$lifeCycleDetail->getAverageWeightPerKgConsumptionFeed():"0",
+                                    "average_weight_per_kg_dm"=> $lifeCycleDetail->getAverageWeightPerKgDm()?(string)$lifeCycleDetail->getAverageWeightPerKgDm():"0",
+                                    "milk_fat_percentage"=> $lifeCycleDetail->getMilkFatPercentage()?(string)$lifeCycleDetail->getMilkFatPercentage():"0",
+                                    "consumption_feed_intake_ready_feed"=> $lifeCycleDetail->getConsumptionFeedIntakeReadyFeed()?(string)$lifeCycleDetail->getConsumptionFeedIntakeReadyFeed():"0",
+                                    "consumption_feed_intake_conventional"=> $lifeCycleDetail->getConsumptionFeedIntakeConventional()?(string)$lifeCycleDetail->getConsumptionFeedIntakeConventional():"0",
+                                    "consumption_feed_intake_total"=> $lifeCycleDetail->getConsumptionFeedIntakeTotal()?(string)$lifeCycleDetail->getConsumptionFeedIntakeTotal():"0",
+                                    "fodder_green_grass_kg"=> $lifeCycleDetail->getFodderGreenGrassKg()?(string)$lifeCycleDetail->getFodderGreenGrassKg():"0",
+                                    "fodder_straw_kg"=> $lifeCycleDetail->getFodderStrawKg()?(string)$lifeCycleDetail->getFodderStrawKg():"0",
+                                    "dm_of_fodder_green_grass_kg"=> $lifeCycleDetail->getDmOfFodderGreenGrassKg()?(string)$lifeCycleDetail->getDmOfFodderGreenGrassKg():"0",
+                                    "dm_of_fodder_straw_kg"=> $lifeCycleDetail->getDmOfFodderStrawKg()?(string)$lifeCycleDetail->getDmOfFodderStrawKg():"0",
+                                    "total_dm_kg"=> $lifeCycleDetail->getTotalDmKg()?(string)$lifeCycleDetail->getTotalDmKg():"0",
+                                    "dm_requirement_by_bwt_kg"=> $lifeCycleDetail->getDmRequirementByBwtKg()?(string)$lifeCycleDetail->getDmRequirementByBwtKg():"0",
                                     "remarks"=> $lifeCycleDetail->getRemarks()?(string)$lifeCycleDetail->getRemarks():"",
                                     "created_at"=> $lifeCycleDetail->getCreatedAt()?$lifeCycleDetail->getCreatedAt()->format('Y-m-d H:i:s'):"",
                                     "updated_at"=> $lifeCycleDetail->getUpdatedAt()?$lifeCycleDetail->getUpdatedAt()->format('Y-m-d H:i:s'):"",
@@ -3523,6 +3523,7 @@ class ApiController extends AbstractController
             $parameters = $request->request->all();
 
             if(isset($parameters['agent_id'])&&$parameters['agent_id']!=""){
+
                 $findAgent = $this->getDoctrine()->getRepository(Agent::class)->find($parameters['agent_id']);
 
                 if($findAgent && $findAgent->getAgentGroup() && $findAgent->getAgentGroup()->getSlug()!="other-agent"){
@@ -3551,10 +3552,10 @@ class ApiController extends AbstractController
                         $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
                         $stmt->bindValue('farmerId', $parameters['customer_id']);
                         $stmt->bindValue('agentId', $parameters['agent_id']);
-                        $stmt->bindValue('culture_species_item_and_qty', $parameters['culture_species_item_and_qty']);
-                        $stmt->bindValue('remarks', $parameters['remarks']);
+                        $stmt->bindValue('culture_species_item_and_qty', isset($parameters['culture_species_item_and_qty'])&&$parameters['culture_species_item_and_qty']?$parameters['culture_species_item_and_qty']:$findIntroFarmer->getCultureSpeciesItemAndQty());
+                        $stmt->bindValue('remarks', isset($parameters['remarks'])&&$parameters['remarks']?$parameters['remarks']:$findIntroFarmer->getRemarks());
                         $stmt->bindValue('introduce_by_id', $parameters['employee_id']);
-                        if ($parameters['created_at']){
+                        if (isset($parameters['created_at'])&&$parameters['created_at']){
                             $stmt->bindValue('introduce_date', (new \DateTime($parameters['created_at']))->format('Y-m-d H:i:s'));
                         }else{
                             $stmt->bindValue('introduce_date', (new \DateTime('now'))->format('Y-m-d H:i:s'));
@@ -3563,10 +3564,27 @@ class ApiController extends AbstractController
                         $stmt->bindValue('feed_id', 55);
 
                         $stmt->execute();
-                    }
-                }
 
+                        return new JsonResponse([
+                            'status' => 200,
+                            'message' => 'Farmer introduce successfully.'
+                        ]);
+                    }
+
+                    return new JsonResponse([
+                        'status' => 403,
+                        'message' => 'This Farmer already introduce.'
+                    ]);
+                }
+                return new JsonResponse([
+                    'status' => 403,
+                    'message' => 'This Agent is a other agent.'
+                ]);
             }
+            return new JsonResponse([
+                'status' => 404,
+                'message' => 'Agent is required.'
+            ]);
         }
         return new JsonResponse([
             'status' => 500,
