@@ -1650,12 +1650,13 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
                         }
                         $updateFarmerStmt->execute();
 
-                        $sql = "UPDATE `crm_customer_introduce_details` SET `agent_id`= :agentId,`culture_species_item_and_qty`= :culture_species_item_and_qty,`remarks`= :remarks,`feed_id`= :feed_id,`introduce_date`= :introduce_date WHERE customer_id = :farmerId";  // every time exits when create new farmer
+                        $sql = "UPDATE `crm_customer_introduce_details` SET `agent_id`= :agentId,`culture_species_item_and_qty`= :culture_species_item_and_qty,`remarks`= :remarks,`feed_id`= :feed_id,`introduce_date`= :introduce_date,`introduce_by_id`= :introduce_by_id WHERE customer_id = :farmerId";  // every time exits when create new farmer
                         $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
                         $stmt->bindValue('farmerId', $farmer['customer_id']);
                         $stmt->bindValue('agentId', $farmer['agent_id']);
                         $stmt->bindValue('culture_species_item_and_qty', $farmer['culture_species_item_and_qty']);
                         $stmt->bindValue('remarks', $farmer['remarks']);
+                        $stmt->bindValue('introduce_by_id', $farmer['employee_id']);
                         if ($farmer['created_at']){
                             $stmt->bindValue('introduce_date', (new \DateTime($farmer['created_at']))->format('Y-m-d H:i:s'));
                         }else{

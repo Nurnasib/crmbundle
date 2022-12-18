@@ -80,6 +80,12 @@ class FarmerIntroduceDetails
     private $employee;
 
     /**
+     * @var User
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="farmerIntroduce")
+     */
+    private $introduceBy;
+
+    /**
      * @var string
      * @Orm\Column(name="culture_species_item_and_qty", type="text", nullable=true)
      */

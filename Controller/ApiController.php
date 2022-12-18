@@ -3507,4 +3507,72 @@ class ApiController extends AbstractController
         ]);
 
     }
+
+
+    /**
+     * @param Request $request
+     * @param ParameterBagInterface $parameterBag
+     * @return JsonResponse
+     * @Route("/new-farmer-introduce", name="new_farmer_introduce")
+     */
+    public function newFarmerIntroduce(Request $request, ParameterBagInterface $parameterBag)
+    {
+        set_time_limit(0);
+        ignore_user_abort(true);
+        if ($request->getMethod() == 'POST' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')) {
+            $parameters = $request->request->all();
+
+            if(isset($parameters['agent_id'])&&$parameters['agent_id']!=""){
+                $findAgent = $this->getDoctrine()->getRepository(Agent::class)->find($parameters['agent_id']);
+
+                if($findAgent && $findAgent->getAgentGroup() && $findAgent->getAgentGroup()->getSlug()!="other-agent"){
+
+                    $findFarmer = $this->getDoctrine()->getRepository(CrmCustomer::class)->find($parameters['customer_id']);
+                    /**
+                     * @var FarmerIntroduceDetails $findIntroFarmer
+                     */
+                    $findIntroFarmer = $this->getDoctrine()->getRepository(FarmerIntroduceDetails::class)->findOneBy(['customer' => $findFarmer]);
+
+                    if ($findIntroFarmer && $findIntroFarmer->getIntroduceDate()===null && $parameters['feed_id'] == 1){
+
+                        $updateFarmer = "UPDATE `crm_customers` SET `updated`= :updated,`agent_id`= :agent_id WHERE id = :id";
+                        $updateFarmerStmt = $this->getDoctrine()->getConnection()->prepare($updateFarmer);
+                        $updateFarmerStmt->bindValue('agent_id', $parameters['agent_id']);
+                        $updateFarmerStmt->bindValue('id', $parameters['customer_id']);
+
+                        if ($parameters['created_at']){
+                            $updateFarmerStmt->bindValue('updated', (new \DateTime($parameters['created_at']))->format('Y-m-d H:i:s'));
+                        }else{
+                            $updateFarmerStmt->bindValue('updated', null);
+                        }
+                        $updateFarmerStmt->execute();
+
+                        $sql = "UPDATE `crm_customer_introduce_details` SET `agent_id`= :agentId,`culture_species_item_and_qty`= :culture_species_item_and_qty,`remarks`= :remarks,`feed_id`= :feed_id,`introduce_date`= :introduce_date,`introduce_by_id`= :introduce_by_id WHERE customer_id = :farmerId";  // every time exits when create new farmer
+                        $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
+                        $stmt->bindValue('farmerId', $parameters['customer_id']);
+                        $stmt->bindValue('agentId', $parameters['agent_id']);
+                        $stmt->bindValue('culture_species_item_and_qty', $parameters['culture_species_item_and_qty']);
+                        $stmt->bindValue('remarks', $parameters['remarks']);
+                        $stmt->bindValue('introduce_by_id', $parameters['employee_id']);
+                        if ($parameters['created_at']){
+                            $stmt->bindValue('introduce_date', (new \DateTime($parameters['created_at']))->format('Y-m-d H:i:s'));
+                        }else{
+                            $stmt->bindValue('introduce_date', (new \DateTime('now'))->format('Y-m-d H:i:s'));
+                        }
+
+                        $stmt->bindValue('feed_id', 55);
+
+                        $stmt->execute();
+                    }
+                }
+
+            }
+        }
+        return new JsonResponse([
+            'status' => 500,
+            'message' => 'Server Error!'
+        ]);
+
+    }
+
 }
