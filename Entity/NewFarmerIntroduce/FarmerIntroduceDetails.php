@@ -331,4 +331,20 @@ class FarmerIntroduceDetails
         $this->otherFeed = $otherFeed;
     }
 
+    /**
+     * @return User
+     */
+    public function getIntroduceBy()
+    {
+        return $this->introduceBy;
+    }
+
+    /**
+     * @param User $introduceBy
+     */
+    public function setIntroduceBy($introduceBy): void
+    {
+        $this->introduceBy = $introduceBy;
+    }
+
 }
