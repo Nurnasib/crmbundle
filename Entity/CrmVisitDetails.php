@@ -37,7 +37,7 @@ class CrmVisitDetails
      * @ORM\Column(name="comments" , type="text", nullable=true)
      */
     private $comments;
-
+    
     /**
      * @var string
      * @ORM\Column(name="process" , type="string",nullable=true)
@@ -127,6 +127,12 @@ class CrmVisitDetails
      */
 
     private $appId;
+
+    /**
+     * @var string
+     * @ORM\Column(name="report_desc" , type="text", nullable=true)
+     */
+    private $reportDesc;
 
     /**
      * @return int
@@ -367,6 +373,22 @@ class CrmVisitDetails
     public function setAppId(int $appId): void
     {
         $this->appId = $appId;
+    }
+
+    /**
+     * @return string
+     */
+    public function getReportDesc()
+    {
+        return $this->reportDesc;
+    }
+
+    /**
+     * @param string $reportDesc
+     */
+    public function setReportDesc($reportDesc): void
+    {
+        $this->reportDesc = $reportDesc;
     }
 
 

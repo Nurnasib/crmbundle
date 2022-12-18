@@ -316,8 +316,8 @@ class SyncAppDataController extends AbstractController
                     }
                 }
 
-                $sql = "INSERT INTO `crm_visit_details`(`crm_visit_id`, `farmCapacity`, `updated`, `comments`, `created`, `customer_id`, `process`, `agent_id`, `purpose_id`, `firm_type_id`, `report_id`, `purpose_multiple`, `app_batch_id`, `app_id`)
-VALUES (:crm_visit_id, :farmCapacity, :updated, :comments, :created, :customer_id, :process, :agent_id, :purpose_id, :firm_type_id, :report_id, :purpose_multiple, :app_batch_id, :app_id)";
+                $sql = "INSERT INTO `crm_visit_details`(`crm_visit_id`, `farmCapacity`, `updated`, `comments`, `created`, `customer_id`, `process`, `agent_id`, `purpose_id`, `firm_type_id`, `report_id`, `purpose_multiple`, `app_batch_id`, `app_id`, `report_desc`)
+VALUES (:crm_visit_id, :farmCapacity, :updated, :comments, :created, :customer_id, :process, :agent_id, :purpose_id, :firm_type_id, :report_id, :purpose_multiple, :app_batch_id, :app_id, :report_desc)";
 
                 $createdAt = new \DateTime($visitDetail['created']);
                 $updatedAt = new \DateTime($visitDetail['updated']);
@@ -341,6 +341,7 @@ VALUES (:crm_visit_id, :farmCapacity, :updated, :comments, :created, :customer_i
 
                 $stmt->bindValue('app_batch_id', $batch->getId());
                 $stmt->bindValue('app_id', $visitDetail['id']);
+                $stmt->bindValue('report_desc', isset($visitDetail['report_desc'])&&$visitDetail['report_desc']!=''?$visitDetail['report_desc']:null);
 
                 $stmt->execute();
             }
