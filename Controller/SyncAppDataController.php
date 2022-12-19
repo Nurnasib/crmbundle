@@ -650,10 +650,11 @@ VALUES (:report_id, :employee_id, :agent_id, :customer_id, :hatchery_id, :breed_
     {
         foreach ($reports as $report) {
 
-            $sql = "SELECT id FROM `crm_antibiotic_free_farm` WHERE `employee_id` = :employee_id AND `customer_id` = :customer_id AND `reporting_month` = :reporting_month LIMIT 1";
+            $sql = "SELECT id FROM `crm_antibiotic_free_farm` WHERE `employee_id` = :employee_id AND `customer_id` = :customer_id AND `report_id` = :report_id AND `reporting_month` = :reporting_month LIMIT 1";
             $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
             $stmt->bindValue('employee_id', $report['employee_id']);
             $stmt->bindValue('customer_id', $report['customer_id']);
+            $stmt->bindValue('report_id', $report['report_id']);
             $stmt->bindValue('reporting_month', $report['reporting_month']);
 
             $stmt->execute();

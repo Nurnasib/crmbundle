@@ -14,7 +14,7 @@ use Terminalbd\CrmBundle\Entity\Setting;
 /**
  * @ORM\Entity(repositoryClass="Terminalbd\CrmBundle\Repository\AntibioticFreeFarmRepository")
  * @ORM\Table(name="crm_antibiotic_free_farm",
- *     uniqueConstraints={@ORM\UniqueConstraint(columns={"employee_id", "customer_id", "reporting_month"})}
+ *     uniqueConstraints={@ORM\UniqueConstraint(columns={"employee_id", "customer_id", "report_id", "reporting_month"})}
  *     )
  */
 class AntibioticFreeFarm
