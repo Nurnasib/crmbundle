@@ -735,6 +735,8 @@ VALUES (:report_id, :report_parent_parent_id, :agent_id, :customer_id, :employee
     private function processCostBenefitAnalysis($reports, Api $batch)
     {
         foreach ($reports as $report) {
+            $lessCostingReport= $this->getDoctrine()->getRepository(Setting::class)->find($report['report_id']);
+            $parentParentId= $lessCostingReport&&$lessCostingReport->getParent()&&$lessCostingReport->getParent()->getParent()?$lessCostingReport->getParent()->getParent()->getId():null;
 
             $sql = "SELECT id FROM `crm_cost_benefit_analysis_for_less_costing_farm` WHERE `employee_id` = :employee_id AND `customer_id` = :customer_id AND `reporting_month` = :reporting_month AND `report_id` = :report_id LIMIT 1";
             $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
@@ -788,7 +790,7 @@ VALUES (:report_id, :report_parent_parent_id, :agent_id, :customer_id, :employee
 
                 $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
                 $stmt->bindValue('report_id', $report['report_id']);
-                $stmt->bindValue('report_parent_parent_id', $report['report_parent_parent_id']);
+                $stmt->bindValue('report_parent_parent_id', $report['report_parent_parent_id']&&($report['report_parent_parent_id']!="null"||$report['report_parent_parent_id']!=""||$report['report_parent_parent_id']!=0)?$report['report_parent_parent_id']:$parentParentId);
                 $stmt->bindValue('agent_id', $report['agent_id']);
                 $stmt->bindValue('hatchery_id', $report['hatchery_id']);
                 $stmt->bindValue('breed_id', $report['breed_id']);
@@ -839,7 +841,7 @@ VALUES (:report_id, :report_parent_parent_id, :agent_id, :customer_id, :employee
 
                 $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
                 $stmt->bindValue('report_id', $report['report_id']);
-                $stmt->bindValue('report_parent_parent_id', $report['report_parent_parent_id']);
+                $stmt->bindValue('report_parent_parent_id', $report['report_parent_parent_id']&&($report['report_parent_parent_id']!="null"||$report['report_parent_parent_id']!=""||$report['report_parent_parent_id']!=0)?$report['report_parent_parent_id']:$parentParentId);
                 $stmt->bindValue('agent_id', $report['agent_id']);
                 $stmt->bindValue('customer_id', $report['customer_id']);
                 $stmt->bindValue('employee_id', $report['employee_id']);
