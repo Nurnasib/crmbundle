@@ -37,6 +37,8 @@ class FcrDetailsRepository extends BaseRepository
                 ->andWhere('f.report = :report')
                 ->andWhere('f.employee = :employee')
 //                ->andWhere('f.customer = :customer')
+                ->andWhere('f.deletedAt IS NULL')
+                ->andWhere('f.deletedBy IS NULL')
                 ->setParameters(array('startDate'=>$startDate, 'endDate'=>$endDate, 'type'=>$data, 'report'=>$report, 'employee'=>$employee));
 
             return $query->getQuery()->getResult();
@@ -56,6 +58,8 @@ class FcrDetailsRepository extends BaseRepository
                 ->andWhere('f.fcrOfFeed = :type')
                 ->andWhere('f.report = :report')
                 ->andWhere('f.employee = :employee')
+                ->andWhere('f.deletedAt IS NULL')
+                ->andWhere('f.deletedBy IS NULL')
                 ->setParameters(array('startDate'=>$startDate, 'endDate'=>$endDate, 'type'=>$data, 'report'=>$report, 'employee'=>$employee));
 
             return $query->getQuery()->getOneOrNullResult();

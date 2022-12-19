@@ -54,6 +54,9 @@
         <th data-a-h="center" scope="col" colspan="3" class="text-center">Others Information</th>
         <th data-a-h="center" scope="col" rowspan="2" class="text-center">Disease</th>
         <th data-a-h="center" scope="col" rowspan="2" class="text-center">Remarks</th>
+        {% if is_granted('ROLE_DEVELOPER') or is_granted('ROLE_CRM_POULTRY_ADMIN') %}
+            <th data-exclude="true" class="text-center" scope="col" rowspan="2">Action</th>
+        {% endif %}
 
     </tr>
     <tr style="position: sticky; top: 28px; background-color: #dbdee3" class="data-header">
@@ -123,6 +126,11 @@
                             <td>{{ detail['colorName']|default('') }}</td>
                             <td>{{ detail['disease']|default('') }}</td>
                             <td>{{ detail['remarks']|default('') }}</td>
+                            {% if is_granted('ROLE_DEVELOPER') or is_granted('ROLE_CRM_POULTRY_ADMIN') %}
+                                <td class="text-center" data-exclude="true" >
+                                    <a data-action="{{ path('layer_parformance_details_soft_delete_by_admin_user',{id:detail['rId']}) }}" class="btn btn-danger btn-xs record_delete">x</a>
+                                </td>
+                            {% endif %}
                         </tr>
                         {% set regionRecordCount=regionRecordCount+1 %}
                         {% set recordCount=recordCount+1 %}

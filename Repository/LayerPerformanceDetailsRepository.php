@@ -41,6 +41,8 @@ class LayerPerformanceDetailsRepository extends BaseRepository
                 ->andWhere('lpr.report = :report')
 //                ->andWhere('lpr.customer = :customer')
                 ->andWhere('lpr.employee = :employee')
+                ->andWhere('lpr.deletedAt IS NULL')
+                ->andWhere('lpr.deletedBy IS NULL')
                 ->setParameters(array('startDate'=>$startDate, 'endDate'=>$endDate, 'report'=>$report, 'employee'=>$employee));
 
             return $query->getQuery()->getResult();
@@ -58,7 +60,8 @@ class LayerPerformanceDetailsRepository extends BaseRepository
         $qb->where('employee.id = :employeeId')->setParameter('employeeId', $filterBy['employeeId']);
         $qb->andWhere('e.reportingMonth >= :monthStart')->setParameter('monthStart', $filterBy['monthStart']);
         $qb->andWhere('e.reportingMonth <= :monthEnd')->setParameter('monthEnd', $filterBy['monthEnd']);
-
+        $qb->andWhere('e.deletedAt IS NULL');
+        $qb->andWhere('e.deletedBy IS NULL');
         $results = $qb->getQuery()->getSingleResult();
         return $results['totalReport'];
     }
@@ -111,7 +114,8 @@ class LayerPerformanceDetailsRepository extends BaseRepository
             $qb->leftJoin('e.feedType', 'feedType');
             $qb->leftJoin('e.color', 'color');
             $qb->where('e.report =:report')->setParameter('report',$report);
-
+            $qb->andWhere('e.deletedAt IS NULL');
+            $qb->andWhere('e.deletedBy IS NULL');
             $employee = isset($filterBy['employeeId'])&&$filterBy['employeeId']!=''? $filterBy['employeeId']: '';
             if (!empty($employee)){
                 $qb->andWhere('employee.id = :employee')->setParameter('employee', $employee);
@@ -246,7 +250,8 @@ class LayerPerformanceDetailsRepository extends BaseRepository
         $qb->where('e.employee = :employee')->setParameter('employee',$board->getEmployee());
         $qb->andWhere('e.reportingMonth >= :startDate')->setParameter('startDate', $startDate);
         $qb->andWhere('e.reportingMonth <= :endDate')->setParameter('endDate', $endDate);
-
+        $qb->andWhere('e.deletedAt IS NULL');
+        $qb->andWhere('e.deletedBy IS NULL');
         return count($qb->getQuery()->getArrayResult());
     }
 }

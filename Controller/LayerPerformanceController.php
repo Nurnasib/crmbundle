@@ -102,6 +102,57 @@ class LayerPerformanceController extends AbstractController
 
 
     /**
+     * Deletes a Fcr entity.
+     * @Route("/soft/delete/{id}/by/admin/user", methods={"POST","GET"}, name="layer_parformance_details_soft_delete_by_admin_user", options={"expose"=true})
+     * @param $id
+     * @return Response
+     * @Security("is_granted('ROLE_CRM_POULTRY_ADMIN') or is_granted('ROLE_DEVELOPER')")
+     */
+    public function softDeleteLayerParformanceDetailsByAdminUser($id): Response
+    {
+
+        $entity = $this->getDoctrine()->getRepository(LayerPerformanceDetails::class)->find($id);
+        $em = $this->getDoctrine()->getManager();
+        $entity->setDeletedBy($this->getUser());
+        $entity->setDeletedAt(new \DateTime('now'));
+        $em->persist($entity);
+        $em->flush();
+
+        $requestAllData = $_REQUEST;
+        $data = isset($requestAllData['search_filter_form'])&&$requestAllData['search_filter_form']?$requestAllData['search_filter_form']:[];
+        /*return new JsonResponse($data['search_filter_form']);*/
+        $reportId = isset( $data['monthlyReport'])&&$data['monthlyReport']? $data['monthlyReport']:'';
+        $report=$entity->getReport();
+
+        $filterBy['startDate'] = isset( $data['startDate'])&&$data['startDate']? date('Y-m-d', strtotime($data['startDate'])):'';
+        $filterBy['endDate'] = isset( $data['endDate'])&&$data['endDate']? date('Y-m-d', strtotime($data['endDate'])):'';
+        $filterBy['employeeId'] = isset( $data['employee'])&&$data['employee']?$data['employee']:'';
+        $filterBy['feedMill'] = isset( $data['feedMill'])&&$data['feedMill']?$data['feedMill']:'';
+        $filterBy['region'] = isset( $data['region'])&&$data['region']?$data['region']:'';
+        $filterBy['feedCompany'] = isset($data['feedCompany'])&&$data['feedCompany']? $data['feedCompany'] : '';
+        $employee=null;
+//        return new JsonResponse($requestAllData['search_filter_form']);
+
+        $entities = $this->getDoctrine()->getRepository(LayerPerformanceDetails::class)->getLayerPerformanceReportByEmployeeAndDate($report, $filterBy, $this->getUser());
+//        return new JsonResponse($entities);
+        $htmlProcess='';
+        if($report&&($report->getSlug()=='layer-performance-brown'||$report->getSlug()=='layer-performance-white')){
+            $htmlProcess = $this->renderView(
+                '@TerminalbdCrm/report/monthlyReport/inc/poultry/_layer_performance.html.twig', array(
+                    'entities' => $entities,
+                    'filterBy' => $filterBy,
+                    'reportSlug' => $report ? $report->getSlug() : null,
+                    'employee' => $employee,
+                    'report' => $report,
+                )
+            );
+        }
+
+        return new Response($htmlProcess);
+    }
+
+
+    /**
      * @Route("/visit/{visit}/{id}/details/add", methods={"POST"}, name="crm_layer_performance_detail_report_add", options={"expose"=true})
      * @param Request $request
      * @param Setting $report

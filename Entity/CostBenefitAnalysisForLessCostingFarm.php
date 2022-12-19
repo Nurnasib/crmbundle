@@ -14,7 +14,7 @@ use Terminalbd\CrmBundle\Entity\Setting;
  *
  * @ORM\Entity(repositoryClass="Terminalbd\CrmBundle\Repository\CostBenefitAnalysisForLessCostingFarmRepository")
  * @ORM\Table(name="crm_cost_benefit_analysis_for_less_costing_farm",
- *     uniqueConstraints={@ORM\UniqueConstraint(columns={"employee_id", "customer_id", "reporting_month"})}
+ *     uniqueConstraints={@ORM\UniqueConstraint(columns={"employee_id", "customer_id", "report_id", "reporting_month"})}
  *     )
  */
 class CostBenefitAnalysisForLessCostingFarm
