@@ -188,7 +188,7 @@ class LayerLifeCycleDetails
      * @var integer
      * @Orm\Column(name="is_visited", type="integer", options={"default"="0"})
      */
-    private $isVisited=1;
+    private $isVisited=0;
     
     /**
      * @return int

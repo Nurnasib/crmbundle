@@ -178,6 +178,7 @@ class LayerLifeCycleController extends AbstractController
             $entity->setTargetFeedPerBird($layerStandard?$layerStandard->getTargetFeedConsumption():0);
             $entity->setTargetEggProduction($layerStandard?$layerStandard->getTargetEggProduction():0);
             $entity->setEggWeightStandard($layerStandard?$layerStandard->getTargetEggWeight():0);
+            $entity->setIsVisited(1);
         }
 
         $em = $this->getDoctrine()->getManager();
