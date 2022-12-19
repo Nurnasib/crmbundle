@@ -177,6 +177,9 @@
     <script>
         $("#search_filter_form_employee").on('change', function () {
             var employeeId = $(this).val();
+            if(employeeId==''){
+                return false;
+            }
             $.ajax({
                 url: Routing.generate('get_farmer_by_employee_location',{'id':employeeId}),
                 type: 'post',

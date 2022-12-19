@@ -37,7 +37,7 @@ use Terminalbd\CrmBundle\Repository\FcrRepository;
 
 /**
  * @Route("/crm/fcr")
- * @Security("is_granted('ROLE_CRM_POULTRY_USER') or is_granted('ROLE_DEVELOPER')")
+ * @Security("is_granted('ROLE_CRM_POULTRY_USER') or is_granted('ROLE_CRM_POULTRY_ADMIN') or is_granted('ROLE_DEVELOPER')")
  */
 class FcrController extends AbstractController
 {
@@ -207,6 +207,90 @@ class FcrController extends AbstractController
         $em->flush();
         $this->addFlash('success', 'post.deleted_successfully');
         return new Response('Success');
+    }
+
+    /**
+     * Deletes a Fcr entity.
+     * @Route("/soft/delete/{id}/by/admin/user", methods={"POST","GET"}, name="fcr_detail_soft_delete_by_admin_user", options={"expose"=true})
+     * @param $id
+     * @return Response
+     * @Security("is_granted('ROLE_CRM_POULTRY_ADMIN') or is_granted('ROLE_DEVELOPER')")
+     */
+    public function softDeleteFcrDetailsByAdminUser($id): Response
+    {
+
+//        return new JsonResponse($data);
+        $entity = $this->getDoctrine()->getRepository(FcrDetails::class)->find($id);
+        $em = $this->getDoctrine()->getManager();
+        $entity->setDeletedBy($this->getUser());
+        $entity->setDeletedAt(new \DateTime('now'));
+        $em->persist($entity);
+        $em->flush();
+
+        $requestAllData = $_REQUEST;
+        $data = isset($requestAllData['search_filter_form'])&&$requestAllData['search_filter_form']?$requestAllData['search_filter_form']:[];
+        /*return new JsonResponse($data['search_filter_form']);*/
+        $reportId = isset( $data['monthlyReport'])&&$data['monthlyReport']? $data['monthlyReport']:'';
+        $report=$entity->getReport();
+        /*if($reportId){
+            $report=$this->getDoctrine()->getRepository(FcrDetails::class)->find($reportId);
+        }*/
+
+        $filterBy['startDate'] = isset( $data['startDate'])&&$data['startDate']? date('Y-m-d', strtotime($data['startDate'])):'';
+        $filterBy['endDate'] = isset( $data['endDate'])&&$data['endDate']? date('Y-m-d', strtotime($data['endDate'])):'';
+        $filterBy['employeeId'] = isset( $data['employee'])&&$data['employee']?$data['employee']:'';
+        $filterBy['feedMill'] = isset( $data['feedMill'])&&$data['feedMill']?$data['feedMill']:'';
+        $filterBy['region'] = isset( $data['region'])&&$data['region']?$data['region']:'';
+        $filterBy['feedCompany'] = isset($data['feedCompany'])&&$data['feedCompany']? $data['feedCompany'] : '';
+        $employee=null;
+//        return new JsonResponse($requestAllData['search_filter_form']);
+
+        $entities = $this->getDoctrine()->getRepository(FcrDetails::class)->getFcrDetailsByEmployee($report, $filterBy, $this->getUser());
+//        return new JsonResponse($entities);
+        $htmlProcess='';
+        if($report&&$report->getSlug()=='fcr-before-sale-boiler'){
+            $htmlProcess = $this->renderView(
+                '@TerminalbdCrm/report/monthlyReport/inc/_fcr_broiler_before.html.twig', array(
+                    'entities' => $entities,
+                    'filterBy' => $filterBy,
+                    'reportSlug' => $report ? $report->getSlug() : null,
+                    'employee' => $employee,
+                    'report' => $report,
+                )
+            );
+        }elseif ($report&&$report->getSlug()=='fcr-after-sale-boiler'){
+            $htmlProcess = $this->renderView(
+                '@TerminalbdCrm/report/monthlyReport/inc/_fcr_broiler_after.html.twig', array(
+                    'entities' => $entities,
+                    'filterBy' => $filterBy,
+                    'reportSlug' => $report ? $report->getSlug() : null,
+                    'employee' => $employee,
+                    'report' => $report,
+                )
+            );
+        }elseif ($report&&$report->getSlug()=='fcr-before-sale-sonali'){
+            $htmlProcess = $this->renderView(
+                '@TerminalbdCrm/report/monthlyReport/inc/_fcr_sonali_before.html.twig', array(
+                    'entities' => $entities,
+                    'filterBy' => $filterBy,
+                    'reportSlug' => $report ? $report->getSlug() : null,
+                    'employee' => $employee,
+                    'report' => $report,
+                )
+            );
+        }elseif ($report&&$report->getSlug()=='fcr-after-sale-sonali'){
+            $htmlProcess = $this->renderView(
+                '@TerminalbdCrm/report/monthlyReport/inc/_fcr_sonali_after.html.twig', array(
+                    'entities' => $entities,
+                    'filterBy' => $filterBy,
+                    'reportSlug' => $report ? $report->getSlug() : null,
+                    'employee' => $employee,
+                    'report' => $report,
+                )
+            );
+        }
+        
+        return new Response($htmlProcess);
     }
 
     /**

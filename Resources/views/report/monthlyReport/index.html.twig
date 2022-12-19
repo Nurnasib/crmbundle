@@ -18,9 +18,10 @@
 
         <div class="row">
             <div class="col p-0">
+                {{ form_start(form, {'attr': {'id': 'search_filter_form'}}) }}
                 <table class="table">
                     <thead class="thead-dark">
-                    {{ form_start(form) }}
+
                     <tr>
                         <th style="min-width: 300px">
                             {{ form_label(form.monthlyReport, 'Report:', { 'label_attr': {'class': 'col-md-3 text-right'} })}}
@@ -94,15 +95,16 @@
                         </th>
 {#                        <th></th>#}
                     </tr>
-                    </form>
+
                     </thead>
                 </table>
+                </form>
             </div>
         </div>
         {% if entities is defined and entities is not empty %}
             <div class="row">
                 <div class="card" style="overflow-x: scroll; max-height: 75vh">
-                    <div class="card-body p-0">
+                    <div id="data-load" class="card-body p-0">
                         {% if reportSlug is same as 'fcr-before-sale-boiler' %}
                             {% include '@TerminalbdCrm/report/monthlyReport/inc/_fcr_broiler_before.html.twig'%}
 
@@ -190,6 +192,13 @@
 /*        table.filter thead th{
             border: 0 !important;
         }*/
+        .btn-xs{
+            padding: 0.25rem;
+            font-size: 0.80rem;
+            line-height: 1;
+            color: #FFFFFF;
+        }
+
     </style>
 
 {% endblock  %}
@@ -201,6 +210,9 @@
     <script>
         $("#search_filter_form_employee").on('change', function () {
             var employeeId = $(this).val();
+            if(employeeId==''){
+                return false;
+            }
             $.ajax({
                 url: Routing.generate('get_farmer_by_employee_location',{'id':employeeId}),
                 type: 'post',
@@ -237,6 +249,41 @@
                 }
             });
         });
+
+        $(document).on('click', '.record_delete', function (event) {
+            event.preventDefault();
+            var url = $(this).attr('data-action');
+            var formData=new FormData($('form#search_filter_form')[0]);
+            /*var reportId= $('#search_filter_form_monthlyReport').val();
+            console.log(reportId);*/
+            $.MessageBox({
+                buttonFail  : "No",
+                buttonDone  : "Yes",
+                message     : "Are you sure want to delete this record?"
+            }).done(function(){
+                /*$.get(url, {name:'Steve'}, function( data ) {
+                    $(event.target).closest('tr').hide();
+                });*/
+                $.ajax({
+                    url         :url,
+                    type        : 'post',
+                    data        : formData,
+                    processData : false,
+                    contentType : false,
+                    beforeSend: function(){
+                        $('.loader-double').fadeIn(1000).addClass('is-active');
+                    },
+                    complete: function(){
+                        $('.loader-double').fadeIn(1000).removeClass('is-active');
+                    },
+                    success: function(response){
+                        console.log(response);
+                        $('#data-load').html(response);
+                    }
+                });
+            });
+        });
+
     </script>
 {% endblock  %}
 {% block documentready %}

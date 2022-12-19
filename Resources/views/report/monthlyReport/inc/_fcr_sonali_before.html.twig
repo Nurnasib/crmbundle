@@ -55,9 +55,12 @@
         <th data-a-v="middle" class="text-center" style="width: 150px;" scope="col" rowspan="2">Feed</th>
         <th data-a-v="middle" class="text-center" style="width: 150px;" scope="col" rowspan="2">FeedMill</th>
         <th data-a-v="middle" class="text-center" style="width: 150px;" scope="col" rowspan="2">FeedType</th>
-        <th data-a-v="middle" class="text-center" style="width: 150px;" style="width: 105px" scope="col" rowspan="2">Pro. Date</th>
+        <th data-a-v="middle" class="text-center" style="width: 150px;" scope="col" rowspan="2">Pro. Date</th>
         <th data-a-v="middle" class="text-center" style="width: 200px;" scope="col" rowspan="2">Batch No.</th>
         <th data-a-v="middle" class="text-center" style="width: 300px;" scope="col" rowspan="2">Remarks</th>
+        {% if is_granted('ROLE_DEVELOPER') or is_granted('ROLE_CRM_POULTRY_ADMIN') %}
+            <th data-exclude="true" class="text-center" style="" scope="col" rowspan="2">Action</th>
+        {% endif %}
     </tr>
     <tr style="position: sticky; top: 28px; background-color: #dbdee3" class="data-header">
         <th class="text-center" scope="col">Pcs</th>
@@ -132,6 +135,11 @@
                                         <td data-t="s">{{ fcrDetail['proDate']|date('d-m-Y') }}</td>
                                         <td data-t="s">{{ fcrDetail['batchNo'] }}</td>
                                         <td data-t="s">{{ fcrDetail['remarks'] }}</td>
+                                        {% if is_granted('ROLE_DEVELOPER') or is_granted('ROLE_CRM_POULTRY_ADMIN') %}
+                                            <td class="text-center" data-exclude="true" >
+                                                <a data-action="{{ path('fcr_detail_soft_delete_by_admin_user',{id:fcrDetail['id']}) }}" class="btn btn-danger btn-xs record_delete">x</a>
+                                            </td>
+                                        {% endif %}
                                     </tr>
                                     {% set totalRecordCount=totalRecordCount+1 %}
                                     {% set recordCount=recordCount+1 %}

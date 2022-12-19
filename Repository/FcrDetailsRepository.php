@@ -71,7 +71,7 @@ class FcrDetailsRepository extends BaseRepository
         if(!empty($report)){
             $qb = $this->createQueryBuilder('e');
 
-            $qb->select('e.fcrOfFeed', 'e.reportingMonth', 'e.hatchingDate', 'e.totalBirds', 'e.ageDay', 'e.mortalityPes', 'e.mortalityPercent', 'e.weight', 'e.weightStandard', 'e.feedConsumptionTotalKg', 'e.feedConsumptionPerBird', 'e.feedConsumptionStandard', 'e.fcrWithoutMortality', 'e.fcrWithMortality', 'e.proDate', 'e.batchNo', 'e.remarks', 'e.createdAt');
+            $qb->select('e.id','e.fcrOfFeed', 'e.reportingMonth', 'e.hatchingDate', 'e.totalBirds', 'e.ageDay', 'e.mortalityPes', 'e.mortalityPercent', 'e.weight', 'e.weightStandard', 'e.feedConsumptionTotalKg', 'e.feedConsumptionPerBird', 'e.feedConsumptionStandard', 'e.fcrWithoutMortality', 'e.fcrWithMortality', 'e.proDate', 'e.batchNo', 'e.remarks', 'e.createdAt');
 
             $qb->addSelect('agent.name AS agentName', 'agent.address AS agentAddress');
 
@@ -104,6 +104,8 @@ class FcrDetailsRepository extends BaseRepository
             $qb->leftJoin('e.feedMill', 'feed_mill');
             $qb->leftJoin('e.feedType', 'feed_type');
             $qb->where('e.report =:report')->setParameter('report',$report);
+            $qb->andWhere('e.deletedAt IS NULL');
+            $qb->andWhere('e.deletedBy IS NULL');
 
             $startDate = isset($filterBy['startDate'])? (new \DateTime($filterBy['startDate']))->format('Y-m-d') . ' 00:00:00': '';
             $endDate = isset($filterBy['endDate'])? (new \DateTime($filterBy['endDate']))->format('Y-m-d') . ' 23:59:59': '';
@@ -247,7 +249,8 @@ class FcrDetailsRepository extends BaseRepository
         $qb->andWhere('e.fcrOfFeed = :fcrFeed')->setParameter('fcrFeed', 'AFTER');
         $qb->andWhere('e.reportingMonth >= :monthStart')->setParameter('monthStart', $filterBy['monthStart']);
         $qb->andWhere('e.reportingMonth <= :monthEnd')->setParameter('monthEnd', $filterBy['monthEnd']);
-
+        $qb->andWhere('e.deletedAt IS NULL');
+        $qb->andWhere('e.deletedBy IS NULL');
         $results = $qb->getQuery()->getSingleResult();
         return $results['totalReport'];
     }
@@ -265,6 +268,8 @@ class FcrDetailsRepository extends BaseRepository
         $qb->andWhere('e.reportingMonth >= :monthStart')->setParameter('monthStart', $filterBy['monthStart']);
         $qb->andWhere('e.reportingMonth <= :monthEnd')->setParameter('monthEnd', $filterBy['monthEnd']);
         $qb->andWhere('report.slug = :slug')->setParameter('slug', 'fcr-before-sale-boiler');
+        $qb->andWhere('e.deletedAt IS NULL');
+        $qb->andWhere('e.deletedBy IS NULL');
 
         $results = $qb->getQuery()->getSingleResult();
         return $results['totalReport'];
@@ -286,7 +291,8 @@ class FcrDetailsRepository extends BaseRepository
         $qb->andWhere('e.fcrOfFeed = :type')->setParameter('type', $type);
         $qb->andWhere('e.reportingMonth >= :startDate')->setParameter('startDate', $startDate);
         $qb->andWhere('e.reportingMonth <= :endDate')->setParameter('endDate', $endDate);
-
+        $qb->andWhere('e.deletedAt IS NULL');
+        $qb->andWhere('e.deletedBy IS NULL');
         return count($qb->getQuery()->getArrayResult());
     }
 

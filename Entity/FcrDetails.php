@@ -229,6 +229,18 @@ class FcrDetails
     private $appId;
 
     /**
+     * @var User
+     * @ORM\ManyToOne(targetEntity="App\Entity\User" , inversedBy="fcr")
+     */
+    private $deletedBy;
+
+    /**
+     * @var \DateTime
+     * @ORM\Column(name="deleted_at", type="datetime", nullable=true)
+     */
+    private $deletedAt;
+
+    /**
      * @return int
      */
     public function getId()
@@ -762,6 +774,38 @@ class FcrDetails
     public function setAppId(int $appId): void
     {
         $this->appId = $appId;
+    }
+
+    /**
+     * @return User
+     */
+    public function getDeletedBy()
+    {
+        return $this->deletedBy;
+    }
+
+    /**
+     * @param User $deletedBy
+     */
+    public function setDeletedBy($deletedBy): void
+    {
+        $this->deletedBy = $deletedBy;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDeletedAt()
+    {
+        return $this->deletedAt;
+    }
+
+    /**
+     * @param \DateTime $deletedAt
+     */
+    public function setDeletedAt(\DateTime $deletedAt): void
+    {
+        $this->deletedAt = $deletedAt;
     }
 
 }
