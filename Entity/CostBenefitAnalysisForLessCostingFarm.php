@@ -318,7 +318,7 @@ class CostBenefitAnalysisForLessCostingFarm
     /**
      * @param Setting $reportParentParent
      */
-    public function setReportParentParent(Setting $reportParentParent): void
+    public function setReportParentParent($reportParentParent): void
     {
         $this->reportParentParent = $reportParentParent;
     }
