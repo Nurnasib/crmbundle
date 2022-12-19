@@ -150,7 +150,7 @@ class CompanyWiseFeedSale
     /**
      * @param string $productWiseQty
      */
-    public function setProductWiseQty(string $productWiseQty): void
+    public function setProductWiseQty($productWiseQty): void
     {
         $this->productWiseQty = $productWiseQty;
     }
