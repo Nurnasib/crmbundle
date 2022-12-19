@@ -408,7 +408,7 @@ class ChickLifeCycleDetails
      */
     public function getWithoutMortality()
     {
-        return number_format($this->withoutMortality,2,'.','');
+        return number_format($this->withoutMortality,3,'.','');
     }
 
     /**
@@ -434,7 +434,7 @@ class ChickLifeCycleDetails
      */
     public function getWithMortality()
     {
-        return number_format($this->withMortality,2,'.','');
+        return number_format($this->withMortality,3,'.','');
     }
 
     /**
