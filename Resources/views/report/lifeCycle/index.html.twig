@@ -127,11 +127,16 @@
     {{ parent() }}
     <link rel="stylesheet" href="{{ asset('assets/module/css/app.css') }}">
     <style>
-        table.filter-result thead {
+        table.filter-result thead.thead-dark {
             position: sticky;
             top: -1px;
             background-color: #dbdee3 !important;
             border-bottom: 2px solid #4C9EE7!important;
+        }
+        table thead tr.data-header th{
+
+            border: 2px solid #b5b5b5 !important;
+            border-bottom-color: #b5b5b5 !important;
         }
     </style>
 {% endblock  %}

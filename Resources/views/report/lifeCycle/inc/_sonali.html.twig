@@ -27,7 +27,7 @@
                     <th colspan="27"><h4 class="bg-secondary text-center p-1">{{ month }}</h4>
                     </th>
                 </tr>
-                <tr>
+                <tr class="data-header">
                     <th data-a-v="middle" scope="col" rowspan="2">Report Status</th>
                     <th data-a-h="center" scope="col" colspan="2" class="text-center">Agent</th>
                     <th data-a-h="center" scope="col" colspan="3" class="text-center">Farmer</th>
@@ -48,7 +48,7 @@
                     <th data-a-v="middle" scope="col" rowspan="2">Remarks</th>
                 </tr>
 
-                <tr>
+                <tr class="data-header">
                     <th scope="col">Name</th>
                     <th scope="col">Address</th>
                     <th scope="col">Name</th>
@@ -68,7 +68,20 @@
                 </thead>
                 <tbody>
                 {% for lifeCycle in entity %}
+                    {% set presentBird=0 %}
+                    {% set currentTotalBird=0 %}
                     {% for detail in lifeCycle.details %}
+
+                        {% set cureentMortalityPes=detail.mortalityPes|default(0) %}
+                        {% set presentBird=lifeCycle.parent.totalBirds|default(0)-cureentMortalityPes %}
+                        {% set currentTotalBird=lifeCycle.parent.totalBirds|default(0) %}
+                        {% set mortalityPercentage = currentTotalBird>0?((cureentMortalityPes*100)/currentTotalBird):0 %}
+                        {% set totalFeedKg = detail.feedTotalKg|default(0) %}
+                        {% set perBirdGm = currentTotalBird>0?((totalFeedKg/currentTotalBird)*1000):0 %}
+                        {% set weightAchieved = detail.weightAchieved|default(0) %}
+                        {% set calculateWithoutMortality = currentTotalBird>0 and weightAchieved>0?(((totalFeedKg/currentTotalBird)/weightAchieved)*1000):0 %}
+                        {% set calculateWithMortality = presentBird>0 and weightAchieved>0?(((totalFeedKg/presentBird)/weightAchieved)*1000):0 %}
+
                         <tr>
                             {% if loop.first %}
                                 <td data-a-v="middle" valign="middle"
@@ -99,17 +112,17 @@
                                     rowspan="{{ lifeCycle.details|length }}">{{ lifeCycle.parent.hatchingDate|date('d-m-Y') }}</td>
                             {% endif %}
                             <td data-t="s">{{ detail.visitingWeek|week|default('N/A') }}</td>
-                            <td data-t="n">{{ lifeCycle.parent.totalBirds|default(0) }}</td>
+                            <td data-t="n">{{ currentTotalBird }}</td>
                             <td data-t="n">{{ detail.ageDays|default(0) }}</td>
                             <td data-t="n">{{ detail.mortalityPes|number_format(2)|default(0) }}</td>
-                            <td data-t="n">{{ detail.mortalityPercent|number_format(2)|default(0) }}</td>
+                            <td data-t="n">{{ mortalityPercentage|number_format(2) }}</td>
                             <td data-t="n">{{ detail.weightStandard|number_format(2)|default('') }}</td>
                             <td data-t="n">{{ detail.weightAchieved|number_format(2)|default(0) }}</td>
-                            <td data-t="n">{{ detail.feedTotalKg|number_format(2)|default(0) }}</td>
-                            <td data-t="n">{{ detail.perBird|number_format(2)|default(0) }}</td>
+                            <td data-t="n">{{ totalFeedKg|number_format(2) }}</td>
+                            <td data-t="n">{{ perBirdGm|number_format(2) }}</td>
                             <td data-t="n">{{ detail.feedStandard|number_format(2)|default('') }}</td>
-                            <td data-t="n">{{ detail.withoutMortality|number_format(2)|default(0) }}</td>
-                            <td data-t="n">{{ detail.withMortality|number_format(2)|default(0) }}</td>
+                            <td data-t="n">{{ calculateWithoutMortality|number_format(2) }}</td>
+                            <td data-t="n">{{ calculateWithMortality|number_format(2) }}</td>
                             <td data-t="n">{{ detail.weightStandard>0?(detail.feedStandard/detail.weightStandard)|number_format(2)|default(0):'' }}</td>
                             {% if loop.first %}
                                 <td data-a-v="middle" valign="middle"
