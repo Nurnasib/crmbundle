@@ -1307,7 +1307,7 @@ VALUES (:total_birds, :hatchery_date, :created, :updated, :customer_id, :employe
                 $stmt->bindValue('hatchery_id', $report['hatchery_id']);
                 $stmt->bindValue('breed_id', $report['breed_id']);
                 $stmt->bindValue('feed_id', $report['feed_id']);
-                $stmt->bindValue('feed_mill_id', $report['feed_mill_id']);
+                $stmt->bindValue('feed_mill_id', isset($report['feed_mill_id'])&&$report['feed_mill_id']!=""?$report['feed_mill_id']:null);
                 $stmt->bindValue('app_batch_id', $batch->getId());
                 $stmt->bindValue('app_id', $report['id']);
                 $stmt->bindValue('farm_number', isset($report['farm_number'])&&$report['farm_number']?$report['farm_number']:1);
