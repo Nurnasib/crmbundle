@@ -528,18 +528,17 @@ VALUES (:employee_id, :report_id, :agent_id, :customer_id, :breed_type, :feed_ty
                 $fromDate= $cratedAt->format('Y-m-d').' 00:00:00';
                 $toDate= $cratedAt->format('Y-m-d').' 23:59:59';
                 $crmVisitId=null;
-                if($frcDetail['fcr_of_feed']=="AFTER"){
+                /*if($frcDetail['fcr_of_feed']=="AFTER"){
                     $sql = "SELECT id FROM `crm_visit` WHERE `app_batch_id` = :app_batch_id AND `employee_id` = :employee_id AND `created` >= :from_date AND `created` <= :to_date LIMIT 1";
                     $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
                     $stmt->bindValue('app_batch_id', $batch->getId());
                     $stmt->bindValue('employee_id', $frcDetail['employee_id']);
-//                $stmt->bindValue('location_id', $agentLocationId);
                     $stmt->bindValue('from_date', $fromDate);
                     $stmt->bindValue('to_date', $toDate);
 
                     $stmt->execute();
                     $crmVisitId = $stmt->fetch();
-                }
+                }*/
                 if($frcDetail['fcr_of_feed']=="BEFORE"){
                     $sql = "SELECT crm_visit.id FROM `crm_visit` join crm_visit_details on crm_visit_details.crm_visit_id=crm_visit.id WHERE `crm_visit`.`app_batch_id` = :app_batch_id AND `crm_visit`.`employee_id` = :employee_id AND `crm_visit`.`created` >= :from_date AND `crm_visit`.`created` <= :to_date AND `crm_visit_details`.`process` = :process AND `crm_visit_details`.`customer_id` = :customer_id group by crm_visit.id LIMIT 1";
                     $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
@@ -552,18 +551,19 @@ VALUES (:employee_id, :report_id, :agent_id, :customer_id, :breed_type, :feed_ty
 
                     $stmt->execute();
                     $crmVisitId = $stmt->fetch();
+
+                    if($crmVisitId && isset($crmVisitId['id'])){
+
+                        $findVisit = $this->getDoctrine()->getRepository(CrmVisit::class)->find($crmVisitId['id']);
+                    }
                 }
 
-                if($crmVisitId && isset($crmVisitId['id'])){
-
-                    $findVisit = $this->getDoctrine()->getRepository(CrmVisit::class)->find($crmVisitId['id']);
-                }
             }else{
                 $findVisit = $this->getDoctrine()->getRepository(CrmVisit::class)->findOneBy(['appId' => $frcDetail['crm_visit_id'], 'appBatch' => $batch]);
             }
 
 
-            if ($findVisit){
+//            if ($findVisit){
                 $deleteSql = "DELETE FROM `crm_fcr_details` WHERE `app_batch_id`= :app_batch_id AND `app_id`= :app_id";
                 $stmtDelete = $this->getDoctrine()->getConnection()->prepare($deleteSql);
                 $stmtDelete->bindValue('app_batch_id', $batch->getId());
@@ -638,12 +638,12 @@ VALUES (:report_id, :employee_id, :agent_id, :customer_id, :hatchery_id, :breed_
                 $stmt->bindValue('batch_no', $frcDetail['batch_no']);
                 $stmt->bindValue('remarks', $frcDetail['remarks']);
                 $stmt->bindValue('created_at', $createdAt->format('Y-m-d H:i:s'));
-                $stmt->bindValue('visit_id', $findVisit->getId());
+                $stmt->bindValue('visit_id', $findVisit?$findVisit->getId():null);
                 $stmt->bindValue('app_batch_id', $batch->getId());
                 $stmt->bindValue('app_id', $frcDetail['id']);
 
                 $stmt->execute();
-            }
+//            }
         }
     }
     private function processAntibioticFreeFarm($reports, Api $batch)
