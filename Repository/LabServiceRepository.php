@@ -90,7 +90,7 @@ class LabServiceRepository extends EntityRepository
                 ->join('ls.lab','lab')
                 ->join('ls.service','service')
                 ->select('ls.id','ls.january','ls.february','ls.march','ls.april','ls.may','ls.june','ls.july','ls.august','ls.september','ls.october','ls.november','ls.december')
-                ->where('ls.reportingYear >= :reportingYear')
+                ->where('ls.reportingYear =:reportingYear')
                 ->andWhere('employee.id = :employeeId')
                 ->andWhere('lab.id = :lab')
                 ->andWhere('service.id = :labService')
