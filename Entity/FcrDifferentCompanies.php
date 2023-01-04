@@ -150,6 +150,12 @@ class FcrDifferentCompanies
     private $createdAt;
 
     /**
+     * @var string
+     * @Orm\Column(type="string", nullable=true)
+     */
+    private $reportingYear;
+    
+    /**
      * @return int
      */
     public function getId()
@@ -419,6 +425,22 @@ class FcrDifferentCompanies
     public function setBreedName(string $breedName): void
     {
         $this->breedName = $breedName;
+    }
+
+    /**
+     * @return string
+     */
+    public function getReportingYear()
+    {
+        return $this->reportingYear;
+    }
+
+    /**
+     * @param string $reportingYear
+     */
+    public function setReportingYear($reportingYear): void
+    {
+        $this->reportingYear = $reportingYear;
     }
 
 }

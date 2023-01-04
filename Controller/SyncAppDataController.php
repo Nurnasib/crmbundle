@@ -1807,22 +1807,23 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
     {
         foreach ($reports as $report) {
             $createdAt = $report['created_at'] ? (new \DateTime($report['created_at']))->format('Y-m-d H:i:s') : null;
-
+            $year = $report['year'] ? $report['year'] : (new \DateTime($report['created_at']))->format('Y');
             /**
              * @var FcrDifferentCompanies $exist
              */
-            $exist = $this->getDoctrine()->getRepository(FcrDifferentCompanies::class)->getExists($report['employee_id'], $report['hatchery_id'], $report['breed_name'], $createdAt);
+            $exist = $this->getDoctrine()->getRepository(FcrDifferentCompanies::class)->getExists($report['employee_id'], $report['hatchery_id'], $report['breed_name'], $year);
             if ($exist){
                 for($i = 1; $i <= 12; $i++){
                     $date = '01-' . $i . '-2022';
                     $month = date('F', strtotime($date));
                     $set = 'set' . $month;
                     $exist->$set($report[strtolower($month)] ?: 0);
+                    $exist->setCreatedAt(new \DateTime($report['created_at']));
                     $this->getDoctrine()->getManager()->persist($exist);
                 }
                 $this->getDoctrine()->getManager()->flush();
             }else{
-                $sql = "INSERT INTO `crm_fcr_different_companies` (`employee_id`, `hatchery_id`, `breed_name`, `january`, `february`, `march`, `april`, `may`, `june`, `july`, `august`, `september`, `october`, `november`, `december`, `created_at`) VALUES (:employee_id, :hatchery_id, :breed_name, :january, :february, :march, :april, :may, :june, :july, :august, :september, :october, :november, :december, :created_at)";
+                $sql = "INSERT INTO `crm_fcr_different_companies` (`employee_id`, `hatchery_id`, `breed_name`, `january`, `february`, `march`, `april`, `may`, `june`, `july`, `august`, `september`, `october`, `november`, `december`, `created_at`, `reporting_year`) VALUES (:employee_id, :hatchery_id, :breed_name, :january, :february, :march, :april, :may, :june, :july, :august, :september, :october, :november, :december, :created_at, :reporting_year)";
 
                 $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
 
@@ -1842,6 +1843,7 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
                 $stmt->bindValue('november', $report['november'] && $report['november']!=''?(float)$report['november']: 0);
                 $stmt->bindValue('december', $report['december'] && $report['december']!=''?(float)$report['december']: 0);
                 $stmt->bindValue('created_at', $createdAt);
+                $stmt->bindValue('reporting_year', $year);
 
                 $stmt->execute();
             }
@@ -1854,7 +1856,7 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
         foreach ($reports as $report) {
             $createdAt = $report['created_at'] ? (new \DateTime($report['created_at']))->format('Y-m-d H:i:s') : null;
 
-            $year = $report['created_at'] ? (new \DateTime($report['created_at']))->format('Y') : null;
+            $year = $report['year'] ?$report['year']: (new \DateTime($report['created_at']))->format('Y');
 
             $exitingLabService = $this->getDoctrine()->getRepository(LabService::class)->getExitingLabService($report['employee_id'], $report['lab_id'], $report['service_id'], $report['breed_name'], $year);
 

@@ -149,10 +149,10 @@ class FcrDifferentCompaniesRepository extends EntityRepository
         return $data;
     }
 
-    public function getExists($employeeId, $hatcheryId, $breedName, $createdAt)
+    public function getExists($employeeId, $hatcheryId, $breedName, $year)
     {
-        $startDate = (new \DateTime($createdAt))->format('Y-01-01 00:00:00');
-        $endDate = (new \DateTime($createdAt))->format('Y-12-31 23:59:59');
+        /*$startDate = (new \DateTime($createdAt))->format('Y-01-01 00:00:00');
+        $endDate = (new \DateTime($createdAt))->format('Y-12-31 23:59:59');*/
 
         $qb = $this->createQueryBuilder('e');
 
@@ -162,8 +162,8 @@ class FcrDifferentCompaniesRepository extends EntityRepository
         $qb->where('employee.id = :employeeId')->setParameter('employeeId', $employeeId);
         $qb->andWhere('hatchery.id = :hatcheryId')->setParameter('hatcheryId', $hatcheryId);
         $qb->andWhere('e.breedName = :breedName')->setParameter('breedName', strtolower($breedName));
-        $qb->andWhere('e.createdAt >= :startDate')->setParameter('startDate', $startDate);
-        $qb->andWhere('e.createdAt <= :endDate')->setParameter('endDate', $endDate);
+        $qb->andWhere('e.reportingYear =:reportingYear')->setParameter('reportingYear', $year);
+//        $qb->andWhere('e.createdAt <= :endDate')->setParameter('endDate', $endDate);
 
         return $qb->getQuery()->getOneOrNullResult();
 
@@ -218,7 +218,8 @@ class FcrDifferentCompaniesRepository extends EntityRepository
                     "october"=> (string)$result['details']['october'],
                     "november"=> (string)$result['details']['november'],
                     "december"=> (string)$result['details']['december'],
-                    "created_at"=> $result['details']['createdAt']->format('Y-m-d H:i:s')
+                    "created_at"=> $result['details']['createdAt']->format('Y-m-d H:i:s'),
+                    "year"=> (string)$result['details']['reportingYear'],
                 ];
             }
         }

@@ -231,7 +231,8 @@ class LabServiceRepository extends EntityRepository
                     "october"=> (string)$result['details']['october'],
                     "november"=> (string)$result['details']['november'],
                     "december"=> (string)$result['details']['december'],
-                    "created_at"=> $result['details']['createdAt']->format('Y-m-d H:i:s')
+                    "created_at"=> $result['details']['createdAt']->format('Y-m-d H:i:s'),
+                    "year"=> (string)$result['details']['reportingYear'],
                 ];
             }
         }
