@@ -103,13 +103,14 @@
                             <th>{{ 'Address'|trans }}</th>
                             <th>{{ 'Phone'|trans }}</th>
                             <th>{{ 'Purpose'|trans }}</th>
+                            <th>{{ 'Report Description'|trans }}</th>
                             <th>{{ 'Comments'|trans }}</th>
                         </tr>
                         </thead>
                         <tbody>
                         {% for dateMonthYear, dateWiseRecord in entity %}
                             <tr>
-                                <th colspan="6">{{ dateMonthYear }}</th>
+                                <th colspan="7">{{ dateMonthYear }}</th>
                             </tr>
                             {% for data in dateWiseRecord %}
                                 <tr>
@@ -118,6 +119,7 @@
                                     <td>{{ data.agentAddress }}</td>
                                     <td>{{ data.agentMobile }}</td>
                                     <td>{{ data.purposeName }}</td>
+                                    <td>{{ data.reportDesc }}</td>
                                     <td>{{ data.comments }}</td>
                                 </tr>
                             {% endfor %}
@@ -138,13 +140,14 @@
                             <th>{{ 'Name Agent'|trans }}</th>
                             <th>{{ 'Phone'|trans }}</th>
                             <th>{{ 'Purpose'|trans }}</th>
+                            <th>{{ 'Report Description'|trans }}</th>
                             <th>{{ 'Comments'|trans }}</th>
                         </tr>
                         </thead>
                         <tbody>
                         {% for dateMonthYear, dateWiseRecord in entity %}
                             <tr>
-                                <th colspan="7">{{ dateMonthYear }}</th>
+                                <th colspan="8">{{ dateMonthYear }}</th>
                             </tr>
                             {% for data in dateWiseRecord %}
                                 <tr>
@@ -154,6 +157,7 @@
                                     <td>{{ data.nourishAgentName }}</td>
                                     <td>{{ data.agentMobile }}</td>
                                     <td>{{ data.purposeName }}</td>
+                                    <td>{{ data.reportDesc }}</td>
                                     <td>{{ data.comments }}</td>
                                 </tr>
                             {% endfor %}
@@ -173,13 +177,14 @@
                             <th>{{ 'Address'|trans }}</th>
                             <th>{{ 'Phone'|trans }}</th>
                             <th>{{ 'Purpose'|trans }}</th>
+                            <th>{{ 'Report Description'|trans }}</th>
                             <th>{{ 'Comments'|trans }}</th>
                         </tr>
                         </thead>
                         <tbody>
                         {% for dateMonthYear, dateWiseRecord in entity %}
                             <tr>
-                                <th colspan="6">{{ dateMonthYear }}</th>
+                                <th colspan="7">{{ dateMonthYear }}</th>
                             </tr>
                             {% for data in dateWiseRecord %}
                                 <tr>
@@ -188,6 +193,7 @@
                                     <td>{{ data.agentAddress }}</td>
                                     <td>{{ data.agentMobile }}</td>
                                     <td>{{ data.purposeName }}</td>
+                                    <td>{{ data.reportDesc }}</td>
                                     <td>{{ data.comments }}</td>
                                 </tr>
                             {% endfor %}

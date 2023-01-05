@@ -117,6 +117,8 @@ class CrmVisitRepository extends EntityRepository
             $qb->andWhere('e.employee = :employee')->setParameter('employee', $employee);
         }
 
+        $qb->orderBy('e.created', 'ASC');
+
 
         $results = $qb->getQuery()->getArrayResult();
         $data = [];

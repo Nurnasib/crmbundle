@@ -209,7 +209,7 @@ class CrmVisitDetailsRepository extends EntityRepository
         $qb->leftJoin('e.crmCustomer', 'farmer');
         $qb->leftJoin('e.agent', 'agent');
         $qb->leftJoin('agent.parent', 'nourishAgent');
-        $qb->select('e.farmCapacity', 'e.process', 'e.comments', 'e.purposeMultiple');
+        $qb->select('e.farmCapacity', 'e.process', 'e.comments', 'e.purposeMultiple', 'e.reportDesc');
         $qb->addSelect('farmer.name AS farmerName', 'farmer.address AS farmerAddress', 'farmer.mobile AS farmerMobile');
         $qb->addSelect('agent.name AS agentName', 'agent.address AS agentAddress', 'agent.mobile AS agentMobile');
         $qb->addSelect('employee.userId','employee.name AS employeeName');
