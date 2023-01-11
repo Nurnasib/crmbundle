@@ -47,159 +47,176 @@
             {# Agent Section#}
             {% for key, entity in employee %}
                 {% if key is same as 'farmer' %}
-                    <table border="1" cellspacing="0" cellpadding="5" width="100%" style="margin-top: 10px">
-                        <thead style="background-color: #CCCCCC">
-                        <tr>
-                            <th width="50">S/N</th>
-                            <th>{{ 'Visited Farmers\' Name'|trans }}</th>
-                            <th>{{ 'Address'|trans }}</th>
-                            <th>{{ 'Phone'|trans }}</th>
-                            <th>{{ 'Purpose'|trans }}</th>
-                            <th>{{ 'Farm Capacity'|trans }}</th>
-                            <th>{{ 'Comments'|trans }}</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {% for dateMonthYear, dateWiseRecord in entity %}
+                    <div style="border: 2px solid green; padding: 0 10px; margin-bottom: 20px" title="Agent Section">
+                        <h3 style="text-align: center; background-color: green; color: #fff; padding: 5px 0">Farmer Section</h3>
+                        <table border="1" cellspacing="0" cellpadding="5" width="100%" style="margin-top: 10px">
+                            <thead style="background-color: #CCCCCC">
                             <tr>
-                                <th colspan="7">{{ dateMonthYear }}</th>
+                                <th width="50">S/N</th>
+                                <th>{{ 'Visited Farmers\' Name'|trans }}</th>
+                                <th>{{ 'Address'|trans }}</th>
+                                <th>{{ 'Phone'|trans }}</th>
+                                <th>{{ 'Purpose'|trans }}</th>
+                                <th>{{ 'Farm Capacity'|trans }}</th>
+                                <th>{{ 'Comments'|trans }}</th>
                             </tr>
-                            {% for data in dateWiseRecord %}
+                            </thead>
+                            <tbody>
+                            {% for dateMonthYear, dateWiseRecord in entity %}
                                 <tr>
-
-                                    <td align="center">{{ loop.index }}</td>
-                                    <td>{{ data.farmerName }}</td>
-                                    <td>{{ data.farmerAddress }}</td>
-                                    <td>{{ data.farmerMobile }}</td>
-                                    <td>
-                                        {% if data.purposeMultiple is not empty %}
-                                            {% set purposes=data.purposeMultiple|json_decode %}
-                                            <ol>
-                                                {% for purpose in purposes %}
-                                                    <li>{{ purpose }}</li>
-                                                {% endfor %}
-                                            </ol>
-                                        {% else %}
-                                            {{ data.purposeName }}
-                                        {% endif %}
-                                    </td>
-                                    <td>{{ data.farmCapacity }}</td>
-                                    <td>{{ data.comments }}</td>
+                                    <th colspan="7">{{ dateMonthYear }}</th>
                                 </tr>
+                                {% for data in dateWiseRecord %}
+                                    <tr>
+
+                                        <td align="center">{{ loop.index }}</td>
+                                        <td>{{ data.farmerName }}</td>
+                                        <td>{{ data.farmerAddress }}</td>
+                                        <td>{{ data.farmerMobile }}</td>
+                                        <td>
+                                            {% if data.purposeMultiple is not empty %}
+                                                {% set purposes=data.purposeMultiple|json_decode %}
+                                                <ol>
+                                                    {% for purpose in purposes %}
+                                                        <li>{{ purpose }}</li>
+                                                    {% endfor %}
+                                                </ol>
+                                            {% else %}
+                                                {{ data.purposeName }}
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ data.farmCapacity }}</td>
+                                        <td>{{ data.comments }}</td>
+                                    </tr>
+                                {% endfor %}
                             {% endfor %}
-                        {% endfor %}
-                        </tbody>
-                    </table>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div style="page-break-after: always"></div>
                 {% endif %}
             {% endfor %}
             {# Agent Section#}
             {% for key, entity in employee %}
                 {% if key is same as 'agent' %}
-                    <table border="1" cellspacing="0" cellpadding="5" width="100%" style="margin-top: 10px">
-                        <thead style="background-color: #CCCCCC">
-                        <tr>
-                            <th width="50">S/N</th>
-                            <th>{{ 'Visited Agent Name(Nourish)'|trans }}</th>
-                            <th>{{ 'Address'|trans }}</th>
-                            <th>{{ 'Phone'|trans }}</th>
-                            <th>{{ 'Purpose'|trans }}</th>
-                            <th>{{ 'Report Description'|trans }}</th>
-                            <th>{{ 'Comments'|trans }}</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {% for dateMonthYear, dateWiseRecord in entity %}
+                    <div style="border: 2px solid red; padding: 10px; margin-bottom: 20px" title="Agent Section">
+                        <h3 style="text-align: center; background-color: red; color: #fff; padding: 5px 0">Agent Section</h3>
+                        <table border="1" cellspacing="0" cellpadding="5" width="100%" style="margin-top: 10px">
+                            <thead style="background-color: #CCCCCC">
                             <tr>
-                                <th colspan="7">{{ dateMonthYear }}</th>
+                                <th width="50">S/N</th>
+                                <th>{{ 'Visited Agent Name(Nourish)'|trans }}</th>
+                                <th>{{ 'Address'|trans }}</th>
+                                <th>{{ 'Phone'|trans }}</th>
+                                <th>{{ 'Purpose'|trans }}</th>
+                                <th>{{ 'Report Description'|trans }}</th>
+                                <th>{{ 'Comments'|trans }}</th>
                             </tr>
-                            {% for data in dateWiseRecord %}
+                            </thead>
+                            <tbody>
+                            {% for dateMonthYear, dateWiseRecord in entity %}
                                 <tr>
-                                    <td align="center">{{ loop.index }}</td>
-                                    <td>{{ data.agentName }}</td>
-                                    <td>{{ data.agentAddress }}</td>
-                                    <td>{{ data.agentMobile }}</td>
-                                    <td>{{ data.purposeName }}</td>
-                                    <td>{{ data.reportDesc }}</td>
-                                    <td>{{ data.comments }}</td>
+                                    <th colspan="7">{{ dateMonthYear }}</th>
                                 </tr>
+                                {% for data in dateWiseRecord %}
+                                    <tr>
+                                        <td align="center">{{ loop.index }}</td>
+                                        <td>{{ data.agentName }} ({{ data.agentId|default('') }})</td>
+                                        <td>{{ data.agentAddress }}</td>
+                                        <td>{{ data.agentMobile }}</td>
+                                        <td>{{ data.purposeName }}</td>
+                                        <td>{{ data.reportDesc }}</td>
+                                        <td>{{ data.comments }}</td>
+                                    </tr>
+                                {% endfor %}
                             {% endfor %}
-                        {% endfor %}
-                        </tbody>
-                    </table>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div style="page-break-after: always"></div>
                 {% endif %}
             {% endfor %}
             {# Other Agent Section#}
             {% for key, entity in employee %}
                 {% if key is same as 'other-agent' %}
-                    <table border="1" cellspacing="0" cellpadding="5" width="100%" style="margin-top: 10px">
-                        <thead style="background-color: #CCCCCC">
-                        <tr>
-                            <th width="50">S/N</th>
-                            <th>{{ 'Visited Agent Name(Other Agent)'|trans }}</th>
-                            <th>{{ 'Address'|trans }}</th>
-                            <th>{{ 'Name Agent'|trans }}</th>
-                            <th>{{ 'Phone'|trans }}</th>
-                            <th>{{ 'Purpose'|trans }}</th>
-                            <th>{{ 'Report Description'|trans }}</th>
-                            <th>{{ 'Comments'|trans }}</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {% for dateMonthYear, dateWiseRecord in entity %}
+                    <div style="border: 1px solid blue; padding: 10px; margin-bottom: 20px" title="Other Agent Section">
+                        <h3 style="text-align: center; background-color: blue; color: #fff; padding: 5px 0">Other Agent Section</h3>
+                        <table border="1" cellspacing="0" cellpadding="5" width="100%" style="margin-top: 10px">
+                            <thead style="background-color: #CCCCCC">
                             <tr>
-                                <th colspan="8">{{ dateMonthYear }}</th>
+                                <th width="50">S/N</th>
+                                <th>{{ 'Visited Agent Name(Other Agent)'|trans }}</th>
+                                <th>{{ 'Address'|trans }}</th>
+                                <th>{{ 'Name Agent'|trans }}</th>
+                                <th>{{ 'Phone'|trans }}</th>
+                                <th>{{ 'Purpose'|trans }}</th>
+                                <th>{{ 'Report Description'|trans }}</th>
+                                <th>{{ 'Comments'|trans }}</th>
                             </tr>
-                            {% for data in dateWiseRecord %}
+                            </thead>
+                            <tbody>
+                            {% for dateMonthYear, dateWiseRecord in entity %}
                                 <tr>
-                                    <td align="center">{{ loop.index }}</td>
-                                    <td>{{ data.agentName }}</td>
-                                    <td>{{ data.agentAddress }}</td>
-                                    <td>{{ data.nourishAgentName }}</td>
-                                    <td>{{ data.agentMobile }}</td>
-                                    <td>{{ data.purposeName }}</td>
-                                    <td>{{ data.reportDesc }}</td>
-                                    <td>{{ data.comments }}</td>
+                                    <th colspan="8">{{ dateMonthYear }}</th>
                                 </tr>
+                                {% for data in dateWiseRecord %}
+                                    <tr>
+                                        <td align="center">{{ loop.index }}</td>
+                                        <td>{{ data.agentName }}</td>
+                                        <td>{{ data.agentAddress }}</td>
+                                        <td>{{ data.nourishAgentName }}</td>
+                                        <td>{{ data.agentMobile }}</td>
+                                        <td>{{ data.purposeName }}</td>
+                                        <td>{{ data.reportDesc }}</td>
+                                        <td>{{ data.comments }}</td>
+                                    </tr>
+                                {% endfor %}
                             {% endfor %}
-                        {% endfor %}
-                        </tbody>
-                    </table>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div style="page-break-after: always"></div>
                 {% endif %}
             {% endfor %}
             {#            Sub Agent Section#}
             {% for key, entity in employee %}
                 {% if key is same as 'sub-agent' %}
-                    <table border="1" cellspacing="0" cellpadding="5" width="100%" style="margin-top: 10px">
-                        <thead style="background-color: #CCCCCC">
-                        <tr>
-                            <th width="50">S/N</th>
-                            <th>{{ 'Visited Agent Name(Sub Agent)'|trans }}</th>
-                            <th>{{ 'Address'|trans }}</th>
-                            <th>{{ 'Phone'|trans }}</th>
-                            <th>{{ 'Purpose'|trans }}</th>
-                            <th>{{ 'Report Description'|trans }}</th>
-                            <th>{{ 'Comments'|trans }}</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {% for dateMonthYear, dateWiseRecord in entity %}
+                    <div style="border: 1px solid purple; padding: 5px 10px; margin-bottom: 20px" title="Sub Agent Section">
+                        <h3 style="text-align: center; background-color: purple; color: #fff; padding: 5px 0">Sub Agent Section</h3>
+                        <table border="1" cellspacing="0" cellpadding="5" width="100%" style="margin-top: 10px">
+                            <thead style="background-color: #CCCCCC">
+
                             <tr>
-                                <th colspan="7">{{ dateMonthYear }}</th>
+                                <th width="50">S/N</th>
+                                <th>{{ 'Visited Agent Name(Sub Agent)'|trans }}</th>
+                                <th>{{ 'Address'|trans }}</th>
+                                <th>{{ 'Phone'|trans }}</th>
+                                <th>{{ 'Purpose'|trans }}</th>
+                                <th>{{ 'Report Description'|trans }}</th>
+                                <th>{{ 'Comments'|trans }}</th>
                             </tr>
-                            {% for data in dateWiseRecord %}
+                            </thead>
+                            <tbody>
+                            {% for dateMonthYear, dateWiseRecord in entity %}
                                 <tr>
-                                    <td align="center">{{ loop.index }}</td>
-                                    <td>{{ data.agentName }}</td>
-                                    <td>{{ data.agentAddress }}</td>
-                                    <td>{{ data.agentMobile }}</td>
-                                    <td>{{ data.purposeName }}</td>
-                                    <td>{{ data.reportDesc }}</td>
-                                    <td>{{ data.comments }}</td>
+                                    <th colspan="7">{{ dateMonthYear }}</th>
                                 </tr>
+                                {% for data in dateWiseRecord %}
+                                    <tr>
+                                        <td align="center">{{ loop.index }}</td>
+                                        <td>{{ data.agentName }}</td>
+                                        <td>{{ data.agentAddress }}</td>
+                                        <td>{{ data.agentMobile }}</td>
+                                        <td>{{ data.purposeName }}</td>
+                                        <td>{{ data.reportDesc }}</td>
+                                        <td>{{ data.comments }}</td>
+                                    </tr>
+                                {% endfor %}
                             {% endfor %}
-                        {% endfor %}
-                        </tbody>
-                    </table>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div style="page-break-after: always"></div>
                 {% endif %}
             {% endfor %}
         {% endif %}

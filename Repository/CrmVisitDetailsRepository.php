@@ -211,7 +211,7 @@ class CrmVisitDetailsRepository extends EntityRepository
         $qb->leftJoin('agent.parent', 'nourishAgent');
         $qb->select('e.farmCapacity', 'e.process', 'e.comments', 'e.purposeMultiple', 'e.reportDesc');
         $qb->addSelect('farmer.name AS farmerName', 'farmer.address AS farmerAddress', 'farmer.mobile AS farmerMobile');
-        $qb->addSelect('agent.name AS agentName', 'agent.address AS agentAddress', 'agent.mobile AS agentMobile');
+        $qb->addSelect('agent.name AS agentName','agent.agentId', 'agent.address AS agentAddress', 'agent.mobile AS agentMobile');
         $qb->addSelect('employee.userId','employee.name AS employeeName');
         $qb->addSelect('crmVisit.created AS visitDate');
         $qb->addSelect('purpose.name AS purposeName');
@@ -221,6 +221,8 @@ class CrmVisitDetailsRepository extends EntityRepository
         if($employeeId){
             $qb->andWhere('employee.id =:employeeId')->setParameter('employeeId', $employeeId);
         }
+
+        $qb->orderBy('crmVisit.created', 'ASC');
 
         $results = $qb->getQuery()->getArrayResult();
 
