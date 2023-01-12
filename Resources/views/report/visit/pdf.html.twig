@@ -124,7 +124,18 @@
                                         <td>{{ data.agentName }} ({{ data.agentId|default('') }})</td>
                                         <td>{{ data.agentAddress }}</td>
                                         <td>{{ data.agentMobile }}</td>
-                                        <td>{{ data.purposeName }}</td>
+                                        <td>
+                                            {% if data.purposeMultiple is not empty %}
+                                                {% set purposes=data.purposeMultiple|json_decode %}
+                                                <ol>
+                                                    {% for purpose in purposes %}
+                                                        <li>{{ purpose }}</li>
+                                                    {% endfor %}
+                                                </ol>
+                                            {% else %}
+                                                {{ data.purposeName }}
+                                            {% endif %}
+                                        </td>
                                         <td>{{ data.reportDesc }}</td>
                                         <td>{{ data.comments }}</td>
                                     </tr>
@@ -166,7 +177,18 @@
                                         <td>{{ data.agentAddress }}</td>
                                         <td>{{ data.nourishAgentName }}</td>
                                         <td>{{ data.agentMobile }}</td>
-                                        <td>{{ data.purposeName }}</td>
+                                        <td>
+                                            {% if data.purposeMultiple is not empty %}
+                                                {% set purposes=data.purposeMultiple|json_decode %}
+                                                <ol>
+                                                    {% for purpose in purposes %}
+                                                        <li>{{ purpose }}</li>
+                                                    {% endfor %}
+                                                </ol>
+                                            {% else %}
+                                                {{ data.purposeName }}
+                                            {% endif %}
+                                        </td>
                                         <td>{{ data.reportDesc }}</td>
                                         <td>{{ data.comments }}</td>
                                     </tr>
@@ -207,7 +229,18 @@
                                         <td>{{ data.agentName }}</td>
                                         <td>{{ data.agentAddress }}</td>
                                         <td>{{ data.agentMobile }}</td>
-                                        <td>{{ data.purposeName }}</td>
+                                        <td>
+                                            {% if data.purposeMultiple is not empty %}
+                                                {% set purposes=data.purposeMultiple|json_decode %}
+                                                <ol>
+                                                    {% for purpose in purposes %}
+                                                        <li>{{ purpose }}</li>
+                                                    {% endfor %}
+                                                </ol>
+                                            {% else %}
+                                                {{ data.purposeName }}
+                                            {% endif %}
+                                        </td>
                                         <td>{{ data.reportDesc }}</td>
                                         <td>{{ data.comments }}</td>
                                     </tr>

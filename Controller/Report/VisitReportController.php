@@ -133,6 +133,11 @@ class VisitReportController extends AbstractController
                 "Attachment" => false
             ]);
         }
+        if($mode=='excel'){
+            return $this->render('@TerminalbdCrm/report/visit/excel.html.twig',[
+                'entities' => $entities,
+            ]);
+        }
 
     }
 

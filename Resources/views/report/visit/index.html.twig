@@ -53,8 +53,12 @@
                                         value="pdf_download"><i class="fa fa-file-pdf" aria-hidden="true"></i></button>
                                 {% if entities is defined and entities is not empty %}
                                     <a href="{{ path('visit_details_report',{mode:'pdf', startDate: startDate, endDate: endDate, employeeId: employee?employee.id:null}) }}"
-                                       target="_blank" class="btn blue-bg btn-sm white-font"><i class="fa fa-download"
-                                                                                                aria-hidden="true"></i> {{ 'All Details' }}
+                                       target="_blank" class="btn blue-bg btn-sm white-font"><i class="fa fa-file-pdf"
+                                                                                                aria-hidden="true"></i> {{ 'All Details PDF' }}
+                                    </a>
+                                    <a href="{{ path('visit_details_report',{mode:'excel', startDate: startDate, endDate: endDate, employeeId: employee?employee.id:null}) }}"
+                                       target="_blank" class="btn blue-bg btn-sm white-font"><i class="fa fa-file-excel"
+                                                                                                aria-hidden="true"></i> {{ 'All Details Excel' }}
                                     </a>
                                 {% endif %}
                             </div>
