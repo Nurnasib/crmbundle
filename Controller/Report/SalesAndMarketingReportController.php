@@ -68,6 +68,7 @@ class SalesAndMarketingReportController extends AbstractController
             $filterBy['otherReport'] = $report;
             $filterBy['startDate'] = $form->getData()['startDate'];
             $filterBy['endDate'] = $form->getData()['endDate'];
+            $filterBy['poultryFramType'] = $form->getData()['poultryFramType'];
 //            $filterBy['employee'] = $form->getData()['employee'] ? $form->getData()['employee'] : '';
             $filterBy['employeeId'] = $form->getData()['employee'] ? $form->getData()['employee']->getId() : '';
 
@@ -82,6 +83,10 @@ class SalesAndMarketingReportController extends AbstractController
                 
                 case 'doc-price':
                     $entities = $this->getDoctrine()->getRepository(DailyChickPriceDetails::class)->getDocPriceReport($filterBy, $this->getUser());
+                    break;
+                
+                case 'daily-doc-price':
+                    $entities = $this->getDoctrine()->getRepository(DailyChickPriceDetails::class)->getDailyDocPriceReport($filterBy, $this->getUser());
                     break;
                     
                 case 'meat-egg-price':

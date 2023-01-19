@@ -17,6 +17,9 @@
     {% elseif filterBy['otherReport'] is same as 'doc-price' %}
         {% include '@TerminalbdCrm/report/others/inc/_doc_price.html.twig'%}
 
+    {% elseif filterBy['otherReport'] is same as 'daily-doc-price' %}
+        {% include '@TerminalbdCrm/report/others/inc/_doc_price.html.twig'%}
+
     {% elseif filterBy['otherReport'] is same as 'meat-egg-price' %}
         {% include '@TerminalbdCrm/report/others/inc/_meat_egg_price.html.twig'%}
 

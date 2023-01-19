@@ -159,6 +159,10 @@ class OthersReportController extends AbstractController
                     $entities = $this->getDoctrine()->getRepository(DailyChickPriceDetails::class)->getDocPriceReport($filterBy, $this->getUser());
                     break;
 
+                case 'daily-doc-price':
+                    $entities = $this->getDoctrine()->getRepository(DailyChickPriceDetails::class)->getDailyDocPriceReport($filterBy, $this->getUser());
+                    break;
+
                 case 'meat-egg-price':
                     $entities = $this->getDoctrine()->getRepository(PoultryMeatEggPrice::class)->getMeatEggPriceReport($filterBy, $this->getUser());
                     break;

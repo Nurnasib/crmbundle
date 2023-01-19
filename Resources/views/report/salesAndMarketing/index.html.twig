@@ -27,6 +27,12 @@
                             {{ form_label(form.employee, 'Employee:') }}
                             {{ form_widget(form.employee) }}
                         </th>
+                        {% if report=='daily-doc-price' %}
+                        <th>
+                            {{ form_label(form.poultryFramType, 'Doc Type:') }}
+                            {{ form_widget(form.poultryFramType) }}
+                        </th>
+                        {% endif %}
 
                         <th>
                             {{ form_label(form.startDate, 'Start Date:') }}
@@ -36,6 +42,7 @@
                             {{ form_label(form.endDate, 'End Date:') }}
                             {{ form_widget(form.endDate) }}
                         </th>
+                        {% if report!="daily-doc-price" %}
                         <th>
                             {{ form_label(form.year, 'Year:') }}
                             {{ form_widget(form.year) }}
@@ -44,6 +51,7 @@
                             {{ form_label(form.month, 'Month:') }}
                             {{ form_widget(form.month) }}
                         </th>
+                        {% endif %}
                         <th style="vertical-align: bottom!important;">
                             <div class="btn-group float-right">
                                 {{ form_widget(form._token) }}
@@ -79,6 +87,9 @@
 
                         {% elseif reportSlug is same as 'doc-price' %}
                             {% include '@TerminalbdCrm/report/others/inc/_doc_price.html.twig'%}
+
+                        {% elseif reportSlug is same as 'daily-doc-price' %}
+                            {% include '@TerminalbdCrm/report/others/inc/_daily_doc_price.html.twig'%}
 
                         {% elseif reportSlug is same as 'meat-egg-price' %}
                             {% include '@TerminalbdCrm/report/others/inc/_meat_egg_price.html.twig'%}

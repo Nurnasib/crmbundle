@@ -185,6 +185,25 @@ class SearchFilterFormForSalesAndMarketingType extends AbstractType
                 ]
 
             ])
+            ->add('poultryFramType', EntityType::class,[
+                'class' => Setting::class,
+                'choice_label' => 'name',
+                'placeholder' => '- Select Fram Type -',
+                'query_builder' => function(EntityRepository $er){
+                    return $er->createQueryBuilder('e')
+                        ->join('e.parent','parent')
+                        ->where('e.settingType = :settingType')->setParameter('settingType', 'FARM_TYPE')
+                        ->andWhere('e.status = 1')
+                        ->andWhere('e.slug != :slug')->setParameter('slug','others-poultry')
+                        ->andWhere('parent.slug = :parentSlug')->setParameter('parentSlug','poultry-breed')
+                        ->orderBy('e.name');
+                },
+                'attr' => [
+                    'class' => 'select2'
+                ],
+                'required' => false
+
+            ])
 
         ;
     }
