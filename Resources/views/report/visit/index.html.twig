@@ -23,7 +23,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-md-8 offset-2">
+            <div class="col-md-12">
                 <table class="table ">
                     <thead class="thead-dark">
                     {{ form_start(form) }}
@@ -33,6 +33,10 @@
                                 {{ form_label(form.employee, 'Employee:') }}
                                 {{ form_widget(form.employee) }}
                             </th>
+                        <th>
+                            {{ form_label(form.serviceMode, 'Service Mode:') }}
+                            {{ form_widget(form.serviceMode) }}
+                        </th>
 {#                        {% endif %}#}
                         <th>
                             {{ form_label(form.startDate, 'Start Date:') }}
@@ -52,11 +56,11 @@
                                 <button type="submit" name="pdf_download" class="btn btn-primary btn-sm" title="Pdf Download"
                                         value="pdf_download"><i class="fa fa-file-pdf" aria-hidden="true"></i></button>
                                 {% if entities is defined and entities is not empty %}
-                                    <a href="{{ path('visit_details_report',{mode:'pdf', startDate: startDate, endDate: endDate, employeeId: employee?employee.id:null}) }}"
+                                    <a href="{{ path('visit_details_report',{mode:'pdf', startDate: startDate, endDate: endDate, employeeId: employee?employee.id:null, serviceModeId: serviceMode?serviceMode.id:null}) }}"
                                        target="_blank" class="btn blue-bg btn-sm white-font"><i class="fa fa-file-pdf"
                                                                                                 aria-hidden="true"></i> {{ 'All Details PDF' }}
                                     </a>
-                                    <a href="{{ path('visit_details_report',{mode:'excel', startDate: startDate, endDate: endDate, employeeId: employee?employee.id:null}) }}"
+                                    <a href="{{ path('visit_details_report',{mode:'excel', startDate: startDate, endDate: endDate, employeeId: employee?employee.id:null, serviceModeId: serviceMode?serviceMode.id:null}) }}"
                                        target="_blank" class="btn blue-bg btn-sm white-font"><i class="fa fa-file-excel"
                                                                                                 aria-hidden="true"></i> {{ 'All Details Excel' }}
                                     </a>

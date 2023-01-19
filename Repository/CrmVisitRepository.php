@@ -56,12 +56,13 @@ class CrmVisitRepository extends EntityRepository
         return $qb->getQuery()->getArrayResult();
     }
 
-    public function getVisits($startDate, $endDate, $employee, User $loggedUser)
+    public function getVisits($startDate, $endDate, $employee, $serviceMode, User $loggedUser)
     {
         $qb = $this->createQueryBuilder('e');
         $qb->leftJoin('e.location', 'location');
         $qb->leftJoin('e.workingMode', 'workingMode');
         $qb->join('e.employee', 'employee');
+        $qb->join('employee.serviceMode', 'serviceMode');
         $qb->join('employee.userGroup', 'userGroup');
         $qb->leftJoin('employee.designation', 'designation');
         $qb->select('e.id AS visitId', 'e.created AS visitDate', 'e.workingDuration AS visitBegin', 'e.workingDurationTo AS visitEnd', 'location.name AS locationName');
@@ -115,6 +116,9 @@ class CrmVisitRepository extends EntityRepository
         
         if($employee) {
             $qb->andWhere('e.employee = :employee')->setParameter('employee', $employee);
+        }else{
+//            dd($serviceMode->getId());
+            $qb->andWhere('serviceMode.id =:serviceModeId')->setParameter('serviceModeId', $serviceMode->getId());
         }
 
         $qb->orderBy('e.created', 'ASC');

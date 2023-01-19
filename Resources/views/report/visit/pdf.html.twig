@@ -44,61 +44,60 @@
                 </tr>
                 </thead>
             </table>
-            {# Agent Section#}
-            {% for key, entity in employee %}
-                {% if key is same as 'farmer' %}
-                    <div style="border: 2px solid green; padding: 0 10px; margin-bottom: 20px" title="Agent Section">
-                        <h3 style="text-align: center; background-color: green; color: #fff; padding: 5px 0">Farmer Section</h3>
-                        <table border="1" cellspacing="0" cellpadding="5" width="100%" style="margin-top: 10px">
-                            <thead style="background-color: #CCCCCC">
+            {# Farmer Section#}
+        {% if employee['farmer'] is defined and employee['farmer'] is iterable %}
+            <div style="border: 2px solid green; padding: 0 10px; margin-bottom: 20px" title="Farmer Section">
+            <h3 style="text-align: center; background-color: green; color: #fff; padding: 5px 0">Farmer Section</h3>
+            <table border="1" cellspacing="0" cellpadding="5" width="100%" style="margin-top: 10px">
+            <thead style="background-color: #CCCCCC">
+            <tr>
+                <th width="50">S/N</th>
+                <th>{{ 'Visited Farmers\' Name'|trans }}</th>
+                <th>{{ 'Address'|trans }}</th>
+                <th>{{ 'Phone'|trans }}</th>
+                <th>{{ 'Purpose'|trans }}</th>
+                <th>{{ 'Farm Capacity'|trans }}</th>
+                <th>{{ 'Comments'|trans }}</th>
+            </tr>
+            </thead>
+            <tbody>
+                {% for dateMonthYear, entity in employee['farmer'] %}
+                    <tr>
+                        <th colspan="7">{{ dateMonthYear }}</th>
+                    </tr>
+                    {% if entity is not empty %}
+                        {% for data in entity %}
                             <tr>
-                                <th width="50">S/N</th>
-                                <th>{{ 'Visited Farmers\' Name'|trans }}</th>
-                                <th>{{ 'Address'|trans }}</th>
-                                <th>{{ 'Phone'|trans }}</th>
-                                <th>{{ 'Purpose'|trans }}</th>
-                                <th>{{ 'Farm Capacity'|trans }}</th>
-                                <th>{{ 'Comments'|trans }}</th>
+                                <td align="center">{{ loop.index }}</td>
+                                <td>{{ data.farmerName }}</td>
+                                <td>{{ data.farmerAddress }}</td>
+                                <td>{{ data.farmerMobile }}</td>
+                                <td>
+                                    {% if data.purposeMultiple is not empty %}
+                                        {% set purposes=data.purposeMultiple|json_decode %}
+                                        <ol>
+                                            {% for purpose in purposes %}
+                                                <li>{{ purpose }}</li>
+                                            {% endfor %}
+                                        </ol>
+                                    {% else %}
+                                        {{ data.purposeName }}
+                                    {% endif %}
+                                </td>
+                                <td>{{ data.farmCapacity }}</td>
+                                <td>{{ data.comments }}</td>
                             </tr>
-                            </thead>
-                            <tbody>
-                            {% for dateMonthYear, dateWiseRecord in entity %}
-                                <tr>
-                                    <th colspan="7">{{ dateMonthYear }}</th>
-                                </tr>
-                                {% for data in dateWiseRecord %}
-                                    <tr>
-
-                                        <td align="center">{{ loop.index }}</td>
-                                        <td>{{ data.farmerName }}</td>
-                                        <td>{{ data.farmerAddress }}</td>
-                                        <td>{{ data.farmerMobile }}</td>
-                                        <td>
-                                            {% if data.purposeMultiple is not empty %}
-                                                {% set purposes=data.purposeMultiple|json_decode %}
-                                                <ol>
-                                                    {% for purpose in purposes %}
-                                                        <li>{{ purpose }}</li>
-                                                    {% endfor %}
-                                                </ol>
-                                            {% else %}
-                                                {{ data.purposeName }}
-                                            {% endif %}
-                                        </td>
-                                        <td>{{ data.farmCapacity }}</td>
-                                        <td>{{ data.comments }}</td>
-                                    </tr>
-                                {% endfor %}
-                            {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                    <div style="page-break-after: always"></div>
-                {% endif %}
-            {% endfor %}
+                        {% endfor %}
+                    {% endif %}
+                {% endfor %}
+            </tbody>
+            </table>
+            </div>
+            <div style="page-break-after: always"></div>
+        {% endif %}
             {# Agent Section#}
-            {% for key, entity in employee %}
-                {% if key is same as 'agent' %}
+{#            {% for key, entity in employee %}#}
+                {% if employee['agent'] is defined and employee['agent'] is iterable %}
                     <div style="border: 2px solid red; padding: 10px; margin-bottom: 20px" title="Agent Section">
                         <h3 style="text-align: center; background-color: red; color: #fff; padding: 5px 0">Agent Section</h3>
                         <table border="1" cellspacing="0" cellpadding="5" width="100%" style="margin-top: 10px">
@@ -114,42 +113,44 @@
                             </tr>
                             </thead>
                             <tbody>
-                            {% for dateMonthYear, dateWiseRecord in entity %}
+                            {% for dateMonthYear, entity in employee['agent'] %}
                                 <tr>
                                     <th colspan="7">{{ dateMonthYear }}</th>
                                 </tr>
-                                {% for data in dateWiseRecord %}
-                                    <tr>
-                                        <td align="center">{{ loop.index }}</td>
-                                        <td>{{ data.agentName }} ({{ data.agentId|default('') }})</td>
-                                        <td>{{ data.agentAddress }}</td>
-                                        <td>{{ data.agentMobile }}</td>
-                                        <td>
-                                            {% if data.purposeMultiple is not empty %}
-                                                {% set purposes=data.purposeMultiple|json_decode %}
-                                                <ol>
-                                                    {% for purpose in purposes %}
-                                                        <li>{{ purpose }}</li>
-                                                    {% endfor %}
-                                                </ol>
-                                            {% else %}
-                                                {{ data.purposeName }}
-                                            {% endif %}
-                                        </td>
-                                        <td>{{ data.reportDesc }}</td>
-                                        <td>{{ data.comments }}</td>
-                                    </tr>
-                                {% endfor %}
+                                {% if entity is not empty %}
+                                    {% for data in entity %}
+                                        <tr>
+                                            <td align="center">{{ loop.index }}</td>
+                                            <td>{{ data.agentName }} ({{ data.agentId|default('') }})</td>
+                                            <td>{{ data.agentAddress }}</td>
+                                            <td>{{ data.agentMobile }}</td>
+                                            <td>
+                                                {% if data.purposeMultiple is not empty %}
+                                                    {% set purposes=data.purposeMultiple|json_decode %}
+                                                    <ol>
+                                                        {% for purpose in purposes %}
+                                                            <li>{{ purpose }}</li>
+                                                        {% endfor %}
+                                                    </ol>
+                                                {% else %}
+                                                    {{ data.purposeName }}
+                                                {% endif %}
+                                            </td>
+                                            <td>{{ data.reportDesc }}</td>
+                                            <td>{{ data.comments }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                {% endif %}
                             {% endfor %}
                             </tbody>
                         </table>
                     </div>
                     <div style="page-break-after: always"></div>
                 {% endif %}
-            {% endfor %}
+{#            {% endfor %}#}
             {# Other Agent Section#}
-            {% for key, entity in employee %}
-                {% if key is same as 'other-agent' %}
+            {#{% for key, entity in employee %}#}
+                {% if employee['other-agent'] is defined and employee['other-agent'] is iterable %}
                     <div style="border: 1px solid blue; padding: 10px; margin-bottom: 20px" title="Other Agent Section">
                         <h3 style="text-align: center; background-color: blue; color: #fff; padding: 5px 0">Other Agent Section</h3>
                         <table border="1" cellspacing="0" cellpadding="5" width="100%" style="margin-top: 10px">
@@ -166,43 +167,45 @@
                             </tr>
                             </thead>
                             <tbody>
-                            {% for dateMonthYear, dateWiseRecord in entity %}
+                            {% for dateMonthYear, entity in employee['other-agent'] %}
                                 <tr>
                                     <th colspan="8">{{ dateMonthYear }}</th>
                                 </tr>
-                                {% for data in dateWiseRecord %}
-                                    <tr>
-                                        <td align="center">{{ loop.index }}</td>
-                                        <td>{{ data.agentName }}</td>
-                                        <td>{{ data.agentAddress }}</td>
-                                        <td>{{ data.nourishAgentName }}</td>
-                                        <td>{{ data.agentMobile }}</td>
-                                        <td>
-                                            {% if data.purposeMultiple is not empty %}
-                                                {% set purposes=data.purposeMultiple|json_decode %}
-                                                <ol>
-                                                    {% for purpose in purposes %}
-                                                        <li>{{ purpose }}</li>
-                                                    {% endfor %}
-                                                </ol>
-                                            {% else %}
-                                                {{ data.purposeName }}
-                                            {% endif %}
-                                        </td>
-                                        <td>{{ data.reportDesc }}</td>
-                                        <td>{{ data.comments }}</td>
-                                    </tr>
-                                {% endfor %}
+                                {% if entity is not empty %}
+                                    {% for data in entity %}
+                                        <tr>
+                                            <td align="center">{{ loop.index }}</td>
+                                            <td>{{ data.agentName }}</td>
+                                            <td>{{ data.agentAddress }}</td>
+                                            <td>{{ data.nourishAgentName }}</td>
+                                            <td>{{ data.agentMobile }}</td>
+                                            <td>
+                                                {% if data.purposeMultiple is not empty %}
+                                                    {% set purposes=data.purposeMultiple|json_decode %}
+                                                    <ol>
+                                                        {% for purpose in purposes %}
+                                                            <li>{{ purpose }}</li>
+                                                        {% endfor %}
+                                                    </ol>
+                                                {% else %}
+                                                    {{ data.purposeName }}
+                                                {% endif %}
+                                            </td>
+                                            <td>{{ data.reportDesc }}</td>
+                                            <td>{{ data.comments }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                {% endif %}
                             {% endfor %}
                             </tbody>
                         </table>
                     </div>
                     <div style="page-break-after: always"></div>
                 {% endif %}
-            {% endfor %}
+{#            {% endfor %}#}
             {#            Sub Agent Section#}
-            {% for key, entity in employee %}
-                {% if key is same as 'sub-agent' %}
+{#            {% for key, entity in employee %}#}
+                {% if employee['sub-agent'] is defined and employee['sub-agent'] is iterable %}
                     <div style="border: 1px solid purple; padding: 5px 10px; margin-bottom: 20px" title="Sub Agent Section">
                         <h3 style="text-align: center; background-color: purple; color: #fff; padding: 5px 0">Sub Agent Section</h3>
                         <table border="1" cellspacing="0" cellpadding="5" width="100%" style="margin-top: 10px">
@@ -219,39 +222,41 @@
                             </tr>
                             </thead>
                             <tbody>
-                            {% for dateMonthYear, dateWiseRecord in entity %}
+                            {% for dateMonthYear, entity in employee['sub-agent'] %}
                                 <tr>
                                     <th colspan="7">{{ dateMonthYear }}</th>
                                 </tr>
-                                {% for data in dateWiseRecord %}
-                                    <tr>
-                                        <td align="center">{{ loop.index }}</td>
-                                        <td>{{ data.agentName }}</td>
-                                        <td>{{ data.agentAddress }}</td>
-                                        <td>{{ data.agentMobile }}</td>
-                                        <td>
-                                            {% if data.purposeMultiple is not empty %}
-                                                {% set purposes=data.purposeMultiple|json_decode %}
-                                                <ol>
-                                                    {% for purpose in purposes %}
-                                                        <li>{{ purpose }}</li>
-                                                    {% endfor %}
-                                                </ol>
-                                            {% else %}
-                                                {{ data.purposeName }}
-                                            {% endif %}
-                                        </td>
-                                        <td>{{ data.reportDesc }}</td>
-                                        <td>{{ data.comments }}</td>
-                                    </tr>
-                                {% endfor %}
+                                {% if entity is not empty %}
+                                    {% for data in entity %}
+                                        <tr>
+                                            <td align="center">{{ loop.index }}</td>
+                                            <td>{{ data.agentName }}</td>
+                                            <td>{{ data.agentAddress }}</td>
+                                            <td>{{ data.agentMobile }}</td>
+                                            <td>
+                                                {% if data.purposeMultiple is not empty %}
+                                                    {% set purposes=data.purposeMultiple|json_decode %}
+                                                    <ol>
+                                                        {% for purpose in purposes %}
+                                                            <li>{{ purpose }}</li>
+                                                        {% endfor %}
+                                                    </ol>
+                                                {% else %}
+                                                    {{ data.purposeName }}
+                                                {% endif %}
+                                            </td>
+                                            <td>{{ data.reportDesc }}</td>
+                                            <td>{{ data.comments }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                {% endif %}
                             {% endfor %}
                             </tbody>
                         </table>
                     </div>
                     <div style="page-break-after: always"></div>
                 {% endif %}
-            {% endfor %}
+{#            {% endfor %}#}
         {% endif %}
     {% endfor %}
 

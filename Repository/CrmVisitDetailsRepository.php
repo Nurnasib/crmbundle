@@ -200,11 +200,12 @@ class CrmVisitDetailsRepository extends EntityRepository
         }
     }
 
-    public function getVisitDetails($begin,$end,$employeeId)
+    public function getVisitDetails($begin,$end,$employeeId,$serviceModeId)
     {
         $qb = $this->createQueryBuilder('e');
         $qb->join('e.crmVisit', 'crmVisit');
         $qb->join('crmVisit.employee', 'employee');
+        $qb->join('employee.serviceMode', 'serviceMode');
         $qb->leftJoin('e.purpose', 'purpose');
         $qb->leftJoin('e.crmCustomer', 'farmer');
         $qb->leftJoin('e.agent', 'agent');
@@ -220,7 +221,12 @@ class CrmVisitDetailsRepository extends EntityRepository
         $qb->andWhere('crmVisit.created <=:end')->setParameter('end', $end);
         if($employeeId){
             $qb->andWhere('employee.id =:employeeId')->setParameter('employeeId', $employeeId);
+        }else{
+            if($serviceModeId){
+                $qb->andWhere('serviceMode.id =:serviceModeId')->setParameter('serviceModeId', $serviceModeId);
+            }
         }
+
 
         $qb->orderBy('crmVisit.created', 'ASC');
 

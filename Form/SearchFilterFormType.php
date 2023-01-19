@@ -373,6 +373,20 @@ class SearchFilterFormType extends AbstractType
                 'placeholder' => '- Select Feed -',
                 'required' => false,
             ])
+            ->add('serviceMode', EntityType::class, array(
+                'required'    => false,
+                'class' => \App\Entity\Core\Setting::class,
+                'placeholder' => '- Select Service Mode -',
+                'choice_label' => 'name',
+                'attr'=>array('class'=>'select2 span12 m-wrap'),
+                'query_builder' => function(EntityRepository $er){
+                    return $er->createQueryBuilder('e')
+                        ->join("e.settingType","st")
+                        ->where("st.slug ='service-mode'")
+                        ->andWhere("e.status = 1")
+                        ->orderBy('e.name', 'ASC');
+                },
+            ))
             ->add('filter', SubmitType::class,[
                 'attr'=>[
                     'class' => 'btn btn-primary btn-block'
