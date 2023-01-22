@@ -176,7 +176,7 @@ class SearchFilterFormType extends AbstractType
             ->add('poultryFramType', EntityType::class,[
                 'class' => Setting::class,
                 'choice_label' => 'name',
-                'placeholder' => '- Select Fram Type -',
+                'placeholder' => '- All DOC Type -',
                 'query_builder' => function(EntityRepository $er){
                     return $er->createQueryBuilder('e')
                         ->join('e.parent','parent')

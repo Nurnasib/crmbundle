@@ -1,0 +1,77 @@
+
+<table class="table table-striped table-bordered table-hover download-excel">
+    {% if entities is defined %}
+        <thead>
+        <tr>
+            <th data-a-h="center" class="border-0" colspan="{{ entities['dateRange']|length+5 }}"><h3 class="text-center">NOURISH POULTRY AND HATCHERY LTD</h3></th>
+        </tr>
+        <tr>
+            <th data-a-h="center" class="border-0" colspan="{{ entities['dateRange']|length+5 }}"><h5 class="text-center">UTTARA, DHAKA.</h5></th>
+        </tr>
+
+        <tr>
+            <td data-a-h="center" class="border-0" colspan="{{ entities['dateRange']|length+5 }}" align="center"><h6>{{ filterBy['otherReport']|replace({'-': ' '}) |upper }}</h6></td>
+        </tr>
+        <tr>
+            <td data-a-h="center" class="border-0" colspan="{{ entities['dateRange']|length+5 }}" align="center"><h6>{{ filterBy['startDate'] is defined? 'Date: '~ filterBy['startDate']:'' }} {{ filterBy['endDate'] is defined? ' To '~ filterBy['endDate']:'' }}</h6></td>
+        </tr>
+        </thead>
+        {% for chickType, entity in entities['records'] %}
+            <thead>
+            <tr>
+                <th data-a-h="center" class="border-0" scope="col" colspan="{{ entities['dateRange']|length+5 }}" style="text-align: left; background-color: yellow; font-size: 20px">{{ chickType }}</th>
+            </tr>
+            </thead>
+            <thead class="thead-dark">
+
+            <tr>
+                <th scope="col">Region</th>
+                <th scope="col">Name</th>
+                <th scope="col">Employee ID</th>
+                <th scope="col">Designation</th>
+                <th scope="col">Avg. Price</th>
+                {% if entities['dateRange'] is defined and entities['dateRange'] is not empty %}
+                    {% for reportingDate in entities['dateRange'] %}
+                        <th scope="col" style="transform: rotate(-30deg);text-align: center; min-width: 65px; padding: 0!important;">{{ reportingDate }}</th>
+                    {% endfor %}
+                {% endif %}
+            </tr>
+            </thead>
+
+
+            <tbody>
+
+            {% for regionId, data in entity %}
+                {% set regionRecordCount=0 %}
+                {% for employeeId, details in data %}
+                    <tr>
+                        {% if regionRecordCount==0 %}
+                        <td rowspan="{{ entity[regionId]|length }}">{{ entities['regionInfo'][chickType][regionId]['regionName']|default('') }}</td>
+                        {% endif %}
+                        <td>{{ entities['employeeInfo'][chickType][regionId][employeeId]['employeeName']|default('') }}</td>
+                        <td>{{ entities['employeeInfo'][chickType][regionId][employeeId]['employeeId']|default('') }}</td>
+                        <td>{{ entities['employeeInfo'][chickType][regionId][employeeId]['designationName']|default('') }}</td>
+                        <td data-t="n" >{{ details|length>0?((details|arraySum)/(details|length))|number_format(2,'.',''):'' }}</td>
+                        {% if entities['dateRange'] is defined and entities['dateRange'] is not empty %}
+                            {% for reportingDate in entities['dateRange'] %}
+                                <td data-t="n" align="center">
+                                    {% if details[reportingDate] is defined %}
+                                        {{ details[reportingDate]|number_format(2) }}
+                                    {% else %}
+                                        0
+                                    {% endif %}
+                                </td>
+                            {% endfor %}
+                        {% endif %}
+
+                    </tr>
+                    {% set regionRecordCount=regionRecordCount+1 %}
+                {% endfor %}
+
+            {% endfor %}
+            </tbody>
+
+
+        {% endfor %}
+    {% endif %}
+</table>

@@ -33,6 +33,12 @@
                             {{ form_widget(form.poultryFramType) }}
                         </th>
                         {% endif %}
+                        {% if report=='daily-meat-egg-price' %}
+                        <th>
+                            {{ form_label(form.meatEggBreedType, 'Type:') }}
+                            {{ form_widget(form.meatEggBreedType) }}
+                        </th>
+                        {% endif %}
 
                         <th>
                             {{ form_label(form.startDate, 'Start Date:') }}
@@ -42,7 +48,7 @@
                             {{ form_label(form.endDate, 'End Date:') }}
                             {{ form_widget(form.endDate) }}
                         </th>
-                        {% if report!="daily-doc-price" %}
+                        {% if report!="daily-doc-price" and report!="daily-meat-egg-price" %}
                         <th>
                             {{ form_label(form.year, 'Year:') }}
                             {{ form_widget(form.year) }}
@@ -93,6 +99,9 @@
 
                         {% elseif reportSlug is same as 'meat-egg-price' %}
                             {% include '@TerminalbdCrm/report/others/inc/_meat_egg_price.html.twig'%}
+
+                        {% elseif reportSlug is same as 'daily-meat-egg-price' %}
+                            {% include '@TerminalbdCrm/report/others/inc/_meat_egg_price_daily.html.twig'%}
 
 
                         {% elseif reportSlug in ['doc-complain', 'feed-complain'] %}

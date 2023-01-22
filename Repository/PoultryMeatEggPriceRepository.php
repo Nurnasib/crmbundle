@@ -143,4 +143,86 @@ class PoultryMeatEggPriceRepository extends EntityRepository
 
     }
 
+    public function getDailyMeatEggPrice($filterBy, User $loggedUser)
+    {
+        $start = isset($filterBy['startDate']) ? (new \DateTime($filterBy['startDate']))->format('Y-m-d') : date('Y-m-d');
+        $end = isset($filterBy['endDate']) ? (new \DateTime($filterBy['endDate']))->format('Y-m-d') : date('Y-m-d');
+        $employeeId = isset($filterBy['employee']) ? $filterBy['employee']->getId() : null;
+        $meatEggBreedType = isset($filterBy['meatEggBreedType']) ? $filterBy['meatEggBreedType']->getId() : null;
+
+
+        $qb = $this->createQueryBuilder('e');
+        $qb->join('e.breedType', 'breed_type');
+        $qb->join('e.employee', 'employee');
+        $qb->leftJoin('employee.designation', 'designation');
+        $qb->join('e.region', 'region');
+        $qb->join('employee.userGroup', 'user_group');
+
+
+        $qb->select('e.price', 'MONTH(e.reportingDate) AS month', 'YEAR(e.reportingDate) AS year', 'e.reportingDate');
+        $qb->addSelect('breed_type.id AS breedTypeId', 'breed_type.name AS breedTypeName');
+        $qb->addSelect('employee.id as employeeAutoId','employee.userId', 'employee.name as employeeName');
+        $qb->addSelect('region.id as regionId', 'region.name as regionName');
+        $qb->addSelect('designation.name as designationName');
+
+        $qb->where('e.reportingDate >= :start')->setParameter('start', $start);
+        $qb->andWhere('e.reportingDate <= :end')->setParameter('end', $end);
+        $qb->andWhere('user_group.slug = :userGroupSlug')->setParameter('userGroupSlug', 'employee');
+        $qb->andWhere('e.price > :price')->setParameter('price', 0);
+
+        $rolesString = implode('_', $loggedUser->getRoles());
+        if (!str_contains($rolesString, 'ADMIN') && !in_array('ROLE_LINE_MANAGER', $loggedUser->getRoles())){
+            $qb->andWhere('employee.id = :employeeId')->setParameter('employeeId', $loggedUser->getId());
+        }elseif (!str_contains($rolesString, 'ADMIN') && in_array('ROLE_LINE_MANAGER', $loggedUser->getRoles())){
+
+            $employeeIdsByLineManager = $this->_em->getRepository(User::class)->getEmployeesByLineManager($loggedUser);
+            $employeeIs=[];
+            if($employeeIdsByLineManager){
+                $employeeIs=$employeeIdsByLineManager;
+            }
+            $qb->andWhere('employee.id IN (:employeeIds)')->setParameter('employeeIds', $employeeIs);
+        }
+        if (isset($filterBy['employeeId']) && $filterBy['employeeId'] !=''){
+            $qb->andWhere('employee.id = :employeeId')->setParameter('employeeId', $employeeId);
+        }
+
+        if($meatEggBreedType){
+            $qb->andWhere('breed_type.id = :breedTypeId')->setParameter('breedTypeId', $meatEggBreedType);
+        }
+
+        $qb->orderBy('region.name', 'ASC');
+
+        $results = $qb->getQuery()->getArrayResult();
+        $data = [];
+        foreach ($results as $result) {
+            $reportingDate = $result['reportingDate']->format('d-m-Y');
+            $data['records'][$result['breedTypeName']][$result['regionId']][$result['employeeAutoId']][$reportingDate] = $result['price'];
+            $data['employeeInfo'][$result['breedTypeName']][$result['regionId']][$result['employeeAutoId']] = ['employeeId'=>$result['userId'], 'employeeName'=>$result['employeeName'], 'designationName'=>$result['designationName']];
+            $data['regionInfo'][$result['breedTypeName']][$result['regionId']] = ['regionName'=>$result['regionName']];
+
+        }
+        $data['dateRange']=$this->getBetweenDates($start, $end);
+//        dd($data);
+        return $data;
+
+    }
+
+
+    private function getBetweenDates($startDate, $endDate)
+    {
+        $rangArray = [];
+
+        $startDate = strtotime($startDate);
+        $endDate = strtotime($endDate);
+
+        for ($currentDate = $startDate; $currentDate <= $endDate;
+             $currentDate += (86400)) {
+
+            $date = date('d-m-Y', $currentDate);
+            $rangArray[] = $date;
+        }
+
+        return $rangArray;
+    }
+
 }
