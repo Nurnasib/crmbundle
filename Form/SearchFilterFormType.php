@@ -483,9 +483,9 @@ class SearchFilterFormType extends AbstractType
                 $otherReport,
                 ['Sales & Marketing' =>
                     [
-                        'DOC Price' => 'doc-price',
-                        'Daily DOC Price' => 'daily-doc-price',
-                        'Meat & Egg Price' => 'meat-egg-price',
+//                        'DOC Price' => 'doc-price',
+//                        'Daily DOC Price' => 'doc-price-daily',
+//                        'Meat & Egg Price' => 'meat-egg-price',
                     ]
                 ]
             );

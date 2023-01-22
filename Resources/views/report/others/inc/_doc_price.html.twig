@@ -2,64 +2,69 @@
     {% if entities is defined %}
         <thead>
         <tr>
-            <th data-a-h="center" class="border-0" colspan="15"><h3 class="text-center">NOURISH POULTRY AND HATCHERY LTD</h3></th>
+            <th data-a-h="center" class="border-0" colspan="{{ entities['monthRange']|length+6 }}"><h3 class="text-center">NOURISH POULTRY AND HATCHERY LTD</h3></th>
         </tr>
         <tr>
-            <th data-a-h="center" class="border-0" colspan="15"><h5 class="text-center">UTTARA, DHAKA.</h5></th>
+            <th data-a-h="center" class="border-0" colspan="{{ entities['monthRange']|length+6 }}"><h5 class="text-center">UTTARA, DHAKA.</h5></th>
         </tr>
 
         <tr>
-            <td data-a-h="center" class="border-0" colspan="15" align="center"><h6>{{ filterBy['otherReport']|replace({'-': ' '}) |upper }}</h6></td>
+            <td data-a-h="center" class="border-0" colspan="{{ entities['monthRange']|length+6 }}" align="center"><h6>{{ filterBy['otherReport']|replace({'-': ' '}) |upper }}</h6></td>
         </tr>
-        </thead>
-    {% for year, entity in entities %}
-        <thead>
         <tr>
-            <th data-a-h="center" class="border-0" scope="col" colspan="15" style="text-align: center">{{ year }}</th>
+            <td data-a-h="center" class="border-0" colspan="{{ entities['monthRange']|length+6 }}" align="center"><h6>{{ filterBy['startMonth'] is defined? 'Month: '~ filterBy['startMonth']|date('F-Y'):'' }} {{ filterBy['endMonth'] is defined? ' To '~ filterBy['endMonth']|date('F-Y'):'' }}</h6></td>
         </tr>
         </thead>
+    {% if entities['records'] is defined and entities['records'] is not empty %}
+        {% for chickType, entity in entities['records'] %}
+            <thead class="thead-dark">
+            <tr>
+                <th scope="col" colspan="{{ entities['monthRange']|length+6 }}" style="text-align: left; background-color: yellow; font-size: 20px">{{ chickType }} DOC</th>
+            </tr>
+            <tr>
+                <th scope="col">Name</th>
+                <th scope="col">Employee ID</th>
+                <th scope="col">Designation</th>
+                <th scope="col">Region</th>
+                <th scope="col">Company</th>
+                <th scope="col">Avg. Price</th>
+                {% if entities['monthRange'] is defined and entities['monthRange'] is not empty %}
+                    {% for month in entities['monthRange'] %}
+                        <th scope="col" style="text-align: center"><span style="display:block; transform: rotate(-30deg);text-align: center; min-width: 65px; padding: 0!important;">{{ month|date('F') }}</span></th>
+                    {% endfor %}
+                {% endif %}
+            </tr>
+            </thead>
+            <tbody>
+                {% for employeeId, data in entity %}
 
-    {% for chickType, data in entity %}
-        <thead class="thead-dark">
-        <tr>
-            <th scope="col" colspan="15">{{ chickType }} DOC</th>
-        </tr>
-        <tr>
-            <th scope="col">Employee ID</th>
-            <th scope="col">Name</th>
-            <th scope="col">Company</th>
-            {% for month in 1..12 %}
-                {% set date = '01-' ~ month ~ '-2022' %}
-                <th scope="col" style="text-align: center">{{ date|date('F') }}</th>
-            {% endfor %}
-        </tr>
-        </thead>
-        <tbody>
-         {% for employee, item in data %}
-             {% for company, details in item %}
-                <tr>
-                    {% if loop.first %}
-                        <td data-a-v="middle" rowspan="{{ item|length }}">{{ employee|split('~')[0] }}</td>
-                        <td data-a-v="middle" rowspan="{{ item|length }}">{{ employee|split('~')[1] }}</td>
-                    {% endif %}
-                    <td>{{ company }}</td>
-                    {% for month in 1..12 %}
-                        {% set date = '01-' ~ month ~ '-2022' %}
-                        <td data-t="n" align="center">
-                            {% if details[date|date('m-F')] is defined %}
-                                {{ details[date|date('m-F')]|number_format(2) }}
-                            {% else %}
-                                0
+                    {% for company, details in data %}
+                        <tr>
+                            {% if loop.first %}
+                                <td data-a-v="middle" rowspan="{{ data|length }}">{{ entities['employeeInfo'][chickType][employeeId]['employeeName']|default('') }}</td>
+                                <td data-a-v="middle" rowspan="{{ data|length }}">{{ entities['employeeInfo'][chickType][employeeId]['employeeId']|default('') }}</td>
+                                <td data-a-v="middle" rowspan="{{ data|length }}">{{ entities['employeeInfo'][chickType][employeeId]['designationName']|default('') }}</td>
+                                <td data-a-v="middle" rowspan="{{ data|length }}">{{ entities['employeeInfo'][chickType][employeeId]['regionalName']|default('') }}</td>
                             {% endif %}
-                        </td>
+                            <td>{{ entities['feedCompany'][chickType][employeeId][company]|default('') }}</td>
+                            <td data-t="n" >{{ details|length>0?((details|arraySum)/(details|length))|number_format(2,'.',''):'' }}</td>
+                            {% if entities['monthRange'] is defined and entities['monthRange'] is not empty %}
+                                {% for month in entities['monthRange'] %}
+                                    <td data-t="n" align="center">
+                                        {% if details[month|date('F-Y')] is defined %}
+                                            {{ details[month|date('F-Y')]|number_format(2) }}
+                                        {% else %}
+                                            0
+                                        {% endif %}
+                                    </td>
+                                {% endfor %}
+                            {% endif %}
+                        </tr>
                     {% endfor %}
 
-                </tr>
-            {% endfor %}
+                {% endfor %}
+            </tbody>
         {% endfor %}
-        </tbody>
-    {% endfor %}
-
-    {% endfor %}
+        {% endif %}
     {% endif %}
 </table>

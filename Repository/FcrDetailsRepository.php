@@ -96,12 +96,11 @@ class FcrDetailsRepository extends BaseRepository
 
             $qb->join('e.employee','employee');
             $qb->leftJoin('e.visit','visit');
-            $qb->leftJoin('visit.location','location');
-            $qb->leftJoin('location.parent','dist');
-            $qb->leftJoin('dist.parent','region');
+
             $qb->leftJoin('e.customer','customer');
             $qb->leftJoin('e.agent', 'agent');
             $qb->leftJoin('agent.district', 'district');
+            $qb->leftJoin('district.parent', 'region');
             $qb->leftJoin('e.hatchery', 'hatchery');
             $qb->leftJoin('e.breed', 'breed');
             $qb->leftJoin('e.feed', 'feed');

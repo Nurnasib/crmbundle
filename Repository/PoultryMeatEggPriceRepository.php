@@ -90,29 +90,38 @@ class PoultryMeatEggPriceRepository extends EntityRepository
 
     public function getMeatEggPriceReport($filterBy, User $loggedUser)
     {
-        $start = isset($filterBy['startDate']) ? (new \DateTime($filterBy['startDate']))->format('Y-m-d') : null;
-        $end = isset($filterBy['endDate']) ? (new \DateTime($filterBy['endDate']))->format('Y-m-d') : null;
-        $employeeId = isset($filterBy['employee']) ? $filterBy['employee']->getId() : null;
-
+        $start = isset($filterBy['startMonth']) ? (new \DateTime($filterBy['startMonth']))->format('Y-m-d') : date('Y-01-01');
+        $end = isset($filterBy['endMonth']) ? (new \DateTime($filterBy['endMonth']))->format('Y-m-d') : date('Y-12-31');
+        $employeeId = isset($filterBy['employeeId']) ? $filterBy['employeeId'] : null;
+        $meatEggBreedType = isset($filterBy['meatEggBreedType']) ? $filterBy['meatEggBreedType']->getId() : null;
 
         $qb = $this->createQueryBuilder('e');
         $qb->join('e.breedType', 'breed_type');
         $qb->join('e.employee', 'employee');
+        $qb->leftJoin('employee.designation', 'designation');
+        $qb->join('e.region', 'region');
         $qb->join('employee.userGroup', 'user_group');
 
 
         $qb->select('AVG(e.price) AS avgPrice', 'MONTH(e.reportingDate) AS month', 'YEAR(e.reportingDate) AS year', 'e.reportingDate');
         $qb->addSelect('breed_type.id AS breedTypeId', 'breed_type.name AS breedTypeName');
-        $qb->addSelect('employee.userId', 'employee.name');
+        $qb->addSelect('employee.id as employeeAutoId', 'employee.userId', 'employee.name');
+        $qb->addSelect('region.id as regionId', 'region.name as regionName');
+        $qb->addSelect('designation.name as designationName');
 
         $qb->where('e.reportingDate >= :start')->setParameter('start', $start);
         $qb->andWhere('e.reportingDate <= :end')->setParameter('end', $end);
         $qb->andWhere('user_group.slug = :userGroupSlug')->setParameter('userGroupSlug', 'employee');
+        $qb->andWhere('e.price > :price')->setParameter('price', 0);
 
         $qb->groupBy('month');
         $qb->addGroupBy('year');
         $qb->addGroupBy('breedTypeId');
-        $qb->addGroupBy('employee.userId');
+        $qb->addGroupBy('employee.id');
+
+        $qb->orderBy('employee.name', 'ASC');
+        $qb->addOrderBy("DATE_FORMAT(e.reportingDate,'%Y-%m')", "ASC");
+
 
         $rolesString = implode('_', $loggedUser->getRoles());
         if (!str_contains($rolesString, 'ADMIN') && !in_array('ROLE_LINE_MANAGER', $loggedUser->getRoles())){
@@ -129,13 +138,16 @@ class PoultryMeatEggPriceRepository extends EntityRepository
         if (isset($filterBy['employeeId']) && $filterBy['employeeId'] !=''){
             $qb->andWhere('employee.id = :employeeId')->setParameter('employeeId', $employeeId);
         }
+        if($meatEggBreedType){
+            $qb->andWhere('breed_type.id = :breedTypeId')->setParameter('breedTypeId', $meatEggBreedType);
+        }
+
 
         $results = $qb->getQuery()->getArrayResult();
         $data = [];
         foreach ($results as $result) {
             $month = $result['reportingDate']->format('m-F');
             $data['Year-' . $result['reportingDate']->format('Y')][$result['breedTypeName']][$result['userId'] . '~' . $result['name']][$month] = $result['avgPrice'];
-            ksort($data['Year-' . $result['reportingDate']->format('Y')][$result['breedTypeName']][$result['userId'] . '~' . $result['name']]);
         }
         return $data;
 

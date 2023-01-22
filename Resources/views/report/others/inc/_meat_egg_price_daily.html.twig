@@ -10,7 +10,7 @@
         </tr>
 
         <tr>
-            <td data-a-h="center" class="border-0" colspan="{{ entities['dateRange']|length+5 }}" align="center"><h6>{{ filterBy['otherReport']|replace({'-': ' '}) |upper }}</h6></td>
+            <td data-a-h="center" class="border-0" colspan="{{ entities['dateRange']|length+5 }}" align="center"><h6>{{ 'Meat & Egg Price Daily Report' |upper }}</h6></td>
         </tr>
         <tr>
             <td data-a-h="center" class="border-0" colspan="{{ entities['dateRange']|length+5 }}" align="center"><h6>{{ filterBy['startDate'] is defined? 'Date: '~ filterBy['startDate']:'' }} {{ filterBy['endDate'] is defined? ' To '~ filterBy['endDate']:'' }}</h6></td>

@@ -27,28 +27,41 @@
                             {{ form_label(form.employee, 'Employee:') }}
                             {{ form_widget(form.employee) }}
                         </th>
-                        {% if report=='daily-doc-price' %}
+                        {% if report=='doc-price-daily' or report =='doc-price-monthly' %}
                         <th>
                             {{ form_label(form.poultryFramType, 'Doc Type:') }}
                             {{ form_widget(form.poultryFramType) }}
                         </th>
                         {% endif %}
-                        {% if report=='daily-meat-egg-price' %}
+                        {% if report=='meat-egg-price-daily' or report=='meat-egg-price-monthly' %}
                         <th>
                             {{ form_label(form.meatEggBreedType, 'Type:') }}
                             {{ form_widget(form.meatEggBreedType) }}
                         </th>
                         {% endif %}
 
-                        <th>
-                            {{ form_label(form.startDate, 'Start Date:') }}
-                            {{ form_widget(form.startDate) }}
-                        </th>
-                        <th>
-                            {{ form_label(form.endDate, 'End Date:') }}
-                            {{ form_widget(form.endDate) }}
-                        </th>
-                        {% if report!="daily-doc-price" and report!="daily-meat-egg-price" %}
+                        {% if report =='doc-price-monthly' or report=='meat-egg-price-monthly' %}
+                            <th>
+                                {{ form_label(form.startMonth, 'Start Month:') }}
+                                {{ form_widget(form.startMonth) }}
+                            </th>
+                            <th>
+                                {{ form_label(form.endMonth, 'End Month:') }}
+                                {{ form_widget(form.endMonth) }}
+                            </th>
+                        {% else %}
+
+                            <th>
+                                {{ form_label(form.startDate, 'Start Date:') }}
+                                {{ form_widget(form.startDate) }}
+                            </th>
+                            <th>
+                                {{ form_label(form.endDate, 'End Date:') }}
+                                {{ form_widget(form.endDate) }}
+                            </th>
+                        {% endif %}
+
+                        {% if report!="doc-price-daily" and report!="doc-price-monthly" and report!="meat-egg-price-daily" and report!="meat-egg-price-monthly" %}
                         <th>
                             {{ form_label(form.year, 'Year:') }}
                             {{ form_widget(form.year) }}
@@ -90,17 +103,16 @@
                         {% elseif reportSlug is same as 'competitors-activity' %}
                             {% include '@TerminalbdCrm/report/salesAndMarketing/inc/challenger/competitors-activity.twig'%}
 
-
-                        {% elseif reportSlug is same as 'doc-price' %}
+                        {% elseif reportSlug is same as 'doc-price-monthly' %}
                             {% include '@TerminalbdCrm/report/others/inc/_doc_price.html.twig'%}
 
-                        {% elseif reportSlug is same as 'daily-doc-price' %}
+                        {% elseif reportSlug is same as 'doc-price-daily' %}
                             {% include '@TerminalbdCrm/report/others/inc/_daily_doc_price.html.twig'%}
 
-                        {% elseif reportSlug is same as 'meat-egg-price' %}
+                        {% elseif reportSlug is same as 'meat-egg-price-monthly' %}
                             {% include '@TerminalbdCrm/report/others/inc/_meat_egg_price.html.twig'%}
 
-                        {% elseif reportSlug is same as 'daily-meat-egg-price' %}
+                        {% elseif reportSlug is same as 'meat-egg-price-daily' %}
                             {% include '@TerminalbdCrm/report/others/inc/_meat_egg_price_daily.html.twig'%}
 
 
@@ -139,6 +151,10 @@
 
             border: 2px solid #b5b5b5 !important;
             border-bottom-color: #b5b5b5 !important;
+        }
+
+        .hide-calendar .ui-datepicker-calendar{
+            display: none;
         }
 
         /*.ui-datepicker-calendar {
@@ -191,13 +207,15 @@
             dateFormat: 'mm-yy',
             autoClose:true,
             onClose: function() {
+                $(this).datepicker('widget').removeClass('hide-calendar');
                 $("#ui-datepicker-div").removeClass('monthYearPicker');
                 var iMonth = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
                 var iYear = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
                 $(this).datepicker('setDate', new Date(iYear, iMonth, 1));
             },
 
-            beforeShow: function() {
+            beforeShow: function(input) {
+                $(input).datepicker("widget").addClass('hide-calendar');
                 $("#ui-datepicker-div").addClass('monthYearPicker');
                 // console.log($(this).val());
                 if ((selDate = $(this).val()).length > 0)
@@ -219,7 +237,7 @@
             e.preventDefault();
             let table = document.querySelector(".download-excel");
             TableToExcel.convert(table, {
-                name: "{{ report is defined and report is not null ? report : ''}} ({{ filterBy['startDate'] is defined ? filterBy['startDate']:'' }} {{ filterBy['endDate'] is defined ? ' to '~filterBy['endDate']:'' }}).xlsx",
+                name: "{{ report is defined and report is not null ? report : ''}} ({{filterBy['startDate'] is defined ? filterBy['startDate']:'' }}{{ filterBy['startMonth'] is defined ? filterBy['startMonth']:'' }}{{ filterBy['endDate'] is defined and filterBy['endDate'] is not empty ? ' to '~filterBy['endDate']:'' }} {{ filterBy['endMonth'] is defined and filterBy['endMonth'] is not empty ? ' to '~filterBy['endMonth']:'' }}).xlsx",
                 sheet: {
                     name: "Sheet 1"
                 }

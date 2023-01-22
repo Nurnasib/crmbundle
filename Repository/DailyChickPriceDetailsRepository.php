@@ -114,17 +114,44 @@ class DailyChickPriceDetailsRepository extends EntityRepository
         return $rangArray;
     }
 
-    public function getDocPriceReport($filterBy, User $loggedUser)
+    private function getMonthBetweenDates($startDate, $endDate)
     {
+        $rangArray = [];
+        $startYear = date('Y', strtotime($startDate));
+        $endYear = date('Y', strtotime($endDate));
+        $startDate= date('Y-m-d',strtotime($startYear.'-01-01'));
+        if($startYear!=$endYear){
+            $endDate= date('Y-m-d', strtotime($endDate));
+        }else{
+            $endDate= date('Y-m-d', strtotime($startYear.'-12-31'));
+        }
+        
+        $start    = (new \DateTime($startDate))->modify('first day of this month');
+        $end      = (new \DateTime($endDate))->modify('last day of this month');
+        $interval = \DateInterval::createFromDateString('1 month');
+        $period   = new \DatePeriod($start, $interval, $end);
 
-        $start = isset($filterBy['startDate']) ? (new \DateTime($filterBy['startDate']))->format('Y-m-d') : date('Y-01-01');
-        $end = isset($filterBy['endDate']) ? (new \DateTime($filterBy['endDate']))->format('Y-m-d') : date('Y-12-31');
+        foreach ($period as $dt) {
+            $date= $dt->format("F-Y");
+            $rangArray[] = $date;
+        }
+
+        return $rangArray;
+    }
+
+    public function getDocPriceMonthly($filterBy, User $loggedUser)
+    {
+        
+        $start = isset($filterBy['startMonth']) ? (new \DateTime($filterBy['startMonth']))->format('Y-m-d') : date('Y-01-01');
+        $end = isset($filterBy['endMonth']) ? (new \DateTime($filterBy['endMonth']))->format('Y-m-d') : date('Y-12-31');
         $employeeId = isset($filterBy['employeeId']) ? $filterBy['employeeId'] : null;
-
-//        dd($start, $end);
+        $poultryFramType = isset($filterBy['poultryFramType']) ? $filterBy['poultryFramType'] : '';
+        
         $qb = $this->createQueryBuilder('e');
         $qb->join('e.crmDailyChickPrice', 'parent');
         $qb->join('parent.employee', 'employee');
+        $qb->leftJoin('employee.regional', 'regional');
+        $qb->leftJoin('employee.designation', 'designation');
         $qb->join('employee.userGroup', 'user_group');
         $qb->join('e.chickType', 'chick_type');
         $qb->join('chick_type.parent', 'chick_type_parent');
@@ -135,17 +162,21 @@ class DailyChickPriceDetailsRepository extends EntityRepository
         $qb->addSelect('chick_type_parent.id AS chickTypeParentId', 'chick_type_parent.name AS chickTypeParentName');
         $qb->addSelect('feed.id AS feedId', 'feed.name AS feedName');
         $qb->addSelect('parent.reportingDate', 'MONTH(parent.reportingDate) AS month', 'YEAR(parent.reportingDate) AS year');
+        $qb->addSelect('designation.name as designationName');
+        $qb->addSelect('regional.name as regionalName');
 
         $qb->where('parent.reportingDate >= :start')->setParameter('start', $start);
         $qb->andWhere('parent.reportingDate <= :end')->setParameter('end', $end);
         $qb->andWhere('user_group.slug = :userGroupSlug')->setParameter('userGroupSlug', 'employee');
+        $qb->andWhere('e.price > :price')->setParameter('price', 0);
 
         $qb->groupBy('employee.userId');
+        $qb->addGroupBy('feedId');
         $qb->addGroupBy('month');
         $qb->addGroupBy('year');
         $qb->addGroupBy('chickTypeParentId');
-        $qb->addGroupBy('feedId');
-        $qb->orderBy('feed.name', 'ASC');
+        $qb->orderBy('feed.sortOrder', 'ASC');
+        $qb->addOrderBy("DATE_FORMAT(parent.reportingDate,'%Y-%m')", "ASC");
 
         $rolesString = implode('_', $loggedUser->getRoles());
         if (!str_contains($rolesString, 'ADMIN') && !in_array('ROLE_LINE_MANAGER', $loggedUser->getRoles())){
@@ -163,19 +194,26 @@ class DailyChickPriceDetailsRepository extends EntityRepository
             $qb->andWhere('employee.id = :employeeId')->setParameter('employeeId', $employeeId);
         }
 
+        if($poultryFramType){
+            $qb->andWhere('chick_type_parent.id =:docType')->setParameter('docType', $poultryFramType);
+        }
+
         $results = $qb->getQuery()->getArrayResult();
 
         $data = [];
 
         foreach ($results as $result) {
-            $month = $result['reportingDate']->format('m-F');
-            $data['Year-' . $result['reportingDate']->format('Y')][$result['chickTypeParentName']][$result['userId'] . '~' . $result['name']][$result['feedName']][$month] = $result['avgPrice'];
+            $month = $result['reportingDate']->format('F-Y');
+            $data['records'][$result['chickTypeParentName']][$result['userId']][$result['feedId']][$month] = $result['avgPrice'];
+            $data['feedCompany'][$result['chickTypeParentName']][$result['userId']][$result['feedId']] = $result['feedName'];
+            $data['employeeInfo'][$result['chickTypeParentName']][$result['userId']] = ['employeeId'=>$result['userId'], 'employeeName'=>$result['name'], 'designationName'=>$result['designationName'], 'regionalName'=>$result['regionalName']];
 
-            ksort($data['Year-' . $result['reportingDate']->format('Y')][$result['chickTypeParentName']][$result['userId'] . '~' . $result['name']][$result['feedName']]);
         }
+        $data['monthRange']=$this->getMonthBetweenDates($start, $end);
         return $data;
 
     }
+    
 
 }
 

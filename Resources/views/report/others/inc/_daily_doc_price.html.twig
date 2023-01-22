@@ -9,7 +9,7 @@
         </tr>
 
         <tr>
-            <td data-a-h="center" class="border-0" colspan="{{ entities['dateRange']|length+6 }}" align="center"><h6>{{ filterBy['otherReport']|replace({'-': ' '}) |upper }}</h6></td>
+            <td data-a-h="center" class="border-0" colspan="{{ entities['dateRange']|length+6 }}" align="center"><h6>{{ 'DOC Price Daily Report' |upper }}</h6></td>
         </tr>
         <tr>
             <td data-a-h="center" class="border-0" colspan="{{ entities['dateRange']|length+6 }}" align="center"><h6>{{ filterBy['startDate'] is defined? 'Date: '~ filterBy['startDate']:'' }} {{ filterBy['endDate'] is defined? ' To '~ filterBy['endDate']:'' }}</h6></td>
@@ -18,7 +18,7 @@
         {% for chickType, entity in entities['records'] %}
             <thead>
             <tr>
-                <th data-a-h="center" class="border-0" scope="col" colspan="{{ entities['dateRange']|length+6 }}" style="text-align: left; background-color: yellow; font-size: 20px">{{ chickType }} DOC</th>
+                <th class="border-0" scope="col" colspan="{{ entities['dateRange']|length+6 }}" style="text-align: left; background-color: yellow; font-size: 20px">{{ chickType }} DOC</th>
             </tr>
             </thead>
             <thead class="thead-dark">
@@ -32,7 +32,7 @@
                 <th scope="col">Avg. Price</th>
                 {% if entities['dateRange'] is defined and entities['dateRange'] is not empty %}
                     {% for reportingDate in entities['dateRange'] %}
-                        <th scope="col" style="transform: rotate(-30deg);text-align: center; min-width: 65px; padding: 0!important;">{{ reportingDate }}</th>
+                        <th scope="col" style="text-align: center"><span style="transform: rotate(-30deg);text-align: center; min-width: 65px; padding: 0!important; display: block">{{ reportingDate }}</span></th>
                     {% endfor %}
                 {% endif %}
             </tr>
