@@ -154,11 +154,11 @@ class ChickLifeCycleController extends AbstractController
         $feedType= null;
 
 //        $entity->setTotalBirds(isset($data['totalBirds'])?$data['totalBirds']:0);
-        $entity->setAgeDays(isset($data['ageDays'])?$data['ageDays']:0);
-        $entity->setMortalityPes(isset($data['mortalityPes'])?$data['mortalityPes']:0);
+        $entity->setAgeDays(isset($data['ageDays']) && $data['ageDays']!=''?$data['ageDays']:0);
+        $entity->setMortalityPes(isset($data['mortalityPes']) && $data['mortalityPes']!=""?$data['mortalityPes']:0);
         $entity->setMortalityPercent($entity->calculateMortalityPercent());
-        $entity->setWeightAchieved(isset($data['weightAchieved'])?$data['weightAchieved']:0);
-        $entity->setFeedTotalKg(isset($data['feedTotalKg'])?$data['feedTotalKg']:0);
+        $entity->setWeightAchieved(isset($data['weightAchieved']) && $data['weightAchieved']!=""?$data['weightAchieved']:0);
+        $entity->setFeedTotalKg(isset($data['feedTotalKg']) && $data['feedTotalKg']!=""?$data['feedTotalKg']:0);
         $entity->setPerBird($entity->calculatePerBird());
         $entity->setWithoutMortality($entity->calculateWithoutMortality());
         $entity->setWithMortality($entity->calculateWithMortality());

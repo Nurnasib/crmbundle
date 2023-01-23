@@ -356,7 +356,7 @@ class ChickLifeCycleDetails
     /**
      * @param float $feedTotalKg
      */
-    public function setFeedTotalKg(float $feedTotalKg): void
+    public function setFeedTotalKg($feedTotalKg): void
     {
         $this->feedTotalKg = $feedTotalKg;
     }
