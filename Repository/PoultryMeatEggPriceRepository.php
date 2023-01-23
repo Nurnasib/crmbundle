@@ -242,14 +242,9 @@ class PoultryMeatEggPriceRepository extends EntityRepository
     private function getMonthBetweenDates($startDate, $endDate)
     {
         $rangArray = [];
-        $startYear = date('Y', strtotime($startDate));
-        $endYear = date('Y', strtotime($endDate));
-        $startDate= date('Y-m-d',strtotime($startYear.'-01-01'));
-        if($startYear!=$endYear){
-            $endDate= date('Y-m-d', strtotime($endDate));
-        }else{
-            $endDate= date('Y-m-d', strtotime($startYear.'-12-31'));
-        }
+        
+        $startDate= date('Y-m-d',strtotime($startDate));
+        $endDate= date('Y-m-t', strtotime($endDate));
 
         $start    = (new \DateTime($startDate))->modify('first day of this month');
         $end      = (new \DateTime($endDate))->modify('last day of this month');
