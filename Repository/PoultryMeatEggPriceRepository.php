@@ -105,7 +105,7 @@ class PoultryMeatEggPriceRepository extends EntityRepository
 
         $qb->select('AVG(e.price) AS avgPrice', 'MONTH(e.reportingDate) AS month', 'YEAR(e.reportingDate) AS year', 'e.reportingDate');
         $qb->addSelect('breed_type.id AS breedTypeId', 'breed_type.name AS breedTypeName');
-        $qb->addSelect('employee.id as employeeAutoId', 'employee.userId', 'employee.name');
+        $qb->addSelect('employee.id as employeeAutoId', 'employee.userId', 'employee.name as employeeName');
         $qb->addSelect('region.id as regionId', 'region.name as regionName');
         $qb->addSelect('designation.name as designationName');
 
@@ -146,9 +146,11 @@ class PoultryMeatEggPriceRepository extends EntityRepository
         $results = $qb->getQuery()->getArrayResult();
         $data = [];
         foreach ($results as $result) {
-            $month = $result['reportingDate']->format('m-F');
-            $data['Year-' . $result['reportingDate']->format('Y')][$result['breedTypeName']][$result['userId'] . '~' . $result['name']][$month] = $result['avgPrice'];
+            $reportingDate = $result['reportingDate']->format('F-Y');
+            $data['records'][$result['breedTypeName']][$result['employeeAutoId']][$reportingDate] = $result['avgPrice'];
+            $data['employeeInfo'][$result['breedTypeName']][$result['employeeAutoId']] = ['employeeId'=>$result['userId'], 'employeeName'=>$result['employeeName'], 'designationName'=>$result['designationName']];
         }
+        $data['monthRange']=$this->getMonthBetweenDates($start, $end);
         return $data;
 
 
@@ -231,6 +233,31 @@ class PoultryMeatEggPriceRepository extends EntityRepository
              $currentDate += (86400)) {
 
             $date = date('d-m-Y', $currentDate);
+            $rangArray[] = $date;
+        }
+
+        return $rangArray;
+    }
+
+    private function getMonthBetweenDates($startDate, $endDate)
+    {
+        $rangArray = [];
+        $startYear = date('Y', strtotime($startDate));
+        $endYear = date('Y', strtotime($endDate));
+        $startDate= date('Y-m-d',strtotime($startYear.'-01-01'));
+        if($startYear!=$endYear){
+            $endDate= date('Y-m-d', strtotime($endDate));
+        }else{
+            $endDate= date('Y-m-d', strtotime($startYear.'-12-31'));
+        }
+
+        $start    = (new \DateTime($startDate))->modify('first day of this month');
+        $end      = (new \DateTime($endDate))->modify('last day of this month');
+        $interval = \DateInterval::createFromDateString('1 month');
+        $period   = new \DatePeriod($start, $interval, $end);
+
+        foreach ($period as $dt) {
+            $date= $dt->format("F-Y");
             $rangArray[] = $date;
         }
 

@@ -9,8 +9,8 @@
         <th colspan="18" class="border-0" data-a-h="center"><h5 class="text-center">UTTARA, DHAKA.</h5></th>
     </tr>
     <tr>
-        <th colspan="18" class="border-0" data-a-h="center"><h6
-                    class="text-center">{{ report.name|default('') }}</h6></th>
+        <th  colspan="18" class="border-0" data-a-h="center"><h6 class="text-center">{{ report.name|default('') }}  &nbsp; &nbsp;
+                &nbsp; ({{ filterBy['startDate'] is defined and filterBy['startDate'] is not empty ?filterBy['startDate']:'' }} {{ filterBy['endDate'] is defined and filterBy['endDate'] is not empty?' to '~filterBy['endDate']:'' }})</h6></th>
     </tr>
 
     <tr style="position: sticky; top: -1px; background-color: #dbdee3" class="data-header">

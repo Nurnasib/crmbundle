@@ -8,7 +8,7 @@
     </tr>
     <tr>
         <th  colspan="28" class="border-0" data-a-h="center"><h6 class="text-center">{{ report.name|default('') }}  &nbsp; &nbsp;
-                &nbsp; {{ filterBy['startDate']?filterBy['startDate']:'' }} {{ filterBy['startDate']?' to '~filterBy['endDate']:'' }}</h6></th>
+                &nbsp; {{ filterBy['startDate'] is defined and filterBy['startDate'] is not empty?filterBy['startDate']:'' }} {{ filterBy['endDate'] is defined and filterBy['endDate'] is not empty?' to '~filterBy['endDate']:'' }}</h6></th>
     </tr>
     <tr>
         <th colspan="28" class="border-0" data-a-h="center"><h6 class="text-center">Reporting Date : {{ "now"|date('d-m-Y') }}</h6></th>
