@@ -220,6 +220,22 @@ class SearchFilterFormForSalesAndMarketingType extends AbstractType
                 'required' => false
 
             ])
+            ->add('region', EntityType::class,[
+                'class' => Location::class,
+                'choice_label' => 'name',
+                'placeholder' => '- Select Region -',
+                'query_builder' => function(EntityRepository $er){
+                    return $er->createQueryBuilder('e')
+                        ->where('e.level = :level')->setParameter('level', 3)
+                        ->andWhere('e.parent IS NOT NULL')
+                        ->orderBy('e.name');
+                },
+                'attr' => [
+                    'class' => 'select2'
+                ],
+                'required' => false
+
+            ])
 
         ;
     }

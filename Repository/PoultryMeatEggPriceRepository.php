@@ -94,6 +94,7 @@ class PoultryMeatEggPriceRepository extends EntityRepository
         $end = isset($filterBy['endMonth']) ? (new \DateTime($filterBy['endMonth']))->format('Y-m-d') : date('Y-12-31');
         $employeeId = isset($filterBy['employeeId']) ? $filterBy['employeeId'] : null;
         $meatEggBreedType = isset($filterBy['meatEggBreedType']) ? $filterBy['meatEggBreedType']->getId() : null;
+        $region = isset($filterBy['region']) && $filterBy['region']!='' ? $filterBy['region'] : '';
 
         $qb = $this->createQueryBuilder('e');
         $qb->join('e.breedType', 'breed_type');
@@ -106,7 +107,7 @@ class PoultryMeatEggPriceRepository extends EntityRepository
         $qb->select('AVG(e.price) AS avgPrice', 'MONTH(e.reportingDate) AS month', 'YEAR(e.reportingDate) AS year', 'e.reportingDate');
         $qb->addSelect('breed_type.id AS breedTypeId', 'breed_type.name AS breedTypeName');
         $qb->addSelect('employee.id as employeeAutoId', 'employee.userId', 'employee.name as employeeName');
-        $qb->addSelect('region.id as regionId', 'region.name as regionName');
+        $qb->addSelect('region.id as regionId', 'group_concat(DISTINCT region.name) as regionName');
         $qb->addSelect('designation.name as designationName');
 
         $qb->where('e.reportingDate >= :start')->setParameter('start', $start);
@@ -142,18 +143,20 @@ class PoultryMeatEggPriceRepository extends EntityRepository
             $qb->andWhere('breed_type.id = :breedTypeId')->setParameter('breedTypeId', $meatEggBreedType);
         }
 
+        if($region){
+            $qb->andWhere('region.id = :regionId')->setParameter('regionId', $region);
+        }
+
 
         $results = $qb->getQuery()->getArrayResult();
         $data = [];
         foreach ($results as $result) {
             $reportingDate = $result['reportingDate']->format('F-Y');
             $data['records'][$result['breedTypeName']][$result['employeeAutoId']][$reportingDate] = $result['avgPrice'];
-            $data['employeeInfo'][$result['breedTypeName']][$result['employeeAutoId']] = ['employeeId'=>$result['userId'], 'employeeName'=>$result['employeeName'], 'designationName'=>$result['designationName']];
+            $data['employeeInfo'][$result['breedTypeName']][$result['employeeAutoId']] = ['employeeId'=>$result['userId'], 'employeeName'=>$result['employeeName'], 'designationName'=>$result['designationName'], 'regionName'=>$result['regionName']];
         }
         $data['monthRange']=$this->getMonthBetweenDates($start, $end);
         return $data;
-
-
 
     }
 
@@ -163,7 +166,7 @@ class PoultryMeatEggPriceRepository extends EntityRepository
         $end = isset($filterBy['endDate']) ? (new \DateTime($filterBy['endDate']))->format('Y-m-d') : date('Y-m-d');
         $employeeId = isset($filterBy['employee']) ? $filterBy['employee']->getId() : null;
         $meatEggBreedType = isset($filterBy['meatEggBreedType']) ? $filterBy['meatEggBreedType']->getId() : null;
-
+        $region = isset($filterBy['region']) && $filterBy['region']!='' ? $filterBy['region'] : '';
 
         $qb = $this->createQueryBuilder('e');
         $qb->join('e.breedType', 'breed_type');
@@ -202,6 +205,9 @@ class PoultryMeatEggPriceRepository extends EntityRepository
 
         if($meatEggBreedType){
             $qb->andWhere('breed_type.id = :breedTypeId')->setParameter('breedTypeId', $meatEggBreedType);
+        }
+        if($region){
+            $qb->andWhere('region.id = :regionId')->setParameter('regionId', $region);
         }
 
         $qb->orderBy('region.name', 'ASC');

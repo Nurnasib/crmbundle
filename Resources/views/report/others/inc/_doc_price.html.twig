@@ -15,56 +15,62 @@
             <td data-a-h="center" class="border-0" colspan="{{ entities['monthRange']|length+6 }}" align="center"><h6>{{ filterBy['startMonth'] is defined? 'Month: '~ filterBy['startMonth']|date('F-Y'):'' }} {{ filterBy['endMonth'] is defined? ' To '~ filterBy['endMonth']|date('F-Y'):'' }}</h6></td>
         </tr>
         </thead>
-    {% if entities['records'] is defined and entities['records'] is not empty %}
-        {% for chickType, entity in entities['records'] %}
-            <thead class="thead-dark">
-            <tr>
-                <th scope="col" colspan="{{ entities['monthRange']|length+6 }}" style="text-align: left; background-color: yellow; font-size: 20px">{{ chickType }} DOC</th>
-            </tr>
-            <tr>
-                <th scope="col">Name</th>
-                <th scope="col">Employee ID</th>
-                <th scope="col">Designation</th>
-                <th scope="col">Region</th>
-                <th scope="col">Company</th>
-                <th scope="col">Avg. Price</th>
-                {% if entities['monthRange'] is defined and entities['monthRange'] is not empty %}
-                    {% for month in entities['monthRange'] %}
-                        <th scope="col" style="text-align: center"><span style="display:block; transform: rotate(-30deg);text-align: center; min-width: 65px; padding: 0!important;">{{ month|date('F') }}</span></th>
+        {% if entities['records'] is defined and entities['records'] is not empty %}
+            {% for chickType, entity in entities['records'] %}
+                <thead class="thead-dark">
+                <tr>
+                    <th scope="col" colspan="{{ entities['monthRange']|length+6 }}" style="text-align: left; background-color: yellow; font-size: 20px">{{ chickType }} DOC</th>
+                </tr>
+                <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">Employee ID</th>
+                    <th scope="col">Designation</th>
+                    <th scope="col">Region</th>
+                    <th scope="col">Company</th>
+                    <th scope="col">Avg. Price</th>
+                    {% if entities['monthRange'] is defined and entities['monthRange'] is not empty %}
+                        {% for month in entities['monthRange'] %}
+                            <th scope="col" style="text-align: center"><span style="display:block; transform: rotate(-30deg);text-align: center; min-width: 65px; padding: 0!important;">{{ month|date('F') }}</span></th>
+                        {% endfor %}
+                    {% endif %}
+                </tr>
+                </thead>
+                <tbody>
+                    {% for employeeId, data in entity %}
+
+                        {% for company, details in data %}
+                            <tr>
+                                {% if loop.first %}
+                                    <td data-a-v="middle" rowspan="{{ data|length }}">{{ entities['employeeInfo'][chickType][employeeId]['employeeName']|default('') }}</td>
+                                    <td data-a-v="middle" rowspan="{{ data|length }}">{{ entities['employeeInfo'][chickType][employeeId]['employeeId']|default('') }}</td>
+                                    <td data-a-v="middle" rowspan="{{ data|length }}">{{ entities['employeeInfo'][chickType][employeeId]['designationName']|default('') }}</td>
+                                    <td data-a-v="middle" rowspan="{{ data|length }}">{{ entities['employeeInfo'][chickType][employeeId]['regionalName']|default('') }}</td>
+                                {% endif %}
+                                <td>{{ entities['feedCompany'][chickType][employeeId][company]|default('') }}</td>
+                                <td data-t="n" >{{ details|length>0?((details|arraySum)/(details|length))|number_format(2,'.',''):'' }}</td>
+                                {% if entities['monthRange'] is defined and entities['monthRange'] is not empty %}
+                                    {% for month in entities['monthRange'] %}
+                                        <td data-t="n" align="center">
+                                            {% if details[month|date('F-Y')] is defined %}
+                                                {{ details[month|date('F-Y')]|number_format(2) }}
+                                            {% else %}
+                                                0
+                                            {% endif %}
+                                        </td>
+                                    {% endfor %}
+                                {% endif %}
+                            </tr>
+                        {% endfor %}
+
                     {% endfor %}
-                {% endif %}
-            </tr>
-            </thead>
+                </tbody>
+            {% endfor %}
+            {% else %}
             <tbody>
-                {% for employeeId, data in entity %}
-
-                    {% for company, details in data %}
-                        <tr>
-                            {% if loop.first %}
-                                <td data-a-v="middle" rowspan="{{ data|length }}">{{ entities['employeeInfo'][chickType][employeeId]['employeeName']|default('') }}</td>
-                                <td data-a-v="middle" rowspan="{{ data|length }}">{{ entities['employeeInfo'][chickType][employeeId]['employeeId']|default('') }}</td>
-                                <td data-a-v="middle" rowspan="{{ data|length }}">{{ entities['employeeInfo'][chickType][employeeId]['designationName']|default('') }}</td>
-                                <td data-a-v="middle" rowspan="{{ data|length }}">{{ entities['employeeInfo'][chickType][employeeId]['regionalName']|default('') }}</td>
-                            {% endif %}
-                            <td>{{ entities['feedCompany'][chickType][employeeId][company]|default('') }}</td>
-                            <td data-t="n" >{{ details|length>0?((details|arraySum)/(details|length))|number_format(2,'.',''):'' }}</td>
-                            {% if entities['monthRange'] is defined and entities['monthRange'] is not empty %}
-                                {% for month in entities['monthRange'] %}
-                                    <td data-t="n" align="center">
-                                        {% if details[month|date('F-Y')] is defined %}
-                                            {{ details[month|date('F-Y')]|number_format(2) }}
-                                        {% else %}
-                                            0
-                                        {% endif %}
-                                    </td>
-                                {% endfor %}
-                            {% endif %}
-                        </tr>
-                    {% endfor %}
-
-                {% endfor %}
+            <tr>
+                <td colspan="{{ entities['monthRange']|length+6 }}">No record found.</td>
+            </tr>
             </tbody>
-        {% endfor %}
         {% endif %}
     {% endif %}
 </table>

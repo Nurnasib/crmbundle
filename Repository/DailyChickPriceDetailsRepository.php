@@ -32,6 +32,7 @@ class DailyChickPriceDetailsRepository extends EntityRepository
         $end = isset($filterBy['endDate']) ? (new \DateTime($filterBy['endDate']))->format('Y-m-d') : date('Y-m-d');
         $employeeId = isset($filterBy['employeeId']) ? $filterBy['employeeId'] : null;
         $poultryFramType = isset($filterBy['poultryFramType']) ? $filterBy['poultryFramType'] : '';
+        $region = isset($filterBy['region']) && $filterBy['region']!='' ? $filterBy['region'] : '';
 
         $qb = $this->createQueryBuilder('e');
         $qb->join('e.crmDailyChickPrice', 'parent');
@@ -77,6 +78,10 @@ class DailyChickPriceDetailsRepository extends EntityRepository
 
         if($poultryFramType){
            $qb->andWhere('chick_type_parent.id =:docType')->setParameter('docType', $poultryFramType);
+        }
+        
+        if($region){
+            $qb->andWhere('regional.id = :regionId')->setParameter('regionId', $region);
         }
 
         $results = $qb->getQuery()->getArrayResult();
@@ -141,6 +146,7 @@ class DailyChickPriceDetailsRepository extends EntityRepository
         $end = isset($filterBy['endMonth']) ? (new \DateTime($filterBy['endMonth']))->format('Y-m-d') : date('Y-12-31');
         $employeeId = isset($filterBy['employeeId']) ? $filterBy['employeeId'] : null;
         $poultryFramType = isset($filterBy['poultryFramType']) ? $filterBy['poultryFramType'] : '';
+        $region = isset($filterBy['region']) && $filterBy['region']!='' ? $filterBy['region'] : '';
         
         $qb = $this->createQueryBuilder('e');
         $qb->join('e.crmDailyChickPrice', 'parent');
@@ -191,6 +197,9 @@ class DailyChickPriceDetailsRepository extends EntityRepository
 
         if($poultryFramType){
             $qb->andWhere('chick_type_parent.id =:docType')->setParameter('docType', $poultryFramType);
+        }
+        if($region){
+            $qb->andWhere('regional.id = :regionId')->setParameter('regionId', $region);
         }
 
         $results = $qb->getQuery()->getArrayResult();

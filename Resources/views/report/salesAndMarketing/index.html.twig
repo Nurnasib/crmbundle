@@ -29,11 +29,19 @@
                         </th>
                         {% if report=='doc-price-daily' or report =='doc-price-monthly' %}
                         <th>
+                            {{ form_label(form.region, 'Region:') }}
+                            {{ form_widget(form.region) }}
+                        </th>
+                        <th>
                             {{ form_label(form.poultryFramType, 'Doc Type:') }}
                             {{ form_widget(form.poultryFramType) }}
                         </th>
                         {% endif %}
                         {% if report=='meat-egg-price-daily' or report=='meat-egg-price-monthly' %}
+                        <th>
+                            {{ form_label(form.region, 'Region:') }}
+                            {{ form_widget(form.region) }}
+                        </th>
                         <th>
                             {{ form_label(form.meatEggBreedType, 'Type:') }}
                             {{ form_widget(form.meatEggBreedType) }}

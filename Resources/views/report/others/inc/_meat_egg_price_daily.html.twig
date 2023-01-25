@@ -16,6 +16,7 @@
             <td data-a-h="center" class="border-0" colspan="{{ entities['dateRange']|length+5 }}" align="center"><h6>{{ filterBy['startDate'] is defined? 'Date: '~ filterBy['startDate']:'' }} {{ filterBy['endDate'] is defined? ' To '~ filterBy['endDate']:'' }}</h6></td>
         </tr>
         </thead>
+        {% if entities['records'] is defined and entities['records'] is not empty %}
         {% for chickType, entity in entities['records'] %}
             <thead>
             <tr>
@@ -73,5 +74,14 @@
 
 
         {% endfor %}
+            {% else %}
+            <tbody>
+            <tr>
+                <td colspan="{{ entities['dateRange']|length+5 }}">
+                    No record found.
+                </td>
+            </tr>
+            </tbody>
+            {% endif %}
     {% endif %}
 </table>
