@@ -17,7 +17,7 @@
         {% for monthYear, monthYearData in entities %}
             {% for entity in monthYearData %}
             <tr>
-                <td>{{ entity.feedName|default('') }}</td>
+                <td>{{ entity.problemOn|default('') }}</td>
                 <td>{{ entity.description }}</td>
                 <td>{{ entity.employeeName|default('') }}</td>
                 <td>{{ entity.designationName|default('') }}</td>

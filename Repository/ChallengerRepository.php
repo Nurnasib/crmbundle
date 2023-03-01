@@ -32,7 +32,7 @@ class ChallengerRepository extends EntityRepository
         if(!empty($report)){
             $qb = $this->createQueryBuilder('e');
 
-            $qb->select('e.id', 'e.createdAt','e.challengerType','e.name','e.description');
+            $qb->select('e.id', 'e.createdAt','e.challengerType','e.name','e.description', 'e.problemOn');
 
             $qb->addSelect('employee.id AS employeeId');
             $qb->addSelect('employee.name AS employeeName');
