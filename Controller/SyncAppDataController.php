@@ -2583,7 +2583,7 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
 
                 $createdAt = $report['created_at'] ? (new \DateTime($report['created_at']))->format('Y-m-d H:i:s') : null;
 
-                $sql = "INSERT INTO `crm_challenger`(`employee_id`, `challenger_feed_name_id`, `name`, `challenger_type`, `description`, `created_at`, `app_batch_id`, `app_id`, `feed_company_id`) VALUES (:employee_id, :challenger_feed_name_id, :name, :challenger_type, :description, :created_at, :app_batch_id, :app_id, :feed_company_id)";
+                $sql = "INSERT INTO `crm_challenger`(`employee_id`, `challenger_feed_name_id`, `name`, `challenger_type`, `description`, `created_at`, `app_batch_id`, `app_id`, `feed_company_id`, `problem_on`) VALUES (:employee_id, :challenger_feed_name_id, :name, :challenger_type, :description, :created_at, :app_batch_id, :app_id, :feed_company_id, :problem_on)";
 
                 $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
 
@@ -2596,6 +2596,7 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
                 $stmt->bindValue('app_batch_id', $batch->getId());
                 $stmt->bindValue('app_id', $report['id']);
                 $stmt->bindValue('feed_company_id', isset( $report['companyId']) &&  $report['companyId']!='' &&  $report['companyId']!=0? $report['companyId']:null);
+                $stmt->bindValue('problem_on', isset( $report['problem_on']) &&  $report['problem_on']!='' ? $report['problem_on']:null);
 
                 $stmt->execute();
             }

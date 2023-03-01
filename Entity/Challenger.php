@@ -64,6 +64,12 @@ class Challenger
      * @Orm\Column(type="text", nullable=true)
      */
     private $description;
+    
+    /**
+     * @var string
+     * @Orm\Column(type="text", nullable=true)
+     */
+    private $problemOn;
 
     /**
      * @var \DateTime
@@ -244,6 +250,22 @@ class Challenger
     public function setFeedCompany($feedCompany): void
     {
         $this->feedCompany = $feedCompany;
+    }
+
+    /**
+     * @return string
+     */
+    public function getProblemOn()
+    {
+        return $this->problemOn;
+    }
+
+    /**
+     * @param string $problemOn
+     */
+    public function setProblemOn($problemOn): void
+    {
+        $this->problemOn = $problemOn;
     }
 
 
