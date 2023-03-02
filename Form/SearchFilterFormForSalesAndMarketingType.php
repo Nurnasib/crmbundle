@@ -150,6 +150,22 @@ class SearchFilterFormForSalesAndMarketingType extends AbstractType
                     'class' => 'select2'
                 ]
             ])
+            ->add('hatchery', EntityType::class,[
+                'class' => Setting::class,
+                'choice_label' => 'name',
+                'placeholder' => '- Select Hatchery -',
+                'query_builder' => function(EntityRepository $er){
+                    return $er->createQueryBuilder('e')
+                        ->where('e.settingType = :settingType')->setParameter('settingType', 'HATCHERY')
+                        ->andWhere('e.status = 1')
+                        ->orderBy('e.sortOrder', 'ASC');
+                },
+                'attr' => [
+                    'class' => 'select2'
+                ],
+                'required' => false
+
+            ])
             ->add('month', ChoiceType::class,[
                 'choices' => [
                     'January' => '01',

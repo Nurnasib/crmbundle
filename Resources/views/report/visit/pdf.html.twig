@@ -31,8 +31,8 @@
             <table width="100%" style="background-color: #CCCCCC; margin-top: 20px">
                 <thead>
                 <tr>
-                    <th>{{ 'Officer ID'|trans }}: {{ employeeId }}</th>
-                    <th>{{ 'Name of Officer'|trans }}: {{ entities[employeeId]['employeeName']|default }}</th>
+                    <th>{{ 'Employee ID'|trans }}: {{ employeeId }}</th>
+                    <th>{{ 'Employee Name'|trans }}: {{ entities[employeeId]['employeeName']|default }}</th>
                     <th>
                         {{ 'Date'|trans }}:
                         {% if entities.visitDate.begin|date('d-m-Y') is not empty %}
@@ -93,7 +93,9 @@
             </tbody>
             </table>
             </div>
-            <div style="page-break-after: always"></div>
+            {% if employee['agent'] is defined and employee['agent'] is iterable %}
+                <div style="page-break-after: always"></div>
+            {% endif %}
         {% endif %}
             {# Agent Section#}
 {#            {% for key, entity in employee %}#}
@@ -104,6 +106,7 @@
                             <thead style="background-color: #CCCCCC">
                             <tr>
                                 <th width="50">S/N</th>
+                                <th>{{ 'Agent Id'|trans }}</th>
                                 <th>{{ 'Visited Agent Name(Nourish)'|trans }}</th>
                                 <th>{{ 'Address'|trans }}</th>
                                 <th>{{ 'Phone'|trans }}</th>
@@ -121,7 +124,8 @@
                                     {% for data in entity %}
                                         <tr>
                                             <td align="center">{{ loop.index }}</td>
-                                            <td>{{ data.agentName }} ({{ data.agentId|default('') }})</td>
+                                            <td>{{ data.agentId|default('') }}</td>
+                                            <td>{{ data.agentName }}</td>
                                             <td>{{ data.agentAddress }}</td>
                                             <td>{{ data.agentMobile }}</td>
                                             <td>
@@ -145,7 +149,9 @@
                             </tbody>
                         </table>
                     </div>
-                    <div style="page-break-after: always"></div>
+                    {% if employee['other-agent'] is defined and employee['other-agent'] is iterable %}
+                        <div style="page-break-after: always"></div>
+                    {% endif %}
                 {% endif %}
 {#            {% endfor %}#}
             {# Other Agent Section#}
@@ -200,7 +206,9 @@
                             </tbody>
                         </table>
                     </div>
-                    <div style="page-break-after: always"></div>
+                    {% if employee['sub-agent'] is defined and employee['sub-agent'] is iterable %}
+                        <div style="page-break-after: always"></div>
+                    {% endif %}
                 {% endif %}
 {#            {% endfor %}#}
             {#            Sub Agent Section#}
@@ -254,7 +262,7 @@
                             </tbody>
                         </table>
                     </div>
-                    <div style="page-break-after: always"></div>
+
                 {% endif %}
 {#            {% endfor %}#}
         {% endif %}

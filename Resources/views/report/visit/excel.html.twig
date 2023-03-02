@@ -53,8 +53,8 @@
                     {% if employeeId is not same as 'visitDate' %}
                         <thead style="background-color: #CCCCCC">
                         <tr>
-                            <th colspan="3"><h4>{{ 'Officer ID'|trans }}: {{ employeeId }}</h4></th>
-                            <th colspan="3"><h4>{{ 'Name of Officer'|trans }}
+                            <th colspan="3"><h4>{{ 'Employee ID'|trans }}: {{ employeeId }}</h4></th>
+                            <th colspan="3"><h4>{{ 'Employee Name'|trans }}
                                     : {{ entities[employeeId]['employeeName']|default }}</h4></th>
                             <th colspan="3">
                                 <h4>
@@ -131,12 +131,13 @@
                         <tr>
                             <th>Date</th>
                             <th width="50">S/N</th>
+                            <th>{{ 'Agent Id'|trans }}</th>
                             <th>{{ 'Visited Agent Name(Nourish)'|trans }}</th>
                             <th>{{ 'Address'|trans }}</th>
                             <th>{{ 'Phone'|trans }}</th>
                             <th>{{ 'Purpose'|trans }}</th>
                             <th>{{ 'Report Description'|trans }}</th>
-                            <th colspan="2">{{ 'Comments'|trans }}</th>
+                            <th colspan="0">{{ 'Comments'|trans }}</th>
                         </tr>
                         </thead>
                         {% for dateMonthYear, entity in employee['agent'] %}
@@ -148,7 +149,8 @@
                                             <td data-a-v="middle" rowspan="{{ entity|length }}">{{ dateMonthYear }}</td>
                                         {% endif %}
                                         <td data-a-h="center" data-t="n" align="center">{{ loop.index }}</td>
-                                        <td>{{ data.agentName }} ({{ data.agentId|default('') }})</td>
+                                        <td>{{ data.agentId|default('') }}</td>
+                                        <td>{{ data.agentName }}</td>
                                         <td>{{ data.agentAddress }}</td>
                                         <td data-t="s">{{ data.agentMobile }}</td>
                                         <td>
@@ -168,7 +170,7 @@
                                             {% endif %}
                                         </td>
                                         <td>{{ data.reportDesc }}</td>
-                                        <td colspan="2">{{ data.comments }}</td>
+                                        <td colspan="0">{{ data.comments }}</td>
                                     </tr>
                                 {% endfor %}
                                 </tbody>

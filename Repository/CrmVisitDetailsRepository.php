@@ -200,7 +200,7 @@ class CrmVisitDetailsRepository extends EntityRepository
         }
     }
 
-    public function getVisitDetails($begin,$end,$employeeId,$serviceModeId)
+    public function getVisitDetails($begin,$end,$employeeId,$serviceModeId, $process)
     {
         $qb = $this->createQueryBuilder('e');
         $qb->join('e.crmVisit', 'crmVisit');
@@ -225,6 +225,10 @@ class CrmVisitDetailsRepository extends EntityRepository
             if($serviceModeId){
                 $qb->andWhere('serviceMode.id =:serviceModeId')->setParameter('serviceModeId', $serviceModeId);
             }
+        }
+
+        if($process){
+            $qb->andWhere('e.process = :process')->setParameter('process', $process);
         }
 
 

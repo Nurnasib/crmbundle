@@ -37,6 +37,7 @@ class VisitReportController extends AbstractController
         $endDate = null;
         $employee = null;
         $serviceMode = null;
+        $process = null;
         $userRepo = $this->getDoctrine()->getRepository(User::class);
         $form = $this->createForm(SearchFilterFormType::class, null, ['loggedUser' => $this->getUser(),'userRepo'=>$userRepo]);
 //        $form = $this->createForm(SearchFilterFormType::class, null, ['loggedUser' => $this->getUser()]);
@@ -52,13 +53,14 @@ class VisitReportController extends AbstractController
 
             $employee = $form->getData()['employee'];
             $serviceMode = $form->getData()['serviceMode'];
+            $process = $form->getData()['process'];
             if(!$employee && !$serviceMode){
                 $this->addFlash('error', 'Employee Or Service mode is required.');
                 return $this->redirectToRoute('visit_report');
             }
 
 //            dd($serviceMode->getId());
-            $entities = $this->getDoctrine()->getRepository(CrmVisit::class)->getVisits($startDate, $endDate, $employee, $serviceMode, $this->getUser());
+            $entities = $this->getDoctrine()->getRepository(CrmVisit::class)->getVisits($startDate, $endDate, $employee, $serviceMode, $this->getUser(), $process);
 
             if(isset($requestData['pdf_download'])&&$requestData['pdf_download']=='pdf_download'){
                 $pdfOptions = new Options();
@@ -92,6 +94,7 @@ class VisitReportController extends AbstractController
             'endDate' => $endDate,
             'employee' => $employee,
             'serviceMode' => $serviceMode,
+            'process' => $process,
         ]);
     }
 
@@ -105,6 +108,7 @@ class VisitReportController extends AbstractController
         $mode = $request->query->get('mode');
         $employeeId = $request->query->get('employeeId');
         $serviceModeId = $request->query->get('serviceModeId');
+        $process = $request->query->get('process');
 
         $visitDate = $request->query->get('visitDate');
         $begin = (new \DateTime($visitDate))->format('Y-m-d 00:00:00');
@@ -114,7 +118,7 @@ class VisitReportController extends AbstractController
             $begin = $request->query->get('startDate');
             $end = $request->query->get('endDate');
         }
-        $entities = $this->getDoctrine()->getRepository(CrmVisitDetails::class)->getVisitDetails($begin,$end,$employeeId,$serviceModeId);
+        $entities = $this->getDoctrine()->getRepository(CrmVisitDetails::class)->getVisitDetails($begin,$end,$employeeId,$serviceModeId, $process);
 //        dd($entities);
         if ($mode == 'pdf'){
 

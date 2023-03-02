@@ -56,7 +56,7 @@ class CrmVisitRepository extends EntityRepository
         return $qb->getQuery()->getArrayResult();
     }
 
-    public function getVisits($startDate, $endDate, $employee, $serviceMode, User $loggedUser)
+    public function getVisits($startDate, $endDate, $employee, $serviceMode, User $loggedUser, $process)
     {
         $qb = $this->createQueryBuilder('e');
         $qb->leftJoin('e.location', 'location');
@@ -73,6 +73,12 @@ class CrmVisitRepository extends EntityRepository
         $qb->where('e.created >= :startDate')->setParameter('startDate', $startDate);
         $qb->andWhere('e.created <= :endDate')->setParameter('endDate', $endDate);
         $qb->andWhere('userGroup.slug = :userGroupSlug')->setParameter('userGroupSlug', 'employee');
+
+        if($process && $process != ''){
+            $qb->leftJoin('e.crmVisitDetails', 'crmVisitDetails');
+            $qb->andWhere('crmVisitDetails.process = :process')->setParameter('process', $process);
+            $qb->groupBy('e.id');
+        }
 
         $roleSplitArray = [];
 

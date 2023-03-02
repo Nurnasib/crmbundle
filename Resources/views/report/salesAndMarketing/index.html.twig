@@ -20,13 +20,28 @@
             <div class="col p-0">
                 <table class="table">
                     <thead class="thead-dark">
-                    {{ form_start(form) }}
+                    {{ form_start(form, { 'attr' : { 'class': 'sales_marketing_search_form' } }) }}
                     <tr>
 
+                        {% if report=='company-wise-doc-price-daily' or report =='company-wise-doc-price-monthly' %}
+                            <th>
+                                {{ form_label(form.region, 'Region:') }}
+                                {{ form_widget(form.region) }}
+                            </th>
+                            <th>
+                                {{ form_label(form.hatchery, 'Company:') }}
+                                {{ form_widget(form.hatchery) }}
+                            </th>
+                            <th>
+                                {{ form_label(form.poultryFramType, 'Doc Type:') }}
+                                {{ form_widget(form.poultryFramType) }}
+                            </th>
+                        {% else %}
                         <th>
                             {{ form_label(form.employee, 'Employee:') }}
                             {{ form_widget(form.employee) }}
                         </th>
+                        {% endif %}
                         {% if report=='doc-price-daily' or report =='doc-price-monthly' %}
                         <th>
                             {{ form_label(form.region, 'Region:') }}
@@ -48,7 +63,7 @@
                         </th>
                         {% endif %}
 
-                        {% if report =='doc-price-monthly' or report=='meat-egg-price-monthly' %}
+                        {% if report =='doc-price-monthly' or report =='company-wise-doc-price-monthly' or report=='meat-egg-price-monthly' %}
                             <th>
                                 {{ form_label(form.startMonth, 'Start Month:') }}
                                 {{ form_widget(form.startMonth) }}
@@ -69,7 +84,7 @@
                             </th>
                         {% endif %}
 
-                        {% if report!="doc-price-daily" and report!="doc-price-monthly" and report!="meat-egg-price-daily" and report!="meat-egg-price-monthly" %}
+                        {% if report!="doc-price-daily" and report!="doc-price-monthly" and report!="company-wise-doc-price-daily" and report!="company-wise-doc-price-monthly" and report!="meat-egg-price-daily" and report!="meat-egg-price-monthly"  and report!="challenges-problem" and report!="challenges-idea" and report!="competitors-activity" %}
                         <th>
                             {{ form_label(form.year, 'Year:') }}
                             {{ form_widget(form.year) }}
@@ -83,6 +98,7 @@
                             <div class="btn-group float-right">
                                 {{ form_widget(form._token) }}
                                 <button type="submit" name="search" class="btn btn-primary btn-sm" title="Search" value="search"><i class="fa fa-search" aria-hidden="true"></i></button>
+                                <a title="reset" href="{{ path('sales_marketing_report_index',{'report':reportSlug}) }}" name="reset" class="btn btn-success btn-sm formDataReset"><i class="fa fa-refresh" aria-hidden="true"></i></a>
                                 <button type="submit" name="excel" class="btn blue-bg btn-sm white-font" title="Excel" value="excel" id="button-excel"><i class="fa fa-file-excel" aria-hidden="true"></i> {{ 'Excel'|trans }}</button>
                             </div>
                         </th>
@@ -97,7 +113,7 @@
                 </table>
             </div>
         </div>
-        {% if entities is defined and entities is not empty %}
+        {% if entities is defined %}
             <div class="row">
                 <div class="card" style="overflow-x: scroll; max-height: 75vh">
                     <div class="card-body p-0">
@@ -112,23 +128,29 @@
                             {% include '@TerminalbdCrm/report/salesAndMarketing/inc/challenger/competitors-activity.twig'%}
 
                         {% elseif reportSlug is same as 'doc-price-monthly' %}
-                            {% include '@TerminalbdCrm/report/others/inc/_doc_price.html.twig'%}
+                            {% include '@TerminalbdCrm/report/salesAndMarketing/inc/doc-price/_doc_price.html.twig'%}
 
                         {% elseif reportSlug is same as 'doc-price-daily' %}
-                            {% include '@TerminalbdCrm/report/others/inc/_daily_doc_price.html.twig'%}
+                            {% include '@TerminalbdCrm/report/salesAndMarketing/inc/doc-price/_daily_doc_price.html.twig'%}
+
+                        {% elseif reportSlug is same as 'company-wise-doc-price-monthly' %}
+                            {% include '@TerminalbdCrm/report/salesAndMarketing/inc/doc-price/_doc_price_company_wise.html.twig'%}
+
+                        {% elseif reportSlug is same as 'company-wise-doc-price-daily' %}
+                            {% include '@TerminalbdCrm/report/salesAndMarketing/inc/doc-price/_daily_doc_price_company_wise.html.twig'%}
 
                         {% elseif reportSlug is same as 'meat-egg-price-monthly' %}
-                            {% include '@TerminalbdCrm/report/others/inc/_meat_egg_price.html.twig'%}
+                            {% include '@TerminalbdCrm/report/salesAndMarketing/inc/meat-egg/_meat_egg_price.html.twig'%}
 
                         {% elseif reportSlug is same as 'meat-egg-price-daily' %}
-                            {% include '@TerminalbdCrm/report/others/inc/_meat_egg_price_daily.html.twig'%}
+                            {% include '@TerminalbdCrm/report/salesAndMarketing/inc/meat-egg/_meat_egg_price_daily.html.twig'%}
 
 
                         {% elseif reportSlug in ['doc-complain', 'feed-complain'] %}
-                            {% include '@TerminalbdCrm/report/others/inc/_complain.html.twig'%}
+                            {% include '@TerminalbdCrm/report/salesAndMarketing/inc/_complain.html.twig'%}
 
                         {% elseif reportSlug in ['company-wise-feed-sale-poultry','company-wise-boiler-chick','company-wise-layer-chick','company-wise-feed-sale-cattle','company-wise-feed-sale-fish'] %}
-                            {% include '@TerminalbdCrm/report/others/inc/_company_wise_feed_sale.html.twig'%}
+                            {% include '@TerminalbdCrm/report/salesAndMarketing/inc/_company_wise_feed_sale.html.twig'%}
 
                         {% endif %}
 
@@ -251,6 +273,7 @@
                 }
             });
         });
+
     </script>
 {% endblock  %}
 {% block documentready %}

@@ -43,17 +43,52 @@
                         <li><a class="dropdown-item" href="{{ path('sales_marketing_report_index',{'report':'challenges-problem'}) }}">{{ 'Problems'|trans }}</a>
                         <li><a class="dropdown-item" href="{{ path('sales_marketing_report_index',{'report':'challenges-idea'}) }}">{{ 'Ideas'|trans }}</a>
                         <li><a class="dropdown-item" href="{{ path('sales_marketing_report_index',{'report':'competitors-activity'}) }}">{{ 'Competitors Activity'|trans }}</a>
+                        <li>
+                            <a class="dropdown-item" href="javascript:">{{ 'DOC Price'|trans }}</a>
+                            <ul class="sub-menu">
+                                <li><a class="dropdown-item" href="{{ path('sales_marketing_report_index',{'report':'doc-price-monthly'}) }}">{{ 'Employee Wise Monthly'|trans }}</a>
+                                <li><a class="dropdown-item" href="{{ path('sales_marketing_report_index',{'report':'doc-price-daily'}) }}">{{ 'Employee Wise Daily'|trans }}</a>
+
+                                <li><a class="dropdown-item" href="{{ path('sales_marketing_report_index',{'report':'company-wise-doc-price-monthly'}) }}">{{ 'Company Wise Monthly'|trans }}</a>
+                                <li><a class="dropdown-item" href="{{ path('sales_marketing_report_index',{'report':'company-wise-doc-price-daily'}) }}">{{ 'Company Wise Daily'|trans }}</a>
+                            </ul>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="javascript:">{{ 'Meat & Egg Price'|trans }}</a>
+                            <ul class="sub-menu">
+                                <li><a class="dropdown-item" href="{{ path('sales_marketing_report_index',{'report':'meat-egg-price-monthly'}) }}">{{ 'Monthly'|trans }}</a>
+                                <li><a class="dropdown-item" href="{{ path('sales_marketing_report_index',{'report':'meat-egg-price-daily'}) }}">{{ 'Daily'|trans }}</a>
+                            </ul>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="javascript:">{{ 'Complain'|trans }}</a>
+                            <ul class="sub-menu">
+                                <li><a class="dropdown-item" href="{{ path('sales_marketing_report_index',{'report':'doc-complain'}) }}">{{ 'DOC'|trans }}</a>
+                                <li><a class="dropdown-item" href="{{ path('sales_marketing_report_index',{'report':'feed-complain'}) }}">{{ 'Feed'|trans }}</a>
+                            </ul>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="javascript:">{{ 'Company Wise'|trans }}</a>
+                            <ul class="sub-menu">
+                                <li><a class="dropdown-item" href="{{ path('sales_marketing_report_index',{'report':'company-wise-layer-chick'}) }}">{{ 'DOC Production'|trans }}</a>
+                                <li><a class="dropdown-item" href="{{ path('sales_marketing_report_index',{'report':'company-wise-feed-sale-poultry'}) }}">{{ 'Poultry Feed Sale'|trans }}</a>
+                                <li><a class="dropdown-item" href="{{ path('sales_marketing_report_index',{'report':'company-wise-feed-sale-cattle'}) }}">{{ 'Cattle Feed Sale'|trans }}</a>
+                                <li><a class="dropdown-item" href="{{ path('sales_marketing_report_index',{'report':'company-wise-feed-sale-fish'}) }}">{{ 'Fish Feed Sale'|trans }}</a>
+                            </ul>
+                        </li>
+
+
 {#                        <li><a class="dropdown-item" href="{{ path('sales_marketing_report_index',{'report':'doc-price'}) }}">{{ 'DOC Price Monthly'|trans }}</a>#}
-                        <li><a class="dropdown-item" href="{{ path('sales_marketing_report_index',{'report':'doc-price-monthly'}) }}">{{ 'DOC Price Monthly'|trans }}</a>
-                        <li><a class="dropdown-item" href="{{ path('sales_marketing_report_index',{'report':'doc-price-daily'}) }}">{{ 'DOC Price Daily'|trans }}</a>
-                        <li><a class="dropdown-item" href="{{ path('sales_marketing_report_index',{'report':'meat-egg-price-monthly'}) }}">{{ 'Meat & Egg Price Monthly'|trans }}</a>
-                        <li><a class="dropdown-item" href="{{ path('sales_marketing_report_index',{'report':'meat-egg-price-daily'}) }}">{{ 'Meat & Egg Price Daily'|trans }}</a>
-                        <li><a class="dropdown-item" href="{{ path('sales_marketing_report_index',{'report':'doc-complain'}) }}">{{ 'DOC Complain'|trans }}</a>
-                        <li><a class="dropdown-item" href="{{ path('sales_marketing_report_index',{'report':'feed-complain'}) }}">{{ 'Feed Complain'|trans }}</a>
-                        <li><a class="dropdown-item" href="{{ path('sales_marketing_report_index',{'report':'company-wise-layer-chick'}) }}">{{ 'Company Wise DOC Production'|trans }}</a>
+{#                        <li><a class="dropdown-item" href="{{ path('sales_marketing_report_index',{'report':'doc-price-monthly'}) }}">{{ 'DOC Price Monthly'|trans }}</a>#}
+{#                        <li><a class="dropdown-item" href="{{ path('sales_marketing_report_index',{'report':'doc-price-daily'}) }}">{{ 'DOC Price Daily'|trans }}</a>#}
+                        {#<li><a class="dropdown-item" href="{{ path('sales_marketing_report_index',{'report':'meat-egg-price-monthly'}) }}">{{ 'Meat & Egg Price Monthly'|trans }}</a>
+                        <li><a class="dropdown-item" href="{{ path('sales_marketing_report_index',{'report':'meat-egg-price-daily'}) }}">{{ 'Meat & Egg Price Daily'|trans }}</a>#}
+                        {#<li><a class="dropdown-item" href="{{ path('sales_marketing_report_index',{'report':'doc-complain'}) }}">{{ 'DOC Complain'|trans }}</a>
+                        <li><a class="dropdown-item" href="{{ path('sales_marketing_report_index',{'report':'feed-complain'}) }}">{{ 'Feed Complain'|trans }}</a>#}
+                        {#<li><a class="dropdown-item" href="{{ path('sales_marketing_report_index',{'report':'company-wise-layer-chick'}) }}">{{ 'Company Wise DOC Production'|trans }}</a>
                         <li><a class="dropdown-item" href="{{ path('sales_marketing_report_index',{'report':'company-wise-feed-sale-poultry'}) }}">{{ 'Company Wise Poultry Feed Sale'|trans }}</a>
                         <li><a class="dropdown-item" href="{{ path('sales_marketing_report_index',{'report':'company-wise-feed-sale-cattle'}) }}">{{ 'Company Wise Cattle Feed Sale'|trans }}</a>
-                        <li><a class="dropdown-item" href="{{ path('sales_marketing_report_index',{'report':'company-wise-feed-sale-fish'}) }}">{{ 'Company Wise Fish Feed Sale'|trans }}</a>
+                        <li><a class="dropdown-item" href="{{ path('sales_marketing_report_index',{'report':'company-wise-feed-sale-fish'}) }}">{{ 'Company Wise Fish Feed Sale'|trans }}</a>#}
                         </li>
                     </ul>
                 </li>

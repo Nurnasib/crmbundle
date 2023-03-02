@@ -63,8 +63,8 @@ class SalesAndMarketingReportController extends AbstractController
             $filterBy = $form->getData();
 //            $report = $form->getData()['monthlyReport'];
 
-            $filterBy['startMonth'] = $form->getData()['startMonth']? $form->getData()['startMonth']->format('Y-m-d'):date('Y-m-01');
-            $filterBy['endMonth'] = $form->getData()['endMonth']?$form->getData()['endMonth']->format('Y-m-t'):date('Y-m-t');
+            $filterBy['startMonth'] = $form->getData()['startMonth']? $form->getData()['startMonth']->format('Y-m-d'):null;
+            $filterBy['endMonth'] = $form->getData()['endMonth']?$form->getData()['endMonth']->format('Y-m-t'):null;
             $filterBy['otherReport'] = $report;
             $filterBy['startDate'] = $form->getData()['startDate'];
             $filterBy['endDate'] = $form->getData()['endDate'];
@@ -73,6 +73,7 @@ class SalesAndMarketingReportController extends AbstractController
 //            $filterBy['employee'] = $form->getData()['employee'] ? $form->getData()['employee'] : '';
             $filterBy['employeeId'] = $form->getData()['employee'] ? $form->getData()['employee']->getId() : '';
             $filterBy['region'] = $form->getData()['region'] ? $form->getData()['region']->getId() : '';
+            $filterBy['hatchery'] = $form->getData()['hatchery'] ? $form->getData()['hatchery']->getId() : '';
 
             $employee = $form->getData()['employee'];
 
@@ -90,7 +91,16 @@ class SalesAndMarketingReportController extends AbstractController
                 case 'doc-price-daily':
                     $entities = $this->getDoctrine()->getRepository(DailyChickPriceDetails::class)->getDailyDocPriceReport($filterBy, $this->getUser());
                     break;
-                    
+
+
+                case 'company-wise-doc-price-monthly':
+                    $entities = $this->getDoctrine()->getRepository(DailyChickPriceDetails::class)->getCompanyWiseAvgDocPriceMonthly($filterBy, $this->getUser());
+                    break;
+
+                case 'company-wise-doc-price-daily':
+                    $entities = $this->getDoctrine()->getRepository(DailyChickPriceDetails::class)->getCompanyWiseAvgDailyDocPrice($filterBy, $this->getUser());
+                    break;
+
                 case 'meat-egg-price-monthly':
                     $entities = $this->getDoctrine()->getRepository(PoultryMeatEggPrice::class)->getMeatEggPriceReport($filterBy, $this->getUser());
                     break;

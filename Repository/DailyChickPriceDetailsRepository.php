@@ -217,6 +217,179 @@ class DailyChickPriceDetailsRepository extends EntityRepository
         return $data;
 
     }
+
+
+
+    public function getCompanyWiseAvgDailyDocPrice($filterBy, User $loggedUser)
+    {
+
+        $start = isset($filterBy['startDate']) ? (new \DateTime($filterBy['startDate']))->format('Y-m-d') : date('Y-m-d');
+        $end = isset($filterBy['endDate']) ? (new \DateTime($filterBy['endDate']))->format('Y-m-d') : date('Y-m-d');
+//        $employeeId = isset($filterBy['employeeId']) ? $filterBy['employeeId'] : null;
+        $poultryFramType = isset($filterBy['poultryFramType']) ? $filterBy['poultryFramType'] : '';
+        $region = isset($filterBy['region']) && $filterBy['region']!='' ? $filterBy['region'] : '';
+        $hatchery = isset($filterBy['hatchery']) && $filterBy['hatchery']!='' ? $filterBy['hatchery'] : '';
+
+        $qb = $this->createQueryBuilder('e');
+        $qb->join('e.crmDailyChickPrice', 'parent');
+        $qb->join('parent.employee', 'employee');
+        $qb->leftJoin('employee.designation', 'designation');
+        $qb->leftJoin('employee.regional', 'regional');
+        $qb->join('employee.userGroup', 'user_group');
+        $qb->join('e.chickType', 'chick_type');
+        $qb->join('chick_type.parent', 'chick_type_parent');
+        $qb->join('e.feed', 'feed');
+
+//        $qb->select('employee.id','employee.userId', 'employee.name');
+        $qb->select('AVG(e.price) AS avgPrice');
+        $qb->addSelect('chick_type_parent.id AS chickTypeParentId', 'chick_type_parent.name AS chickTypeParentName');
+        $qb->addSelect('feed.id AS feedId', 'feed.name AS feedName');
+        $qb->addSelect('parent.reportingDate', 'MONTH(parent.reportingDate) AS month', 'YEAR(parent.reportingDate) AS year');
+        $qb->addSelect('designation.name as designationName');
+        $qb->addSelect('regional.name as regionalName');
+
+        $qb->where('parent.reportingDate >= :start')->setParameter('start', $start);
+        $qb->andWhere('parent.reportingDate <= :end')->setParameter('end', $end);
+
+        $qb->andWhere('e.price > :price')->setParameter('price', 0);
+
+
+
+        $rolesString = implode('_', $loggedUser->getRoles());
+        if (!str_contains($rolesString, 'ADMIN') && !in_array('ROLE_LINE_MANAGER', $loggedUser->getRoles())){
+            $qb->andWhere('employee.id = :employeeId')->setParameter('employeeId', $loggedUser->getId());
+        }elseif (!str_contains($rolesString, 'ADMIN') && in_array('ROLE_LINE_MANAGER', $loggedUser->getRoles())){
+
+            $employeeIdsByLineManager = $this->_em->getRepository(User::class)->getEmployeesByLineManager($loggedUser);
+            $employeeIs=[];
+            if($employeeIdsByLineManager){
+                $employeeIs=$employeeIdsByLineManager;
+            }
+            $qb->andWhere('employee.id IN (:employeeIds)')->setParameter('employeeIds', $employeeIs);
+        }
+        if (isset($filterBy['employeeId']) && $filterBy['employeeId'] !=''){
+            $qb->andWhere('employee.id = :employeeId')->setParameter('employeeId', $employeeId);
+        }
+
+        if($poultryFramType){
+            $qb->andWhere('chick_type_parent.id =:docType')->setParameter('docType', $poultryFramType);
+        }
+
+        if($region){
+            $qb->andWhere('regional.id = :regionId')->setParameter('regionId', $region);
+        }
+
+        if($hatchery){
+            $qb->andWhere('feed.id = :hatchery')->setParameter('hatchery', $hatchery);
+        }
+
+        $qb->addGroupBy('feedId');
+        $qb->addGroupBy('parent.reportingDate');
+        $qb->addGroupBy('chickTypeParentId');
+
+        $qb->orderBy('feed.sortOrder', 'ASC');
+        $qb->addOrderBy('parent.reportingDate', 'ASC');
+
+        $results = $qb->getQuery()->getArrayResult();
+
+        $data = [];
+
+        foreach ($results as $result) {
+            $reportingDate = $result['reportingDate']->format('d-m-Y');
+//            $data[$result['chickTypeParentName']][$result['userId'] . '~' . $result['name']][$result['feedName']][$reportingDate] = $result['price'];
+            $data['records'][$result['chickTypeParentName']][$result['feedId']][$reportingDate] = $result['avgPrice'];
+            $data['feedCompany'][$result['chickTypeParentName']][$result['feedId']] = $result['feedName'];
+//            $data['employeeInfo'][$result['chickTypeParentName']][$result['userId']] = ['employeeId'=>$result['userId'], 'employeeName'=>$result['name'], 'designationName'=>$result['designationName'], 'regionalName'=>$result['regionalName']];
+
+        }
+        $data['dateRange']=$this->getBetweenDates($start, $end);
+//        dd($data);
+        return $data;
+
+    }
+
+
+    public function getCompanyWiseAvgDocPriceMonthly($filterBy, User $loggedUser)
+    {
+
+        $start = isset($filterBy['startMonth']) ? (new \DateTime($filterBy['startMonth']))->format('Y-m-d') : date('Y-01-01');
+        $end = isset($filterBy['endMonth']) ? (new \DateTime($filterBy['endMonth']))->format('Y-m-d') : date('Y-12-31');
+//        $employeeId = isset($filterBy['employeeId']) ? $filterBy['employeeId'] : null;
+        $poultryFramType = isset($filterBy['poultryFramType']) ? $filterBy['poultryFramType'] : '';
+        $region = isset($filterBy['region']) && $filterBy['region']!='' ? $filterBy['region'] : '';
+        $hatchery = isset($filterBy['hatchery']) && $filterBy['hatchery']!='' ? $filterBy['hatchery'] : '';
+
+        $qb = $this->createQueryBuilder('e');
+        $qb->join('e.crmDailyChickPrice', 'parent');
+        $qb->join('parent.employee', 'employee');
+        $qb->leftJoin('employee.regional', 'regional');
+        $qb->leftJoin('employee.designation', 'designation');
+        $qb->join('employee.userGroup', 'user_group');
+        $qb->join('e.chickType', 'chick_type');
+        $qb->join('chick_type.parent', 'chick_type_parent');
+        $qb->join('e.feed', 'feed');
+
+//        $qb->select('employee.id','employee.userId', 'employee.name');
+        $qb->select('AVG(e.price) AS avgPrice');
+        $qb->addSelect('chick_type_parent.id AS chickTypeParentId', 'chick_type_parent.name AS chickTypeParentName');
+        $qb->addSelect('feed.id AS feedId', 'feed.name AS feedName');
+        $qb->addSelect('parent.reportingDate', 'MONTH(parent.reportingDate) AS month', 'YEAR(parent.reportingDate) AS year');
+        $qb->addSelect('designation.name as designationName');
+        $qb->addSelect('regional.name as regionalName');
+
+        $qb->where('parent.reportingDate >= :start')->setParameter('start', $start);
+        $qb->andWhere('parent.reportingDate <= :end')->setParameter('end', $end);
+        $qb->andWhere('user_group.slug = :userGroupSlug')->setParameter('userGroupSlug', 'employee');
+        $qb->andWhere('e.price > :price')->setParameter('price', 0);
+
+//        $qb->groupBy('employee.userId');
+        $qb->groupBy('feedId');
+        $qb->addGroupBy('month');
+        $qb->addGroupBy('year');
+        $qb->addGroupBy('chickTypeParentId');
+        $qb->orderBy('feed.sortOrder', 'ASC');
+        $qb->addOrderBy("DATE_FORMAT(parent.reportingDate,'%Y-%m')", "ASC");
+
+        $rolesString = implode('_', $loggedUser->getRoles());
+        if (!str_contains($rolesString, 'ADMIN') && !in_array('ROLE_LINE_MANAGER', $loggedUser->getRoles())){
+            $qb->andWhere('employee.id = :employeeId')->setParameter('employeeId', $loggedUser->getId());
+        }elseif (!str_contains($rolesString, 'ADMIN') && in_array('ROLE_LINE_MANAGER', $loggedUser->getRoles())){
+
+            $employeeIdsByLineManager = $this->_em->getRepository(User::class)->getEmployeesByLineManager($loggedUser);
+            $employeeIs=[];
+            if($employeeIdsByLineManager){
+                $employeeIs=$employeeIdsByLineManager;
+            }
+            $qb->andWhere('employee.id IN (:employeeIds)')->setParameter('employeeIds', $employeeIs);
+        }
+
+
+        if($poultryFramType){
+            $qb->andWhere('chick_type_parent.id =:docType')->setParameter('docType', $poultryFramType);
+        }
+        if($region){
+            $qb->andWhere('regional.id = :regionId')->setParameter('regionId', $region);
+        }
+
+        if($hatchery){
+            $qb->andWhere('feed.id = :hatchery')->setParameter('hatchery', $hatchery);
+        }
+
+        $results = $qb->getQuery()->getArrayResult();
+
+        $data = [];
+
+        foreach ($results as $result) {
+            $month = $result['reportingDate']->format('F-Y');
+            $data['records'][$result['chickTypeParentName']][$result['feedId']][$month] = $result['avgPrice'];
+            $data['feedCompany'][$result['chickTypeParentName']][$result['feedId']] = $result['feedName'];
+//            $data['employeeInfo'][$result['chickTypeParentName']] = ['employeeId'=>$result['userId'], 'employeeName'=>$result['name'], 'designationName'=>$result['designationName'], 'regionalName'=>$result['regionalName']];
+
+        }
+        $data['monthRange']=$this->getMonthBetweenDates($start, $end);
+        return $data;
+
+    }
     
 
 }

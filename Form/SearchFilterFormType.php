@@ -392,6 +392,16 @@ class SearchFilterFormType extends AbstractType
                 'placeholder' => '- Select Feed -',
                 'required' => false,
             ])
+            ->add('process', ChoiceType::class,[
+                'choices' => [
+                    'Farmer' => 'farmer',
+                    'Agent' => 'agent',
+                    'Sub Agent' => 'sub-agent',
+                    'Other Agent' => 'other-agent',
+                ],
+                'placeholder' => '- Select Group -',
+                'required' => false,
+            ])
             ->add('serviceMode', EntityType::class, array(
                 'required'    => false,
                 'class' => \App\Entity\Core\Setting::class,
