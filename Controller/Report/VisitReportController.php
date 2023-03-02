@@ -16,6 +16,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Terminalbd\CrmBundle\Entity\CrmVisit;
 use Terminalbd\CrmBundle\Entity\CrmVisitDetails;
 use Terminalbd\CrmBundle\Form\SearchFilterFormType;
+use Terminalbd\CrmBundle\Form\SearchFilterFormTypeForVisitReport;
 
 /**
  * Class VisitReportController
@@ -39,8 +40,7 @@ class VisitReportController extends AbstractController
         $serviceMode = null;
         $process = null;
         $userRepo = $this->getDoctrine()->getRepository(User::class);
-        $form = $this->createForm(SearchFilterFormType::class, null, ['loggedUser' => $this->getUser(),'userRepo'=>$userRepo]);
-//        $form = $this->createForm(SearchFilterFormType::class, null, ['loggedUser' => $this->getUser()]);
+        $form = $this->createForm(SearchFilterFormTypeForVisitReport::class, null, ['loggedUser' => $this->getUser(),'userRepo'=>$userRepo]);
         $form->handleRequest($request);
         if ($form->isSubmitted()){
             $requestData = $request->request->all();

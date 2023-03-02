@@ -253,7 +253,7 @@ class SearchFilterFormType extends AbstractType
                     'autocomplete' => 'off'
                 ]
             ])
-            ->add('farmer', EntityType::class,[
+            /*->add('farmer', EntityType::class,[
                 'class' => CrmCustomer::class,
                 'query_builder' => function(EntityRepository $repository){
                 return $repository->createQueryBuilder('e')
@@ -263,7 +263,7 @@ class SearchFilterFormType extends AbstractType
                 },
                 'choice_label' => 'name',
                 'placeholder' => '- Select Farmer -'
-            ])
+            ])*/
             ->add('employeeWiseFarmer', ChoiceType::class,[
                 'choices' => [],
                 'attr' => [

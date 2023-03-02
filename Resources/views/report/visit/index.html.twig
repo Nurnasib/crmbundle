@@ -29,10 +29,10 @@
                     {{ form_start(form) }}
                     <tr>
 {#                        {% if is_granted('ROLE_CRM_POULTRY_ADMIN') or is_granted('ROLE_CRM_CATTLE_ADMIN') or is_granted('ROLE_CRM_AQUA_ADMIN') %}#}
-                            <th>
-                                {{ form_label(form.employee, 'Employee:') }}
-                                {{ form_widget(form.employee) }}
-                            </th>
+                        <th>
+                            {{ form_label(form.employee, 'Employee:') }}
+                            {{ form_widget(form.employee) }}
+                        </th>
                         <th>
                             {{ form_label(form.serviceMode, 'Service Mode:') }}
                             {{ form_widget(form.serviceMode) }}
