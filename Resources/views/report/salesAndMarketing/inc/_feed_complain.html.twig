@@ -1,0 +1,111 @@
+<table class="table table-striped table-bordered table-hover download-excel" id="fcrReportDetails">
+    <thead>
+    <tr>
+        <th data-a-h="center" class="border-0" colspan="21"><h3 class="text-center">NOURISH POULTRY AND HATCHERY LTD</h3></th>
+    </tr>
+    <tr>
+        <th data-a-h="center" class="border-0" colspan="21"><h5 class="text-center">UTTARA, DHAKA.</h5></th>
+    </tr>
+
+    <tr>
+        <td data-a-h="center" class="border-0" colspan="21" align="center"><h6>{{ reportSlug is defined ? reportSlug|replace({'-': ' '}) |upper:'' }}</h6></td>
+    </tr>
+    </thead>
+    {% if entities is defined and entities['records'] is defined and entities['records'] is not empty %}
+        <thead class="thead-dark">
+        <tr>
+            <th scope="col" style="width: 100px">Date</th>
+            <th scope="col">Employee Name</th>
+            <th scope="col">Employee ID</th>
+            <th scope="col">Designation</th>
+            <th scope="col" width="50">Issue No</th>
+            <th scope="col">Agent Name</th>
+            <th scope="col">Agent ID</th>
+            <th scope="col">Area</th>
+
+            <th scope="col">Production date</th>
+            <th scope="col">Supply Point</th>
+            <th scope="col">Batch No</th>
+            <th scope="col">Sl No</th>
+            <th scope="col">Feed Name</th>
+            <th scope="col">Feed Category</th>
+            <th scope="col">Problem</th>
+            <th scope="col">Obsevation</th>
+            <th scope="col">Comments</th>
+{#            <th scope="col">Action Taken</th>#}
+        </tr>
+        </thead>
+
+        {% set slNo=1 %}
+
+        {% for monthYear, monthlyData in entities['records'] %}
+
+            {% for createdDate, dailyData in monthlyData %}
+                {% set dateWiseCount=1 %}
+                {% for employeeId, employeeData in dailyData %}
+
+                    {% set issueCount=1 %}
+                    {% set employeeWiseCount=1 %}
+
+                    {% for parentId, details in employeeData %}
+
+                        {% for index, detail in details %}
+
+                            {% set dateWiseRowspan = entities['dateWiseLength'] is defined and entities['dateWiseLength'][monthYear] is defined and  entities['dateWiseLength'][monthYear][createdDate] is defined ? entities['dateWiseLength'][monthYear][createdDate]|length:0  %}
+                            {% set employeeWiseRowspan = entities['employeeWiseLength'] is defined and entities['employeeWiseLength'][monthYear] is defined and  entities['employeeWiseLength'][monthYear][createdDate] is defined and  entities['employeeWiseLength'][monthYear][createdDate][employeeId] is defined ? entities['employeeWiseLength'][monthYear][createdDate][employeeId]|length:0  %}
+
+                            <tr>
+
+                                {% if dateWiseCount==1 %}
+                                <td data-a-v="middle" rowspan="{{ dateWiseRowspan }}">{{ createdDate }} </td>
+                                {% endif %}
+
+                                {% if employeeWiseCount==1 %}
+                                    <td data-a-v="middle" rowspan="{{ employeeWiseRowspan }}">{{ detail.employeeName|default('') }} {{ employeeWiseCount }}</td>
+                                    <td data-a-v="middle" rowspan="{{ employeeWiseRowspan }}">{{ detail.userId|default('') }}</td>
+                                    <td data-a-v="middle" rowspan="{{ employeeWiseRowspan }}">{{ detail.designationName|default('') }}</td>
+                                {% endif %}
+
+                                {% if index==0 %}
+                                    <td data-t="n" data-a-v="middle" rowspan="{{ details|length }}">{{ issueCount }}</td>
+                                    <td data-a-v="middle" rowspan="{{ details|length }}">{{ detail.agentName|default('') }}</td>
+                                    <td data-t="s" data-a-v="middle" rowspan="{{ details|length }}">{{ detail.agentId|default('') }}</td>
+                                    <td data-a-v="middle" rowspan="{{ details|length }}">{{ detail.agentDistrictName|default('') }}</td>
+{#                                    <td data-a-v="middle" rowspan="{{ details|length }}">{{ detail.hatcheryName|default('') }}</td>#}
+                                    <td data-a-v="middle" rowspan="{{ details|length }}">{{ detail.productionDate?detail.productionDate|date('d-m-Y'):'' }}</td>
+                                    <td data-t="s" data-a-v="middle" rowspan="{{ details|length }}">{{ detail.feedMillName|default('') }}</td>
+                                    <td data-t="s" data-a-v="middle" rowspan="{{ details|length }}">{{ detail.batchNo|default('') }}</td>
+                                    <td data-t="s" data-a-v="middle" rowspan="{{ details|length }}">{{ slNo }}</td>
+{#                                    <td data-a-v="middle" rowspan="{{ details|length }}">{{ detail.receivedDocQty|default('') }}</td>#}
+{#                                    <td data-a-v="middle" rowspan="{{ details|length }}">{{ detail.transportName|default('') }}</td>#}
+                                    <td data-a-v="middle" rowspan="{{ details|length }}">{{ detail.feedParentName|default('') }}</td>
+                                    <td data-a-v="middle" rowspan="{{ details|length }}">{{ detail.feedName|default('') }}</td>
+                                {% endif %}
+
+
+                                <td>{{ detail.parameterName|default('') }}</td>
+{#                                <td data-t="s">{{ detail.day|default('') }}</td>#}
+{#                                <td data-t="n">{{ detail.quantity|default('') }}</td>#}
+
+                                {% if index==0 %}
+                                <td data-a-v="middle" rowspan="{{ details|length }}">{{ detail.observation|default('') }}</td>
+                                <td data-a-v="middle" rowspan="{{ details|length }}">{{ detail.complains|default('') }}</td>
+                                {% endif %}
+
+                            </tr>
+                            {% set slNo=slNo+1 %}
+                            {% set employeeWiseCount=employeeWiseCount+1 %}
+                            {% set dateWiseCount=dateWiseCount+1 %}
+                        {% endfor %}
+                        {% set issueCount=issueCount+1 %}
+                    {% endfor %}
+
+                {% endfor %}
+
+            {% endfor %}
+
+        {% endfor %}
+
+    {% endif %}
+</table>
+

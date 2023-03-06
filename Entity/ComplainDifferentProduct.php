@@ -88,6 +88,12 @@ class ComplainDifferentProduct
 
     /**
      * @var string
+     * @Orm\Column(type="text", nullable=true)
+     */
+    private $diseases;
+
+    /**
+     * @var string
      * @ORM\Column(type="string", nullable=true)
      */
     private $ageDays;
@@ -141,6 +147,12 @@ class ComplainDifferentProduct
      * @ORM\Column(type="date", nullable=true)
      */
     private $productionDate;
+
+    /**
+     * @var \DateTime
+     * @ORM\Column(type="date", nullable=true)
+     */
+    private $hatchingDate;
 
     /**
      * @var \DateTime
@@ -456,6 +468,22 @@ class ComplainDifferentProduct
     /**
      * @return \DateTime
      */
+    public function getHatchingDate(): \DateTime
+    {
+        return $this->hatchingDate;
+    }
+
+    /**
+     * @param \DateTime $hatchingDate
+     */
+    public function setHatchingDate(\DateTime $hatchingDate): void
+    {
+        $this->hatchingDate = $hatchingDate;
+    }
+
+    /**
+     * @return \DateTime
+     */
     public function getCreatedAt()
     {
         return $this->createdAt;
@@ -468,5 +496,25 @@ class ComplainDifferentProduct
     {
         $this->createdAt = $createdAt;
     }
+
+    /**
+     * @return string
+     */
+    public function getDiseases(): string
+    {
+        return $this->diseases;
+    }
+
+    /**
+     * @param string $diseases
+     */
+    public function setDiseases(string $diseases): void
+    {
+        $this->diseases = $diseases;
+    }
+
+    
+    
+    
 
 }

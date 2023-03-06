@@ -146,12 +146,15 @@ class SalesAndMarketingReportController extends AbstractController
                     break;
             }
         }
-        return $this->render('@TerminalbdCrm/report/salesAndMarketing/index.html.twig', ['form' => $form->createView(),
+        return $this->render('@TerminalbdCrm/report/salesAndMarketing/index.html.twig', [
+            'form' => $form->createView(),
             'entities' => $entities,
             'filterBy' => $filterBy,
             'employee' => $employee,
             'report' => $report,
             'reportSlug' => $report,
-            'species' => $species,]);
+            'species' => $species,
+            ]
+        );
     }
 }

@@ -36,11 +36,34 @@ class ComplainDifferentProductDetailsRepository extends EntityRepository
         $qb->join('e.complain', 'parent');
         $qb->join('e.ComplainParameter', 'parameter');
         $qb->join('parent.employee', 'employee');
+        $qb->leftJoin('employee.designation', 'designation');
+        $qb->leftJoin('parent.hatchery', 'hatchery');
+        $qb->leftJoin('parent.agent', 'agent');
+        $qb->leftJoin('agent.district', 'district');
+        $qb->leftJoin('parent.breed', 'breed');
+        $qb->leftJoin('breed.parent','breedParent');
+        $qb->leftJoin('parent.feedMill', 'feedMill');
+        $qb->leftJoin('parent.transport', 'transport');
+        $qb->leftJoin('parent.productName', 'productName');
+        $qb->leftJoin('parent.feed', 'feed');
+        $qb->leftJoin('feed.parent', 'feedParent');
 
-        $qb->select('e.id','e.quantity');
-        $qb->addSelect('parent.observation', 'parent.ageDays', 'parent.createdAt');
+        $qb->select('e.id','e.quantity','e.day');
+        $qb->addSelect('parent.observation', 'parent.ageDays', 'parent.createdAt', 'parent.hatchingDate', 'parent.productionDate', 'parent.complains', 'parent.diseases', 'parent.receivedDocQty');
+        $qb->addSelect('parent.id as parentId','parent.boxNo', 'parent.batchNo');
+        $qb->addSelect('hatchery.name as hatcheryName');
+        $qb->addSelect('agent.name as agentName', 'agent.agentId', 'agent.address');
+        $qb->addSelect('district.name as agentDistrictName');
+        $qb->addSelect('breed.name as breedName');
+        $qb->addSelect('breedParent.name as breedParentName');
+        $qb->addSelect('feedMill.name as feedMillName');
+        $qb->addSelect('transport.name as transportName');
+        $qb->addSelect('productName.name as productTypeName');
         $qb->addSelect('parameter.item AS parameterName');
-        $qb->addSelect('employee.name as employeeName');
+        $qb->addSelect('employee.name as employeeName', 'employee.id as employeeAutoId', 'employee.userId as userId');
+        $qb->addSelect('designation.name as designationName');
+        $qb->addSelect('feed.name as feedName');
+        $qb->addSelect('feedParent.name as feedParentName');
 
 
         $qb->where('parameter.type = :type')->setParameter('type', $type);
@@ -64,15 +87,24 @@ class ComplainDifferentProductDetailsRepository extends EntityRepository
         $qb->andWhere('parent.createdAt >= :start')->setParameter('start', $start);
         $qb->andWhere('parent.createdAt <= :end')->setParameter('end', $end);
 
+        if($type=='COMPLAIN_DOC'){
+            $qb->andWhere('e.quantity > 0 OR e.day > 0');
+        }
+
+        $qb->orderBy("DATE_FORMAT(parent.createdAt,'%Y-%m')", "ASC");
+
         $results = $qb->getQuery()->getArrayResult();
 
         $data = [];
         foreach ($results as $result) {
             $monthYear = $result['createdAt']->format('Y-m-F');
-            $data[$monthYear][] = $result;
+            $reportingDate = $result['createdAt']->format('d-m-Y');
+            $data['records'][$monthYear][$reportingDate][$result['employeeAutoId']][$result['parentId']][] = $result;
+            $data['dateWiseLength'][$monthYear][$reportingDate][] = $result['id'];
+            $data['employeeWiseLength'][$monthYear][$reportingDate][$result['employeeAutoId']][] = $result['id'];
         }
+        
 
-        ksort($data);
         return $data;
 
     }

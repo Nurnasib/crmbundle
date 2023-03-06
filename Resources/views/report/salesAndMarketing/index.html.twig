@@ -84,7 +84,7 @@
                             </th>
                         {% endif %}
 
-                        {% if report!="doc-price-daily" and report!="doc-price-monthly" and report!="company-wise-doc-price-daily" and report!="company-wise-doc-price-monthly" and report!="meat-egg-price-daily" and report!="meat-egg-price-monthly"  and report!="challenges-problem" and report!="challenges-idea" and report!="competitors-activity" %}
+                        {% if report!="doc-price-daily" and report!="doc-price-monthly" and report!="company-wise-doc-price-daily" and report!="company-wise-doc-price-monthly" and report!="meat-egg-price-daily" and report!="meat-egg-price-monthly"  and report!="challenges-problem" and report!="challenges-idea" and report!="competitors-activity" and report!="doc-complain" and report!="feed-complain" %}
                         <th>
                             {{ form_label(form.year, 'Year:') }}
                             {{ form_widget(form.year) }}
@@ -146,8 +146,11 @@
                             {% include '@TerminalbdCrm/report/salesAndMarketing/inc/meat-egg/_meat_egg_price_daily.html.twig'%}
 
 
-                        {% elseif reportSlug in ['doc-complain', 'feed-complain'] %}
-                            {% include '@TerminalbdCrm/report/salesAndMarketing/inc/_complain.html.twig'%}
+                        {% elseif reportSlug in ['doc-complain'] %}
+                            {% include '@TerminalbdCrm/report/salesAndMarketing/inc/_doc_complain.html.twig'%}
+
+                        {% elseif reportSlug in ['feed-complain'] %}
+                            {% include '@TerminalbdCrm/report/salesAndMarketing/inc/_feed_complain.html.twig'%}
 
                         {% elseif reportSlug in ['company-wise-feed-sale-poultry','company-wise-boiler-chick','company-wise-layer-chick','company-wise-feed-sale-cattle','company-wise-feed-sale-fish'] %}
                             {% include '@TerminalbdCrm/report/salesAndMarketing/inc/_company_wise_feed_sale.html.twig'%}

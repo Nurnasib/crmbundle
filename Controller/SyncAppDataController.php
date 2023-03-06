@@ -1493,9 +1493,10 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
     {
         foreach ($reports as $report) {
 
-            $sql = "INSERT INTO `crm_complain_different_product`(`agent_id`, `employee_id`, `complains`, `created_at`, `transport_id`, `breed_id`, `hatchery_id`, `age_days`, `box_no`, `received_doc_qty`, `observation`) VALUES (:agent_id, :employee_id, :complains, :created_at, :transport_id, :breed_id, :hatchery_id, :age_days, :box_no, :received_doc_qty, :observation)";
+            $sql = "INSERT INTO `crm_complain_different_product`(`agent_id`, `employee_id`, `complains`, `created_at`, `transport_id`, `breed_id`, `hatchery_id`, `age_days`, `box_no`, `received_doc_qty`, `observation`, `diseases`, `hatching_date`) VALUES (:agent_id, :employee_id, :complains, :created_at, :transport_id, :breed_id, :hatchery_id, :age_days, :box_no, :received_doc_qty, :observation, :diseases, :hatching_date)";
 
             $createdAt = new \DateTime($report['created_at']);
+            $hatching_date = isset($report['hatching_date']) && $report['hatching_date'] != ''? new \DateTime($report['hatching_date']):null;
 
             $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
             $stmt->bindValue('agent_id', $report['agent_id']);
@@ -1509,6 +1510,8 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
             $stmt->bindValue('box_no', $report['box_no']);
             $stmt->bindValue('received_doc_qty', $report['received_doc_qty']);
             $stmt->bindValue('observation', $report['observation']);
+            $stmt->bindValue('diseases', isset($report['disease_text']) && $report['disease_text'] != '' ? $report['disease_text']:null);
+            $stmt->bindValue('hatching_date', $hatching_date?$hatching_date->format('Y-m-d'):null);
 
             if ($stmt->execute()){
                 $compailId = $this->getDoctrine()->getConnection()->lastInsertId();
