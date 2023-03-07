@@ -39,6 +39,7 @@ class ComplainDifferentProductDetailsRepository extends EntityRepository
         $qb->leftJoin('employee.designation', 'designation');
         $qb->leftJoin('parent.hatchery', 'hatchery');
         $qb->leftJoin('parent.agent', 'agent');
+        $qb->leftJoin('agent.agentGroup', 'agentGroup');
         $qb->leftJoin('agent.district', 'district');
         $qb->leftJoin('parent.breed', 'breed');
         $qb->leftJoin('breed.parent','breedParent');
@@ -49,10 +50,11 @@ class ComplainDifferentProductDetailsRepository extends EntityRepository
         $qb->leftJoin('feed.parent', 'feedParent');
 
         $qb->select('e.id','e.quantity','e.day');
-        $qb->addSelect('parent.observation', 'parent.ageDays', 'parent.createdAt', 'parent.hatchingDate', 'parent.productionDate', 'parent.complains', 'parent.diseases', 'parent.receivedDocQty');
+        $qb->addSelect('parent.observation', 'parent.ageDays', 'parent.createdAt as createdAt', 'parent.hatchingDate', 'parent.productionDate', 'parent.complains', 'parent.diseases', 'parent.receivedDocQty');
         $qb->addSelect('parent.id as parentId','parent.boxNo', 'parent.batchNo');
         $qb->addSelect('hatchery.name as hatcheryName');
         $qb->addSelect('agent.name as agentName', 'agent.agentId', 'agent.address');
+        $qb->addSelect('agentGroup.name as agentGroupName', 'agentGroup.slug as agentGroupSlug');
         $qb->addSelect('district.name as agentDistrictName');
         $qb->addSelect('breed.name as breedName');
         $qb->addSelect('breedParent.name as breedParentName');
@@ -92,12 +94,13 @@ class ComplainDifferentProductDetailsRepository extends EntityRepository
         }
 
         $qb->orderBy("DATE_FORMAT(parent.createdAt,'%Y-%m')", "ASC");
+        $qb->addOrderBy("parent.createdAt", "ASC");
 
         $results = $qb->getQuery()->getArrayResult();
 
         $data = [];
         foreach ($results as $result) {
-            $monthYear = $result['createdAt']->format('Y-m-F');
+            $monthYear = $result['createdAt']->format('F-Y');
             $reportingDate = $result['createdAt']->format('d-m-Y');
             $data['records'][$monthYear][$reportingDate][$result['employeeAutoId']][$result['parentId']][] = $result;
             $data['dateWiseLength'][$monthYear][$reportingDate][] = $result['id'];
