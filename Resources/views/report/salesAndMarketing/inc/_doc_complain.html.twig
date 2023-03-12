@@ -61,17 +61,21 @@
 
                             <tr>
 
-                                {% if dateWiseCount==1 %}
+                                {#{% if dateWiseCount==1 %}
                                 <td data-a-v="middle" rowspan="{{ dateWiseRowspan }}">{{ createdDate }} </td>
-                                {% endif %}
+                                {% endif %}#}
+                                <td data-a-v="middle">{{ createdDate }} </td>
 
-                                {% if employeeWiseCount==1 %}
+                                {#{% if employeeWiseCount==1 %}
                                     <td data-a-v="middle" rowspan="{{ employeeWiseRowspan }}">{{ detail.employeeName|default('') }} {{ employeeWiseCount }}</td>
                                     <td data-a-v="middle" rowspan="{{ employeeWiseRowspan }}">{{ detail.userId|default('') }}</td>
                                     <td data-a-v="middle" rowspan="{{ employeeWiseRowspan }}">{{ detail.designationName|default('') }}</td>
-                                {% endif %}
+                                {% endif %}#}
+                                <td data-a-v="middle">{{ detail.employeeName|default('') }} {{ employeeWiseCount }}</td>
+                                <td data-a-v="middle">{{ detail.userId|default('') }}</td>
+                                <td data-a-v="middle">{{ detail.designationName|default('') }}</td>
 
-                                {% if index==0 %}
+                                {#{% if index==0 %}
                                     <td data-t="n" data-a-v="middle" rowspan="{{ details|length }}">{{ parentId }}</td>
                                     <td data-a-v="middle" rowspan="{{ details|length }}">{{ detail.agentName|default('') }}</td>
                                     <td data-t="s" data-a-v="middle" rowspan="{{ details|length }}">{{ detail.agentId ? detail.agentId : ( detail.agentGroupName|default() ) }}</td>
@@ -84,18 +88,33 @@
                                     <td data-a-v="middle" rowspan="{{ details|length }}">{{ detail.transportName|default('') }}</td>
                                     <td data-a-v="middle" rowspan="{{ details|length }}">{{ detail.breedParentName|default('') }}</td>
                                     <td data-a-v="middle" rowspan="{{ details|length }}">{{ detail.breedName|default('') }}</td>
-                                {% endif %}
+                                {% endif %}#}
+                                <td data-t="n" data-a-v="middle">{{ detail.id }}</td>
+                                <td data-a-v="middle">{{ detail.agentName|default('') }}</td>
+                                <td data-t="s" data-a-v="middle">{{ detail.agentId ? detail.agentId : ( detail.agentGroupName|default() ) }}</td>
+                                <td data-a-v="middle">{{ detail.agentDistrictName|default('') }}</td>
+                                <td data-a-v="middle">{{ detail.hatcheryName|default('') }}</td>
+                                <td data-a-v="middle">{{ detail.hatchingDate?detail.hatchingDate|date('d-m-Y'):(detail.productionDate?detail.productionDate|date('d-m-Y'):'') }}</td>
+                                <td data-t="s" data-a-v="middle">{{ detail.boxNo|default('') }}</td>
+                                <td data-t="s" data-a-v="middle">{{ detail.ageDays|default('') }}</td>
+                                <td data-a-v="middle">{{ detail.receivedDocQty|default('') }}</td>
+                                <td data-a-v="middle">{{ detail.transportName|default('') }}</td>
+                                <td data-a-v="middle">{{ detail.breedParentName|default('') }}</td>
+                                <td data-a-v="middle">{{ detail.breedName|default('') }}</td>
 
 
                                 <td>{{ detail.parameterName|default('') }}</td>
                                 <td data-t="s">{{ detail.day|default('') }}</td>
                                 <td data-t="n">{{ detail.quantity|default('') }}</td>
 
-                                {% if index==0 %}
+                                {#{% if index==0 %}
                                 <td data-a-v="middle" rowspan="{{ details|length }}">{{ detail.diseases|default('') }}</td>
                                 <td data-a-v="middle" rowspan="{{ details|length }}">{{ detail.observation|default('') }}</td>
                                 <td data-a-v="middle" rowspan="{{ details|length }}">{{ detail.complains|default('') }}</td>
-                                {% endif %}
+                                {% endif %}#}
+                                <td data-a-v="middle">{{ detail.diseases|default('') }}</td>
+                                <td data-a-v="middle">{{ detail.observation|default('') }}</td>
+                                <td data-a-v="middle">{{ detail.complains|default('') }}</td>
 
                             </tr>
                             {% set employeeWiseCount=employeeWiseCount+1 %}

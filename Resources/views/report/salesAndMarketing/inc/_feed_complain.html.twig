@@ -59,41 +59,57 @@
 
                             <tr>
 
-                                {% if dateWiseCount==1 %}
+                                {#{% if dateWiseCount==1 %}
                                 <td data-a-v="middle" rowspan="{{ dateWiseRowspan }}">{{ createdDate }} </td>
-                                {% endif %}
+                                {% endif %}#}
+                                <td data-a-v="middle">{{ createdDate }} </td>
 
-                                {% if employeeWiseCount==1 %}
+                                {#{% if employeeWiseCount==1 %}
                                     <td data-a-v="middle" rowspan="{{ employeeWiseRowspan }}">{{ detail.employeeName|default('') }} {{ employeeWiseCount }}</td>
                                     <td data-a-v="middle" rowspan="{{ employeeWiseRowspan }}">{{ detail.userId|default('') }}</td>
                                     <td data-a-v="middle" rowspan="{{ employeeWiseRowspan }}">{{ detail.designationName|default('') }}</td>
-                                {% endif %}
+                                {% endif %}#}
+                                <td data-a-v="middle">{{ detail.employeeName|default('') }} {{ employeeWiseCount }}</td>
+                                <td data-a-v="middle">{{ detail.userId|default('') }}</td>
+                                <td data-a-v="middle">{{ detail.designationName|default('') }}</td>
 
-                                {% if index==0 %}
+                                {#{% if index==0 %}
                                     <td data-t="n" data-a-v="middle" rowspan="{{ details|length }}">{{ issueCount }}</td>
                                     <td data-a-v="middle" rowspan="{{ details|length }}">{{ detail.agentName|default('') }}</td>
                                     <td data-t="s" data-a-v="middle" rowspan="{{ details|length }}">{{ detail.agentId ? detail.agentId : ( detail.agentGroupName|default() ) }}</td>
                                     <td data-a-v="middle" rowspan="{{ details|length }}">{{ detail.agentDistrictName|default('') }}</td>
-{#                                    <td data-a-v="middle" rowspan="{{ details|length }}">{{ detail.hatcheryName|default('') }}</td>#}
+#}{#                                    <td data-a-v="middle" rowspan="{{ details|length }}">{{ detail.hatcheryName|default('') }}</td>#}{#
                                     <td data-a-v="middle" rowspan="{{ details|length }}">{{ detail.productionDate?detail.productionDate|date('d-m-Y'):'' }}</td>
                                     <td data-t="s" data-a-v="middle" rowspan="{{ details|length }}">{{ detail.feedMillName|default('') }}</td>
                                     <td data-t="s" data-a-v="middle" rowspan="{{ details|length }}">{{ detail.batchNo|default('') }}</td>
                                     <td data-t="s" data-a-v="middle" rowspan="{{ details|length }}">{{ slNo }}</td>
-{#                                    <td data-a-v="middle" rowspan="{{ details|length }}">{{ detail.receivedDocQty|default('') }}</td>#}
-{#                                    <td data-a-v="middle" rowspan="{{ details|length }}">{{ detail.transportName|default('') }}</td>#}
+#}{#                                    <td data-a-v="middle" rowspan="{{ details|length }}">{{ detail.receivedDocQty|default('') }}</td>#}{#
+#}{#                                    <td data-a-v="middle" rowspan="{{ details|length }}">{{ detail.transportName|default('') }}</td>#}{#
                                     <td data-a-v="middle" rowspan="{{ details|length }}">{{ detail.feedParentName|default('') }}</td>
                                     <td data-a-v="middle" rowspan="{{ details|length }}">{{ detail.feedName|default('') }}</td>
-                                {% endif %}
+                                {% endif %}#}
+
+                                <td data-t="n" data-a-v="middle">{{ issueCount }}</td>
+                                <td data-a-v="middle">{{ detail.agentName|default('') }}</td>
+                                <td data-t="s" data-a-v="middle">{{ detail.agentId ? detail.agentId : ( detail.agentGroupName|default() ) }}</td>
+                                <td data-a-v="middle">{{ detail.agentDistrictName|default('') }}</td>
+                                <td data-a-v="middle">{{ detail.productionDate?detail.productionDate|date('d-m-Y'):'' }}</td>
+                                <td data-t="s" data-a-v="middle">{{ detail.feedMillName|default('') }}</td>
+                                <td data-t="s" data-a-v="middle">{{ detail.batchNo|default('') }}</td>
+                                <td data-t="s" data-a-v="middle">{{ slNo }}</td>
+                                <td data-a-v="middle">{{ detail.feedParentName|default('') }}</td>
+                                <td data-a-v="middle">{{ detail.feedName|default('') }}</td>
 
 
                                 <td>{{ detail.parameterName|default('') }}</td>
-{#                                <td data-t="s">{{ detail.day|default('') }}</td>#}
-{#                                <td data-t="n">{{ detail.quantity|default('') }}</td>#}
 
-                                {% if index==0 %}
+                                {#{% if index==0 %}
                                 <td data-a-v="middle" rowspan="{{ details|length }}">{{ detail.observation|default('') }}</td>
                                 <td data-a-v="middle" rowspan="{{ details|length }}">{{ detail.complains|default('') }}</td>
-                                {% endif %}
+                                {% endif %}#}
+
+                                <td data-a-v="middle">{{ detail.observation|default('') }}</td>
+                                <td data-a-v="middle">{{ detail.complains|default('') }}</td>
 
                             </tr>
                             {% set slNo=slNo+1 %}
