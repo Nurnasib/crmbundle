@@ -64,6 +64,16 @@ class FishLifeCycleCultureRepository extends EntityRepository
             $qb->andWhere('employee.id = :employee')->setParameter('employee', $employee);
         }
 
+        $farmer = isset($filterBy['farmerId']) && $filterBy['farmerId']!=""? $filterBy['farmerId']: '';
+        if (!empty($farmer)){
+            $qb->andWhere('customer.id = :customer')->setParameter('customer', $farmer);
+        }
+
+        $region = isset($filterBy['regionId']) && $filterBy['regionId']!=""? $filterBy['regionId']: '';
+        if (!empty($region)){
+            $qb->andWhere('regional.id = :regional')->setParameter('regional', $region);
+        }
+
         $rolesString = implode('_', $loggedUser->getRoles());
         if (!str_contains($rolesString, 'ADMIN') && !in_array('ROLE_LINE_MANAGER', $loggedUser->getRoles())){
             $qb->andWhere('employee.id = :employeeId')->setParameter('employeeId', $loggedUser->getId());

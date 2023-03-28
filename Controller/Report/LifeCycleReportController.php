@@ -29,15 +29,15 @@ use Terminalbd\CrmBundle\Form\SearchFilterFormType;
 class LifeCycleReportController extends AbstractController
 {
     /**
-     * @Route("/", name="life_cycle_report_index")
+     * @Route("/{lifeCycleSlug}", name="life_cycle_report_index")
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function index(Request $request)
+    public function index(Request $request, $lifeCycleSlug)
     {
         $filterBy = [];
         $entities = [];
-        $lifeCycleSlug = '';
+//        $lifeCycleSlug = '';
         $employee = null;
 //        $form = $this->createForm(SearchFilterFormType::class, null, ['loggedUser' => $this->getUser()]);
         $userRepo = $this->getDoctrine()->getRepository(User::class);
@@ -45,13 +45,14 @@ class LifeCycleReportController extends AbstractController
         $form->handleRequest($request);
 
         if($form->isSubmitted()){
-            $lifeCycleSlug = $form->getData()['lifeCycle']->getSlug();
+//            $lifeCycleSlug = $form->getData()['lifeCycle']->getSlug();
 
             $filterBy['startDate'] = $form->getData()['startDate'];
             $filterBy['endDate'] = $form->getData()['endDate'];
             $filterBy['reportStatus'] = $form->getData()['reportStatus'];
             $filterBy['employeeId'] = $form->getData()['employee'] ? $form->getData()['employee']->getId() : '';
             $filterBy['farmerId'] = $request->request->get('search_filter_form')['employeeWiseFarmer'];
+            $filterBy['regionId'] = $form->getData()['region'] ? $form->getData()['region']->getId() : '';
 
             $employee = $form->getData()['employee'];
 
