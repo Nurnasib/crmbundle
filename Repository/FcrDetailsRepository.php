@@ -152,7 +152,7 @@ class FcrDetailsRepository extends BaseRepository
                 if($feedCompany=='NOURISH'){
                     $qb->andWhere('feed.name = :feed_name')->setParameter('feed_name','Nourish');
                 }elseif ($feedCompany=='OTHERS'){
-                    $qb->andWhere('feed.name != :feed_name')->setParameter('feed_name','Nourish');
+                    $qb->andWhere('feed.name IS NULL OR feed.name != :feed_name')->setParameter('feed_name','Nourish');
                 }
             }
 

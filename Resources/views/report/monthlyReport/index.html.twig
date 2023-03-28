@@ -22,149 +22,143 @@
                 <table class="table">
                     <thead class="thead-dark">
 
-                    <tr>
-                        <th style="min-width: 300px">
-                            {{ form_label(form.monthlyReport, 'Report:', { 'label_attr': {'class': 'col-md-3 text-right'} })}}
-                            <div class="col-md-9 p-0">
-                                {{ form_widget(form.monthlyReport) }}
-                            </div>
-                        </th>
-                        <th style="min-width: 200px">
-                        <div class="form-group">
-                            {{ form_label(form.employee, 'Employee:', { 'label_attr': {'class': 'col-md-4 text-right'} })}}
-                            <div class="col-md-8 p-0">
-                            {{ form_widget(form.employee) }}
-                            </div>
-                        </div>
-                        </th>
-                        <th>
-                            {{ form_label(form.startDate, 'Start Date:', { 'label_attr': {'class': 'col-md-4 text-right'} }) }}
-                            <div class="col-md-8 p-0">
-                            {{ form_widget(form.startDate,{'id':'start-date', 'attr':{'placeholder': 'dd-mm-YYYY'}}) }}
-                            </div>
-                        </th>
-                        <th>
-                            {{ form_label(form.endDate, 'End Date:', { 'label_attr': {'class': 'col-md-4 text-right'} }) }}
-                            <div class="col-md-8 p-0">
-                            {{ form_widget(form.endDate,{'id':'end-date', 'attr':{'placeholder': 'dd-mm-YYYY'}}) }}
-                            </div>
-                        </th>
-                        <th></th>
-                    </tr>
-                    <tr>
-                        <th>
-                            {{ form_label(form.region, 'Region:', { 'label_attr': {'class': 'col-md-3 text-right'} }) }}
-                            <div class="col-md-9 p-0">
-                            {{ form_widget(form.region) }}
-                            </div>
-                        </th>
-                        {#<th>
-                            {{ form_label(form.zone, 'Zone:') }}
-                            {{ form_widget(form.zone) }}
-                        </th>#}
-                        <th>
-                            {{ form_label(form.feedMill, 'Feed Mill:', { 'label_attr': {'class': 'col-md-4 text-right'} }) }}
-                            <div class="col-md-8 p-0">
-                            {{ form_widget(form.feedMill) }}
-                            </div>
-                        </th>
-                        <th>
-                            {{ form_label(form.breed, 'Breed:', { 'label_attr': {'class': 'col-md-4 text-right'} }) }}
-                            <div class="col-md-8 p-0">
-                            {{ form_widget(form.breed) }}
-                            </div>
-                        </th>
-                        <th>
-                            {{ form_label(form.feedCompany, 'Feed:', { 'label_attr': {'class': 'col-md-4 text-right'} }) }}
-                            <div class="col-md-8 p-0">
-                            {{ form_widget(form.feedCompany) }}
-                            </div>
-                        </th>
-                        <th>
-                            <div class="btn-group float-right">
-                                {{ form_widget(form._token) }}
-                                <button type="submit" name="search" class="btn btn-primary btn-sm" title="Search" value="search"><i class="fa fa-search" aria-hidden="true"></i></button>
-                                <a href="{{ path('monthly_report_index') }}" class="btn purple-bg btn-sm white-font" title="Reset" value="reset"><i class="fa fa-refresh" aria-hidden="true"></i></a>
-                                {% if entities is defined and entities is not empty %}
-                                    {% set filterBy = filterBy|merge({"lifeCycle" : reportSlug}) %}
-                                    <button type="submit" name="excel" class="btn blue-bg btn-sm white-font" title="Excel" value="excel" id="button-excel"><i class="fa fa-file-excel" aria-hidden="true"></i> {{ 'Excel'|trans }}</button>
-{#                                    <a target="_blank" href="{{ path('life_cycle_pdf', {filterBy: filterBy}) }}" class="btn blue-bg btn-sm white-font"><i class="fa fa-download" aria-hidden="true"></i> {{ 'PDF'|trans }}</a>#}
-{#                                    <a target="_blank" href="{{ path('life_cycle_excel', {filterBy: filterBy}) }}" class="btn blue-bg btn-sm white-font"><i class="fa fa-file-excel" aria-hidden="true"></i> {{ 'Excel'|trans }}</a>#}
-                                {% endif %}
-                            </div>
-                        </th>
-{#                        <th></th>#}
-                    </tr>
+                        <tr>
+                            <th style="min-width: 200px">
+                                {{ form_label(form.employee, 'Employee:') }}
+                                {{ form_widget(form.employee) }}
+                            </th>
+                            <th style="min-width: 100px">
+                                {{ form_label(form.startDate, 'Start Date:') }}
+                                {{ form_widget(form.startDate,{'id':'start-date', 'attr':{'placeholder': 'dd-mm-YYYY'}}) }}
+                            </th>
+                            <th style="min-width: 100px">
+                                {{ form_label(form.endDate, 'End Date:') }}
+                                {{ form_widget(form.endDate,{'id':'end-date', 'attr':{'placeholder': 'dd-mm-YYYY'}}) }}
+                            </th>
+                            {% if reportSlug =='fcr-before-sale-boiler' or reportSlug =='fcr-after-sale-boiler' or reportSlug =='fcr-before-sale-sonali' or reportSlug =='fcr-after-sale-sonali' or reportSlug =='layer-performance-brown' or reportSlug =='layer-performance-white' %}
+                                <th>
+                                    {{ form_label(form.region, 'Region:') }}
+                                    {{ form_widget(form.region) }}
+                                </th>
+                                <th>
+                                    {{ form_label(form.feedMill, 'Feed Mill:') }}
+                                    {{ form_widget(form.feedMill) }}
+                                </th>
+                                <th>
+                                    {% if reportSlug =='layer-performance-brown' or reportSlug =='layer-performance-white' %}
+                                        {{ form_label(form.feedCompany, 'Hatchery:') }}
+                                    {% else %}
+                                        {{ form_label(form.feedCompany, 'Feed:') }}
+                                    {% endif %}
+                                    {{ form_widget(form.feedCompany) }}
+                                </th>
+                            {% endif %}
+
+                            {% if reportSlug =='farmer-introduce-report-poultry' or reportSlug =='farmer-introduce-report-fish' or reportSlug =='farmer-introduce-report-cattle' or  reportSlug =='less-costing-farm-poultry' or reportSlug =='less-costing-farm-fish' or reportSlug =='disease-mapping-report-poultry' or reportSlug =='disease-mapping-report-cattle' or reportSlug =='disease-mapping-report-fish'  or reportSlug =='fattening-performance-report' or reportSlug =='dairy-performance-report' %}
+                                <th>
+                                    {{ form_label(form.region, 'Region:') }}
+                                    {{ form_widget(form.region) }}
+                                </th>
+                            {% endif %}
+
+                            {% if reportSlug =='antibiotic-free-farm-poultry' or  reportSlug =='less-costing-farm-poultry' or reportSlug =='less-costing-farm-fish' or reportSlug =='disease-mapping-report-poultry' or reportSlug =='disease-mapping-report-cattle' or reportSlug =='disease-mapping-report-fish' %}
+                            <th>
+                                {{ form_label(form.feedCompany, 'Hatchery:') }}
+                                {{ form_widget(form.feedCompany) }}
+                            </th>
+                            {% endif %}
+                            <th>
+                                <div class="btn-group float-right" style="margin-top: 20px">
+                                    {{ form_widget(form._token) }}
+                                    <button type="submit" name="search" class="btn btn-primary btn-sm" title="Search" value="search"><i class="fa fa-search" aria-hidden="true"></i></button>
+                                    <a href="{{ path('monthly_report_index', {'reportSlug': reportSlug}) }}" class="btn purple-bg btn-sm white-font" title="Reset" value="reset"><i class="fa fa-refresh" aria-hidden="true"></i></a>
+                                    {% if entities is defined and entities is not empty %}
+                                        {% set filterBy = filterBy|merge({"lifeCycle" : reportSlug}) %}
+                                        <button type="submit" name="excel" class="btn blue-bg btn-sm white-font" title="Excel" value="excel" id="button-excel"><i class="fa fa-file-excel" aria-hidden="true"></i> {{ 'Excel'|trans }}</button>
+                                        {#                                    <a target="_blank" href="{{ path('life_cycle_pdf', {filterBy: filterBy}) }}" class="btn blue-bg btn-sm white-font"><i class="fa fa-download" aria-hidden="true"></i> {{ 'PDF'|trans }}</a>#}
+                                        {#                                    <a target="_blank" href="{{ path('life_cycle_excel', {filterBy: filterBy}) }}" class="btn blue-bg btn-sm white-font"><i class="fa fa-file-excel" aria-hidden="true"></i> {{ 'Excel'|trans }}</a>#}
+                                    {% endif %}
+                                </div>
+                            </th>
+                        </tr>
 
                     </thead>
                 </table>
                 </form>
             </div>
         </div>
-        {% if entities is defined and entities is not empty %}
+
             <div class="row">
-                <div class="card" style="overflow-x: scroll; max-height: 75vh">
+                <div class="card" style="overflow-x: scroll; max-height: 90vh">
                     <div id="data-load" class="card-body p-0">
-                        {% if reportSlug is same as 'fcr-before-sale-boiler' %}
-                            {% include '@TerminalbdCrm/report/monthlyReport/inc/_fcr_broiler_before.html.twig'%}
+                        {% if entities is defined and entities is not empty %}
+                            {% if reportSlug is same as 'fcr-before-sale-boiler' %}
+                                {% include '@TerminalbdCrm/report/monthlyReport/inc/_fcr_broiler_before.html.twig'%}
 
-                        {% elseif reportSlug is same as 'fcr-after-sale-boiler' %}
-                            {% include '@TerminalbdCrm/report/monthlyReport/inc/_fcr_broiler_after.html.twig'%}
+                            {% elseif reportSlug is same as 'fcr-after-sale-boiler' %}
+                                {% include '@TerminalbdCrm/report/monthlyReport/inc/_fcr_broiler_after.html.twig'%}
 
-                        {% elseif reportSlug is same as 'fcr-before-sale-sonali' %}
-                            {% include '@TerminalbdCrm/report/monthlyReport/inc/_fcr_sonali_before.html.twig'%}
+                            {% elseif reportSlug is same as 'fcr-before-sale-sonali' %}
+                                {% include '@TerminalbdCrm/report/monthlyReport/inc/_fcr_sonali_before.html.twig'%}
 
-                        {% elseif reportSlug is same as 'fcr-after-sale-sonali' %}
-                            {% include '@TerminalbdCrm/report/monthlyReport/inc/_fcr_sonali_after.html.twig'%}
+                            {% elseif reportSlug is same as 'fcr-after-sale-sonali' %}
+                                {% include '@TerminalbdCrm/report/monthlyReport/inc/_fcr_sonali_after.html.twig'%}
 
-                        {% elseif reportSlug in ['layer-performance-brown','layer-performance-white'] %}
-                            {% include '@TerminalbdCrm/report/monthlyReport/inc/poultry/_layer_performance.html.twig'%}
+                            {% elseif reportSlug in ['layer-performance-brown','layer-performance-white'] %}
+                                {% include '@TerminalbdCrm/report/monthlyReport/inc/poultry/_layer_performance.html.twig'%}
 
-                        {% elseif reportSlug is same as 'antibiotic-free-farm-poultry' %}
-                            {% include '@TerminalbdCrm/report/monthlyReport/inc/poultry/_antibiotic_free_farm.html.twig'%}
+                            {% elseif reportSlug is same as 'antibiotic-free-farm-poultry' %}
+                                {% include '@TerminalbdCrm/report/monthlyReport/inc/poultry/_antibiotic_free_farm.html.twig'%}
 
-                        {% elseif reportSlug is same as 'less-costing-farm-poultry' %}
-                            {% include '@TerminalbdCrm/report/monthlyReport/inc/poultry/_less_costing_farm.html.twig'%}
+                            {% elseif reportSlug is same as 'less-costing-farm-poultry' %}
+                                {% include '@TerminalbdCrm/report/monthlyReport/inc/poultry/_less_costing_farm.html.twig'%}
 
-                        {% elseif reportSlug is same as 'less-costing-farm-fish' %}
-                            {% include '@TerminalbdCrm/report/monthlyReport/inc/fish/_less_costing_farm.html.twig'%}
+                            {% elseif reportSlug is same as 'less-costing-farm-fish' %}
+                                {% include '@TerminalbdCrm/report/monthlyReport/inc/fish/_less_costing_farm.html.twig'%}
 
-                        {% elseif reportSlug is same as 'disease-mapping-report-poultry' %}
-                            {% include '@TerminalbdCrm/report/monthlyReport/inc/poultry/_disease_mapping.html.twig'%}
+                            {% elseif reportSlug is same as 'disease-mapping-report-poultry' %}
+                                {% include '@TerminalbdCrm/report/monthlyReport/inc/poultry/_disease_mapping.html.twig'%}
 
-                        {% elseif reportSlug is same as 'disease-mapping-report-cattle' %}
-                            {% include '@TerminalbdCrm/report/monthlyReport/inc/cattle/_disease_mapping.html.twig'%}
+                            {% elseif reportSlug is same as 'disease-mapping-report-cattle' %}
+                                {% include '@TerminalbdCrm/report/monthlyReport/inc/cattle/_disease_mapping.html.twig'%}
 
-                        {% elseif reportSlug is same as 'disease-mapping-report-fish' %}
-                            {% include '@TerminalbdCrm/report/monthlyReport/inc/fish/_disease_mapping.html.twig'%}
+                            {% elseif reportSlug is same as 'disease-mapping-report-fish' %}
+                                {% include '@TerminalbdCrm/report/monthlyReport/inc/fish/_disease_mapping.html.twig'%}
 
-                        {% elseif reportSlug is same as 'farmer-introduce-report-poultry' %}
-                            {% include '@TerminalbdCrm/report/monthlyReport/inc/poultry/_farmer_introduce.html.twig'%}
+                            {% elseif reportSlug is same as 'farmer-introduce-report-poultry' %}
+                                {% include '@TerminalbdCrm/report/monthlyReport/inc/poultry/_farmer_introduce.html.twig'%}
 
-                        {% elseif reportSlug is same as 'farmer-introduce-report-fish' %}
-                            {% include '@TerminalbdCrm/report/monthlyReport/inc/fish/_farmer_introduce.html.twig'%}
+                            {% elseif reportSlug is same as 'farmer-introduce-report-fish' %}
+                                {% include '@TerminalbdCrm/report/monthlyReport/inc/fish/_farmer_introduce.html.twig'%}
 
-                        {% elseif reportSlug is same as 'farmer-introduce-report-cattle' %}
-                            {% include '@TerminalbdCrm/report/monthlyReport/inc/cattle/_farmer_introduce.html.twig'%}
+                            {% elseif reportSlug is same as 'farmer-introduce-report-cattle' %}
+                                {% include '@TerminalbdCrm/report/monthlyReport/inc/cattle/_farmer_introduce.html.twig'%}
 
-                        {% elseif reportSlug in ['company-species-wise-average-fcr-before','company-species-wise-average-fcr-after'] %}
-                            {% include '@TerminalbdCrm/report/monthlyReport/inc/fish/_company_species_average_fcr.html.twig'%}
+                            {% elseif reportSlug in ['company-species-wise-average-fcr-before','company-species-wise-average-fcr-after'] %}
+                                {% include '@TerminalbdCrm/report/monthlyReport/inc/fish/_company_species_average_fcr.html.twig'%}
 
-                        {% elseif reportSlug in ['fattening-performance-report'] %}
-                            {% include '@TerminalbdCrm/report/monthlyReport/inc/cattle/_fattening_performance.html.twig'%}
+                            {% elseif reportSlug in ['fattening-performance-report'] %}
+                                {% include '@TerminalbdCrm/report/monthlyReport/inc/cattle/_fattening_performance.html.twig'%}
 
-                        {% elseif reportSlug in ['dairy-performance-report'] %}
-                            {% include '@TerminalbdCrm/report/monthlyReport/inc/cattle/_dairy_performance.html.twig'%}
+                            {% elseif reportSlug in ['dairy-performance-report'] %}
+                                {% include '@TerminalbdCrm/report/monthlyReport/inc/cattle/_dairy_performance.html.twig'%}
 
-                        {% elseif reportSlug is same as 'cattle-farm-visit-report' %}
-                            {% include '@TerminalbdCrm/report/monthlyReport/inc/cattle/_farm_visit.html.twig'%}
+                            {% elseif reportSlug is same as 'cattle-farm-visit-report' %}
+                                {% include '@TerminalbdCrm/report/monthlyReport/inc/cattle/_farm_visit.html.twig'%}
 
+                            {% endif %}
+
+                        {% else %}
+                            <div style="background-color: #dbdee3; width: 100%; height: 100%">
+                                <h3 class="text-center">NOURISH POULTRY AND HATCHERY LTD</h3>
+                                <h5 class="text-center">UTTARA, DHAKA.</h5>
+                                <h6 class="text-center">{{ report.name|default('') }}</h6>
+                            </div>
                         {% endif %}
-
                     </div>
                 </div>
             </div>
-        {% endif %}
+
 
 
 
@@ -239,16 +233,18 @@
 
         let button = document.querySelector("#button-excel");
 
-        button.addEventListener("click", e => {
-            e.preventDefault();
-            let table = document.querySelector(".download-excel");
-            TableToExcel.convert(table, {
-                name: "{{ report is defined and report is not null ? report.slug : ''}} ({{ filterBy['startDate'] is defined ? filterBy['startDate']:'' }} {{ filterBy['endDate'] is defined ? ' to '~filterBy['endDate']:'' }}).xlsx",
-                sheet: {
-                    name: "Sheet 1"
-                }
+        if(button){
+            button.addEventListener("click", e => {
+                e.preventDefault();
+                let table = document.querySelector(".download-excel");
+                TableToExcel.convert(table, {
+                    name: "{{ report is defined and report is not null ? report.slug : ''}} ({{ filterBy['startDate'] is defined ? filterBy['startDate']:'' }} {{ filterBy['endDate'] is defined ? ' to '~filterBy['endDate']:'' }}).xlsx",
+                    sheet: {
+                        name: "Sheet 1"
+                    }
+                });
             });
-        });
+        }
 
         $(document).on('click', '.record_delete', function (event) {
             event.preventDefault();

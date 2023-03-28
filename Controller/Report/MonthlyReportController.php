@@ -5,6 +5,7 @@ namespace Terminalbd\CrmBundle\Controller\Report;
 
 
 use App\Entity\User;
+use Doctrine\Persistence\ManagerRegistry;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
@@ -37,11 +38,11 @@ use Terminalbd\CrmBundle\Form\SearchFilterFormType;
 class MonthlyReportController extends AbstractController
 {
     /**
-     * @Route("/", name="monthly_report_index")
+     * @Route("/{reportSlug}", name="monthly_report_index")
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function index(Request $request, ParameterBagInterface $parameterBag)
+    public function index(Request $request, ParameterBagInterface $parameterBag, ManagerRegistry $doctrine, $reportSlug)
     {
         $filterBy = [];
         $entities = [];
@@ -51,11 +52,14 @@ class MonthlyReportController extends AbstractController
 //        $form = $this->createForm(SearchFilterFormType::class, null, ['loggedUser' => $this->getUser()]);
         $userRepo = $this->getDoctrine()->getRepository(User::class);
         $form = $this->createForm(SearchFilterFormType::class, null, ['loggedUser' => $this->getUser(),'userRepo'=>$userRepo]);
+
+        $report = $doctrine->getRepository(Setting::class)->findOneBy(['settingType'=>'FARMER_REPORT','slug'=>$reportSlug, 'status'=>1]);
+
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {
-            $report = $form->getData()['monthlyReport'];
-
+//            $report = $form->getData()['monthlyReport'];
+            
             $filterBy['startDate'] = $form->getData()['startDate'];
             $filterBy['endDate'] = $form->getData()['endDate'];
             $filterBy['employeeId'] = $form->getData()['employee'] ? $form->getData()['employee']->getId() : '';
@@ -134,7 +138,7 @@ class MonthlyReportController extends AbstractController
         return $this->render('@TerminalbdCrm/report/monthlyReport/index.html.twig', ['form' => $form->createView(),
             'entities' => $entities,
             'filterBy' => $filterBy,
-            'reportSlug' => $report ? $report->getSlug() : null,
+            'reportSlug' => $report ? $report->getSlug() : $reportSlug,
             'employee' => $employee,
             'report' => $report,
             'species' => $species,]);

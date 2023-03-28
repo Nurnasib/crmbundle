@@ -102,6 +102,12 @@ class FarmerIntroduceDetailsRepository extends BaseRepository
             }
             $qb->andWhere('e.introduceDate IS NOT NULL');
             $qb->andWhere('e.createdAt IS NOT NULL');
+
+            $region = isset($filterBy['region'])? $filterBy['region']: '';
+            if (!empty($region)){
+                $qb->andWhere('customerRegion.id = :regionId')->setParameter('regionId', $region);
+            }
+            
             $qb->orderBy('e.introduceDate','ASC');
             $results = $qb->getQuery()->getArrayResult();
 

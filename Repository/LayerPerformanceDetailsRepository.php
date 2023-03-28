@@ -149,6 +149,15 @@ class LayerPerformanceDetailsRepository extends BaseRepository
             if (!empty($region)){
                 $qb->andWhere('region.id = :regionId')->setParameter('regionId', $region);
             }
+            
+            $feedCompany = isset($filterBy['feedCompany'])&& $filterBy['feedCompany']!=''? $filterBy['feedCompany']: '';
+            if (!empty($feedCompany)){
+                if($feedCompany=='NOURISH'){
+                    $qb->andWhere('hatchery.name = :feed_name')->setParameter('feed_name','Nourish');
+                }elseif ($feedCompany=='OTHERS'){
+                    $qb->andWhere('hatchery.name IS NULL OR hatchery.name != :feed_name')->setParameter('feed_name','Nourish');
+                }
+            }
             $qb->orderBy('e.reportingMonth','ASC');
 
             $results = $qb->getQuery()->getArrayResult();

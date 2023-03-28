@@ -11,6 +11,146 @@
                         class="feather icon-edit"></i>{{ 'Expense For Approval'|trans }}</a></li>
     {% endif %}
 
+    {% if is_granted('ROLE_CRM_POULTRY_ADMIN') or is_granted('ROLE_CRM_CATTLE_ADMIN') or is_granted('ROLE_CRM_AQUA_ADMIN') or is_granted('ROLE_CRM_SALES_MARKETING_ADMIN') or is_granted('ROLE_CRM_REPORT') or is_granted('ROLE_DEVELOPER') %}
+        <li class=""><a class="" href="javascript:"><i class="feather icon-file-text"></i>{{ 'Report'|trans }}</a>
+
+            <ul class="sub-menu">
+
+                {% if is_granted('ROLE_CRM_SALES_MARKETING_ADMIN') or is_granted('ROLE_DEVELOPER') %}
+                    <li>
+                        <a class="dropdown-item" href="javascript:">{{ 'Sales & Marketing'|trans }}</a>
+                        <ul>
+                            <li><a class="dropdown-item" href="{{ path('sales_marketing_report_index',{'report':'challenges-problem'}) }}">{{ 'Problems'|trans }}</a></li>
+                            <li><a class="dropdown-item" href="{{ path('sales_marketing_report_index',{'report':'challenges-idea'}) }}">{{ 'Ideas'|trans }}</a></li>
+                            <li><a class="dropdown-item" href="{{ path('sales_marketing_report_index',{'report':'competitors-activity'}) }}">{{ 'Competitors Activity'|trans }}</a></li>
+                            <li>
+                                <a class="dropdown-item" href="javascript:">{{ 'DOC Price'|trans }}</a>
+                                <ul class="sub-menu">
+                                    <li><a class="dropdown-item" href="{{ path('sales_marketing_report_index',{'report':'doc-price-monthly'}) }}">{{ 'Employee Wise Monthly'|trans }}</a></li>
+                                    <li><a class="dropdown-item" href="{{ path('sales_marketing_report_index',{'report':'doc-price-daily'}) }}">{{ 'Employee Wise Daily'|trans }}</a></li>
+
+                                    <li><a class="dropdown-item" href="{{ path('sales_marketing_report_index',{'report':'company-wise-doc-price-monthly'}) }}">{{ 'Company Wise Monthly'|trans }}</a></li>
+                                    <li><a class="dropdown-item" href="{{ path('sales_marketing_report_index',{'report':'company-wise-doc-price-daily'}) }}">{{ 'Company Wise Daily'|trans }}</a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="javascript:">{{ 'Meat & Egg Price'|trans }}</a>
+                                <ul class="sub-menu">
+                                    <li><a class="dropdown-item" href="{{ path('sales_marketing_report_index',{'report':'meat-egg-price-monthly'}) }}">{{ 'Monthly'|trans }}</a></li>
+                                    <li><a class="dropdown-item" href="{{ path('sales_marketing_report_index',{'report':'meat-egg-price-daily'}) }}">{{ 'Daily'|trans }}</a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="javascript:">{{ 'Complain'|trans }}</a>
+                                <ul class="sub-menu">
+                                    <li><a class="dropdown-item" href="{{ path('sales_marketing_report_index',{'report':'doc-complain'}) }}">{{ 'DOC'|trans }}</a></li>
+                                    <li><a class="dropdown-item" href="{{ path('sales_marketing_report_index',{'report':'feed-complain'}) }}">{{ 'Feed'|trans }}</a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="javascript:">{{ 'Company Wise'|trans }}</a>
+                                <ul class="sub-menu">
+                                    <li><a class="dropdown-item" href="{{ path('sales_marketing_report_index',{'report':'company-wise-layer-chick'}) }}">{{ 'DOC Production'|trans }}</a></li>
+                                    <li><a class="dropdown-item" href="{{ path('sales_marketing_report_index',{'report':'company-wise-feed-sale-poultry'}) }}">{{ 'Poultry Feed Sale'|trans }}</a></li>
+                                    <li><a class="dropdown-item" href="{{ path('sales_marketing_report_index',{'report':'company-wise-feed-sale-cattle'}) }}">{{ 'Cattle Feed Sale'|trans }}</a></li>
+                                    <li><a class="dropdown-item" href="{{ path('sales_marketing_report_index',{'report':'company-wise-feed-sale-fish'}) }}">{{ 'Fish Feed Sale'|trans }}</a></li>
+                                </ul>
+                            </li>
+
+                        </ul>
+                    </li>
+                {% endif %}
+                {% if is_granted('ROLE_CRM_POULTRY_ADMIN') or is_granted('ROLE_CRM_CATTLE_ADMIN') or is_granted('ROLE_CRM_AQUA_ADMIN') or is_granted('ROLE_CRM_REPORT') or is_granted('ROLE_DEVELOPER')  %}
+                    <li>
+                        <a class="dropdown-item" href="javascript:">{{ 'Life Cycle Report'|trans }}</a>
+                        <ul>
+                            <li>
+                                <a class="dropdown-item" href="javascript:">{{ 'Poultry'|trans }}</a>
+                                <ul class="sub-menu">
+                                    <li><a class="dropdown-item" href="{{ path('life_cycle_report_index', {'lifeCycleSlug':'boiler-life-cycle'}) }}">{{ 'Boiler'|trans }}</a></li>
+                                    <li><a class="dropdown-item" href="{{ path('life_cycle_report_index', {'lifeCycleSlug':'sonali-life-cycle'}) }}">{{ 'sonali'|trans }}</a></li>
+                                    <li><a class="dropdown-item" href="{{ path('life_cycle_report_index', {'lifeCycleSlug':'layer-life-cycle-brown'}) }}">{{ 'Layer Brown'|trans }}</a></li>
+                                    <li><a class="dropdown-item" href="{{ path('life_cycle_report_index', {'lifeCycleSlug':'layer-life-cycle-white'}) }}">{{ 'Layer White'|trans }}</a></li>
+                                </ul>
+                            </li>
+
+                            <li>
+                                <a class="dropdown-item" href="javascript:">{{ 'Cattle'|trans }}</a>
+                                <ul class="sub-menu">
+                                    <li><a class="dropdown-item" href="{{ path('life_cycle_report_index', {'lifeCycleSlug':'dairy-life-cycle'}) }}">{{ 'Dairy'|trans }}</a></li>
+                                    <li><a class="dropdown-item" href="{{ path('life_cycle_report_index', {'lifeCycleSlug':'fattening-life-cycle'}) }}">{{ 'Fattening'|trans }}</a></li>
+                                </ul>
+                            </li>
+
+                            <li>
+                                <a class="dropdown-item" href="javascript:">{{ 'Fish'|trans }}</a>
+                                <ul class="sub-menu">
+                                    <li><a class="dropdown-item" href="{{ path('life_cycle_report_index', {'lifeCycleSlug':'fish-life-cycle-report'}) }}">{{ 'Culture'|trans }}</a></li>
+                                    <li><a class="dropdown-item" href="{{ path('life_cycle_report_index', {'lifeCycleSlug':'fish-life-cycle-after-sale-report'}) }}">{{ 'Harvest'|trans }}</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <li>
+                        <a class="dropdown-item" href="javascript:">{{ 'Monthly Report'|trans }}</a>
+                        <ul>
+                            <li>
+                                <a class="dropdown-item" href="javascript:">{{ 'Poultry'|trans }}</a>
+                                <ul class="sub-menu">
+                                    <li><a class="dropdown-item" href="{{ path('monthly_report_index', {'reportSlug':'antibiotic-free-farm-poultry'}) }}">{{ 'Antibiotic Free Farm'|trans }}</a></li>
+                                    <li><a class="dropdown-item" href="{{ path('monthly_report_index', {'reportSlug':'less-costing-farm-poultry'}) }}">{{ 'Less Costing Farm'|trans }}</a></li>
+                                    <li><a class="dropdown-item" href="{{ path('monthly_report_index', {'reportSlug':'disease-mapping-report-poultry'}) }}">{{ 'Disease Mapping Report'|trans }}</a></li>
+                                    <li><a class="dropdown-item" href="{{ path('monthly_report_index', {'reportSlug':'farmer-introduce-report-poultry'}) }}">{{ 'New Farmer Introduce'|trans }}</a></li>
+
+                                    <li><a class="dropdown-item" href="{{ path('monthly_report_index', {'reportSlug':'fcr-before-sale-boiler'}) }}">{{ 'Boilar FCR (Before Sale)'|trans }}</a></li>
+                                    <li><a class="dropdown-item" href="{{ path('monthly_report_index', {'reportSlug':'fcr-after-sale-boiler'}) }}">{{ 'Boilar FCR (After Sale)'|trans }}</a></li>
+                                    <li><a class="dropdown-item" href="{{ path('monthly_report_index', {'reportSlug':'fcr-before-sale-sonali'}) }}">{{ 'Sonali FCR (Before Sale)'|trans }}</a></li>
+                                    <li><a class="dropdown-item" href="{{ path('monthly_report_index', {'reportSlug':'fcr-after-sale-sonali'}) }}">{{ 'Sonali FCR (After Sale)'|trans }}</a></li>
+
+                                    <li><a class="dropdown-item" href="{{ path('monthly_report_index', {'reportSlug':'layer-performance-brown'}) }}">{{ 'Layer Performance (Brown)'|trans }}</a></li>
+                                    <li><a class="dropdown-item" href="{{ path('monthly_report_index', {'reportSlug':'layer-performance-white'}) }}">{{ 'Layer Performance (White)'|trans }}</a></li>
+                                </ul>
+                            </li>
+
+                            <li>
+                                <a class="dropdown-item" href="javascript:">{{ 'Cattle'|trans }}</a>
+                                <ul class="sub-menu">
+                                    <li><a class="dropdown-item" href="{{ path('monthly_report_index', {'reportSlug':'farmer-introduce-report-cattle'}) }}">{{ 'New Farmer Introduce'|trans }}</a></li>
+                                    <li><a class="dropdown-item" href="{{ path('monthly_report_index', {'reportSlug':'disease-mapping-report-cattle'}) }}">{{ 'Disease Mapping Report'|trans }}</a></li>
+                                    <li><a class="dropdown-item" href="{{ path('monthly_report_index', {'reportSlug':'cattle-farm-visit-report'}) }}">{{ 'Cattle Farm Visit Report'|trans }}</a></li>
+
+                                    <li><a class="dropdown-item" href="{{ path('monthly_report_index', {'reportSlug':'dairy-performance-report'}) }}">{{ 'Dairy Performance Report'|trans }}</a></li>
+                                    <li><a class="dropdown-item" href="{{ path('monthly_report_index', {'reportSlug':'fattening-performance-report'}) }}">{{ 'Fattening Performance Report'|trans }}</a></li>
+                                </ul>
+                            </li>
+
+                            <li>
+                                <a class="dropdown-item" href="javascript:">{{ 'Fish'|trans }}</a>
+                                <ul class="sub-menu">
+                                    <li><a class="dropdown-item" href="{{ path('monthly_report_index', {'reportSlug':'farmer-introduce-report-fish'}) }}">{{ 'New Farmer Introduce'|trans }}</a></li>
+                                    <li><a class="dropdown-item" href="{{ path('monthly_report_index', {'reportSlug':'less-costing-farm-fish'}) }}">{{ 'Less Costing Farm Fish'|trans }}</a></li>
+                                    <li><a class="dropdown-item" href="{{ path('monthly_report_index', {'reportSlug':'disease-mapping-report-fish'}) }}">{{ 'Disease Mapping Report'|trans }}</a></li>
+
+                                    <li><a title="{{ 'Company & Species wise Average FCR (Culture)'|trans }}" class="dropdown-item" href="{{ path('monthly_report_index', {'reportSlug':'company-species-wise-average-fcr-before'}) }}">{{ 'Com. & Spec. wise Average FCR (Culture)'|trans }}</a></li>
+                                    <li><a title="{{ 'Company & Species wise Average FCR (Culture)'|trans }}" class="dropdown-item" href="{{ path('monthly_report_index', {'reportSlug':'company-species-wise-average-fcr-after'}) }}">{{ 'Com. & Spec. wise Average FCR (Harvest)'|trans }}</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                    {#                <li><a class="" href="{{ path('monthly_report_index') }}"><span>{{ 'Monthly Report'|trans }}</span></a></li>#}
+                    <li><a class="" href="{{ path('others_report_index') }}"><span>{{ 'Others Report'|trans }}</span></a></li>
+                {% endif %}
+                <li><a class="dropdown-item" href="{{ path('visit_report') }}">{{ 'Visit Report'|trans }}</a></li>
+                <li><a class="dropdown-item" href="{{ path('visit_status') }}">{{ 'Visit Status'|trans }}</a></li>
+
+
+            </ul>
+
+        </li>
+    {% endif %}
+
+
     {% if is_granted('ROLE_DEVELOPER') or is_granted('ROLE_CRM_POULTRY_ADMIN') or is_granted('ROLE_CRM_CATTLE_ADMIN') or is_granted('ROLE_CRM_AQUA_ADMIN') or is_granted('ROLE_CRM_SALES_MARKETING_ADMIN') %}
         <li class="">
             <a class="" href="javascript:"><i class="feather icon-info"></i>{{ 'Master Data'|trans }}</a>
@@ -31,96 +171,6 @@
         </li>
     {% endif %}
 
-    {% if is_granted('ROLE_CRM_POULTRY_ADMIN') or is_granted('ROLE_CRM_CATTLE_ADMIN') or is_granted('ROLE_CRM_AQUA_ADMIN') or is_granted('ROLE_CRM_SALES_MARKETING_ADMIN') or is_granted('ROLE_CRM_REPORT') or is_granted('ROLE_DEVELOPER') %}
-        <li class=""><a class="" href="javascript:"><i class="feather icon-file-text"></i>{{ 'Report'|trans }}</a>
-
-            <ul class="sub-menu">
-
-                {% if is_granted('ROLE_CRM_SALES_MARKETING_ADMIN') or is_granted('ROLE_DEVELOPER') %}
-                <li>
-                    <a class="dropdown-item" href="javascript:">{{ 'Sales & Marketing'|trans }}</a>
-                    <ul>
-                        <li><a class="dropdown-item" href="{{ path('sales_marketing_report_index',{'report':'challenges-problem'}) }}">{{ 'Problems'|trans }}</a></li>
-                        <li><a class="dropdown-item" href="{{ path('sales_marketing_report_index',{'report':'challenges-idea'}) }}">{{ 'Ideas'|trans }}</a></li>
-                        <li><a class="dropdown-item" href="{{ path('sales_marketing_report_index',{'report':'competitors-activity'}) }}">{{ 'Competitors Activity'|trans }}</a></li>
-                        <li>
-                            <a class="dropdown-item" href="javascript:">{{ 'DOC Price'|trans }}</a>
-                            <ul class="sub-menu">
-                                <li><a class="dropdown-item" href="{{ path('sales_marketing_report_index',{'report':'doc-price-monthly'}) }}">{{ 'Employee Wise Monthly'|trans }}</a></li>
-                                <li><a class="dropdown-item" href="{{ path('sales_marketing_report_index',{'report':'doc-price-daily'}) }}">{{ 'Employee Wise Daily'|trans }}</a></li>
-
-                                <li><a class="dropdown-item" href="{{ path('sales_marketing_report_index',{'report':'company-wise-doc-price-monthly'}) }}">{{ 'Company Wise Monthly'|trans }}</a></li>
-                                <li><a class="dropdown-item" href="{{ path('sales_marketing_report_index',{'report':'company-wise-doc-price-daily'}) }}">{{ 'Company Wise Daily'|trans }}</a></li>
-                            </ul>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="javascript:">{{ 'Meat & Egg Price'|trans }}</a>
-                            <ul class="sub-menu">
-                                <li><a class="dropdown-item" href="{{ path('sales_marketing_report_index',{'report':'meat-egg-price-monthly'}) }}">{{ 'Monthly'|trans }}</a></li>
-                                <li><a class="dropdown-item" href="{{ path('sales_marketing_report_index',{'report':'meat-egg-price-daily'}) }}">{{ 'Daily'|trans }}</a></li>
-                            </ul>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="javascript:">{{ 'Complain'|trans }}</a>
-                            <ul class="sub-menu">
-                                <li><a class="dropdown-item" href="{{ path('sales_marketing_report_index',{'report':'doc-complain'}) }}">{{ 'DOC'|trans }}</a></li>
-                                <li><a class="dropdown-item" href="{{ path('sales_marketing_report_index',{'report':'feed-complain'}) }}">{{ 'Feed'|trans }}</a></li>
-                            </ul>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="javascript:">{{ 'Company Wise'|trans }}</a>
-                            <ul class="sub-menu">
-                                <li><a class="dropdown-item" href="{{ path('sales_marketing_report_index',{'report':'company-wise-layer-chick'}) }}">{{ 'DOC Production'|trans }}</a></li>
-                                <li><a class="dropdown-item" href="{{ path('sales_marketing_report_index',{'report':'company-wise-feed-sale-poultry'}) }}">{{ 'Poultry Feed Sale'|trans }}</a></li>
-                                <li><a class="dropdown-item" href="{{ path('sales_marketing_report_index',{'report':'company-wise-feed-sale-cattle'}) }}">{{ 'Cattle Feed Sale'|trans }}</a></li>
-                                <li><a class="dropdown-item" href="{{ path('sales_marketing_report_index',{'report':'company-wise-feed-sale-fish'}) }}">{{ 'Fish Feed Sale'|trans }}</a></li>
-                            </ul>
-                        </li>
-
-                    </ul>
-                </li>
-                {% endif %}
-                <li><a class="dropdown-item" href="{{ path('visit_report') }}">{{ 'Visit Report'|trans }}</a></li>
-                <li><a class="dropdown-item" href="{{ path('visit_status') }}">{{ 'Visit Status'|trans }}</a></li>
-                {% if is_granted('ROLE_CRM_POULTRY_ADMIN') or is_granted('ROLE_CRM_CATTLE_ADMIN') or is_granted('ROLE_CRM_AQUA_ADMIN') or is_granted('ROLE_CRM_REPORT') or is_granted('ROLE_DEVELOPER')  %}
-                <li>
-                    <a class="dropdown-item" href="javascript:">{{ 'Life Cycle Report'|trans }}</a>
-                    <ul>
-                        <li>
-                            <a class="dropdown-item" href="javascript:">{{ 'Poultry'|trans }}</a>
-                            <ul class="sub-menu">
-                                <li><a class="dropdown-item" href="{{ path('life_cycle_report_index', {'lifeCycleSlug':'boiler-life-cycle'}) }}">{{ 'Boiler'|trans }}</a></li>
-                                <li><a class="dropdown-item" href="{{ path('life_cycle_report_index', {'lifeCycleSlug':'sonali-life-cycle'}) }}">{{ 'sonali'|trans }}</a></li>
-                                <li><a class="dropdown-item" href="{{ path('life_cycle_report_index', {'lifeCycleSlug':'layer-life-cycle-brown'}) }}">{{ 'Layer Brown'|trans }}</a></li>
-                                <li><a class="dropdown-item" href="{{ path('life_cycle_report_index', {'lifeCycleSlug':'layer-life-cycle-white'}) }}">{{ 'Layer White'|trans }}</a></li>
-                            </ul>
-                        </li>
-
-                        <li>
-                            <a class="dropdown-item" href="javascript:">{{ 'Cattle'|trans }}</a>
-                            <ul class="sub-menu">
-                                <li><a class="dropdown-item" href="{{ path('life_cycle_report_index', {'lifeCycleSlug':'dairy-life-cycle'}) }}">{{ 'Dairy'|trans }}</a></li>
-                                <li><a class="dropdown-item" href="{{ path('life_cycle_report_index', {'lifeCycleSlug':'fattening-life-cycle'}) }}">{{ 'Fattening'|trans }}</a></li>
-                            </ul>
-                        </li>
-
-                        <li>
-                            <a class="dropdown-item" href="javascript:">{{ 'Fish'|trans }}</a>
-                            <ul class="sub-menu">
-                                <li><a class="dropdown-item" href="{{ path('life_cycle_report_index', {'lifeCycleSlug':'fish-life-cycle-report'}) }}">{{ 'Culture'|trans }}</a></li>
-                                <li><a class="dropdown-item" href="{{ path('life_cycle_report_index', {'lifeCycleSlug':'fish-life-cycle-after-sale-report'}) }}">{{ 'Harvest'|trans }}</a></li>
-                            </ul>
-                        </li>
-                    </ul>
-                </li>
-                <li><a class="" href="{{ path('monthly_report_index') }}"><span>{{ 'Monthly Report'|trans }}</span></a></li>
-                <li><a class="" href="{{ path('others_report_index') }}"><span>{{ 'Others Report'|trans }}</span></a></li>
-                {% endif %}
-
-            </ul>
-
-        </li>
-    {% endif %}
 
     {% if is_granted('ROLE_CRM_POULTRY_USER') or is_granted('ROLE_CRM_CATTLE_USER') or is_granted('ROLE_CRM_AQUA_USER') or is_granted('ROLE_DEVELOPER')  or is_granted('ROLE_CRM_SALES_MARKETING_USER') %}
         <li>
