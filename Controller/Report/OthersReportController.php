@@ -46,11 +46,11 @@ use Terminalbd\CrmBundle\Repository\AntibioticFreeFarmRepository;
 class OthersReportController extends AbstractController
 {
     /**
-     * @Route("/", name="others_report_index")
+     * @Route("/{reportSlug}", name="others_report_index")
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function index(Request $request)
+    public function index(Request $request, $reportSlug)
     {
         $filterBy = [];
         $entities = [];
@@ -73,23 +73,25 @@ class OthersReportController extends AbstractController
 
             $filterBy['employeeId'] = $form->getData()['employee'] ? $form->getData()['employee']->getId() : '';
 
+            $filterBy['otherReport'] = $reportSlug;
+
             switch ($filterBy['otherReport']){
                 case 'farmer-survey-poultry':
                     $breed = $this->getDoctrine()->getRepository(Setting::class)->findBy(['status' => 1, 'slug' => 'poultry-breed', 'settingType' => 'BREED_NAME']);
                     $species = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('status'=>1,'settingType'=>'SPECIES_TYPE','parent'=>$breed));
-                    $entities = $this->getDoctrine()->getRepository(FarmerIntroduceDetails::class)->getFarmerSurveyReport($filterBy);
+                    $entities = $this->getDoctrine()->getRepository(FarmerIntroduceDetails::class)->getFarmerSurveyReport($filterBy, $this->getUser());
                     break;
 
                 case 'farmer-survey-cattle':
                     $breed = $this->getDoctrine()->getRepository(Setting::class)->findBy(['status' => 1, 'slug' => 'cattle-breed', 'settingType' => 'BREED_NAME']);
                     $species = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('status'=>1,'settingType'=>'SPECIES_TYPE','parent'=>$breed));
-                    $entities = $this->getDoctrine()->getRepository(FarmerIntroduceDetails::class)->getFarmerSurveyReport($filterBy);
+                    $entities = $this->getDoctrine()->getRepository(FarmerIntroduceDetails::class)->getFarmerSurveyReport($filterBy, $this->getUser());
                     break;
 
                 case 'farmer-survey-fish':
                     $breed = $this->getDoctrine()->getRepository(Setting::class)->findBy(['status' => 1, 'slug' => 'fish-breed', 'settingType' => 'BREED_NAME']);
                     $species = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('status'=>1,'settingType'=>'SPECIES_TYPE','parent'=>$breed));
-                    $entities = $this->getDoctrine()->getRepository(FarmerIntroduceDetails::class)->getFarmerSurveyReport($filterBy);
+                    $entities = $this->getDoctrine()->getRepository(FarmerIntroduceDetails::class)->getFarmerSurveyReport($filterBy, $this->getUser());
                     break;
 
                 case 'lab-service-poultry':
@@ -275,7 +277,8 @@ class OthersReportController extends AbstractController
             'speciesTypes' => $speciesTypesByParent,
             'fishSizes' => $arrFishSizes,
             'arrayMonth' => $arrayMonth,
-            'report' => isset($filterBy['otherReport']) &&$filterBy['otherReport']!=''?$filterBy['otherReport']:'',
+            'report' => isset($filterBy['otherReport']) &&$filterBy['otherReport']!=''?$filterBy['otherReport']:$reportSlug,
+            'reportSlug' => $reportSlug,
         ]);
     }
 

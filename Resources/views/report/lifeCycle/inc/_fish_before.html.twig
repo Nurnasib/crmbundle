@@ -90,10 +90,10 @@
                                 <td data-a-v="middle">{{ details.hatchery.name|default('') }}</td>
                                 <td data-a-v="middle">
                                     {% if details.feed is defined and details.feed.name=="Nourish" %}
-                                        {% if details.feedItemName is not empty %}
+                                        {#{% if details.feedItemName is not empty %}
 
                                             {% set feedItems = details.feedItemName|json_decode %}
-                                            {#                                                    {{ dump(feedItemName) }}#}
+                                            #}{#                                                    {{ dump(feedItemName) }}#}{#
                                             {% if feedItems is not empty %}
 
                                                 {% for feedItem in feedItems %}
@@ -106,7 +106,7 @@
                                                 {% endfor %}
 
                                             {% endif %}
-                                        {% endif %}
+                                        {% endif %}#}
 
 
                                     {% else %}

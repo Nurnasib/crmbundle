@@ -64,6 +64,11 @@
                                 {{ form_label(form.employee, 'Employee:') }}
                                 {{ form_widget(form.employee) }}
                             </th>
+                            <th style="min-width: 200px">
+                                {{ form_label(form.employeeWiseFarmer, 'Farmer:') }}
+                                {{ form_widget(form.employeeWiseFarmer) }}
+                                <input type="hidden" class="selected_farmer_id" value="{{ filterBy['farmerId'] is defined?filterBy['farmerId']:'' }}">
+                            </th>
                             <th style="min-width: 100px">
                                 {{ form_label(form.startDate, 'Start Date:') }}
                                 {{ form_widget(form.startDate) }}

@@ -214,10 +214,10 @@ class VisitReportController extends AbstractController
             $selectedLineManagerUserId = $request->request->get('lineManager');
 
             $selectedEmployee = $form->get('employee')->getData();
-            $month = $form->get('month')->getData();
-            $year = $form->get('year')->getData();
+            $month = $form->get('month')->getData() ? $form->get('month')->getData() : date('m');
+            $year = $form->get('year')->getData() ? $form->get('year')->getData() : date(('Y'));
 
-//            if (!$selectedLineManagerUserId && !$selectedEmployee){
+            //            if (!$selectedLineManagerUserId && !$selectedEmployee){
 //                foreach ($lineManagers as $lineManager){
 //                    $lineManagersId[] = $lineManager['userId'];
 //                }

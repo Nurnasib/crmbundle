@@ -3,7 +3,7 @@
 {% block body %}
     <div class="pcoded-inner-content">
         <!-- [ breadcrumb ] start -->
-        <div class="page-header">
+        {#<div class="page-header">
             <div class="page-block">
                 <div class="row align-items-center">
                     <ul class="breadcrumb">
@@ -12,31 +12,62 @@
                     </ul>
                 </div>
             </div>
-        </div>
+        </div>#}
         <!-- [ breadcrumb ] end -->
         <!-- [ Main Content ] start -->
         <div class="row">
-            <div class="card">
-                <div class="card-header">
-                    <h5>{{ 'Others Report'|trans }}</h5>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
+            <div class="col p-0">
                 {{ form_start(form) }}
                 <table class="table ">
                     <thead class="thead-dark">
 
                     <tr>
                         <th style="min-width: 200px">
-                            {{ form_label(form.otherReport, 'Report:') }}
-                            {{ form_widget(form.otherReport) }}
-                        </th>
-                        <th style="min-width: 200px">
                             {{ form_label(form.employee, 'Employee:') }}
                             {{ form_widget(form.employee) }}
                         </th>
+                        {% if reportSlug=='lab-service-poultry'
+                            or reportSlug=='fcr-different-companies-poultry'
+                            or reportSlug=='fcr-different-companies-sonali'
+                            or reportSlug=='company-wise-feed-sale-poultry'
+                            or reportSlug=='company-wise-boiler-chick'
+                            or reportSlug=='company-wise-layer-chick'
+                            or reportSlug=='company-wise-feed-sale-cattle'
+                            or reportSlug=='company-wise-feed-sale-fish'
+                            or reportSlug=='fish-sales-price'
+                            or reportSlug=='fish-tilapia-fry-sales' %}
+                            <th>
+                                {{ form_label(form.year, 'Year:') }}
+                                {{ form_widget(form.year) }}
+                            </th>
+                        {% endif %}
+                        {% if reportSlug=='company-wise-feed-sale-poultry'
+                            or reportSlug=='company-wise-boiler-chick'
+                            or reportSlug=='company-wise-layer-chick'
+                            or reportSlug=='company-wise-feed-sale-cattle'
+                            or reportSlug=='company-wise-feed-sale-fish'  %}
+                            <th>
+                                {{ form_label(form.month, 'Month:') }}
+                                {{ form_widget(form.month) }}
+                            </th>
+                        {% endif %}
+                        {% if reportSlug=='lab-service-poultry' %}
+                            <th>
+                                {{ form_label(form.lab, 'Lab:') }}
+                                {{ form_widget(form.lab) }}
+                            </th>
+                        {% endif %}
+
+                        {% if reportSlug=='farmer-survey-poultry'
+                            or reportSlug=='farmer-survey-cattle'
+                            or reportSlug=='farmer-survey-fish'
+                            or reportSlug=='farmer-training-fish'
+                            or reportSlug=='farmer-training-poultry'
+                            or reportSlug=='farmer-training-cattle'
+                            or reportSlug=='doc-complain'
+                            or reportSlug=='feed-complain'
+                            or reportSlug=='new-agent-upgradation-cattle'
+                            or reportSlug=='new-agent-upgradation-fish' %}
                         <th>
                             {{ form_label(form.startDate, 'Start Date:') }}
                             {{ form_widget(form.startDate,{'id':'start-date', 'attr':{'placeholder': 'dd-mm-YYYY'}}) }}
@@ -45,16 +76,32 @@
                             {{ form_label(form.endDate, 'End Date:') }}
                             {{ form_widget(form.endDate,{'id':'end-date', 'attr':{'placeholder': 'dd-mm-YYYY'}}) }}
                         </th>
-                        <th>
+
+                        {% endif %}
+
+                        <th colspan="1">
+                            <div class="btn-group" style="margin-top: 25px">
+                                <button type="submit" name="search" class="btn btn-primary btn-sm" title="Search" value="search"><i class="fa fa-search" aria-hidden="true"></i></button>
+                                <a href="{{ path('others_report_index', {'reportSlug': reportSlug}) }}" class="btn purple-bg btn-sm white-font" title="Reset" value="reset"><i class="fa fa-refresh" aria-hidden="true"></i></a>
+                                {% if entities is defined and entities is not empty %}
+                                    <button type="submit" name="excel" class="btn blue-bg btn-sm white-font" title="Excel" value="excel" id="button-excel"><i class="fa fa-file-excel" aria-hidden="true"></i> {{ 'Excel'|trans }}</button>
+
+                                    {#                                    <button type="submit" name="excel" class="btn blue-bg btn-sm white-font" title="Excel" value="excel"><i class="fa fa-file-excel" aria-hidden="true"></i> {{ 'Excel'|trans }}</button>#}
+                                    {#                                    <a target="_blank" href="{{ path('life_cycle_pdf', {filterBy: filterBy}) }}" class="btn blue-bg btn-sm white-font"><i class="fa fa-download" aria-hidden="true"></i> {{ 'PDF'|trans }}</a>#}
+                                    {#                                    <a target="_blank" href="{{ path('life_cycle_excel', {filterBy: filterBy}) }}" class="btn blue-bg btn-sm white-font"><i class="fa fa-file-excel" aria-hidden="true"></i> {{ 'Excel'|trans }}</a>#}
+                                {% endif %}
+                            </div>
+                        </th>
+                        {#<th>
                             {{ form_label(form.year, 'Year:') }}
                             {{ form_widget(form.year) }}
                         </th>
                         <th>
                             {{ form_label(form.month, 'Month:') }}
                             {{ form_widget(form.month) }}
-                        </th>
+                        </th>#}
                     </tr>
-                    <tr>
+                    {#<tr>
                         <th>
                             {{ form_label(form.region, 'Region:') }}
                             {{ form_widget(form.region) }}
@@ -75,30 +122,18 @@
                             {{ form_label(form.lab, 'Lab:') }}
                             {{ form_widget(form.lab) }}
                         </th>
-                        <th colspan="1">
-                            <div class="btn-group" style="margin-top: 25px">
-                                <button type="submit" name="search" class="btn btn-primary btn-sm" title="Search" value="search"><i class="fa fa-search" aria-hidden="true"></i></button>
-                                <a href="{{ path('others_report_index') }}" class="btn purple-bg btn-sm white-font" title="Reset" value="reset"><i class="fa fa-refresh" aria-hidden="true"></i></a>
-                                {% if entities is defined and entities is not empty %}
-                                    <button type="submit" name="excel" class="btn blue-bg btn-sm white-font" title="Excel" value="excel" id="button-excel"><i class="fa fa-file-excel" aria-hidden="true"></i> {{ 'Excel'|trans }}</button>
 
-{#                                    <button type="submit" name="excel" class="btn blue-bg btn-sm white-font" title="Excel" value="excel"><i class="fa fa-file-excel" aria-hidden="true"></i> {{ 'Excel'|trans }}</button>#}
-{#                                    <a target="_blank" href="{{ path('life_cycle_pdf', {filterBy: filterBy}) }}" class="btn blue-bg btn-sm white-font"><i class="fa fa-download" aria-hidden="true"></i> {{ 'PDF'|trans }}</a>#}
-{#                                    <a target="_blank" href="{{ path('life_cycle_excel', {filterBy: filterBy}) }}" class="btn blue-bg btn-sm white-font"><i class="fa fa-file-excel" aria-hidden="true"></i> {{ 'Excel'|trans }}</a>#}
-                                {% endif %}
-                            </div>
-                        </th>
-                    </tr>
+                    </tr>#}
 
                     </thead>
                 </table>
                 </form>
             </div>
         </div>
-        {% if entities is defined and entities is not empty %}
-            <div class="row">
-                <div class="card" style="overflow-x: scroll; height: 500px">
-                    <div class="card-block">
+        <div class="row">
+            <div class="card" style="overflow-x: scroll; max-height: 90vh">
+                <div id="data-load" class="card-body p-0">
+                    {% if entities is defined and entities is not empty %}
                         {% if filterBy['otherReport'] in ['farmer-survey-poultry','farmer-survey-cattle','farmer-survey-fish'] %}
                             {% include '@TerminalbdCrm/report/others/inc/_farmer_survey.html.twig'%}
 
@@ -138,15 +173,31 @@
                         {% elseif filterBy['otherReport'] is same as 'fish-tilapia-fry-sales' %}
                             {% include '@TerminalbdCrm/report/others/inc/_fish_tilapia_fry_sales.html.twig'%}
 
-                        {% elseif filterBy['otherReport'] in ['doc-complain', 'feed-complain'] %}
-                            {% include '@TerminalbdCrm/report/others/inc/_complain.html.twig'%}
+                        {% elseif filterBy['otherReport'] is same as 'feed-complain' %}
+                            {% include '@TerminalbdCrm/report/others/inc/_feed_complain.html.twig'%}
+
+                        {% elseif filterBy['otherReport'] in ['doc-complain'] %}
+                            {% include '@TerminalbdCrm/report/others/inc/_doc_complain.html.twig'%}
 
                         {% endif %}
-
-                    </div>
+                    {% else %}
+                        <div style="background-color: #dbdee3; width: 100%; height: 100%">
+                            <h3 class="text-center">NOURISH POULTRY AND HATCHERY LTD</h3>
+                            <h5 class="text-center">UTTARA, DHAKA.</h5>
+                            <h6 class="text-center">
+                                {% if reportSlug=='company-wise-feed-sale-fish' %}
+                                {{ 'COMPANY WISE FEED SALE FISH'|trans }}
+                                {% elseif reportSlug=='company-wise-layer-chick' %}
+                                {{ 'COMPANY WISE LAYER CHICK'|trans }}
+                                 {% else %}
+                                     {{ reportSlug|replace({'-': ' '}) |upper }}
+                                {% endif %}
+                            </h6>
+                        </div>
+                    {% endif %}
                 </div>
             </div>
-        {% endif %}
+        </div>
 
         <!-- [ Main Content ] end -->
     </div>
@@ -214,7 +265,7 @@
             e.preventDefault();
             let table = document.querySelector(".download-excel");
             TableToExcel.convert(table, {
-                name: "{{ report is defined and report is not null ? report : ''}} ({{ filterBy['year'] is defined ? filterBy['year']:'' }}).xlsx",
+                name: "{{ report is defined and report is not null ? report : ''}}{{ filterBy['startDate'] is defined and filterBy['startDate'] is not empty ? '('~filterBy['startDate']:'' }} {{ filterBy['endDate'] is defined and filterBy['endDate'] is not empty ? ' to '~filterBy['endDate']~')':'' }}{{ filterBy['year'] is defined and filterBy['year'] is not empty ? '('~filterBy['year']~')':'' }}.xlsx",
                 sheet: {
                     name: "Sheet 1"
                 }

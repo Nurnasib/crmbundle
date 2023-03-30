@@ -103,10 +103,19 @@ class AgentUpgradationReportRepository extends BaseRepository
             }
 
             $rolesString = implode('_', $loggedUser->getRoles());
-
             if (!str_contains($rolesString, 'ADMIN') && !in_array('ROLE_LINE_MANAGER', $loggedUser->getRoles())){
-                $query->andWhere('employee.id = :employeeId')->setParameter('employeeId', $loggedUser->getId());
+                $qb->andWhere('employee.id = :employeeId')->setParameter('employeeId', $loggedUser->getId());
+            }elseif (!str_contains($rolesString, 'ADMIN') && in_array('ROLE_LINE_MANAGER', $loggedUser->getRoles())){
+    
+                $employeeIdsByLineManager = $this->_em->getRepository(User::class)->getEmployeesByLineManager($loggedUser);
+                $employeeIs=[];
+                if($employeeIdsByLineManager){
+                    $employeeIs=$employeeIdsByLineManager;
+                }
+                $qb->andWhere('employee.id IN (:employeeIds)')->setParameter('employeeIds', $employeeIs);
             }
+            
+            
             if (isset($filterBy['employee']) && $filterBy['employee'] !== null){
                 $query->andWhere('employee.id = :employeeId')->setParameter('employeeId', $employeeId);
             }
@@ -122,6 +131,7 @@ class AgentUpgradationReportRepository extends BaseRepository
             foreach ($results as $result){
                 $monthYear = $result->getReportingMonth()->format('F-Y');
                 $returnArray[$result->getEmployee()->getId()]['name']=$result->getEmployee()->getName();
+                $returnArray[$result->getEmployee()->getId()]['employeeId']=$result->getEmployee()->getUserId();
                 $returnArray[$result->getEmployee()->getId()]['employeeDesignationName']=$result->getEmployee()->getDesignation()->getName();
                 $returnArray[$result->getEmployee()->getId()]['details'][$monthYear][]=$result;
 //                $returnArray[$result['employeeId']]['details'][$monthYear][]=$result;

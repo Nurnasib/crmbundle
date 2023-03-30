@@ -186,9 +186,10 @@ class TilapiaFrySalesRepository extends BaseRepository
 
     public function getTilapiaFrySalesReport($filterBy, User $loggedUser)
     {
-        $start = isset($filterBy['startDate']) ? (new \DateTime($filterBy['startDate']))->format('Y-m-d') : null;
-        $end = isset($filterBy['endDate']) ? (new \DateTime($filterBy['endDate']))->format('Y-m-d') : null;
+//        $start = isset($filterBy['startDate']) ? (new \DateTime($filterBy['startDate']))->format('Y-m-d') : null;
+//        $end = isset($filterBy['endDate']) ? (new \DateTime($filterBy['endDate']))->format('Y-m-d') : null;
         $employeeId = isset($filterBy['employee']) ? $filterBy['employee']->getId() : null;
+        $year = isset($filterBy['year']) && $filterBy['year'] !='' ? $filterBy['year'] : date('Y');
 
         $queryNourishSales = $this->createQueryBuilder('tfs');
         $queryNourishSales->select('tfs.id', 'tfs.monthName', 'tfs.year','SUM(tfs.quantity) as qty');
@@ -207,12 +208,7 @@ class TilapiaFrySalesRepository extends BaseRepository
         if (isset($filterBy['employee']) && $filterBy['employee'] !== null){
             $queryNourishSales->andWhere('employee.id = :employeeId')->setParameter('employeeId', $employeeId);
         }
-
-        if(isset($filterBy['year']) && $filterBy['year']){
-            $year= $filterBy['year'];
-        }else{
-            $year = date('Y');
-        }
+        
         $queryNourishSales->andWhere('tfs.year = :year')->setParameter('year',$year);
 
         $queryNourishSales->groupBy('employee.id','tfs.monthName','tfs.year','a.id');

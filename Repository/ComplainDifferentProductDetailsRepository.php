@@ -50,7 +50,7 @@ class ComplainDifferentProductDetailsRepository extends EntityRepository
         $qb->leftJoin('feed.parent', 'feedParent');
 
         $qb->select('e.id','e.quantity','e.day');
-        $qb->addSelect('parent.observation', 'parent.ageDays', 'parent.createdAt as createdAt', 'parent.hatchingDate', 'parent.productionDate', 'parent.complains', 'parent.diseases', 'parent.receivedDocQty');
+        $qb->addSelect('parent.observation', 'parent.ageDays', 'parent.createdAt as createdAt', 'parent.hatchingDate as hatchingDate', 'parent.productionDate', 'parent.complains', 'parent.diseases', 'parent.receivedDocQty');
         $qb->addSelect('parent.id as parentId','parent.boxNo', 'parent.batchNo');
         $qb->addSelect('hatchery.name as hatcheryName');
         $qb->addSelect('agent.name as agentName', 'agent.agentId', 'agent.address');

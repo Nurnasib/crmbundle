@@ -348,7 +348,7 @@ class SearchFilterFormType extends AbstractType
                 ],
                 'placeholder' => '- Select month -',
                 'required' => false,
-                'data' => date('m')
+//                'data' => date('m')
             ])
             ->add('monthName', ChoiceType::class,[
                 'choices' => [
@@ -376,7 +376,7 @@ class SearchFilterFormType extends AbstractType
                 'attr' => [
                     'class' => 'select2'
                 ],
-                'data' => date('Y')
+//                'data' => date('Y')
             ])
             ->add('reportStatus', ChoiceType::class,[
                 'choices' => [

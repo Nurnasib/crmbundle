@@ -1,38 +1,33 @@
-{% for monthYear, entity in entities %}
-    {% set count = 0 %}
+{% if entities is defined and entities['records'] is defined %}
+    {% set totalCol = species ? species|length+12 : 12 %}
+<table class="table table-striped table-bordered table-hover download-excel" id="datatable">
+    <thead>
+    <tr>
+        <th data-a-h="center" class="border-0" colspan="{{ species ? species|length+12 : 12 }}"><h3 class="text-center">NOURISH POULTRY AND HATCHERY LTD</h3></th>
+    </tr>
+    <tr>
+        <th data-a-h="center" class="border-0" colspan="{{ species ? species|length+12 : 12 }}"><h5 class="text-center">UTTARA, DHAKA.</h5></th>
+    </tr>
 
-    <table width="100%">
-        <tr>
-            <th colspan="14"><h3 class="text-center">NOURISH POULTRY AND HATCHERY LTD</h3></th>
-        </tr>
-        <tr>
-            <th colspan="14"><h5 class="text-center">UTTARA, DHAKA.</h5></th>
-        </tr>
-
-        <tr>
-            <td colspan="14" align="center"><h6>{{ 'Farmer Survey Report (Poultry)'|upper }}</h6></td>
-        </tr>
-    </table>
-    <table width="100%" class="table table-bordered">
+    <tr>
+        <td data-a-h="center" class="border-0" colspan="{{ species ? species|length+12 : 12 }}" align="center"><h6>{{ 'Farmer Survey Report'|upper }} {{ reportSlug=='farmer-survey-poultry'? '(Poultry)':(reportSlug=='farmer-survey-fish'? '(Fish)':'(Cattle)') }}</h6></td>
+    </tr>
+    </thead>
+    {% for employeeId, employeeData in entities['records'] %}
         <thead class="thead-dark">
         <tr>
-            <th>Officer's ID: {{ employee ? employee.userId : '' }}</th>
-            <th>Officer's Name: {{ employee ? employee.name : '' }}</th>
-            <th>Designation: {{ employee and employee.designation ? employee.designation.name : '' }}</th>
-            <th>Region: {{ employee and employee.regional ? employee.regional.name : '' }}</th>
-            <th>Month: {{ monthYear|split('-')[2] ~ '-' ~ monthYear|split('-')[0] }}</th>
+            <th colspan="{{ (totalCol/4)|number_format(0) }}">Officer's ID: {{ entities['employeeInfo'] is defined and entities['employeeInfo'][employeeId] is defined ? entities['employeeInfo'][employeeId]['employeeId'] : '' }}</th>
+            <th colspan="{{ (totalCol/4)|number_format(0) }}">Officer's Name: {{ entities['employeeInfo'] is defined and entities['employeeInfo'][employeeId] is defined ? entities['employeeInfo'][employeeId]['employeeName'] : '' }}</th>
+            <th colspan="{{ (totalCol/4)|number_format(0) }}">Designation: {{ entities['employeeInfo'] is defined and entities['employeeInfo'][employeeId] is defined ? entities['employeeInfo'][employeeId]['employeeDesignationName'] : '' }}</th>
+            <th colspan="{{ (totalCol/4)|number_format(0) }}">Region: {{ entities['employeeInfo'] is defined and entities['employeeInfo'][employeeId] is defined ? entities['employeeInfo'][employeeId]['employeeRegionName'] : '' }}</th>
         </tr>
-        </thead>
-    </table>
-    <table class="table table-striped table-bordered table-hover">
-        <thead class="thead-dark">
         <tr>
-            <th scope="col" colspan="4" style="text-align: center">Agent</th>
-            <th scope="col" colspan="4" style="text-align: center">Farmer</th>
-            <th scope="col" colspan="{{ species ? species|length : 0 }}" style="text-align: center">Capacity</th>
-            <th scope="col" colspan="2" style="text-align: center">Feed</th>
-            <th scope="col" rowspan="2">Remarks</th>
-            <th scope="col" rowspan="2">Created Date</th>
+            <th data-a-h="center" scope="col" colspan="4" style="text-align: center">Agent</th>
+            <th data-a-h="center" scope="col" colspan="4" style="text-align: center">Farmer</th>
+            <th data-a-h="center" scope="col" colspan="{{ species ? species|length : 0 }}" style="text-align: center">Capacity</th>
+            <th data-a-h="center" scope="col" colspan="2" style="text-align: center">Feed</th>
+            <th data-a-v="middle" scope="col" rowspan="2">Remarks</th>
+            <th data-a-v="middle" scope="col" rowspan="2">Created Date</th>
         </tr>
         <tr>
             <th scope="col">Agent ID</th>
@@ -52,36 +47,45 @@
             <th scope="col">Ohters</th>
         </tr>
         </thead>
+    {% for monthYear, entity in employeeData %}
+    {% set count = 0 %}
         <tbody>
-        {#    {% set count = 0 %}#}
+        <tr>
+            <th style="background-color: yellow" colspan="{{ species ? species|length+12 : 12 }}">Month: {{ monthYear|split('-')[2] ~ '-' ~ monthYear|split('-')[0] }}</th>
+        </tr>
 
-        {% for data in entity %}
-            {% for farmer in data.farmers %}
+        {% for agentAutoId, data in entity %}
+            {% for farmer in data %}
                 {% set count = count + 1 %}
                 {% set capacity = farmer.cultureSpeciesItemAndQty|json_decode %}
                 <tr>
                     {% if loop.first %}
-                        <td rowspan="{{ data.farmers|length }}">{{ data.agent.agentId }}</td>
-                        <td rowspan="{{ data.farmers|length }}">{{ data.agent.agentName }}</td>
-                        <td rowspan="{{ data.farmers|length }}">{{ data.agent.agentDistrictName }}</td>
-                        <td rowspan="{{ data.farmers|length }}">{{ data.agent.agentUpozilaName }}</td>
+                        <td data-a-v="middle" rowspan="{{ data|length }}">{{ entities['agentInfo'] is defined and entities['agentInfo'][agentAutoId] is defined ? entities['agentInfo'][agentAutoId]['agentId'] : '' }}</td>
+                        <td data-a-v="middle" rowspan="{{ data|length }}">{{ entities['agentInfo'] is defined and entities['agentInfo'][agentAutoId] is defined ? entities['agentInfo'][agentAutoId]['agentName'] : '' }}</td>
+                        <td data-a-v="middle" rowspan="{{ data|length }}">{{ entities['agentInfo'] is defined and entities['agentInfo'][agentAutoId] is defined ? entities['agentInfo'][agentAutoId]['agentDistrictName'] : '' }}</td>
+                        <td data-a-v="middle" rowspan="{{ data|length }}">{{ entities['agentInfo'] is defined and entities['agentInfo'][agentAutoId] is defined ? entities['agentInfo'][agentAutoId]['agentUpozilaName'] : '' }}</td>
+
                     {% endif %}
-                    <td align="center">{{ count }}</td>
+                    <td data-t="n" align="center">{{ count }}</td>
                     <td>{{ farmer.farmerName }}</td>
                     <td>{{ farmer.farmerAddress }}</td>
                     <td>{{ farmer.farmerMobile }}</td>
                     {% if species is defined and species is not empty %}
                         {% for item in species %}
-                            <td>{{ capacity[item.id]|default(0) }}</td>
+                            <td data-t="n">{{ capacity[item.id]|default(0) }}</td>
                         {% endfor %}
                     {% endif %}
                     <td>{{ farmer.feedName }}</td>
                     <td>{{ farmer.otherFeedName }}</td>
                     <td>{{ farmer.remarks }}</td>
-                    <td>{{ farmer.createdAt|date('d-m-Y') }}</td>
+                    <td data-t="s">{{ farmer.createdAt|date('d-m-Y') }}</td>
                 </tr>
             {% endfor %}
         {% endfor %}
         </tbody>
-    </table>
-{% endfor %}
+
+
+    {% endfor %}
+    {% endfor %}
+</table>
+{% endif %}

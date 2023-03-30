@@ -138,8 +138,54 @@
                             </li>
                         </ul>
                     </li>
-                    {#                <li><a class="" href="{{ path('monthly_report_index') }}"><span>{{ 'Monthly Report'|trans }}</span></a></li>#}
-                    <li><a class="" href="{{ path('others_report_index') }}"><span>{{ 'Others Report'|trans }}</span></a></li>
+
+                    <li>
+                        <a class="dropdown-item" href="javascript:">{{ 'Others Report'|trans }}</a>
+                        <ul>
+                            <li>
+                                <a class="dropdown-item" href="javascript:">{{ 'Others'|trans }}</a>
+                                <ul class="sub-menu">
+{#                                    <li><a class="dropdown-item" href="{{ path('others_report_index', {'reportSlug':'expense'}) }}">{{ 'Expense'|trans }}</a></li>#}
+                                    <li><a class="dropdown-item" href="{{ path('others_report_index', {'reportSlug':'feed-complain'}) }}">{{ 'Feed Complain'|trans }}</a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="javascript:">{{ 'Poultry'|trans }}</a>
+                                <ul class="sub-menu">
+                                    <li><a class="dropdown-item" href="{{ path('others_report_index', {'reportSlug':'company-wise-feed-sale-poultry'}) }}">{{ 'Company Wise Feed Sale'|trans }}</a></li>
+                                    <li><a class="dropdown-item" href="{{ path('others_report_index', {'reportSlug':'company-wise-layer-chick'}) }}">{{ 'DOC Production'|trans }}</a></li>
+                                    <li><a class="dropdown-item" href="{{ path('others_report_index', {'reportSlug':'farmer-survey-poultry'}) }}">{{ 'Farmer Survey'|trans }}</a></li>
+                                    <li><a class="dropdown-item" href="{{ path('others_report_index', {'reportSlug':'farmer-training-poultry'}) }}">{{ 'Farmer Training'|trans }}</a></li>
+                                    <li><a title="FCR Different Companies (Broiler)" class="dropdown-item" href="{{ path('others_report_index', {'reportSlug':'fcr-different-companies-poultry'}) }}">{{ 'FCR Diff. Comp. (Broiler)'|trans }}</a></li>
+                                    <li><a title="FCR Different Companies (Sonali)" class="dropdown-item" href="{{ path('others_report_index', {'reportSlug':'fcr-different-companies-sonali'}) }}">{{ 'FCR Diff. Comp. (Sonali)'|trans }}</a></li>
+                                    <li><a class="dropdown-item" href="{{ path('others_report_index', {'reportSlug':'lab-service-poultry'}) }}">{{ 'Lab Service'|trans }}</a></li>
+                                    <li><a class="dropdown-item" href="{{ path('others_report_index', {'reportSlug':'doc-complain'}) }}">{{ 'DOC Complain'|trans }}</a></li>
+                                </ul>
+                            </li>
+
+                            <li>
+                                <a class="dropdown-item" href="javascript:">{{ 'Cattle'|trans }}</a>
+                                <ul class="sub-menu">
+                                    <li><a class="dropdown-item" href="{{ path('others_report_index', {'reportSlug':'new-agent-upgradation-cattle'}) }}">{{ 'New Agent or Upgradation'|trans }}</a></li>
+                                    <li><a class="dropdown-item" href="{{ path('others_report_index', {'reportSlug':'company-wise-feed-sale-cattle'}) }}">{{ 'Company Wise Feed Sale'|trans }}</a></li>
+                                    <li><a class="dropdown-item" href="{{ path('others_report_index', {'reportSlug':'farmer-survey-cattle'}) }}">{{ 'Farmer Survey'|trans }}</a></li>
+                                    <li><a class="dropdown-item" href="{{ path('others_report_index', {'reportSlug':'farmer-training-cattle'}) }}">{{ 'Farmer Training'|trans }}</a></li>
+                                </ul>
+                            </li>
+
+                            <li>
+                                <a class="dropdown-item" href="javascript:">{{ 'Fish'|trans }}</a>
+                                <ul class="sub-menu">
+                                    <li><a class="dropdown-item" href="{{ path('others_report_index', {'reportSlug':'new-agent-upgradation-fish'}) }}">{{ 'New Agent or Upgradation'|trans }}</a></li>
+                                    <li><a class="dropdown-item" href="{{ path('others_report_index', {'reportSlug':'company-wise-feed-sale-fish'}) }}">{{ 'Company Wise Feed Sale'|trans }}</a></li>
+                                    <li><a class="dropdown-item" href="{{ path('others_report_index', {'reportSlug':'farmer-survey-fish'}) }}">{{ 'Farmer Survey'|trans }}</a></li>
+                                    <li><a class="dropdown-item" href="{{ path('others_report_index', {'reportSlug':'farmer-training-fish'}) }}">{{ 'Farmer Training'|trans }}</a></li>
+                                    <li><a class="dropdown-item" href="{{ path('others_report_index', {'reportSlug':'fish-sales-price'}) }}">{{ 'Fish Sales Price'|trans }}</a></li>
+                                    <li><a class="dropdown-item" href="{{ path('others_report_index', {'reportSlug':'fish-tilapia-fry-sales'}) }}">{{ 'Tilapia Fry Sales'|trans }}</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
                 {% endif %}
                 <li><a class="dropdown-item" href="{{ path('visit_report') }}">{{ 'Visit Report'|trans }}</a></li>
                 <li><a class="dropdown-item" href="{{ path('visit_status') }}">{{ 'Visit Status'|trans }}</a></li>

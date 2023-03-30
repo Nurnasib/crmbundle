@@ -47,6 +47,8 @@
                                 <a href="{{ path('visit_status') }}" class="btn purple-bg btn-sm white-font"
                                    title="Reset" value="reset"><i class="fa fa-refresh" aria-hidden="true"></i></a>
 
+                                <button type="button" name="excel" class="btn blue-bg btn-sm white-font" title="Excel" value="excel" id="button-excel"><i class="fa fa-file-excel" aria-hidden="true"></i> {{ 'Excel'|trans }}</button>
+
                             </div>
                         </th>
                     </tr>
@@ -58,9 +60,19 @@
         </div>
         <div class="row">
             <div class="card">
-                <div class="card-body p-0" style="overflow: auto; height: 64vh">
-                    <table class="table table-striped table-bordered table-hover details-table" width="100%">
+                <div class="card-body p-0" style="overflow: auto; height: 75vh">
+                    <table class="table table-striped table-bordered table-hover details-table  download-excel" width="100%">
                         <thead class="thead-dark">
+                        <tr>
+                            <th data-a-h="center" class="border-0" colspan="35"><h3 class="text-center">NOURISH POULTRY AND HATCHERY LTD</h3></th>
+                        </tr>
+                        <tr>
+                            <th data-a-h="center" class="border-0" colspan="35"><h5 class="text-center">UTTARA, DHAKA.</h5></th>
+                        </tr>
+
+                        <tr>
+                            <td data-a-h="center" class="border-0" colspan="35" align="center"><h6>Visit Status Report {{ firstDayOfMonth|date('Y') }}</h6></td>
+                        </tr>
                         <tr>
                             <th rowspan="2">S/L</th>
                             <th rowspan="2">Line Manager</th>
@@ -74,7 +86,7 @@
                         <tr>
                             {% if lastDayOfMonth is defined and lastDayOfMonth is not null %}
                                 {% for day in 1..lastDayOfMonth|date('d') %}
-                                    <th class="text-center">{{ "%02d"|format(day) }}</th>
+                                    <th data-a-h="center" class="text-center">{{ "%02d"|format(day) }}</th>
                                 {% endfor %}
                             {% endif %}
                         </tr>
@@ -84,8 +96,8 @@
                             {% set lineManagerUserId = selectedEmployee.lineManager.userId %}
                             {% set employeeUserId = selectedEmployee.userId %}
                             <tr>
-                                <td>1</td>
-                                <td>{{ selectedEmployee.lineManager.name }}</td>
+                                <td data-a-v="middle">1</td>
+                                <td data-a-v="middle">{{ selectedEmployee.lineManager.name }}</td>
                                 <td>{{ employeeUserId }}</td>
                                 <td>{{ selectedEmployee.name }}</td>
                                 {% if lastDayOfMonth is defined and lastDayOfMonth is not null %}
@@ -143,8 +155,8 @@
                                     {% for employeeUserId, teamMember in details['teamMember'] %}
                                         <tr>
                                             {% if loop.first %}
-                                                <td rowspan="{{ details['teamMember']|length }}">{{ loop.parent.loop.index }}</td>
-                                                <td rowspan="{{ details['teamMember']|length }}">{{ details['lineManager'].name }}</td>
+                                                <td data-a-v="middle" rowspan="{{ details['teamMember']|length }}">{{ loop.parent.loop.index }}</td>
+                                                <td data-a-v="middle" rowspan="{{ details['teamMember']|length }}">{{ details['lineManager'].name }}</td>
                                             {% endif %}
                                             <td>{{ teamMember.userId }}</td>
                                             <td>{{ teamMember.employeeName }}</td>
@@ -247,6 +259,23 @@
 {% block javascripts %}
     {{ parent() }}
     <script type="application/javascript" src="{{ asset('assets/module/js/app.js') }}"></script>
+    <script src="{{ asset('assets/js/tableToExcel.js') }}"></script>
+    <script>
+        let button = document.querySelector("#button-excel");
+
+        if(button){
+            button.addEventListener("click", e => {
+                e.preventDefault();
+                let table = document.querySelector(".download-excel");
+                TableToExcel.convert(table, {
+                    name: "{{ report is defined and report is not null ? report : ''}} ({{filterBy['startDate'] is defined ? filterBy['startDate']:'' }}{{ filterBy['startMonth'] is defined ? filterBy['startMonth']:'' }}{{ filterBy['endDate'] is defined and filterBy['endDate'] is not empty ? ' to '~filterBy['endDate']:'' }} {{ filterBy['endMonth'] is defined and filterBy['endMonth'] is not empty ? ' to '~filterBy['endMonth']:'' }}).xlsx",
+                    sheet: {
+                        name: "Sheet 1"
+                    }
+                });
+            });
+        }
+    </script>
 {% endblock %}
 {% block documentready %}
     {{ parent() }}

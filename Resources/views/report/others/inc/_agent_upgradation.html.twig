@@ -1,93 +1,87 @@
 {% if entities is not empty %}
+    <table class="table table-striped table-bordered table-hover download-excel" id="datatable">
+
+    <thead class="thead-dark">
+    <tr>
+        <th data-a-h="center" class="border-0" colspan="15"><h3 class="text-center">NOURISH POULTRY AND HATCHERY LTD</h3></th>
+    </tr>
+    <tr>
+        <th data-a-h="center" class="border-0" colspan="15"><h5 class="text-center">UTTARA, DHAKA.</h5></th>
+    </tr>
+    <tr>
+        <th data-a-h="center" class="border-0" colspan="15"><h5 class="text-center">New Agent/Agent Upgradation Report</h5></th>
+    </tr>
+    <tr style="position: sticky; top: -1px; background-color: #dbdee3">
+        <th data-a-v="middle" scope="col" rowspan="2" class="text-center">Month</th>
+        <th data-a-v="middle" scope="col" rowspan="2" class="text-center">SL No.</th>
+        <th data-a-v="middle" scope="col" rowspan="2" class="text-center">Agent Id</th>
+        <th data-a-v="middle" scope="col" rowspan="2" class="text-center">Name of Agent</th>
+        <th data-a-v="middle" scope="col" rowspan="2" class="text-center">Address</th>
+        <th data-a-v="middle" scope="col" rowspan="2" class="text-center">Mobile No.</th>
+        <th data-a-v="middle" scope="col" rowspan="2" class="text-center">Feed Type</th>
+
+        <th data-a-h="center" scope="col" colspan="2" class="text-center">Agent Status</th>
+        <th data-a-h="center" scope="col" colspan="2" class="text-center">Previous Category</th>
+        <th data-a-h="center" scope="col" colspan="2" class="text-center">Present Category</th>
+
+        <th data-a-v="middle" scope="col" rowspan="2" class="text-center">Remarks</th>
+        <th data-a-v="middle" scope="col" rowspan="2" class="text-center">Created Date</th>
+
+
+    </tr>
+    <tr style="position: sticky; top: 45px; background-color: #dbdee3">
+
+
+        <th scope="col">New Agent</th>
+        <th scope="col">Upgrade Agent</th>
+
+        <th scope="col">Sale (ton)</th>
+        <th scope="col">Category</th>
+
+        <th scope="col">Sale (ton)</th>
+        <th scope="col">Category</th>
+
+    </tr>
+
+    </thead>
     {% for employeeId, employeesDetails in entities %}
 
-        <table width="100%">
-            <tr>
-                <th colspan="14"><h3 class="text-center">NOURISH POULTRY AND HATCHERY LTD</h3></th>
-            </tr>
-            <tr>
-                <th colspan="14"><h5 class="text-center">UTTARA, DHAKA.</h5></th>
-            </tr>
-            <tr>
-                <th colspan="14"><h5 class="text-center">New Agent/Agent Upgradation Report</h5></th>
-            </tr>
-
-        </table>
-        <table width="100%">
-            <tr>
-                <th colspan="7"><h5>{{ 'Name Of CSO' }}: {{ entities[employeeId]['name'] }}</h5></th>
-                <th colspan="7" class="text-center"><h5>{{ 'Designation' }}
-                        : {{ entities[employeeId]['employeeDesignationName'] }}</h5></th>
-            </tr>
-        </table>
-
-        <table class="table table-striped table-bordered table-hover" id="datatable">
-            <thead class="thead-dark">
-            <tr>
-                <th scope="col" rowspan="2" class="text-center">Month</th>
-                <th scope="col" rowspan="2" class="text-center">SL No.</th>
-                <th scope="col" rowspan="2" class="text-center">Agent Id</th>
-                <th scope="col" rowspan="2" class="text-center">Name of Agent</th>
-                <th scope="col" rowspan="2" class="text-center">Address</th>
-                <th scope="col" rowspan="2" class="text-center">Mobile No.</th>
-                <th scope="col" rowspan="2" class="text-center">Feed Type</th>
-
-                <th scope="col" colspan="2" class="text-center">Agent Status</th>
-                <th scope="col" colspan="2" class="text-center">Previous Category</th>
-                <th scope="col" colspan="2" class="text-center">Present Category</th>
-
-                <th scope="col" rowspan="2" class="text-center">Remarks</th>
-                <th scope="col" rowspan="2" class="text-center">Created Date</th>
+        <tbody>
+        <tr>
+            <th class="border-0" colspan="5"><h5>{{ 'Employee Name' }}: {{ entities[employeeId]['name'] }}</h5></th>
+            <th class="border-0" colspan="5"><h5>{{ 'Employee Id' }}: {{ entities[employeeId]['employeeId'] }}</h5></th>
+            <th class="border-0 text-center" colspan="5"><h5>{{ 'Designation' }}
+                    : {{ entities[employeeId]['employeeDesignationName'] }}</h5></th>
+        </tr>
+        {% for monthYear,details in employeesDetails['details'] %}
+            {% for detail in details %}
 
 
-            </tr>
-            <tr>
-
-
-                <th scope="col">New Agent</th>
-                <th scope="col">Upgrade Agent</th>
-
-                <th scope="col">Sale (ton)</th>
-                <th scope="col">Category</th>
-
-                <th scope="col">Sale (ton)</th>
-                <th scope="col">Category</th>
-
-            </tr>
-
-            </thead>
-            <tbody>
-            {% for monthYear,details in employeesDetails['details'] %}
-                {% for detail in details %}
-
-
-                    <tr>
-                        {% if loop.first %}
-                            <td valign="middle"
-                                rowspan="{{ details|length }}">{{ monthYear }}</td>
-                        {% endif %}
-                        {#                        <td>{{ monthYear }}</td>#}
-                        <td>{{ loop.index }}</td>
-                        <td>{{ detail.agent.agentId|default('') }}</td>
-                        <td>{{ detail.agent.name|default('') ~ ' (' ~detail.agent.agentGroup.name ~ ')' }}</td>
-                        <td>{{ detail.agent.address|default('') }}</td>
-                        <td>{{ detail.agent.mobile|default('') }}</td>
-                        <td>{{ detail.breedName.name|default('') }}</td>
-                        <td>{{ detail.agentStatus=='NEW'?detail.agentStatus|default(''):'' }}</td>
-                        <td>{{ detail.agentStatus=='UPGRADE'?detail.agentStatus|default(''):'' }}</td>
-                        <td>{{ detail.previousSaleTon?detail.previousSaleTon|number_format(2,'.',''):'0' }}</td>
-                        <td>{{ detail.calculationPreviousCategory }}</td>
-                        <td>{{ detail.presentSaleTon?detail.presentSaleTon|number_format(2,'.',''):'0' }}</td>
-                        <td>{{ detail.calculationPresentCategory }}</td>
-                        <td>{{ detail.remarks }}</td>
-                        <td>{{ detail.createdAt|date('d-m-Y') }}</td>
-
-                    </tr>
-                {% endfor %}
-
+                <tr>
+                    {% if loop.first %}
+                        <td data-a-v="middle" valign="middle"
+                            rowspan="{{ details|length }}">{{ monthYear }}</td>
+                    {% endif %}
+                    {#                        <td>{{ monthYear }}</td>#}
+                    <td>{{ loop.index }}</td>
+                    <td>{{ detail.agent.agentId|default('') }}</td>
+                    <td>{{ detail.agent.name|default('') ~ ' (' ~detail.agent.agentGroup.name ~ ')' }}</td>
+                    <td>{{ detail.agent.address|default('') }}</td>
+                    <td>{{ detail.agent.mobile|default('') }}</td>
+                    <td>{{ detail.breedName.name|default('') }}</td>
+                    <td>{{ detail.agentStatus=='NEW'?detail.agentStatus|default(''):'' }}</td>
+                    <td>{{ detail.agentStatus=='UPGRADE'?detail.agentStatus|default(''):'' }}</td>
+                    <td data-t="n">{{ detail.previousSaleTon?detail.previousSaleTon|number_format(2,'.',''):'0' }}</td>
+                    <td>{{ detail.calculationPreviousCategory }}</td>
+                    <td data-t="n">{{ detail.presentSaleTon?detail.presentSaleTon|number_format(2,'.',''):'0' }}</td>
+                    <td>{{ detail.calculationPresentCategory }}</td>
+                    <td>{{ detail.remarks }}</td>
+                    <td>{{ detail.createdAt|date('d-m-Y') }}</td>
+                </tr>
             {% endfor %}
-            </tbody>
-        </table>
 
+        {% endfor %}
+        </tbody>
     {% endfor %}
+    </table>
 {% endif %}

@@ -3,6 +3,7 @@
 namespace Terminalbd\CrmBundle\Repository\NewFarmerIntroduce;
 
 use App\Entity\Core\Agent;
+use App\Entity\User;
 use Doctrine\ORM\EntityRepository;
 use Terminalbd\CrmBundle\Entity\CrmCustomer;
 use Terminalbd\CrmBundle\Entity\NewFarmerIntroduce\FarmerIntroduceDetails;
@@ -150,16 +151,17 @@ class FarmerIntroduceDetailsRepository extends BaseRepository
         return $results['totalReport'];
     }
 
-    public function getFarmerSurveyReport($filterBy)
+    public function getFarmerSurveyReport($filterBy, User $loggedUser)
     {
 
         $start = isset($filterBy['startDate']) ? (new \DateTime($filterBy['startDate']))->format('Y-m-d') . ' 00:00:00' : null;
         $end = isset($filterBy['endDate']) ? (new \DateTime($filterBy['endDate']))->format('Y-m-d') . ' 23:59:59' : null;
         $employee = isset($filterBy['employee']) ? $filterBy['employee']->getId() : null;
-
         $qb = $this->createQueryBuilder('e');
 
         $qb->join('e.employee', 'employee');
+        $qb->leftJoin('employee.designation', 'designation');
+        $qb->leftJoin('employee.regional', 'regional');
         $qb->join('e.customer', 'farmer');
         $qb->join('e.agent', 'agent');
         $qb->leftJoin('e.feed', 'feed');
@@ -169,11 +171,30 @@ class FarmerIntroduceDetailsRepository extends BaseRepository
 
         $qb->select('e.cultureSpeciesItemAndQty', 'e.remarks', 'e.createdAt');
         $qb->addSelect('farmer.id AS farmerId', 'farmer.name AS farmerName', 'farmer.address AS farmerAddress', 'farmer.mobile AS farmerMobile');
-        $qb->addSelect('agent.agentId', 'agent.name AS agentName', 'agentDistrict.name AS agentDistrictName', 'agentUpozila.name AS agentUpozilaName');
+        $qb->addSelect('agent.id as agentAutoId','agent.agentId', 'agent.name AS agentName', 'agentDistrict.name AS agentDistrictName', 'agentUpozila.name AS agentUpozilaName');
         $qb->addSelect('other_feed.name AS otherFeedName');
         $qb->addSelect('feed.name AS feedName');
+        $qb->addSelect('employee.id AS employeeId', 'employee.userId as employeeUserId', 'employee.name AS employeeName');
+        $qb->addSelect('designation.name AS employeeDesignationName');
+        $qb->addSelect('regional.name AS employeeRegionName');
+        if($employee){
+            $qb->where('employee.id = :employeeId')->setParameter('employeeId', $employee);
+        }
 
-        $qb->where('employee.id = :employeeId')->setParameter('employeeId', $employee);
+        $rolesString = implode('_', $loggedUser->getRoles());
+        if (!str_contains($rolesString, 'ADMIN') && !in_array('ROLE_LINE_MANAGER', $loggedUser->getRoles())){
+            $qb->andWhere('employee.id = :employeeId')->setParameter('employeeId', $loggedUser->getId());
+        }elseif (!str_contains($rolesString, 'ADMIN') && in_array('ROLE_LINE_MANAGER', $loggedUser->getRoles())){
+
+            $employeeIdsByLineManager = $this->_em->getRepository(User::class)->getEmployeesByLineManager($loggedUser);
+            $employeeIs=[];
+            if($employeeIdsByLineManager){
+                $employeeIs=$employeeIdsByLineManager;
+            }
+            $qb->andWhere('employee.id IN (:employeeIds)')->setParameter('employeeIds', $employeeIs);
+        }
+        
+        
         $qb->andWhere('e.createdAt >= :start')->setParameter('start', $start);
         $qb->andWhere('e.createdAt <= :end')->setParameter('end', $end);
 
@@ -182,13 +203,19 @@ class FarmerIntroduceDetailsRepository extends BaseRepository
         $data = [];
         foreach ($results as $result) {
             $month = $result['createdAt']->format('Y-m-F');
-            $data[$month][$result['agentId']]['agent'] = [
+            $data['employeeInfo'][$result['employeeId']] = [
+                'employeeId' => $result['employeeUserId'],
+                'employeeName' => $result['employeeName'],
+                'employeeDesignationName' => $result['employeeDesignationName'],
+                'employeeRegionName' => $result['employeeRegionName'],
+            ];
+            $data['agentInfo'][$result['agentAutoId']] = [
                 'agentId' => $result['agentId'],
                 'agentName' => $result['agentName'],
                 'agentDistrictName' => $result['agentDistrictName'],
                 'agentUpozilaName' => $result['agentUpozilaName'],
             ];
-            $data[$month][$result['agentId']]['farmers'][$result['farmerId']] = $result;
+            $data['records'][$result['employeeId']][$month][$result['agentAutoId']][$result['farmerId']] = $result;
         }
         ksort($data);
         return $data;

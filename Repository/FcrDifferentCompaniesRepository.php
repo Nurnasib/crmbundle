@@ -82,11 +82,11 @@ class FcrDifferentCompaniesRepository extends EntityRepository
     public function getFcrDifferentCompaniesReport($filterBy, User $loggedUser)
     {
         $year = isset($filterBy['year']) && $filterBy['year']!=''?$filterBy['year']:date('Y');
-        $startDate = date('Y-01-01');
+        /*$startDate = date('Y-01-01');
         $endDate = date('Y-12-31');
         
         $start = isset($filterBy['startDate']) ? (new \DateTime($filterBy['startDate']))->format('Y-m-d') . ' 00:00:00' : null;
-        $end = isset($filterBy['endDate']) ? (new \DateTime($filterBy['endDate']))->format('Y-m-d') . ' 23:59:59' : null;
+        $end = isset($filterBy['endDate']) ? (new \DateTime($filterBy['endDate']))->format('Y-m-d') . ' 23:59:59' : null;*/
 
 
         $qb = $this->createQueryBuilder('e');
@@ -128,7 +128,8 @@ class FcrDifferentCompaniesRepository extends EntityRepository
             $qb->andWhere('employee.id IN (:employeeIds)')->setParameter('employeeIds', $employeeIs);
         }
 
-        $qb->andWhere('YEAR(e.createdAt) =:year')->setParameter('year',$year);
+//        $qb->andWhere('YEAR(e.createdAt) =:year')->setParameter('year',$year);
+        $qb->andWhere('e.reportingYear =:year')->setParameter('year',$year);
 
         $results = $qb->getQuery()->getArrayResult();
         $data = [];
@@ -191,7 +192,7 @@ class FcrDifferentCompaniesRepository extends EntityRepository
 
             $qb->andWhere('employee.id = :employee')->setParameter('employee', $employeeId);
 
-            $qb->andWhere('YEAR(e.createdAt) =:year')->setParameter('year',$year);
+            $qb->andWhere('e.reportingYear =:year')->setParameter('year',$year);
 
             $results = $qb->getQuery()->getArrayResult();
 

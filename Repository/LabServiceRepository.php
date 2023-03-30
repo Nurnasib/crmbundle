@@ -104,9 +104,7 @@ class LabServiceRepository extends EntityRepository
 
     public function getLabServiceSummaryReport($filterBy, User $loggedUser)
     {
-        $start = isset($filterBy['year']) && $filterBy['year'] ? (new \DateTime($filterBy['year'].'-01-01'))->format('Y-m-d') . ' 00:00:00' : date('Y-01-01'). ' 00:00:00';
-        $end = isset($filterBy['year']) && $filterBy['year'] ? (new \DateTime($filterBy['year'].'-12-31'))->format('Y-m-d') . ' 23:59:59' : date('Y-12-31'). ' 23:59:59';
-
+        
         $year = isset($filterBy['year']) && $filterBy['year'] ?$filterBy['year']:date('Y');
 
         $qb = $this->createQueryBuilder('e');
@@ -115,7 +113,7 @@ class LabServiceRepository extends EntityRepository
         $qb->join('e.employee', 'employee');
         $qb->leftJoin('employee.designation', 'designation');
 
-        $qb->select('e.id as eId','e.january','e.february','e.march','e.april','e.may','e.june','e.july','e.august','e.september','e.october','e.november','e.december','e.createdAt as eCreatedAt');
+        $qb->select('e.id as eId','e.january','e.february','e.march','e.april','e.may','e.june','e.july','e.august','e.september','e.october','e.november','e.december','e.createdAt as eCreatedAt', 'e.reportingYear');
         $qb->addSelect('service.id AS serviceId', 'service.name AS serviceName');
         $qb->addSelect('lab.id AS labId', 'lab.name AS labName');
         $qb->addSelect('employee.id as empId','employee.name as employeeName','employee.userId');
@@ -124,7 +122,7 @@ class LabServiceRepository extends EntityRepository
         if(isset($filterBy['lab']) && $filterBy['lab']){
             $qb->andWhere('e.lab = :lab')->setParameter('lab', $filterBy['lab']);
         }
-        $qb->andWhere('YEAR(e.createdAt) =:year')->setParameter('year',$year);
+        $qb->andWhere('e.reportingYear =:year')->setParameter('year',$year);
 
         $employee = isset($filterBy['employeeId'])? $filterBy['employeeId']: '';
         if (!empty($employee)){
@@ -208,7 +206,7 @@ class LabServiceRepository extends EntityRepository
 
             $qb->andWhere('employee.id = :employee')->setParameter('employee', $employeeId);
 
-            $qb->andWhere('YEAR(e.createdAt) =:year')->setParameter('year',$year);
+            $qb->andWhere('e.reportingYear =:year')->setParameter('year',$year);
 
             $results = $qb->getQuery()->getArrayResult();
 

@@ -51,9 +51,10 @@ class FishSalesPriceRepository extends BaseRepository
 
     public function getFishSalesPriceReport($filterBy, User $loggedUser)
     {
-        $start = isset($filterBy['startDate']) ? (new \DateTime($filterBy['startDate']))->format('Y-m-d') : null;
-        $end = isset($filterBy['endDate']) ? (new \DateTime($filterBy['endDate']))->format('Y-m-d') : null;
+//        $start = isset($filterBy['startDate']) ? (new \DateTime($filterBy['startDate']))->format('Y-m-d') : null;
+//        $end = isset($filterBy['endDate']) ? (new \DateTime($filterBy['endDate']))->format('Y-m-d') : null;
         $employeeId = isset($filterBy['employee']) ? $filterBy['employee']->getId() : null;
+        $year = isset($filterBy['year']) && $filterBy['year'] !='' ? $filterBy['year'] : date('Y');
 
         $qb = $this->createQueryBuilder('e');
 
@@ -64,21 +65,26 @@ class FishSalesPriceRepository extends BaseRepository
         $qb->select('e.id AS eId','e.price','e.year','e.monthName');
         $qb->addSelect('employee.id empId','employee.userId', 'employee.name as employeeName', 'designation.name AS designationName');
         $qb->addSelect('fishSize.id as fsId');
-        $rolesString = implode('_', $loggedUser->getRoles());
 
+        $rolesString = implode('_', $loggedUser->getRoles());
         if (!str_contains($rolesString, 'ADMIN') && !in_array('ROLE_LINE_MANAGER', $loggedUser->getRoles())){
             $qb->andWhere('employee.id = :employeeId')->setParameter('employeeId', $loggedUser->getId());
+        }elseif (!str_contains($rolesString, 'ADMIN') && in_array('ROLE_LINE_MANAGER', $loggedUser->getRoles())){
+
+            $employeeIdsByLineManager = $this->_em->getRepository(User::class)->getEmployeesByLineManager($loggedUser);
+            $employeeIs=[];
+            if($employeeIdsByLineManager){
+                $employeeIs=$employeeIdsByLineManager;
+            }
+            $qb->andWhere('employee.id IN (:employeeIds)')->setParameter('employeeIds', $employeeIs);
         }
-        if (isset($filterBy['employee']) && $filterBy['employee'] !== null){
+        if ($employeeId){
             $qb->andWhere('employee.id = :employeeId')->setParameter('employeeId', $employeeId);
         }
-        if(isset($filterBy['year']) && $filterBy['year']){
-            $currentYear= $filterBy['year'];
-        }else{
-            $currentYear = date('Y');
+                
+        if($year){
+            $qb->andWhere('e.year = :year')->setParameter('year',$year);
         }
-
-        $qb->andWhere('e.year = :year')->setParameter('year',$currentYear);
 
         $results = $qb->getQuery()->getArrayResult();
 
