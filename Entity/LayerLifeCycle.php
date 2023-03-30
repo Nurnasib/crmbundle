@@ -146,6 +146,12 @@ class LayerLifeCycle
      * @Orm\Column(name="farm_number", type="integer", options={"default"="1"})
      */
     private $farmNumber=1;
+    
+    /**
+     * @var \DateTime
+     * @ORM\Column(name="reporting_date", type="date", nullable=true)
+     */
+    private $reportingDate;
 
     /**
      * @return int
@@ -433,6 +439,22 @@ class LayerLifeCycle
     public function setFarmNumber($farmNumber): void
     {
         $this->farmNumber = $farmNumber;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getReportingDate(): \DateTime
+    {
+        return $this->reportingDate;
+    }
+
+    /**
+     * @param \DateTime $reportingDate
+     */
+    public function setReportingDate(\DateTime $reportingDate): void
+    {
+        $this->reportingDate = $reportingDate;
     }
     
     

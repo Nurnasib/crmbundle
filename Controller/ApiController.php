@@ -2324,6 +2324,7 @@ class ApiController extends AbstractController
                             "customer_name"=> $entity->getCustomer()?$entity->getCustomer()->getName():"",
                             "address"=> $entity->getAgent()?$entity->getAgent()->getUpozila()->getName():"",
                             "reportTypeName" => $entity->getReport()?$entity->getReport()->getName():null,
+                            "reporting_date" => $entity->getReportingDate()?$entity->getReportingDate()->format('Y-m-d'):null,
                         ];
                     }
                 }

@@ -1287,9 +1287,10 @@ VALUES (:crm_cattle_life_cycle_id, :visiting_date, :age_of_cattle_month, :previo
                 $this->getDoctrine()->getManager()->persist($findLifeCycle);
                 $this->getDoctrine()->getManager()->flush();
             }else{
-                $sql = "INSERT INTO `crm_layer_life_cycle`(`total_birds`, `hatchery_date`, `created`, `updated`, `customer_id`, `employee_id`, `report_id`, `agent_id`, `life_cycle_state`, `hatchery_id`, `breed_id`, `feed_id`, `feed_mill_id`, `app_batch_id`, `app_id`, `farm_number`) 
-VALUES (:total_birds, :hatchery_date, :created, :updated, :customer_id, :employee_id, :report_id, :agent_id, :life_cycle_state, :hatchery_id, :breed_id, :feed_id, :feed_mill_id, :app_batch_id, :app_id, :farm_number)";
+                $sql = "INSERT INTO `crm_layer_life_cycle`(`total_birds`, `hatchery_date`, `created`, `updated`, `customer_id`, `employee_id`, `report_id`, `agent_id`, `life_cycle_state`, `hatchery_id`, `breed_id`, `feed_id`, `feed_mill_id`, `app_batch_id`, `app_id`, `farm_number`, `reporting_date`) 
+VALUES (:total_birds, :hatchery_date, :created, :updated, :customer_id, :employee_id, :report_id, :agent_id, :life_cycle_state, :hatchery_id, :breed_id, :feed_id, :feed_mill_id, :app_batch_id, :app_id, :farm_number, :reporting_date)";
 
+                $reportingDate = new \DateTime($report['reporting_date']);
                 $hatchingDate = new \DateTime($report['hatchery_date']);
                 $createdAt = new \DateTime($report['created']);
                 $updatedAt = new \DateTime($report['updated']);
@@ -1311,6 +1312,7 @@ VALUES (:total_birds, :hatchery_date, :created, :updated, :customer_id, :employe
                 $stmt->bindValue('app_batch_id', $batch->getId());
                 $stmt->bindValue('app_id', $report['id']);
                 $stmt->bindValue('farm_number', isset($report['farm_number'])&&$report['farm_number']?$report['farm_number']:1);
+                $stmt->bindValue('reporting_date', $reportingDate?$reportingDate->format('Y-m-d'):null);
 
                 $executeStatus = $stmt->execute();
 
