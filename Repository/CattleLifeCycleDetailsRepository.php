@@ -46,7 +46,7 @@ class CattleLifeCycleDetailsRepository extends EntityRepository
         $qb->andWhere('report.slug = :reportSlug')->setParameter('reportSlug', $lifeCycleSlug);
         $qb->andWhere('crm_cattle_life_cycle.lifeCycleState = :reportStatus')->setParameter('reportStatus', $filterBy['reportStatus']);
         $qb->andWhere('employee.id = :employeeId')->setParameter('employeeId', $filterBy['employeeId']);
-        if ($filterBy['farmerId']){
+        if (isset($filterBy['farmerId']) && $filterBy['farmerId']!=''){
             $qb->andWhere('customer.id = :farmerId')->setParameter('farmerId', $filterBy['farmerId']);
         }
 
