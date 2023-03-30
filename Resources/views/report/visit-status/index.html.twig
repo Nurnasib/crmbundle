@@ -268,7 +268,7 @@
                 e.preventDefault();
                 let table = document.querySelector(".download-excel");
                 TableToExcel.convert(table, {
-                    name: "{{ report is defined and report is not null ? report : ''}} ({{filterBy['startDate'] is defined ? filterBy['startDate']:'' }}{{ filterBy['startMonth'] is defined ? filterBy['startMonth']:'' }}{{ filterBy['endDate'] is defined and filterBy['endDate'] is not empty ? ' to '~filterBy['endDate']:'' }} {{ filterBy['endMonth'] is defined and filterBy['endMonth'] is not empty ? ' to '~filterBy['endMonth']:'' }}).xlsx",
+                    name: "{{ 'visit_status_report'}} ({{firstDayOfMonth is defined ? firstDayOfMonth:'' }}{{ lastDayOfMonth is defined ? ' to '~lastDayOfMonth:'' }}).xlsx",
                     sheet: {
                         name: "Sheet 1"
                     }

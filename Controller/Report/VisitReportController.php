@@ -239,16 +239,13 @@ class VisitReportController extends AbstractController
             if ($month && $year){
                 $firstDayOfMonth = date('Y-m-d', strtotime("01-$month-$year"));
                 $lastDayOfMonth = date('Y-m-t', strtotime("01-$month-$year"));
-            }else{
-                $firstDayOfMonth = null;
-                $lastDayOfMonth = null;
             }
         }
 
         $employeesByLineManager = $this->getDoctrine()->getRepository(User::class)->getLineManagerTeamMember($lineManagersId, $userRoles);
 //        $employees = $this->getDoctrine()->getRepository(User::class)->getServiceModeWiseEmployee($lineManagersId, $userRoles);
         $visitStatus = $this->getDoctrine()->getRepository(CrmVisit::class)->getVisitsStatus($firstDayOfMonth, $lastDayOfMonth, $selectedEmployee, $lineManagersId, $employeeIds);
-
+//dd($firstDayOfMonth);
         return $this->render("@TerminalbdCrm/report/visit-status/index.html.twig",[
             'employeesByLineManager' => $employeesByLineManager,
             'visitStatus' => $visitStatus,
