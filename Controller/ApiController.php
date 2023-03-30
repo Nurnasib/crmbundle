@@ -2174,6 +2174,7 @@ class ApiController extends AbstractController
                             "agent_name"=> $entity->getAgent()?$entity->getAgent()->getName():"",
                             "customer_name"=> $entity->getCustomer()?$entity->getCustomer()->getName():"",
                             "address"=> $entity->getAgent()?$entity->getAgent()->getUpozila()->getName():"",
+                            "reportTypeName" => $entity->getReport()?$entity->getReport()->getName():null,
                         ];
                     }
                 }
@@ -2322,6 +2323,7 @@ class ApiController extends AbstractController
                             "agent_name"=> $entity->getAgent()?$entity->getAgent()->getName():"",
                             "customer_name"=> $entity->getCustomer()?$entity->getCustomer()->getName():"",
                             "address"=> $entity->getAgent()?$entity->getAgent()->getUpozila()->getName():"",
+                            "reportTypeName" => $entity->getReport()?$entity->getReport()->getName():null,
                         ];
                     }
                 }
@@ -3235,7 +3237,8 @@ class ApiController extends AbstractController
                             "status"=> $entity->getStatus(),
                             "feed_item_name_other"=> $entity->getFeedItemNameOther()?$entity->getFeedItemNameOther():"",
                             "web_life_cycle_id"=> (string)$entity->getId(),
-                            "employee_id"=> $entity->getEmployee()?(string)$entity->getEmployee()->getId():""
+                            "employee_id"=> $entity->getEmployee()?(string)$entity->getEmployee()->getId():"",
+                            "reportTypeName" => $entity->getReport()?$entity->getReport()->getName():null,
                         ];
                     }
                 }
@@ -3367,6 +3370,7 @@ class ApiController extends AbstractController
                             "address"=> $entity->getAgent() && $entity->getAgent()->getUpozila()?$entity->getAgent()->getUpozila()->getName():"",
                             "web_life_cycle_id"=> $entity->getId(),
                             "farm_number"=> $entity->getFarmNumber()?$entity->getFarmNumber():1,
+                            "reportTypeName" => $entity->getReport()?$entity->getReport()->getName():null,
                         ];
                     }
                 }
