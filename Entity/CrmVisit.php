@@ -122,6 +122,18 @@ class CrmVisit
     private $remarks;
 
     /**
+     * @var \DateTime
+     * @ORM\Column(name="visit_date", type="date", nullable=true)
+     */
+    private $visitDate;
+
+    /**
+     * @var string
+     * @ORM\Column(name="visit_time", type="string", nullable=true)
+     */
+    private $visitTime;
+
+    /**
      * @return int
      */
     public function getId()
@@ -345,7 +357,37 @@ class CrmVisit
         $this->area = $area;
     }
 
+    /**
+     * @return \DateTime
+     */
+    public function getVisitDate(): \DateTime
+    {
+        return $this->visitDate;
+    }
 
+    /**
+     * @param \DateTime $visitDate
+     */
+    public function setVisitDate(\DateTime $visitDate): void
+    {
+        $this->visitDate = $visitDate;
+    }
+
+    /**
+     * @return string
+     */
+    public function getVisitTime(): string
+    {
+        return $this->visitTime;
+    }
+
+    /**
+     * @param string $visitTime
+     */
+    public function setVisitTime(string $visitTime): void
+    {
+        $this->visitTime = $visitTime;
+    }
 
 
 }

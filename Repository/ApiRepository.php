@@ -306,7 +306,7 @@ class ApiRepository extends BaseRepository
         $qb->leftJoin('cve.designation', 'cved');
         $qb->leftJoin('cv.location', 'cvl');
 
-        $qb->select('cv.id as id', 'cv.workingDuration as workingDurationForm', 'cv.workingDurationTo as workingDurationTo', 'cv.created as created');
+        $qb->select('cv.id as id', 'cv.workingDuration as workingDurationForm', 'cv.workingDurationTo as workingDurationTo', 'cv.created as created', 'cv.visitDate', 'cv.visitTime');
         $qb->addSelect('cve.name as employeeName');
         $qb->addSelect('cved.name as designationName');
         $qb->addSelect('cvl.name as areaName');
@@ -326,7 +326,9 @@ class ApiRepository extends BaseRepository
             $data[$key]['areaName'] = (string)$row['areaName'];
             $data[$key]['workingDurationForm'] = (string)$row['workingDurationForm'];
             $data[$key]['workingDurationTo'] = (string)$row['workingDurationTo'];
-            $data[$key]['created'] = $row['created']->format('Y-m-d');
+            $data[$key]['created'] = $row['created']->format('Y-m-d H:i:s');
+            $data[$key]['visit_date'] = $row['visitDate']->format('Y-m-d');
+            $data[$key]['visit_time'] = $row['visitTime'];
 
         }
         return $data;

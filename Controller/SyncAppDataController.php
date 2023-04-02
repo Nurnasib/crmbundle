@@ -262,6 +262,8 @@ class SyncAppDataController extends AbstractController
             if (!$findVisit){
 
                 $createdAt = new \DateTime($visit['created_at']);
+                $createdDate = $createdAt->format('Y-m-d');
+                $visitDate = isset($visit['visit_date']) && $visit['visit_date'] !='' ? new \DateTime($visit['visit_date']):new \DateTime($createdDate);
                 $findEmployee = $this->getDoctrine()->getRepository(User::class)->find($visit['employee_id']);
                 $findLocation = $visit['location_id'] ? $this->getDoctrine()->getRepository(Location::class)->find($visit['location_id']) : null;
                 $mode = $visit['modeId'] ? $this->getDoctrine()->getRepository(Setting::class)->find((int)$visit['modeId']) : null;
@@ -287,6 +289,11 @@ class SyncAppDataController extends AbstractController
                     $newVisit->setWorkingMode($mode);
                     $newVisit->setArea($area);
                     $newVisit->setRemarks($visit['remarks']);
+
+
+                    $newVisit->setVisitDate($visitDate);
+                    $newVisit->setVisitTime(isset($visit['visit_time']) && $visit['visit_time'] !='' ? $visit['visit_time'] : '');
+
 
                     $em->persist($newVisit);
                     $em->flush();
