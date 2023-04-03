@@ -99,7 +99,9 @@
                                 <table class="table table-bordered filter-result">
                                     <thead class="thead-dark">
                                     <tr>
+                                        <th>{{ 'Created Date'|trans }}</th>
                                         <th>{{ 'Visit Date'|trans }}</th>
+                                        <th>{{ 'Visit Time'|trans }}</th>
                                         <th>{{ 'Working Mode'|trans }}</th>
                                         <th>{{ 'Location'|trans }}</th>
                                         <th>{{ 'Visit Begin'|trans }}</th>
@@ -109,13 +111,15 @@
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    {% for visitDate,entity in details['details'] %}
+                                    {% for visitCreatedDate,entity in details['details'] %}
                                         {% for data in entity %}
                                             <tr>
                                                 {% if loop.first %}
-                                                    <td rowspan="{{ entity|length }}">{{ visitDate|date('d-m-Y') }}</td>
+                                                    <td rowspan="{{ entity|length }}">{{ visitCreatedDate|date('d-m-Y') }}</td>
                                                 {% endif %}
 
+                                                <td>{{ data.visitDate|date('d-m-Y') }}</td>
+                                                <td>{{ data.visitTime|default('') }}</td>
                                                 <td>{{ data.workingModeName }}</td>
                                                 <td>{{ data.locationName }}</td>
                                                 <td>{{ data.visitBegin }}</td>
@@ -125,8 +129,8 @@
                                                 {% if loop.first %}
                                                     <td rowspan="{{ entity|length }}">
                                                         <div class="btn-group">
-                                                            <a href="{{ path('visit_details_report',{mode:'pdf', visitDate:visitDate, employeeId, process: process?process:null}) }}" target="_blank" class="btn purple-bg white-font btn-mini"><i class="fa fa-file-pdf"></i> {{ 'PDF'|trans }}</a>
-                                                            {#                                                        <a href="{{ path('visit_details_report',{mode:'excel', visitDate:visitDate, employee:employee.id}) }}" class="btn blue-bg white-font btn-mini"><i class="fa fa-file-excel"></i>{{ 'Excel'|trans }}</a>#}
+                                                            <a href="{{ path('visit_details_report',{mode:'pdf', visitDate:visitCreatedDate, employeeId, process: process?process:null}) }}" target="_blank" class="btn purple-bg white-font btn-mini"><i class="fa fa-file-pdf"></i> {{ 'PDF'|trans }}</a>
+                                                            {#                                                        <a href="{{ path('visit_details_report',{mode:'excel', visitDate:visitCreatedDate, employee:employee.id}) }}" class="btn blue-bg white-font btn-mini"><i class="fa fa-file-excel"></i>{{ 'Excel'|trans }}</a>#}
                                                             <a href="javascript:void(0)" class="btn blue-bg white-font btn-mini"><i class="fa fa-file-excel"></i>{{ 'Excel'|trans }}</a>
 
                                                         </div>

@@ -19,15 +19,15 @@
     {% if entities is defined and entities is not empty %}
         <h6 class="text-center" style="margin: 0 0 10px;">
             {{ 'VISIT REPORT'|trans }} :
-            {% if entities.visitDate.begin|date('d-m-Y') is not empty %}
-                {{ entities.visitDate.begin|date('d-m-Y') }} - {{ entities.visitDate.end|date('d-m-Y') }}
+            {% if entities.visitCreatedDate.begin|date('d-m-Y') is not empty %}
+                {{ entities.visitCreatedDate.begin|date('d-m-Y') }} - {{ entities.visitCreatedDate.end|date('d-m-Y') }}
             {% endif %}
         </h6>
     {% endif %}
 </div>
 {% if entities is defined and entities is not empty %}
     {% for employeeId, employee in entities %}
-        {% if employeeId is not same as 'visitDate' %}
+        {% if employeeId is not same as 'visitCreatedDate' %}
             <table width="100%" style="background-color: #CCCCCC; margin-top: 20px">
                 <thead>
                 <tr>
@@ -35,10 +35,10 @@
                     <th>{{ 'Employee Name'|trans }}: {{ entities[employeeId]['employeeName']|default }}</th>
                     <th>
                         {{ 'Date'|trans }}:
-                        {% if entities.visitDate.begin|date('d-m-Y') is not empty %}
-                            {{ entities.visitDate.begin|date('d-m-Y') }} - {{ entities.visitDate.end|date('d-m-Y') }}
+                        {% if entities.visitCreatedDate.begin|date('d-m-Y') is not empty %}
+                            {{ entities.visitCreatedDate.begin|date('d-m-Y') }} - {{ entities.visitCreatedDate.end|date('d-m-Y') }}
                         {% else %}
-                            {{ entities.visitDate.begin|date('d-m-Y') }}
+                            {{ entities.visitCreatedDate.begin|date('d-m-Y') }}
                         {% endif %}
                     </th>
                 </tr>
@@ -46,12 +46,14 @@
             </table>
             {# Farmer Section#}
         {% if employee['farmer'] is defined and employee['farmer'] is iterable %}
-            <div style="border: 2px solid green; padding: 0 10px; margin-bottom: 20px" title="Farmer Section">
+            <div style="border: 2px solid green; padding: 5px; margin-bottom: 20px" title="Farmer Section">
             <h3 style="text-align: center; background-color: green; color: #fff; padding: 5px 0">Farmer Section</h3>
             <table border="1" cellspacing="0" cellpadding="5" width="100%" style="margin-top: 10px">
             <thead style="background-color: #CCCCCC">
             <tr>
-                <th width="50">S/N</th>
+                <th width="10">S/N</th>
+                <th>Visited Date</th>
+                <th>Visited Time</th>
                 <th>{{ 'Visited Farmers\' Name'|trans }}</th>
                 <th>{{ 'Address'|trans }}</th>
                 <th>{{ 'Phone'|trans }}</th>
@@ -63,12 +65,14 @@
             <tbody>
                 {% for dateMonthYear, entity in employee['farmer'] %}
                     <tr>
-                        <th colspan="7">{{ dateMonthYear }}</th>
+                        <th colspan="9">{{ dateMonthYear }}</th>
                     </tr>
                     {% if entity is not empty %}
                         {% for data in entity %}
                             <tr>
                                 <td align="center">{{ loop.index }}</td>
+                                <td>{{ data.visitDate|date('d-m-Y') }}</td>
+                                <td>{{ data.visitTime|default('') }}</td>
                                 <td>{{ data.farmerName }}</td>
                                 <td>{{ data.farmerAddress }}</td>
                                 <td>{{ data.farmerMobile }}</td>
@@ -100,14 +104,16 @@
             {# Agent Section#}
 {#            {% for key, entity in employee %}#}
                 {% if employee['agent'] is defined and employee['agent'] is iterable %}
-                    <div style="border: 2px solid red; padding: 10px; margin-bottom: 20px" title="Agent Section">
+                    <div style="border: 2px solid red; padding: 5px; margin-bottom: 20px" title="Agent Section">
                         <h3 style="text-align: center; background-color: red; color: #fff; padding: 5px 0">Agent Section</h3>
                         <table border="1" cellspacing="0" cellpadding="5" width="100%" style="margin-top: 10px">
                             <thead style="background-color: #CCCCCC">
                             <tr>
-                                <th width="50">S/N</th>
+                                <th width="10">S/N</th>
+                                <th>Visited Date</th>
+                                <th>Visited Time</th>
                                 <th>{{ 'Agent Id'|trans }}</th>
-                                <th>{{ 'Visited Agent Name(Nourish)'|trans }}</th>
+                                <th>{{ 'Agent Name (Nourish)'|trans }}</th>
                                 <th>{{ 'Address'|trans }}</th>
                                 <th>{{ 'Phone'|trans }}</th>
                                 <th>{{ 'Purpose'|trans }}</th>
@@ -118,12 +124,14 @@
                             <tbody>
                             {% for dateMonthYear, entity in employee['agent'] %}
                                 <tr>
-                                    <th colspan="7">{{ dateMonthYear }}</th>
+                                    <th colspan="10">{{ dateMonthYear }}</th>
                                 </tr>
                                 {% if entity is not empty %}
                                     {% for data in entity %}
                                         <tr>
                                             <td align="center">{{ loop.index }}</td>
+                                            <td>{{ data.visitDate|date('d-m-Y') }}</td>
+                                            <td>{{ data.visitTime|default('') }}</td>
                                             <td>{{ data.agentId|default('') }}</td>
                                             <td>{{ data.agentName }}</td>
                                             <td>{{ data.agentAddress }}</td>
@@ -157,12 +165,14 @@
             {# Other Agent Section#}
             {#{% for key, entity in employee %}#}
                 {% if employee['other-agent'] is defined and employee['other-agent'] is iterable %}
-                    <div style="border: 1px solid blue; padding: 10px; margin-bottom: 20px" title="Other Agent Section">
+                    <div style="border: 1px solid blue; padding: 5px; margin-bottom: 20px" title="Other Agent Section">
                         <h3 style="text-align: center; background-color: blue; color: #fff; padding: 5px 0">Other Agent Section</h3>
                         <table border="1" cellspacing="0" cellpadding="5" width="100%" style="margin-top: 10px">
                             <thead style="background-color: #CCCCCC">
                             <tr>
-                                <th width="50">S/N</th>
+                                <th width="10">S/N</th>
+                                <th>Visited Date</th>
+                                <th>Visited Time</th>
                                 <th>{{ 'Visited Agent Name(Other Agent)'|trans }}</th>
                                 <th>{{ 'Address'|trans }}</th>
                                 <th>{{ 'Name Agent'|trans }}</th>
@@ -175,12 +185,14 @@
                             <tbody>
                             {% for dateMonthYear, entity in employee['other-agent'] %}
                                 <tr>
-                                    <th colspan="8">{{ dateMonthYear }}</th>
+                                    <th colspan="10">{{ dateMonthYear }}</th>
                                 </tr>
                                 {% if entity is not empty %}
                                     {% for data in entity %}
                                         <tr>
                                             <td align="center">{{ loop.index }}</td>
+                                            <td>{{ data.visitDate|date('d-m-Y') }}</td>
+                                            <td>{{ data.visitTime|default('') }}</td>
                                             <td>{{ data.agentName }}</td>
                                             <td>{{ data.agentAddress }}</td>
                                             <td>{{ data.nourishAgentName }}</td>
@@ -214,13 +226,15 @@
             {#            Sub Agent Section#}
 {#            {% for key, entity in employee %}#}
                 {% if employee['sub-agent'] is defined and employee['sub-agent'] is iterable %}
-                    <div style="border: 1px solid purple; padding: 5px 10px; margin-bottom: 20px" title="Sub Agent Section">
+                    <div style="border: 1px solid purple; padding: 5px; margin-bottom: 20px" title="Sub Agent Section">
                         <h3 style="text-align: center; background-color: purple; color: #fff; padding: 5px 0">Sub Agent Section</h3>
                         <table border="1" cellspacing="0" cellpadding="5" width="100%" style="margin-top: 10px">
                             <thead style="background-color: #CCCCCC">
 
                             <tr>
-                                <th width="50">S/N</th>
+                                <th width="10">S/N</th>
+                                <th>Visited Date</th>
+                                <th>Visited Time</th>
                                 <th>{{ 'Visited Agent Name(Sub Agent)'|trans }}</th>
                                 <th>{{ 'Address'|trans }}</th>
                                 <th>{{ 'Phone'|trans }}</th>
@@ -232,12 +246,14 @@
                             <tbody>
                             {% for dateMonthYear, entity in employee['sub-agent'] %}
                                 <tr>
-                                    <th colspan="7">{{ dateMonthYear }}</th>
+                                    <th colspan="9">{{ dateMonthYear }}</th>
                                 </tr>
                                 {% if entity is not empty %}
                                     {% for data in entity %}
                                         <tr>
                                             <td align="center">{{ loop.index }}</td>
+                                            <td>{{ data.visitDate|date('d-m-Y') }}</td>
+                                            <td>{{ data.visitTime|default('') }}</td>
                                             <td>{{ data.agentName }}</td>
                                             <td>{{ data.agentAddress }}</td>
                                             <td>{{ data.agentMobile }}</td>

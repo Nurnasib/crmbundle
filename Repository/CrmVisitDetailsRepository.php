@@ -214,7 +214,7 @@ class CrmVisitDetailsRepository extends EntityRepository
         $qb->addSelect('farmer.name AS farmerName', 'farmer.address AS farmerAddress', 'farmer.mobile AS farmerMobile');
         $qb->addSelect('agent.name AS agentName','agent.agentId', 'agent.address AS agentAddress', 'agent.mobile AS agentMobile');
         $qb->addSelect('employee.userId','employee.name AS employeeName');
-        $qb->addSelect('crmVisit.created AS visitDate');
+        $qb->addSelect('crmVisit.created AS visitCreatedDate', 'crmVisit.visitDate', 'crmVisit.visitTime');
         $qb->addSelect('purpose.name AS purposeName');
         $qb->addSelect('nourishAgent.name AS nourishAgentName');
         $qb->where('crmVisit.created >=:begin')->setParameter('begin', $begin);
@@ -239,16 +239,16 @@ class CrmVisitDetailsRepository extends EntityRepository
         $data = [];
         foreach ($results as $result) {
             if ($result['process'] == 'farmer'){
-                $data[$result['userId']]['farmer'][$result['visitDate']->format('d-m-Y')][] = $result;
+                $data[$result['userId']]['farmer'][$result['visitCreatedDate']->format('d-m-Y')][] = $result;
             }elseif ($result['process'] == 'agent'){
-                $data[$result['userId']]['agent'][$result['visitDate']->format('d-m-Y')][] = $result;
+                $data[$result['userId']]['agent'][$result['visitCreatedDate']->format('d-m-Y')][] = $result;
             }elseif ($result['process'] == 'other-agent'){
-                $data[$result['userId']]['other-agent'][$result['visitDate']->format('d-m-Y')][] = $result;
+                $data[$result['userId']]['other-agent'][$result['visitCreatedDate']->format('d-m-Y')][] = $result;
             }elseif ($result['process'] == 'sub-agent'){
-                $data[$result['userId']]['sub-agent'][$result['visitDate']->format('d-m-Y')][] = $result;
+                $data[$result['userId']]['sub-agent'][$result['visitCreatedDate']->format('d-m-Y')][] = $result;
             }
             $data[$result['userId']]['employeeName']= $result['employeeName'];
-            $data['visitDate']= ['begin' => $begin,'end' => $end];
+            $data['visitCreatedDate']= ['begin' => $begin,'end' => $end];
 
         }
         return $data;

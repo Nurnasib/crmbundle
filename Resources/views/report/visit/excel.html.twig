@@ -31,18 +31,18 @@
             <table data-cols-width="12,5,25,25,20,30,25" class="table table-striped table-bordered download-excel">
                 <thead>
                 <tr>
-                    <th data-a-h="center" class="border-0" colspan="9"><h3 class="text-center" style="margin: 0px;">{{ 'NOURISH POULTRY AND HATCHERY LTD'|trans }}</h3></th>
+                    <th data-a-h="center" class="border-0" colspan="11"><h3 class="text-center" style="margin: 0px;">{{ 'NOURISH POULTRY AND HATCHERY LTD'|trans }}</h3></th>
                 </tr>
                 <tr>
-                    <th data-a-h="center" class="border-0" colspan="9"><h5 class="text-center" style="margin: 0px;">{{ 'UTTARA, DHAKA.'|trans }}</h5></th>
+                    <th data-a-h="center" class="border-0" colspan="11"><h5 class="text-center" style="margin: 0px;">{{ 'UTTARA, DHAKA.'|trans }}</h5></th>
                 </tr>
                 <tr>
-                    <th data-a-h="center" class="border-0" colspan="9">
+                    <th data-a-h="center" class="border-0" colspan="11">
                         {% if entities is defined and entities is not empty %}
                             <h6 class="text-center" style="margin: 0 0 10px;">
                                 {{ 'VISIT REPORT'|trans }} :
-                                {% if entities.visitDate.begin|date('d-m-Y') is not empty %}
-                                    {{ entities.visitDate.begin|date('d-m-Y') }} - {{ entities.visitDate.end|date('d-m-Y') }}
+                                {% if entities.visitCreatedDate.begin|date('d-m-Y') is not empty %}
+                                    {{ entities.visitCreatedDate.begin|date('d-m-Y') }} - {{ entities.visitCreatedDate.end|date('d-m-Y') }}
                                 {% endif %}
                             </h6>
                         {% endif %}
@@ -50,21 +50,21 @@
                 </tr>
                 </thead>
                 {% for employeeId, employee in entities %}
-                    {% if employeeId is not same as 'visitDate' %}
+                    {% if employeeId is not same as 'visitCreatedDate' %}
                         <thead style="background-color: #CCCCCC">
                         <tr>
-                            <th colspan="3"><h4>{{ 'Employee ID'|trans }}: {{ employeeId }}</h4></th>
-                            <th colspan="3"><h4>{{ 'Employee Name'|trans }}
-                                    : {{ entities[employeeId]['employeeName']|default }}</h4></th>
+                            <th colspan="4"><h5>{{ 'Employee ID'|trans }}: {{ employeeId }}</h5></th>
+                            <th colspan="4"><h5>{{ 'Employee Name'|trans }}
+                                    : {{ entities[employeeId]['employeeName']|default }}</h5></th>
                             <th colspan="3">
-                                <h4>
+                                <h5>
                                     {{ 'Date'|trans }}:
-                                    {% if entities.visitDate.begin|date('d-m-Y') is not empty %}
-                                        {{ entities.visitDate.begin|date('d-m-Y') }} - {{ entities.visitDate.end|date('d-m-Y') }}
+                                    {% if entities.visitCreatedDate.begin|date('d-m-Y') is not empty %}
+                                        {{ entities.visitCreatedDate.begin|date('d-m-Y') }} - {{ entities.visitCreatedDate.end|date('d-m-Y') }}
                                     {% else %}
-                                        {{ entities.visitDate.begin|date('d-m-Y') }}
+                                        {{ entities.visitCreatedDate.begin|date('d-m-Y') }}
                                     {% endif %}
-                                </h4>
+                                </h5>
                             </th>
                         </tr>
                         </thead>
@@ -72,11 +72,13 @@
                         {% if employee['farmer'] is defined and employee['farmer'] is iterable %}
                             <thead style="background-color: #CCCCCC">
                             <tr>
-                                <th data-a-h="center" colspan="9" class="text-center"><h4>Farmer Section</h4></th>
+                                <th data-a-h="center" colspan="11" class="text-center"><h4>Farmer Section</h4></th>
                             </tr>
                             <tr>
-                                <th>Date</th>
+                                <th>Created Date</th>
                                 <th width="50">S/N</th>
+                                <th>Visited Date</th>
+                                <th>Visited Time</th>
                                 <th>{{ 'Visited Farmer\'s Name'|trans }}</th>
                                 <th>{{ 'Address'|trans }}</th>
                                 <th>{{ 'Phone'|trans }}</th>
@@ -94,6 +96,8 @@
                                             <td data-a-v="middle" rowspan="{{ entity|length }}">{{ dateMonthYear }}</td>
                                         {% endif %}
                                         <td data-a-h="center" data-t="n" align="center">{{ loop.index }}</td>
+                                        <td>{{ data.visitDate|date('d-m-Y') }}</td>
+                                        <td>{{ data.visitTime|default('') }}</td>
                                         <td>{{ data.farmerName }}</td>
                                         <td>{{ data.farmerAddress }}</td>
                                         <td data-t="s">{{ data.farmerMobile }}</td>
@@ -126,11 +130,13 @@
                     {% if employee['agent'] is defined and employee['agent'] is iterable %}
                         <thead style="background-color: #CCCCCC">
                         <tr>
-                            <th data-a-h="center" colspan="9" class="text-center"><h4>Agent Section</h4></th>
+                            <th data-a-h="center" colspan="11" class="text-center"><h4>Agent Section</h4></th>
                         </tr>
                         <tr>
-                            <th>Date</th>
+                            <th>Created Date</th>
                             <th width="50">S/N</th>
+                            <th>Visited Date</th>
+                            <th>Visited Time</th>
                             <th>{{ 'Agent Id'|trans }}</th>
                             <th>{{ 'Visited Agent Name(Nourish)'|trans }}</th>
                             <th>{{ 'Address'|trans }}</th>
@@ -149,6 +155,8 @@
                                             <td data-a-v="middle" rowspan="{{ entity|length }}">{{ dateMonthYear }}</td>
                                         {% endif %}
                                         <td data-a-h="center" data-t="n" align="center">{{ loop.index }}</td>
+                                        <td>{{ data.visitDate|date('d-m-Y') }}</td>
+                                        <td>{{ data.visitTime|default('') }}</td>
                                         <td>{{ data.agentId|default('') }}</td>
                                         <td>{{ data.agentName }}</td>
                                         <td>{{ data.agentAddress }}</td>
@@ -181,11 +189,13 @@
                     {% if employee['other-agent'] is defined and employee['other-agent'] is iterable %}
                         <thead style="background-color: #CCCCCC">
                         <tr>
-                            <th data-a-h="center" colspan="9" class="text-center"><h4>Other Agent Section</h4></th>
+                            <th data-a-h="center" colspan="11" class="text-center"><h4>Other Agent Section</h4></th>
                         </tr>
                         <tr>
-                            <th>Date</th>
+                            <th>Created Date</th>
                             <th width="50">S/N</th>
+                            <th>Visited Date</th>
+                            <th>Visited Time</th>
                             <th>{{ 'Visited Agent Name(Other Agent)'|trans }}</th>
                             <th>{{ 'Address'|trans }}</th>
                             <th>{{ 'Name Agent'|trans }}</th>
@@ -204,6 +214,8 @@
                                             <td data-a-v="middle" rowspan="{{ entity|length }}">{{ dateMonthYear }}</td>
                                         {% endif %}
                                         <td data-a-h="center" data-t="n" align="center">{{ loop.index }}</td>
+                                        <td>{{ data.visitDate|date('d-m-Y') }}</td>
+                                        <td>{{ data.visitTime|default('') }}</td>
                                         <td>{{ data.agentName }}</td>
                                         <td>{{ data.agentAddress }}</td>
                                         <td>{{ data.nourishAgentName }}</td>
@@ -237,11 +249,13 @@
                     {% if employee['sub-agent'] is defined and employee['sub-agent'] is iterable %}
                         <thead style="background-color: #CCCCCC">
                         <tr>
-                            <th data-a-h="center" colspan="9" class="text-center"><h4>Sub Agent Section</h4></th>
+                            <th data-a-h="center" colspan="11" class="text-center"><h4>Sub Agent Section</h4></th>
                         </tr>
                         <tr>
-                            <th>Date</th>
+                            <th>Created Date</th>
                             <th width="50">S/N</th>
+                            <th>Visited Date</th>
+                            <th>Visited Time</th>
                             <th>{{ 'Visited Agent Name(Sub Agent)'|trans }}</th>
                             <th>{{ 'Address'|trans }}</th>
                             <th>{{ 'Name Agent'|trans }}</th>
@@ -261,6 +275,8 @@
                                             <td data-a-v="middle" rowspan="{{ entity|length }}">{{ dateMonthYear }}</td>
                                         {% endif %}
                                         <td data-a-h="center" data-t="n" align="center">{{ loop.index }}</td>
+                                        <td>{{ data.visitDate|date('d-m-Y') }}</td>
+                                        <td>{{ data.visitTime|default('') }}</td>
                                         <td>{{ data.agentName }}</td>
                                         <td>{{ data.agentAddress }}</td>
                                         <td>{{ data.nourishAgentName }}</td>

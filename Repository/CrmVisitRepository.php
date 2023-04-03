@@ -65,7 +65,7 @@ class CrmVisitRepository extends EntityRepository
         $qb->join('employee.serviceMode', 'serviceMode');
         $qb->join('employee.userGroup', 'userGroup');
         $qb->leftJoin('employee.designation', 'designation');
-        $qb->select('e.id AS visitId', 'e.created AS visitDate', 'e.workingDuration AS visitBegin', 'e.workingDurationTo AS visitEnd', 'location.name AS locationName');
+        $qb->select('e.id AS visitId', 'e.created AS visitCreatedDate', 'e.workingDuration AS visitBegin', 'e.workingDurationTo AS visitEnd', 'location.name AS locationName', 'e.visitDate', 'e.visitTime');
         $qb->addSelect('workingMode.id AS workingModeId', 'workingMode.name AS workingModeName', 'workingMode.slug AS workingModeSlug', 'e.remarks');
         $qb->addSelect('employee.id as empId', 'employee.name as employeeName', 'employee.userId');
         $qb->addSelect('designation.name as employeeDesignationName');
@@ -137,8 +137,8 @@ class CrmVisitRepository extends EntityRepository
             $data[$result['empId']]['userId'] = $result['userId'];
             $data[$result['empId']]['employeeName'] = $result['employeeName'];
             $data[$result['empId']]['employeeDesignationName'] = $result['employeeDesignationName'];
-            $data[$result['empId']]['details'][$result['visitDate']->format('d-m-Y')][] = $result;
-//            $data['visitDays'][$result['visitDate']->format('d-m-Y')]['visitIds'][] = $result['visitId'];
+            $data[$result['empId']]['details'][$result['visitCreatedDate']->format('d-m-Y')][] = $result;
+//            $data['visitDays'][$result['visitCreatedDate']->format('d-m-Y')]['visitIds'][] = $result['visitId'];
 //            $data['visitIds'][] = $result['visitId'];
 
         }
@@ -153,7 +153,7 @@ class CrmVisitRepository extends EntityRepository
         $qb->join('employee.lineManager', 'lineManager');
         $qb->leftJoin('e.workingMode', 'working_mode');
 
-        $qb->select('e.created AS visitDate');
+        $qb->select('e.created AS visitCreatedDate');
         $qb->addSelect('working_mode.id AS workingModeId', 'working_mode.name AS workingModeName', 'working_mode.slug AS workingModeSlug');
         $qb->addSelect('employee.id AS employeeId', 'employee.userId AS employeeUserId', 'employee.name AS employeeName');
         $qb->addSelect('lineManager.id AS lineManagerAutoIncId', 'lineManager.userId AS lineManagerUserId', 'lineManager.name AS lineManagerName');
@@ -173,7 +173,7 @@ class CrmVisitRepository extends EntityRepository
         $results = $qb->getQuery()->getArrayResult();
         $data = [];
         foreach ($results as $result) {
-            $day = $result['visitDate']->format('d');
+            $day = $result['visitCreatedDate']->format('d');
 
 /*            $data[$result['lineManagerUserId']]['lineManager'] = [
                 'id' => $result['lineManagerAutoIncId'],
