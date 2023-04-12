@@ -118,28 +118,28 @@
                                                     {% endif %}
 
                                                     {% if 'leave' in workingStatus %}
-                                                        <span class="btn btn-mini btn-transparent" title="Leave" style="cursor: default">L
+                                                        <span class="btn btn-mini btn-transparent" title="{{ (visitStatus[lineManagerUserId]['teamMember'][employeeUserId]['days']["%02d"|format(day)]['visits']|multiDimensionalArrayCol('remarks'))|join(', ') }}" style="cursor: default">L
                                                                     </span>
                                                     {% endif %}
 
                                                     {% if 'training' in workingStatus %}
-                                                        <span class="btn btn-mini btn-transparent" title="Training" style="cursor: default">T
+                                                        <span class="btn btn-mini btn-transparent" title="{{ (visitStatus[lineManagerUserId]['teamMember'][employeeUserId]['days']["%02d"|format(day)]['visits']|multiDimensionalArrayCol('remarks'))|join(', ') }}" style="cursor: default">T
                                                                     </span>
                                                     {% endif %}
 
                                                     {% if 'office-work' in workingStatus %}
-                                                        <span class="btn btn-mini btn-transparent" title="Office Work" style="cursor: default">
+                                                        <span class="btn btn-mini btn-transparent" title="{{ (visitStatus[lineManagerUserId]['teamMember'][employeeUserId]['days']["%02d"|format(day)]['visits']|multiDimensionalArrayCol('remarks'))|join(', ') }}" style="cursor: default">
                                                                         OW
                                                                     </span>
                                                     {% endif %}
 
                                                     {% if 'other-1' in workingStatus %}
-                                                        <span class="btn btn-mini btn-transparent" title="Other" style="cursor: default">O
+                                                        <span class="btn btn-mini btn-transparent" title="{{ (visitStatus[lineManagerUserId]['teamMember'][employeeUserId]['days']["%02d"|format(day)]['visits']|multiDimensionalArrayCol('remarks'))|join(', ') }}" style="cursor: default">O
                                                                     </span>
                                                     {% endif %}
 
                                                     {% if 'workshop' in workingStatus %}
-                                                        <span class="btn btn-mini btn-transparent" title="Workshop" style="cursor: default">W
+                                                        <span class="btn btn-mini btn-transparent" title="{{ (visitStatus[lineManagerUserId]['teamMember'][employeeUserId]['days']["%02d"|format(day)]['visits']|multiDimensionalArrayCol('remarks'))|join(', ') }}" style="cursor: default">W
                                                                     </span>
                                                     {% endif %}
 
@@ -179,41 +179,41 @@
                                                                 {% endif %}
 
                                                                 {% if 'leave' in workingStatus %}
-                                                                    <span class="btn btn-mini btn-transparent" title="Leave" style="cursor: default">L
+                                                                    <span class="btn btn-mini btn-transparent" title="{{ (visitStatus[lineManagerUserId]['teamMember'][employeeUserId]['days']["%02d"|format(day)]['visits']|multiDimensionalArrayCol('remarks'))|join(', ') }}" style="cursor: default">L
                                                                     </span>
                                                                 {% endif %}
 
                                                                 {% if 'training' in workingStatus %}
-                                                                    <span class="btn btn-mini btn-transparent" title="Training" style="cursor: default">T
+                                                                    <span class="btn btn-mini btn-transparent" title="{{ (visitStatus[lineManagerUserId]['teamMember'][employeeUserId]['days']["%02d"|format(day)]['visits']|multiDimensionalArrayCol('remarks'))|join(', ') }}" style="cursor: default">T
                                                                     </span>
                                                                 {% endif %}
 
                                                                 {% if 'office-work' in workingStatus %}
-                                                                    <span class="btn btn-mini btn-transparent" title="Office Work" style="cursor: default">
+                                                                    <span class="btn btn-mini btn-transparent" title="{{ (visitStatus[lineManagerUserId]['teamMember'][employeeUserId]['days']["%02d"|format(day)]['visits']|multiDimensionalArrayCol('remarks'))|join(', ') }}" style="cursor: default">
                                                                         OW
                                                                     </span>
                                                                 {% endif %}
 
                                                                 {% if 'other-1' in workingStatus %}
-                                                                    <span class="btn btn-mini btn-transparent" title="Other" style="cursor: default">O
+                                                                    <span class="btn btn-mini btn-transparent" title="{{ (visitStatus[lineManagerUserId]['teamMember'][employeeUserId]['days']["%02d"|format(day)]['visits']|multiDimensionalArrayCol('remarks'))|join(', ') }}" style="cursor: default">O
                                                                     </span>
                                                                 {% endif %}
 
                                                                 {% if 'workshop' in workingStatus %}
-                                                                    <span class="btn btn-mini btn-transparent" title="Workshop" style="cursor: default">W
+                                                                    <span class="btn btn-mini btn-transparent" title="{{ (visitStatus[lineManagerUserId]['teamMember'][employeeUserId]['days']["%02d"|format(day)]['visits']|multiDimensionalArrayCol('remarks'))|join(', ') }}" style="cursor: default">W
                                                                     </span>
                                                                 {% endif %}
 
                                                                 {% if 'meeting' in workingStatus %}
-                                                                    <span class="btn btn-mini btn-transparent" title="Meeting" style="cursor: default">M
+                                                                    <span class="btn btn-mini btn-transparent" title="{{ (visitStatus[lineManagerUserId]['teamMember'][employeeUserId]['days']["%02d"|format(day)]['visits']|multiDimensionalArrayCol('remarks'))|join(', ') }}" style="cursor: default">M
                                                                     </span>
                                                                 {% endif %}
                                                                 {% if 'traveling' in workingStatus %}
-                                                                    <span class="btn btn-mini btn-transparent" title="Traveling" style="cursor: default">T
+                                                                    <span class="btn btn-mini btn-transparent" title="{{ (visitStatus[lineManagerUserId]['teamMember'][employeeUserId]['days']["%02d"|format(day)]['visits']|multiDimensionalArrayCol('remarks'))|join(', ') }}" style="cursor: default">T
                                                                     </span>
                                                                 {% endif %}
                                                                 {% if 'conference' in workingStatus %}
-                                                                    <span class="btn btn-mini btn-transparent" title="Conference" style="cursor: default">C
+                                                                    <span class="btn btn-mini btn-transparent" title="{{ (visitStatus[lineManagerUserId]['teamMember'][employeeUserId]['days']["%02d"|format(day)]['visits']|multiDimensionalArrayCol('remarks'))|join(', ') }}" style="cursor: default">C
                                                                     </span>
                                                                 {% endif %}
                                                                 {% if 'holiday' in workingStatus %}

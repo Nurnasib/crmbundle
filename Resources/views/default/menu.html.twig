@@ -33,6 +33,8 @@
                                     <li><a class="dropdown-item" href="{{ path('sales_marketing_report_index',{'report':'company-wise-doc-price-daily'}) }}">{{ 'Company Wise Daily'|trans }}</a></li>
                                 </ul>
                             </li>
+                            <li><a class="dropdown-item" href="{{ path('monthly_report_index', {'reportSlug':'farmer-introduce-report-cattle'}) }}">{{ 'New Farmer Introduce (Cattle)'|trans }}</a></li>
+
                             <li>
                                 <a class="dropdown-item" href="javascript:">{{ 'Meat & Egg Price'|trans }}</a>
                                 <ul class="sub-menu">
@@ -64,6 +66,7 @@
                     <li>
                         <a class="dropdown-item" href="javascript:">{{ 'Life Cycle Report'|trans }}</a>
                         <ul>
+                            {% if is_granted('ROLE_CRM_POULTRY_ADMIN') or (is_granted('ROLE_CRM_POULTRY_USER') and is_granted('ROLE_CRM_REPORT')) %}
                             <li>
                                 <a class="dropdown-item" href="javascript:">{{ 'Poultry'|trans }}</a>
                                 <ul class="sub-menu">
@@ -73,7 +76,8 @@
                                     <li><a class="dropdown-item" href="{{ path('life_cycle_report_index', {'lifeCycleSlug':'layer-life-cycle-white'}) }}">{{ 'Layer White'|trans }}</a></li>
                                 </ul>
                             </li>
-
+                            {% endif %}
+                            {% if is_granted('ROLE_CRM_CATTLE_ADMIN') or (is_granted('ROLE_CRM_CATTLE_USER') and is_granted('ROLE_CRM_REPORT')) %}
                             <li>
                                 <a class="dropdown-item" href="javascript:">{{ 'Cattle'|trans }}</a>
                                 <ul class="sub-menu">
@@ -82,6 +86,8 @@
                                 </ul>
                             </li>
 
+                            {% endif %}
+                            {% if is_granted('ROLE_CRM_AQUA_ADMIN') or (is_granted('ROLE_CRM_AQUA_USER') and is_granted('ROLE_CRM_REPORT')) %}
                             <li>
                                 <a class="dropdown-item" href="javascript:">{{ 'Fish'|trans }}</a>
                                 <ul class="sub-menu">
@@ -89,12 +95,14 @@
                                     <li><a class="dropdown-item" href="{{ path('life_cycle_report_index', {'lifeCycleSlug':'fish-life-cycle-after-sale-report'}) }}">{{ 'Harvest'|trans }}</a></li>
                                 </ul>
                             </li>
+                            {% endif %}
                         </ul>
                     </li>
 
                     <li>
                         <a class="dropdown-item" href="javascript:">{{ 'Monthly Report'|trans }}</a>
                         <ul>
+                            {% if is_granted('ROLE_CRM_POULTRY_ADMIN') or (is_granted('ROLE_CRM_POULTRY_USER') and is_granted('ROLE_CRM_REPORT')) %}
                             <li>
                                 <a class="dropdown-item" href="javascript:">{{ 'Poultry'|trans }}</a>
                                 <ul class="sub-menu">
@@ -102,6 +110,8 @@
                                     <li><a class="dropdown-item" href="{{ path('monthly_report_index', {'reportSlug':'less-costing-farm-poultry'}) }}">{{ 'Less Costing Farm'|trans }}</a></li>
                                     <li><a class="dropdown-item" href="{{ path('monthly_report_index', {'reportSlug':'disease-mapping-report-poultry'}) }}">{{ 'Disease Mapping Report'|trans }}</a></li>
                                     <li><a class="dropdown-item" href="{{ path('monthly_report_index', {'reportSlug':'farmer-introduce-report-poultry'}) }}">{{ 'New Farmer Introduce'|trans }}</a></li>
+
+                                    <li><a class="dropdown-item" href="{{ path('monthly_report_index', {'reportSlug':'farmer-introduce-report-cattle'}) }}">{{ 'New Farmer Introduce (Cattle)'|trans }}</a></li>
 
                                     <li><a class="dropdown-item" href="{{ path('monthly_report_index', {'reportSlug':'fcr-before-sale-boiler'}) }}">{{ 'Boilar FCR (Before Sale)'|trans }}</a></li>
                                     <li><a class="dropdown-item" href="{{ path('monthly_report_index', {'reportSlug':'fcr-after-sale-boiler'}) }}">{{ 'Boilar FCR (After Sale)'|trans }}</a></li>
@@ -112,7 +122,8 @@
                                     <li><a class="dropdown-item" href="{{ path('monthly_report_index', {'reportSlug':'layer-performance-white'}) }}">{{ 'Layer Performance (White)'|trans }}</a></li>
                                 </ul>
                             </li>
-
+                            {% endif %}
+                            {% if is_granted('ROLE_CRM_CATTLE_ADMIN') or (is_granted('ROLE_CRM_CATTLE_USER') and is_granted('ROLE_CRM_REPORT')) %}
                             <li>
                                 <a class="dropdown-item" href="javascript:">{{ 'Cattle'|trans }}</a>
                                 <ul class="sub-menu">
@@ -124,11 +135,15 @@
                                     <li><a class="dropdown-item" href="{{ path('monthly_report_index', {'reportSlug':'fattening-performance-report'}) }}">{{ 'Fattening Performance Report'|trans }}</a></li>
                                 </ul>
                             </li>
-
+                            {% endif %}
+                            {% if is_granted('ROLE_CRM_AQUA_ADMIN') or (is_granted('ROLE_CRM_AQUA_USER') and is_granted('ROLE_CRM_REPORT')) %}
                             <li>
                                 <a class="dropdown-item" href="javascript:">{{ 'Fish'|trans }}</a>
                                 <ul class="sub-menu">
                                     <li><a class="dropdown-item" href="{{ path('monthly_report_index', {'reportSlug':'farmer-introduce-report-fish'}) }}">{{ 'New Farmer Introduce'|trans }}</a></li>
+
+                                    <li><a class="dropdown-item" href="{{ path('monthly_report_index', {'reportSlug':'farmer-introduce-report-cattle'}) }}">{{ 'New Farmer Introduce (Cattle)'|trans }}</a></li>
+
                                     <li><a class="dropdown-item" href="{{ path('monthly_report_index', {'reportSlug':'less-costing-farm-fish'}) }}">{{ 'Less Costing Farm Fish'|trans }}</a></li>
                                     <li><a class="dropdown-item" href="{{ path('monthly_report_index', {'reportSlug':'disease-mapping-report-fish'}) }}">{{ 'Disease Mapping Report'|trans }}</a></li>
 
@@ -136,6 +151,7 @@
                                     <li><a title="{{ 'Company & Species wise Average FCR (Harvest)'|trans }}" class="dropdown-item" href="{{ path('monthly_report_index', {'reportSlug':'company-species-wise-average-fcr-after'}) }}">{{ 'Average FCR (Harvest)'|trans }}</a></li>
                                 </ul>
                             </li>
+                            {% endif %}
                         </ul>
                     </li>
 
@@ -149,6 +165,7 @@
                                     <li><a class="dropdown-item" href="{{ path('others_report_index', {'reportSlug':'feed-complain'}) }}">{{ 'Feed Complain'|trans }}</a></li>
                                 </ul>
                             </li>
+                            {% if is_granted('ROLE_CRM_POULTRY_ADMIN') or (is_granted('ROLE_CRM_POULTRY_USER') and is_granted('ROLE_CRM_REPORT')) %}
                             <li>
                                 <a class="dropdown-item" href="javascript:">{{ 'Poultry'|trans }}</a>
                                 <ul class="sub-menu">
@@ -162,7 +179,8 @@
                                     <li><a class="dropdown-item" href="{{ path('others_report_index', {'reportSlug':'doc-complain'}) }}">{{ 'DOC Complain'|trans }}</a></li>
                                 </ul>
                             </li>
-
+                            {% endif %}
+                            {% if is_granted('ROLE_CRM_CATTLE_ADMIN') or (is_granted('ROLE_CRM_CATTLE_USER') and is_granted('ROLE_CRM_REPORT')) %}
                             <li>
                                 <a class="dropdown-item" href="javascript:">{{ 'Cattle'|trans }}</a>
                                 <ul class="sub-menu">
@@ -172,7 +190,8 @@
                                     <li><a class="dropdown-item" href="{{ path('others_report_index', {'reportSlug':'farmer-training-cattle'}) }}">{{ 'Farmer Training'|trans }}</a></li>
                                 </ul>
                             </li>
-
+                            {% endif %}
+                            {% if is_granted('ROLE_CRM_AQUA_ADMIN') or (is_granted('ROLE_CRM_AQUA_USER') and is_granted('ROLE_CRM_REPORT')) %}
                             <li>
                                 <a class="dropdown-item" href="javascript:">{{ 'Fish'|trans }}</a>
                                 <ul class="sub-menu">
@@ -184,6 +203,7 @@
                                     <li><a class="dropdown-item" href="{{ path('others_report_index', {'reportSlug':'fish-tilapia-fry-sales'}) }}">{{ 'Tilapia Fry Sales'|trans }}</a></li>
                                 </ul>
                             </li>
+                            {% endif %}
                         </ul>
                     </li>
                 {% endif %}

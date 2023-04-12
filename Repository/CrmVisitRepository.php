@@ -153,7 +153,7 @@ class CrmVisitRepository extends EntityRepository
         $qb->join('employee.lineManager', 'lineManager');
         $qb->leftJoin('e.workingMode', 'working_mode');
 
-        $qb->select('e.created AS visitCreatedDate');
+        $qb->select('e.created AS visitCreatedDate', 'e.remarks');
         $qb->addSelect('working_mode.id AS workingModeId', 'working_mode.name AS workingModeName', 'working_mode.slug AS workingModeSlug');
         $qb->addSelect('employee.id AS employeeId', 'employee.userId AS employeeUserId', 'employee.name AS employeeName');
         $qb->addSelect('lineManager.id AS lineManagerAutoIncId', 'lineManager.userId AS lineManagerUserId', 'lineManager.name AS lineManagerName');
