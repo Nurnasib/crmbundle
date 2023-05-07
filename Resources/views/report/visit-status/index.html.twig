@@ -167,6 +167,7 @@
                                                             {% if visitStatus[lineManagerUserId] is defined and visitStatus[lineManagerUserId]['teamMember'][employeeUserId] is defined and visitStatus[lineManagerUserId]['teamMember'][employeeUserId]['days']["%02d"|format(day)] is defined %}
                                                                 {#                                                            {% if visitStatus[lineManagerUserId]['teamMember'][employeeUserId]['days']["%02d"|format(day)]['status'] is same as 'working' %}#}
                                                                 {% set workingStatus = visitStatus[lineManagerUserId]['teamMember'][employeeUserId]['days']["%02d"|format(day)]['status'] %}
+                                                                {% set remarks = visitStatus[lineManagerUserId]['teamMember'][employeeUserId]['days']["%02d"|format(day)]['status'] %}
                                                                 {% if 'working' in workingStatus %}
                                                                     <a style="text-decoration: underline;"
                                                                        class="btn btn-mini btn-transparent font-white"
@@ -261,6 +262,7 @@
     <script type="application/javascript" src="{{ asset('assets/module/js/app.js') }}"></script>
     <script src="{{ asset('assets/js/tableToExcel.js') }}"></script>
     <script>
+        $('.element').tooltip('show')
         let button = document.querySelector("#button-excel");
 
         if(button){

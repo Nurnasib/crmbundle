@@ -1382,6 +1382,52 @@ class ApiController extends AbstractController
     }
 
     /**
+     * @Route("/store-api-json-data", methods={"POST"}, name="store_api_json_data")
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function storeApiJsonData(Request $request)
+    {
+        set_time_limit(0);
+        ignore_user_abort(true);
+
+        $data = $request->request->all();
+
+        if ($data) {
+            $em = $this->getDoctrine()->getManager();
+            $findEmployee = $this->getDoctrine()->getRepository(User::class)->find($data['employee_id']);
+            $api = new Api();
+            $api->setBatchNo($data['batch_id'] ?: null);
+            $api->setEmployee($findEmployee);
+            $api->setStatus(0);
+            $api->setCreatedAt(new \DateTime('now'));
+
+            $jsonBody = json_decode($data['json_body'], true);
+
+            foreach ($jsonBody as $process=>$item) {
+                $apiDetails = new ApiDetails();
+                $apiDetails->setBatch($api);
+                $apiDetails->setProcess($process);
+                $apiDetails->setJsonData($item);
+                $apiDetails->setStatus(0);
+                $api->addApiDetails($apiDetails);
+            }
+
+
+            $em->persist($api);
+            $em->flush();
+
+            return new JsonResponse([
+                'status' => 200,
+            ]);
+        } else {
+            return new JsonResponse([
+                'status' => false,
+            ]);
+        }
+    }
+
+    /**
      * @Route("/list", name="api_response_list")
      */
     /*    public function apiResponseList()
