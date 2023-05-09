@@ -390,7 +390,7 @@ class ApiController extends AbstractController
             if($employee){
 //                $findEmployee = $this->getDoctrine()->getRepository(User::class)->find($data['employee_id']);
                 if($employee && $employee->getLabs()!=''){
-                    $labs = $this->getDoctrine()->getRepository(Api::class)->labName($findEmployee->getLabs());
+                    $labs = $this->getDoctrine()->getRepository(Api::class)->labName($employee->getLabs());
                 }
             }
             $entities['lab']=$labs;
