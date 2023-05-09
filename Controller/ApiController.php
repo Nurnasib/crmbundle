@@ -274,6 +274,194 @@ class ApiController extends AbstractController
 
 
     /**
+     * @Route("/initial-export-data-api", name="initial_export_data_api" , methods={"POST","GET"}, options={"expose"=true})
+     * @param Request $request
+     * @param ParameterBagInterface $parameterBag
+     * @return JsonResponse|Response
+     */
+    public function initailExportDataApi(Request $request, ParameterBagInterface $parameterBag)
+    {
+        set_time_limit(0);
+        ignore_user_abort(true);
+
+        if ($request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')) {
+        $locations = isset($_REQUEST['locations']) ? $_REQUEST['locations'] : "";
+        //$terminal = $this->getUser()->getTerminal()->getId();
+            $entities=[];
+
+            $entities['agent'] = $this->getDoctrine()->getRepository(Api::class)->apiAgent(1, $locations);
+
+            $entities['customer'] = $this->getDoctrine()->getRepository(Api::class)->customerApi(1, 'farmer', $locations);
+
+            $username = isset($_REQUEST['username']) ? $_REQUEST['username'] : "";
+            //$terminal = $this->getUser()->getTerminal()->getId();
+            $entities['employee'] = $this->getDoctrine()->getRepository(Api::class)->employeeApi(1, $username);
+
+            $entities['md_layer_standard'] = $this->getDoctrine()->getRepository(Api::class)->apiLayer(1);
+
+            $entities['md_sonali_standard'] = $this->getDoctrine()->getRepository(Api::class)->apiSonali(1);
+
+            $entities['md_broiler_standard'] = $this->getDoctrine()->getRepository(Api::class)->apiBroiler(1);
+
+            $entities['md_setting_lifecycle'] = $this->getDoctrine()->getRepository(Api::class)->apiLifeCycleSetting(1);
+
+            $userId = isset($_REQUEST['user_id']) && $_REQUEST['user_id']!='' ? $_REQUEST['user_id'] : "";
+
+            $entities['visit_area'] = $this->getDoctrine()->getRepository(Api::class)->usercrmvisitingarea($userId);
+
+            $entities['purpose'] = $this->getDoctrine()->getRepository(Api::class)->dailyActiviesPurpose(1);
+
+            $entities['purpose_sales_and_marketing'] = $this->getDoctrine()->getRepository(Api::class)->dailyActivitiesPurposeForSalesAndMarketing();
+
+            $entities['agent_report_type'] = $this->getDoctrine()->getRepository(Api::class)->agentPurposeForReport();
+
+            $employee = $this->getDoctrine()->getRepository(User::class)->find($userId);
+
+            $entities['farmer'] = $this->getDoctrine()->getRepository(Api::class)->searchfarmer($employee);
+
+            $entities['farmer_type'] = $this->getDoctrine()->getRepository(Api::class)->newfarmertype(1);
+
+            $entities['farm_type'] = $this->getDoctrine()->getRepository(Api::class)->selectFarmType();
+
+            $entities['farm_type_marketing'] = $this->getDoctrine()->getRepository(Api::class)->selectFarmTypeForMarketing();
+
+            $entities['farm_report_type'] = $this->getDoctrine()->getRepository(Api::class)->farmSelectReport(1);
+
+            $entities['farm_report_type_marketing'] = $this->getDoctrine()->getRepository(Api::class)->farmSelectReportForMarketing();
+
+            $entities['report_age_week'] = $this->getDoctrine()->getRepository(Api::class)->ageweek(1);
+
+            $entities['report_breed_type'] = $this->getDoctrine()->getRepository(Api::class)->breedType(1);
+
+            $entities['report_color'] = $this->getDoctrine()->getRepository(Api::class)->color(1);
+
+            $entities['report_feed_mill'] = $this->getDoctrine()->getRepository(Api::class)->feedMill(1);
+
+            $entities['report_feed_type'] = $this->getDoctrine()->getRepository(Api::class)->feedType(1);
+
+            $entities['report_product_name_type'] = $this->getDoctrine()->getRepository(Api::class)->productName();
+
+            $entities['feed'] = $this->getDoctrine()->getRepository(Api::class)->feed(1);
+
+            $entities['report_hatchery'] = $this->getDoctrine()->getRepository(Api::class)->hatchery(1);
+
+            $entities['disease'] = $this->getDoctrine()->getRepository(Api::class)->disease(1);
+
+            $entities['product'] = $this->getDoctrine()->getRepository(Api::class)->product(1);
+
+            $entities['product_for_chick'] = $this->getDoctrine()->getRepository(Api::class)->productForBoilerChick();
+
+            $entities['product_for_layer_chick'] = $this->getDoctrine()->getRepository(Api::class)->productForLayerChick();
+
+            $entities['species'] = $this->getDoctrine()->getRepository(Api::class)->mainculturespecies();
+
+            $entities['crm_vehicle'] = $this->getDoctrine()->getRepository(Api::class)->vehicle(1);
+
+            $entities['agent_purpose'] = $this->getDoctrine()->getRepository(Api::class)->agentPurpose();
+
+            $locations = isset($_REQUEST['locations']) ? $_REQUEST['locations'] : "";
+
+            $entities['sub_agent'] = $this->getDoctrine()->getRepository(Api::class)->agentApi(1, 'sub-agent', $locations);
+
+            $entities['sub_agent_purpose'] = $this->getDoctrine()->getRepository(Api::class)->subAgentPurpose();
+
+            $entities['other_agent'] = $this->getDoctrine()->getRepository(Api::class)->agentApi(1, 'other-agent', $locations);
+
+            $entities['other_agent_purpose'] = $this->getDoctrine()->getRepository(Api::class)->otherAgentPurpose();
+
+            $entities['crm_complain_doc'] = $this->getDoctrine()->getRepository(Api::class)->getComplainType('COMPLAIN_DOC');
+
+            $entities['crm_complain_feed'] = $this->getDoctrine()->getRepository(Api::class)->getComplainType('COMPLAIN_FEED');
+
+            $entities['crm_complain_hatchery'] = $this->getDoctrine()->getRepository(Api::class)->getNourishHatchery('HATCHERY_NOURISH');
+
+            $entities['crm_complain_transport'] = $this->getDoctrine()->getRepository(Api::class)->getTransport('TRANSPORT');
+
+            $entities['fish_feed_type'] = $this->getDoctrine()->getRepository(Api::class)->fishFeedType();
+
+            $entities['fish_species'] = $this->getDoctrine()->getRepository(Api::class)->fishSpeciesName();
+
+            $entities['main_culture_species'] = $this->getDoctrine()->getRepository(Api::class)->mainculturespecies();
+
+            $entities['fish_sale_price'] = $this->getDoctrine()->getRepository(Api::class)->fishSalesPrice(1);
+
+            $labs=[];
+//            $employeeId = isset($_REQUEST['employee_id']) && $_REQUEST['employee_id']!='' ? $_REQUEST['employee_id'] : "";
+            if($employee){
+//                $findEmployee = $this->getDoctrine()->getRepository(User::class)->find($data['employee_id']);
+                if($employee && $employee->getLabs()!=''){
+                    $labs = $this->getDoctrine()->getRepository(Api::class)->labName($findEmployee->getLabs());
+                }
+            }
+            $entities['lab']=$labs;
+
+            $entities['lab_service'] = $this->getDoctrine()->getRepository(Api::class)->labServiceName();
+
+            $regions = $this->getDoctrine()->getRepository(Location::class)->findBy(['level' => 3]);
+            $regionArraydata = [];
+            foreach ($regions as $region) {
+                $regionArraydata[] = [
+                    'id' => $region->getId(),
+                    'name' => $region->getName(),
+                ];
+            }
+
+            $entities['region']= $regionArraydata;
+
+            $entities['chick_type'] = $this->getDoctrine()->getRepository(Setting::class)->getActiveSettingByType('CHICK_TYPE');
+
+            $entities['poultry_meat_egg_type'] = $this->getDoctrine()->getRepository(Setting::class)->getActiveSettingByType('MEAT_EGG_TYPE');
+
+            $entities['visit_working_mode'] = $this->getDoctrine()->getRepository(Setting::class)->getActiveSettingByType('WORKING_MODE');
+
+            $entities['fcr_hatchery_company'] = $this->getDoctrine()->getRepository(Api::class)->fcrHatcheryCompany();
+
+            $entities['breed'] = $this->getDoctrine()->getRepository(Setting::class)->getActiveSettingByType('BREED_NAME');
+
+            $trainingMaterilArray = [];
+            if ($employee){
+                if($employee->getServiceMode() && $employee->getServiceMode()->getSlug() != 'sales-marketing' ) {
+                    $serviceModeExplode = explode('-', $employee->getServiceMode()->getSlug());
+                    $lastElement = end($serviceModeExplode);
+                    $breedName = $this->getDoctrine()->getRepository(Setting::class)->findOneBy(['settingType' => 'BREED_NAME', 'slug' => $lastElement . '-breed', 'status' => 1]);
+                    $materials = $this->getDoctrine()->getRepository(Setting::class)->findBy(['settingType' => 'TRAINING_MATERIAL', 'parent' => $breedName]);
+
+                    foreach ($materials as $material) {
+                        $trainingMaterilArray[] = [
+                            'id' => $material->getId(),
+                            'name' => $material->getName(),
+                        ];
+                    }
+                }
+
+            }
+            $entities['training_material']=$trainingMaterilArray;
+
+            $entities['challenge_name_type'] = $this->getDoctrine()->getRepository(Api::class)->challengeName();
+
+            $entities['fish_feed_type_for_life_cycle'] = $this->getDoctrine()->getRepository(Api::class)->fishFeedTypeForLifeCycle();
+
+            $entities['area'] = $this->getDoctrine()->getRepository(Api::class)->area();
+
+            $entities['fcr_different_feed_company_for_broiler'] = $this->getDoctrine()->getRepository(Api::class)->fcrDifferentFeedCompanyForBroiler();
+
+            $entities['fcr_different_feed_company_for_sonali'] = $this->getDoctrine()->getRepository(Api::class)->fcrDifferentFeedCompanyForSonali();
+
+
+            $response = new Response();
+            $response->headers->set('Content-Type', 'application/json');
+            $response->setContent(json_encode($entities));
+            $response->setStatusCode(Response::HTTP_OK);
+            return $response;
+        }
+        return new JsonResponse([
+            'status' => 404,
+            'message' => 'Not Found!'
+        ]);
+    }
+
+
+    /**
      * @Route("/agent", name="crm_api_agent" , methods={"POST","GET"}, options={"expose"=true})
      */
     public function apiAgent()
@@ -1664,15 +1852,16 @@ class ApiController extends AbstractController
         ignore_user_abort(true);
 
         if ($request->getMethod() == 'GET' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')) {
-            $records = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType' => 'AGENT_PURPOSE','status'=>1));
-            $data = [];
+//            $records = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType' => 'AGENT_PURPOSE','status'=>1));
+            $entities = $this->getDoctrine()->getRepository(Api::class)->agentPurpose();
+            /*$data = [];
             foreach ($records as $key => $record) {
                 $data[$key]['id'] = $record->getId();
                 $data[$key]['name'] = $record->getName();
-            }
+            }*/
             $response = new Response();
             $response->headers->set('Content-Type', 'application/json');
-            $response->setContent(json_encode($data));
+            $response->setContent(json_encode($entities));
             $response->setStatusCode(Response::HTTP_OK);
             return $response;
         }
@@ -1695,15 +1884,16 @@ class ApiController extends AbstractController
         ignore_user_abort(true);
 
         if ($request->getMethod() == 'GET' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')) {
-            $records = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType' => 'SUB_AGENT_PURPOSE'));
+            $entities = $this->getDoctrine()->getRepository(Api::class)->subAgentPurpose();
+            /*$records = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType' => 'SUB_AGENT_PURPOSE'));
             $data = [];
             foreach ($records as $key => $record) {
                 $data[$key]['id'] = $record->getId();
                 $data[$key]['name'] = $record->getName();
-            }
+            }*/
             $response = new Response();
             $response->headers->set('Content-Type', 'application/json');
-            $response->setContent(json_encode($data));
+            $response->setContent(json_encode($entities));
             $response->setStatusCode(Response::HTTP_OK);
             return $response;
         }
@@ -1726,15 +1916,16 @@ class ApiController extends AbstractController
         ignore_user_abort(true);
 
         if ($request->getMethod() == 'GET' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')) {
-            $records = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType' => 'OTHER_AGENT_PURPOSE'));
+            $entities = $this->getDoctrine()->getRepository(Api::class)->otherAgentPurpose();
+            /*$records = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType' => 'OTHER_AGENT_PURPOSE'));
             $data = [];
             foreach ($records as $key => $record) {
                 $data[$key]['id'] = $record->getId();
                 $data[$key]['name'] = $record->getName();
-            }
+            }*/
             $response = new Response();
             $response->headers->set('Content-Type', 'application/json');
-            $response->setContent(json_encode($data));
+            $response->setContent(json_encode($entities));
             $response->setStatusCode(Response::HTTP_OK);
             return $response;
         }
@@ -2756,14 +2947,7 @@ class ApiController extends AbstractController
         if ($request->getMethod() == 'GET' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')) {
             $fcrCompanies = $this->getDoctrine()->getRepository(Api::class)->fcrHatcheryCompany();
 
-            $data = [];
-            foreach ($fcrCompanies as $company) {
-                $data[] = [
-                    'id' => $company['id'],
-                    'name' => $company['name'],
-                ];
-            }
-            return new JsonResponse($data);
+            return new JsonResponse($fcrCompanies);
         }
         return new JsonResponse([
             'status' => 404,
@@ -3004,15 +3188,11 @@ class ApiController extends AbstractController
         ignore_user_abort(true);
 
         if ($request->getMethod() == 'GET' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')) {
-            $records = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType' => 'AGENT_PURPOSE', 'slug'=>['farmer-training','agent-upgradation']));
-            $data = [];
-            foreach ($records as $key => $record) {
-                $data[$key]['id'] = $record->getId();
-                $data[$key]['name'] = $record->getName();
-            }
+            $entities = $this->getDoctrine()->getRepository(Api::class)->agentPurposeForReport();
+
             $response = new Response();
             $response->headers->set('Content-Type', 'application/json');
-            $response->setContent(json_encode($data));
+            $response->setContent(json_encode($entities));
             $response->setStatusCode(Response::HTTP_OK);
             return $response;
         }
@@ -3163,14 +3343,7 @@ class ApiController extends AbstractController
         if ($request->getMethod() == 'GET' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')) {
             $fcrCompanies = $this->getDoctrine()->getRepository(Api::class)->fcrDifferentFeedCompanyForBroiler();
 
-            $data = [];
-            foreach ($fcrCompanies as $company) {
-                $data[] = [
-                    'id' => $company['id'],
-                    'name' => $company['name'],
-                ];
-            }
-            return new JsonResponse($data);
+            return new JsonResponse($fcrCompanies);
         }
         return new JsonResponse([
             'status' => 404,
@@ -3192,14 +3365,7 @@ class ApiController extends AbstractController
         if ($request->getMethod() == 'GET' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')) {
             $fcrCompanies = $this->getDoctrine()->getRepository(Api::class)->fcrDifferentFeedCompanyForSonali();
 
-            $data = [];
-            foreach ($fcrCompanies as $company) {
-                $data[] = [
-                    'id' => $company['id'],
-                    'name' => $company['name'],
-                ];
-            }
-            return new JsonResponse($data);
+            return new JsonResponse($fcrCompanies);
         }
         return new JsonResponse([
             'status' => 404,

@@ -295,4 +295,13 @@ class SettingRepository extends EntityRepository
         return $data;
     }
 
+    public function getActiveSettingByType($type){
+        $qb = $this->createQueryBuilder('e');
+        $qb->select('e.id', 'e.name');
+        $qb->where("e.settingType = :type")->setParameter('type', $type);
+        $qb->andWhere('e.status = 1');
+        $qb->orderBy('e.sortOrder', 'ASC');
+        return $qb->getQuery()->getArrayResult();
+    }
+
 }

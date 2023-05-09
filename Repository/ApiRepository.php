@@ -2318,5 +2318,70 @@ class ApiRepository extends BaseRepository
         return $qb->getQuery()->getArrayResult();
 
     }
+    /**
+     * agentPurposeForReport
+     */
+    public function agentPurposeForReport()
+    {
+        $em = $this->_em;
+        $qb = $em->createQueryBuilder();
+        $qb->from(Setting::class, 's');
+
+        $qb->select('s.id', 's.name');
+        $qb->where("s.settingType = 'AGENT_PURPOSE'");
+        $qb->andWhere('s.slug IN (:slug)')->setParameter('slug',['farmer-training','agent-upgradation']);
+        $qb->andWhere('s.status = 1');
+        $qb->orderBy('s.sortOrder', 'ASC');
+        return $qb->getQuery()->getArrayResult();
+
+    }
+    /**
+     * agentPurpose
+     */
+    public function agentPurpose()
+    {
+        $em = $this->_em;
+        $qb = $em->createQueryBuilder();
+        $qb->from(Setting::class, 's');
+
+        $qb->select('s.id', 's.name');
+        $qb->where("s.settingType = 'AGENT_PURPOSE'");
+        $qb->andWhere('s.status = 1');
+        $qb->orderBy('s.sortOrder', 'ASC');
+        return $qb->getQuery()->getArrayResult();
+
+    }
+    /**
+     * subAgentPurpose
+     */
+    public function subAgentPurpose()
+    {
+        $em = $this->_em;
+        $qb = $em->createQueryBuilder();
+        $qb->from(Setting::class, 's');
+
+        $qb->select('s.id', 's.name');
+        $qb->where("s.settingType = 'SUB_AGENT_PURPOSE'");
+        $qb->andWhere('s.status = 1');
+        $qb->orderBy('s.sortOrder', 'ASC');
+        return $qb->getQuery()->getArrayResult();
+
+    }
+    /**
+     * otherAgentPurpose
+     */
+    public function otherAgentPurpose()
+    {
+        $em = $this->_em;
+        $qb = $em->createQueryBuilder();
+        $qb->from(Setting::class, 's');
+
+        $qb->select('s.id', 's.name');
+        $qb->where("s.settingType = 'OTHER_AGENT_PURPOSE'");
+        $qb->andWhere('s.status = 1');
+        $qb->orderBy('s.sortOrder', 'ASC');
+        return $qb->getQuery()->getArrayResult();
+
+    }
     
 }
