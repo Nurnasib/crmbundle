@@ -274,12 +274,12 @@ class ApiController extends AbstractController
 
 
     /**
-     * @Route("/initial-export-data-api", name="initial_export_data_api" , methods={"POST","GET"}, options={"expose"=true})
+     * @Route("/initial-mater-data-import-api", name="initial_master_data_import_api" , methods={"POST","GET"}, options={"expose"=true})
      * @param Request $request
      * @param ParameterBagInterface $parameterBag
      * @return JsonResponse|Response
      */
-    public function initailExportDataApi(Request $request, ParameterBagInterface $parameterBag)
+    public function initailMasterDataImportApi(Request $request, ParameterBagInterface $parameterBag)
     {
         set_time_limit(0);
         ignore_user_abort(true);
@@ -295,7 +295,8 @@ class ApiController extends AbstractController
 
             $username = isset($_REQUEST['username']) ? $_REQUEST['username'] : "";
             //$terminal = $this->getUser()->getTerminal()->getId();
-            $entities['employee'] = $this->getDoctrine()->getRepository(Api::class)->employeeApi(1, $username);
+//            $entities['employee'] = $this->getDoctrine()->getRepository(Api::class)->employeeApi(1, $username);
+            $entities['employee'] = [];
 
             $entities['md_layer_standard'] = $this->getDoctrine()->getRepository(Api::class)->apiLayer(1);
 
@@ -446,6 +447,50 @@ class ApiController extends AbstractController
             $entities['fcr_different_feed_company_for_broiler'] = $this->getDoctrine()->getRepository(Api::class)->fcrDifferentFeedCompanyForBroiler();
 
             $entities['fcr_different_feed_company_for_sonali'] = $this->getDoctrine()->getRepository(Api::class)->fcrDifferentFeedCompanyForSonali();
+
+
+            $response = new Response();
+            $response->headers->set('Content-Type', 'application/json');
+            $response->setContent(json_encode($entities));
+            $response->setStatusCode(Response::HTTP_OK);
+            return $response;
+        }
+        return new JsonResponse([
+            'status' => 404,
+            'message' => 'Not Found!'
+        ]);
+    }
+
+
+    /**
+     * @Route("/life-cycle-data-import-api", name="initial_life_cycle_data_import_api" , methods={"POST","GET"}, options={"expose"=true})
+     * @param Request $request
+     * @param ParameterBagInterface $parameterBag
+     * @return JsonResponse|Response
+     */
+    public function lifeCycleDataImportApi(Request $request, ParameterBagInterface $parameterBag)
+    {
+        set_time_limit(0);
+        ignore_user_abort(true);
+
+        if ($request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')) {
+
+            $entities=[];
+            $employee_id = $request->query->get('employee_id') && $request->query->get('employee_id') !='' ? $request->query->get('employee_id') : "";
+
+            $entities['crm_fish_life_cycle_culture'] = $this->getFishLifeCycleDataByEmployeeId($employee_id);
+
+            $entities['crm_broiler_life_cycle'] = $this->getChickLifeCycleInprogressData($employee_id);
+
+            $entities['crm_broiler_life_cycle_details'] = $this->getChickLifeCycleDetailsInprogressData($employee_id);
+
+            $entities['crm_layer_life_cycle'] = $this->getLayerLifeCycleInprogressData($employee_id);
+
+            $entities['crm_layer_life_cycle_details'] = $this->getLayerLifeCycleDetailsInprogressData($employee_id);
+
+            $entities['crm_cattle_life_cycle'] = $this->getCattleLifeCycleInprogressData($employee_id);
+
+            $entities['crm_cattle_life_cycle_details'] = $this->getCattleLifeCycleDetailsInprogressData($employee_id);
 
 
             $response = new Response();
@@ -2376,45 +2421,7 @@ class ApiController extends AbstractController
             $parameters = $request->request->all();
             $arrayData=[];
             if(isset($parameters['employee_id'])&&$parameters['employee_id']!=""){
-                $employee = $this->getDoctrine()->getRepository(User::class)->find($parameters['employee_id']);
-
-                $entities = $this->getDoctrine()->getRepository(ChickLifeCycle::class)->findBy(['employee'=>$employee, 'lifeCycleState'=>'IN_PROGRESS'],['id'=>'ASC']);
-
-                if($entities){
-                    /** @var ChickLifeCycle  $entity */
-                    foreach ($entities as $entity) {
-                        $arrayData[]=[
-                            "id"=> $entity->getAppId()?(int)$entity->getAppId():$entity->getId(),
-                            "hatching_date"=> $entity->getHatchingDate()?$entity->getHatchingDate()->format('Y-m-d'):"",
-                            "remarks"=> $entity->getRemarks()?$entity->getRemarks():null,
-                            "reporting_date"=> $entity->getReportingDate()?$entity->getReportingDate()->format('Y-m-d'):"",
-                            "customer_id"=> $entity->getCustomer()? $entity->getCustomer()->getId():null,
-                            "agent_id"=> $entity->getAgent()? $entity->getAgent()->getId():null,
-                            "employee_id"=> $entity->getEmployee()? $entity->getEmployee()->getId():null,
-                            "report_id"=> $entity->getReport()? $entity->getReport()->getId():null,
-                            "life_cycle_state"=> $entity->getLifeCycleState()?$entity->getLifeCycleState():"",
-                            "created_at"=> $entity->getCreatedAt()?$entity->getCreatedAt()->format('Y-m-d H:i:s'):null,
-                            "hatchery_id"=> $entity->getHatchery()? $entity->getHatchery()->getId():null,
-                            "breed_id"=> $entity->getBreed()? $entity->getBreed()->getId():null,
-                            "feed_id"=> $entity->getFeed()? $entity->getFeed()->getId():null,
-                            "feed_mill_id"=> $entity->getFeedMill()? $entity->getFeedMill()->getId():null,
-                            "total_birds"=> $entity->getTotalBirds()? (string)$entity->getTotalBirds():"0",
-                            "hatchery_name"=> $entity->getHatchery()? $entity->getHatchery()->getName():"",
-                            "breed_name"=> $entity->getBreed()? $entity->getBreed()->getName():"",
-                            "feed_name"=> $entity->getFeed()? $entity->getFeed()->getName():"",
-                            "feed_mill_name"=> $entity->getFeedMill()? $entity->getFeedMill()->getName():"",
-                            "crm_visit_id"=> null,
-                            "is_sync"=> 1,
-                            "visit_details_id"=> null,
-                            "web_life_cycle_id"=> $entity->getId(),
-                            "farm_number"=> $entity->getFarmNumber()?$entity->getFarmNumber():1,
-                            "agent_name"=> $entity->getAgent()?$entity->getAgent()->getName():"",
-                            "customer_name"=> $entity->getCustomer()?$entity->getCustomer()->getName():"",
-                            "address"=> $entity->getAgent()?$entity->getAgent()->getUpozila()->getName():"",
-                            "report_type_name" => $entity->getReport()?$entity->getReport()->getName():null,
-                        ];
-                    }
-                }
+                $arrayData = $this->getChickLifeCycleInprogressData($parameters['employee_id']);
             }
 
             $response = new Response();
@@ -2431,6 +2438,53 @@ class ApiController extends AbstractController
 
     }
 
+    private function getChickLifeCycleInprogressData($employeeId){
+        $arrayData=[];
+        if($employeeId){
+            $employee = $this->getDoctrine()->getRepository(User::class)->find($employeeId);
+
+            $entities = $this->getDoctrine()->getRepository(ChickLifeCycle::class)->findBy(['employee'=>$employee, 'lifeCycleState'=>'IN_PROGRESS'],['id'=>'ASC']);
+
+            if($entities){
+                /** @var ChickLifeCycle  $entity */
+                foreach ($entities as $entity) {
+                    $arrayData[]=[
+                        "id"=> $entity->getAppId()?(int)$entity->getAppId():$entity->getId(),
+                        "hatching_date"=> $entity->getHatchingDate()?$entity->getHatchingDate()->format('Y-m-d'):"",
+                        "remarks"=> $entity->getRemarks()?$entity->getRemarks():null,
+                        "reporting_date"=> $entity->getReportingDate()?$entity->getReportingDate()->format('Y-m-d'):"",
+                        "customer_id"=> $entity->getCustomer()? $entity->getCustomer()->getId():null,
+                        "agent_id"=> $entity->getAgent()? $entity->getAgent()->getId():null,
+                        "employee_id"=> $entity->getEmployee()? $entity->getEmployee()->getId():null,
+                        "report_id"=> $entity->getReport()? $entity->getReport()->getId():null,
+                        "life_cycle_state"=> $entity->getLifeCycleState()?$entity->getLifeCycleState():"",
+                        "created_at"=> $entity->getCreatedAt()?$entity->getCreatedAt()->format('Y-m-d H:i:s'):null,
+                        "hatchery_id"=> $entity->getHatchery()? $entity->getHatchery()->getId():null,
+                        "breed_id"=> $entity->getBreed()? $entity->getBreed()->getId():null,
+                        "feed_id"=> $entity->getFeed()? $entity->getFeed()->getId():null,
+                        "feed_mill_id"=> $entity->getFeedMill()? $entity->getFeedMill()->getId():null,
+                        "total_birds"=> $entity->getTotalBirds()? (string)$entity->getTotalBirds():"0",
+                        "hatchery_name"=> $entity->getHatchery()? $entity->getHatchery()->getName():"",
+                        "breed_name"=> $entity->getBreed()? $entity->getBreed()->getName():"",
+                        "feed_name"=> $entity->getFeed()? $entity->getFeed()->getName():"",
+                        "feed_mill_name"=> $entity->getFeedMill()? $entity->getFeedMill()->getName():"",
+                        "crm_visit_id"=> null,
+                        "is_sync"=> 1,
+                        "visit_details_id"=> null,
+                        "web_life_cycle_id"=> $entity->getId(),
+                        "farm_number"=> $entity->getFarmNumber()?$entity->getFarmNumber():1,
+                        "agent_name"=> $entity->getAgent()?$entity->getAgent()->getName():"",
+                        "customer_name"=> $entity->getCustomer()?$entity->getCustomer()->getName():"",
+                        "address"=> $entity->getAgent()?$entity->getAgent()->getUpozila()->getName():"",
+                        "report_type_name" => $entity->getReport()?$entity->getReport()->getName():null,
+                    ];
+                }
+            }
+        }
+
+        return $arrayData;
+    }
+
     /**
      * @Route("/chick-life-cycle-details-in-progress", name="chick_life_cycle_details_in_progress")
      * @param Request $request
@@ -2445,55 +2499,9 @@ class ApiController extends AbstractController
             $parameters = $request->request->all();
             $arrayData=[];
             if(isset($parameters['employee_id'])&&$parameters['employee_id']!=""){
-                $employee = $this->getDoctrine()->getRepository(User::class)->find($parameters['employee_id']);
 
-                $entities = $this->getDoctrine()->getRepository(ChickLifeCycle::class)->findBy(['employee'=>$employee, 'lifeCycleState'=>'IN_PROGRESS'],['id'=>'ASC']);
+                $arrayData = $this->getChickLifeCycleDetailsInprogressData($parameters['employee_id']);
 
-                if($entities){
-                    /** @var ChickLifeCycle  $entity */
-                    foreach ($entities as $entity) {
-                        if($entity->getCrmChickLifeCycleDetails()){
-                            /* @var ChickLifeCycleDetails $lifeCycleDetail*/
-                            foreach ($entity->getCrmChickLifeCycleDetails() as $lifeCycleDetail) {
-                                if($lifeCycleDetail->getReportingDate()!=""){
-                                    $lifeCycleDate = $entity->getCreatedAt()?$entity->getCreatedAt()->format('Y-m-d H:i:s'):null;
-                                    $arrayData[]=[
-                                        "id"=>$lifeCycleDetail->getAppId()?(int)$lifeCycleDetail->getAppId():$lifeCycleDetail->getId(),
-                                        "crm_chick_life_cycle_id"=> $entity->getAppId()?(int)$entity->getAppId():$entity->getId(),
-                                        "visiting_week"=> $lifeCycleDetail->getVisitingWeek()? (string)$lifeCycleDetail->getVisitingWeek():"",
-                                        "age_days"=> $lifeCycleDetail->getAgeDays()? (string)$lifeCycleDetail->getAgeDays():"0",
-                                        "mortality_pes"=> $lifeCycleDetail->getMortalityPes()? (string)$lifeCycleDetail->getMortalityPes():"0",
-                                        "mortality_percent"=> $lifeCycleDetail->calculateMortalityPercent()>0? (string)number_format($lifeCycleDetail->calculateMortalityPercent(),2,'.',''):"0",
-                                        "weight_standard"=> $lifeCycleDetail->getWeightStandard()? (string)$lifeCycleDetail->getWeightStandard():"0",
-                                        "weight_achieved"=> $lifeCycleDetail->getWeightAchieved()? (string)$lifeCycleDetail->getWeightAchieved():"0",
-                                        "feed_total_kg"=> $lifeCycleDetail->getFeedTotalKg()? (string)$lifeCycleDetail->getFeedTotalKg():"0",
-                                        "per_bird"=> $lifeCycleDetail->getPerBird()? (string)$lifeCycleDetail->getPerBird():"0",
-                                        "feed_standard"=> $lifeCycleDetail->getFeedStandard()? (string)$lifeCycleDetail->getFeedStandard():"0",
-                                        "without_mortality"=> $lifeCycleDetail->calculateWithoutMortality()>0? (string)number_format($lifeCycleDetail->calculateWithoutMortality(),5,'.',''):"0",
-                                        "with_mortality"=> $lifeCycleDetail->calculateWithMortality()>0? (string)number_format($lifeCycleDetail->calculateWithMortality(), 5,'.',''):"0",
-                                        "pro_date"=> $lifeCycleDetail->getProDate()?$lifeCycleDetail->getProDate()->format('Y-m-d'):"",
-                                        "batch_no"=> $lifeCycleDetail->getBatchNo(),
-                                        "remarks"=> $lifeCycleDetail->getRemarks(),
-                                        "created_at"=> $lifeCycleDetail->getCreatedAt()&&$lifeCycleDetail->getCreatedAt()->format('Y-m-d H:i:s')!='-0001-11-30 00:00:00'?$lifeCycleDetail->getCreatedAt()->format('Y-m-d H:i:s'):$lifeCycleDate,
-                                        "updated_at"=> $lifeCycleDetail->getUpdatedAt()?$lifeCycleDetail->getUpdatedAt()->format('Y-m-d H:i:s'):"",
-                                        "feed_type_id"=> $lifeCycleDetail->getFeedType()?$lifeCycleDetail->getFeedType()->getId():null,
-                                        "reporting_date"=> $lifeCycleDetail->getReportingDate()?$lifeCycleDetail->getReportingDate()->format('Y-m-d'):"",
-                                        "crm_visit_id"=> null,
-                                        "is_sync"=> 1,
-                                        "customer_id"=> $entity->getCustomer()? $entity->getCustomer()->getId():null,
-                                        "employee_id"=> $entity->getEmployee()? $entity->getEmployee()->getId():null,
-                                        "report_id"=> $entity->getReport()? $entity->getReport()->getId():null,
-                                        'visit_details_id'=> null,
-                                        'life_cycle_state'=> $entity->getLifeCycleState(),
-                                        "web_life_cycle_details_id"=>$lifeCycleDetail->getId(),
-                                        "web_life_cycle_id"=> $entity->getId(),
-                                        "farm_number"=> $entity->getFarmNumber()?$entity->getFarmNumber():1,
-                                    ];
-                                }
-                            }
-                        }
-                    }
-                }
             }
 
             $response = new Response();
@@ -2508,6 +2516,64 @@ class ApiController extends AbstractController
             'message' => 'Not Found!'
         ]);
 
+
+    }
+
+    private function getChickLifeCycleDetailsInprogressData($employeeId){
+        $arrayData=[];
+        if($employeeId){
+            $employee = $this->getDoctrine()->getRepository(User::class)->find($employeeId);
+
+            $entities = $this->getDoctrine()->getRepository(ChickLifeCycle::class)->findBy(['employee'=>$employee, 'lifeCycleState'=>'IN_PROGRESS'],['id'=>'ASC']);
+
+            if($entities){
+                /** @var ChickLifeCycle  $entity */
+                foreach ($entities as $entity) {
+                    if($entity->getCrmChickLifeCycleDetails()){
+                        /* @var ChickLifeCycleDetails $lifeCycleDetail*/
+                        foreach ($entity->getCrmChickLifeCycleDetails() as $lifeCycleDetail) {
+                            if($lifeCycleDetail->getReportingDate()!=""){
+                                $lifeCycleDate = $entity->getCreatedAt()?$entity->getCreatedAt()->format('Y-m-d H:i:s'):null;
+                                $arrayData[]=[
+                                    "id"=>$lifeCycleDetail->getAppId()?(int)$lifeCycleDetail->getAppId():$lifeCycleDetail->getId(),
+                                    "crm_chick_life_cycle_id"=> $entity->getAppId()?(int)$entity->getAppId():$entity->getId(),
+                                    "visiting_week"=> $lifeCycleDetail->getVisitingWeek()? (string)$lifeCycleDetail->getVisitingWeek():"",
+                                    "age_days"=> $lifeCycleDetail->getAgeDays()? (string)$lifeCycleDetail->getAgeDays():"0",
+                                    "mortality_pes"=> $lifeCycleDetail->getMortalityPes()? (string)$lifeCycleDetail->getMortalityPes():"0",
+                                    "mortality_percent"=> $lifeCycleDetail->calculateMortalityPercent()>0? (string)number_format($lifeCycleDetail->calculateMortalityPercent(),2,'.',''):"0",
+                                    "weight_standard"=> $lifeCycleDetail->getWeightStandard()? (string)$lifeCycleDetail->getWeightStandard():"0",
+                                    "weight_achieved"=> $lifeCycleDetail->getWeightAchieved()? (string)$lifeCycleDetail->getWeightAchieved():"0",
+                                    "feed_total_kg"=> $lifeCycleDetail->getFeedTotalKg()? (string)$lifeCycleDetail->getFeedTotalKg():"0",
+                                    "per_bird"=> $lifeCycleDetail->getPerBird()? (string)$lifeCycleDetail->getPerBird():"0",
+                                    "feed_standard"=> $lifeCycleDetail->getFeedStandard()? (string)$lifeCycleDetail->getFeedStandard():"0",
+                                    "without_mortality"=> $lifeCycleDetail->calculateWithoutMortality()>0? (string)number_format($lifeCycleDetail->calculateWithoutMortality(),5,'.',''):"0",
+                                    "with_mortality"=> $lifeCycleDetail->calculateWithMortality()>0? (string)number_format($lifeCycleDetail->calculateWithMortality(), 5,'.',''):"0",
+                                    "pro_date"=> $lifeCycleDetail->getProDate()?$lifeCycleDetail->getProDate()->format('Y-m-d'):"",
+                                    "batch_no"=> $lifeCycleDetail->getBatchNo(),
+                                    "remarks"=> $lifeCycleDetail->getRemarks(),
+                                    "created_at"=> $lifeCycleDetail->getCreatedAt()&&$lifeCycleDetail->getCreatedAt()->format('Y-m-d H:i:s')!='-0001-11-30 00:00:00'?$lifeCycleDetail->getCreatedAt()->format('Y-m-d H:i:s'):$lifeCycleDate,
+                                    "updated_at"=> $lifeCycleDetail->getUpdatedAt()?$lifeCycleDetail->getUpdatedAt()->format('Y-m-d H:i:s'):"",
+                                    "feed_type_id"=> $lifeCycleDetail->getFeedType()?$lifeCycleDetail->getFeedType()->getId():null,
+                                    "reporting_date"=> $lifeCycleDetail->getReportingDate()?$lifeCycleDetail->getReportingDate()->format('Y-m-d'):"",
+                                    "crm_visit_id"=> null,
+                                    "is_sync"=> 1,
+                                    "customer_id"=> $entity->getCustomer()? $entity->getCustomer()->getId():null,
+                                    "employee_id"=> $entity->getEmployee()? $entity->getEmployee()->getId():null,
+                                    "report_id"=> $entity->getReport()? $entity->getReport()->getId():null,
+                                    'visit_details_id'=> null,
+                                    'life_cycle_state'=> $entity->getLifeCycleState(),
+                                    "web_life_cycle_details_id"=>$lifeCycleDetail->getId(),
+                                    "web_life_cycle_id"=> $entity->getId(),
+                                    "farm_number"=> $entity->getFarmNumber()?$entity->getFarmNumber():1,
+                                ];
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return $arrayData;
 
     }
 
@@ -2526,45 +2592,7 @@ class ApiController extends AbstractController
 
             $arrayData=[];
             if(isset($parameters['employee_id'])&&$parameters['employee_id']!=""){
-                $employee = $this->getDoctrine()->getRepository(User::class)->find($parameters['employee_id']);
-
-                $entities = $this->getDoctrine()->getRepository(LayerLifeCycle::class)->findBy(['employee'=>$employee, 'lifeCycleState'=>'IN_PROGRESS'],['id'=>'ASC']);
-
-                if($entities){
-                    /** @var LayerLifeCycle  $entity */
-                    foreach ($entities as $entity) {
-                        $arrayData[]=[
-                            "id"=> $entity->getAppId()?(int)$entity->getAppId():$entity->getId(),
-                            "total_birds"=> $entity->getTotalBirds()?(string)$entity->getTotalBirds():"0",
-                            "hatchery_date"=> $entity->getHatcheryDate()?$entity->getHatcheryDate()->format('Y-m-d'):null,
-                            "created"=> $entity->getCreated()?$entity->getCreated()->format('Y-m-d H:i:s'):null,
-                            "updated"=> $entity->getUpdated()?$entity->getUpdated()->format('Y-m-d H:i:s'):null,
-                            "customer_id"=> $entity->getCustomer()? $entity->getCustomer()->getId():null,
-                            "agent_id"=> $entity->getAgent()? $entity->getAgent()->getId():null,
-                            "employee_id"=> $entity->getEmployee()? $entity->getEmployee()->getId():null,
-                            "report_id"=> $entity->getReport()?$entity->getReport()->getId():null,
-                            "life_cycle_state"=> $entity->getLifeCycleState(),
-                            "hatchery_id"=> $entity->getHatchery()? $entity->getHatchery()->getId():null,
-                            "breed_id"=> $entity->getBreed()? $entity->getBreed()->getId():null,
-                            "feed_id"=> $entity->getFeed()? $entity->getFeed()->getId():null,
-                            "feed_mill_id"=> $entity->getFeedMill()? $entity->getFeedMill()->getId():null,
-                            "hatchery_name"=> $entity->getHatchery()? $entity->getHatchery()->getName():"",
-                            "breed_name"=> $entity->getBreed()? $entity->getBreed()->getName():"",
-                            "feed_name"=> $entity->getFeed()? $entity->getFeed()->getName():"",
-                            "feed_mill_name"=> $entity->getFeedMill()? $entity->getFeedMill()->getName():"",
-                            "crm_visit_id"=> null,
-                            "is_sync"=> 1,
-                            "visit_details_id"=> null,
-                            "web_life_cycle_id"=> $entity->getId(),
-                            "farm_number"=> $entity->getFarmNumber()?$entity->getFarmNumber():1,
-                            "agent_name"=> $entity->getAgent()?$entity->getAgent()->getName():"",
-                            "customer_name"=> $entity->getCustomer()?$entity->getCustomer()->getName():"",
-                            "address"=> $entity->getAgent()?$entity->getAgent()->getUpozila()->getName():"",
-                            "report_type_name" => $entity->getReport()?$entity->getReport()->getName():null,
-                            "reporting_date" => $entity->getReportingDate()?$entity->getReportingDate()->format('Y-m-d'):null,
-                        ];
-                    }
-                }
+                $arrayData = $this->getLayerLifeCycleInprogressData($parameters['employee_id']);
             }
 
             $response = new Response();
@@ -2589,6 +2617,55 @@ class ApiController extends AbstractController
 
     }
 
+    private function getLayerLifeCycleInprogressData($employeeId){
+
+        $arrayData=[];
+        if($employeeId){
+            $employee = $this->getDoctrine()->getRepository(User::class)->find($employeeId);
+
+            $entities = $this->getDoctrine()->getRepository(LayerLifeCycle::class)->findBy(['employee'=>$employee, 'lifeCycleState'=>'IN_PROGRESS'],['id'=>'ASC']);
+
+            if($entities){
+                /** @var LayerLifeCycle  $entity */
+                foreach ($entities as $entity) {
+                    $arrayData[]=[
+                        "id"=> $entity->getAppId()?(int)$entity->getAppId():$entity->getId(),
+                        "total_birds"=> $entity->getTotalBirds()?(string)$entity->getTotalBirds():"0",
+                        "hatchery_date"=> $entity->getHatcheryDate()?$entity->getHatcheryDate()->format('Y-m-d'):null,
+                        "created"=> $entity->getCreated()?$entity->getCreated()->format('Y-m-d H:i:s'):null,
+                        "updated"=> $entity->getUpdated()?$entity->getUpdated()->format('Y-m-d H:i:s'):null,
+                        "customer_id"=> $entity->getCustomer()? $entity->getCustomer()->getId():null,
+                        "agent_id"=> $entity->getAgent()? $entity->getAgent()->getId():null,
+                        "employee_id"=> $entity->getEmployee()? $entity->getEmployee()->getId():null,
+                        "report_id"=> $entity->getReport()?$entity->getReport()->getId():null,
+                        "life_cycle_state"=> $entity->getLifeCycleState(),
+                        "hatchery_id"=> $entity->getHatchery()? $entity->getHatchery()->getId():null,
+                        "breed_id"=> $entity->getBreed()? $entity->getBreed()->getId():null,
+                        "feed_id"=> $entity->getFeed()? $entity->getFeed()->getId():null,
+                        "feed_mill_id"=> $entity->getFeedMill()? $entity->getFeedMill()->getId():null,
+                        "hatchery_name"=> $entity->getHatchery()? $entity->getHatchery()->getName():"",
+                        "breed_name"=> $entity->getBreed()? $entity->getBreed()->getName():"",
+                        "feed_name"=> $entity->getFeed()? $entity->getFeed()->getName():"",
+                        "feed_mill_name"=> $entity->getFeedMill()? $entity->getFeedMill()->getName():"",
+                        "crm_visit_id"=> null,
+                        "is_sync"=> 1,
+                        "visit_details_id"=> null,
+                        "web_life_cycle_id"=> $entity->getId(),
+                        "farm_number"=> $entity->getFarmNumber()?$entity->getFarmNumber():1,
+                        "agent_name"=> $entity->getAgent()?$entity->getAgent()->getName():"",
+                        "customer_name"=> $entity->getCustomer()?$entity->getCustomer()->getName():"",
+                        "address"=> $entity->getAgent()?$entity->getAgent()->getUpozila()->getName():"",
+                        "report_type_name" => $entity->getReport()?$entity->getReport()->getName():null,
+                        "reporting_date" => $entity->getReportingDate()?$entity->getReportingDate()->format('Y-m-d'):null,
+                    ];
+                }
+            }
+        }
+
+        return $arrayData;
+
+    }
+
 
     /**
      * @Route("/layer-life-cycle-details-in-progress", name="layer_life_cycle_details_in_progress")
@@ -2604,57 +2681,8 @@ class ApiController extends AbstractController
             $parameters = $request->request->all();
             $arrayData=[];
             if(isset($parameters['employee_id'])&&$parameters['employee_id']!=""){
-                $employee = $this->getDoctrine()->getRepository(User::class)->find($parameters['employee_id']);
 
-                $entities = $this->getDoctrine()->getRepository(LayerLifeCycle::class)->findBy(['employee'=>$employee, 'lifeCycleState'=>'IN_PROGRESS'],['id'=>'ASC']);
-
-                if($entities){
-                    /** @var LayerLifeCycle  $entity */
-                    foreach ($entities as $entity) {
-                        if($entity->getCrmLayerLifeCycleDetails()){
-                            /* @var LayerLifeCycleDetails $lifeCycleDetail*/
-                            foreach ($entity->getCrmLayerLifeCycleDetails() as $lifeCycleDetail) {
-                                if($lifeCycleDetail->getVisitingDate()!=""&&$lifeCycleDetail->getIsVisited()==1){
-                                    $arrayData[]=[
-                                        "id"=>$lifeCycleDetail->getAppId()?(int)$lifeCycleDetail->getAppId():$lifeCycleDetail->getId(),
-                                        "crm_layer_life_cycle_id"=> $entity->getAppId()?(int)$entity->getAppId():$entity->getId(),
-                                        "visiting_date"=> $lifeCycleDetail->getVisitingDate()?$lifeCycleDetail->getVisitingDate()->format('Y-m-d'):null,
-                                        "age_week"=> $lifeCycleDetail->getAgeWeek()?(string)$lifeCycleDetail->getAgeWeekOnlyNumber():"",
-                                        "dead_bird"=> $lifeCycleDetail->getDeadBird()?(string)$lifeCycleDetail->getDeadBird():"0",
-                                        "avg_weight"=> $lifeCycleDetail->getAvgWeight()?(string)$lifeCycleDetail->getAvgWeight():"0",
-                                        "target_weight"=> $lifeCycleDetail->getTargetWeight()?(string)$lifeCycleDetail->getTargetWeight():"0",
-                                        "uniformity"=> $lifeCycleDetail->getUniformity()?(string)$lifeCycleDetail->getUniformity():"0",
-                                        "feed_per_bird"=> $lifeCycleDetail->getFeedPerBird()?(string)$lifeCycleDetail->getFeedPerBird():"0",
-                                        "target_feed_per_bird"=> $lifeCycleDetail->getTargetFeedPerBird()?(string)$lifeCycleDetail->getTargetFeedPerBird():"0",
-                                        "total_eggs"=> $lifeCycleDetail->getTotalEggs()?(string)$lifeCycleDetail->getTotalEggs():"0",
-                                        "target_egg_production"=> $lifeCycleDetail->getTargetEggProduction()?(string)$lifeCycleDetail->getTargetEggProduction():"0",
-                                        "egg_weight_actual"=> $lifeCycleDetail->getEggWeightActual()?(string)$lifeCycleDetail->getEggWeightActual():"0",
-                                        "egg_weight_standard"=> $lifeCycleDetail->getEggWeightStandard()?(string)$lifeCycleDetail->getEggWeightStandard():"0",
-                                        "production_date"=> $lifeCycleDetail->getProductionDate()?$lifeCycleDetail->getProductionDate()->format('Y-m-d'):"",
-                                        "batch_no"=> $lifeCycleDetail->getBatchNo()?$lifeCycleDetail->getBatchNo():"",
-                                        "medicine"=> $lifeCycleDetail->getMedicine()?$lifeCycleDetail->getMedicine():"",
-                                        "remarks"=> $lifeCycleDetail->getRemarks()?$lifeCycleDetail->getRemarks():"",
-                                        "created"=> $lifeCycleDetail->getCreated()?$lifeCycleDetail->getCreated()->format('Y-m-d H:i:s'):null,
-                                        "updated"=> $lifeCycleDetail->getUpdated()?$lifeCycleDetail->getUpdated()->format('Y-m-d H:i:s'):null,
-                                        "feed_mill_id"=> $lifeCycleDetail->getFeedMill()?$lifeCycleDetail->getFeedMill()->getId():null,
-                                        "feed_type_id"=> $lifeCycleDetail->getFeedType()?$lifeCycleDetail->getFeedType()->getId():null,
-                                        "crm_visit_id"=> null,
-                                        "is_sync"=> 1,
-                                        "customer_id"=> $entity->getCustomer()? $entity->getCustomer()->getId():null,
-                                        "employee_id"=> $entity->getEmployee()? $entity->getEmployee()->getId():null,
-                                        "report_id"=> $entity->getReport()? $entity->getReport()->getId():null,
-                                        "visit_details_id"=> null,
-                                        'life_cycle_state'=> $entity->getLifeCycleState(),
-                                        "web_life_cycle_details_id"=>$lifeCycleDetail->getId(),
-                                        "web_life_cycle_id"=> $entity->getId(),
-                                        "farm_number"=> $entity->getFarmNumber()?$entity->getFarmNumber():1,
-                                    ]; 
-                                }
-                                
-                            }
-                        }
-                    }
-                }
+                $arrayData = $this->getLayerLifeCycleDetailsInprogressData($parameters['employee_id']);
             }
 
             $response = new Response();
@@ -2670,6 +2698,64 @@ class ApiController extends AbstractController
         ]);
 
 
+    }
+
+    private function getLayerLifeCycleDetailsInprogressData($employeeId){
+        $arrayData=[];
+        if($employeeId){
+            $employee = $this->getDoctrine()->getRepository(User::class)->find($employeeId);
+
+            $entities = $this->getDoctrine()->getRepository(LayerLifeCycle::class)->findBy(['employee'=>$employee, 'lifeCycleState'=>'IN_PROGRESS'],['id'=>'ASC']);
+
+            if($entities){
+                /** @var LayerLifeCycle  $entity */
+                foreach ($entities as $entity) {
+                    if($entity->getCrmLayerLifeCycleDetails()){
+                        /* @var LayerLifeCycleDetails $lifeCycleDetail*/
+                        foreach ($entity->getCrmLayerLifeCycleDetails() as $lifeCycleDetail) {
+                            if($lifeCycleDetail->getVisitingDate()!=""&&$lifeCycleDetail->getIsVisited()==1){
+                                $arrayData[]=[
+                                    "id"=>$lifeCycleDetail->getAppId()?(int)$lifeCycleDetail->getAppId():$lifeCycleDetail->getId(),
+                                    "crm_layer_life_cycle_id"=> $entity->getAppId()?(int)$entity->getAppId():$entity->getId(),
+                                    "visiting_date"=> $lifeCycleDetail->getVisitingDate()?$lifeCycleDetail->getVisitingDate()->format('Y-m-d'):null,
+                                    "age_week"=> $lifeCycleDetail->getAgeWeek()?(string)$lifeCycleDetail->getAgeWeekOnlyNumber():"",
+                                    "dead_bird"=> $lifeCycleDetail->getDeadBird()?(string)$lifeCycleDetail->getDeadBird():"0",
+                                    "avg_weight"=> $lifeCycleDetail->getAvgWeight()?(string)$lifeCycleDetail->getAvgWeight():"0",
+                                    "target_weight"=> $lifeCycleDetail->getTargetWeight()?(string)$lifeCycleDetail->getTargetWeight():"0",
+                                    "uniformity"=> $lifeCycleDetail->getUniformity()?(string)$lifeCycleDetail->getUniformity():"0",
+                                    "feed_per_bird"=> $lifeCycleDetail->getFeedPerBird()?(string)$lifeCycleDetail->getFeedPerBird():"0",
+                                    "target_feed_per_bird"=> $lifeCycleDetail->getTargetFeedPerBird()?(string)$lifeCycleDetail->getTargetFeedPerBird():"0",
+                                    "total_eggs"=> $lifeCycleDetail->getTotalEggs()?(string)$lifeCycleDetail->getTotalEggs():"0",
+                                    "target_egg_production"=> $lifeCycleDetail->getTargetEggProduction()?(string)$lifeCycleDetail->getTargetEggProduction():"0",
+                                    "egg_weight_actual"=> $lifeCycleDetail->getEggWeightActual()?(string)$lifeCycleDetail->getEggWeightActual():"0",
+                                    "egg_weight_standard"=> $lifeCycleDetail->getEggWeightStandard()?(string)$lifeCycleDetail->getEggWeightStandard():"0",
+                                    "production_date"=> $lifeCycleDetail->getProductionDate()?$lifeCycleDetail->getProductionDate()->format('Y-m-d'):"",
+                                    "batch_no"=> $lifeCycleDetail->getBatchNo()?$lifeCycleDetail->getBatchNo():"",
+                                    "medicine"=> $lifeCycleDetail->getMedicine()?$lifeCycleDetail->getMedicine():"",
+                                    "remarks"=> $lifeCycleDetail->getRemarks()?$lifeCycleDetail->getRemarks():"",
+                                    "created"=> $lifeCycleDetail->getCreated()?$lifeCycleDetail->getCreated()->format('Y-m-d H:i:s'):null,
+                                    "updated"=> $lifeCycleDetail->getUpdated()?$lifeCycleDetail->getUpdated()->format('Y-m-d H:i:s'):null,
+                                    "feed_mill_id"=> $lifeCycleDetail->getFeedMill()?$lifeCycleDetail->getFeedMill()->getId():null,
+                                    "feed_type_id"=> $lifeCycleDetail->getFeedType()?$lifeCycleDetail->getFeedType()->getId():null,
+                                    "crm_visit_id"=> null,
+                                    "is_sync"=> 1,
+                                    "customer_id"=> $entity->getCustomer()? $entity->getCustomer()->getId():null,
+                                    "employee_id"=> $entity->getEmployee()? $entity->getEmployee()->getId():null,
+                                    "report_id"=> $entity->getReport()? $entity->getReport()->getId():null,
+                                    "visit_details_id"=> null,
+                                    'life_cycle_state'=> $entity->getLifeCycleState(),
+                                    "web_life_cycle_details_id"=>$lifeCycleDetail->getId(),
+                                    "web_life_cycle_id"=> $entity->getId(),
+                                    "farm_number"=> $entity->getFarmNumber()?$entity->getFarmNumber():1,
+                                ];
+                            }
+
+                        }
+                    }
+                }
+            }
+        }
+        return $arrayData;
     }
 
     /**
@@ -3390,71 +3476,9 @@ class ApiController extends AbstractController
             $parameters = $request->request->all();
             $arrayData=[];
             if(isset($parameters['employee_id'])&&$parameters['employee_id']!=""){
-                $employee = $this->getDoctrine()->getRepository(User::class)->find($parameters['employee_id']);
 
-                $entities = $this->getDoctrine()->getRepository(FishLifeCycleCulture::class)->findBy(['employee'=>$employee, 'status'=>'IN_PROGRESS'],['id'=>'ASC']);
+                $arrayData = $this->getFishLifeCycleDataByEmployeeId($parameters['employee_id']);
 
-                if($entities){
-                    /** @var FishLifeCycleCulture  $entity */
-                    foreach ($entities as $entity) {
-                        $detailData=[];
-                        if($entity->getFishLifeCycleCultureDetails()){
-                            /* @var FishLifeCycleCultureDetails $fishLifeCycleCultureDetail*/
-                            foreach ($entity->getFishLifeCycleCultureDetails() as $fishLifeCycleCultureDetail) {
-                                $detailData[]=[
-                                    "id"=>$fishLifeCycleCultureDetail->getAppId()?(int)$fishLifeCycleCultureDetail->getAppId():"",
-                                    "sampling_date"=>$fishLifeCycleCultureDetail->getSamplingDate()->format('Y-m-d'),
-                                    "avg_present_weight_gm"=>$fishLifeCycleCultureDetail->getAveragePresentWeight()?(string)$fishLifeCycleCultureDetail->getAveragePresentWeight():"0",
-                                    "cur_survival_rate"=>$fishLifeCycleCultureDetail->getSrPercentage()?(string)$fishLifeCycleCultureDetail->getSrPercentage():"0",
-                                    "cur_feed_consumption"=>(string)$fishLifeCycleCultureDetail->getCurrentFeedConsumptionKg(),
-                                    "farmer_comment"=>(string)$fishLifeCycleCultureDetail->getFarmerRemarks()?$fishLifeCycleCultureDetail->getFarmerRemarks():"",
-                                    "visitor_comment"=>(string)$fishLifeCycleCultureDetail->getEmployeeRemarks()?$fishLifeCycleCultureDetail->getEmployeeRemarks():"",
-                                    "pond_number"=>$entity->getPondNumber()?(string)$entity->getPondNumber():(string)1,
-                                    "cur_fcr"=>(string)$fishLifeCycleCultureDetail->getCurrentFcr(),
-                                    "web_life_cycle_details_id"=>(string)$fishLifeCycleCultureDetail->getId(),
-                                    "created_at"=>$fishLifeCycleCultureDetail->getCreatedAt()->format('Y-m-d H:i:s')
-                                ];
-                            }
-                        }
-                        $customerGroup=$entity->getCustomer()->getFarmerIntroduce() && $entity->getCustomer()->getFarmerIntroduce()->getFarmerType()?'('.$entity->getCustomer()->getFarmerIntroduce()->getFarmerType()->getName().')':null;
-                        $arrayData[]=[
-                            "id"=> $entity->getAppId(),
-                            "report_id"=> (string)$entity->getAppReportId(),
-                            "report_type_id"=> $entity->getReport()?(string)$entity->getReport()->getId():"",
-                            "agent_id"=> $entity->getAgent()?(string)$entity->getAgent()->getId():"",
-                            "agent_name"=> $entity->getAgent()?$entity->getAgent()->getName():"",
-                            "customer_id"=> $entity->getCustomer()?(string)$entity->getCustomer()->getId():"",
-                            "customer_name"=> $entity->getCustomer()?$entity->getCustomer()->getName().' '.$customerGroup:"",
-                            "pond_number"=> (string)$entity->getPondNumber(),
-                            "reporting_date"=> $entity->getCreatedAt()->format('Y-m-d H:i:s'),
-                            "address"=> $entity->getAgent() && $entity->getAgent()->getUpozila()?$entity->getAgent()->getUpozila()->getName():"",
-                            "feed_company_id"=> $entity->getFeed()?(string)$entity->getFeed()->getId():"",
-                            "feed_company_name"=> $entity->getFeed()?(string)$entity->getFeed()->getName():"",
-                            "hatchery_id"=> $entity->getHatchery()?(string)$entity->getHatchery()->getId():"",
-                            "hatchery_name"=> $entity->getHatchery()?$entity->getHatchery()->getName():"",
-                            "feed_item_name"=> $entity->getFeedItemName()?$entity->getFeedItemName():"",
-                            "culture_species_main_id"=> $entity->getMainCultureSpecies()?(string)$entity->getMainCultureSpecies()->getId():"",
-                            "culture_species_main_name"=> $entity->getMainCultureSpecies()?(string)$entity->getMainCultureSpecies()->getName():"",
-                            "culture_species_optional_id"=> $entity->getOtherCultureSpecies()?(string)$entity->getOtherCultureSpecies()->getId():"",
-                            "culture_species_optional_name"=> $entity->getOtherCultureSpecies()?$entity->getOtherCultureSpecies()->getName():"",
-                            "feed_type_id"=> $entity->getFeedType()?(string)$entity->getFeedType()->getId():"",
-                            "feed_type_name"=> $entity->getFeedType()?$entity->getFeedType()->getName():"",
-                            "stocking_date"=> $entity->getStockingDate()->format('Y-m-d'),
-                            "culture_area_decimal"=> $entity->getCultureAreaDecimal()?(string)$entity->getCultureAreaDecimal():"0",
-                            "no_of_initial_fish_pcs"=> $entity->getNoOfInitialFish()?(string)$entity->getNoOfInitialFish():"0",
-                            "density_per_decimal_pcs"=> $entity->getStockingDensity()?(string)$entity->getStockingDensity():"0",
-                            "avg_initial_weight_gm"=> $entity->getAverageInitialWeightGm()?(string)$entity->getAverageInitialWeightGm():"0",
-                            "total_initial_weight_kg"=> $entity->getTotalInitialWeightKg()?(string)$entity->getTotalInitialWeightKg():"0",
-                            "culture_species_desc"=> $entity->getSpeciesDescription()?(string)$entity->getSpeciesDescription():"",
-                            "life_cycle_details"=>sizeof($detailData)>0?json_encode($detailData):"",
-                            "status"=> $entity->getStatus(),
-                            "feed_item_name_other"=> $entity->getFeedItemNameOther()?$entity->getFeedItemNameOther():"",
-                            "web_life_cycle_id"=> (string)$entity->getId(),
-                            "employee_id"=> $entity->getEmployee()?(string)$entity->getEmployee()->getId():"",
-                            "report_type_name" => $entity->getReport()?$entity->getReport()->getName():null,
-                        ];
-                    }
-                }
             }
 
             $response = new Response();
@@ -3469,6 +3493,79 @@ class ApiController extends AbstractController
         ]);
 
 
+    }
+
+    private function getFishLifeCycleDataByEmployeeId($employeeId){
+        $arrayData=[];
+        if($employeeId){
+            $employee = $this->getDoctrine()->getRepository(User::class)->find($employeeId);
+
+            $entities = $this->getDoctrine()->getRepository(FishLifeCycleCulture::class)->findBy(['employee'=>$employee, 'status'=>'IN_PROGRESS'],['id'=>'ASC']);
+
+            if($entities){
+                /** @var FishLifeCycleCulture  $entity */
+                foreach ($entities as $entity) {
+                    $detailData=[];
+                    if($entity->getFishLifeCycleCultureDetails()){
+                        /* @var FishLifeCycleCultureDetails $fishLifeCycleCultureDetail*/
+                        foreach ($entity->getFishLifeCycleCultureDetails() as $fishLifeCycleCultureDetail) {
+                            $detailData[]=[
+                                "id"=>$fishLifeCycleCultureDetail->getAppId()?(int)$fishLifeCycleCultureDetail->getAppId():"",
+                                "sampling_date"=>$fishLifeCycleCultureDetail->getSamplingDate()->format('Y-m-d'),
+                                "avg_present_weight_gm"=>$fishLifeCycleCultureDetail->getAveragePresentWeight()?(string)$fishLifeCycleCultureDetail->getAveragePresentWeight():"0",
+                                "cur_survival_rate"=>$fishLifeCycleCultureDetail->getSrPercentage()?(string)$fishLifeCycleCultureDetail->getSrPercentage():"0",
+                                "cur_feed_consumption"=>(string)$fishLifeCycleCultureDetail->getCurrentFeedConsumptionKg(),
+                                "farmer_comment"=>(string)$fishLifeCycleCultureDetail->getFarmerRemarks()?$fishLifeCycleCultureDetail->getFarmerRemarks():"",
+                                "visitor_comment"=>(string)$fishLifeCycleCultureDetail->getEmployeeRemarks()?$fishLifeCycleCultureDetail->getEmployeeRemarks():"",
+                                "pond_number"=>$entity->getPondNumber()?(string)$entity->getPondNumber():(string)1,
+                                "cur_fcr"=>(string)$fishLifeCycleCultureDetail->getCurrentFcr(),
+                                "web_life_cycle_details_id"=>(string)$fishLifeCycleCultureDetail->getId(),
+                                "created_at"=>$fishLifeCycleCultureDetail->getCreatedAt()->format('Y-m-d H:i:s')
+                            ];
+                        }
+                    }
+                    $customerGroup=$entity->getCustomer()->getFarmerIntroduce() && $entity->getCustomer()->getFarmerIntroduce()->getFarmerType()?'('.$entity->getCustomer()->getFarmerIntroduce()->getFarmerType()->getName().')':null;
+                    $arrayData[]=[
+                        "id"=> $entity->getAppId(),
+                        "report_id"=> (string)$entity->getAppReportId(),
+                        "report_type_id"=> $entity->getReport()?(string)$entity->getReport()->getId():"",
+                        "agent_id"=> $entity->getAgent()?(string)$entity->getAgent()->getId():"",
+                        "agent_name"=> $entity->getAgent()?$entity->getAgent()->getName():"",
+                        "customer_id"=> $entity->getCustomer()?(string)$entity->getCustomer()->getId():"",
+                        "customer_name"=> $entity->getCustomer()?$entity->getCustomer()->getName().' '.$customerGroup:"",
+                        "pond_number"=> (string)$entity->getPondNumber(),
+                        "reporting_date"=> $entity->getCreatedAt()->format('Y-m-d H:i:s'),
+                        "address"=> $entity->getAgent() && $entity->getAgent()->getUpozila()?$entity->getAgent()->getUpozila()->getName():"",
+                        "feed_company_id"=> $entity->getFeed()?(string)$entity->getFeed()->getId():"",
+                        "feed_company_name"=> $entity->getFeed()?(string)$entity->getFeed()->getName():"",
+                        "hatchery_id"=> $entity->getHatchery()?(string)$entity->getHatchery()->getId():"",
+                        "hatchery_name"=> $entity->getHatchery()?$entity->getHatchery()->getName():"",
+                        "feed_item_name"=> $entity->getFeedItemName()?$entity->getFeedItemName():"",
+                        "culture_species_main_id"=> $entity->getMainCultureSpecies()?(string)$entity->getMainCultureSpecies()->getId():"",
+                        "culture_species_main_name"=> $entity->getMainCultureSpecies()?(string)$entity->getMainCultureSpecies()->getName():"",
+                        "culture_species_optional_id"=> $entity->getOtherCultureSpecies()?(string)$entity->getOtherCultureSpecies()->getId():"",
+                        "culture_species_optional_name"=> $entity->getOtherCultureSpecies()?$entity->getOtherCultureSpecies()->getName():"",
+                        "feed_type_id"=> $entity->getFeedType()?(string)$entity->getFeedType()->getId():"",
+                        "feed_type_name"=> $entity->getFeedType()?$entity->getFeedType()->getName():"",
+                        "stocking_date"=> $entity->getStockingDate()->format('Y-m-d'),
+                        "culture_area_decimal"=> $entity->getCultureAreaDecimal()?(string)$entity->getCultureAreaDecimal():"0",
+                        "no_of_initial_fish_pcs"=> $entity->getNoOfInitialFish()?(string)$entity->getNoOfInitialFish():"0",
+                        "density_per_decimal_pcs"=> $entity->getStockingDensity()?(string)$entity->getStockingDensity():"0",
+                        "avg_initial_weight_gm"=> $entity->getAverageInitialWeightGm()?(string)$entity->getAverageInitialWeightGm():"0",
+                        "total_initial_weight_kg"=> $entity->getTotalInitialWeightKg()?(string)$entity->getTotalInitialWeightKg():"0",
+                        "culture_species_desc"=> $entity->getSpeciesDescription()?(string)$entity->getSpeciesDescription():"",
+                        "life_cycle_details"=>sizeof($detailData)>0?json_encode($detailData):"",
+                        "status"=> $entity->getStatus(),
+                        "feed_item_name_other"=> $entity->getFeedItemNameOther()?$entity->getFeedItemNameOther():"",
+                        "web_life_cycle_id"=> (string)$entity->getId(),
+                        "employee_id"=> $entity->getEmployee()?(string)$entity->getEmployee()->getId():"",
+                        "report_type_name" => $entity->getReport()?$entity->getReport()->getName():null,
+                    ];
+                }
+            }
+        }
+
+        return $arrayData;
     }
 
 
@@ -3554,39 +3651,9 @@ class ApiController extends AbstractController
             $parameters = $request->request->all();
             $arrayData=[];
             if(isset($parameters['employee_id'])&&$parameters['employee_id']!=""){
-                $employee = $this->getDoctrine()->getRepository(User::class)->find($parameters['employee_id']);
 
-                $entities = $this->getDoctrine()->getRepository(CattleLifeCycle::class)->findBy(['employee'=>$employee, 'lifeCycleState'=>'IN_PROGRESS'],['id'=>'ASC']);
+                $arrayData = $this->getCattleLifeCycleInprogressData($parameters['employee_id']);
 
-                if($entities){
-                    /** @var CattleLifeCycle  $entity */
-                    foreach ($entities as $entity) {
-                        $arrayData[]=[
-                            "id"=> $entity->getAppId()?(int)$entity->getAppId():$entity->getId(),
-                            "customer_id"=> $entity->getCustomer()? $entity->getCustomer()->getId():null,
-                            "report_id"=> $entity->getReport()? $entity->getReport()->getId():null,
-                            "agent_id"=> $entity->getAgent()? $entity->getAgent()->getId():null,
-                            "employee_id"=> $entity->getEmployee()? $entity->getEmployee()->getId():null,
-                            "reporting_date"=> $entity->getReportingDate()?(string)$entity->getReportingDate()->format('Y-m-d'):"",
-                            "breed_type"=> $entity->getBreedType()? $entity->getBreedType()->getId():null,
-                            "life_cycle_state"=> $entity->getLifeCycleState()?$entity->getLifeCycleState():"",
-                            "remarks"=> $entity->getRemarks()?$entity->getRemarks():"",
-                            "created_at"=> $entity->getCreatedAt()?$entity->getCreatedAt()->format('Y-m-d H:i:s'):null,
-                            "feed_type"=> $entity->getFeedType()? $entity->getFeedType()->getId():null,
-                            "feedName"=> $entity->getFeedType()? $entity->getFeedType()->getName():null,
-                            "breedName"=> $entity->getBreedType()? $entity->getBreedType()->getName():null,
-                            "crm_visit_id"=> null,
-                            "is_sync"=> 1,
-                            "visit_details_id"=> null,
-                            "agent_name"=> $entity->getAgent()? $entity->getAgent()->getName():"",
-                            "customer_name"=> $entity->getCustomer()? $entity->getCustomer()->getName():"",
-                            "address"=> $entity->getAgent() && $entity->getAgent()->getUpozila()?$entity->getAgent()->getUpozila()->getName():"",
-                            "web_life_cycle_id"=> $entity->getId(),
-                            "farm_number"=> $entity->getFarmNumber()?$entity->getFarmNumber():1,
-                            "report_type_name" => $entity->getReport()?$entity->getReport()->getName():null,
-                        ];
-                    }
-                }
             }
 
             $response = new Response();
@@ -3603,6 +3670,49 @@ class ApiController extends AbstractController
 
     }
 
+    private function getCattleLifeCycleInprogressData($employeeId){
+
+        $arrayData=[];
+
+        if($employeeId){
+            $employee = $this->getDoctrine()->getRepository(User::class)->find($employeeId);
+
+            $entities = $this->getDoctrine()->getRepository(CattleLifeCycle::class)->findBy(['employee'=>$employee, 'lifeCycleState'=>'IN_PROGRESS'],['id'=>'ASC']);
+
+            if($entities){
+                /** @var CattleLifeCycle  $entity */
+                foreach ($entities as $entity) {
+                    $arrayData[]=[
+                        "id"=> $entity->getAppId()?(int)$entity->getAppId():$entity->getId(),
+                        "customer_id"=> $entity->getCustomer()? $entity->getCustomer()->getId():null,
+                        "report_id"=> $entity->getReport()? $entity->getReport()->getId():null,
+                        "agent_id"=> $entity->getAgent()? $entity->getAgent()->getId():null,
+                        "employee_id"=> $entity->getEmployee()? $entity->getEmployee()->getId():null,
+                        "reporting_date"=> $entity->getReportingDate()?(string)$entity->getReportingDate()->format('Y-m-d'):"",
+                        "breed_type"=> $entity->getBreedType()? $entity->getBreedType()->getId():null,
+                        "life_cycle_state"=> $entity->getLifeCycleState()?$entity->getLifeCycleState():"",
+                        "remarks"=> $entity->getRemarks()?$entity->getRemarks():"",
+                        "created_at"=> $entity->getCreatedAt()?$entity->getCreatedAt()->format('Y-m-d H:i:s'):null,
+                        "feed_type"=> $entity->getFeedType()? $entity->getFeedType()->getId():null,
+                        "feedName"=> $entity->getFeedType()? $entity->getFeedType()->getName():null,
+                        "breedName"=> $entity->getBreedType()? $entity->getBreedType()->getName():null,
+                        "crm_visit_id"=> null,
+                        "is_sync"=> 1,
+                        "visit_details_id"=> null,
+                        "agent_name"=> $entity->getAgent()? $entity->getAgent()->getName():"",
+                        "customer_name"=> $entity->getCustomer()? $entity->getCustomer()->getName():"",
+                        "address"=> $entity->getAgent() && $entity->getAgent()->getUpozila()?$entity->getAgent()->getUpozila()->getName():"",
+                        "web_life_cycle_id"=> $entity->getId(),
+                        "farm_number"=> $entity->getFarmNumber()?$entity->getFarmNumber():1,
+                        "report_type_name" => $entity->getReport()?$entity->getReport()->getName():null,
+                    ];
+                }
+            }
+        }
+
+        return $arrayData;
+    }
+
     /**
      * @Route("/cattle-life-cycle-details-in-progress", name="cattle_life_cycle_details_in_progress")
      * @param Request $request
@@ -3617,60 +3727,9 @@ class ApiController extends AbstractController
             $parameters = $request->request->all();
             $arrayData=[];
             if(isset($parameters['employee_id'])&&$parameters['employee_id']!=""){
-                $employee = $this->getDoctrine()->getRepository(User::class)->find($parameters['employee_id']);
 
-                $entities = $this->getDoctrine()->getRepository(CattleLifeCycle::class)->findBy(['employee'=>$employee, 'lifeCycleState'=>'IN_PROGRESS'],['id'=>'ASC']);
+                $arrayData = $this->getCattleLifeCycleDetailsInprogressData($parameters['employee_id']);
 
-                if($entities){
-                    /** @var CattleLifeCycle  $entity */
-                    foreach ($entities as $entity) {
-                        if($entity->getCrmCattleLifeCycleDetails()){
-                            /* @var CattleLifeCycleDetails $lifeCycleDetail*/
-                            foreach ($entity->getCrmCattleLifeCycleDetails() as $lifeCycleDetail) {
-                                $arrayData[]=[
-                                    "id"=>$lifeCycleDetail->getAppId()?(int)$lifeCycleDetail->getAppId():$lifeCycleDetail->getId(),
-                                    "crm_cattle_life_cycle_id"=> $entity->getAppId()?(int)$entity->getAppId():$entity->getId(),
-                                    "visiting_date"=> $lifeCycleDetail->getVisitingDate()?$lifeCycleDetail->getVisitingDate()->format('Y-m-d'):"",
-                                    "age_of_cattle_month"=> $lifeCycleDetail->getAgeOfCattleMonth()?(string)$lifeCycleDetail->getAgeOfCattleMonth():"0",
-                                    "previous_body_weight"=> $lifeCycleDetail->getPreviousBodyWeight()?(string)$lifeCycleDetail->getPreviousBodyWeight():"0",
-                                    "present_body_weight"=> $lifeCycleDetail->getPresentBodyWeight()?(string)$lifeCycleDetail->getPresentBodyWeight():"0",
-                                    "body_weight_difference"=> $lifeCycleDetail->getBodyWeightDifference()?(string)$lifeCycleDetail->getBodyWeightDifference():"0",
-                                    "duration_of_bwt_difference"=> $lifeCycleDetail->getDurationOfBwtDifference()?(string)$lifeCycleDetail->getDurationOfBwtDifference():"0",
-                                    "lactation_no"=> $lifeCycleDetail->getLactationNo()?(string)$lifeCycleDetail->getLactationNo():"0",
-                                    "age_of_lactation"=> $lifeCycleDetail->getAgeOfLactation()?(string)$lifeCycleDetail->getAgeOfLactation():"0",
-                                    "average_weight_per_day"=> $lifeCycleDetail->getAverageWeightPerDay()?(string)$lifeCycleDetail->getAverageWeightPerDay():"0",
-                                    "average_weight_per_kg_consumption_feed"=> $lifeCycleDetail->getAverageWeightPerKgConsumptionFeed()?(string)$lifeCycleDetail->getAverageWeightPerKgConsumptionFeed():"0",
-                                    "average_weight_per_kg_dm"=> $lifeCycleDetail->getAverageWeightPerKgDm()?(string)$lifeCycleDetail->getAverageWeightPerKgDm():"0",
-                                    "milk_fat_percentage"=> $lifeCycleDetail->getMilkFatPercentage()?(string)$lifeCycleDetail->getMilkFatPercentage():"0",
-                                    "consumption_feed_intake_ready_feed"=> $lifeCycleDetail->getConsumptionFeedIntakeReadyFeed()?(string)$lifeCycleDetail->getConsumptionFeedIntakeReadyFeed():"0",
-                                    "consumption_feed_intake_conventional"=> $lifeCycleDetail->getConsumptionFeedIntakeConventional()?(string)$lifeCycleDetail->getConsumptionFeedIntakeConventional():"0",
-                                    "consumption_feed_intake_total"=> $lifeCycleDetail->getConsumptionFeedIntakeTotal()?(string)$lifeCycleDetail->getConsumptionFeedIntakeTotal():"0",
-                                    "fodder_green_grass_kg"=> $lifeCycleDetail->getFodderGreenGrassKg()?(string)$lifeCycleDetail->getFodderGreenGrassKg():"0",
-                                    "fodder_straw_kg"=> $lifeCycleDetail->getFodderStrawKg()?(string)$lifeCycleDetail->getFodderStrawKg():"0",
-                                    "dm_of_fodder_green_grass_kg"=> $lifeCycleDetail->getDmOfFodderGreenGrassKg()?(string)$lifeCycleDetail->getDmOfFodderGreenGrassKg():"0",
-                                    "dm_of_fodder_straw_kg"=> $lifeCycleDetail->getDmOfFodderStrawKg()?(string)$lifeCycleDetail->getDmOfFodderStrawKg():"0",
-                                    "total_dm_kg"=> $lifeCycleDetail->getTotalDmKg()?(string)$lifeCycleDetail->getTotalDmKg():"0",
-                                    "dm_requirement_by_bwt_kg"=> $lifeCycleDetail->getDmRequirementByBwtKg()?(string)$lifeCycleDetail->getDmRequirementByBwtKg():"0",
-                                    "remarks"=> $lifeCycleDetail->getRemarks()?(string)$lifeCycleDetail->getRemarks():"",
-                                    "created_at"=> $lifeCycleDetail->getCreatedAt()?$lifeCycleDetail->getCreatedAt()->format('Y-m-d H:i:s'):"",
-                                    "updated_at"=> $lifeCycleDetail->getUpdatedAt()?$lifeCycleDetail->getUpdatedAt()->format('Y-m-d H:i:s'):"",
-                                    "feedName"=> $entity->getFeedType()?$entity->getFeedType()->getName():"",
-                                    "breedName"=> $entity->getBreedType()?$entity->getBreedType()->getName():"",
-                                    "crm_visit_id"=> null,
-                                    "is_sync"=> 1,
-                                    "customer_id"=> $entity->getCustomer()? $entity->getCustomer()->getId():null,
-                                    "employee_id"=> $entity->getEmployee()? $entity->getEmployee()->getId():null,
-                                    "report_id"=> $entity->getReport()? $entity->getReport()->getId():null,
-                                    'visit_details_id'=> null,
-                                    'life_cycle_state'=> $entity->getLifeCycleState(),
-                                    "web_life_cycle_id"=> $entity->getId(),
-                                    "farm_number"=> $entity->getFarmNumber()?$entity->getFarmNumber():1,
-                                    "web_life_cycle_details_id"=>$lifeCycleDetail->getId(),
-                                ];
-                            }
-                        }
-                    }
-                }
             }
 
             $response = new Response();
@@ -3686,6 +3745,68 @@ class ApiController extends AbstractController
         ]);
 
 
+    }
+
+    private function getCattleLifeCycleDetailsInprogressData($employeeId){
+        $arrayData=[];
+        if($employeeId){
+            $employee = $this->getDoctrine()->getRepository(User::class)->find($employeeId);
+
+            $entities = $this->getDoctrine()->getRepository(CattleLifeCycle::class)->findBy(['employee'=>$employee, 'lifeCycleState'=>'IN_PROGRESS'],['id'=>'ASC']);
+
+            if($entities){
+                /** @var CattleLifeCycle  $entity */
+                foreach ($entities as $entity) {
+                    if($entity->getCrmCattleLifeCycleDetails()){
+                        /* @var CattleLifeCycleDetails $lifeCycleDetail*/
+                        foreach ($entity->getCrmCattleLifeCycleDetails() as $lifeCycleDetail) {
+                            $arrayData[]=[
+                                "id"=>$lifeCycleDetail->getAppId()?(int)$lifeCycleDetail->getAppId():$lifeCycleDetail->getId(),
+                                "crm_cattle_life_cycle_id"=> $entity->getAppId()?(int)$entity->getAppId():$entity->getId(),
+                                "visiting_date"=> $lifeCycleDetail->getVisitingDate()?$lifeCycleDetail->getVisitingDate()->format('Y-m-d'):"",
+                                "age_of_cattle_month"=> $lifeCycleDetail->getAgeOfCattleMonth()?(string)$lifeCycleDetail->getAgeOfCattleMonth():"0",
+                                "previous_body_weight"=> $lifeCycleDetail->getPreviousBodyWeight()?(string)$lifeCycleDetail->getPreviousBodyWeight():"0",
+                                "present_body_weight"=> $lifeCycleDetail->getPresentBodyWeight()?(string)$lifeCycleDetail->getPresentBodyWeight():"0",
+                                "body_weight_difference"=> $lifeCycleDetail->getBodyWeightDifference()?(string)$lifeCycleDetail->getBodyWeightDifference():"0",
+                                "duration_of_bwt_difference"=> $lifeCycleDetail->getDurationOfBwtDifference()?(string)$lifeCycleDetail->getDurationOfBwtDifference():"0",
+                                "lactation_no"=> $lifeCycleDetail->getLactationNo()?(string)$lifeCycleDetail->getLactationNo():"0",
+                                "age_of_lactation"=> $lifeCycleDetail->getAgeOfLactation()?(string)$lifeCycleDetail->getAgeOfLactation():"0",
+                                "average_weight_per_day"=> $lifeCycleDetail->getAverageWeightPerDay()?(string)$lifeCycleDetail->getAverageWeightPerDay():"0",
+                                "average_weight_per_kg_consumption_feed"=> $lifeCycleDetail->getAverageWeightPerKgConsumptionFeed()?(string)$lifeCycleDetail->getAverageWeightPerKgConsumptionFeed():"0",
+                                "average_weight_per_kg_dm"=> $lifeCycleDetail->getAverageWeightPerKgDm()?(string)$lifeCycleDetail->getAverageWeightPerKgDm():"0",
+                                "milk_fat_percentage"=> $lifeCycleDetail->getMilkFatPercentage()?(string)$lifeCycleDetail->getMilkFatPercentage():"0",
+                                "consumption_feed_intake_ready_feed"=> $lifeCycleDetail->getConsumptionFeedIntakeReadyFeed()?(string)$lifeCycleDetail->getConsumptionFeedIntakeReadyFeed():"0",
+                                "consumption_feed_intake_conventional"=> $lifeCycleDetail->getConsumptionFeedIntakeConventional()?(string)$lifeCycleDetail->getConsumptionFeedIntakeConventional():"0",
+                                "consumption_feed_intake_total"=> $lifeCycleDetail->getConsumptionFeedIntakeTotal()?(string)$lifeCycleDetail->getConsumptionFeedIntakeTotal():"0",
+                                "fodder_green_grass_kg"=> $lifeCycleDetail->getFodderGreenGrassKg()?(string)$lifeCycleDetail->getFodderGreenGrassKg():"0",
+                                "fodder_straw_kg"=> $lifeCycleDetail->getFodderStrawKg()?(string)$lifeCycleDetail->getFodderStrawKg():"0",
+                                "dm_of_fodder_green_grass_kg"=> $lifeCycleDetail->getDmOfFodderGreenGrassKg()?(string)$lifeCycleDetail->getDmOfFodderGreenGrassKg():"0",
+                                "dm_of_fodder_straw_kg"=> $lifeCycleDetail->getDmOfFodderStrawKg()?(string)$lifeCycleDetail->getDmOfFodderStrawKg():"0",
+                                "total_dm_kg"=> $lifeCycleDetail->getTotalDmKg()?(string)$lifeCycleDetail->getTotalDmKg():"0",
+                                "dm_requirement_by_bwt_kg"=> $lifeCycleDetail->getDmRequirementByBwtKg()?(string)$lifeCycleDetail->getDmRequirementByBwtKg():"0",
+                                "remarks"=> $lifeCycleDetail->getRemarks()?(string)$lifeCycleDetail->getRemarks():"",
+                                "created_at"=> $lifeCycleDetail->getCreatedAt()?$lifeCycleDetail->getCreatedAt()->format('Y-m-d H:i:s'):"",
+                                "updated_at"=> $lifeCycleDetail->getUpdatedAt()?$lifeCycleDetail->getUpdatedAt()->format('Y-m-d H:i:s'):"",
+                                "feedName"=> $entity->getFeedType()?$entity->getFeedType()->getName():"",
+                                "breedName"=> $entity->getBreedType()?$entity->getBreedType()->getName():"",
+                                "crm_visit_id"=> null,
+                                "is_sync"=> 1,
+                                "customer_id"=> $entity->getCustomer()? $entity->getCustomer()->getId():null,
+                                "employee_id"=> $entity->getEmployee()? $entity->getEmployee()->getId():null,
+                                "report_id"=> $entity->getReport()? $entity->getReport()->getId():null,
+                                'visit_details_id'=> null,
+                                'life_cycle_state'=> $entity->getLifeCycleState(),
+                                "web_life_cycle_id"=> $entity->getId(),
+                                "farm_number"=> $entity->getFarmNumber()?$entity->getFarmNumber():1,
+                                "web_life_cycle_details_id"=>$lifeCycleDetail->getId(),
+                            ];
+                        }
+                    }
+                }
+            }
+        }
+
+        return $arrayData;
     }
 
 
