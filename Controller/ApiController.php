@@ -279,7 +279,7 @@ class ApiController extends AbstractController
      * @param ParameterBagInterface $parameterBag
      * @return JsonResponse|Response
      */
-    public function initailMasterDataImportApi(Request $request, ParameterBagInterface $parameterBag)
+    public function initialMasterDataImportApi(Request $request, ParameterBagInterface $parameterBag)
     {
         set_time_limit(0);
         ignore_user_abort(true);
