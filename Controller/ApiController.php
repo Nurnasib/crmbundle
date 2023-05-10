@@ -289,9 +289,13 @@ class ApiController extends AbstractController
         //$terminal = $this->getUser()->getTerminal()->getId();
             $entities=[];
 
-            $entities['agent'] = $this->getDoctrine()->getRepository(Api::class)->apiAgent(1, $locations);
+            $agent = $this->getDoctrine()->getRepository(Api::class)->apiAgent(1, $locations);
 
-            $entities['customer'] = $this->getDoctrine()->getRepository(Api::class)->customerApi(1, 'farmer', $locations);
+            $entities['agent'] = $agent;
+
+            $customer = $this->getDoctrine()->getRepository(Api::class)->customerApi(1, 'farmer', $locations);
+
+            $entities['customer'] = $customer;
 
             $username = isset($_REQUEST['username']) ? $_REQUEST['username'] : "";
             //$terminal = $this->getUser()->getTerminal()->getId();
@@ -305,6 +309,10 @@ class ApiController extends AbstractController
             $entities['md_broiler_standard'] = $this->getDoctrine()->getRepository(Api::class)->apiBroiler(1);
 
             $entities['md_setting_lifecycle'] = $this->getDoctrine()->getRepository(Api::class)->apiLifeCycleSetting(1);
+
+            $entities['agent_location'] = $agent;
+
+            $entities['customer_location'] = $customer;
 
             $userId = isset($_REQUEST['user_id']) && $_REQUEST['user_id']!='' ? $_REQUEST['user_id'] : "";
 
