@@ -274,7 +274,7 @@ class ApiController extends AbstractController
 
 
     /**
-     * @Route("/initial-mater-data-import-api", name="initial_master_data_import_api" , methods={"POST","GET"}, options={"expose"=true})
+     * @Route("/initial-master-data-import-api", name="initial_master_data_import_api" , methods={"POST","GET"}, options={"expose"=true})
      * @param Request $request
      * @param ParameterBagInterface $parameterBag
      * @return JsonResponse|Response
