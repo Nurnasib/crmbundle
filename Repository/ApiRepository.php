@@ -1152,9 +1152,12 @@ class ApiRepository extends BaseRepository
     public function searchfarmer($user)
     {
         $arrs = array();
-        foreach ($user->getUpozila() as $location) {
-            $arrs[] = $location->getId();
+        if($user && $user->getUpozila()){
+            foreach ($user->getUpozila() as $location) {
+                $arrs[] = $location->getId();
+            }
         }
+        
         $em = $this->_em;
         $qb = $em->createQueryBuilder();
         $qb->from(CrmCustomer::class, 'e');

@@ -469,6 +469,46 @@ class ApiController extends AbstractController
         ]);
     }
 
+    /**
+     * @Route("/farmer-data-import-api", name="farmer_data_import_api" , methods={"GET"}, options={"expose"=true})
+     * @param Request $request
+     * @param ParameterBagInterface $parameterBag
+     * @return JsonResponse|Response
+     */
+    public function farmerDataImportApi(Request $request, ParameterBagInterface $parameterBag)
+    {
+        set_time_limit(0);
+        ignore_user_abort(true);
+
+        if ($request->getMethod() == 'GET' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')) {
+        $locations = isset($_REQUEST['locations']) ? $_REQUEST['locations'] : "";
+        //$terminal = $this->getUser()->getTerminal()->getId();
+            $entities=[];
+
+            $customer = $this->getDoctrine()->getRepository(Api::class)->customerApi(1, 'farmer', $locations);
+
+            $entities['customer'] = $customer;
+
+            $entities['customer_location'] = $customer;
+
+            $userId = isset($_REQUEST['user_id']) && $_REQUEST['user_id']!='' ? $_REQUEST['user_id'] : "";
+
+            $employee = $this->getDoctrine()->getRepository(User::class)->find($userId);
+
+            $entities['farmer'] = $this->getDoctrine()->getRepository(Api::class)->searchfarmer($employee);
+
+            $response = new Response();
+            $response->headers->set('Content-Type', 'application/json');
+            $response->setContent(json_encode($entities));
+            $response->setStatusCode(Response::HTTP_OK);
+            return $response;
+        }
+        return new JsonResponse([
+            'status' => 404,
+            'message' => 'Not Found!'
+        ]);
+    }
+
 
     /**
      * @Route("/life-cycle-data-import-api", name="initial_life_cycle_data_import_api" , methods={"POST","GET"}, options={"expose"=true})
@@ -481,7 +521,7 @@ class ApiController extends AbstractController
         set_time_limit(0);
         ignore_user_abort(true);
 
-        if ($request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')) {
+        if ($request->getMethod() == 'GET' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')) {
 
             $entities=[];
             $employee_id = $request->query->get('employee_id') && $request->query->get('employee_id') !='' ? $request->query->get('employee_id') : "";
