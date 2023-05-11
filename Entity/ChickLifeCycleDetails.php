@@ -447,9 +447,10 @@ class ChickLifeCycleDetails
 
     public function calculateWithMortality(){
         $result = 0;
-        if($this->getTotalBirds()>0 && $this->getWeightAchieved()>0){
+        $totalCalculateBird = $this->getTotalBirds()-$this->getMortalityPes();
+        if($totalCalculateBird>0 && $this->getWeightAchieved()>0){
 
-            $result = (($this->getFeedTotalKg()/($this->getTotalBirds()-$this->getMortalityPes()))/$this->getWeightAchieved())*1000;
+            $result = (($this->getFeedTotalKg() / $totalCalculateBird) / $this->getWeightAchieved())*1000;
         }
 
         return $result;
