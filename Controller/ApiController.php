@@ -394,6 +394,19 @@ class ApiController extends AbstractController
 
             $entities['fish_sale_price'] = $this->getDoctrine()->getRepository(Api::class)->fishSalesPrice(1);
 
+            $arrayData = [];
+
+            if($userId){
+                $newDate = date('Y-F', strtotime('-1 month'));
+                $explodeDate = explode('-',$newDate);
+                $year= $explodeDate[0];
+                $month= $explodeDate[1];
+                $arrayData = $this->getDoctrine()->getRepository(CompanyWiseFeedSale::class)->getCompanyWiseFeedSaleDataForApiImport($userId, $year, $month);
+            }
+
+            $entities['company_wise_feed_sale_data'] = $arrayData;
+
+
             $labs=[];
 //            $employeeId = isset($_REQUEST['employee_id']) && $_REQUEST['employee_id']!='' ? $_REQUEST['employee_id'] : "";
             if($employee){

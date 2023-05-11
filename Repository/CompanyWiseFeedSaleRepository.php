@@ -154,8 +154,8 @@ class CompanyWiseFeedSaleRepository extends BaseRepository
             ->join('cwfs.feedCompany','feedCompany')
             ->where('cwfs.year =:year')
             ->andWhere('cwfs.monthName =:month')
-            ->andWhere('employee.id =:employee')
-            ->setParameters(array('year'=>$year, 'month'=>$month, 'employee'=>$employee));
+            ->andWhere('employee.id =:employeeId')
+            ->setParameters(array('year'=>$year, 'month'=>$month, 'employeeId'=>$employee));
 
         $resutls = $query->getQuery()->getArrayResult();
         $returnArray=[];
