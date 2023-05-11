@@ -486,19 +486,36 @@ class ApiController extends AbstractController
             $entities=[];
             $employee_id = $request->query->get('employee_id') && $request->query->get('employee_id') !='' ? $request->query->get('employee_id') : "";
 
-            $entities['crm_fish_life_cycle_culture'] = $this->getFishLifeCycleDataByEmployeeId($employee_id);
+            if($employee_id && $employee_id !=''){
+                $employee = $this->getDoctrine()->getRepository(User::class)->find($employee_id);
 
-            $entities['crm_broiler_life_cycle'] = $this->getChickLifeCycleInprogressData($employee_id);
+                if($employee && $employee->getServiceMode()){
+                    if( $employee->getServiceMode()->getSlug() == 'sales-service-poultry' ) {
 
-            $entities['crm_broiler_life_cycle_details'] = $this->getChickLifeCycleDetailsInprogressData($employee_id);
+                        $entities['crm_broiler_life_cycle'] = $this->getChickLifeCycleInprogressData($employee_id);
 
-            $entities['crm_layer_life_cycle'] = $this->getLayerLifeCycleInprogressData($employee_id);
+                        $entities['crm_broiler_life_cycle_details'] = $this->getChickLifeCycleDetailsInprogressData($employee_id);
 
-            $entities['crm_layer_life_cycle_details'] = $this->getLayerLifeCycleDetailsInprogressData($employee_id);
+                        $entities['crm_layer_life_cycle'] = $this->getLayerLifeCycleInprogressData($employee_id);
 
-            $entities['crm_cattle_life_cycle'] = $this->getCattleLifeCycleInprogressData($employee_id);
+                        $entities['crm_layer_life_cycle_details'] = $this->getLayerLifeCycleDetailsInprogressData($employee_id);
 
-            $entities['crm_cattle_life_cycle_details'] = $this->getCattleLifeCycleDetailsInprogressData($employee_id);
+
+                    }elseif ($employee->getServiceMode()->getSlug() == 'sales-service-cattle' ) {
+
+                        $entities['crm_cattle_life_cycle'] = $this->getCattleLifeCycleInprogressData($employee_id);
+
+                        $entities['crm_cattle_life_cycle_details'] = $this->getCattleLifeCycleDetailsInprogressData($employee_id);
+
+                    }elseif ($employee->getServiceMode()->getSlug() == 'sales-service-fish' ) {
+
+                        $entities['crm_fish_life_cycle_culture'] = $this->getFishLifeCycleDataByEmployeeId($employee_id);
+
+                    }
+
+                }
+
+            }
 
 
             $response = new Response();
