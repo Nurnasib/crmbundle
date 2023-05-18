@@ -98,6 +98,9 @@ class ApiController extends AbstractController
                         $upozilas[] = $location->getId();
                     }
 
+                    $findUser->setOtp($otp);
+                    $this->getDoctrine()->getManager()->flush();
+
                     $locations = implode(",", $upozilas);
                     $data = [
                         'userId' => $findUser->getId(),
