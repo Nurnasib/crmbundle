@@ -55,6 +55,39 @@ class CrmCustomerRepository extends EntityRepository
 
     }
 
+    public function getCustomerByLocationAndType( $customerType, User $user, $pram)
+    {
+        $rolesString = implode('_', $user->getRoles());
+
+        $locationsId = array();
+        foreach ($user->getUpozila() as $location){
+            $locationsId[] = $location->getId();
+        }
+        $qb = $this->createQueryBuilder('e');
+
+        $qb->leftJoin('e.location','location');
+        $qb->join('e.customerGroup','s');
+        $qb->leftJoin('e.agent','agent');
+        $qb->join('e.farmerIntroduce','farmerIntroduce');
+        $qb->leftJoin('farmerIntroduce.feed', 'feed');
+        $qb->leftJoin('farmerIntroduce.farmerType','farmerType');
+
+        $qb->select('e.id as id','e.name as name','e.address as address','e.mobile as mobile', 'agent.name AS agentName', 'location.name AS locationName');
+        $qb->addSelect('farmerType.name as farmerTypeName');
+        $qb->addSelect('farmerIntroduce.cultureSpeciesItemAndQty');
+        $qb->addSelect('feed.name as feedName');
+
+        $qb->where('s.slug = :slug')->setParameter('slug',$pram);
+        $qb->andWhere('farmerType.slug =:farmerTypeSlug')->setParameter('farmerTypeSlug', $customerType.'-breed');
+        if (!str_contains($rolesString, 'ADMIN')){
+            $qb->andWhere('location.id IN (:upozilas)')->setParameter('upozilas',$locationsId);
+        }
+        $qb->andWhere('e.deletedAt IS NULL');
+        $qb->andWhere('e.deletedBy IS NULL');
+        return $qb->getQuery()->getArrayResult();
+
+    }
+
     public function getAgentWise(Agent $agent, User $user, $pram='farmer')
     {
         $serviceMode= $user->getServiceMode()->getSlug();

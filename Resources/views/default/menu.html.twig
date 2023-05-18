@@ -305,8 +305,27 @@
         {#        <li><a class="dropdown-item" href="{{ path('crm_expense') }}"><i class="feather icon-credit-card"></i>{{ 'Expense'|trans }}</a></li>#}
         {#    <li><a class="dropdown-item" href="{{ path('crm_employee') }}">{{ 'Employee'|trans }}</a></li>#}
     {% endif %}
-    <li><a class="dropdown-item" href="{{ path('crm_customer') }}"><i
-                    class="feather icon-users"></i>{{ 'Farmer'|trans }}</a></li>
+    <li>
+        <a class="" href="javascript:"><i class="feather icon-users"></i>{{ 'Farmer'|trans }}</a>
+        <ul class="sub-menu">
+            <li>
+                <a class="dropdown-item" href='{{ path('crm_customer',{'customerType': 'poultry'}) }}'>
+                    {{ 'Poultry'|trans }}
+                </a>
+            </li>
+            <li>
+                <a class="dropdown-item" href='{{ path('crm_customer',{'customerType': 'cattle'}) }}'>
+                    {{ 'Cattle'|trans }}
+                </a>
+            </li>
+            <li>
+                <a class="dropdown-item" href='{{ path('crm_customer',{'customerType': 'fish'}) }}'>
+                    {{ 'Fish'|trans }}
+                </a>
+            </li>
+        </ul>
+
+    </li>
 
     {% if is_granted('ROLE_CRM_POULTRY_ADMIN') or is_granted('ROLE_CRM_CATTLE_ADMIN') or is_granted('ROLE_CRM_AQUA_ADMIN') or is_granted('ROLE_CRM_SALES_MARKETING_ADMIN') or is_granted('ROLE_DEVELOPER') %}
     <li><a class="" href="{{ path('crm_sync_app_data_index') }}"><i

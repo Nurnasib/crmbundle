@@ -11,6 +11,7 @@ use App\Entity\Admin\Location;
 use App\Entity\Core\Agent;
 use Doctrine\ORM\QueryBuilder;
 use http\Url;
+use Knp\Component\Pager\PaginatorInterface;
 use Omines\DataTablesBundle\Adapter\ArrayAdapter;
 use Omines\DataTablesBundle\Adapter\Doctrine\ORMAdapter;
 use Omines\DataTablesBundle\Column\TextColumn;
@@ -44,64 +45,41 @@ use Terminalbd\CrmBundle\Repository\CrmCustomerRepository;
 class CrmCustomerController extends AbstractController
 {
     /**
-     * @Route("/", methods={"GET","POST"}, name="crm_customer")
+     * @Route("/{customerType}/{mode}", defaults={"customerType" = "poultry", "mode" = null}, methods={"GET","POST"}, name="crm_customer")
      */
-    public function index(Request $request, DataTableFactory $dataTableFactory)
+    public function index($customerType, $mode, Request $request, PaginatorInterface $paginator)
     {
-        $entities=[];
-//        $entities=$this->getDoctrine()->getRepository(CrmCustomer::class)->getLocationWise($this->getUser(), 'farmer');
 
-        $user=$this->getUser();
-        $rolesString = implode('_', $user->getRoles());
+        $entities=$this->getDoctrine()->getRepository(CrmCustomer::class)->getCustomerByLocationAndType($customerType, $this->getUser(), 'farmer');
 
-        $locationsId = array();
-        foreach ($user->getUpozila() as $location){
-            $locationsId[] = $location->getId();
+        $data = $paginator->paginate(
+            $entities,
+            $request->query->get('page', 1)/*page number*/,
+            50  /*limit per page*/
+        );
+
+        $species=[];
+
+        $breedName= $this->getDoctrine()->getRepository(Setting::class)->findOneBy(['settingType'=>'BREED_NAME','slug'=>$customerType.'-breed','status'=>1]);
+        if($breedName){
+            $species = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('status'=>1,'settingType'=>'SPECIES_TYPE','parent'=>$breedName));
         }
-        $table = $dataTableFactory->create()
-            ->add('name', TextColumn::class,['field' => 'e.name','label' => 'Name'])
-            ->add('mobile', TextColumn::class,['field' => 'e.mobile','label' => 'Mobile'])
-            ->add('address', TextColumn::class,['field' => 'e.address','label' => 'Address'])
-            ->add('agent', TextColumn::class,['field' => 'agent.name','label' => 'Agent'])
-            ->add('location', TextColumn::class,['field' => 'location.name','label' => 'Location'])
-            ->add('farmerType', TextColumn::class,['field' => 'farmerType.name','label' => 'Farmer Type'])
-            ->add('link', TwigStringColumn::class, [
-                'template' => '<a class="btn btn-mini yellow-bg white-font" href="{{path(\'crm_customer_edit\', {id: row.id})}}"><i class="feather icon-edit"></i> Edit</a><a class="btn btn-transparent btn-mini red-font removeWithMessage" href="javascript:" data-action="{{ path(\'customer_delete\',{id:row.id}) }}"><i class="fa fa-remove"></i></a>',
-                'label' => 'Action'
-            ])
-            ->createAdapter(ORMAdapter::class, [
-            'entity' => CrmCustomer::class,
-            'query' => function (QueryBuilder $builder) use($rolesString, $locationsId) {
-                $builder
-                    ->select('e')
-//                    ->addSelect('agent')
-//                    ->addSelect('location')
-//                    ->addSelect('farmerType')
-//                    ->addSelect('location.id as locationId','location.name as locationName')
-//                    ->select('e.id as id','e.name as name','e.address as address','e.mobile as mobile', 'agent.name AS agentName', 'location.name AS locationName')
-                    ->from(CrmCustomer::class, 'e')
-                    ->leftJoin('e.location','location')
-                    ->join('e.customerGroup','s')
-                    ->leftJoin('e.agent','agent')
-                    ->join('e.farmerIntroduce','farmerIntroduce')
-                    ->leftJoin('farmerIntroduce.farmerType','farmerType')
-                    ->where('s.slug = :slug')->setParameter('slug','farmer');
-                if (!str_contains($rolesString, 'ADMIN')){
-                    $builder->andWhere('location.id IN (:upozilas)')->setParameter('upozilas',$locationsId);
-                }
-                    $builder
-                    ->andWhere('e.deletedAt IS NULL')
-                    ->andWhere('e.deletedBy IS NULL');
-                ;
-            },
-        ])->handleRequest($request);
 
-        if ($table->isCallback()) {
-            return $table->getResponse();
+        if ($mode == 'excel'){
+            return $this->render('@TerminalbdCrm/crmcustomer/customer-excel.html.twig',[
+                'entities' => $entities,
+                'customerType'=>$customerType,
+                'species'=>$species,
+//                'form' => $form->createView()
+            ]);
         }
-        return $this->render('@TerminalbdCrm/crmcustomer/index.html.twig', [
-            'entities' =>$entities,
-            'datatable' => $table
+
+
+        return $this->render('@TerminalbdCrm/crmcustomer/index.html.twig',[
+            'entities' => $data,
+            'customerType'=>$customerType,
+            'species'=>$species,
+//            'form' => $form->createView()
         ]);
     }
 
