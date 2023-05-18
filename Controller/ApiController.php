@@ -565,6 +565,16 @@ class ApiController extends AbstractController
 
                             $entities['crm_fish_life_cycle_culture'] = $this->getFishLifeCycleDataByEmployeeId($employee_id);
 
+                        }else{
+                            $entities['crm_broiler_life_cycle']=[];
+                            $entities['crm_broiler_life_cycle_details']=[];
+                            $entities['crm_layer_life_cycle']=[];
+                            $entities['crm_layer_life_cycle_details']=[];
+
+                            $entities['crm_cattle_life_cycle']=[];
+                            $entities['crm_cattle_life_cycle_details']=[];
+
+                            $entities['crm_fish_life_cycle_culture']=[];
                         }
                     }else{
                         $entities['crm_broiler_life_cycle']=[];
