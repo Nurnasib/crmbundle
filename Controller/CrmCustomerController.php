@@ -45,7 +45,7 @@ use Terminalbd\CrmBundle\Repository\CrmCustomerRepository;
 class CrmCustomerController extends AbstractController
 {
     /**
-     * @Route("/{customerType}/{mode}", defaults={"customerType" = "poultry", "mode" = null}, methods={"GET","POST"}, name="crm_customer")
+     * @Route("/list/{customerType}/{mode}", defaults={"customerType" = "poultry", "mode" = null}, methods={"GET","POST"}, name="crm_customer")
      */
     public function index($customerType, $mode, Request $request, PaginatorInterface $paginator)
     {
