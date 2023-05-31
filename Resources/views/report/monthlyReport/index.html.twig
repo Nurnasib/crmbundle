@@ -67,6 +67,13 @@
                                 {{ form_widget(form.feedCompany) }}
                             </th>
                             {% endif %}
+
+                            {% if reportSlug in ['company-species-wise-average-fcr-before','company-species-wise-average-fcr-after'] %}
+                            <th>
+                                {{ form_label(form.feedType, 'Type:') }}
+                                {{ form_widget(form.feedType) }}
+                            </th>
+                            {% endif %}
                             <th>
                                 <div class="btn-group float-right" style="margin-top: 20px">
                                     {{ form_widget(form._token) }}

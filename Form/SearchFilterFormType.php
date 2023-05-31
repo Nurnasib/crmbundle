@@ -173,6 +173,24 @@ class SearchFilterFormType extends AbstractType
                 'required' => false
 
             ])
+            ->add('feedType', EntityType::class,[
+                'class' => Setting::class,
+                'choice_label' => 'name',
+                'placeholder' => '- Select Feed Type -',
+                'query_builder' => function(EntityRepository $er){
+                    return $er->createQueryBuilder('e')
+                        ->where('e.settingType = :settingType')->setParameter('settingType', 'FEED_TYPE')
+                        ->join('e.parent','parent')
+                        ->andWhere('parent.slug = :slugParent')->setParameter('slugParent','fish')
+                        ->andWhere('e.status = 1')
+                        ->orderBy('e.name');
+                },
+                'attr' => [
+                    'class' => 'select2'
+                ],
+                'required' => false
+
+            ])
             ->add('poultryFramType', EntityType::class,[
                 'class' => Setting::class,
                 'choice_label' => 'name',

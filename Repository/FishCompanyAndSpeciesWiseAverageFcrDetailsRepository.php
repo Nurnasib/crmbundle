@@ -97,6 +97,7 @@ WHERE fcrDetails.quantity>0 and fcr.employee_id = :employee_id and fcr.feed_type
         $start = isset($filterBy['startDate']) ? (new \DateTime($filterBy['startDate']))->format('Y-m-d') : null;
         $end = isset($filterBy['endDate']) ? (new \DateTime($filterBy['endDate']))->format('Y-m-d') : null;
         $employeeId = isset($filterBy['employeeId']) && $filterBy['employeeId']!=''?$filterBy['employeeId']: null;
+        $feedType = isset($filterBy['feedType']) && $filterBy['feedType']!=''?$filterBy['feedType']: null;
 
         $qb = $this->createQueryBuilder('e');
         $qb->join('e.fishCompanyAndSpeciesWiseAverageFcr', 'parent');
@@ -121,6 +122,9 @@ WHERE fcrDetails.quantity>0 and fcr.employee_id = :employee_id and fcr.feed_type
         $qb->andWhere('user_group.slug = :userGroupSlug')->setParameter('userGroupSlug', 'employee');
         $qb->andWhere('parent.fcrOfFeed = :fcrOfFeed')->setParameter('fcrOfFeed', $fcrOfFeed);
         $qb->andWhere('e.quantity >:quantity')->setParameter('quantity',0);
+        if($feedType){
+            $qb->andWhere('feed_type.id = :feedTypeId')->setParameter('feedTypeId', $feedType);
+        }
 
 
         $rolesString = implode('_', $loggedUser->getRoles());

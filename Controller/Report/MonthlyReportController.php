@@ -66,6 +66,7 @@ class MonthlyReportController extends AbstractController
             $filterBy['feedMill'] = $form->getData()['feedMill'] ? $form->getData()['feedMill']->getId() : '';
             $filterBy['region'] = $form->getData()['region'] ? $form->getData()['region']->getId() : '';
             $filterBy['feedCompany'] = isset($form->getData()['feedCompany']) ? $form->getData()['feedCompany'] : '';
+            $filterBy['feedType'] = isset($form->getData()['feedType']) ? $form->getData()['feedType']->getId() : '';
 
             $employee = $form->getData()['employee'];
 
