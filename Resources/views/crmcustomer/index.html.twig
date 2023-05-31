@@ -40,6 +40,41 @@
                     <h5 class="text-center">UTTARA, DHAKA.</h5>
                     <h6 class="text-center">Farmer Type: {{ customerType|upper }}</h6>
 
+                    {{ form_start(form) }}
+                    <table class="table table-bordered ">
+                        <thead class="thead-dark">
+                        <tr role="row" class="filter">
+                            <th colspan="2">
+                                {{ form_label(form.customerName, 'Name') }}
+                                {{ form_widget(form.customerName) }}
+                            </th>
+                            <th colspan="2">
+                                {{ form_label(form.customerMobile, 'Mobile') }}
+                                {{ form_widget(form.customerMobile) }}
+                            </th>
+                            <th colspan="2">
+                                {{ form_label(form.customerAddress, 'Address/Upazilla') }}
+                                {{ form_widget(form.customerAddress) }}
+                            </th>
+                            <th colspan="2">
+                                {{ form_label(form.feedCompany, 'Feed') }}
+                                {{ form_widget(form.feedCompany) }}
+                            </th>
+
+                            <th colspan="1">
+                                <div class="btn-group" style="margin-top: 25px">
+                                    <button type="submit" name="search" class="btn btn-primary btn-sm"
+                                            title="Search" value="search"><i
+                                                class="fa fa-search" aria-hidden="true"></i></button>
+                                    <a href="{{ path('crm_customer', {'customerType': customerType}) }}" class="btn purple-bg btn-sm white-font" title="Reset"
+                                       value="reset"><i class="fa fa-refresh" aria-hidden="true"></i></a>
+                                </div>
+                            </th>
+                        </tr>
+                        </thead>
+                    </table>
+                    {{ form_end(form) }}
+
                     <table class="table table-striped table-bordered table-hover">
                         <thead class="thead-dark">
                         <tr>

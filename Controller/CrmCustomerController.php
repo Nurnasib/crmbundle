@@ -35,6 +35,7 @@ use Terminalbd\CrmBundle\Form\CrmCustomerFormType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 
+use Terminalbd\CrmBundle\Form\CustomerFilterFormType;
 use Terminalbd\CrmBundle\Repository\CrmCustomerRepository;
 
 /**
@@ -49,8 +50,19 @@ class CrmCustomerController extends AbstractController
      */
     public function index($customerType, $mode, Request $request, PaginatorInterface $paginator)
     {
+        $filterBy=[];
 
-        $entities=$this->getDoctrine()->getRepository(CrmCustomer::class)->getCustomerByLocationAndType($customerType, $this->getUser(), 'farmer');
+        $entities=$this->getDoctrine()->getRepository(CrmCustomer::class)->getCustomerByLocationAndType($filterBy, $customerType, $this->getUser(), 'farmer');
+
+        $form = $this->createForm(CustomerFilterFormType::class);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted()){
+            $filterBy = $form->getData();
+
+            $entities = $this->getDoctrine()->getRepository(CrmCustomer::class)->getCustomerByLocationAndType($filterBy, $customerType, $this->getUser(), 'farmer');
+//            dd($entities);
+        }
 
         $data = $paginator->paginate(
             $entities,
@@ -79,7 +91,7 @@ class CrmCustomerController extends AbstractController
             'entities' => $data,
             'customerType'=>$customerType,
             'species'=>$species,
-//            'form' => $form->createView()
+            'form' => $form->createView()
         ]);
     }
 

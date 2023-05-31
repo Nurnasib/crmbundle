@@ -55,8 +55,9 @@ class CrmCustomerRepository extends EntityRepository
 
     }
 
-    public function getCustomerByLocationAndType( $customerType, User $user, $pram)
+    public function getCustomerByLocationAndType( $filterBy, $customerType, User $user, $pram)
     {
+//        print_r($filterBy);
         $rolesString = implode('_', $user->getRoles());
 
         $locationsId = array();
@@ -84,6 +85,30 @@ class CrmCustomerRepository extends EntityRepository
         }
         $qb->andWhere('e.deletedAt IS NULL');
         $qb->andWhere('e.deletedBy IS NULL');
+
+        if(isset($filterBy['customerName']) && $filterBy['customerName'] != ""){
+            $qb->andWhere(
+                $qb->expr()->like('e.name', ':name')
+            )->setParameter(':name', '%' . $filterBy['customerName'] . '%');
+        }
+
+        if(isset($filterBy['customerMobile']) && $filterBy['customerMobile'] != ""){
+            $qb->andWhere(
+                $qb->expr()->like('e.mobile', ':mobile')
+            )->setParameter(':mobile', '%'.trim($filterBy['customerMobile']).'%');
+        }
+
+        if(isset($filterBy['customerAddress']) && $filterBy['customerAddress'] != ""){
+            $qb->andWhere($qb->expr()->orX(
+                $qb->expr()->like('e.address', ':address'),
+                $qb->expr()->like('location.name', ':address')
+            ))->setParameter(':address', trim($filterBy['customerAddress']) . '%');
+        }
+
+        if(isset($filterBy['feedCompany']) && $filterBy['feedCompany'] != ""){
+            $qb->andWhere('feed.id = :feedId')->setParameter('feedId', $filterBy['feedCompany']->getId());
+        }
+
         return $qb->getQuery()->getArrayResult();
 
     }
