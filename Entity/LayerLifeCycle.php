@@ -444,7 +444,7 @@ class LayerLifeCycle
     /**
      * @return \DateTime
      */
-    public function getReportingDate(): \DateTime
+    public function getReportingDate(): ?\DateTime
     {
         return $this->reportingDate;
     }

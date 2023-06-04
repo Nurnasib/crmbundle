@@ -398,16 +398,16 @@ VALUES (:crm_visit_id, :farmCapacity, :updated, :comments, :created, :customer_i
                 $stmt->bindValue('feed_type_id', $performance['feed_type_id']);
                 $stmt->bindValue('color_id', $performance['color_id']);
                 $stmt->bindValue('repoting_month', $repotingMonth->format('Y-m-d'));
-                $stmt->bindValue('total_birds', $performance['total_birds']);
+                $stmt->bindValue('total_birds', $performance['total_birds']!=""?(float)trim($performance['total_birds']):0);
                 $stmt->bindValue('age_week', $performance['age_week']);
-                $stmt->bindValue('bird_weight_achieved', $performance['bird_weight_achieved']!=""?$performance['bird_weight_achieved']:0);
-                $stmt->bindValue('bird_weight_target', $performance['bird_weight_target']);
-                $stmt->bindValue('feed_intake_per_bird', $performance['feed_intake_per_bird']);
-                $stmt->bindValue('feed_Target', $performance['feed_Target']);
-                $stmt->bindValue('egg_production_achieved', (float)$performance['egg_production_achieved']!=""?$performance['egg_production_achieved']:0);
-                $stmt->bindValue('egg_production_target', $performance['egg_production_target']);
-                $stmt->bindValue('egg_weight_achieved', $performance['egg_weight_achieved']!=""?$performance['egg_weight_achieved']:0);
-                $stmt->bindValue('egg_weight_stand', $performance['egg_weight_stand']);
+                $stmt->bindValue('bird_weight_achieved', $performance['bird_weight_achieved']!=""?(float)trim($performance['bird_weight_achieved']):0);
+                $stmt->bindValue('bird_weight_target', $performance['bird_weight_target']!=""?(float)$performance['bird_weight_target']:0);
+                $stmt->bindValue('feed_intake_per_bird', $performance['feed_intake_per_bird']!=""?(float)$performance['feed_intake_per_bird']:"");
+                $stmt->bindValue('feed_Target', $performance['feed_Target']!=""?(float)$performance['feed_Target']:0);
+                $stmt->bindValue('egg_production_achieved', $performance['egg_production_achieved']!=""?(float)trim($performance['egg_production_achieved']):0);
+                $stmt->bindValue('egg_production_target', $performance['egg_production_target']!=""?(float)$performance['egg_production_target']:0);
+                $stmt->bindValue('egg_weight_achieved', $performance['egg_weight_achieved']!=""?(float)$performance['egg_weight_achieved']:0);
+                $stmt->bindValue('egg_weight_stand', $performance['egg_weight_stand']!=""?(float)$performance['egg_weight_stand']:0);
                 $stmt->bindValue('production_date', $productionDate!=""?$productionDate->format('Y-m-d'):null);
                 $stmt->bindValue('batch_no', $performance['batch_no']);
                 $stmt->bindValue('disease', $performance['disease']);
@@ -454,33 +454,33 @@ VALUES (:employee_id, :report_id, :agent_id, :customer_id, :breed_type, :feed_ty
                 $stmt->bindValue('visiting_date', $visitingDate->format('Y-m-d'));
                 $stmt->bindValue('age_of_cattle_month', $performance['age_of_cattle_month']);
                 $stmt->bindValue('present_body_weight', $performance['present_body_weight']);
-                if ($performance['previous_body_weight'] === null){
+                if ($performance['previous_body_weight']=="" || $performance['previous_body_weight'] === null){
                     $stmt->bindValue('previous_body_weight', 0);
                 }else{
                     $stmt->bindValue('previous_body_weight', $performance['previous_body_weight']);
                 }
-                if ($performance['body_weight_difference'] === null){
+                if ($performance['body_weight_difference']=="" || $performance['body_weight_difference'] === null){
                     $stmt->bindValue('body_weight_difference', 0);
                 }else{
                     $stmt->bindValue('body_weight_difference', $performance['body_weight_difference']);
                 }
-                if ($performance['duration_of_bwt_difference'] === null){
+                if ($performance['duration_of_bwt_difference']=="" || $performance['duration_of_bwt_difference'] === null){
                     $stmt->bindValue('duration_of_bwt_difference', 0);
                 }else{
                     $stmt->bindValue('duration_of_bwt_difference', $performance['duration_of_bwt_difference']);
 
                 }
-                if ($performance['lactation_no'] === null){
+                if ($performance['lactation_no']=="" || $performance['lactation_no'] === null){
                     $stmt->bindValue('lactation_no', 0);
                 }else{
                     $stmt->bindValue('lactation_no', $performance['lactation_no']);
                 }
-                if ($performance['age_of_lactation'] === null){
+                if ($performance['age_of_lactation']=="" || $performance['age_of_lactation'] === null){
                     $stmt->bindValue('age_of_lactation', 0);
                 }else{
                     $stmt->bindValue('age_of_lactation', $performance['age_of_lactation']);
                 }
-                if ($performance['milk_fat_percentage'] === null){
+                if ($performance['milk_fat_percentage']=="" && $performance['milk_fat_percentage'] === null){
                     $stmt->bindValue('milk_fat_percentage', 0);
                 }else{
                     $stmt->bindValue('milk_fat_percentage', $performance['milk_fat_percentage']);
@@ -630,17 +630,17 @@ VALUES (:report_id, :employee_id, :agent_id, :customer_id, :hatchery_id, :breed_
                 $stmt->bindValue('fcr_of_feed', $frcDetail['fcr_of_feed']);
                 $stmt->bindValue('reporting_month', $repotingMonth->format('Y-m-d'));
                 $stmt->bindValue('hatching_date', $hatchingDate->format('Y-m-d'));
-                $stmt->bindValue('total_birds', $frcDetail['total_birds']);
+                $stmt->bindValue('total_birds', $frcDetail['total_birds']!=""||$frcDetail['total_birds']!="null"?(float)trim($frcDetail['total_birds']):0);
                 $stmt->bindValue('age_day', $frcDetail['age_day']);
-                $stmt->bindValue('mortality_pes', $frcDetail['mortality_pes']);
-                $stmt->bindValue('mortality_percent', $frcDetail['mortality_percent']);
+                $stmt->bindValue('mortality_pes', $frcDetail['mortality_pes']!=""||$frcDetail['mortality_pes']!="null"?(float)trim($frcDetail['mortality_pes']):0);
+                $stmt->bindValue('mortality_percent', $frcDetail['mortality_percent']!=""||$frcDetail['mortality_percent']!="null"?(float)trim($frcDetail['mortality_percent']):0);
                 $stmt->bindValue('weight_standard', $frcDetail['weight_standard']!='null'?$frcDetail['weight_standard']:$weight_standard);
-                $stmt->bindValue('weight', $frcDetail['weight']);
-                $stmt->bindValue('feed_consumption_total_kg', (float)$frcDetail['feed_consumption_total_kg']);
-                $stmt->bindValue('feed_consumption_per_bird', (float)$frcDetail['feed_consumption_per_bird']);
-                $stmt->bindValue('feed_consumption_standard', (float)$frcDetail['feed_consumption_standard'] != 'null' ? $frcDetail['feed_consumption_standard'] : $feed_consumption_standard);
-                $stmt->bindValue('fcr_without_mortality', $frcDetail['fcr_without_mortality']);
-                $stmt->bindValue('fcr_with_mortality', $frcDetail['fcr_with_mortality']);
+                $stmt->bindValue('weight', $frcDetail['weight']!=""||$frcDetail['weight']!="null"?(float)$frcDetail['weight']:0);
+                $stmt->bindValue('feed_consumption_total_kg', $frcDetail['feed_consumption_total_kg']!=""||$frcDetail['feed_consumption_total_kg']!="null"?(float)$frcDetail['feed_consumption_total_kg']:0);
+                $stmt->bindValue('feed_consumption_per_bird', $frcDetail['feed_consumption_per_bird']!=""||$frcDetail['feed_consumption_per_bird']!="null"?(float)$frcDetail['feed_consumption_per_bird']:0);
+                $stmt->bindValue('feed_consumption_standard', $frcDetail['feed_consumption_standard']!=""||$frcDetail['feed_consumption_standard']!="null"? (float)$frcDetail['feed_consumption_standard'] : (float)$feed_consumption_standard);
+                $stmt->bindValue('fcr_without_mortality', $frcDetail['fcr_without_mortality']!=""||$frcDetail['fcr_without_mortality']!="null"?(float)$frcDetail['fcr_without_mortality']:0);
+                $stmt->bindValue('fcr_with_mortality', $frcDetail['fcr_with_mortality']!=""||$frcDetail['fcr_with_mortality']!="null"?(float)$frcDetail['fcr_with_mortality']:0);
                 $stmt->bindValue('pro_date', $proDate!=''?$proDate->format('Y-m-d'):null);
                 $stmt->bindValue('batch_no', $frcDetail['batch_no']);
                 $stmt->bindValue('remarks', $frcDetail['remarks']);
@@ -694,15 +694,15 @@ VALUES (:report_id, :employee_id, :agent_id, :customer_id, :hatchery_id, :breed_
                 $stmt->bindValue('feed_id',$report['feed_id']);
                 $stmt->bindValue('feed_mill_id', isset($report['feed_mill_id'])?$report['feed_mill_id']:null);
                 $stmt->bindValue('hatching_date',$hatchingDate->format('Y-m-d'));
-                $stmt->bindValue('total_stocked_chicks_pcs',$report['total_stocked_chicks_pcs']);
-                $stmt->bindValue('total_feed_used_kg',$report['total_feed_used_kg']);
+                $stmt->bindValue('total_stocked_chicks_pcs',$report['total_stocked_chicks_pcs']!=""||$report['total_stocked_chicks_pcs']!='null'?(float)trim($report['total_stocked_chicks_pcs']):0);
+                $stmt->bindValue('total_feed_used_kg',$report['total_feed_used_kg']!=""||$report['total_feed_used_kg']!="null"?(float)trim($report['total_feed_used_kg']):0);
                 $stmt->bindValue('age_days',$report['age_days']);
-                $stmt->bindValue('total_broiler_weight_kg',$report['total_broiler_weight_kg']);
-                $stmt->bindValue('mortality',$report['mortality']);
-                $stmt->bindValue('fcr',$report['fcr']);
+                $stmt->bindValue('total_broiler_weight_kg',$report['total_broiler_weight_kg']!=""||$report['total_broiler_weight_kg']!="null"?(float)$report['total_broiler_weight_kg']:0);
+                $stmt->bindValue('mortality',$report['mortality']!=""||$report['mortality']!="null"?(float)$report['mortality']:0);
+                $stmt->bindValue('fcr',$report['fcr']!=""||$report['fcr']!="null"||$report['fcr']!="Infinity"||$report['fcr']!="NaN"?(float)$report['fcr']:0);
                 $stmt->bindValue('remarks',$report['remarks']);
-                $stmt->bindValue('medicine_total_cost',$report['medicine_total_cost']);
-                $stmt->bindValue('vaccine_total_cost',$report['vaccine_total_cost']);
+                $stmt->bindValue('medicine_total_cost',$report['medicine_total_cost']!=""||$report['medicine_total_cost']!="null"?$report['medicine_total_cost']:0);
+                $stmt->bindValue('vaccine_total_cost',$report['vaccine_total_cost']!=""||$report['vaccine_total_cost']!="null"?$report['vaccine_total_cost']:0);
 
                 $stmt->execute();
 
@@ -725,16 +725,16 @@ VALUES (:report_id, :report_parent_parent_id, :agent_id, :customer_id, :employee
                 $stmt->bindValue('feed_mill_id',$report['feed_mill_id']);
                 $stmt->bindValue('hatching_date',$hatchingDate->format('Y-m-d'));
                 $stmt->bindValue('reporting_month',$report['reporting_month']);
-                $stmt->bindValue('total_stocked_chicks_pcs',$report['total_stocked_chicks_pcs']);
-                $stmt->bindValue('total_feed_used_kg',$report['total_feed_used_kg']);
+                $stmt->bindValue('total_stocked_chicks_pcs',$report['total_stocked_chicks_pcs']!=""||$report['total_stocked_chicks_pcs']!='null'?(float)trim($report['total_stocked_chicks_pcs']):0);
+                $stmt->bindValue('total_feed_used_kg',$report['total_feed_used_kg']!=""||$report['total_feed_used_kg']!="null"?(float)trim($report['total_feed_used_kg']):0);
                 $stmt->bindValue('age_days',$report['age_days']);
-                $stmt->bindValue('total_broiler_weight_kg',$report['total_broiler_weight_kg']);
-                $stmt->bindValue('mortality',$report['mortality']);
-                $stmt->bindValue('fcr',$report['fcr']);
+                $stmt->bindValue('total_broiler_weight_kg',$report['total_broiler_weight_kg']!=""||$report['total_broiler_weight_kg']!="null"?(float)$report['total_broiler_weight_kg']:0);
+                $stmt->bindValue('mortality',$report['mortality']!=""||$report['mortality']!="null"?(float)$report['mortality']:0);
+                $stmt->bindValue('fcr',$report['fcr']!=""||$report['fcr']!="null"||$report['fcr']!="Infinity"?(float)$report['fcr']:0);
                 $stmt->bindValue('remarks',$report['remarks']);
                 $stmt->bindValue('created_at',$createdAt->format('Y-m-d H:i:s'));
-                $stmt->bindValue('medicine_total_cost',$report['medicine_total_cost']);
-                $stmt->bindValue('vaccine_total_cost',$report['vaccine_total_cost']);
+                $stmt->bindValue('medicine_total_cost',$report['medicine_total_cost']!=""||$report['medicine_total_cost']!="null"?$report['medicine_total_cost']:0);
+                $stmt->bindValue('vaccine_total_cost',$report['vaccine_total_cost']!=""||$report['vaccine_total_cost']!="null"?$report['vaccine_total_cost']:0);
 
                 $stmt->execute();
             }
@@ -804,38 +804,38 @@ VALUES (:report_id, :report_parent_parent_id, :agent_id, :customer_id, :employee
                 $stmt->bindValue('breed_id', $report['breed_id']);
                 $stmt->bindValue('feed_id', $report['feed_id']);
                 $stmt->bindValue('hatching_date', $hatchingDate->format('Y-m-d'));
-                $stmt->bindValue('total_stocked_chicks_pcs', $report['total_stocked_chicks_pcs'] ?: 0);
-                $stmt->bindValue('total_feed_used_kg', $report['total_feed_used_kg'] ?: 0);
-                $stmt->bindValue('total_broiler_weight_kg', $report['total_broiler_weight_kg'] ?: 0);
-                $stmt->bindValue('mortality', $report['mortality'] ?: 0);
+                $stmt->bindValue('total_stocked_chicks_pcs', $report['total_stocked_chicks_pcs']!=""||$report['total_stocked_chicks_pcs']!="null"?(float)$report['total_stocked_chicks_pcs']: 0);
+                $stmt->bindValue('total_feed_used_kg', $report['total_feed_used_kg']!=""||$report['total_feed_used_kg']!="null"?(float)$report['total_feed_used_kg']: 0);
+                $stmt->bindValue('total_broiler_weight_kg', $report['total_broiler_weight_kg']!=""||$report['total_broiler_weight_kg']!="null"?(float)$report['total_broiler_weight_kg']: 0);
+                $stmt->bindValue('mortality', $report['mortality']!=""||$report['mortality']!="null"?(float)$report['mortality']: 0);
                 $stmt->bindValue('remarks', $report['remarks']);
                 $stmt->bindValue('species_id', $report['species_id']);
                 $stmt->bindValue('pond_size', $report['pond_size']);
-                if ($report['fingerling_size'] === null){
+                if ($report['fingerling_size']==""||$report['fingerling_size'] === null){
                     $stmt->bindValue('fingerling_size', 0);
                 }else{
                     $stmt->bindValue('fingerling_size', $report['fingerling_size']);
                 }
-                if ($report['harvesting_size'] === null){
+                if ($report['harvesting_size']==""||$report['harvesting_size'] === null){
                     $stmt->bindValue('harvesting_size', 0);
                 }else{
                     $stmt->bindValue('harvesting_size', $report['harvesting_size']);
 
                 }
-                $stmt->bindValue('age_days', $report['age_days'] ?: 0);
-                $stmt->bindValue('fcr', $report['fcr'] ?: 0);
-                $stmt->bindValue('item_price_per_pcs', $report['item_price_per_pcs'] ?: 0);
-                $stmt->bindValue('feed_price_per_kg', $report['feed_price_per_kg'] ?: 0);
-                $stmt->bindValue('broiler_or_fish_price_per_kg', $report['broiler_or_fish_price_per_kg'] ?: 0);
-                $stmt->bindValue('total_medicine_cost', $report['total_medicine_cost'] ?: 0);
-                $stmt->bindValue('total_vaccine_cost', $report['total_vaccine_cost'] ?: 0);
-                $stmt->bindValue('total_pond_preparation_cost', $report['total_pond_preparation_cost'] ?: 0);
-                $stmt->bindValue('used_bag_price_per_pcs', $report['used_bag_price_per_pcs'] ?: 0);
-                $stmt->bindValue('litter_or_pond_rent_cost', $report['litter_or_pond_rent_cost'] ?: 0);
-                $stmt->bindValue('electricity_and_fuel_cost', $report['electricity_and_fuel_cost'] ?: 0);
-                $stmt->bindValue('labour_cost', $report['labour_cost'] ?: 0);
-                $stmt->bindValue('transport_cost', $report['transport_cost'] ?: 0);
-                $stmt->bindValue('other_cost', $report['other_cost'] ?: 0);
+                $stmt->bindValue('age_days', $report['age_days']!=""||$report['age_days']!="null"?(float)$report['age_days']: 0);
+                $stmt->bindValue('fcr', $report['fcr']!=""||$report['fcr']!="null"?(float)$report['fcr']: 0);
+                $stmt->bindValue('item_price_per_pcs', $report['item_price_per_pcs']!=""||$report['item_price_per_pcs']!='null'?(float)$report['item_price_per_pcs']: 0);
+                $stmt->bindValue('feed_price_per_kg', $report['feed_price_per_kg']!=""||$report['feed_price_per_kg']!="null"?(float)$report['feed_price_per_kg']: 0);
+                $stmt->bindValue('broiler_or_fish_price_per_kg', $report['broiler_or_fish_price_per_kg']!=""||$report['broiler_or_fish_price_per_kg']!="null"?(float)$report['broiler_or_fish_price_per_kg']: 0);
+                $stmt->bindValue('total_medicine_cost', $report['total_medicine_cost']!=""||$report['total_medicine_cost']!='null'?(float)$report['total_medicine_cost']: 0);
+                $stmt->bindValue('total_vaccine_cost', $report['total_vaccine_cost']!=""||$report['total_vaccine_cost']!="null"?(float)$report['total_vaccine_cost']: 0);
+                $stmt->bindValue('total_pond_preparation_cost', $report['total_pond_preparation_cost']!=""||$report['total_pond_preparation_cost']!=null ?(float)$report['total_pond_preparation_cost']: 0);
+                $stmt->bindValue('used_bag_price_per_pcs', $report['used_bag_price_per_pcs']!=""||$report['used_bag_price_per_pcs']!='null'?(float)$report['used_bag_price_per_pcs']: 0);
+                $stmt->bindValue('litter_or_pond_rent_cost', $report['litter_or_pond_rent_cost']!=""||$report['litter_or_pond_rent_cost']!='null'?(float)$report['litter_or_pond_rent_cost']: 0);
+                $stmt->bindValue('electricity_and_fuel_cost', $report['electricity_and_fuel_cost']!=""||$report['electricity_and_fuel_cost']!="null" ?(float)$report['electricity_and_fuel_cost']: 0);
+                $stmt->bindValue('labour_cost', $report['labour_cost']!=""||$report['labour_cost']!='null' ?(float)$report['labour_cost']: 0);
+                $stmt->bindValue('transport_cost', $report['transport_cost']!=""||$report['transport_cost']!='null'?(float)$report['transport_cost']: 0);
+                $stmt->bindValue('other_cost', $report['other_cost']!=""||$report['other_cost']!="null" ?(float)$report['other_cost']: 0);
 
                 $stmt->execute();
 
@@ -857,40 +857,40 @@ VALUES (:report_id, :report_parent_parent_id, :agent_id, :customer_id, :employee
                 $stmt->bindValue('breed_id', $report['breed_id']);
                 $stmt->bindValue('feed_id', $report['feed_id']);
                 $stmt->bindValue('hatching_date', $hatchingDate->format('Y-m-d'));
-                $stmt->bindValue('total_stocked_chicks_pcs', $report['total_stocked_chicks_pcs'] ?: 0);
-                $stmt->bindValue('total_feed_used_kg', $report['total_feed_used_kg'] ?: 0);
-                $stmt->bindValue('total_broiler_weight_kg', $report['total_broiler_weight_kg'] ?: 0);
-                $stmt->bindValue('mortality', $report['mortality'] ?: 0);
+                $stmt->bindValue('total_stocked_chicks_pcs', $report['total_stocked_chicks_pcs']!=""||$report['total_stocked_chicks_pcs']!="null"?(float)$report['total_stocked_chicks_pcs']: 0);
+                $stmt->bindValue('total_feed_used_kg', $report['total_feed_used_kg']!=""||$report['total_feed_used_kg']!="null"?(float)$report['total_feed_used_kg']: 0);
+                $stmt->bindValue('total_broiler_weight_kg', $report['total_broiler_weight_kg']!=""||$report['total_broiler_weight_kg']!="null"?(float)$report['total_broiler_weight_kg']: 0);
+                $stmt->bindValue('mortality', $report['mortality']!=""||$report['mortality']!="null"?(float)$report['mortality']: 0);
                 $stmt->bindValue('remarks', $report['remarks']);
                 $stmt->bindValue('created_at', $createdAt->format('Y-m-d H:i:s'));
                 $stmt->bindValue('species_id', $report['species_id']);
                 $stmt->bindValue('reporting_month', $report['reporting_month']);
                 $stmt->bindValue('pond_size', $report['pond_size']);
-                if ($report['fingerling_size'] === null){
+                if ($report['fingerling_size']!=""||$report['fingerling_size'] === null){
                     $stmt->bindValue('fingerling_size', 0);
                 }else{
                     $stmt->bindValue('fingerling_size', $report['fingerling_size']);
                 }
-                if ($report['harvesting_size'] === null){
+                if ($report['harvesting_size']!=""||$report['harvesting_size'] === null){
                     $stmt->bindValue('harvesting_size', 0);
                 }else{
                     $stmt->bindValue('harvesting_size', $report['harvesting_size']);
 
                 }
-                $stmt->bindValue('age_days', $report['age_days'] ?: 0);
-                $stmt->bindValue('fcr', $report['fcr'] ?: 0);
-                $stmt->bindValue('item_price_per_pcs', $report['item_price_per_pcs'] ?: 0);
-                $stmt->bindValue('feed_price_per_kg', $report['feed_price_per_kg'] ?: 0);
-                $stmt->bindValue('broiler_or_fish_price_per_kg', $report['broiler_or_fish_price_per_kg'] ?: 0);
-                $stmt->bindValue('total_medicine_cost', $report['total_medicine_cost'] ?: 0);
-                $stmt->bindValue('total_vaccine_cost', $report['total_vaccine_cost'] ?: 0);
-                $stmt->bindValue('total_pond_preparation_cost', $report['total_pond_preparation_cost'] ?: 0);
-                $stmt->bindValue('used_bag_price_per_pcs', $report['used_bag_price_per_pcs'] ?: 0);
-                $stmt->bindValue('litter_or_pond_rent_cost', $report['litter_or_pond_rent_cost'] ?: 0);
-                $stmt->bindValue('electricity_and_fuel_cost', $report['electricity_and_fuel_cost'] ?: 0);
-                $stmt->bindValue('labour_cost', $report['labour_cost'] ?: 0);
-                $stmt->bindValue('transport_cost', $report['transport_cost'] ?: 0);
-                $stmt->bindValue('other_cost', $report['other_cost'] ?: 0);
+                $stmt->bindValue('age_days', $report['age_days']!=""||$report['age_days']!="null"?(float)$report['age_days']: 0);
+                $stmt->bindValue('fcr', $report['fcr']!=""||$report['fcr']!="null"?(float)$report['fcr']: 0);
+                $stmt->bindValue('item_price_per_pcs', $report['item_price_per_pcs']!=""||$report['item_price_per_pcs']!='null'?(float)$report['item_price_per_pcs']: 0);
+                $stmt->bindValue('feed_price_per_kg', $report['feed_price_per_kg']!=""||$report['feed_price_per_kg']!="null"?(float)$report['feed_price_per_kg']: 0);
+                $stmt->bindValue('broiler_or_fish_price_per_kg', $report['broiler_or_fish_price_per_kg']!=""||$report['broiler_or_fish_price_per_kg']!="null"?(float)$report['broiler_or_fish_price_per_kg']: 0);
+                $stmt->bindValue('total_medicine_cost', $report['total_medicine_cost']!=""||$report['total_medicine_cost']!='null'?(float)$report['total_medicine_cost']: 0);
+                $stmt->bindValue('total_vaccine_cost', $report['total_vaccine_cost']!=""||$report['total_vaccine_cost']!="null"?(float)$report['total_vaccine_cost']: 0);
+                $stmt->bindValue('total_pond_preparation_cost', $report['total_pond_preparation_cost']!=""||$report['total_pond_preparation_cost']!=null ?(float)$report['total_pond_preparation_cost']: 0);
+                $stmt->bindValue('used_bag_price_per_pcs', $report['used_bag_price_per_pcs']!=""||$report['used_bag_price_per_pcs']!='null'?(float)$report['used_bag_price_per_pcs']: 0);
+                $stmt->bindValue('litter_or_pond_rent_cost', $report['litter_or_pond_rent_cost']!=""||$report['litter_or_pond_rent_cost']!='null'?(float)$report['litter_or_pond_rent_cost']: 0);
+                $stmt->bindValue('electricity_and_fuel_cost', $report['electricity_and_fuel_cost']!=""||$report['electricity_and_fuel_cost']!="null" ?(float)$report['electricity_and_fuel_cost']: 0);
+                $stmt->bindValue('labour_cost', $report['labour_cost']!=""||$report['labour_cost']!='null' ?(float)$report['labour_cost']: 0);
+                $stmt->bindValue('transport_cost', $report['transport_cost']!=""||$report['transport_cost']!='null'?(float)$report['transport_cost']: 0);
+                $stmt->bindValue('other_cost', $report['other_cost']!=""||$report['other_cost']!="null" ?(float)$report['other_cost']: 0);
 
                 $stmt->execute();
             }
@@ -945,13 +945,13 @@ VALUES (:report_id, :report_parent_parent_id, :agent_id, :customer_id, :employee
             }
 
             if (isset($report['age_days'])&&$report['age_days']){
-                $stmt->bindValue('age_days', $report['age_days']);
+                $stmt->bindValue('age_days', (float)$report['age_days']);
             }else{
                 $stmt->bindValue('age_days', 0);
             }
 
-            if (isset($report['culture_area'])&&$report['culture_area']){
-                $stmt->bindValue('culture_area_for_fish', $report['culture_area']);
+            if (isset($report['culture_area'])&&$report['culture_area']&&$report['culture_area']!=""){
+                $stmt->bindValue('culture_area_for_fish', (float)$report['culture_area']);
             }else{
                 $stmt->bindValue('culture_area_for_fish', 0);
             }
@@ -960,8 +960,8 @@ VALUES (:report_id, :report_parent_parent_id, :agent_id, :customer_id, :employee
             }else{
                 $stmt->bindValue('dencity_for_fish', 0);
             }
-            if (isset($report['avg_weight'])&&$report['avg_weight']){
-                $stmt->bindValue('average_weight_for_fish', $report['avg_weight']);
+            if (isset($report['avg_weight'])&&$report['avg_weight']&&$report['avg_weight']!=""){
+                $stmt->bindValue('average_weight_for_fish', (float)$report['avg_weight']);
             }else{
                 $stmt->bindValue('average_weight_for_fish', 0);
             }
@@ -1007,7 +1007,7 @@ VALUES (:report_id, :report_parent_parent_id, :agent_id, :customer_id, :employee
             $findLifeCycle=null;
             if(isset($report['web_life_cycle_id'])&&!empty($report['web_life_cycle_id'])){
                 $findLifeCycle = $this->getDoctrine()->getRepository(ChickLifeCycle::class)->find($report['web_life_cycle_id']);
-            }elseif (!empty($report['id'])){
+            }elseif ($report['web_life_cycle_id']===null && !empty($report['id'])){
                 if(!$findLifeCycle){
                     $fram_number=isset($report['farm_number'])&&$report['farm_number']!=''?$report['farm_number']:1;
                     $findLifeCycle = $this->getDoctrine()->getRepository(ChickLifeCycle::class)->findOneBy(['customer' => $findFarmer, 'employee' => $findEmployee, 'report' => $findReport, 'appId'=>$report['id'], 'farmNumber'=>$fram_number]);
@@ -1052,10 +1052,10 @@ VALUES (:hatching_date, :remarks, :reporting_date, :customer_id, :agent_id, :emp
                 $stmt->bindValue('breed_id', $report['breed_id']);
                 $stmt->bindValue('feed_id', $report['feed_id']);
                 $stmt->bindValue('feed_mill_id', $report['feed_mill_id']);
-                $stmt->bindValue('total_birds', $report['total_birds']&&$report['total_birds']!=""?$report['total_birds']:0);
+                $stmt->bindValue('total_birds', $report['total_birds']&&$report['total_birds']!=""?(float)$report['total_birds']:0);
                 $stmt->bindValue('app_batch_id', $batch->getId());
                 $stmt->bindValue('app_id', $report['id']);
-                $stmt->bindValue('farm_number', isset($report['farm_number'])&&$report['farm_number']!=''?$report['farm_number']:1);
+                $stmt->bindValue('farm_number', isset($report['farm_number'])&&$report['farm_number']!=''?(float)$report['farm_number']:1);
 
                 $executeStatus = $stmt->execute();
                 if ($executeStatus){
@@ -1087,7 +1087,7 @@ VALUES (:hatching_date, :remarks, :reporting_date, :customer_id, :agent_id, :emp
             $findEmployee = $this->getDoctrine()->getRepository(User::class)->find($report['employee_id']);
             if(isset($report['web_life_cycle_id']) && !empty($report['web_life_cycle_id'])){
                 $lifeCycle= $this->getDoctrine()->getRepository(ChickLifeCycle::class)->find($report['web_life_cycle_id']);
-            }elseif(!empty($report['crm_chick_life_cycle_id'])){
+            }elseif($report['web_life_cycle_id']===null && !empty($report['crm_chick_life_cycle_id'])){
                 if(!$lifeCycle){
                     $lifeCycle= $this->getDoctrine()->getRepository(ChickLifeCycle::class)->findOneBy(['employee' => $findEmployee,'appId'=>$report['crm_chick_life_cycle_id']]);
                 }
@@ -1105,7 +1105,7 @@ VALUES (:hatching_date, :remarks, :reporting_date, :customer_id, :agent_id, :emp
 
                 $proDate = isset($report['pro_date']) && $report['pro_date']!=''? new \DateTime($report['pro_date']):null;
                 $reportingDate = $report['reporting_date'] && $report['reporting_date']!=""?new \DateTime($report['reporting_date']):null;
-                $createdAt = $report['created_at'] && $report['created_at']!=""?new \DateTime($report['created_at']):null;
+                $createdAt = $report['created_at'] && ($report['created_at']!=""||$report['created_at']!="-0001-11-30 00:00:00"||$report['created_at']!="0000-00-00 00:00:00")?new \DateTime($report['created_at']):null;
                 $updatedAt = $report['updated_at'] && $report['updated_at']!=""?new \DateTime($report['updated_at']):null;
 
                 /* @var ChickLifeCycleDetails $findDetails*/
@@ -1115,18 +1115,18 @@ VALUES (:hatching_date, :remarks, :reporting_date, :customer_id, :agent_id, :emp
 
                     $findDetails->setAgeDays($report['age_days']&&$report['age_days']!=""?(float)$report['age_days']:0);
                     $findDetails->setMortalityPes($report['mortality_pes']&&$report['mortality_pes']!=""?(float)$report['mortality_pes']:0);
-                    $findDetails->setMortalityPercent($report['mortality_percent']&&$report['mortality_percent']!=""?(float)$report['mortality_percent']:0);
+                    $findDetails->setMortalityPercent($report['mortality_percent']&&($report['mortality_percent']!=""||$report['mortality_percent']!="NaN"||$report['mortality_percent']!="Infinity")?(float)$report['mortality_percent']:0);
                     $findDetails->setWeightStandard($report['weight_standard']&&$report['weight_standard']!=""?(float)$report['weight_standard']:0);
                     $findDetails->setWeightAchieved($report['weight_achieved']&&$report['weight_achieved']!=""?(float)$report['weight_achieved']:0);
-                    $findDetails->setPerBird($report['per_bird']&&$report['per_bird']!=''?(float)$report['per_bird']:0);
+                    $findDetails->setPerBird($report['per_bird']&&($report['per_bird']!=''||$report['per_bird']!='NaN'||$report['per_bird']!='Infinity')?(float)$report['per_bird']:0);
                     $findDetails->setFeedStandard($report['feed_standard']&&$report['feed_standard']!=""?(float)$report['feed_standard']:0);
                     $findDetails->setFeedTotalKg($report['feed_total_kg']&&$report['feed_total_kg']!=""?(float)$report['feed_total_kg']:0);
-                    $findDetails->setWithoutMortality($report['without_mortality']&&($report['without_mortality']!=''||$report['without_mortality']!='NaN')?(float)$report['without_mortality']:0);
-                    $findDetails->setWithMortality($report['with_mortality']&&($report['with_mortality']!=''||$report['with_mortality']!='NaN')?(float)$report['with_mortality']:0);
+                    $findDetails->setWithoutMortality($report['without_mortality']&&($report['without_mortality']!=''||$report['without_mortality']!='NaN'||$report['without_mortality']!='null'||$report['without_mortality']!='Infinity')?(float)$report['without_mortality']:0);
+                    $findDetails->setWithMortality($report['with_mortality']&&($report['with_mortality']!=''||$report['with_mortality']!='NaN'||$report['with_mortality']!='null'||$report['with_mortality']!='Infinity')?(float)$report['with_mortality']:0);
                     $findDetails->setProDate($proDate);
                     $findDetails->setBatchNo($report['batch_no']&&$report['batch_no']!=''?$report['batch_no']:null);
                     $findDetails->setRemarks($report['remarks']&&$report['remarks']!=""?$report['remarks']:null);
-//                    $findDetails->setCreatedAt($createdAt);
+                    $findDetails->setCreatedAt($createdAt);
                     $findDetails->setUpdatedAt($updatedAt);
                     $findDetails->setFeedType($feedType);
                     $findDetails->setReportingDate($reportingDate);
@@ -1148,7 +1148,7 @@ VALUES (:hatching_date, :remarks, :reporting_date, :customer_id, :agent_id, :emp
             $findLifeCycle=null;
             if(isset($report['web_life_cycle_id'])&&!empty($report['web_life_cycle_id'])){
                 $findLifeCycle = $this->getDoctrine()->getRepository(CattleLifeCycle::class)->find($report['web_life_cycle_id']);
-            }elseif (!empty($report['id'])){
+            }elseif ($report['web_life_cycle_id']===null && !empty($report['id'])){
                 if(!$findLifeCycle){
                     $findLifeCycle = $this->getDoctrine()->getRepository(CattleLifeCycle::class)->findOneBy(['customer' => $findFarmer, 'employee' => $findEmployee, 'report' => $findReport, 'appId'=>$report['id']]);
                 }
@@ -1192,7 +1192,7 @@ VALUES (:customer_id, :report_id, :agent_id, :employee_id, :reporting_date, :bre
             $findEmployee = $this->getDoctrine()->getRepository(User::class)->find($report['employee_id']);
             if(isset($report['web_life_cycle_id']) && !empty($report['web_life_cycle_id'])){
                 $lifeCycle= $this->getDoctrine()->getRepository(CattleLifeCycle::class)->find($report['web_life_cycle_id']);
-            }elseif (!empty($report['crm_cattle_life_cycle_id'])){
+            }elseif ($report['web_life_cycle_id']===null && !empty($report['crm_cattle_life_cycle_id'])){
                 if(!$lifeCycle){
                     $lifeCycle= $this->getDoctrine()->getRepository(CattleLifeCycle::class)->findOneBy(['employee' => $findEmployee,'appId'=>$report['crm_cattle_life_cycle_id']]);
                 }
@@ -1212,58 +1212,58 @@ VALUES (:crm_cattle_life_cycle_id, :visiting_date, :age_of_cattle_month, :previo
 
                 $visitingDate = new \DateTime($report['visiting_date']);
                 $createdAt = new \DateTime($report['created_at']);
-                $updatedAt = new \DateTime($report['updated_at']);
+                $updatedAt = $report['updated_at']&&$report['updated_at']!=""?new \DateTime($report['updated_at']):null;
 
                 $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
                 $stmt->bindValue('crm_cattle_life_cycle_id', $lifeCycle->getId());
                 $stmt->bindValue('visiting_date', $visitingDate->format('Y-m-d'));
                 $stmt->bindValue('age_of_cattle_month', $report['age_of_cattle_month']);
-                if ($report['previous_body_weight'] === null){
+                if ($report['previous_body_weight'] ==""||$report['previous_body_weight'] === null){
                     $stmt->bindValue('previous_body_weight', 0);
                 }else{
-                    $stmt->bindValue('previous_body_weight', $report['previous_body_weight']);
+                    $stmt->bindValue('previous_body_weight', (float)$report['previous_body_weight']);
                 }
                 $stmt->bindValue('present_body_weight', $report['present_body_weight']);
-                if ($report['body_weight_difference'] === null){
+                if ($report['body_weight_difference']==""||$report['body_weight_difference'] === null||$report['body_weight_difference'] =='NaN'){
                     $stmt->bindValue('body_weight_difference', 0);
                 }else{
-                    $stmt->bindValue('body_weight_difference', $report['body_weight_difference']);
+                    $stmt->bindValue('body_weight_difference', (float)$report['body_weight_difference']);
                 }
-                if ($report['duration_of_bwt_difference'] === null){
+                if ($report['duration_of_bwt_difference']==""||$report['duration_of_bwt_difference']=="NaN"||$report['duration_of_bwt_difference'] === null){
                     $stmt->bindValue('duration_of_bwt_difference', 0);
                 }else{
-                    $stmt->bindValue('duration_of_bwt_difference', $report['duration_of_bwt_difference']);
+                    $stmt->bindValue('duration_of_bwt_difference', (float)$report['duration_of_bwt_difference']);
                 }
-                if ($report['lactation_no'] === null){
+                if ($report['lactation_no']==""||$report['lactation_no'] === null){
                     $stmt->bindValue('lactation_no', 0);
                 }else{
-                    $stmt->bindValue('lactation_no', $report['lactation_no']);
+                    $stmt->bindValue('lactation_no', (float)$report['lactation_no']);
                 }
-                if ($report['age_of_lactation'] === null){
+                if ($report['age_of_lactation']==""||$report['age_of_lactation'] === null){
                     $stmt->bindValue('age_of_lactation', 0);
                 }else{
-                    $stmt->bindValue('age_of_lactation', $report['age_of_lactation']);
+                    $stmt->bindValue('age_of_lactation', (float)$report['age_of_lactation']);
                 }
-                $stmt->bindValue('average_weight_per_day', $report['average_weight_per_day']);
-                $stmt->bindValue('average_weight_per_kg_consumption_feed', $report['average_weight_per_kg_consumption_feed']);
-                $stmt->bindValue('average_weight_per_kg_dm', $report['average_weight_per_kg_dm']);
-                if ($report['milk_fat_percentage'] === null){
+                $stmt->bindValue('average_weight_per_day', $report['average_weight_per_day']!=""||$report['average_weight_per_day']!="null"||$report['average_weight_per_day']!="NaN"?(float)$report['average_weight_per_day']:0);
+                $stmt->bindValue('average_weight_per_kg_consumption_feed', $report['average_weight_per_kg_consumption_feed']!=""||$report['average_weight_per_kg_consumption_feed']!="null"||$report['average_weight_per_kg_consumption_feed']!="NaN"?(float)$report['average_weight_per_kg_consumption_feed']:0);
+                $stmt->bindValue('average_weight_per_kg_dm', $report['average_weight_per_kg_dm']!=""||$report['average_weight_per_kg_dm']!="null"||$report['average_weight_per_kg_dm']!="NaN"?(float)$report['average_weight_per_kg_dm']:0);
+                if ($report['milk_fat_percentage']==""||$report['milk_fat_percentage'] === null||$report['milk_fat_percentage'] === "NaN"){
                     $stmt->bindValue('milk_fat_percentage', 0);
                 }else{
-                    $stmt->bindValue('milk_fat_percentage', $report['milk_fat_percentage']);
+                    $stmt->bindValue('milk_fat_percentage', (float)$report['milk_fat_percentage']);
                 }
-                $stmt->bindValue('consumption_feed_intake_ready_feed', $report['consumption_feed_intake_ready_feed']);
-                $stmt->bindValue('consumption_feed_intake_conventional', $report['consumption_feed_intake_conventional']);
-                $stmt->bindValue('consumption_feed_intake_total', $report['consumption_feed_intake_total']);
-                $stmt->bindValue('fodder_green_grass_kg', $report['fodder_green_grass_kg']);
-                $stmt->bindValue('fodder_straw_kg', $report['fodder_straw_kg']);
-                $stmt->bindValue('dm_of_fodder_green_grass_kg', $report['dm_of_fodder_green_grass_kg']);
-                $stmt->bindValue('dm_of_fodder_straw_kg', $report['dm_of_fodder_straw_kg']);
-                $stmt->bindValue('total_dm_kg', $report['total_dm_kg']);
-                $stmt->bindValue('dm_requirement_by_bwt_kg', $report['dm_requirement_by_bwt_kg']);
+                $stmt->bindValue('consumption_feed_intake_ready_feed', $report['consumption_feed_intake_ready_feed']!=""||$report['consumption_feed_intake_ready_feed']!='null'||$report['consumption_feed_intake_ready_feed']!='NaN'?(float)$report['consumption_feed_intake_ready_feed']:0);
+                $stmt->bindValue('consumption_feed_intake_conventional', $report['consumption_feed_intake_conventional']!=""||$report['consumption_feed_intake_conventional']!='null'||$report['consumption_feed_intake_conventional']!='NaN'?(float)$report['consumption_feed_intake_conventional']:0);
+                $stmt->bindValue('consumption_feed_intake_total', $report['consumption_feed_intake_total']!=''||$report['consumption_feed_intake_total']!='null'||$report['consumption_feed_intake_total']!='NaN'?(float)$report['consumption_feed_intake_total']:0);
+                $stmt->bindValue('fodder_green_grass_kg', $report['fodder_green_grass_kg']!=''||$report['fodder_green_grass_kg']!="null"||$report['fodder_green_grass_kg']!="NaN"?(float)$report['fodder_green_grass_kg']:0);
+                $stmt->bindValue('fodder_straw_kg', $report['fodder_straw_kg']!=''||$report['fodder_straw_kg']!='null'||$report['fodder_straw_kg']!='NaN'?(float)$report['fodder_straw_kg']:0);
+                $stmt->bindValue('dm_of_fodder_green_grass_kg', $report['dm_of_fodder_green_grass_kg']!=''||$report['dm_of_fodder_green_grass_kg']!='null'||$report['dm_of_fodder_green_grass_kg']!='NaN'?(float)$report['dm_of_fodder_green_grass_kg']:0);
+                $stmt->bindValue('dm_of_fodder_straw_kg', $report['dm_of_fodder_straw_kg']!=""||$report['dm_of_fodder_straw_kg']!="null"||$report['dm_of_fodder_straw_kg']!="NaN"?(float)$report['dm_of_fodder_straw_kg']:0);
+                $stmt->bindValue('total_dm_kg', $report['total_dm_kg']!=""||$report['total_dm_kg']!="null"||$report['total_dm_kg']!="NaN"?(float)$report['total_dm_kg']:0);
+                $stmt->bindValue('dm_requirement_by_bwt_kg', $report['dm_requirement_by_bwt_kg']!=""||$report['dm_requirement_by_bwt_kg']!="null"||$report['dm_requirement_by_bwt_kg']!="NaN"?(float)$report['dm_requirement_by_bwt_kg']:0);
                 $stmt->bindValue('remarks', $report['remarks']);
                 $stmt->bindValue('created_at', $createdAt->format('Y-m-d H:i:s'));
-                $stmt->bindValue('updated_at', $updatedAt->format('Y-m-d H:i:s'));
+                $stmt->bindValue('updated_at', $updatedAt?$updatedAt->format('Y-m-d H:i:s'):null);
                 $stmt->bindValue('app_id', $report['id']);
 
                 $stmt->execute();
@@ -1280,16 +1280,18 @@ VALUES (:crm_cattle_life_cycle_id, :visiting_date, :age_of_cattle_month, :previo
             $findLifeCycle=null;
             if(isset($report['web_life_cycle_id']) && !empty($report['web_life_cycle_id'])){
                 $findLifeCycle = $this->getDoctrine()->getRepository(LayerLifeCycle::class)->find($report['web_life_cycle_id']);
-            }elseif (!empty($report['id'])){
+            }elseif ($report['web_life_cycle_id']===null && !empty($report['id'])){
                 if(!$findLifeCycle){
                     $findLifeCycle = $this->getDoctrine()->getRepository(LayerLifeCycle::class)->findOneBy(['customer' => $findFarmer, 'employee' => $findEmployee, 'report' => $findReport, 'appId'=>$report['id']]);
                 }
             }else{
-                $findLifeCycle = $this->getDoctrine()->getRepository(LayerLifeCycle::class)->findOneBy(['customer' => $findFarmer, 'employee' => $findEmployee, 'report' => $findReport, 'lifeCycleState'=>LayerLifeCycle::LIFE_CYCLE_STATE_IN_PROGRESS]);
+                $farm_number = isset($report['farm_number'])&&$report['farm_number']?$report['farm_number']:1;
+                $findLifeCycle = $this->getDoctrine()->getRepository(LayerLifeCycle::class)->findOneBy(['customer' => $findFarmer, 'employee' => $findEmployee, 'report' => $findReport, 'lifeCycleState'=>LayerLifeCycle::LIFE_CYCLE_STATE_IN_PROGRESS, 'farmNumber'=>$farm_number]);
             }
 
             if ($findLifeCycle){
                 $findLifeCycle->setAppBatch($batch);
+                $findLifeCycle->setAppId($report['id']);
                 $findLifeCycle->setLifeCycleState($report['life_cycle_state']);
                 $this->getDoctrine()->getManager()->persist($findLifeCycle);
                 $this->getDoctrine()->getManager()->flush();
@@ -1353,7 +1355,7 @@ VALUES (:total_birds, :hatchery_date, :created, :updated, :customer_id, :employe
             $findEmployee = $this->getDoctrine()->getRepository(User::class)->find($report['employee_id']);
             if(isset($report['web_life_cycle_id']) && !empty($report['web_life_cycle_id'])){
                 $lifeCycle= $this->getDoctrine()->getRepository(LayerLifeCycle::class)->find($report['web_life_cycle_id']);
-            }elseif (!empty($report['crm_layer_life_cycle_id'])){
+            }elseif ($report['web_life_cycle_id']===null && !empty($report['crm_layer_life_cycle_id'])){
                 if(!$lifeCycle){
                     $lifeCycle= $this->getDoctrine()->getRepository(LayerLifeCycle::class)->findOneBy(['employee' => $findEmployee,'appId'=>$report['crm_layer_life_cycle_id']]);
                 }
@@ -1397,12 +1399,12 @@ VALUES (:total_birds, :hatchery_date, :created, :updated, :customer_id, :employe
                     $findDetails->setAvgWeight($report['avg_weight']&&$report['avg_weight']!=""?(float)$report['avg_weight']:0);
                     $findDetails->setTargetWeight($report['target_weight']&&$report['target_weight']!=""?(float)$report['target_weight']:0);
                     $findDetails->setUniformity($report['uniformity']&&$report['uniformity']!=""?(float)$report['uniformity']:0);
-                    $findDetails->setFeedPerBird($report['feed_per_bird']&&$report['feed_per_bird']!=""?$report['feed_per_bird']:0);
-                    $findDetails->setTargetFeedPerBird($report['target_feed_per_bird']&&$report['target_feed_per_bird']!=""?$report['target_feed_per_bird']:0);
-                    $findDetails->setTotalEggs($report['total_eggs']&&$report['total_eggs']!=""?$report['total_eggs']:0);
-                    $findDetails->setTargetEggProduction($report['target_egg_production']&&$report['target_egg_production']!=""?$report['target_egg_production']:0);
-                    $findDetails->setEggWeightActual($report['egg_weight_actual']&&$report['egg_weight_actual']!=""?$report['egg_weight_actual']:0);
-                    $findDetails->setEggWeightStandard($report['egg_weight_standard']&&$report['egg_weight_standard']!=""?$report['egg_weight_standard']:0);
+                    $findDetails->setFeedPerBird($report['feed_per_bird']&&$report['feed_per_bird']!=""?(float)$report['feed_per_bird']:0);
+                    $findDetails->setTargetFeedPerBird($report['target_feed_per_bird']&&$report['target_feed_per_bird']!=""?(float)$report['target_feed_per_bird']:0);
+                    $findDetails->setTotalEggs($report['total_eggs']&&$report['total_eggs']!=""?(float)$report['total_eggs']:0);
+                    $findDetails->setTargetEggProduction($report['target_egg_production']&&$report['target_egg_production']!=""?(float)$report['target_egg_production']:0);
+                    $findDetails->setEggWeightActual($report['egg_weight_actual']&&$report['egg_weight_actual']!=""?(float)$report['egg_weight_actual']:0);
+                    $findDetails->setEggWeightStandard($report['egg_weight_standard']&&$report['egg_weight_standard']!=""?(float)$report['egg_weight_standard']:0);
                     $findDetails->setProductionDate($productionDate);
                     $findDetails->setBatchNo($report['batch_no']&&$report['batch_no']!=""?$report['batch_no']:null);
                     $findDetails->setMedicine($report['medicine']&&$report['medicine']!=""?$report['medicine']:null);
@@ -1713,16 +1715,16 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
             $stmt->bindValue('agent_id', $report['agent_id']);
             $stmt->bindValue('customer_id', $report['customer_id']);
             $stmt->bindValue('visiting_date', $visitingDate);
-            $stmt->bindValue('cattlePopulationOx', $report['cattlePopulationOx'] ?: 0);
-            $stmt->bindValue('cattlePopulationCow', $report['cattlePopulationCow'] ?: 0);
-            $stmt->bindValue('cattlePopulationCalf', $report['cattlePopulationCalf'] ?: 0);
-            $stmt->bindValue('avgMilkYieldPerDay', $report['avgMilkYieldPerDay']);
-            $stmt->bindValue('conceptionRate', $report['conceptionRate']);
+            $stmt->bindValue('cattlePopulationOx', $report['cattlePopulationOx']&&($report['cattlePopulationOx']!=""||$report['cattlePopulationOx']!="null")?(float)$report['cattlePopulationOx']: 0);
+            $stmt->bindValue('cattlePopulationCow', $report['cattlePopulationCow']&&($report['cattlePopulationCow']!=''||$report['cattlePopulationCow']!='null')?(float)$report['cattlePopulationCow']: 0);
+            $stmt->bindValue('cattlePopulationCalf', $report['cattlePopulationCalf']&&($report['cattlePopulationCalf']!=""||$report['cattlePopulationCalf']!='null')?(float)$report['cattlePopulationCalf']: 0);
+            $stmt->bindValue('avgMilkYieldPerDay', $report['avgMilkYieldPerDay'] && ($report['avgMilkYieldPerDay']!=""|| $report['avgMilkYieldPerDay']!='null')? (float)$report['avgMilkYieldPerDay']:0);
+            $stmt->bindValue('conceptionRate', $report['conceptionRate']&&($report['conceptionRate']!=""||$report['conceptionRate']!='null')?(float)$report['conceptionRate']:0);
             $stmt->bindValue('fodder_green_grass_kg', $report['fodder_green_grass_kg']);
             $stmt->bindValue('fodder_straw_kg', $report['fodder_straw_kg']);
             $stmt->bindValue('typeOfConcentrateFeed', $report['typeOfConcentrateFeed']);
-            $stmt->bindValue('marketPriceMilkPerLiter', $report['marketPriceMilkPerLiter']);
-            $stmt->bindValue('marketPriceMeatPerKg', $report['marketPriceMeatPerKg']);
+            $stmt->bindValue('marketPriceMilkPerLiter', $report['marketPriceMilkPerLiter']&&($report['marketPriceMilkPerLiter']!=""||$report['marketPriceMilkPerLiter']!="null")?(float)$report['marketPriceMilkPerLiter']:0);
+            $stmt->bindValue('marketPriceMeatPerKg', $report['marketPriceMeatPerKg']&&($report['marketPriceMeatPerKg']!=""||$report['marketPriceMeatPerKg']!="null")?(float)$report['marketPriceMeatPerKg']:0);
             $stmt->bindValue('remarks', $report['remarks']);
             $stmt->bindValue('employee_id', $report['employee_id']);
             $stmt->bindValue('repoting_month', $reportingMonth);
@@ -1754,7 +1756,7 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
 
                     $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
                     $stmt->bindValue('breed_type_id', $item['id']);
-                    $stmt->bindValue('price', (float)$item['price']);
+                    $stmt->bindValue('price', $item['price']&&($item['price']!=""||$item['price']!="null")?(float)$item['price']:0);
                     $stmt->bindValue('employee_id', $report['employee_id']);
                     $stmt->bindValue('region_id', $report['region_id']);
                     $stmt->bindValue('reporting_date', $reportingDate);
@@ -1771,7 +1773,7 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
                     $stmt->bindValue('status', 1);
                     $stmt->bindValue('created_at', $createdAt);
                     $stmt->bindValue('breed_type_id', $item['id']);
-                    $stmt->bindValue('price', (float)$item['price']);
+                    $stmt->bindValue('price', $item['price']&&($item['price']!=""||$item['price']!="null")?(float)$item['price']:0);
                     $stmt->bindValue('reporting_date', $reportingDate);
 
                     $stmt->execute();
@@ -1786,6 +1788,7 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
         foreach ($reports as $report) {
             $employee = $this->getDoctrine()->getRepository(User::class)->find($report['employee_id']);
             $feedCompany = $this->getDoctrine()->getRepository(Setting::class)->find($report['feed_company_id']);
+            $totalQty=$report['total_qty']&&($report['total_qty']!=""||$report['total_qty']!="null")?(float)$report['total_qty']:0;
 
             /* @var CompanyWiseFeedSale $exist */
             $exist = $this->getDoctrine()->getRepository(CompanyWiseFeedSale::class)->findOneBy(['employee' => $employee, 'feedCompany' => $feedCompany, 'monthName' => $report['month_name'], 'year' => $report['year'], 'breedName' => strtolower($report['breed_name'])]);
@@ -1806,8 +1809,8 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
                 $stmt->bindValue('month_name', $report['month_name']);
                 $stmt->bindValue('year', $report['year']);
                 $stmt->bindValue('breed_name', strtolower($report['breed_name']));
-                $stmt->bindValue('product_wise_qty', $report['product_wise_qty']);
-                $stmt->bindValue('total_qty', $report['total_qty']);
+                $stmt->bindValue('product_wise_qty', $report['product_wise_qty']?$report['product_wise_qty']:'');
+                $stmt->bindValue('total_qty', $totalQty);
                 $stmt->bindValue('created_at', $createdAt);
 
                 $stmt->execute();
@@ -1819,7 +1822,7 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
     {
         foreach ($reports as $report) {
             $createdAt = $report['created_at'] ? (new \DateTime($report['created_at']))->format('Y-m-d H:i:s') : null;
-            $year = $report['year'] ? $report['year'] : (new \DateTime($report['created_at']))->format('Y');
+            $year = isset($report['year']) && $report['year'] != "" ? $report['year'] : (new \DateTime($report['created_at']))->format('Y');
             /**
              * @var FcrDifferentCompanies $exist
              */
@@ -1868,7 +1871,7 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
         foreach ($reports as $report) {
             $createdAt = $report['created_at'] ? (new \DateTime($report['created_at']))->format('Y-m-d H:i:s') : null;
 
-            $year = $report['year'] ?$report['year']: (new \DateTime($report['created_at']))->format('Y');
+            $year = isset($report['year']) && $report['year'] != "" ?$report['year']: (new \DateTime($report['created_at']))->format('Y');
 
             $exitingLabService = $this->getDoctrine()->getRepository(LabService::class)->getExitingLabService($report['employee_id'], $report['lab_id'], $report['service_id'], $report['breed_name'], $year);
 
@@ -1879,18 +1882,18 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
 
                 $stmt->bindValue('id', $exitingLabService['id']);
 
-                $stmt->bindValue('january', $report['january'] && $report['january']!=""?$report['january']: $exitingLabService['january']);
-                $stmt->bindValue('february',$report['february'] && $report['february']!=""?$report['february']: $exitingLabService['february']);
-                $stmt->bindValue('march', $report['march'] && $report['march']!=""?$report['march']: $exitingLabService['march']);
-                $stmt->bindValue('april', $report['april'] && $report['april']!=""?$report['april']: $exitingLabService['april']);
-                $stmt->bindValue('may', $report['may'] && $report['may']!=""?$report['may']: $exitingLabService['may']);
-                $stmt->bindValue('june', $report['june'] && $report['june']!=""?$report['june']: $exitingLabService['june']);
-                $stmt->bindValue('july', $report['july'] && $report['july']!=""?$report['july']: $exitingLabService['july']);
-                $stmt->bindValue('august', $report['august']&&$report['august']!=""?$report['august']: $exitingLabService['august']);
-                $stmt->bindValue('september', $report['september']&&$report['september']!=""?$report['september']: $exitingLabService['september']);
-                $stmt->bindValue('october', $report['october'] && $report['october']!=""?$report['october']: $exitingLabService['october']);
-                $stmt->bindValue('november', $report['november'] && $report['november']!=""?$report['november']: $exitingLabService['november']);
-                $stmt->bindValue('december', $report['december']&&$report['december']!=""?$report['december']: $exitingLabService['december']);
+                $stmt->bindValue('january', $report['january'] && $report['january']!=""?(float)$report['january']:(float)$exitingLabService['january']);
+                $stmt->bindValue('february',$report['february'] && $report['february']!=""?(float)$report['february']:(float)$exitingLabService['february']);
+                $stmt->bindValue('march', $report['march'] && $report['march']!=""?(float)$report['march']:(float)$exitingLabService['march']);
+                $stmt->bindValue('april', $report['april'] && $report['april']!=""?(float)$report['april']:(float)$exitingLabService['april']);
+                $stmt->bindValue('may', $report['may'] && $report['may']!=""?(float)$report['may']:(float)$exitingLabService['may']);
+                $stmt->bindValue('june', $report['june'] && $report['june']!=""?(float)$report['june']:(float)$exitingLabService['june']);
+                $stmt->bindValue('july', $report['july'] && $report['july']!=""?(float)$report['july']:(float)$exitingLabService['july']);
+                $stmt->bindValue('august', $report['august']&&$report['august']!=""?(float)$report['august']:(float)$exitingLabService['august']);
+                $stmt->bindValue('september', $report['september']&&$report['september']!=""?(float)$report['september']:(float)$exitingLabService['september']);
+                $stmt->bindValue('october', $report['october'] && $report['october']!=""?(float)$report['october']:(float)$exitingLabService['october']);
+                $stmt->bindValue('november', $report['november'] && $report['november']!=""?(float)$report['november']: (float)$exitingLabService['november']);
+                $stmt->bindValue('december', $report['december']&&$report['december']!=""?(float)$report['december']: (float)$exitingLabService['december']);
                 $stmt->bindValue('created_at', $createdAt);
                 $stmt->execute();
             }else{
@@ -1902,18 +1905,18 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
                 $stmt->bindValue('lab_id', $report['lab_id']);
                 $stmt->bindValue('service_id', $report['service_id']);
                 $stmt->bindValue('breed_name', $report['breed_name']);
-                $stmt->bindValue('january', $report['january'] ?: 0);
-                $stmt->bindValue('february', $report['february'] ?: 0);
-                $stmt->bindValue('march', $report['march'] ?: 0);
-                $stmt->bindValue('april', $report['april'] ?: 0);
-                $stmt->bindValue('may', $report['may'] ?: 0);
-                $stmt->bindValue('june', $report['june'] ?: 0);
-                $stmt->bindValue('july', $report['july'] ?: 0);
-                $stmt->bindValue('august', $report['august'] ?: 0);
-                $stmt->bindValue('september', $report['september'] ?: 0);
-                $stmt->bindValue('october', $report['october'] ?: 0);
-                $stmt->bindValue('november', $report['november'] ?: 0);
-                $stmt->bindValue('december', $report['december'] ?: 0);
+                $stmt->bindValue('january', $report['january']&&$report['january']!=""?(float) $report['january']:0);
+                $stmt->bindValue('february', $report['february']&&$report['february']!=""?(float)$report['february']:0);
+                $stmt->bindValue('march', $report['march']&&$report['march']!=""?(float)$report['march']:0);
+                $stmt->bindValue('april', $report['april']&&$report['april']!=""?(float)$report['april']:0);
+                $stmt->bindValue('may', $report['may']&&$report['may']!=""?(float)$report['may']:0);
+                $stmt->bindValue('june', $report['june']&&$report['june']!=""?(float)$report['june']:0);
+                $stmt->bindValue('july', $report['july']&&$report['july']!=""?(float)$report['july']:0);
+                $stmt->bindValue('august', $report['august']&&$report['august']!=""?(float)$report['august']:0);
+                $stmt->bindValue('september', $report['september']&&$report['september']!=""?(float)$report['september']:0);
+                $stmt->bindValue('october', $report['october']&&$report['october']!=""?(float)$report['october']:0);
+                $stmt->bindValue('november', $report['november']&&$report['november']!=""?(float)$report['november']:0);
+                $stmt->bindValue('december', $report['december']&&$report['december']!=""?(float)$report['december']: 0);
                 $stmt->bindValue('created_at', $createdAt);
                 $stmt->bindValue('reporting_year', $year);
 
@@ -1938,7 +1941,7 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
             $stmt->bindValue('fish_size_id', $report['fish_size_id']);
             $stmt->bindValue('month_name', $report['month_name']);
             $stmt->bindValue('year', $report['year']);
-            $stmt->bindValue('price', $report['price']?$report['price']:'0');
+            $stmt->bindValue('price', $report['price']&&$report['price']!=""?(float)$report['price']:0);
             $stmt->bindValue('created_at', $createdAt);
 
             $stmt->execute();
