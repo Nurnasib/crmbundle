@@ -37,7 +37,7 @@ use Terminalbd\CrmBundle\Form\SearchFilterFormType;
 /**
  * Class MonthlyReportController
  * @package Terminalbd\CrmBundle\Controller\Report
- * @Security("is_granted('ROLE_CRM_POULTRY_ADMIN') or is_granted('ROLE_CRM_CATTLE_ADMIN') or is_granted('ROLE_CRM_AQUA_ADMIN') or is_granted('ROLE_CRM_SALES_MARKETING_ADMIN') or is_granted('ROLE_CRM_REPORT') or is_granted('ROLE_DEVELOPER')")
+ * @Security("is_granted('ROLE_CRM_POULTRY_ADMIN') or is_granted('ROLE_CRM_CATTLE_ADMIN') or is_granted('ROLE_CRM_AQUA_ADMIN') or is_granted('ROLE_CRM_SALES_MARKETING_ADMIN') or is_granted('ROLE_CRM_REPORT') or is_granted('ROLE_LINE_MANAGER') or is_granted('ROLE_DEVELOPER')")
  * @Route("/crm/report/sales-marketing", name="")
  */
 class SalesAndMarketingReportController extends AbstractController

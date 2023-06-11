@@ -16,7 +16,7 @@
 
             <ul class="sub-menu">
 
-                {% if is_granted('ROLE_CRM_SALES_MARKETING_ADMIN') or is_granted('ROLE_DEVELOPER') %}
+                {% if is_granted('ROLE_CRM_SALES_MARKETING_ADMIN') or is_granted('ROLE_DEVELOPER') or (is_granted('ROLE_CRM_SALES_MARKETING_USER') and is_granted('ROLE_LINE_MANAGER')) %}
                     <li>
                         <a class="dropdown-item" href="javascript:">{{ 'Sales & Marketing'|trans }}</a>
                         <ul>
