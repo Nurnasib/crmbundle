@@ -11,12 +11,12 @@
                         class="feather icon-edit"></i>{{ 'Expense For Approval'|trans }}</a></li>
     {% endif %}
 
-    {% if is_granted('ROLE_CRM_POULTRY_ADMIN') or is_granted('ROLE_CRM_CATTLE_ADMIN') or is_granted('ROLE_CRM_AQUA_ADMIN') or is_granted('ROLE_CRM_SALES_MARKETING_ADMIN') or is_granted('ROLE_CRM_REPORT') or is_granted('ROLE_DEVELOPER') %}
+    {% if is_granted('ROLE_CRM_POULTRY_ADMIN') or is_granted('ROLE_CRM_CATTLE_ADMIN') or is_granted('ROLE_CRM_AQUA_ADMIN') or is_granted('ROLE_CRM_SALES_MARKETING_ADMIN') or is_granted('ROLE_CRM_REPORT') or is_granted('ROLE_DEVELOPER') or is_granted('ROLE_LINE_MANAGER') %}
         <li class=""><a class="" href="javascript:"><i class="feather icon-file-text"></i>{{ 'Report'|trans }}</a>
 
             <ul class="sub-menu">
 
-                {% if is_granted('ROLE_CRM_SALES_MARKETING_ADMIN') or is_granted('ROLE_DEVELOPER') or (is_granted('ROLE_CRM_SALES_MARKETING_USER') and is_granted('ROLE_LINE_MANAGER')) %}
+                {% if is_granted('ROLE_CRM_SALES_MARKETING_ADMIN') or is_granted('ROLE_DEVELOPER') or is_granted('ROLE_LINE_MANAGER') %}
                     <li>
                         <a class="dropdown-item" href="javascript:">{{ 'Sales & Marketing'|trans }}</a>
                         <ul>
@@ -62,11 +62,11 @@
                         </ul>
                     </li>
                 {% endif %}
-                {% if is_granted('ROLE_CRM_POULTRY_ADMIN') or is_granted('ROLE_CRM_CATTLE_ADMIN') or is_granted('ROLE_CRM_AQUA_ADMIN') or is_granted('ROLE_CRM_REPORT') or is_granted('ROLE_DEVELOPER')  %}
+                {% if is_granted('ROLE_CRM_POULTRY_ADMIN') or is_granted('ROLE_CRM_CATTLE_ADMIN') or is_granted('ROLE_CRM_AQUA_ADMIN') or is_granted('ROLE_CRM_REPORT') or is_granted('ROLE_DEVELOPER') or is_granted('ROLE_LINE_MANAGER')  %}
                     <li>
                         <a class="dropdown-item" href="javascript:">{{ 'Life Cycle Report'|trans }}</a>
                         <ul>
-                            {% if is_granted('ROLE_CRM_POULTRY_ADMIN') or (is_granted('ROLE_CRM_POULTRY_USER') and is_granted('ROLE_CRM_REPORT')) %}
+                            {% if is_granted('ROLE_CRM_POULTRY_ADMIN') or is_granted('ROLE_DEVELOPER') or is_granted('ROLE_LINE_MANAGER') or (is_granted('ROLE_CRM_POULTRY_USER') and is_granted('ROLE_CRM_REPORT')) %}
                             <li>
                                 <a class="dropdown-item" href="javascript:">{{ 'Poultry'|trans }}</a>
                                 <ul class="sub-menu">
@@ -77,7 +77,7 @@
                                 </ul>
                             </li>
                             {% endif %}
-                            {% if is_granted('ROLE_CRM_CATTLE_ADMIN') or (is_granted('ROLE_CRM_CATTLE_USER') and is_granted('ROLE_CRM_REPORT')) %}
+                            {% if is_granted('ROLE_CRM_CATTLE_ADMIN') or is_granted('ROLE_DEVELOPER') or is_granted('ROLE_LINE_MANAGER') or (is_granted('ROLE_CRM_CATTLE_USER') and is_granted('ROLE_CRM_REPORT')) %}
                             <li>
                                 <a class="dropdown-item" href="javascript:">{{ 'Cattle'|trans }}</a>
                                 <ul class="sub-menu">
@@ -87,7 +87,7 @@
                             </li>
 
                             {% endif %}
-                            {% if is_granted('ROLE_CRM_AQUA_ADMIN') or (is_granted('ROLE_CRM_AQUA_USER') and is_granted('ROLE_CRM_REPORT')) %}
+                            {% if is_granted('ROLE_CRM_AQUA_ADMIN') or is_granted('ROLE_DEVELOPER') or is_granted('ROLE_LINE_MANAGER') or (is_granted('ROLE_CRM_AQUA_USER') and is_granted('ROLE_CRM_REPORT')) %}
                             <li>
                                 <a class="dropdown-item" href="javascript:">{{ 'Fish'|trans }}</a>
                                 <ul class="sub-menu">
@@ -102,7 +102,7 @@
                     <li>
                         <a class="dropdown-item" href="javascript:">{{ 'Monthly Report'|trans }}</a>
                         <ul>
-                            {% if is_granted('ROLE_CRM_POULTRY_ADMIN') or (is_granted('ROLE_CRM_POULTRY_USER') and is_granted('ROLE_CRM_REPORT')) %}
+                            {% if is_granted('ROLE_CRM_POULTRY_ADMIN') or is_granted('ROLE_DEVELOPER') or is_granted('ROLE_LINE_MANAGER') or (is_granted('ROLE_CRM_POULTRY_USER') and is_granted('ROLE_CRM_REPORT')) %}
                             <li>
                                 <a class="dropdown-item" href="javascript:">{{ 'Poultry'|trans }}</a>
                                 <ul class="sub-menu">
@@ -123,7 +123,7 @@
                                 </ul>
                             </li>
                             {% endif %}
-                            {% if is_granted('ROLE_CRM_CATTLE_ADMIN') or (is_granted('ROLE_CRM_CATTLE_USER') and is_granted('ROLE_CRM_REPORT')) %}
+                            {% if is_granted('ROLE_CRM_CATTLE_ADMIN') or is_granted('ROLE_DEVELOPER') or is_granted('ROLE_LINE_MANAGER') or (is_granted('ROLE_CRM_CATTLE_USER') and is_granted('ROLE_CRM_REPORT')) %}
                             <li>
                                 <a class="dropdown-item" href="javascript:">{{ 'Cattle'|trans }}</a>
                                 <ul class="sub-menu">
@@ -136,7 +136,7 @@
                                 </ul>
                             </li>
                             {% endif %}
-                            {% if is_granted('ROLE_CRM_AQUA_ADMIN') or (is_granted('ROLE_CRM_AQUA_USER') and is_granted('ROLE_CRM_REPORT')) %}
+                            {% if is_granted('ROLE_CRM_AQUA_ADMIN') or is_granted('ROLE_DEVELOPER') or is_granted('ROLE_LINE_MANAGER') or (is_granted('ROLE_CRM_AQUA_USER') and is_granted('ROLE_CRM_REPORT')) %}
                             <li>
                                 <a class="dropdown-item" href="javascript:">{{ 'Fish'|trans }}</a>
                                 <ul class="sub-menu">
@@ -165,7 +165,7 @@
                                     <li><a class="dropdown-item" href="{{ path('others_report_index', {'reportSlug':'feed-complain'}) }}">{{ 'Feed Complain'|trans }}</a></li>
                                 </ul>
                             </li>
-                            {% if is_granted('ROLE_CRM_POULTRY_ADMIN') or (is_granted('ROLE_CRM_POULTRY_USER') and is_granted('ROLE_CRM_REPORT')) %}
+                            {% if is_granted('ROLE_CRM_POULTRY_ADMIN') or is_granted('ROLE_DEVELOPER') or is_granted('ROLE_LINE_MANAGER') or (is_granted('ROLE_CRM_POULTRY_USER') and is_granted('ROLE_CRM_REPORT')) %}
                             <li>
                                 <a class="dropdown-item" href="javascript:">{{ 'Poultry'|trans }}</a>
                                 <ul class="sub-menu">
@@ -180,7 +180,7 @@
                                 </ul>
                             </li>
                             {% endif %}
-                            {% if is_granted('ROLE_CRM_CATTLE_ADMIN') or (is_granted('ROLE_CRM_CATTLE_USER') and is_granted('ROLE_CRM_REPORT')) %}
+                            {% if is_granted('ROLE_CRM_CATTLE_ADMIN') or is_granted('ROLE_DEVELOPER') or is_granted('ROLE_LINE_MANAGER') or (is_granted('ROLE_CRM_CATTLE_USER') and is_granted('ROLE_CRM_REPORT')) %}
                             <li>
                                 <a class="dropdown-item" href="javascript:">{{ 'Cattle'|trans }}</a>
                                 <ul class="sub-menu">
@@ -191,7 +191,7 @@
                                 </ul>
                             </li>
                             {% endif %}
-                            {% if is_granted('ROLE_CRM_AQUA_ADMIN') or (is_granted('ROLE_CRM_AQUA_USER') and is_granted('ROLE_CRM_REPORT')) %}
+                            {% if is_granted('ROLE_CRM_AQUA_ADMIN') or is_granted('ROLE_DEVELOPER') or is_granted('ROLE_LINE_MANAGER') or (is_granted('ROLE_CRM_AQUA_USER') and is_granted('ROLE_CRM_REPORT')) %}
                             <li>
                                 <a class="dropdown-item" href="javascript:">{{ 'Fish'|trans }}</a>
                                 <ul class="sub-menu">
