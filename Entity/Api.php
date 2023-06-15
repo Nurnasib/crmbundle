@@ -59,6 +59,13 @@ class Api
      * @ORM\Column(type="datetime", nullable=true)
      */
     private $updatedAt;
+
+    /**
+     * @var integer
+     * @Orm\Column(name="api_detail_item_count", type="integer", nullable=true)
+     */
+
+    private $apiDetailItemCount;
     
     public function __construct()
     {
@@ -179,7 +186,21 @@ class Api
         $this->batchNo = $batchNo;
     }
 
+    /**
+     * @return int
+     */
+    public function getApiDetailItemCount()
+    {
+        return $this->apiDetailItemCount;
+    }
 
+    /**
+     * @param int $apiDetailItemCount
+     */
+    public function setApiDetailItemCount(?int $apiDetailItemCount): void
+    {
+        $this->apiDetailItemCount = $apiDetailItemCount;
+    }
 
 
 }

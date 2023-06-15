@@ -60,7 +60,6 @@ class ChallengerRepository extends EntityRepository
             if (!str_contains($rolesString, 'ADMIN') && !in_array('ROLE_LINE_MANAGER', $loggedUser->getRoles())){
                 $qb->andWhere('employee.id = :employeeId')->setParameter('employeeId', $loggedUser->getId());
             }elseif (!str_contains($rolesString, 'ADMIN') && in_array('ROLE_LINE_MANAGER', $loggedUser->getRoles())){
-
                 $employeeIdsByLineManager = $this->_em->getRepository(User::class)->getEmployeesByLineManager($loggedUser);
                 $employeeIs=[];
                 if($employeeIdsByLineManager){

@@ -25,5 +25,18 @@ use Terminalbd\CrmBundle\Repository\BaseRepository;
  */
 class ApiDetailsRepository extends BaseRepository
 {
+    public function getProcessingItemLength($batch){
+
+        $qb = $this->createQueryBuilder('e');
+        
+        $qb->select('COUNT(e.id) as totalNumberOfItem');
+        
+        $qb->join('e.batch', 'batch');
+        
+        $qb->where('batch.id = :batchId')->setParameter('batchId', $batch->getId());
+        $qb->andWhere('e.status = :status')->setParameter('status', 1);
+        
+        return $qb->getQuery()->getOneOrNullResult();
+    }
 
 }

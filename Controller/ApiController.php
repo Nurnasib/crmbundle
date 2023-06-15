@@ -1748,6 +1748,8 @@ class ApiController extends AbstractController
 
             $jsonBody = json_decode($data['json_body'], true);
 
+            $api->setApiDetailItemCount(count($jsonBody));
+
             foreach ($jsonBody as $process=>$item) {
                 $apiDetails = new ApiDetails();
                 $apiDetails->setBatch($api);
@@ -1756,8 +1758,8 @@ class ApiController extends AbstractController
                 $apiDetails->setStatus(0);
                 $api->addApiDetails($apiDetails);
             }
-
-
+            
+            
             $em->persist($api);
             $em->flush();
 
