@@ -82,7 +82,7 @@ class CostBenefitAnalysisForLessCostingFarmRepository extends BaseRepository
             $qb->addSelect( 'customerRegion.id AS regionId', 'customerRegion.name AS regionName');
 
             $qb->addSelect('hatchery.name AS hatcheryName');
-            $qb->addSelect('breed.name AS breedBame');
+            $qb->addSelect('breed.name AS breedName');
             $qb->addSelect('feed.name AS feedName');
             $qb->addSelect('species.name AS speciesName');
 
