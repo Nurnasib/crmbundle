@@ -336,7 +336,7 @@ class CrmVisit
     /**
      * @param string $remarks
      */
-    public function setRemarks(string $remarks): void
+    public function setRemarks(?string $remarks): void
     {
         $this->remarks = $remarks;
     }
