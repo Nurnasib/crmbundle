@@ -866,12 +866,12 @@ VALUES (:report_id, :report_parent_parent_id, :agent_id, :customer_id, :employee
                 $stmt->bindValue('species_id', $report['species_id']);
                 $stmt->bindValue('reporting_month', $report['reporting_month']);
                 $stmt->bindValue('pond_size', $report['pond_size']);
-                if ($report['fingerling_size']!=""||$report['fingerling_size'] === null){
+                if ($report['fingerling_size']==""||$report['fingerling_size'] === null){
                     $stmt->bindValue('fingerling_size', 0);
                 }else{
                     $stmt->bindValue('fingerling_size', $report['fingerling_size']);
                 }
-                if ($report['harvesting_size']!=""||$report['harvesting_size'] === null){
+                if ($report['harvesting_size']==""||$report['harvesting_size'] === null){
                     $stmt->bindValue('harvesting_size', 0);
                 }else{
                     $stmt->bindValue('harvesting_size', $report['harvesting_size']);
