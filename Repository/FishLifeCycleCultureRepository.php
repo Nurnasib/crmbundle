@@ -74,6 +74,11 @@ class FishLifeCycleCultureRepository extends EntityRepository
             $qb->andWhere('regional.id = :regional')->setParameter('regional', $region);
         }
 
+        $feedTypeFishLifeCycle = isset($filterBy['feedTypeFishLifeCycle']) && $filterBy['feedTypeFishLifeCycle']!=""? $filterBy['feedTypeFishLifeCycle']: '';
+        if (!empty($feedTypeFishLifeCycle)){
+            $qb->andWhere('feedType.id = :feedType')->setParameter('feedType', $feedTypeFishLifeCycle);
+        }
+
         $rolesString = implode('_', $loggedUser->getRoles());
         if (!str_contains($rolesString, 'ADMIN') && !in_array('ROLE_LINE_MANAGER', $loggedUser->getRoles())){
             $qb->andWhere('employee.id = :employeeId')->setParameter('employeeId', $loggedUser->getId());

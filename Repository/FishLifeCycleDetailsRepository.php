@@ -101,7 +101,7 @@ class FishLifeCycleDetailsRepository extends EntityRepository
         $qb->join('fish_life_cycle.report', 'report');
         $qb->join('fish_life_cycle.customer', 'customer');
         $qb->leftJoin('employee.regional', 'regional');
-
+        $qb->leftJoin('e.feedType', 'feedType');
 
         $qb->where('report.slug = :reportSlug')->setParameter('reportSlug', $lifeCycleSlug);
 
@@ -118,6 +118,11 @@ class FishLifeCycleDetailsRepository extends EntityRepository
         $region = isset($filterBy['regionId']) && $filterBy['regionId']!=""? $filterBy['regionId']: '';
         if (!empty($region)){
             $qb->andWhere('regional.id = :regional')->setParameter('regional', $region);
+        }
+
+        $feedTypeFishLifeCycle = isset($filterBy['feedTypeFishLifeCycle']) && $filterBy['feedTypeFishLifeCycle']!=""? $filterBy['feedTypeFishLifeCycle']: '';
+        if (!empty($feedTypeFishLifeCycle)){
+            $qb->andWhere('feedType.id = :feedType')->setParameter('feedType', $feedTypeFishLifeCycle);
         }
 
         $rolesString = implode('_', $loggedUser->getRoles());

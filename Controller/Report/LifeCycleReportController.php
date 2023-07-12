@@ -53,6 +53,7 @@ class LifeCycleReportController extends AbstractController
             $filterBy['employeeId'] = $form->getData()['employee'] ? $form->getData()['employee']->getId() : '';
             $filterBy['farmerId'] = $request->request->get('search_filter_form')['employeeWiseFarmer'] ? $request->request->get('search_filter_form')['employeeWiseFarmer'] : '';
             $filterBy['regionId'] = $form->getData()['region'] ? $form->getData()['region']->getId() : '';
+            $filterBy['feedTypeFishLifeCycle'] = $form->getData()['feedTypeFishLifeCycle'] ? $form->getData()['feedTypeFishLifeCycle']->getId() : '';
 
             $employee = $form->getData()['employee'];
 
