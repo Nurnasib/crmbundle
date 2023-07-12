@@ -4,21 +4,23 @@
 
             <thead class="thead-dark" style="background-color: #dbdee3">
                 <tr>
-                    <th colspan="42" class="border-0" data-a-h="center"><h3 class="text-center">NOURISH POULTRY AND
+                    <th colspan="44" class="border-0" data-a-h="center"><h3 class="text-center">NOURISH POULTRY AND
                             HATCHERY LTD</h3></th>
                 </tr>
                 <tr>
-                    <th colspan="42" class="border-0" data-a-h="center"><h5 class="text-center">UTTARA, DHAKA.</h5></th>
+                    <th colspan="44" class="border-0" data-a-h="center"><h5 class="text-center">UTTARA, DHAKA.</h5></th>
                 </tr>
                 <tr>
-                    <td colspan="42" class="border-0" data-a-h="center"><h6
+                    <td colspan="44" class="border-0" data-a-h="center"><h6
                                 class="text-center">{{ report.name|default('') }}</h6></td>
                 </tr>
 
             <tr style="position: sticky; top: -1px; background-color: #dbdee3" class="data-header">
                 <th data-a-v="middle" scope="col" rowspan="2" class="text-center">Region</th>
-                <th data-a-v="middle" scope="col" rowspan="2" class="text-center">Name of CSO</th>
-                <th scope="col" rowspan="2" class="text-center">SL No.</th>
+                <th data-a-v="middle" scope="col" rowspan="2" class="text-center">Officer Id</th>
+                <th data-a-v="middle" scope="col" rowspan="2" class="text-center">Officer Name</th>
+                <th data-a-v="middle" scope="col" rowspan="2" class="text-center">Designation</th>
+                <th data-a-v="middle" scope="col" rowspan="2" class="text-center">SL No.</th>
                 <th scope="col" data-a-h="center" colspan="3" class="text-center">Agent Information</th>
                 <th scope="col" data-a-h="center" colspan="3" class="text-center">Farmer Information</th>
                 <th scope="col" data-a-h="center" colspan="6" class="text-center">Fish Information</th>
@@ -85,7 +87,7 @@
                 {% set totalRecordCount=1 %}
                 {% for monthYear, regionDetails in entities['details'] %}
                     <tr>
-                        <td colspan="42">{{ monthYear }}</td>
+                        <td colspan="44">{{ monthYear }}</td>
                     </tr>
                     {% for regionId, employeesDetails in regionDetails %}
                         {% set recordCount=1 %}
@@ -124,15 +126,20 @@
                                 {% set totalProfitPerKg = totalBroilerWeightKg>0?(totalProfit/totalBroilerWeightKg):0 %}
 
                                 <tr>
-                                    {% if recordCount==1 %}
+                                    {#{% if recordCount==1 %}
                                         <td data-a-v="middle" valign="middle"
                                             rowspan="{{ entities['regionRecord'][monthYear][regionId]|length }}">{{ detail['regionName']|default('') }}</td>
                                     {% endif %}
                                     {% if loop.first %}
                                         <td data-a-v="middle" valign="middle"
                                             rowspan="{{ details|length }}">{{ detail['employeeName']|default('') }}</td>
-                                    {% endif %}
-                                    <td data-a-h="center" data-t="n">{{ totalRecordCount }}</td>                                    <td>{{ detail['agentName']|default('') }}</td>
+                                    {% endif %}#}
+                                    <td data-a-v="middle" valign="middle">{{ detail['regionName']|default('') }}</td>
+                                    <td data-a-v="middle" valign="middle">{{ detail['employeeUserId']|default('') }}</td>
+                                    <td data-a-v="middle" valign="middle">{{ detail['employeeName']|default('') }}</td>
+                                    <td data-a-v="middle" valign="middle">{{ detail['employeeDesignationName']|default('') }}</td>
+                                    <td data-a-h="center" data-t="n">{{ totalRecordCount }}</td>
+                                    <td>{{ detail['agentName']|default('') }}</td>
                                     <td>{{ detail['agentAddress']|default('') }}</td>
                                     <td data-t="s">{{ detail['agentMobile']|default('') }}</td>
 

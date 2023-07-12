@@ -70,7 +70,7 @@ class FarmerIntroduceDetailsRepository extends BaseRepository
             $qb->addSelect('farmerType.name AS farmerTypeName');
             $qb->addSelect('feed.name AS feedName');
             $qb->addSelect('otherFeed.name AS otherFeedName');
-            $qb->addSelect('employee.id AS employeeId', 'employee.name AS employeeName');
+            $qb->addSelect('employee.id AS employeeId', 'employee.userId AS employeeUserId', 'employee.name AS employeeName');
             $qb->addSelect('designation.name AS employeeDesignationName');
 
 

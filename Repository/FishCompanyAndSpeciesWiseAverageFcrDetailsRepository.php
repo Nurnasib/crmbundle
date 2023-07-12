@@ -157,6 +157,7 @@ WHERE fcrDetails.quantity>0 and fcr.employee_id = :employee_id and fcr.feed_type
                 'name' => $result['employeeName'],
                 'designation' => $result['designationName']
             ];
+            $data['feedTypeIds'][$result['feedTypeId']]=$result['feedTypeName'];
             $data['feedTypeInfo'][$result['employeeId']][$month][$result['feedTypeId']]=$result['feedTypeName'];
             $data['records'][$result['employeeId']][$month][$result['feedTypeId']][$result['fcrId']][$result['speciesId']]=$result;
             $data['fcrInfo'][$result['employeeId']][$month][$result['feedTypeId']][$result['fcrId']]=['feedName'=>$result['feedName'],'createdAt'=>$result['fcrCreatedAt']->format('d-m-Y'),'reportingMonth'=>$result['reportingMonth']->format('d-m-Y')];

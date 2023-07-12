@@ -64,7 +64,7 @@ class DiseaseMappingRepository extends EntityRepository
             $qb->addSelect('agent.name AS agentName', 'agent.address AS agentAddress', 'agent.mobile AS agentMobile');
             $qb->addSelect('breed.id AS breedId', 'breed.name AS breedName');
 
-            $qb->addSelect('employee.id AS employeeId', 'employee.name AS employeeName');
+            $qb->addSelect('employee.id AS employeeId', 'employee.userId AS employeeUserId', 'employee.name AS employeeName');
             $qb->addSelect('designation.name AS employeeDesignationName');
             $qb->addSelect('customer.id AS customerId', 'customer.name AS customerName', 'customer.mobile AS customerMobile', 'customer.address AS customerAddress');
 

@@ -1,24 +1,35 @@
 <table class="table table-striped table-bordered table-hover download-excel" width="100%">
     {% if entities is defined and entities['records'] is defined and entities['records'] is not empty %}
+        {% set totalColSpan = 7 %}
+        {% if filterBy['feedType'] is defined and filterBy['feedType']==""  %}
+            {% set totalColSpan = totalColSpan + (species['Floating']|length>species['Sinking']|length?species['Floating']|length:species['Sinking']|length)|number_format(0) %}
+        {% else %}
+            {% if 'Floating' in entities['feedTypeIds'] %}
+                {% set totalColSpan = totalColSpan + (species['Floating']|length)|number_format(0) %}
+            {% elseif 'Sinking' in entities['feedTypeIds'] %}
+                {% set totalColSpan = totalColSpan + (species['Sinking']|length)|number_format(0) %}
+            {% endif %}
+        {% endif %}
+
         <thead class="thead-dark" style="background-color: #dbdee3">
         <tr>
             <th data-a-h="center"
-                colspan="{{ ((species['Floating'] is defined ? species['Floating']|length : 0) + 4)|number_format(0) }}"
+                colspan="{{ totalColSpan }}"
                 class="border-0"><h3 class="text-center">NOURISH POULTRY AND HATCHERY LTD</h3></th>
         </tr>
         <tr>
             <th data-a-h="center"
-                colspan="{{ ((species['Floating'] is defined ? species['Floating']|length : 0) + 4)|number_format(0) }}"
+                colspan="{{ totalColSpan }}"
                 class="border-0"><h5 class="text-center">UTTARA, DHAKA.</h5></th>
         </tr>
         <tr>
             <th data-a-h="center"
-                colspan="{{ ((species['Floating'] is defined ? species['Floating']|length : 0) + 4)|number_format(0) }}"
+                colspan="{{ totalColSpan }}"
                 class="border-0"><h6 class="text-center">{{ report.name|default('') }}</h6></th>
         </tr>
         </thead>
         {% for employeeId, employeeRecords in entities['records'] %}
-            <thead class="thead-dark" style="background-color: #dbdee3">
+            {#<thead class="thead-dark" style="background-color: #dbdee3">
 
             <tr>
                 <th colspan="{{ (((species['Floating'] is defined ? species['Floating']|length : 0)+5) / 3)|number_format(0) }}"
@@ -29,22 +40,25 @@
                     class="border-0">{{ 'Designation' }}: {{ entities['employeeInfo'] is defined? entities['employeeInfo'][employeeId]['designation']:'' }}</th>
             </tr>
 
-            </thead>
+            </thead>#}
             {% for monthYear, monthlyRecords in employeeRecords %}
 
                 <tbody>
 
                 <tr>
-                    <th data-t="s" colspan="3">{{ monthYear|split('-')[1] ~ '-' ~ monthYear|split('-')[2]}}</th>
+                    <th data-t="s" colspan="{{ totalColSpan }}">{{ monthYear|split('-')[1] ~ '-' ~ monthYear|split('-')[2]}}</th>
                 </tr>
 
                 {% if entities['feedTypeInfo'][employeeId][monthYear] is defined %}
 
                     {% for feedTypeId, feedType in entities['feedTypeInfo'][employeeId][monthYear] %}
                         <tr>
-                            <th colspan="{{ species[feedType]|length+4 }}">{{ feedType }}</th>
+                            <th colspan="{{ totalColSpan }}">{{ feedType }}</th>
                         </tr>
                         <tr>
+                            <th scope="col">Offiecr Id</th>
+                            <th scope="col">Officer Name</th>
+                            <th scope="col">Designation</th>
                             <th scope="col">S/L</th>
                             <th scope="col">Reporting Date</th>
                             <th scope="col">Created Date</th>
@@ -61,6 +75,9 @@
                             {% for fcrId, fcrRecords in monthlyRecords[feedTypeId] %}
 {#                                {{ dump(fcrRecords) }}#}
                                 <tr>
+                                    <td>{{ entities['employeeInfo'] is defined? entities['employeeInfo'][employeeId]['userId']:'' }}</td>
+                                    <td>{{ entities['employeeInfo'] is defined? entities['employeeInfo'][employeeId]['name']:'' }}</td>
+                                    <td>{{ entities['employeeInfo'] is defined? entities['employeeInfo'][employeeId]['designation']:'' }}</td>
                                     <td data-t="n">{{ loop.index }}</td>
                                     <td>{{ entities['fcrInfo'][employeeId][monthYear][feedTypeId][fcrId]['reportingMonth']|default('') }}</td>
                                     <td>{{ entities['fcrInfo'][employeeId][monthYear][feedTypeId][fcrId]['createdAt']|default('') }}</td>
