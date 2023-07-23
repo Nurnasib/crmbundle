@@ -59,7 +59,7 @@ class VisitReportController extends AbstractController
                 return $this->redirectToRoute('visit_report');
             }
 
-//            dd($serviceMode->getId());
+            
             $entities = $this->getDoctrine()->getRepository(CrmVisit::class)->getVisits($startDate, $endDate, $employee, $serviceMode, $this->getUser(), $process);
 
             if(isset($requestData['pdf_download'])&&$requestData['pdf_download']=='pdf_download'){
