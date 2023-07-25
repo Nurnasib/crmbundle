@@ -265,4 +265,53 @@ class PoultryMeatEggPriceRepository extends EntityRepository
         return $rangArray;
     }
 
+
+
+    public function getMeatEggPriceEmployeeAndDateRangeWiseReport($filterBy)
+    {
+        $year = isset( $filterBy['year']) &&  $filterBy['year']!='' ?  $filterBy['year'] : date('Y');
+
+        $startMonth = date('Y-m-d', strtotime($year . '-' . $filterBy['startMonth'] . '-01'));
+        $endMonth = date('Y-m-t', strtotime($year . '-' . $filterBy['endMonth'] . '-01'));
+
+        $start = isset($filterBy['startMonth']) ? (new \DateTime($startMonth))->format('Y-m-d') : date('Y-m-d');
+        $end = isset($filterBy['endMonth']) ? (new \DateTime($endMonth))->format('Y-m-d') : date('Y-m-t');
+
+        $qb = $this->createQueryBuilder('e');
+        $qb->join('e.breedType', 'breed_type');
+        $qb->join('e.employee', 'employee');
+//        $qb->leftJoin('employee.designation', 'designation');
+        $qb->join('e.region', 'region');
+//        $qb->join('employee.userGroup', 'user_group');
+
+
+        $qb->select('AVG(e.price) AS avgPrice', 'MONTH(e.reportingDate) AS month', 'YEAR(e.reportingDate) AS year', 'e.reportingDate');
+        $qb->addSelect('breed_type.id AS breedTypeId', 'breed_type.name AS breedTypeName');
+        $qb->addSelect('employee.id as employeeAutoId', 'employee.userId', 'employee.name as employeeName');
+        $qb->addSelect('region.id as regionId', 'group_concat(DISTINCT region.name) as regionName');
+//        $qb->addSelect('designation.name as designationName');
+
+        $qb->where('e.reportingDate >= :start')->setParameter('start', $start);
+        $qb->andWhere('e.reportingDate <= :end')->setParameter('end', $end);
+//        $qb->andWhere('user_group.slug = :userGroupSlug')->setParameter('userGroupSlug', 'employee');
+        $qb->andWhere('e.price > :price')->setParameter('price', 0);
+
+        $qb->groupBy('month');
+        $qb->addGroupBy('year');
+        $qb->addGroupBy('breedTypeId');
+
+        $qb->orderBy("DATE_FORMAT(e.reportingDate,'%Y-%m')", "ASC");
+
+        $qb->andWhere('employee = :employee')->setParameter('employee', $filterBy['employee']);
+
+        $results = $qb->getQuery()->getArrayResult();
+        $data = [];
+        foreach ($results as $result) {
+            $reportingDate = $result['reportingDate']->format('F');
+            $data['records'][$result['breedTypeName']][$reportingDate] = $result['avgPrice'];
+        }
+        return $data;
+
+    }
+
 }

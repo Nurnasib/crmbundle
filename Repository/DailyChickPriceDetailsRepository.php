@@ -390,35 +390,65 @@ class DailyChickPriceDetailsRepository extends EntityRepository
         return $data;
 
     }
+
+    public function getEmployeeMonthCompanyWiseAvgDocPriceMonthly($filterBy)
+    {
+
+        $year = isset( $filterBy['year']) &&  $filterBy['year']!='' ?  $filterBy['year'] : date('Y');
+
+        $startMonth = date('Y-m-d', strtotime($year . '-' . $filterBy['startMonth'] . '-01'));
+        $endMonth = date('Y-m-t', strtotime($year . '-' . $filterBy['endMonth'] . '-01'));
+        
+        $start = isset($filterBy['startMonth']) ? (new \DateTime($startMonth))->format('Y-m-d') : date('Y-01-01');
+        $end = isset($filterBy['endMonth']) ? (new \DateTime($endMonth))->format('Y-m-d') : date('Y-12-31');
+//        $employeeId = isset($filterBy['employeeId']) ? $filterBy['employeeId'] : null;
+        
+        $qb = $this->createQueryBuilder('e');
+        $qb->join('e.crmDailyChickPrice', 'parent');
+        $qb->join('parent.employee', 'employee');
+        $qb->leftJoin('employee.regional', 'regional');
+        $qb->leftJoin('employee.designation', 'designation');
+        $qb->join('employee.userGroup', 'user_group');
+        $qb->join('e.chickType', 'chick_type');
+        $qb->join('chick_type.parent', 'chick_type_parent');
+        $qb->join('e.feed', 'feed');
+
+//        $qb->select('employee.id','employee.userId', 'employee.name');
+        $qb->select('AVG(e.price) AS avgPrice');
+        $qb->addSelect('chick_type_parent.id AS chickTypeParentId', 'chick_type_parent.name AS chickTypeParentName');
+        $qb->addSelect('feed.id AS feedId', 'feed.name AS feedName');
+        $qb->addSelect('parent.reportingDate', 'MONTH(parent.reportingDate) AS month', 'YEAR(parent.reportingDate) AS year');
+        $qb->addSelect('designation.name as designationName');
+        $qb->addSelect('regional.name as regionalName');
+
+        $qb->where('parent.reportingDate >= :start')->setParameter('start', $start);
+        $qb->andWhere('parent.reportingDate <= :end')->setParameter('end', $end);
+        $qb->andWhere('user_group.slug = :userGroupSlug')->setParameter('userGroupSlug', 'employee');
+        $qb->andWhere('e.price > :price')->setParameter('price', 0);
+
+//        $qb->groupBy('employee.userId');
+        $qb->groupBy('feedId');
+        $qb->addGroupBy('month');
+        $qb->addGroupBy('year');
+        $qb->addGroupBy('chickTypeParentId');
+        $qb->orderBy('feed.sortOrder', 'ASC');
+        $qb->addOrderBy("DATE_FORMAT(parent.reportingDate,'%Y-%m')", "ASC");
+
+        $qb->andWhere('employee = :employee')->setParameter('employee', $filterBy['employee']);
+
+
+        $results = $qb->getQuery()->getArrayResult();
+
+        $data = [];
+
+        foreach ($results as $result) {
+            $month = $result['reportingDate']->format('F');
+            $data['records'][$result['chickTypeParentName']][$result['feedId']][$month] = $result['avgPrice'];
+            $data['feedCompany'][$result['chickTypeParentName']][$result['feedId']] = $result['feedName'];
+        }
+        return $data;
+
+    }
     
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

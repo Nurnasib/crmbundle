@@ -210,6 +210,35 @@ class SettingRepository extends EntityRepository
         return $data;
     }
 
+    public function getAllProductTypeForMonthlyReport()
+    {
+        $qb = $this->createQueryBuilder('e');
+        $qb->join('e.parent', 'parent');
+
+
+        $qb->select('e.id', 'e.name');
+        $qb->addSelect('parent.name AS parentName');
+        $qb->addSelect('parent.slug AS parentSlug');
+
+        $qb->where("e.settingType = 'PRODUCT_TYPE'");
+        $qb->andWhere('e.status = 1');
+
+        $results = $qb->getQuery()->getArrayResult();
+
+        $data = [];
+
+        foreach ($results as $result) {
+            $data[$result['id']] = [
+                'id' => $result['id'],
+                'name' => $result['name'],
+                'parent' => $result['parentName'],
+                'slug' => $result['parentSlug'],
+            ];
+        }
+
+        return $data;
+    }
+
 
     public function getDailyExpenseParticular()
     {
