@@ -182,35 +182,39 @@ class CompanyWiseFeedSaleRepository extends BaseRepository
     public function getCompanyWiseFeedSaleForMonthlyReport($filterBy)
     {
 
-
-        $year = isset($filterBy['year']) && $filterBy['year']!=''?$filterBy['year']:date('Y');
-
-        $qb = $this->createQueryBuilder('e');
-        $qb->join('e.feedCompany', 'feedCompany');
-        $qb->join('e.employee', 'employee');
-
-        $qb->select('e.monthName', 'e.year', 'e.breedName', 'e.productWiseQty', 'e.totalQty', 'e.createdAt');
-        $qb->addSelect('feedCompany.id AS feedCompanyId', 'feedCompany.name AS feedCompanyName');
-        $qb->addSelect('employee.id AS employeeId','employee.userId','employee.name AS employeeName');
-
-        $qb->where('e.totalQty >0');
-
-        $qb->andWhere('e.monthName IN (:months)')->setParameter('months', $filterBy['months']);
-
-        $qb->andWhere('e.year = :year')->setParameter('year', $year);
-
-        $qb->andWhere('employee = :employee')->setParameter('employee', $filterBy['employee']);
-
-        $results = $qb->getQuery()->getArrayResult();
         $data = [];
 
-        if($results){
-            foreach ($results as $result) {
-                $species = json_decode($result['productWiseQty'], true);
-                if(sizeof($species) > 0 ){
-                    foreach ($species as $key => $value) {
-                        if($value>0){
-                            $data['records'][$key][$result['feedCompanyName']][$result['monthName']] = $value;
+        if($filterBy['employee']!=''){
+
+            $year = isset($filterBy['year']) && $filterBy['year']!=''?$filterBy['year']:date('Y');
+
+            $qb = $this->createQueryBuilder('e');
+            $qb->join('e.feedCompany', 'feedCompany');
+            $qb->join('e.employee', 'employee');
+
+            $qb->select('e.monthName', 'e.year', 'e.breedName', 'e.productWiseQty', 'e.totalQty', 'e.createdAt');
+            $qb->addSelect('feedCompany.id AS feedCompanyId', 'feedCompany.name AS feedCompanyName');
+            $qb->addSelect('employee.id AS employeeId','employee.userId','employee.name AS employeeName');
+
+            $qb->where('e.totalQty >0');
+
+            $qb->andWhere('e.monthName IN (:months)')->setParameter('months', $filterBy['months']);
+
+            $qb->andWhere('e.year = :year')->setParameter('year', $year);
+
+            $qb->andWhere('employee = :employee')->setParameter('employee', $filterBy['employee']);
+
+            $results = $qb->getQuery()->getArrayResult();
+
+
+            if($results){
+                foreach ($results as $result) {
+                    $species = json_decode($result['productWiseQty'], true);
+                    if(sizeof($species) > 0 ){
+                        foreach ($species as $key => $value) {
+                            if($value>0){
+                                $data['records'][$key][$result['feedCompanyName']][$result['monthName']] = $value;
+                            }
                         }
                     }
                 }

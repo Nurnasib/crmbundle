@@ -399,8 +399,8 @@ class DailyChickPriceDetailsRepository extends EntityRepository
         $startMonth = date('Y-m-d', strtotime($year . '-' . $filterBy['startMonth'] . '-01'));
         $endMonth = date('Y-m-t', strtotime($year . '-' . $filterBy['endMonth'] . '-01'));
         
-        $start = isset($filterBy['startMonth']) ? (new \DateTime($startMonth))->format('Y-m-d') : date('Y-01-01');
-        $end = isset($filterBy['endMonth']) ? (new \DateTime($endMonth))->format('Y-m-d') : date('Y-12-31');
+        $start = isset($filterBy['startMonth']) ? (new \DateTime($startMonth))->format('Y-m-d') : date('Y-m-01');
+        $end = isset($filterBy['endMonth']) ? (new \DateTime($endMonth))->format('Y-m-t') : date('Y-d-t');
 //        $employeeId = isset($filterBy['employeeId']) ? $filterBy['employeeId'] : null;
         
         $qb = $this->createQueryBuilder('e');

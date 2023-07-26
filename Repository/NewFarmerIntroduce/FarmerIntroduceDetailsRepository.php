@@ -136,6 +136,74 @@ class FarmerIntroduceDetailsRepository extends BaseRepository
 
     }
 
+    public function getFarmerIntroduceReportByEmployeeDateForKpiMonthlyReport($report, $filterBy)
+    {
+        $returnArray = [];
+        $breed= $report->getParent()->getParent();
+
+        $species = $this->getEntityManager()->getRepository(Setting::class)->findBy(array('status'=>1,'settingType'=>'SPECIES_TYPE','parent'=>$breed));
+
+        $year = isset( $filterBy['year']) &&  $filterBy['year']!='' ?  $filterBy['year'] : date('Y');
+        $startMonth = date('Y-m-d', strtotime($year . '-' . $filterBy['startMonth'] . '-01'));
+        $endMonth = date('Y-m-t', strtotime($year . '-' . $filterBy['endMonth'] . '-01'));
+
+        $startDate = isset($filterBy['startMonth']) ? (new \DateTime($startMonth))->format('Y-m-d 00:00:00') : date('Y-m-d 00:00:00');
+        $endDate = isset($filterBy['endMonth']) ? (new \DateTime($endMonth))->format('Y-m-d 23:59:59') : date('Y-m-t 23:59:59');
+
+        if($report){
+            $qb = $this->createQueryBuilder('e');
+            $qb->select('e.id as eId', 'e.cultureSpeciesItemAndQty', 'e.remarks', 'e.createdAt', 'e.introduceDate');
+            $qb->addSelect('farmer.name AS customerName', 'farmer.address AS customerAddress', 'farmer.mobile AS customerMobile');
+            $qb->addSelect( 'customerRegion.id AS regionId', 'customerRegion.name AS regionName');
+            $qb->addSelect('agent.name AS agentName','agent.address AS agentAddress');
+            $qb->addSelect('otherAgent.name AS otherAgentName','otherAgent.address AS otherAgentAddress');
+            $qb->addSelect('subAgent.name AS subAgentName','subAgent.address AS subAgentAddress');
+            $qb->addSelect('farmerType.name AS farmerTypeName');
+            $qb->addSelect('feed.name AS feedName');
+            $qb->addSelect('otherFeed.name AS otherFeedName');
+            $qb->addSelect('employee.id AS employeeId', 'employee.userId AS employeeUserId', 'employee.name AS employeeName');
+            $qb->addSelect('designation.name AS employeeDesignationName');
+
+
+            $qb->join('e.customer', 'farmer');
+            $qb->join('farmer.location','customerUpazila');
+            $qb->join('customerUpazila.parent', 'customerDistrict');
+            $qb->join('customerDistrict.parent', 'customerRegion');
+            $qb->join('e.employee', 'employee');
+            $qb->join('e.farmerType', 'farmerType');
+            $qb->leftJoin('employee.designation', 'designation');
+            $qb->leftJoin('e.agent', 'agent');
+            $qb->leftJoin('e.otherAgent', 'otherAgent');
+            $qb->leftJoin('e.subAgent', 'subAgent');
+            $qb->leftJoin('e.feed', 'feed');
+            $qb->leftJoin('e.otherFeed', 'otherFeed');
+
+            $qb->where('e.farmerType =:farmerType')->setParameter('farmerType', $breed);
+            $qb->andWhere('employee = :employee')->setParameter('employee', $filterBy['employee']);
+
+            $qb->andWhere('e.introduceDate >= :startDate')->setParameter('startDate', $startDate);
+            $qb->andWhere('e.introduceDate <= :endDate')->setParameter('endDate', $endDate);
+
+            $qb->andWhere('e.introduceDate IS NOT NULL');
+            $qb->andWhere('e.createdAt IS NOT NULL');
+
+            $qb->orderBy('e.introduceDate','ASC');
+            $results = $qb->getQuery()->getArrayResult();
+
+            if($results){
+                foreach ($results as $result){
+                    $monthYear = $result['introduceDate']->format('F-Y');
+                    $returnArray['records'][$monthYear][]=$result;
+                }
+                $returnArray['species']=$species;
+
+            }
+        }
+
+        return $returnArray;
+
+    }
+
     public function getMonthlyNewFarmerIntroduceTotalReport($filterBy)
     {
         $qb = $this->createQueryBuilder('e');
