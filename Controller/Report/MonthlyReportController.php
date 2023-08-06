@@ -96,7 +96,7 @@ class MonthlyReportController extends AbstractController
                 case 'farmer-introduce-report-poultry':
                 case 'farmer-introduce-report-fish':
                 case 'farmer-introduce-report-cattle':
-                    $entities = $this->getDoctrine()->getRepository(FarmerIntroduceDetails::class)->getFarmerIntroduceReportByEmployeeDate($report, $filterBy);
+                    $entities = $this->getDoctrine()->getRepository(FarmerIntroduceDetails::class)->getFarmerIntroduceReportByEmployeeDate($report, $filterBy, $this->getUser());
                     break;
 
                 case 'company-species-wise-average-fcr-before':

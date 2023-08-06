@@ -53,7 +53,7 @@ class FarmerIntroduceDetailsRepository extends BaseRepository
 
     }
 
-    public function getFarmerIntroduceReportByEmployeeDate($report, $filterBy)
+    public function getFarmerIntroduceReportByEmployeeDate($report, $filterBy, $loggedUser)
     {
         $returnArray = [];
         $breed= $report->getParent()->getParent();
@@ -95,6 +95,19 @@ class FarmerIntroduceDetailsRepository extends BaseRepository
             $employee = isset($filterBy['employeeId'])&&$filterBy['employeeId']!=''? $filterBy['employeeId']: '';
             if (!empty($employee)){
                 $qb->andWhere('employee.id = :employee')->setParameter('employee', $employee);
+            }
+
+            $rolesString = implode('_', $loggedUser->getRoles());
+            if (!str_contains($rolesString, 'ADMIN') && !in_array('ROLE_LINE_MANAGER', $loggedUser->getRoles())){
+                $qb->andWhere('employee.id = :employeeId')->setParameter('employeeId', $loggedUser->getId());
+            }elseif (!str_contains($rolesString, 'ADMIN') && in_array('ROLE_LINE_MANAGER', $loggedUser->getRoles())){
+
+                $employeeIdsByLineManager = $this->_em->getRepository(User::class)->getEmployeesByLineManager($loggedUser);
+                $employeeIs=[];
+                if($employeeIdsByLineManager){
+                    $employeeIs=$employeeIdsByLineManager;
+                }
+                $qb->andWhere('employee.id IN (:employeeIds)')->setParameter('employeeIds', $employeeIs);
             }
 
             if (!empty($startDate) && !empty($endDate)){
