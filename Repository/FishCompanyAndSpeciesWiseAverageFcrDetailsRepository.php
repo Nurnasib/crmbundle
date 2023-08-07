@@ -146,24 +146,35 @@ WHERE fcrDetails.quantity>0 and fcr.employee_id = :employee_id and fcr.feed_type
             $qb->andWhere('employee.id IN (:employeeIds)')->setParameter('employeeIds', $employeeIs);
         }
 
+        $qb->orderBy("DATE_FORMAT(parent.reportingMonth,'%Y-%m')", "ASC");
+
         $results = $qb->getQuery()->getArrayResult();
 
         $data = [];
         foreach ($results as $result) {
-            $month = $result['reportingMonth']->format('m-F-Y');
+            /*$month = $result['reportingMonth']->format('m-F-Y');
 
             $data['employeeInfo'][$result['employeeId']] = [
                 'userId' => $result['userId'],
                 'name' => $result['employeeName'],
                 'designation' => $result['designationName']
-            ];
+            ];*/
             $data['feedTypeIds'][$result['feedTypeId']]=$result['feedTypeName'];
-            $data['feedTypeInfo'][$result['employeeId']][$month][$result['feedTypeId']]=$result['feedTypeName'];
-            $data['records'][$result['employeeId']][$month][$result['feedTypeId']][$result['fcrId']][$result['speciesId']]=$result;
-            $data['fcrInfo'][$result['employeeId']][$month][$result['feedTypeId']][$result['fcrId']]=['feedName'=>$result['feedName'],'createdAt'=>$result['fcrCreatedAt']->format('d-m-Y'),'reportingMonth'=>$result['reportingMonth']->format('d-m-Y')];
-            ksort($data['records'][$result['employeeId']]);
+//            $data['feedTypeInfo'][$result['employeeId']][$month][$result['feedTypeId']]=$result['feedTypeName'];
+            $data['records'][$result['feedTypeId']][$result['fcrId']][$result['speciesId']]=$result;
+            $data['fcrInfo'][$result['feedTypeId']][$result['fcrId']]=[
+                'userId' => $result['userId'],
+                'name' => $result['employeeName'],
+                'designation' => $result['designationName'],
+                'feedName'=>$result['feedName'],
+                'createdAt'=>$result['fcrCreatedAt']->format('d-m-Y'),
+                'reportingMonth'=>$result['reportingMonth']->format('d-m-Y'),
+                'month'=>$result['reportingMonth']->format('F'),
+                'year'=>$result['reportingMonth']->format('Y')
+            ];
+//            ksort($data['records'][$result['employeeId']]);
         }
-
+//dd($data);
         return $data;
 
 
