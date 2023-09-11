@@ -210,12 +210,16 @@ class CrmVisitDetailsRepository extends EntityRepository
         $qb->leftJoin('e.crmCustomer', 'farmer');
         $qb->leftJoin('e.agent', 'agent');
         $qb->leftJoin('agent.parent', 'nourishAgent');
+        $qb->leftJoin('crmVisit.area', 'area');
+        $qb->leftJoin('crmVisit.location', 'location');
         $qb->select('e.farmCapacity', 'e.process', 'e.comments', 'e.purposeMultiple', 'e.reportDesc');
         $qb->addSelect('farmer.name AS farmerName', 'farmer.address AS farmerAddress', 'farmer.mobile AS farmerMobile');
         $qb->addSelect('agent.name AS agentName','agent.agentId', 'agent.address AS agentAddress', 'agent.mobile AS agentMobile');
         $qb->addSelect('employee.userId','employee.name AS employeeName');
         $qb->addSelect('crmVisit.created AS visitCreatedDate', 'crmVisit.visitDate', 'crmVisit.visitTime');
         $qb->addSelect('purpose.name AS purposeName');
+        $qb->addSelect('area.name AS areaName');
+        $qb->addSelect('location.name AS vistingAreaName');
         $qb->addSelect('nourishAgent.name AS nourishAgentName');
         $qb->where('crmVisit.created >=:begin')->setParameter('begin', $begin);
         $qb->andWhere('crmVisit.created <=:end')->setParameter('end', $end);

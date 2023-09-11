@@ -12,7 +12,7 @@
         }
     </style>
 </head>
-<body>
+<body style="padding: 0px; margin-left: -30px; margin-right: -30px">
 <div style="text-align: center">
     <h3 class="text-center" style="margin: 0px;">{{ 'NOURISH POULTRY AND HATCHERY LTD'|trans }}</h3>
     <h5 class="text-center" style="margin: 0px;">{{ 'UTTARA, DHAKA.'|trans }}</h5>
@@ -46,26 +46,28 @@
             </table>
             {# Farmer Section#}
         {% if employee['farmer'] is defined and employee['farmer'] is iterable %}
-            <div style="border: 2px solid green; padding: 5px; margin-bottom: 20px" title="Farmer Section">
+            <div style="border: 2px solid green; padding: 5px 2px; margin-bottom: 20px" title="Farmer Section">
             <h3 style="text-align: center; background-color: green; color: #fff; padding: 5px 0">Farmer Section</h3>
             <table border="1" cellspacing="0" cellpadding="5" width="100%" style="margin-top: 10px">
             <thead style="background-color: #CCCCCC">
             <tr>
-                <th width="10">S/N</th>
+                <th width="11">S/N</th>
                 <th>Visited Date</th>
                 <th>Visited Time</th>
                 <th>{{ 'Visited Farmers\' Name'|trans }}</th>
+                <th>{{ 'Visting Area'|trans }}</th>
                 <th>{{ 'Address'|trans }}</th>
                 <th>{{ 'Phone'|trans }}</th>
                 <th>{{ 'Purpose'|trans }}</th>
                 <th>{{ 'Farm Capacity'|trans }}</th>
+                <th>{{ 'Area'|trans }}</th>
                 <th>{{ 'Comments'|trans }}</th>
             </tr>
             </thead>
             <tbody>
                 {% for dateMonthYear, entity in employee['farmer'] %}
                     <tr>
-                        <th colspan="9">{{ dateMonthYear }}</th>
+                        <th colspan="11">{{ dateMonthYear }}</th>
                     </tr>
                     {% if entity is not empty %}
                         {% for data in entity %}
@@ -74,12 +76,13 @@
                                 <td>{{ data.visitDate|date('d-m-Y') }}</td>
                                 <td>{{ data.visitTime|default('') }}</td>
                                 <td>{{ data.farmerName }}</td>
+                                <td>{{ data.vistingAreaName|default('') }}</td>
                                 <td>{{ data.farmerAddress }}</td>
                                 <td>{{ data.farmerMobile }}</td>
                                 <td>
                                     {% if data.purposeMultiple is not empty %}
                                         {% set purposes=data.purposeMultiple|json_decode %}
-                                        <ol>
+                                        <ol style="padding-left: 15px;">
                                             {% for purpose in purposes %}
                                                 <li>{{ purpose }}</li>
                                             {% endfor %}
@@ -89,6 +92,7 @@
                                     {% endif %}
                                 </td>
                                 <td>{{ data.farmCapacity }}</td>
+                                <td>{{ data.areaName }}</td>
                                 <td>{{ data.comments }}</td>
                             </tr>
                         {% endfor %}
@@ -104,42 +108,45 @@
             {# Agent Section#}
 {#            {% for key, entity in employee %}#}
                 {% if employee['agent'] is defined and employee['agent'] is iterable %}
-                    <div style="border: 2px solid red; padding: 5px; margin-bottom: 20px" title="Agent Section">
+                    <div style="border: 2px solid red; padding: 5px 2px; margin-bottom: 20px" title="Agent Section">
                         <h3 style="text-align: center; background-color: red; color: #fff; padding: 5px 0">Agent Section</h3>
                         <table border="1" cellspacing="0" cellpadding="5" width="100%" style="margin-top: 10px">
                             <thead style="background-color: #CCCCCC">
                             <tr>
                                 <th width="10">S/N</th>
-                                <th>Visited Date</th>
-                                <th>Visited Time</th>
+                                <th>Visited Date & Time</th>
+{#                                <th>Visited Time</th>#}
                                 <th>{{ 'Agent Id'|trans }}</th>
                                 <th>{{ 'Agent Name (Nourish)'|trans }}</th>
+                                <th>{{ 'Visting Area'|trans }}</th>
                                 <th>{{ 'Address'|trans }}</th>
                                 <th>{{ 'Phone'|trans }}</th>
                                 <th>{{ 'Purpose'|trans }}</th>
                                 <th>{{ 'Report Description'|trans }}</th>
+                                <th>{{ 'Area'|trans }}</th>
                                 <th>{{ 'Comments'|trans }}</th>
                             </tr>
                             </thead>
                             <tbody>
                             {% for dateMonthYear, entity in employee['agent'] %}
                                 <tr>
-                                    <th colspan="10">{{ dateMonthYear }}</th>
+                                    <th colspan="11">{{ dateMonthYear }}</th>
                                 </tr>
                                 {% if entity is not empty %}
                                     {% for data in entity %}
                                         <tr>
                                             <td align="center">{{ loop.index }}</td>
-                                            <td>{{ data.visitDate|date('d-m-Y') }}</td>
-                                            <td>{{ data.visitTime|default('') }}</td>
+                                            <td>{{ data.visitDate|date('d-m-Y') }} {{ data.visitTime|default('') }}</td>
+{#                                            <td>{{ data.visitTime|default('') }}</td>#}
                                             <td>{{ data.agentId|default('') }}</td>
                                             <td>{{ data.agentName }}</td>
+                                            <td>{{ data.vistingAreaName|default('') }}</td>
                                             <td>{{ data.agentAddress }}</td>
                                             <td>{{ data.agentMobile }}</td>
                                             <td>
                                                 {% if data.purposeMultiple is not empty %}
                                                     {% set purposes=data.purposeMultiple|json_decode %}
-                                                    <ol>
+                                                    <ol style="padding-left: 15px;">
                                                         {% for purpose in purposes %}
                                                             <li>{{ purpose }}</li>
                                                         {% endfor %}
@@ -149,6 +156,7 @@
                                                 {% endif %}
                                             </td>
                                             <td>{{ data.reportDesc }}</td>
+                                            <td>{{ data.areaName }}</td>
                                             <td>{{ data.comments }}</td>
                                         </tr>
                                     {% endfor %}
@@ -165,7 +173,7 @@
             {# Other Agent Section#}
             {#{% for key, entity in employee %}#}
                 {% if employee['other-agent'] is defined and employee['other-agent'] is iterable %}
-                    <div style="border: 1px solid blue; padding: 5px; margin-bottom: 20px" title="Other Agent Section">
+                    <div style="border: 1px solid blue; padding: 5px 2px; margin-bottom: 20px" title="Other Agent Section">
                         <h3 style="text-align: center; background-color: blue; color: #fff; padding: 5px 0">Other Agent Section</h3>
                         <table border="1" cellspacing="0" cellpadding="5" width="100%" style="margin-top: 10px">
                             <thead style="background-color: #CCCCCC">
@@ -174,18 +182,20 @@
                                 <th>Visited Date</th>
                                 <th>Visited Time</th>
                                 <th>{{ 'Visited Agent Name(Other Agent)'|trans }}</th>
+                                <th>{{ 'Visting Area'|trans }}</th>
                                 <th>{{ 'Address'|trans }}</th>
                                 <th>{{ 'Name Agent'|trans }}</th>
                                 <th>{{ 'Phone'|trans }}</th>
                                 <th>{{ 'Purpose'|trans }}</th>
                                 <th>{{ 'Report Description'|trans }}</th>
+                                <th>{{ 'Area'|trans }}</th>
                                 <th>{{ 'Comments'|trans }}</th>
                             </tr>
                             </thead>
                             <tbody>
                             {% for dateMonthYear, entity in employee['other-agent'] %}
                                 <tr>
-                                    <th colspan="10">{{ dateMonthYear }}</th>
+                                    <th colspan="12">{{ dateMonthYear }}</th>
                                 </tr>
                                 {% if entity is not empty %}
                                     {% for data in entity %}
@@ -194,13 +204,14 @@
                                             <td>{{ data.visitDate|date('d-m-Y') }}</td>
                                             <td>{{ data.visitTime|default('') }}</td>
                                             <td>{{ data.agentName }}</td>
+                                            <td>{{ data.vistingAreaName|default('') }}</td>
                                             <td>{{ data.agentAddress }}</td>
                                             <td>{{ data.nourishAgentName }}</td>
                                             <td>{{ data.agentMobile }}</td>
                                             <td>
                                                 {% if data.purposeMultiple is not empty %}
                                                     {% set purposes=data.purposeMultiple|json_decode %}
-                                                    <ol>
+                                                    <ol style="padding-left: 15px;">
                                                         {% for purpose in purposes %}
                                                             <li>{{ purpose }}</li>
                                                         {% endfor %}
@@ -210,6 +221,7 @@
                                                 {% endif %}
                                             </td>
                                             <td>{{ data.reportDesc }}</td>
+                                            <td>{{ data.areaName }}</td>
                                             <td>{{ data.comments }}</td>
                                         </tr>
                                     {% endfor %}
@@ -226,7 +238,7 @@
             {#            Sub Agent Section#}
 {#            {% for key, entity in employee %}#}
                 {% if employee['sub-agent'] is defined and employee['sub-agent'] is iterable %}
-                    <div style="border: 1px solid purple; padding: 5px; margin-bottom: 20px" title="Sub Agent Section">
+                    <div style="border: 1px solid purple; padding: 5px 2px; margin-bottom: 20px" title="Sub Agent Section">
                         <h3 style="text-align: center; background-color: purple; color: #fff; padding: 5px 0">Sub Agent Section</h3>
                         <table border="1" cellspacing="0" cellpadding="5" width="100%" style="margin-top: 10px">
                             <thead style="background-color: #CCCCCC">
@@ -236,17 +248,19 @@
                                 <th>Visited Date</th>
                                 <th>Visited Time</th>
                                 <th>{{ 'Visited Agent Name(Sub Agent)'|trans }}</th>
+                                <th>{{ 'Visting Area'|trans }}</th>
                                 <th>{{ 'Address'|trans }}</th>
                                 <th>{{ 'Phone'|trans }}</th>
                                 <th>{{ 'Purpose'|trans }}</th>
                                 <th>{{ 'Report Description'|trans }}</th>
+                                <th>{{ 'Area'|trans }}</th>
                                 <th>{{ 'Comments'|trans }}</th>
                             </tr>
                             </thead>
                             <tbody>
                             {% for dateMonthYear, entity in employee['sub-agent'] %}
                                 <tr>
-                                    <th colspan="9">{{ dateMonthYear }}</th>
+                                    <th colspan="10">{{ dateMonthYear }}</th>
                                 </tr>
                                 {% if entity is not empty %}
                                     {% for data in entity %}
@@ -255,12 +269,13 @@
                                             <td>{{ data.visitDate|date('d-m-Y') }}</td>
                                             <td>{{ data.visitTime|default('') }}</td>
                                             <td>{{ data.agentName }}</td>
+                                            <td>{{ data.vistingAreaName|default('') }}</td>
                                             <td>{{ data.agentAddress }}</td>
                                             <td>{{ data.agentMobile }}</td>
                                             <td>
                                                 {% if data.purposeMultiple is not empty %}
                                                     {% set purposes=data.purposeMultiple|json_decode %}
-                                                    <ol>
+                                                    <ol style="padding-left: 15px;">
                                                         {% for purpose in purposes %}
                                                             <li>{{ purpose }}</li>
                                                         {% endfor %}
@@ -270,6 +285,7 @@
                                                 {% endif %}
                                             </td>
                                             <td>{{ data.reportDesc }}</td>
+                                            <td>{{ data.areaName }}</td>
                                             <td>{{ data.comments }}</td>
                                         </tr>
                                     {% endfor %}
