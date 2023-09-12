@@ -23,6 +23,7 @@ use Terminalbd\CrmBundle\Entity\Api;
 use Terminalbd\CrmBundle\Entity\ApiDetails;
 use Terminalbd\CrmBundle\Entity\BroilerStandard;
 use Terminalbd\CrmBundle\Entity\CattleLifeCycle;
+use Terminalbd\CrmBundle\Entity\CattleLifeCycleDetails;
 use Terminalbd\CrmBundle\Entity\Challenger;
 use Terminalbd\CrmBundle\Entity\ChickLifeCycle;
 use Terminalbd\CrmBundle\Entity\ChickLifeCycleDetails;
@@ -1217,66 +1218,214 @@ VALUES (:customer_id, :report_id, :agent_id, :employee_id, :reporting_date, :bre
             
 
             if ($lifeCycle){
-                $sql = "INSERT INTO `crm_cattle_life_cycle_details`(`crm_cattle_life_cycle_id`, `visiting_date`, `age_of_cattle_month`, `previous_body_weight`, `present_body_weight`, `body_weight_difference`, `duration_of_bwt_difference`, `lactation_no`, `age_of_lactation`, `average_weight_per_day`, `average_weight_per_kg_consumption_feed`, `average_weight_per_kg_dm`, `milk_fat_percentage`, `consumption_feed_intake_ready_feed`, `consumption_feed_intake_conventional`, `consumption_feed_intake_total`, `fodder_green_grass_kg`, `fodder_straw_kg`, `dm_of_fodder_green_grass_kg`, `dm_of_fodder_straw_kg`, `total_dm_kg`, `dm_requirement_by_bwt_kg`, `remarks`, `created_at`, `updated_at`, `app_id`) 
+                if(isset($report['web_life_cycle_details_id']) && $report['web_life_cycle_details_id']){
+                    $exitingDetails = $this->getDoctrine()->getRepository(CattleLifeCycleDetails::class)->find((int)$report['web_life_cycle_details_id']);
+                    if($exitingDetails){
+                        $visitingDate = new \DateTime($report['visiting_date']);
+                        $updatedAt = $report['updated_at']&&$report['updated_at']!=""?new \DateTime($report['updated_at']):null;
+
+                        $sql = "UPDATE `crm_cattle_life_cycle_details` SET 
+                                           `visiting_date` = :visiting_date,
+                                           `age_of_cattle_month` = :age_of_cattle_month,
+                                           `previous_body_weight` = :previous_body_weight,
+                                           `present_body_weight` =  :present_body_weight,
+                                           `body_weight_difference` = :body_weight_difference,
+                                           `duration_of_bwt_difference` = :duration_of_bwt_difference,
+                                           `lactation_no` = :lactation_no,
+                                           `age_of_lactation` = :age_of_lactation,
+                                           `average_weight_per_day` = :average_weight_per_day,
+                                           `average_weight_per_kg_consumption_feed` = :average_weight_per_kg_consumption_feed,
+                                           `average_weight_per_kg_dm` = :average_weight_per_kg_dm,
+                                           `milk_fat_percentage` = :milk_fat_percentage,
+                                           `consumption_feed_intake_ready_feed` = :consumption_feed_intake_ready_feed,
+                                           `consumption_feed_intake_conventional` = :consumption_feed_intake_conventional,
+                                           `consumption_feed_intake_total` = :consumption_feed_intake_total, 
+                                           `fodder_green_grass_kg` = :fodder_green_grass_kg,
+                                           `fodder_straw_kg` = :fodder_straw_kg,
+                                           `dm_of_fodder_green_grass_kg` = :dm_of_fodder_green_grass_kg,
+                                           `dm_of_fodder_straw_kg`= :dm_of_fodder_straw_kg,
+                                           `total_dm_kg` = :total_dm_kg,
+                                           `dm_requirement_by_bwt_kg` = :dm_requirement_by_bwt_kg,
+                                           `remarks` = :remarks,
+                                           `updated_at` = :updated_at
+                                       WHERE id = {$exitingDetails->getId()}";
+
+                        $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
+
+                        $stmt->bindValue('visiting_date', $visitingDate->format('Y-m-d'));
+                        $stmt->bindValue('age_of_cattle_month', $report['age_of_cattle_month']);
+                        if ($report['previous_body_weight'] ==""||$report['previous_body_weight'] === null){
+                            $stmt->bindValue('previous_body_weight', 0);
+                        }else{
+                            $stmt->bindValue('previous_body_weight', (float)$report['previous_body_weight']);
+                        }
+                        $stmt->bindValue('present_body_weight', $report['present_body_weight']);
+                        if ($report['body_weight_difference']==""||$report['body_weight_difference'] === null||$report['body_weight_difference'] =='NaN'){
+                            $stmt->bindValue('body_weight_difference', 0);
+                        }else{
+                            $stmt->bindValue('body_weight_difference', (float)$report['body_weight_difference']);
+                        }
+                        if ($report['duration_of_bwt_difference']==""||$report['duration_of_bwt_difference']=="NaN"||$report['duration_of_bwt_difference'] === null){
+                            $stmt->bindValue('duration_of_bwt_difference', 0);
+                        }else{
+                            $stmt->bindValue('duration_of_bwt_difference', (float)$report['duration_of_bwt_difference']);
+                        }
+                        if ($report['lactation_no']==""||$report['lactation_no'] === null){
+                            $stmt->bindValue('lactation_no', 0);
+                        }else{
+                            $stmt->bindValue('lactation_no', (float)$report['lactation_no']);
+                        }
+                        if ($report['age_of_lactation']==""||$report['age_of_lactation'] === null){
+                            $stmt->bindValue('age_of_lactation', 0);
+                        }else{
+                            $stmt->bindValue('age_of_lactation', (float)$report['age_of_lactation']);
+                        }
+                        $stmt->bindValue('average_weight_per_day', $report['average_weight_per_day']!=""||$report['average_weight_per_day']!="null"||$report['average_weight_per_day']!="NaN"?(float)$report['average_weight_per_day']:0);
+                        $stmt->bindValue('average_weight_per_kg_consumption_feed', $report['average_weight_per_kg_consumption_feed']!=""||$report['average_weight_per_kg_consumption_feed']!="null"||$report['average_weight_per_kg_consumption_feed']!="NaN"?(float)$report['average_weight_per_kg_consumption_feed']:0);
+                        $stmt->bindValue('average_weight_per_kg_dm', $report['average_weight_per_kg_dm']!=""||$report['average_weight_per_kg_dm']!="null"||$report['average_weight_per_kg_dm']!="NaN"?(float)$report['average_weight_per_kg_dm']:0);
+                        if ($report['milk_fat_percentage']==""||$report['milk_fat_percentage'] === null||$report['milk_fat_percentage'] === "NaN"){
+                            $stmt->bindValue('milk_fat_percentage', 0);
+                        }else{
+                            $stmt->bindValue('milk_fat_percentage', (float)$report['milk_fat_percentage']);
+                        }
+                        $stmt->bindValue('consumption_feed_intake_ready_feed', $report['consumption_feed_intake_ready_feed']!=""||$report['consumption_feed_intake_ready_feed']!='null'||$report['consumption_feed_intake_ready_feed']!='NaN'?(float)$report['consumption_feed_intake_ready_feed']:0);
+                        $stmt->bindValue('consumption_feed_intake_conventional', $report['consumption_feed_intake_conventional']!=""||$report['consumption_feed_intake_conventional']!='null'||$report['consumption_feed_intake_conventional']!='NaN'?(float)$report['consumption_feed_intake_conventional']:0);
+                        $stmt->bindValue('consumption_feed_intake_total', $report['consumption_feed_intake_total']!=''||$report['consumption_feed_intake_total']!='null'||$report['consumption_feed_intake_total']!='NaN'?(float)$report['consumption_feed_intake_total']:0);
+                        $stmt->bindValue('fodder_green_grass_kg', $report['fodder_green_grass_kg']!=''||$report['fodder_green_grass_kg']!="null"||$report['fodder_green_grass_kg']!="NaN"?(float)$report['fodder_green_grass_kg']:0);
+                        $stmt->bindValue('fodder_straw_kg', $report['fodder_straw_kg']!=''||$report['fodder_straw_kg']!='null'||$report['fodder_straw_kg']!='NaN'?(float)$report['fodder_straw_kg']:0);
+                        $stmt->bindValue('dm_of_fodder_green_grass_kg', $report['dm_of_fodder_green_grass_kg']!=''||$report['dm_of_fodder_green_grass_kg']!='null'||$report['dm_of_fodder_green_grass_kg']!='NaN'?(float)$report['dm_of_fodder_green_grass_kg']:0);
+                        $stmt->bindValue('dm_of_fodder_straw_kg', $report['dm_of_fodder_straw_kg']!=""||$report['dm_of_fodder_straw_kg']!="null"||$report['dm_of_fodder_straw_kg']!="NaN"?(float)$report['dm_of_fodder_straw_kg']:0);
+                        $stmt->bindValue('total_dm_kg', $report['total_dm_kg']!=""||$report['total_dm_kg']!="null"||$report['total_dm_kg']!="NaN"?(float)$report['total_dm_kg']:0);
+                        $stmt->bindValue('dm_requirement_by_bwt_kg', $report['dm_requirement_by_bwt_kg']!=""||$report['dm_requirement_by_bwt_kg']!="null"||$report['dm_requirement_by_bwt_kg']!="NaN"?(float)$report['dm_requirement_by_bwt_kg']:0);
+                        $stmt->bindValue('remarks', $report['remarks']);
+                        $stmt->bindValue('updated_at', $updatedAt?$updatedAt->format('Y-m-d H:i:s'):null);
+                        $stmt->execute();
+                    }else{
+                        $sql = "INSERT INTO `crm_cattle_life_cycle_details`(`crm_cattle_life_cycle_id`, `visiting_date`, `age_of_cattle_month`, `previous_body_weight`, `present_body_weight`, `body_weight_difference`, `duration_of_bwt_difference`, `lactation_no`, `age_of_lactation`, `average_weight_per_day`, `average_weight_per_kg_consumption_feed`, `average_weight_per_kg_dm`, `milk_fat_percentage`, `consumption_feed_intake_ready_feed`, `consumption_feed_intake_conventional`, `consumption_feed_intake_total`, `fodder_green_grass_kg`, `fodder_straw_kg`, `dm_of_fodder_green_grass_kg`, `dm_of_fodder_straw_kg`, `total_dm_kg`, `dm_requirement_by_bwt_kg`, `remarks`, `created_at`, `updated_at`, `app_id`) 
 VALUES (:crm_cattle_life_cycle_id, :visiting_date, :age_of_cattle_month, :previous_body_weight, :present_body_weight, :body_weight_difference, :duration_of_bwt_difference, :lactation_no, :age_of_lactation, :average_weight_per_day, :average_weight_per_kg_consumption_feed, :average_weight_per_kg_dm, :milk_fat_percentage, :consumption_feed_intake_ready_feed, :consumption_feed_intake_conventional, :consumption_feed_intake_total, :fodder_green_grass_kg, :fodder_straw_kg, :dm_of_fodder_green_grass_kg, :dm_of_fodder_straw_kg, :total_dm_kg, :dm_requirement_by_bwt_kg, :remarks, :created_at, :updated_at, :app_id)";
 
-                $visitingDate = new \DateTime($report['visiting_date']);
-                $createdAt = new \DateTime($report['created_at']);
-                $updatedAt = $report['updated_at']&&$report['updated_at']!=""?new \DateTime($report['updated_at']):null;
+                        $visitingDate = new \DateTime($report['visiting_date']);
+                        $createdAt = new \DateTime($report['created_at']);
+                        $updatedAt = $report['updated_at']&&$report['updated_at']!=""?new \DateTime($report['updated_at']):null;
+                        
+                        $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
 
-                $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
-                $stmt->bindValue('crm_cattle_life_cycle_id', $lifeCycle->getId());
-                $stmt->bindValue('visiting_date', $visitingDate->format('Y-m-d'));
-                $stmt->bindValue('age_of_cattle_month', $report['age_of_cattle_month']);
-                if ($report['previous_body_weight'] ==""||$report['previous_body_weight'] === null){
-                    $stmt->bindValue('previous_body_weight', 0);
-                }else{
-                    $stmt->bindValue('previous_body_weight', (float)$report['previous_body_weight']);
-                }
-                $stmt->bindValue('present_body_weight', $report['present_body_weight']);
-                if ($report['body_weight_difference']==""||$report['body_weight_difference'] === null||$report['body_weight_difference'] =='NaN'){
-                    $stmt->bindValue('body_weight_difference', 0);
-                }else{
-                    $stmt->bindValue('body_weight_difference', (float)$report['body_weight_difference']);
-                }
-                if ($report['duration_of_bwt_difference']==""||$report['duration_of_bwt_difference']=="NaN"||$report['duration_of_bwt_difference'] === null){
-                    $stmt->bindValue('duration_of_bwt_difference', 0);
-                }else{
-                    $stmt->bindValue('duration_of_bwt_difference', (float)$report['duration_of_bwt_difference']);
-                }
-                if ($report['lactation_no']==""||$report['lactation_no'] === null){
-                    $stmt->bindValue('lactation_no', 0);
-                }else{
-                    $stmt->bindValue('lactation_no', (float)$report['lactation_no']);
-                }
-                if ($report['age_of_lactation']==""||$report['age_of_lactation'] === null){
-                    $stmt->bindValue('age_of_lactation', 0);
-                }else{
-                    $stmt->bindValue('age_of_lactation', (float)$report['age_of_lactation']);
-                }
-                $stmt->bindValue('average_weight_per_day', $report['average_weight_per_day']!=""||$report['average_weight_per_day']!="null"||$report['average_weight_per_day']!="NaN"?(float)$report['average_weight_per_day']:0);
-                $stmt->bindValue('average_weight_per_kg_consumption_feed', $report['average_weight_per_kg_consumption_feed']!=""||$report['average_weight_per_kg_consumption_feed']!="null"||$report['average_weight_per_kg_consumption_feed']!="NaN"?(float)$report['average_weight_per_kg_consumption_feed']:0);
-                $stmt->bindValue('average_weight_per_kg_dm', $report['average_weight_per_kg_dm']!=""||$report['average_weight_per_kg_dm']!="null"||$report['average_weight_per_kg_dm']!="NaN"?(float)$report['average_weight_per_kg_dm']:0);
-                if ($report['milk_fat_percentage']==""||$report['milk_fat_percentage'] === null||$report['milk_fat_percentage'] === "NaN"){
-                    $stmt->bindValue('milk_fat_percentage', 0);
-                }else{
-                    $stmt->bindValue('milk_fat_percentage', (float)$report['milk_fat_percentage']);
-                }
-                $stmt->bindValue('consumption_feed_intake_ready_feed', $report['consumption_feed_intake_ready_feed']!=""||$report['consumption_feed_intake_ready_feed']!='null'||$report['consumption_feed_intake_ready_feed']!='NaN'?(float)$report['consumption_feed_intake_ready_feed']:0);
-                $stmt->bindValue('consumption_feed_intake_conventional', $report['consumption_feed_intake_conventional']!=""||$report['consumption_feed_intake_conventional']!='null'||$report['consumption_feed_intake_conventional']!='NaN'?(float)$report['consumption_feed_intake_conventional']:0);
-                $stmt->bindValue('consumption_feed_intake_total', $report['consumption_feed_intake_total']!=''||$report['consumption_feed_intake_total']!='null'||$report['consumption_feed_intake_total']!='NaN'?(float)$report['consumption_feed_intake_total']:0);
-                $stmt->bindValue('fodder_green_grass_kg', $report['fodder_green_grass_kg']!=''||$report['fodder_green_grass_kg']!="null"||$report['fodder_green_grass_kg']!="NaN"?(float)$report['fodder_green_grass_kg']:0);
-                $stmt->bindValue('fodder_straw_kg', $report['fodder_straw_kg']!=''||$report['fodder_straw_kg']!='null'||$report['fodder_straw_kg']!='NaN'?(float)$report['fodder_straw_kg']:0);
-                $stmt->bindValue('dm_of_fodder_green_grass_kg', $report['dm_of_fodder_green_grass_kg']!=''||$report['dm_of_fodder_green_grass_kg']!='null'||$report['dm_of_fodder_green_grass_kg']!='NaN'?(float)$report['dm_of_fodder_green_grass_kg']:0);
-                $stmt->bindValue('dm_of_fodder_straw_kg', $report['dm_of_fodder_straw_kg']!=""||$report['dm_of_fodder_straw_kg']!="null"||$report['dm_of_fodder_straw_kg']!="NaN"?(float)$report['dm_of_fodder_straw_kg']:0);
-                $stmt->bindValue('total_dm_kg', $report['total_dm_kg']!=""||$report['total_dm_kg']!="null"||$report['total_dm_kg']!="NaN"?(float)$report['total_dm_kg']:0);
-                $stmt->bindValue('dm_requirement_by_bwt_kg', $report['dm_requirement_by_bwt_kg']!=""||$report['dm_requirement_by_bwt_kg']!="null"||$report['dm_requirement_by_bwt_kg']!="NaN"?(float)$report['dm_requirement_by_bwt_kg']:0);
-                $stmt->bindValue('remarks', $report['remarks']);
-                $stmt->bindValue('created_at', $createdAt->format('Y-m-d H:i:s'));
-                $stmt->bindValue('updated_at', $updatedAt?$updatedAt->format('Y-m-d H:i:s'):null);
-                $stmt->bindValue('app_id', $report['id']);
+                        $stmt->bindValue('crm_cattle_life_cycle_id', $lifeCycle->getId());
+                        $stmt->bindValue('visiting_date', $visitingDate->format('Y-m-d'));
+                        $stmt->bindValue('age_of_cattle_month', $report['age_of_cattle_month']);
+                        if ($report['previous_body_weight'] ==""||$report['previous_body_weight'] === null){
+                            $stmt->bindValue('previous_body_weight', 0);
+                        }else{
+                            $stmt->bindValue('previous_body_weight', (float)$report['previous_body_weight']);
+                        }
+                        $stmt->bindValue('present_body_weight', $report['present_body_weight']);
+                        if ($report['body_weight_difference']==""||$report['body_weight_difference'] === null||$report['body_weight_difference'] =='NaN'){
+                            $stmt->bindValue('body_weight_difference', 0);
+                        }else{
+                            $stmt->bindValue('body_weight_difference', (float)$report['body_weight_difference']);
+                        }
+                        if ($report['duration_of_bwt_difference']==""||$report['duration_of_bwt_difference']=="NaN"||$report['duration_of_bwt_difference'] === null){
+                            $stmt->bindValue('duration_of_bwt_difference', 0);
+                        }else{
+                            $stmt->bindValue('duration_of_bwt_difference', (float)$report['duration_of_bwt_difference']);
+                        }
+                        if ($report['lactation_no']==""||$report['lactation_no'] === null){
+                            $stmt->bindValue('lactation_no', 0);
+                        }else{
+                            $stmt->bindValue('lactation_no', (float)$report['lactation_no']);
+                        }
+                        if ($report['age_of_lactation']==""||$report['age_of_lactation'] === null){
+                            $stmt->bindValue('age_of_lactation', 0);
+                        }else{
+                            $stmt->bindValue('age_of_lactation', (float)$report['age_of_lactation']);
+                        }
+                        $stmt->bindValue('average_weight_per_day', $report['average_weight_per_day']!=""||$report['average_weight_per_day']!="null"||$report['average_weight_per_day']!="NaN"?(float)$report['average_weight_per_day']:0);
+                        $stmt->bindValue('average_weight_per_kg_consumption_feed', $report['average_weight_per_kg_consumption_feed']!=""||$report['average_weight_per_kg_consumption_feed']!="null"||$report['average_weight_per_kg_consumption_feed']!="NaN"?(float)$report['average_weight_per_kg_consumption_feed']:0);
+                        $stmt->bindValue('average_weight_per_kg_dm', $report['average_weight_per_kg_dm']!=""||$report['average_weight_per_kg_dm']!="null"||$report['average_weight_per_kg_dm']!="NaN"?(float)$report['average_weight_per_kg_dm']:0);
+                        if ($report['milk_fat_percentage']==""||$report['milk_fat_percentage'] === null||$report['milk_fat_percentage'] === "NaN"){
+                            $stmt->bindValue('milk_fat_percentage', 0);
+                        }else{
+                            $stmt->bindValue('milk_fat_percentage', (float)$report['milk_fat_percentage']);
+                        }
+                        $stmt->bindValue('consumption_feed_intake_ready_feed', $report['consumption_feed_intake_ready_feed']!=""||$report['consumption_feed_intake_ready_feed']!='null'||$report['consumption_feed_intake_ready_feed']!='NaN'?(float)$report['consumption_feed_intake_ready_feed']:0);
+                        $stmt->bindValue('consumption_feed_intake_conventional', $report['consumption_feed_intake_conventional']!=""||$report['consumption_feed_intake_conventional']!='null'||$report['consumption_feed_intake_conventional']!='NaN'?(float)$report['consumption_feed_intake_conventional']:0);
+                        $stmt->bindValue('consumption_feed_intake_total', $report['consumption_feed_intake_total']!=''||$report['consumption_feed_intake_total']!='null'||$report['consumption_feed_intake_total']!='NaN'?(float)$report['consumption_feed_intake_total']:0);
+                        $stmt->bindValue('fodder_green_grass_kg', $report['fodder_green_grass_kg']!=''||$report['fodder_green_grass_kg']!="null"||$report['fodder_green_grass_kg']!="NaN"?(float)$report['fodder_green_grass_kg']:0);
+                        $stmt->bindValue('fodder_straw_kg', $report['fodder_straw_kg']!=''||$report['fodder_straw_kg']!='null'||$report['fodder_straw_kg']!='NaN'?(float)$report['fodder_straw_kg']:0);
+                        $stmt->bindValue('dm_of_fodder_green_grass_kg', $report['dm_of_fodder_green_grass_kg']!=''||$report['dm_of_fodder_green_grass_kg']!='null'||$report['dm_of_fodder_green_grass_kg']!='NaN'?(float)$report['dm_of_fodder_green_grass_kg']:0);
+                        $stmt->bindValue('dm_of_fodder_straw_kg', $report['dm_of_fodder_straw_kg']!=""||$report['dm_of_fodder_straw_kg']!="null"||$report['dm_of_fodder_straw_kg']!="NaN"?(float)$report['dm_of_fodder_straw_kg']:0);
+                        $stmt->bindValue('total_dm_kg', $report['total_dm_kg']!=""||$report['total_dm_kg']!="null"||$report['total_dm_kg']!="NaN"?(float)$report['total_dm_kg']:0);
+                        $stmt->bindValue('dm_requirement_by_bwt_kg', $report['dm_requirement_by_bwt_kg']!=""||$report['dm_requirement_by_bwt_kg']!="null"||$report['dm_requirement_by_bwt_kg']!="NaN"?(float)$report['dm_requirement_by_bwt_kg']:0);
+                        $stmt->bindValue('remarks', $report['remarks']);
+                        $stmt->bindValue('created_at', $createdAt->format('Y-m-d H:i:s'));
+                        $stmt->bindValue('updated_at', $updatedAt?$updatedAt->format('Y-m-d H:i:s'):null);
+                        $stmt->bindValue('app_id', $report['id']);
 
-                $stmt->execute();
+                        $stmt->execute();
+                    }
+                }else{
+                    $sql = "INSERT INTO `crm_cattle_life_cycle_details`(`crm_cattle_life_cycle_id`, `visiting_date`, `age_of_cattle_month`, `previous_body_weight`, `present_body_weight`, `body_weight_difference`, `duration_of_bwt_difference`, `lactation_no`, `age_of_lactation`, `average_weight_per_day`, `average_weight_per_kg_consumption_feed`, `average_weight_per_kg_dm`, `milk_fat_percentage`, `consumption_feed_intake_ready_feed`, `consumption_feed_intake_conventional`, `consumption_feed_intake_total`, `fodder_green_grass_kg`, `fodder_straw_kg`, `dm_of_fodder_green_grass_kg`, `dm_of_fodder_straw_kg`, `total_dm_kg`, `dm_requirement_by_bwt_kg`, `remarks`, `created_at`, `updated_at`, `app_id`) 
+VALUES (:crm_cattle_life_cycle_id, :visiting_date, :age_of_cattle_month, :previous_body_weight, :present_body_weight, :body_weight_difference, :duration_of_bwt_difference, :lactation_no, :age_of_lactation, :average_weight_per_day, :average_weight_per_kg_consumption_feed, :average_weight_per_kg_dm, :milk_fat_percentage, :consumption_feed_intake_ready_feed, :consumption_feed_intake_conventional, :consumption_feed_intake_total, :fodder_green_grass_kg, :fodder_straw_kg, :dm_of_fodder_green_grass_kg, :dm_of_fodder_straw_kg, :total_dm_kg, :dm_requirement_by_bwt_kg, :remarks, :created_at, :updated_at, :app_id)";
+
+                    $visitingDate = new \DateTime($report['visiting_date']);
+                    $createdAt = new \DateTime($report['created_at']);
+                    $updatedAt = $report['updated_at']&&$report['updated_at']!=""?new \DateTime($report['updated_at']):null;
+
+                    $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
+                    $stmt->bindValue('crm_cattle_life_cycle_id', $lifeCycle->getId());
+                    $stmt->bindValue('visiting_date', $visitingDate->format('Y-m-d'));
+                    $stmt->bindValue('age_of_cattle_month', $report['age_of_cattle_month']);
+                    if ($report['previous_body_weight'] ==""||$report['previous_body_weight'] === null){
+                        $stmt->bindValue('previous_body_weight', 0);
+                    }else{
+                        $stmt->bindValue('previous_body_weight', (float)$report['previous_body_weight']);
+                    }
+                    $stmt->bindValue('present_body_weight', $report['present_body_weight']);
+                    if ($report['body_weight_difference']==""||$report['body_weight_difference'] === null||$report['body_weight_difference'] =='NaN'){
+                        $stmt->bindValue('body_weight_difference', 0);
+                    }else{
+                        $stmt->bindValue('body_weight_difference', (float)$report['body_weight_difference']);
+                    }
+                    if ($report['duration_of_bwt_difference']==""||$report['duration_of_bwt_difference']=="NaN"||$report['duration_of_bwt_difference'] === null){
+                        $stmt->bindValue('duration_of_bwt_difference', 0);
+                    }else{
+                        $stmt->bindValue('duration_of_bwt_difference', (float)$report['duration_of_bwt_difference']);
+                    }
+                    if ($report['lactation_no']==""||$report['lactation_no'] === null){
+                        $stmt->bindValue('lactation_no', 0);
+                    }else{
+                        $stmt->bindValue('lactation_no', (float)$report['lactation_no']);
+                    }
+                    if ($report['age_of_lactation']==""||$report['age_of_lactation'] === null){
+                        $stmt->bindValue('age_of_lactation', 0);
+                    }else{
+                        $stmt->bindValue('age_of_lactation', (float)$report['age_of_lactation']);
+                    }
+                    $stmt->bindValue('average_weight_per_day', $report['average_weight_per_day']!=""||$report['average_weight_per_day']!="null"||$report['average_weight_per_day']!="NaN"?(float)$report['average_weight_per_day']:0);
+                    $stmt->bindValue('average_weight_per_kg_consumption_feed', $report['average_weight_per_kg_consumption_feed']!=""||$report['average_weight_per_kg_consumption_feed']!="null"||$report['average_weight_per_kg_consumption_feed']!="NaN"?(float)$report['average_weight_per_kg_consumption_feed']:0);
+                    $stmt->bindValue('average_weight_per_kg_dm', $report['average_weight_per_kg_dm']!=""||$report['average_weight_per_kg_dm']!="null"||$report['average_weight_per_kg_dm']!="NaN"?(float)$report['average_weight_per_kg_dm']:0);
+                    if ($report['milk_fat_percentage']==""||$report['milk_fat_percentage'] === null||$report['milk_fat_percentage'] === "NaN"){
+                        $stmt->bindValue('milk_fat_percentage', 0);
+                    }else{
+                        $stmt->bindValue('milk_fat_percentage', (float)$report['milk_fat_percentage']);
+                    }
+                    $stmt->bindValue('consumption_feed_intake_ready_feed', $report['consumption_feed_intake_ready_feed']!=""||$report['consumption_feed_intake_ready_feed']!='null'||$report['consumption_feed_intake_ready_feed']!='NaN'?(float)$report['consumption_feed_intake_ready_feed']:0);
+                    $stmt->bindValue('consumption_feed_intake_conventional', $report['consumption_feed_intake_conventional']!=""||$report['consumption_feed_intake_conventional']!='null'||$report['consumption_feed_intake_conventional']!='NaN'?(float)$report['consumption_feed_intake_conventional']:0);
+                    $stmt->bindValue('consumption_feed_intake_total', $report['consumption_feed_intake_total']!=''||$report['consumption_feed_intake_total']!='null'||$report['consumption_feed_intake_total']!='NaN'?(float)$report['consumption_feed_intake_total']:0);
+                    $stmt->bindValue('fodder_green_grass_kg', $report['fodder_green_grass_kg']!=''||$report['fodder_green_grass_kg']!="null"||$report['fodder_green_grass_kg']!="NaN"?(float)$report['fodder_green_grass_kg']:0);
+                    $stmt->bindValue('fodder_straw_kg', $report['fodder_straw_kg']!=''||$report['fodder_straw_kg']!='null'||$report['fodder_straw_kg']!='NaN'?(float)$report['fodder_straw_kg']:0);
+                    $stmt->bindValue('dm_of_fodder_green_grass_kg', $report['dm_of_fodder_green_grass_kg']!=''||$report['dm_of_fodder_green_grass_kg']!='null'||$report['dm_of_fodder_green_grass_kg']!='NaN'?(float)$report['dm_of_fodder_green_grass_kg']:0);
+                    $stmt->bindValue('dm_of_fodder_straw_kg', $report['dm_of_fodder_straw_kg']!=""||$report['dm_of_fodder_straw_kg']!="null"||$report['dm_of_fodder_straw_kg']!="NaN"?(float)$report['dm_of_fodder_straw_kg']:0);
+                    $stmt->bindValue('total_dm_kg', $report['total_dm_kg']!=""||$report['total_dm_kg']!="null"||$report['total_dm_kg']!="NaN"?(float)$report['total_dm_kg']:0);
+                    $stmt->bindValue('dm_requirement_by_bwt_kg', $report['dm_requirement_by_bwt_kg']!=""||$report['dm_requirement_by_bwt_kg']!="null"||$report['dm_requirement_by_bwt_kg']!="NaN"?(float)$report['dm_requirement_by_bwt_kg']:0);
+                    $stmt->bindValue('remarks', $report['remarks']);
+                    $stmt->bindValue('created_at', $createdAt->format('Y-m-d H:i:s'));
+                    $stmt->bindValue('updated_at', $updatedAt?$updatedAt->format('Y-m-d H:i:s'):null);
+                    $stmt->bindValue('app_id', $report['id']);
+
+                    $stmt->execute();
+                }
+                
             }
         }
     }
