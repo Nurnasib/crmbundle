@@ -3818,6 +3818,14 @@ class ApiController extends AbstractController
                         "web_life_cycle_id"=> $entity->getId(),
                         "farm_number"=> $entity->getFarmNumber()?$entity->getFarmNumber():1,
                         "report_type_name" => $entity->getReport()?$entity->getReport()->getName():null,
+                        "feed_company_id"=>$entity->getFeed()?$entity->getFeed()->getId():null,
+                        "feed_company_name"=>$entity->getFeed()?$entity->getFeed()->getName():null,
+                        "feed_type_id"=>$entity->getFeedType()? $entity->getFeedType()->getId():null,
+                        "feed_type_name"=>$entity->getFeedType()? $entity->getFeedType()->getName():null,
+                        "feed_mill_id"=>$entity->getFeedMill()? $entity->getFeedMill()->getId():null,
+                        "feed_mill_name"=>$entity->getFeedMill()? $entity->getFeedMill()->getName():null,
+                        "production_date"=>$entity->getProductionDate()?(string)$entity->getProductionDate()->format('Y-m-d'):"",
+                        "batch_no"=>$entity->getBatchNo()?$entity->getBatchNo():""
                     ];
                 }
             }

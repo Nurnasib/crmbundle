@@ -258,6 +258,33 @@ class CattlePerformanceDetails
      */
 
     private $appId;
+
+    /**
+     * @var Setting
+     * @ORM\ManyToOne(targetEntity="Setting", inversedBy="crmCattlePerformanceDetails")
+     * @ORM\JoinColumn(name="feed_id", referencedColumnName="id", onDelete="SET NULL", nullable=true)
+     */
+    private $feed;
+
+    /**
+     * @var Setting
+     * @ORM\ManyToOne(targetEntity="Setting", inversedBy="crmCattlePerformanceDetails")
+     * @ORM\JoinColumn(name="feed_mill_id", referencedColumnName="id", onDelete="SET NULL", nullable=true)
+     */
+    private $feedMill;
+
+    /**
+     * @var \DateTime
+     * @ORM\Column(name="production_date", type="date", nullable=true)
+     */
+    private $productionDate;
+
+    /**
+     * @var string
+     * @Orm\Column(name="batch_no", type="text", nullable=true)
+     */
+
+    private $batchNo;
     
     /**
      * @return int
@@ -892,6 +919,70 @@ class CattlePerformanceDetails
     public function setAppId(int $appId): void
     {
         $this->appId = $appId;
+    }
+
+    /**
+     * @return Setting
+     */
+    public function getFeed(): Setting
+    {
+        return $this->feed;
+    }
+
+    /**
+     * @param Setting $feed
+     */
+    public function setFeed(?Setting $feed): void
+    {
+        $this->feed = $feed;
+    }
+
+    /**
+     * @return Setting
+     */
+    public function getFeedMill(): Setting
+    {
+        return $this->feedMill;
+    }
+
+    /**
+     * @param Setting $feedMill
+     */
+    public function setFeedMill(?Setting $feedMill): void
+    {
+        $this->feedMill = $feedMill;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getProductionDate(): \DateTime
+    {
+        return $this->productionDate;
+    }
+
+    /**
+     * @param \DateTime $productionDate
+     */
+    public function setProductionDate(?\DateTime $productionDate): void
+    {
+        $this->productionDate = $productionDate;
+    }
+
+    /**
+     * @return string
+     */
+    public function getBatchNo(): string
+    {
+        return $this->batchNo;
+    }
+
+    /**
+     * @param string $batchNo
+     */
+    public function setBatchNo(?string $batchNo): void
+    {
+        $this->batchNo = $batchNo;
     }
 
 

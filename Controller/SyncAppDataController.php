@@ -435,14 +435,15 @@ VALUES (:crm_visit_id, :farmCapacity, :updated, :comments, :created, :customer_i
                 $stmtDelete->bindValue('app_id', $performance['id']);
                 $stmtDelete->execute();
 
-                $sql = "INSERT INTO `crm_cattle_performance_details`(`employee_id`, `report_id`, `agent_id`, `customer_id`, `breed_type`, `feed_type`, `repoting_month`, `visiting_date`, `age_of_cattle_month`, `previous_body_weight`, `present_body_weight`, `body_weight_difference`, `duration_of_bwt_difference`, `lactation_no`, `age_of_lactation`, `average_weight_per_day`, `average_weight_per_kg_consumption_feed`, `average_weight_per_kg_dm`, `milk_fat_percentage`, `consumption_feed_intake_ready_feed`, `consumption_feed_intake_conventional`, `consumption_feed_intake_total`, `fodder_green_grass_kg`, `fodder_straw_kg`, `dm_of_fodder_green_grass_kg`, `dm_of_fodder_straw_kg`, `total_dm_kg`, `dm_requirement_by_bwt_kg`, `remarks`, `created_at`, `updated_at`, `visit_id`, `app_batch_id`, `app_id`) 
-VALUES (:employee_id, :report_id, :agent_id, :customer_id, :breed_type, :feed_type, :repoting_month, :visiting_date, :age_of_cattle_month, :previous_body_weight, :present_body_weight, :body_weight_difference, :duration_of_bwt_difference, :lactation_no, :age_of_lactation, :average_weight_per_day, :average_weight_per_kg_consumption_feed, :average_weight_per_kg_dm, :milk_fat_percentage, :consumption_feed_intake_ready_feed, :consumption_feed_intake_conventional, :consumption_feed_intake_total, :fodder_green_grass_kg, :fodder_straw_kg, :dm_of_fodder_green_grass_kg, :dm_of_fodder_straw_kg, :total_dm_kg, :dm_requirement_by_bwt_kg, :remarks, :created_at, :updated_at, :visit_id, :app_batch_id, :app_id)";
+                $sql = "INSERT INTO `crm_cattle_performance_details`(`employee_id`, `report_id`, `agent_id`, `customer_id`, `breed_type`, `feed_type`, `repoting_month`, `visiting_date`, `age_of_cattle_month`, `previous_body_weight`, `present_body_weight`, `body_weight_difference`, `duration_of_bwt_difference`, `lactation_no`, `age_of_lactation`, `average_weight_per_day`, `average_weight_per_kg_consumption_feed`, `average_weight_per_kg_dm`, `milk_fat_percentage`, `consumption_feed_intake_ready_feed`, `consumption_feed_intake_conventional`, `consumption_feed_intake_total`, `fodder_green_grass_kg`, `fodder_straw_kg`, `dm_of_fodder_green_grass_kg`, `dm_of_fodder_straw_kg`, `total_dm_kg`, `dm_requirement_by_bwt_kg`, `remarks`, `created_at`, `updated_at`, `visit_id`, `app_batch_id`, `app_id`, `feed_id`, `feed_mill_id`, `production_date`, `batch_no`) 
+VALUES (:employee_id, :report_id, :agent_id, :customer_id, :breed_type, :feed_type, :repoting_month, :visiting_date, :age_of_cattle_month, :previous_body_weight, :present_body_weight, :body_weight_difference, :duration_of_bwt_difference, :lactation_no, :age_of_lactation, :average_weight_per_day, :average_weight_per_kg_consumption_feed, :average_weight_per_kg_dm, :milk_fat_percentage, :consumption_feed_intake_ready_feed, :consumption_feed_intake_conventional, :consumption_feed_intake_total, :fodder_green_grass_kg, :fodder_straw_kg, :dm_of_fodder_green_grass_kg, :dm_of_fodder_straw_kg, :total_dm_kg, :dm_requirement_by_bwt_kg, :remarks, :created_at, :updated_at, :visit_id, :app_batch_id, :app_id, :feed_id, :feed_mill_id, :production_date, :batch_no)";
 
                 $repotingMonth = new \DateTime($performance['repoting_month']?$performance['repoting_month']:$performance['created_at']);
                 $visitingDate = new \DateTime($performance['visiting_date']);
                 $createdAt = new \DateTime($performance['created_at']);
                 $updatedAt = new \DateTime($performance['updated_at']);
-
+                $productionDate = isset($performance['production_date']) && $performance['production_date']!=""? new \DateTime($performance['production_date']):'';
+                
                 $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
                 $stmt->bindValue('employee_id', $performance['employee_id']);
                 $stmt->bindValue('report_id', $performance['report_id']);
@@ -503,6 +504,10 @@ VALUES (:employee_id, :report_id, :agent_id, :customer_id, :breed_type, :feed_ty
                 $stmt->bindValue('visit_id', $findVisit->getId());
                 $stmt->bindValue('app_batch_id', $batch->getId());
                 $stmt->bindValue('app_id', $performance['id']);
+                $stmt->bindValue('feed_id', isset($performance['feed_company_id']) && $performance['feed_company_id']!=""?$performance['feed_company_id']:null);
+                $stmt->bindValue('feed_mill_id', isset($performance['feed_mill_id']) && $performance['feed_mill_id']!=""?$performance['feed_mill_id']:null);
+                $stmt->bindValue('production_date', $productionDate!=""? $productionDate->format('Y-m-d'): null);
+                $stmt->bindValue('batch_no', $performance['batch_no']);
 
                 $stmt->execute();
             }
@@ -1160,9 +1165,10 @@ VALUES (:hatching_date, :remarks, :reporting_date, :customer_id, :agent_id, :emp
                 $this->getDoctrine()->getManager()->persist($findLifeCycle);
                 $this->getDoctrine()->getManager()->flush();
             }else{
-                $sql = "INSERT INTO `crm_cattle_life_cycle`(`customer_id`, `report_id`, `agent_id`, `employee_id`, `reporting_date`, `breed_type`, `life_cycle_state`, `remarks`, `created_at`, `feed_type`, `app_batch_id`, `app_id`, `farm_number`) 
-VALUES (:customer_id, :report_id, :agent_id, :employee_id, :reporting_date, :breed_type, :life_cycle_state, :remarks, :created_at, :feed_type, :app_batch_id, :app_id, :farm_number)";
+                $sql = "INSERT INTO `crm_cattle_life_cycle`(`customer_id`, `report_id`, `agent_id`, `employee_id`, `reporting_date`, `breed_type`, `life_cycle_state`, `remarks`, `created_at`, `feed_type`, `app_batch_id`, `app_id`, `farm_number`, `feed_id`, `feed_mill_id`, `production_date`, `batch_no`) 
+VALUES (:customer_id, :report_id, :agent_id, :employee_id, :reporting_date, :breed_type, :life_cycle_state, :remarks, :created_at, :feed_type, :app_batch_id, :app_id, :farm_number, :feed_id, :feed_mill_id, :production_date, :batch_no)";
                 $reportingDate = new \DateTime($report['reporting_date']);
+                $productionDate = isset($report['production_date']) && $report['production_date']!=""? new \DateTime($report['production_date']):'';
                 $createdAt = new \DateTime($report['created_at']);
 
                 $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
@@ -1179,6 +1185,10 @@ VALUES (:customer_id, :report_id, :agent_id, :employee_id, :reporting_date, :bre
                 $stmt->bindValue('app_batch_id', $batch->getId());
                 $stmt->bindValue('app_id', $report['id']);
                 $stmt->bindValue('farm_number', isset($report['farm_number'])&&$report['farm_number']!=''?$report['farm_number']:1);
+                $stmt->bindValue('feed_id', isset($report['feed_company_id']) && $report['feed_company_id']!=""?$report['feed_company_id']:null);
+                $stmt->bindValue('feed_mill_id', isset($report['feed_mill_id']) && $report['feed_mill_id']!=""?$report['feed_mill_id']:null);
+                $stmt->bindValue('production_date', $productionDate!=""? $productionDate->format('Y-m-d'): null);
+                $stmt->bindValue('batch_no', $report['batch_no']);
 
                 $stmt->execute();
             }
