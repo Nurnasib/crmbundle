@@ -420,7 +420,7 @@ class CattleLifeCycle
     /**
      * @return \DateTime
      */
-    public function getProductionDate(): \DateTime
+    public function getProductionDate()
     {
         return $this->productionDate;
     }
@@ -436,7 +436,7 @@ class CattleLifeCycle
     /**
      * @return string
      */
-    public function getBatchNo(): string
+    public function getBatchNo()
     {
         return $this->batchNo;
     }

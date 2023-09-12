@@ -956,7 +956,7 @@ class CattlePerformanceDetails
     /**
      * @return \DateTime
      */
-    public function getProductionDate(): \DateTime
+    public function getProductionDate()
     {
         return $this->productionDate;
     }
@@ -972,7 +972,7 @@ class CattlePerformanceDetails
     /**
      * @return string
      */
-    public function getBatchNo(): string
+    public function getBatchNo()
     {
         return $this->batchNo;
     }
