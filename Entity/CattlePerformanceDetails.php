@@ -924,7 +924,7 @@ class CattlePerformanceDetails
     /**
      * @return Setting
      */
-    public function getFeed(): Setting
+    public function getFeed()
     {
         return $this->feed;
     }
@@ -940,7 +940,7 @@ class CattlePerformanceDetails
     /**
      * @return Setting
      */
-    public function getFeedMill(): Setting
+    public function getFeedMill()
     {
         return $this->feedMill;
     }

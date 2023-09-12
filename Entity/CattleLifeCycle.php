@@ -388,7 +388,7 @@ class CattleLifeCycle
     /**
      * @return Setting
      */
-    public function getFeed(): Setting
+    public function getFeed()
     {
         return $this->feed;
     }
@@ -404,7 +404,7 @@ class CattleLifeCycle
     /**
      * @return Setting
      */
-    public function getFeedMill(): Setting
+    public function getFeedMill()
     {
         return $this->feedMill;
     }
