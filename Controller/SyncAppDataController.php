@@ -1189,7 +1189,7 @@ VALUES (:customer_id, :report_id, :agent_id, :employee_id, :reporting_date, :bre
                 $stmt->bindValue('feed_id', isset($report['feed_company_id']) && $report['feed_company_id']!=""?$report['feed_company_id']:null);
                 $stmt->bindValue('feed_mill_id', isset($report['feed_mill_id']) && $report['feed_mill_id']!=""?$report['feed_mill_id']:null);
                 $stmt->bindValue('production_date', $productionDate!=""? $productionDate->format('Y-m-d'): null);
-                $stmt->bindValue('batch_no', $report['batch_no']);
+                $stmt->bindValue('batch_no', isset($report['batch_no']) && $report['batch_no']!=""?$report['batch_no']:null);
 
                 $stmt->execute();
             }
