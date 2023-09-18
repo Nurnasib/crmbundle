@@ -508,7 +508,7 @@ VALUES (:employee_id, :report_id, :agent_id, :customer_id, :breed_type, :feed_ty
                 $stmt->bindValue('feed_id', isset($performance['feed_company_id']) && $performance['feed_company_id']!=""?$performance['feed_company_id']:null);
                 $stmt->bindValue('feed_mill_id', isset($performance['feed_mill_id']) && $performance['feed_mill_id']!=""?$performance['feed_mill_id']:null);
                 $stmt->bindValue('production_date', $productionDate!=""? $productionDate->format('Y-m-d'): null);
-                $stmt->bindValue('batch_no', $performance['batch_no']);
+                $stmt->bindValue('batch_no', isset($performance['batch_no']) && $performance['batch_no']!=""?$performance['batch_no']:null);
 
                 $stmt->execute();
             }
