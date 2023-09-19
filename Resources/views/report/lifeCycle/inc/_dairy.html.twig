@@ -34,7 +34,8 @@
         <th data-a-h="center" scope="col" colspan="2" style="text-align: center">DM of Fodder (Kg)</th>
         <th data-a-v="middle" scope="col" rowspan="2">Total DM (Kg)</th>
         <th data-a-v="middle" scope="col" rowspan="2">DM Requirement (Kg)</th>
-        <th data-a-v="middle" scope="col" rowspan="2">Feed</th>
+        <th data-a-v="middle" scope="col" rowspan="2">Breed Type</th>
+        <th data-a-v="middle" scope="col" rowspan="2">Feed Company</th>
         <th data-a-v="middle" scope="col" rowspan="2">Feed Type</th>
         <th data-a-v="middle" scope="col" rowspan="2">Feed Mill</th>
         <th data-a-v="middle" scope="col" rowspan="2">Prod. Date</th>
@@ -93,6 +94,7 @@
                 <td data-t="n">{{ details.dmOfFodderStrawKg|number_format(2,'.','') }}</td>
                 <td data-t="n">{{ details.totalDmKg|number_format(2,'.','') }}</td>
                 <td data-t="n">{{ details.dmRequirementByBwtKg|number_format(2,'.','') }}</td>
+                <td>{{ details.breedTypeName }}</td>
                 <td>{{ details.feedName }}</td>
                 <td>{{ details.feedTypeName }}</td>
                 <td>{{ details.feedMillName }}</td>

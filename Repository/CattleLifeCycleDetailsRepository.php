@@ -36,6 +36,7 @@ class CattleLifeCycleDetailsRepository extends EntityRepository
         $qb->leftJoin('crm_cattle_life_cycle.feedType', 'feed_type');
         $qb->leftJoin('crm_cattle_life_cycle.feed', 'feed');
         $qb->leftJoin('crm_cattle_life_cycle.feedMill', 'feedMill');
+        $qb->leftJoin('crm_cattle_life_cycle.breedType', 'breedType');
 
         $qb->select('e AS details');
         $qb->addSelect('customer.id AS customerId', 'customer.name AS customerName', 'customer.address AS customerAddress', 'customer.mobile AS customerMobile');
@@ -44,6 +45,7 @@ class CattleLifeCycleDetailsRepository extends EntityRepository
         $qb->addSelect('report.name AS reportName');
         $qb->addSelect('feed.name as feedName');
         $qb->addSelect('feedMill.name as feedMillName');
+        $qb->addSelect('breedType.name as breedTypeName');
         $qb->addSelect('crm_cattle_life_cycle.productionDate', 'crm_cattle_life_cycle.batchNo');
 
         $qb->where('e.visitingDate >= :startDate')->setParameter('startDate', $startDate);
@@ -63,6 +65,7 @@ class CattleLifeCycleDetailsRepository extends EntityRepository
             $result['details']['feedTypeName'] = $result['feedTypeName'];
             $result['details']['feedName'] = $result['feedName'];
             $result['details']['feedMillName'] = $result['feedMillName'];
+            $result['details']['breedTypeName'] = $result['breedTypeName'];
             $result['details']['productionDate'] = $result['productionDate'];
             $result['details']['batchNo'] = $result['batchNo'];
             $data[$result['customerId']]['details'][] = $result['details'];
