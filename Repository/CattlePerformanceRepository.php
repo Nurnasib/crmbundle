@@ -125,6 +125,10 @@ class CattlePerformanceRepository extends EntityRepository
             $result['details']['regionId'] = $result['regionId'];
             $result['details']['regionName'] = $result['regionName'];
             $result['details']['employeeName'] = $result['name'];
+            $result['details']['feedName'] = $result['feedName'];
+            $result['details']['feedMillName'] = $result['feedMillName'];
+            $result['details']['productionDate'] = $result['productionDate'];
+            $result['details']['batchNo'] = $result['batchNo'];
 
 
             $month = $result['details']['visitingDate']->format('F-Y');
