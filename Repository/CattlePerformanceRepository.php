@@ -65,6 +65,8 @@ class CattlePerformanceRepository extends EntityRepository
         $qb->join('e.customer', 'farmer');
         $qb->leftJoin('e.breedType', 'breed_type');
         $qb->leftJoin('e.feedType', 'feed_type');
+        $qb->leftJoin('e.feed', 'feed');
+        $qb->leftJoin('e.feedMill', 'feedMill');
 
         $qb->select('e AS details');
 //        $qb->select('e.id as cpId','e.visitingDate', 'e.reportingMonth','e.ageOfCattleMonth');
@@ -75,6 +77,9 @@ class CattlePerformanceRepository extends EntityRepository
         $qb->addSelect('breed_type.id AS breedTypeId', 'breed_type.name AS breedTypeName');
         $qb->addSelect('feed_type.id AS feedTypeId', 'feed_type.name AS feedTypeName');
         $qb->addSelect('region.id AS regionId', 'region.name AS regionName');
+        $qb->addSelect('feed.name as feedName');
+        $qb->addSelect('feedMill.name as feedMillName');
+        $qb->addSelect('e.productionDate', 'e.batchNo');
 
         $qb->where('e.visitingDate >= :start')->setParameter('start', $start);
         $qb->andWhere('e.visitingDate <= :end')->setParameter('end', $end);

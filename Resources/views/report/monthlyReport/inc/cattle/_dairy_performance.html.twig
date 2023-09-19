@@ -1,17 +1,17 @@
 <table class="table table-striped table-bordered table-hover fcrReportDetails download-excel" id="fcrReportDetails">
     <thead class="thead-dark" style="background-color: #dbdee3">
     <tr>
-        <th colspan="28" class="border-0" data-a-h="center"><h3 class="text-center">NOURISH POULTRY AND HATCHERY LTD</h3></th>
+        <th colspan="32" class="border-0" data-a-h="center"><h3 class="text-center">NOURISH POULTRY AND HATCHERY LTD</h3></th>
     </tr>
     <tr>
-        <th colspan="28" class="border-0" data-a-h="center"><h5 class="text-center">UTTARA, DHAKA.</h5></th>
+        <th colspan="32" class="border-0" data-a-h="center"><h5 class="text-center">UTTARA, DHAKA.</h5></th>
     </tr>
     <tr>
-        <th  colspan="28" class="border-0" data-a-h="center"><h6 class="text-center">{{ report.name|default('') }}  &nbsp; &nbsp;
+        <th  colspan="32" class="border-0" data-a-h="center"><h6 class="text-center">{{ report.name|default('') }}  &nbsp; &nbsp;
                 &nbsp; {{ filterBy['startDate'] is defined and filterBy['startDate'] is not empty?filterBy['startDate']:'' }} {{ filterBy['endDate'] is defined and filterBy['endDate'] is not empty?' to '~filterBy['endDate']:'' }}</h6></th>
     </tr>
     <tr>
-        <th colspan="28" class="border-0" data-a-h="center"><h6 class="text-center">Reporting Date : {{ "now"|date('d-m-Y') }}</h6></th>
+        <th colspan="32" class="border-0" data-a-h="center"><h6 class="text-center">Reporting Date : {{ "now"|date('d-m-Y') }}</h6></th>
     </tr>
     <tr style="position: sticky; top: -1px; background-color: #dbdee3" class="data-header">
         <th data-a-v="middle" rowspan="2">Region</th>
@@ -34,7 +34,11 @@
         <th data-a-h="center" colspan="2">DM of Fodder (Kg)</th>
         <th data-a-v="middle" rowspan="2">Total DM (Kg)</th>
         <th data-a-v="middle" rowspan="2">DM Requirement (Kg)</th>
-        <th data-a-v="middle" rowspan="2">Name of Ready Feed</th>
+        <th data-a-v="middle" scope="col" rowspan="2">Feed</th>
+        <th data-a-v="middle" scope="col" rowspan="2">Name of Ready Feed</th>
+        <th data-a-v="middle" scope="col" rowspan="2">Feed Mill</th>
+        <th data-a-v="middle" scope="col" rowspan="2">Prod. Date</th>
+        <th data-a-v="middle" scope="col" rowspan="2">Batch No</th></th>
         <th data-a-v="middle" rowspan="2">Remarks</th>
     </tr>
     <tr style="position: sticky; top: 76px; background-color: #dbdee3" class="data-header">
@@ -56,7 +60,7 @@
         {% set totalRecordCount=1 %}
     {% for monthYear, monthYearData in entities['records'] %}
         <tr>
-            <td colspan="28">{{ monthYear }}</td>
+            <td colspan="32">{{ monthYear }}</td>
         </tr>
         {% for regionId, regionData in monthYearData %}
             {% set recordCount=1 %}
@@ -96,7 +100,11 @@
                         <td data-t="n">{{ item.dmOfFodderStrawKg|number_format(2,'.','') }}</td>
                         <td data-t="n">{{ item.totalDmKg|number_format(2,'.','') }}</td>
                         <td data-t="n">{{ item.dmRequirementByBwtKg|number_format(2,'.','') }}</td>
+                        <td>{{ item.feedName }}</td>
                         <td>{{ item.feedTypeName }}</td>
+                        <td>{{ item.feedMillName }}</td>
+                        <td>{{ item.productionDate ? item.productionDate|date('d-m-Y'):'' }}</td>
+                        <td>{{ item.batchNo }}</td>
                         <td>{{ item.remarks }}</td>
                     </tr>
                     {% set recordCount=recordCount+1 %}
