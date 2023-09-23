@@ -113,7 +113,8 @@ class SettingController extends AbstractController
     {
         $entity = $this->getDoctrine()->getRepository(Setting::class)->find($id);
         $em = $this->getDoctrine()->getManager();
-        $em->remove($entity);
+        $entity->setStatus(false);
+        $em->persist($entity);
         $em->flush();
         $this->addFlash('success', 'post.deleted_successfully');
         return new Response('Success');
