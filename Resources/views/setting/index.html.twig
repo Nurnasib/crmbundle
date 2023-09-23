@@ -89,6 +89,7 @@
     <script type="application/javascript" src="{{ asset('assets/plugins/bootstrap-editable/js/bootstrap4-editable.js') }}"></script>
 {% endblock  %}
 {% block documentready %}
+{#<script>#}
     {{ parent() }}
 
     $.fn.editable.defaults.mode ='inline';
@@ -100,6 +101,12 @@
     'columnDefs': [ {
     'targets': [0,4,5,6],
     'orderable': false
-    }]
+    }],
+        rowCallback: function (row, data, index) {
+            if ( data[6]==='No' ) {
+                $(row).addClass('disabled');
+                $(row).attr('title','This item is disabled');
+            }
+        },
     });
 {% endblock %}
