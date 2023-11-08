@@ -91,6 +91,7 @@
                             <li>
                                 <a class="dropdown-item" href="javascript:">{{ 'Fish'|trans }}</a>
                                 <ul class="sub-menu">
+                                    <li><a class="dropdown-item" href="{{ path('life_cycle_report_index', {'lifeCycleSlug':'fish-life-cycle-nursing-report'}) }}">{{ 'Nursing'|trans }}</a></li>
                                     <li><a class="dropdown-item" href="{{ path('life_cycle_report_index', {'lifeCycleSlug':'fish-life-cycle-report'}) }}">{{ 'Culture'|trans }}</a></li>
                                     <li><a class="dropdown-item" href="{{ path('life_cycle_report_index', {'lifeCycleSlug':'fish-life-cycle-after-sale-report'}) }}">{{ 'Harvest'|trans }}</a></li>
                                 </ul>

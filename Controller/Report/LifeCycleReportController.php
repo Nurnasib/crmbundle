@@ -17,6 +17,7 @@ use Terminalbd\CrmBundle\Entity\ChickLifeCycleDetails;
 use Terminalbd\CrmBundle\Entity\CrmCustomer;
 use Terminalbd\CrmBundle\Entity\FishLifeCycleCulture;
 use Terminalbd\CrmBundle\Entity\FishLifeCycleDetails;
+use Terminalbd\CrmBundle\Entity\FishLifeCycleNursing;
 use Terminalbd\CrmBundle\Entity\LayerLifeCycleDetails;
 use Terminalbd\CrmBundle\Form\SearchFilterFormType;
 
@@ -77,6 +78,9 @@ class LifeCycleReportController extends AbstractController
                 break;
                 case 'fish-life-cycle-report':
                     $entities = $this->getDoctrine()->getRepository(FishLifeCycleCulture::class)->getFishLifeCycleCulture($lifeCycleSlug,$filterBy, $this->getUser());
+                break;
+                case 'fish-life-cycle-nursing-report':
+                    $entities = $this->getDoctrine()->getRepository(FishLifeCycleNursing::class)->getFishLifeCycleNursing($lifeCycleSlug,$filterBy, $this->getUser());
                 break;
                 default:
                     $entities = [];

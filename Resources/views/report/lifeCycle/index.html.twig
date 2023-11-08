@@ -212,9 +212,12 @@
 
                         {% elseif lifeCycleSlug is same as 'fish-life-cycle-after-sale-report' %}
                             {% include '@TerminalbdCrm/report/lifeCycle/inc/_fish_after.html.twig'%}
+
+                        {% elseif lifeCycleSlug is same as 'fish-life-cycle-nursing-report' %}
+                            {% include '@TerminalbdCrm/report/lifeCycle/inc/_fish_nursing.html.twig'%}
                         {% endif %}
 
-                        {% else %}
+                    {% else %}
 
                             <div style="background-color: #dbdee3; width: 100%; height: 100%; padding: 25px 10px">
                                 <h3 class="text-center">NOURISH POULTRY AND HATCHERY LTD</h3>
