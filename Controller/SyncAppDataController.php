@@ -222,7 +222,7 @@ class SyncAppDataController extends AbstractController
                         $this->processFishLifeCycleCulture($jsonToArray, $batch);
                         break;
                     case "crm_fish_life_cycle_nursing":
-                        $this->processFishLifeCycleNursing($args, $jsonToArray, $batch);
+                        $this->processFishLifeCycleNursing($jsonToArray, $batch);
                         break;
                     /*case "crm_fish_life_cycle_detail_species":
                         $this->processFishLifeCycleDetailsSpecies($jsonToArray, $batch);
