@@ -33,6 +33,7 @@ use Terminalbd\CrmBundle\Entity\FcrDetails;
 use Terminalbd\CrmBundle\Entity\FcrDifferentCompanies;
 use Terminalbd\CrmBundle\Entity\FishLifeCycleCulture;
 use Terminalbd\CrmBundle\Entity\FishLifeCycleCultureDetails;
+use Terminalbd\CrmBundle\Entity\FishLifeCycleNursing;
 use Terminalbd\CrmBundle\Entity\LabService;
 use Terminalbd\CrmBundle\Entity\LayerLifeCycle;
 use Terminalbd\CrmBundle\Entity\LayerLifeCycleDetails;
@@ -567,6 +568,8 @@ class ApiController extends AbstractController
                         }elseif ($employee->getServiceMode()->getSlug() == 'sales-service-fish' ) {
 
                             $entities['crm_fish_life_cycle_culture'] = $this->getFishLifeCycleDataByEmployeeId($employee_id);
+
+                            $entities['crm_fish_life_cycle_nursing'] = $this->getFishLifeCycleNursingDataByEmployeeId($employee_id);
 
                         }else{
                             $entities['crm_broiler_life_cycle']=[];
@@ -3634,6 +3637,79 @@ class ApiController extends AbstractController
                                 "cur_fcr"=>(string)$fishLifeCycleCultureDetail->getCurrentFcr(),
                                 "web_life_cycle_details_id"=>(string)$fishLifeCycleCultureDetail->getId(),
                                 "created_at"=>$fishLifeCycleCultureDetail->getCreatedAt()->format('Y-m-d H:i:s')
+                            ];
+                        }
+                    }
+                    $customerGroup=$entity->getCustomer()->getFarmerIntroduce() && $entity->getCustomer()->getFarmerIntroduce()->getFarmerType()?'('.$entity->getCustomer()->getFarmerIntroduce()->getFarmerType()->getName().')':null;
+                    $arrayData[]=[
+                        "id"=> $entity->getAppId(),
+                        "report_id"=> (string)$entity->getAppReportId(),
+                        "report_type_id"=> $entity->getReport()?(string)$entity->getReport()->getId():"",
+                        "agent_id"=> $entity->getAgent()?(string)$entity->getAgent()->getId():"",
+                        "agent_name"=> $entity->getAgent()?$entity->getAgent()->getName():"",
+                        "customer_id"=> $entity->getCustomer()?(string)$entity->getCustomer()->getId():"",
+                        "customer_name"=> $entity->getCustomer()?$entity->getCustomer()->getName().' '.$customerGroup:"",
+                        "pond_number"=> (string)$entity->getPondNumber(),
+                        "reporting_date"=> $entity->getCreatedAt()->format('Y-m-d H:i:s'),
+                        "address"=> $entity->getAgent() && $entity->getAgent()->getUpozila()?$entity->getAgent()->getUpozila()->getName():"",
+                        "feed_company_id"=> $entity->getFeed()?(string)$entity->getFeed()->getId():"",
+                        "feed_company_name"=> $entity->getFeed()?(string)$entity->getFeed()->getName():"",
+                        "hatchery_id"=> $entity->getHatchery()?(string)$entity->getHatchery()->getId():"",
+                        "hatchery_name"=> $entity->getHatchery()?$entity->getHatchery()->getName():"",
+                        "feed_item_name"=> $entity->getFeedItemName()?$entity->getFeedItemName():"",
+                        "culture_species_main_id"=> $entity->getMainCultureSpecies()?(string)$entity->getMainCultureSpecies()->getId():"",
+                        "culture_species_main_name"=> $entity->getMainCultureSpecies()?(string)$entity->getMainCultureSpecies()->getName():"",
+                        "culture_species_optional_id"=> $entity->getOtherCultureSpecies()?(string)$entity->getOtherCultureSpecies()->getId():"",
+                        "culture_species_optional_name"=> $entity->getOtherCultureSpecies()?$entity->getOtherCultureSpecies()->getName():"",
+                        "feed_type_id"=> $entity->getFeedType()?(string)$entity->getFeedType()->getId():"",
+                        "feed_type_name"=> $entity->getFeedType()?$entity->getFeedType()->getName():"",
+                        "stocking_date"=> $entity->getStockingDate()->format('Y-m-d'),
+                        "culture_area_decimal"=> $entity->getCultureAreaDecimal()?(string)$entity->getCultureAreaDecimal():"0",
+                        "no_of_initial_fish_pcs"=> $entity->getNoOfInitialFish()?(string)$entity->getNoOfInitialFish():"0",
+                        "density_per_decimal_pcs"=> $entity->getStockingDensity()?(string)$entity->getStockingDensity():"0",
+                        "avg_initial_weight_gm"=> $entity->getAverageInitialWeightGm()?(string)$entity->getAverageInitialWeightGm():"0",
+                        "total_initial_weight_kg"=> $entity->getTotalInitialWeightKg()?(string)$entity->getTotalInitialWeightKg():"0",
+                        "culture_species_desc"=> $entity->getSpeciesDescription()?(string)$entity->getSpeciesDescription():"",
+                        "life_cycle_details"=>sizeof($detailData)>0?json_encode($detailData):"",
+                        "status"=> $entity->getStatus(),
+                        "feed_item_name_other"=> $entity->getFeedItemNameOther()?$entity->getFeedItemNameOther():"",
+                        "web_life_cycle_id"=> (string)$entity->getId(),
+                        "employee_id"=> $entity->getEmployee()?(string)$entity->getEmployee()->getId():"",
+                        "report_type_name" => $entity->getReport()?$entity->getReport()->getName():null,
+                    ];
+                }
+            }
+        }
+
+        return $arrayData;
+    }
+
+    private function getFishLifeCycleNursingDataByEmployeeId($employeeId){
+        $arrayData=[];
+        if($employeeId){
+            $employee = $this->getDoctrine()->getRepository(User::class)->find($employeeId);
+
+            $entities = $this->getDoctrine()->getRepository(FishLifeCycleNursing::class)->findBy(['employee'=>$employee, 'status'=>'IN_PROGRESS'],['id'=>'ASC']);
+
+            if($entities){
+                /** @var FishLifeCycleNursing  $entity */
+                foreach ($entities as $entity) {
+                    $detailData=[];
+                    if($entity->getFishLifeCycleNursingDetails()){
+                        /* @var FishLifeCycleCultureDetails $fishLifeCycleNursingDetail*/
+                        foreach ($entity->getFishLifeCycleNursingDetails() as $fishLifeCycleNursingDetail) {
+                            $detailData[]=[
+                                "id"=>$fishLifeCycleNursingDetail->getAppId()?(int)$fishLifeCycleNursingDetail->getAppId():"",
+                                "sampling_date"=>$fishLifeCycleNursingDetail->getSamplingDate()->format('Y-m-d'),
+                                "avg_present_weight_gm"=>$fishLifeCycleNursingDetail->getAveragePresentWeight()?(string)$fishLifeCycleNursingDetail->getAveragePresentWeight():"0",
+                                "cur_survival_rate"=>$fishLifeCycleNursingDetail->getSrPercentage()?(string)$fishLifeCycleNursingDetail->getSrPercentage():"0",
+                                "cur_feed_consumption"=>(string)$fishLifeCycleNursingDetail->getCurrentFeedConsumptionKg(),
+                                "farmer_comment"=>(string)$fishLifeCycleNursingDetail->getFarmerRemarks()?$fishLifeCycleNursingDetail->getFarmerRemarks():"",
+                                "visitor_comment"=>(string)$fishLifeCycleNursingDetail->getEmployeeRemarks()?$fishLifeCycleNursingDetail->getEmployeeRemarks():"",
+                                "pond_number"=>$entity->getPondNumber()?(string)$entity->getPondNumber():(string)1,
+                                "cur_fcr"=>(string)$fishLifeCycleNursingDetail->getCurrentFcr(),
+                                "web_life_cycle_details_id"=>(string)$fishLifeCycleNursingDetail->getId(),
+                                "created_at"=>$fishLifeCycleNursingDetail->getCreatedAt()->format('Y-m-d H:i:s')
                             ];
                         }
                     }

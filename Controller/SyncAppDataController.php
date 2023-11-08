@@ -39,6 +39,7 @@ use Terminalbd\CrmBundle\Entity\FishLifeCycle;
 use Terminalbd\CrmBundle\Entity\FishLifeCycleCulture;
 use Terminalbd\CrmBundle\Entity\FishLifeCycleCultureDetails;
 use Terminalbd\CrmBundle\Entity\FishLifeCycleDetails;
+use Terminalbd\CrmBundle\Entity\FishLifeCycleNursing;
 use Terminalbd\CrmBundle\Entity\LabService;
 use Terminalbd\CrmBundle\Entity\LayerLifeCycle;
 use Terminalbd\CrmBundle\Entity\LayerLifeCycleDetails;
@@ -219,6 +220,9 @@ class SyncAppDataController extends AbstractController
                         break;
                     case "crm_fish_life_cycle_culture":
                         $this->processFishLifeCycleCulture($jsonToArray, $batch);
+                        break;
+                    case "crm_fish_life_cycle_nursing":
+                        $this->processFishLifeCycleNursing($args, $jsonToArray, $batch);
                         break;
                     /*case "crm_fish_life_cycle_detail_species":
                         $this->processFishLifeCycleDetailsSpecies($jsonToArray, $batch);
@@ -2636,6 +2640,212 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
                                     $fishLifeCycleCulture->setFinalFcr($calculateFinalFcr);
                                     $fishLifeCycleCulture->setFinalAdg($calculateFinalAdg);
                                     $em->persist($fishLifeCycleCulture);
+                                    $em->flush();
+                                }
+
+                            }
+
+                        }
+                    }
+                }
+
+            }
+
+        }
+    }
+
+    private function processFishLifeCycleNursing($reports, Api $batch)
+    {
+        $em = $this->getDoctrine()->getManager();
+        foreach ($reports as $report) {
+
+            if(isset($report['report_type_id']) && $report['report_type_id']!=''){
+
+                $employee = null;
+                $customer = null;
+                $customerAgent = null;
+                $agent = null;
+                $feed = null;
+                $hatchery = null;
+                $mainCultureSpecies = null;
+                $otherMainCultureSpecies = null;
+                $feedType = null;
+
+                if(isset($report['employee_id']) && $report['employee_id']!=""){
+                    $employee= $this->getDoctrine()->getRepository(User::class)->find($report['employee_id']);
+                }
+                if(isset($report['customer_id']) && $report['customer_id']!=""){
+                    $customer= $this->getDoctrine()->getRepository(CrmCustomer::class)->find($report['customer_id']);
+                    $customerAgent=$customer?$customer->getAgent():null;
+                }
+                if(isset($report['agent_id']) && $report['agent_id']!=""){
+                    $agent= $this->getDoctrine()->getRepository(Agent::class)->find($report['agent_id']);
+                }
+                if(isset($report['feed_company_id']) && $report['feed_company_id']!=""){
+                    $feed= $this->getDoctrine()->getRepository(Setting::class)->find($report['feed_company_id']);
+                }
+                if(isset($report['hatchery_id']) && $report['hatchery_id']!=""){
+                    $hatchery= $this->getDoctrine()->getRepository(Setting::class)->find($report['hatchery_id']);
+                }
+                if(isset($report['culture_species_main_id']) && $report['culture_species_main_id']!=""){
+                    $mainCultureSpecies= $this->getDoctrine()->getRepository(Setting::class)->find($report['culture_species_main_id']);
+                }
+                if(isset($report['culture_species_optional_id']) && $report['culture_species_optional_id']!=""){
+                    $otherMainCultureSpecies = $this->getDoctrine()->getRepository(Setting::class)->find($report['culture_species_optional_id']);
+                }
+                if(isset($report['feed_type_id']) && $report['feed_type_id']!=""){
+                    $feedType = $this->getDoctrine()->getRepository(Setting::class)->find($report['feed_type_id']);
+                }
+
+                $createdAt = $report['reporting_date'] ? (new \DateTime($report['reporting_date']))->format('Y-m-d H:i:s') : null;
+                $reportingDate = $report['reporting_date'] ? (new \DateTime($report['reporting_date']))->format('Y-m-d') : null;
+                $stockingDate = $report['stocking_date'] ? (new \DateTime($report['stocking_date']))->format('Y-m-d') : null;
+
+                $culture_area_decimal=$report['culture_area_decimal']!=''?trim($report['culture_area_decimal']):0;
+                $no_of_initial_fish=$report['no_of_initial_fish_pcs']!=''?trim($report['no_of_initial_fish_pcs']):0;
+                $stocking_density=$culture_area_decimal>0?($no_of_initial_fish/$culture_area_decimal):0;
+                $avg_initial_weight_gm=$report['avg_initial_weight_gm']!=''?trim($report['avg_initial_weight_gm']):0;
+                $total_initial_weight_kg=($no_of_initial_fish*$avg_initial_weight_gm)/1000;
+
+                $pond_number=$report['pond_number']!=''?$report['pond_number']:1;
+
+
+                $lifeCycleReport = $this->getDoctrine()->getRepository(Setting::class)->find($report['report_type_id']);
+                $existingFishLifeCycleCulture=null;
+                if(isset($report['web_life_cycle_id']) && $report['web_life_cycle_id']!=""){
+                    $existingFishLifeCycleCulture = $this->getDoctrine()->getRepository(FishLifeCycleNursing::class)->find($report['web_life_cycle_id']);
+                }
+                if($lifeCycleReport){
+                    if($existingFishLifeCycleCulture){
+                        $fishLifeCycleNursing= $existingFishLifeCycleCulture;
+                    }else{
+                        $fishLifeCycleNursing = new FishLifeCycleNursing();
+                        $fishLifeCycleNursing->setReport($lifeCycleReport);
+                        $fishLifeCycleNursing->setEmployee($employee?$employee:$batch->getEmployee());
+                        $fishLifeCycleNursing->setCustomer($customer);
+                        $fishLifeCycleNursing->setAgent($agent?$agent:$customerAgent);
+                        $fishLifeCycleNursing->setFeed($feed);
+                        $fishLifeCycleNursing->setHatchery($hatchery);
+                        $fishLifeCycleNursing->setFeedType($feedType);
+                        $fishLifeCycleNursing->setMainCultureSpecies($mainCultureSpecies);
+                        $fishLifeCycleNursing->setOtherCultureSpecies($otherMainCultureSpecies);
+                        $fishLifeCycleNursing->setPondNumber($pond_number);
+                        $fishLifeCycleNursing->setFeedItemName($report['feed_item_name']!=''?$report['feed_item_name']:null);
+                        $fishLifeCycleNursing->setFeedItemNameOther($report['feed_item_name_other']!=''?$report['feed_item_name_other']:null);
+                        $fishLifeCycleNursing->setSpeciesDescription($report['culture_species_desc']!=''?$report['culture_species_desc']:null);
+                        $fishLifeCycleNursing->setCultureAreaDecimal($culture_area_decimal);
+                        $fishLifeCycleNursing->setNoOfInitialFish($no_of_initial_fish);
+                        $fishLifeCycleNursing->setStockingDensity($stocking_density);
+                        $fishLifeCycleNursing->setAverageInitialWeightGm($avg_initial_weight_gm);
+                        $fishLifeCycleNursing->setTotalInitialWeightKg($total_initial_weight_kg);
+                        $fishLifeCycleNursing->setReportingDate(new \DateTime($reportingDate));
+                        $fishLifeCycleNursing->setStockingDate(new \DateTime($stockingDate));
+                        $fishLifeCycleNursing->setCreatedAt(new \DateTime($createdAt));
+
+                    }
+                    $fishLifeCycleNursing->setAppReportId($report['report_id']);
+                    $fishLifeCycleNursing->setStatus($report['status']);
+                    $fishLifeCycleNursing->setAppId($report['id']);
+                    $fishLifeCycleNursing->setAppBatch($batch);
+                    $em->persist($fishLifeCycleNursing);
+                    $em->flush();
+
+                    if(isset($report['life_cycle_details']) && $report['life_cycle_details']!=''){
+                        $detailsJsonData=json_decode($report['life_cycle_details'], true);
+                        if(sizeof($detailsJsonData)>0){
+                            static $finalFish=0;
+                            $last_key = array_key_last($detailsJsonData);
+                            foreach ($detailsJsonData as $key=>$details) {
+
+                                if($key==0){
+                                    $previousDate=$stockingDate;
+                                    $finalFish=($no_of_initial_fish*$details['cur_survival_rate'])/100;
+                                }else{
+                                    $previousDate=$details['sampling_date'] ? (new \DateTime($detailsJsonData[$key-1]['sampling_date']))->format('Y-m-d') : null;;
+                                    $finalFish=($finalFish*$details['cur_survival_rate'])/100;
+                                }
+                                $presentDate = $details['sampling_date'] ? (new \DateTime($details['sampling_date']))->format('Y-m-d') : null;
+                                $dateDiff = strtotime($presentDate) - strtotime($previousDate);
+
+                                $dayOfCulture =  round($dateDiff / (60 * 60 * 24));
+
+                                $samplingDate = $details['sampling_date'] ? (new \DateTime($details['sampling_date']))->format('Y-m-d') : null;
+                                $created_at = isset($details['created_at'])&&$details['created_at'] ? (new \DateTime($details['created_at']))->format('Y-m-d H:i:s') : $createdAt;
+                                $avg_present_weight_gm=$details['avg_present_weight_gm'];
+                                $avgWeightGainGm=$avg_present_weight_gm-$avg_initial_weight_gm;
+                                $totalWeightGainKg=($finalFish*$avgWeightGainGm)/1000;
+                                $current_feed_consumption_kg=$details['cur_feed_consumption'];
+                                $currentFcr=$totalWeightGainKg>0?$current_feed_consumption_kg/$totalWeightGainKg:0;
+
+                                $currentAdg = $dayOfCulture>0?$avgWeightGainGm/$dayOfCulture:0;
+
+                                $currentFeedConKg = $details['cur_feed_consumption'];
+
+
+
+                                if(isset($details['web_life_cycle_details_id']) && $details['web_life_cycle_details_id']!=""){
+
+                                    $existingLifeCycleDetails = $this->getDoctrine()->getRepository(FishLifeCycleCultureDetails::class)->findOneBy(['id'=>$details['web_life_cycle_details_id'], 'fishLifeCycleCulture'=>$fishLifeCycleNursing]);
+                                    if(!$existingLifeCycleDetails){
+                                        $sql = "INSERT INTO `crm_fish_life_cycle_nursing_details` 
+(`fish_life_cycle_id`, `average_present_weight`, `avgWeightGainGm`, `totalWeightGainKg`, `current_fcr`, `current_adg`, `current_feed_consumption_kg`, `no_of_final_fish`, `sampling_date`, `current_culture_days`, `sr_percentage`, `farmer_remarks`, `employee_remarks`, `created_at`, `app_id` ) VALUES
+ (:fish_life_cycle_id, :average_present_weight, :avgWeightGainGm, :totalWeightGainKg, :current_fcr, :current_adg, :current_feed_consumption_kg, :no_of_final_fish, :sampling_date, :current_culture_days, :sr_percentage, :farmer_remarks, :employee_remarks, :created_at, :app_id )";
+
+                                        $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
+                                        $stmt->bindValue('fish_life_cycle_id', $fishLifeCycleNursing->getId());
+                                        $stmt->bindValue('average_present_weight', $details['avg_present_weight_gm']);
+                                        $stmt->bindValue('avgWeightGainGm', $avgWeightGainGm);
+                                        $stmt->bindValue('totalWeightGainKg', $totalWeightGainKg);
+                                        $stmt->bindValue('current_feed_consumption_kg', $currentFeedConKg);
+                                        $stmt->bindValue('sr_percentage', $details['cur_survival_rate']);
+                                        $stmt->bindValue('current_culture_days', $dayOfCulture>0?$dayOfCulture:0);
+                                        $stmt->bindValue('no_of_final_fish', $finalFish);
+                                        $stmt->bindValue('current_fcr', $currentFcr);
+                                        $stmt->bindValue('current_adg', $currentAdg);
+                                        $stmt->bindValue('sampling_date', $samplingDate);
+                                        $stmt->bindValue('farmer_remarks', $details['farmer_comment']);
+                                        $stmt->bindValue('employee_remarks', $details['visitor_comment']);
+                                        $stmt->bindValue('created_at', $created_at);
+                                        $stmt->bindValue('app_id', isset($details['id'])&&$details['id']!=""?$details['id']:null);
+                                        $stmt->execute();
+                                    }
+
+                                }else{
+                                    $sql = "INSERT INTO `crm_fish_life_cycle_nursing_details` 
+(`fish_life_cycle_id`, `average_present_weight`, `avgWeightGainGm`, `totalWeightGainKg`, `current_fcr`, `current_adg`, `current_feed_consumption_kg`, `no_of_final_fish`, `sampling_date`, `current_culture_days`, `sr_percentage`, `farmer_remarks`, `employee_remarks`, `created_at`, `app_id` ) VALUES
+ (:fish_life_cycle_id, :average_present_weight, :avgWeightGainGm, :totalWeightGainKg, :current_fcr, :current_adg, :current_feed_consumption_kg, :no_of_final_fish, :sampling_date, :current_culture_days, :sr_percentage, :farmer_remarks, :employee_remarks, :created_at, :app_id )";
+
+                                    $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
+                                    $stmt->bindValue('fish_life_cycle_id', $fishLifeCycleNursing->getId());
+                                    $stmt->bindValue('average_present_weight', $details['avg_present_weight_gm']);
+                                    $stmt->bindValue('avgWeightGainGm', $avgWeightGainGm);
+                                    $stmt->bindValue('totalWeightGainKg', $totalWeightGainKg);
+                                    $stmt->bindValue('current_feed_consumption_kg', $currentFeedConKg);
+                                    $stmt->bindValue('sr_percentage', $details['cur_survival_rate']);
+                                    $stmt->bindValue('current_culture_days', $dayOfCulture>0?$dayOfCulture:0);
+                                    $stmt->bindValue('no_of_final_fish', $finalFish);
+                                    $stmt->bindValue('current_fcr', $currentFcr);
+                                    $stmt->bindValue('current_adg', $currentAdg);
+                                    $stmt->bindValue('sampling_date', $samplingDate);
+                                    $stmt->bindValue('farmer_remarks', $details['farmer_comment']);
+                                    $stmt->bindValue('employee_remarks', $details['visitor_comment']);
+                                    $stmt->bindValue('created_at', $created_at);
+                                    $stmt->bindValue('app_id', isset($details['id'])&&$details['id']!=""?$details['id']:null);
+                                    $stmt->execute();
+                                }
+
+                                if($last_key==$key){
+                                    $previousDate=$stockingDate;
+                                    $dateDiff = strtotime($presentDate) - strtotime($previousDate);
+
+                                    $finalDayOfCulture =  round($dateDiff / (60 * 60 * 24));
+
+                                    $calculateFinalFcr = $totalWeightGainKg>0?$currentFeedConKg/$totalWeightGainKg:0;
+                                    $calculateFinalAdg = $finalDayOfCulture>0?$avgWeightGainGm/$finalDayOfCulture:0;
+                                    $fishLifeCycleNursing->setTotalDayOfCulture($finalDayOfCulture);
+                                    $fishLifeCycleNursing->setFinalFcr($calculateFinalFcr);
+                                    $fishLifeCycleNursing->setFinalAdg($calculateFinalAdg);
+                                    $em->persist($fishLifeCycleNursing);
                                     $em->flush();
                                 }
 
