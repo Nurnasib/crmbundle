@@ -2687,11 +2687,11 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
                 if(isset($report['hatchery_id']) && $report['hatchery_id']!=""){
                     $hatchery= $this->getDoctrine()->getRepository(Setting::class)->find($report['hatchery_id']);
                 }
-                if(isset($report['culture_species_main_id']) && $report['culture_species_main_id']!=""){
-                    $mainCultureSpecies= $this->getDoctrine()->getRepository(Setting::class)->find($report['culture_species_main_id']);
+                if(isset($report['nursing_species_main_id']) && $report['nursing_species_main_id']!=""){
+                    $mainCultureSpecies= $this->getDoctrine()->getRepository(Setting::class)->find($report['nursing_species_main_id']);
                 }
-                if(isset($report['culture_species_optional_id']) && $report['culture_species_optional_id']!=""){
-                    $otherMainCultureSpecies = $this->getDoctrine()->getRepository(Setting::class)->find($report['culture_species_optional_id']);
+                if(isset($report['nursing_species_optional_id']) && $report['nursing_species_optional_id']!=""){
+                    $otherMainCultureSpecies = $this->getDoctrine()->getRepository(Setting::class)->find($report['nursing_species_optional_id']);
                 }
                 if(isset($report['feed_type_id']) && $report['feed_type_id']!=""){
                     $feedType = $this->getDoctrine()->getRepository(Setting::class)->find($report['feed_type_id']);
@@ -2701,7 +2701,7 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
                 $reportingDate = $report['reporting_date'] ? (new \DateTime($report['reporting_date']))->format('Y-m-d') : null;
                 $stockingDate = $report['stocking_date'] ? (new \DateTime($report['stocking_date']))->format('Y-m-d') : null;
 
-                $culture_area_decimal=$report['culture_area_decimal']!=''?trim($report['culture_area_decimal']):0;
+                $culture_area_decimal=$report['nursing_area_decimal']!=''?trim($report['nursing_area_decimal']):0;
                 $no_of_initial_fish=$report['no_of_initial_fish_pcs']!=''?trim($report['no_of_initial_fish_pcs']):0;
                 $stocking_density=$culture_area_decimal>0?($no_of_initial_fish/$culture_area_decimal):0;
                 $avg_initial_weight_gm=$report['avg_initial_weight_gm']!=''?trim($report['avg_initial_weight_gm']):0;
@@ -2732,7 +2732,7 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
                         $fishLifeCycleNursing->setPondNumber($pond_number);
                         $fishLifeCycleNursing->setFeedItemName($report['feed_item_name']!=''?$report['feed_item_name']:null);
                         $fishLifeCycleNursing->setFeedItemNameOther($report['feed_item_name_other']!=''?$report['feed_item_name_other']:null);
-                        $fishLifeCycleNursing->setSpeciesDescription($report['culture_species_desc']!=''?$report['culture_species_desc']:null);
+                        $fishLifeCycleNursing->setSpeciesDescription($report['nursing_species_desc']!=''?$report['nursing_species_desc']:null);
                         $fishLifeCycleNursing->setCultureAreaDecimal($culture_area_decimal);
                         $fishLifeCycleNursing->setNoOfInitialFish($no_of_initial_fish);
                         $fishLifeCycleNursing->setStockingDensity($stocking_density);
