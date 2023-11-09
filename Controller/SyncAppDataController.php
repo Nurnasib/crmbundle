@@ -2786,7 +2786,7 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
 
                                 if(isset($details['web_life_cycle_details_id']) && $details['web_life_cycle_details_id']!=""){
 
-                                    $existingLifeCycleDetails = $this->getDoctrine()->getRepository(FishLifeCycleNursingDetails::class)->findOneBy(['id'=>$details['web_life_cycle_details_id'], 'fishLifeCycleCulture'=>$fishLifeCycleNursing]);
+                                    $existingLifeCycleDetails = $this->getDoctrine()->getRepository(FishLifeCycleNursingDetails::class)->findOneBy(['id'=>$details['web_life_cycle_details_id'], 'fishLifeCycleNursing'=>$fishLifeCycleNursing]);
                                     if(!$existingLifeCycleDetails){
                                         $sql = "INSERT INTO `crm_fish_life_cycle_nursing_details` 
 (`fish_life_cycle_id`, `average_present_weight`, `avgWeightGainGm`, `totalWeightGainKg`, `current_fcr`, `current_adg`, `current_feed_consumption_kg`, `no_of_final_fish`, `sampling_date`, `current_culture_days`, `sr_percentage`, `farmer_remarks`, `employee_remarks`, `created_at`, `app_id` ) VALUES
