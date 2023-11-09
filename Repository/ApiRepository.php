@@ -2404,7 +2404,6 @@ class ApiRepository extends BaseRepository
             'p.settingType as parent_setting_type',
             'p.slug as parent_slug',
             's.sortOrder as sort_order',
-            's.status as status',
         );
         $qb->where('s.status = 1');
         $qb->orderBy('s.settingType', 'ASC');
