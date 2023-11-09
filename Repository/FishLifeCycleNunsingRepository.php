@@ -74,6 +74,10 @@ class FishLifeCycleNunsingRepository extends EntityRepository
             $qb->andWhere('regional.id = :regional')->setParameter('regional', $region);
         }
 
+        if(isset( $filterBy['reportStatus']) &&  $filterBy['reportStatus'] !=''){
+            $qb->andWhere('e.status = :reportStatus')->setParameter('reportStatus', $filterBy['reportStatus']);
+        }
+
         $feedTypeFishLifeCycle = isset($filterBy['feedTypeFishLifeCycle']) && $filterBy['feedTypeFishLifeCycle']!=""? $filterBy['feedTypeFishLifeCycle']: '';
         if (!empty($feedTypeFishLifeCycle)){
             $qb->andWhere('feedType.id = :feedType')->setParameter('feedType', $feedTypeFishLifeCycle);

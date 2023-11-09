@@ -94,6 +94,9 @@ class FishLifeCycleCultureRepository extends EntityRepository
         $qb->andWhere('e.reportingDate >= :startDate')->setParameter('startDate', $startDate);
         $qb->andWhere('e.reportingDate <= :endDate')->setParameter('endDate', $endDate);
 
+        if(isset( $filterBy['reportStatus']) &&  $filterBy['reportStatus'] !=''){
+            $qb->andWhere('e.status = :reportStatus')->setParameter('reportStatus', $filterBy['reportStatus']);
+        }
 
         $results = $qb->getQuery()->getArrayResult();
 //dd($results);
