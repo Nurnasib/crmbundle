@@ -2386,5 +2386,31 @@ class ApiRepository extends BaseRepository
         return $qb->getQuery()->getArrayResult();
 
     }
+
+
+    public function allCrmSetting(): array
+    {
+        $em = $this->_em;
+        $qb = $em->createQueryBuilder();
+        $qb->from(Setting::class, 's');
+        $qb->leftJoin('s.parent', 'p');
+        $qb->select(
+            's.id as id',
+            's.name as name',
+            's.settingType as setting_type',
+            's.slug as slug',
+            'p.id as parent_id',
+            'p.name as parent_name',
+            'p.settingType as parent_setting_type',
+            'p.slug as parent_slug',
+            's.sortOrder as sort_order',
+            's.status as status',
+        );
+        $qb->where('s.status = 1');
+        $qb->orderBy('s.settingType', 'ASC');
+        $result = $qb->getQuery()->getArrayResult();
+
+        return $result;
+    }
     
 }

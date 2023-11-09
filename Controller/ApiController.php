@@ -320,6 +320,8 @@ class ApiController extends AbstractController
 
             $userId = isset($_REQUEST['user_id']) && $_REQUEST['user_id']!='' ? $_REQUEST['user_id'] : "";
 
+            $entities['crm_setting'] = $this->getDoctrine()->getRepository(Api::class)->allCrmSetting();
+
             $entities['visit_area'] = $this->getDoctrine()->getRepository(Api::class)->usercrmvisitingarea($userId);
 
             $entities['purpose'] = $this->getDoctrine()->getRepository(Api::class)->dailyActiviesPurpose(1);
