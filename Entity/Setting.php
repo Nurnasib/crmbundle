@@ -219,9 +219,9 @@ class Setting
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getExpensePaymentType()
+    public function getExpensePaymentType(): ?string
     {
         return $this->expensePaymentType;
     }
@@ -233,6 +233,7 @@ class Setting
     {
         $this->expensePaymentType = $expensePaymentType;
     }
+
 
 
 }
