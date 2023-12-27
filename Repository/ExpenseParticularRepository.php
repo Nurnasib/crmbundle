@@ -26,7 +26,8 @@ class ExpenseParticularRepository extends EntityRepository
 
     public function getExpenseParticularsByExpense(Expense $entity){
         $qb = $this->createQueryBuilder('e');
-        $qb->select('e.id', 'e.amount', 'e.path');
+        $qb->select('e.id', 'e.amount', 'e.path', 'e.expenseChartDetailId');
+        $qb->addSelect('expense.id as expenseId');
         $qb->addSelect('particular.id as particularId','particular.name as particularName');
         $qb->join('e.particular','particular');
         $qb->join('e.expense','expense');
@@ -38,7 +39,7 @@ class ExpenseParticularRepository extends EntityRepository
         $returnArray=[];
         if($results){
             foreach ($results as $result) {
-                $returnArray[$result['particularId']]=$result;
+                $returnArray[$result['expenseId']][$result['expenseChartDetailId']][$result['particularId']]=$result;
             }
         }
 
@@ -104,6 +105,8 @@ class ExpenseParticularRepository extends EntityRepository
             }
 
             $qb->andWhere('employee.id =:employeeId')->setParameter('employeeId', $user->getId());
+
+            $qb->orderBy('particular.sortOrder', 'ASC');
 
             $results= $qb->getQuery()->getArrayResult();
 

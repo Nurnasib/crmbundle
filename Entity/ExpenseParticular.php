@@ -54,6 +54,12 @@ class ExpenseParticular
     private $particular;
 
     /**
+     * @var integer
+     * @ORM\Column(name="expense_chart_detail_id", type="integer", nullable=true)
+     */
+    private $expenseChartDetailId;
+
+    /**
      * @var float
      *
      * @ORM\Column(name="amount", type="float", nullable=true)
@@ -319,6 +325,22 @@ class ExpenseParticular
     public function setUpdated($updated): void
     {
         $this->updated = $updated;
+    }
+
+    /**
+     * @return int
+     */
+    public function getExpenseChartDetailId(): ?int
+    {
+        return $this->expenseChartDetailId;
+    }
+
+    /**
+     * @param int $expenseChartDetailId
+     */
+    public function setExpenseChartDetailId(?int $expenseChartDetailId): void
+    {
+        $this->expenseChartDetailId = $expenseChartDetailId;
     }
 
 

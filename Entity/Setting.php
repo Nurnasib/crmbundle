@@ -79,6 +79,13 @@ class Setting
     private $sortOrder;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(type="string", nullable=true )
+     */
+    private $expensePaymentType; // FIXED, USER_DEFINED
+
+    /**
      * Get id
      * @return integer
      */
@@ -209,6 +216,22 @@ class Setting
     public function setSortOrder($sortOrder): void
     {
         $this->sortOrder = $sortOrder;
+    }
+
+    /**
+     * @return string
+     */
+    public function getExpensePaymentType(): string
+    {
+        return $this->expensePaymentType;
+    }
+
+    /**
+     * @param string $expensePaymentType
+     */
+    public function setExpensePaymentType(string $expensePaymentType): void
+    {
+        $this->expensePaymentType = $expensePaymentType;
     }
 
 

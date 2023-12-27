@@ -119,10 +119,10 @@
                                     {% if dailyExpenseParticularAttributes is defined and dailyExpenseParticularAttributes is iterable %}
                                         {% for dailyExpenseParticularAttribute in dailyExpenseParticularAttributes %}
                                             <td class="text-right">
-                                                {% if expensePaticularAmount['inLine'] is defined and expensePaticularAmount['inLine'][entity.employee.id][entity.id][dailyExpenseParticularAttribute.id]['path'] is not empty%}
+                                                {% if expensePaticularAmount['inLine'] is defined and expensePaticularAmount['inLine'][entity.employee.id][entity.id][dailyExpenseParticularAttribute.id] is defined and expensePaticularAmount['inLine'][entity.employee.id][entity.id][dailyExpenseParticularAttribute.id]['path'] is not empty%}
                                                     <a title="Attachment Available" href="{{ asset('uploads/expense/'~expensePaticularAmount['inLine'][entity.employee.id][entity.id][dailyExpenseParticularAttribute.id]['path']) }}" download>{{ expensePaticularAmount['inLine'] is defined? expensePaticularAmount['inLine'][entity.employee.id][entity.id][dailyExpenseParticularAttribute.id]['amount']|number_format(2,'.',','):'0.00' }}</a>
                                                 {% else %}
-                                                    {{ expensePaticularAmount['inLine'] is defined? expensePaticularAmount['inLine'][entity.employee.id][entity.id][dailyExpenseParticularAttribute.id]['amount']|number_format(2,'.',','):'0.00' }}
+                                                    {{ expensePaticularAmount['inLine'] is defined and expensePaticularAmount['inLine'][entity.employee.id][entity.id][dailyExpenseParticularAttribute.id] is defined ? expensePaticularAmount['inLine'][entity.employee.id][entity.id][dailyExpenseParticularAttribute.id]['amount']|number_format(2,'.',','):'' }}
                                                 {% endif %}
                                             </td>
                                         {% endfor %}

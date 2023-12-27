@@ -244,9 +244,11 @@ class SettingRepository extends EntityRepository
     {
         $qb = $this->createQueryBuilder('e');
 
-        $qb->select('e.id', 'e.name', 'e.slug');
+        $qb->select('e.id', 'e.name', 'e.slug', 'e.settingType', 'e.expensePaymentType');
         $qb->where("e.settingType = 'DAILY_EXPENSE_PARTICULAR'");
         $qb->andWhere('e.status = 1');
+
+        $qb->orderBy('e.sortOrder', 'ASC');
 
         $results = $qb->getQuery()->getArrayResult();
 
@@ -258,6 +260,63 @@ class SettingRepository extends EntityRepository
                     'id' => $result['id'],
                     'name' => $result['name'],
                     'slug' => $result['slug'],
+                    'expensePaymentType' => $result['expensePaymentType'],
+                ];
+            }
+        }
+
+        return $data;
+    }
+
+    public function getFixedDailyExpenseParticular()
+    {
+        $qb = $this->createQueryBuilder('e');
+
+        $qb->select('e.id', 'e.name', 'e.slug', 'e.settingType', 'e.expensePaymentType');
+        $qb->where("e.settingType = 'DAILY_EXPENSE_PARTICULAR'");
+        $qb->andWhere('e.status = 1');
+        $qb->andWhere('e.expensePaymentType = :expensePaymentType')->setParameter('expensePaymentType', 'FIXED');
+
+        $qb->orderBy('e.sortOrder', 'ASC');
+
+        $results = $qb->getQuery()->getArrayResult();
+
+        $data = [];
+
+        if($results){
+            foreach ($results as $result) {
+                $data[] = [
+                    'id' => $result['id'],
+                    'name' => $result['name'],
+                    'slug' => $result['slug'],
+                    'expensePaymentType' => $result['expensePaymentType'],
+                ];
+            }
+        }
+
+        return $data;
+    }
+
+    public function getUserDefineDailyExpenseParticular()
+    {
+        $qb = $this->createQueryBuilder('e');
+
+        $qb->select('e.id', 'e.name', 'e.slug', 'e.settingType', 'e.expensePaymentType');
+        $qb->where("e.settingType = 'DAILY_EXPENSE_PARTICULAR'");
+        $qb->andWhere('e.status = 1');
+        $qb->andWhere('e.expensePaymentType = :expensePaymentType')->setParameter('expensePaymentType', 'USER_DEFINE');
+
+        $results = $qb->getQuery()->getArrayResult();
+
+        $data = [];
+
+        if($results){
+            foreach ($results as $result) {
+                $data[] = [
+                    'id' => $result['id'],
+                    'name' => $result['name'],
+                    'slug' => $result['slug'],
+                    'expensePaymentType' => $result['expensePaymentType'],
                 ];
             }
         }
@@ -269,7 +328,7 @@ class SettingRepository extends EntityRepository
     {
         $qb = $this->createQueryBuilder('e');
 
-        $qb->select('e.id', 'e.name', 'e.slug');
+        $qb->select('e.id', 'e.name', 'e.slug', 'e.expensePaymentType');
         $qb->where("e.settingType = 'MONTHLY_EXPENSE_PARTICULAR'");
         $qb->andWhere('e.status = 1');
 
@@ -283,6 +342,7 @@ class SettingRepository extends EntityRepository
                     'id' => $result['id'],
                     'name' => $result['name'],
                     'slug' => $result['slug'],
+                    'expensePaymentType' => $result['expensePaymentType'],
                 ];
             }
         }

@@ -90,7 +90,8 @@ class ExpenseFormType extends AbstractType
                 'choice_label' => 'name',
                 'query_builder' => function(EntityRepository $er){
                 return $er->createQueryBuilder('e')
-                    ->where("e.settingType = 'VEHICLE'");
+                    ->where("e.settingType = 'VEHICLE'")
+                    ->andWhere("e.status = 1");
                 },
                 'multiple' => true,
                 'expanded' => true,

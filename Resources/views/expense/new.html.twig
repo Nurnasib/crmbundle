@@ -136,55 +136,79 @@
                                 </div>
                                 <div class="card-body card-body-inner">
                                     <div class="row">
-                                        {% if dailyExpenseParticulars is defined and dailyExpenseParticulars is not empty %}
-                                            {% set arrayLength= dailyExpenseParticulars|length %}
-                                            {% set arrayLengthHalf= arrayLength/2 %}
-                                            {% set arraySplits = dailyExpenseParticulars|batch(arrayLengthHalf|number_format(0), '') %}
+                                        {% if fixedDailyExpenseParticular is defined and fixedDailyExpenseParticular is not empty %}
+                                            <div class="col-md-6">
+                                                <table class="table table-bordered">
+                                                    <thead>
+                                                    <tr>
+                                                        <th width="5%">#</th>
+                                                        <th width="50%">Particular Name</th>
+                                                        <th width="45%">Amount (TK)</th>
+{#                                                        <th>Attachment (pdf/image)</th>#}
+{#                                                        <th></th>#}
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    {% for dailyExpenseParticular in fixedDailyExpenseParticular %}
+                                                        <tr>
+                                                            <td>
+                                                                <input type="checkbox" name="particular_id[{{ entity.id }}][{{ dailyExpenseParticular.expenseChartDetailId }}][{{ dailyExpenseParticular.particularId }}]" value="{{ dailyExpenseParticular.amount }}" {{ expenseParticulars[entity.id][dailyExpenseParticular.expenseChartDetailId][dailyExpenseParticular.particularId] is defined ? 'checked="checked"':'' }}>
+                                                            </td>
+                                                            <td>
+                                                                {{ dailyExpenseParticular.particularName }} ( for {{ dailyExpenseParticular.areaName }})
+                                                            </td>
+                                                            <td>
+                                                                <input class="form-control" type="number" min="0" step="any" name="amount[{{ entity.id }}][{{ dailyExpenseParticular.expenseChartDetailId }}][{{ dailyExpenseParticular.particularId }}]" value="{{ dailyExpenseParticular.amount }}">
+                                                            </td>
+                                                            {#<td style="vertical-align: middle">
+                                                                <div style="height: 30px" class="custom-file">
+                                                                    <input type="file" name="files[{{ entity.id }}][{{ dailyExpenseParticular.expenseChartDetailId }}][{{ dailyExpenseParticular.particularId }}]" class="custom-file-input" style="z-index: 0; height: 30px" id="file_{{ dailyExpenseParticular.particularId }}" aria-describedby="file">
+                                                                    <label style="margin-bottom: 0px; height: 30px" class="custom-file-label" for="file_{{ dailyExpenseParticular.particularId }}">Choose file</label>
+                                                                </div>
+                                                            </td>
+                                                            <td>
+                                                                {% if expenseParticulars[dailyExpenseParticular.id]['path'] is defined and expenseParticulars[dailyExpenseParticular.id]['path'] is not empty %}
+                                                                    <a href="{{ asset('uploads/expense/'~expenseParticulars[dailyExpenseParticular.id]['path']|default('')) }}" download>Download</a>
+                                                                {% endif %}
+                                                            </td>#}
+                                                        </tr>
+                                                    {% endfor %}
+                                                    </tbody>
+                                                </table>
+                                            </div>
 
-                                            {% if arraySplits|length>0 %}
+                                        {% endif %}
 
-                                                {% for arraySplit in arraySplits %}
-                                                    <div class="col-md-6">
-                                                        <table class="table table-bordered">
-                                                            <thead>
-                                                            <tr>
-                                                                <th width="20%">Particular Name</th>
-                                                                <th width="20%">Amount (TK)</th>
-                                                                <th>Attachment (pdf/image)</th>
-                                                                <th></th>
-                                                            </tr>
-                                                            </thead>
-                                                            <tbody>
-                                                                {% for dailyExpenseParticular in arraySplit %}
-                                                                    {% if dailyExpenseParticular is iterable %}
-                                                                    <tr>
-                                                                        <td>
-                                                                            {{ dailyExpenseParticular.name }}
-                                                                            <input type="hidden" name="particular_id[{{ entity.id }}][{{ dailyExpenseParticular.id }}]" value="{{ dailyExpenseParticular.id }}">
-                                                                        </td>
-                                                                        <td>
-                                                                            <input class="form-control" type="number" min="0" step=".01" name="amount[{{ entity.id }}][{{ dailyExpenseParticular.id }}]" value="{{ expenseParticulars[dailyExpenseParticular.id]['amount']|default('') }}">
-                                                                        </td>
-                                                                        <td style="vertical-align: middle">
-                                                                            <div style="height: 30px" class="custom-file">
-                                                                                <input type="file" name="files[{{ entity.id }}][{{ dailyExpenseParticular.id }}]" class="custom-file-input" style="z-index: 0; height: 30px" id="file_{{ dailyExpenseParticular.id }}" aria-describedby="file">
-                                                                                <label style="margin-bottom: 0px; height: 30px" class="custom-file-label" for="file_{{ dailyExpenseParticular.id }}">Choose file</label>
-                                                                            </div>
-                                                                        </td>
-                                                                        <td>
-                                                                            {% if expenseParticulars[dailyExpenseParticular.id]['path'] is defined and expenseParticulars[dailyExpenseParticular.id]['path'] is not empty %}
-                                                                                <a href="{{ asset('uploads/expense/'~expenseParticulars[dailyExpenseParticular.id]['path']|default('')) }}" download>Download</a>
-                                                                            {% endif %}
-                                                                        </td>
-                                                                    </tr>
-                                                                    {% endif %}
-                                                                {% endfor %}
-                                                            </tbody>
-                                                        </table>
-                                                    </div>
-                                                {% endfor %}
 
-                                            {% endif %}
+                                        {% if userDefineDailyExpenseParticular is defined and userDefineDailyExpenseParticular is not empty %}
+                                            <div class="col-md-6">
+                                                <table class="table table-bordered">
+                                                    <thead>
+                                                    <tr>
+                                                        <th width="5%">#</th>
+                                                        <th width="50%">Particular Name</th>
+                                                        <th width="45%">Amount (TK)</th>
+{#                                                        <th>Attachment (pdf/image)</th>#}
+{#                                                        <th></th>#}
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    {% for dailyExpenseParticular in userDefineDailyExpenseParticular %}
+                                                        <tr>
+                                                            <td>
+                                                                <input type="checkbox" name="particular_id[{{ entity.id }}][{{ dailyExpenseParticular.expenseChartDetailId }}][{{ dailyExpenseParticular.particularId }}]" value="{{ dailyExpenseParticular.amount }}" {{ expenseParticulars[entity.id][dailyExpenseParticular.expenseChartDetailId][dailyExpenseParticular.particularId] is defined ? 'checked="checked"':'' }}>
+                                                            </td>
+                                                            <td>
+                                                                {{ dailyExpenseParticular.particularName }}
+                                                            </td>
+                                                            <td>
+                                                                <input class="form-control" type="number" min="0" step="any" name="amount[{{ entity.id }}][{{ dailyExpenseParticular.expenseChartDetailId }}][{{ dailyExpenseParticular.particularId }}]" value="{{ expenseParticulars[entity.id][dailyExpenseParticular.expenseChartDetailId][dailyExpenseParticular.particularId] is defined ? expenseParticulars[entity.id][dailyExpenseParticular.expenseChartDetailId][dailyExpenseParticular.particularId].amount:'' }}">
+                                                            </td>
+                                                        </tr>
+                                                    {% endfor %}
+                                                    </tbody>
+                                                </table>
+                                            </div>
 
                                         {% endif %}
 

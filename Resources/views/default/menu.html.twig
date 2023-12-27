@@ -2,14 +2,33 @@
     {% if is_granted('ROLE_CRM_POULTRY_USER') or is_granted('ROLE_CRM_CATTLE_USER') or is_granted('ROLE_CRM_AQUA_USER') or is_granted('ROLE_CRM_SALES_MARKETING_USER') or is_granted('ROLE_DEVELOPER') %}
         <li><a class="dropdown-item" href="{{ path('crm_visit') }}"><i
                         class="feather icon-edit"></i>{{ 'CRM Visit'|trans }}</a></li>
-        <li><a class="dropdown-item" href="{{ path('crm_expense') }}"><i
-                        class="feather icon-edit"></i>{{ 'Expense'|trans }}</a></li>
+        {#<li><a class="dropdown-item" href="{{ path('crm_expense') }}"><i
+                        class="feather icon-edit"></i>{{ 'Expense'|trans }}</a></li>#}
     {% endif %}
+    <li class="">
+        <a class="" href="javascript:"><i class="feather icon-file-text"></i>{{ 'Expense'|trans }}</a>
+        <ul class="sub-menu">
+            {% if is_granted('ROLE_CRM_POULTRY_USER') or is_granted('ROLE_CRM_CATTLE_USER') or is_granted('ROLE_CRM_AQUA_USER') or is_granted('ROLE_CRM_SALES_MARKETING_USER') or is_granted('ROLE_DEVELOPER') %}
+                <li><a class="dropdown-item" href="{{ path('crm_expense') }}"><i
+                                class="feather icon-edit"></i>{{ 'Expense'|trans }}</a></li>
+            {% endif %}
+            {% if is_granted('ROLE_DEVELOPER') or is_granted('ROLE_LINE_MANAGER') or is_granted('ROLE_CRM_POULTRY_ADMIN') or is_granted('ROLE_CRM_CATTLE_ADMIN') or is_granted('ROLE_CRM_AQUA_ADMIN') or is_granted('ROLE_CRM_SALES_MARKETING_ADMIN') %}
+                <li><a class="dropdown-item" href="{{ path('crm_expense_batch') }}"><i
+                                class="feather icon-edit"></i>{{ 'Expense For Approval'|trans }}</a></li>
+            {% endif %}
+            {% if is_granted('ROLE_DEVELOPER') or is_granted('ROLE_CRM_POULTRY_ADMIN') or is_granted('ROLE_CRM_CATTLE_ADMIN') or is_granted('ROLE_CRM_AQUA_ADMIN') or is_granted('ROLE_CRM_SALES_MARKETING_ADMIN') %}
+                <li><a class="dropdown-item" href="{{ path('crm_expense_particular_type') }}"><i
+                                class="feather icon-edit"></i>{{ 'Particular Type'|trans }}</a></li>
+                {#<li><a class="dropdown-item" href="{{ path('crm_expense_chart') }}"><i
+                                class="feather icon-edit"></i>{{ 'Expense Chart'|trans }}</a></li>#}
+            {% endif %}
+        </ul>
+    </li>
 
-    {% if is_granted('ROLE_DEVELOPER') or is_granted('ROLE_LINE_MANAGER') or is_granted('ROLE_CRM_POULTRY_ADMIN') or is_granted('ROLE_CRM_CATTLE_ADMIN') or is_granted('ROLE_CRM_AQUA_ADMIN') or is_granted('ROLE_CRM_SALES_MARKETING_ADMIN') %}
+    {#{% if is_granted('ROLE_DEVELOPER') or is_granted('ROLE_LINE_MANAGER') or is_granted('ROLE_CRM_POULTRY_ADMIN') or is_granted('ROLE_CRM_CATTLE_ADMIN') or is_granted('ROLE_CRM_AQUA_ADMIN') or is_granted('ROLE_CRM_SALES_MARKETING_ADMIN') %}
         <li><a class="dropdown-item" href="{{ path('crm_expense_batch') }}"><i
                         class="feather icon-edit"></i>{{ 'Expense For Approval'|trans }}</a></li>
-    {% endif %}
+    {% endif %}#}
 
     {% if is_granted('ROLE_CRM_POULTRY_ADMIN') or is_granted('ROLE_CRM_CATTLE_ADMIN') or is_granted('ROLE_CRM_AQUA_ADMIN') or is_granted('ROLE_CRM_SALES_MARKETING_ADMIN') or is_granted('ROLE_CRM_REPORT') or is_granted('ROLE_DEVELOPER') or is_granted('ROLE_LINE_MANAGER') %}
         <li class=""><a class="" href="javascript:"><i class="feather icon-file-text"></i>{{ 'Report'|trans }}</a>

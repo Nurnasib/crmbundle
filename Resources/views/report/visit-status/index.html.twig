@@ -161,7 +161,7 @@
                                                     {% endif %}
 
                                                     {% if 'workshop' in workingStatus %}
-                                                        <span class="btn btn-mini btn-transparent" title="{{ (visitStatus[lineManagerUserId]['teamMember'][employeeUserId]['days']["%02d"|format(day)]['visits']|multiDimensionalArrayCol('remarks'))|join(', ') }}" style="cursor: default">W
+                                                        <span class="btn btn-mini btn-transparent" title="{{ (visitStatus[lineManagerUserId]['teamMember'][employeeUserId]['days']["%02d"|format(day)]['visits']|multiDimensionalArrayCol('remarks'))|join(', ') }}" style="cursor: default">WS
                                                                     </span>
                                                         {% set totalWorkshopStatus = totalWorkshopStatus + 1 %}
                                                     {% endif %}

@@ -58,7 +58,7 @@
 
                             {% if expenseParticularAttributes is defined and expenseParticularAttributes is iterable %}
                                 {% for expenseParticularAttribute in expenseParticularAttributes %}
-                                    <td class="text-right">{{ expensePaticularTotalAmount[entity.employeeAutoId] is defined  and  expensePaticularTotalAmount[entity.employeeAutoId][entity.expenseMonthYear|date('Y-m')] is defined? expensePaticularTotalAmount[entity.employeeAutoId][entity.expenseMonthYear|date('Y-m')][expenseParticularAttribute.id]['totalAmount']|number_format(2,'.',','):'0.00' }}</td>
+                                    <td class="text-right">{{ expensePaticularTotalAmount[entity.employeeAutoId] is defined  and  expensePaticularTotalAmount[entity.employeeAutoId][entity.expenseMonthYear|date('Y-m')] is defined and expensePaticularTotalAmount[entity.employeeAutoId][entity.expenseMonthYear|date('Y-m')][expenseParticularAttribute.id] is defined ? expensePaticularTotalAmount[entity.employeeAutoId][entity.expenseMonthYear|date('Y-m')][expenseParticularAttribute.id]['totalAmount']|number_format(2,'.',','):'0.00' }}</td>
                                 {% endfor %}
                             {% endif %}
 

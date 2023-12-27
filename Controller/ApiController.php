@@ -27,6 +27,8 @@ use Terminalbd\CrmBundle\Entity\ChickLifeCycleDetails;
 use Terminalbd\CrmBundle\Entity\CompanyWiseFeedSale;
 use Terminalbd\CrmBundle\Entity\CrmCustomer;
 use Terminalbd\CrmBundle\Entity\CrmVisit;
+use Terminalbd\CrmBundle\Entity\ExpenseChart;
+use Terminalbd\CrmBundle\Entity\ExpenseChartDetail;
 use Terminalbd\CrmBundle\Entity\FarmerComplain;
 use Terminalbd\CrmBundle\Entity\FarmerComplainDetails;
 use Terminalbd\CrmBundle\Entity\FcrDetails;
@@ -331,6 +333,12 @@ class ApiController extends AbstractController
             $entities['agent_report_type'] = $this->getDoctrine()->getRepository(Api::class)->agentPurposeForReport();
 
             $employee = $this->getDoctrine()->getRepository(User::class)->find($userId);
+
+            $crm_expense_chart = $this->employeeExpenseChart($employee?$employee->getId():'');
+            $crm_expense_chart_detail = $crm_expense_chart && isset( $crm_expense_chart['details']) ? $crm_expense_chart['details']:[];
+            unset($crm_expense_chart['details']);
+            $entities['crm_expense_chart'] = $crm_expense_chart;
+            $entities['crm_expense_chart_detail'] = $crm_expense_chart_detail;
 
             $entities['farmer'] = $this->getDoctrine()->getRepository(Api::class)->searchfarmer($employee);
 
@@ -4129,5 +4137,82 @@ class ApiController extends AbstractController
         ]);
 
     }
+    /**
+     * @param Request $request
+     * @param ParameterBagInterface $parameterBag
+     * @return JsonResponse
+     * @Route("/employee/expense/chart", name="crm_employee_expense_chart")
+     */
+    public function getEmployeeExpenseChart(Request $request, ParameterBagInterface $parameterBag){
+        $arrayData=[];
+        set_time_limit(0);
+        ignore_user_abort(true);
+        if ($request->getMethod() == 'GET' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')) {
+
+            $parameters = $request->query->all();
+
+            if( isset($parameters['employee_id']) && $parameters['employee_id'] != "" ){
+
+                $arrayData = $this->employeeExpenseChart($parameters['employee_id']);
+
+                $response = new Response();
+                $response->headers->set('Content-Type', 'application/json');
+                $response->setContent(json_encode($arrayData));
+                $response->setStatusCode(Response::HTTP_OK);
+                return $response;
+            }
+            return new JsonResponse([
+                'status' => 404,
+                'message' => 'Employee is required.'
+            ]);
+        }
+        return new JsonResponse([
+            'status' => 500,
+            'message' => 'Server Error!'
+        ]);
+
+    }
+
+    private function employeeExpenseChart($employeeId){
+        $arrayData=[];
+        if($employeeId){
+            $employee = $this->getDoctrine()->getRepository(User::class)->find($employeeId);
+
+            $entity = $this->getDoctrine()->getRepository(ExpenseChart::class)->findOneBy(['employee'=>$employee],['id'=>'DESC']);
+//dd($entity);
+            /* @var ExpenseChart $entity*/
+            if($entity){
+                $arrayData=[
+                    "id"=> $entity->getId(),
+                    "employee_id"=> $entity->getEmployee()?$entity->getEmployee()->getId():null,
+                    "typeOfVehicle"=> $entity->getTypeOfVehicle()?$entity->getTypeOfVehicle():null,
+                    "perKmRate"=> $entity->getPerKmRate()?$entity->getPerKmRate():null,
+                ];
+
+                if($entity->getExpenseChartDetails() && sizeof($entity->getExpenseChartDetails())>0){
+                    /* @var ExpenseChartDetail $expenseChartDetail */
+                    foreach ($entity->getExpenseChartDetails() as $expenseChartDetail) {
+                        $arrayData['details'][]=[
+                            'id' => $expenseChartDetail->getId(),
+                            'particular_id' => $expenseChartDetail->getParticular() ? $expenseChartDetail->getParticular()->getId():null,
+                            'particular_name' => $expenseChartDetail->getParticular() ? $expenseChartDetail->getParticular()->getName(): null,
+                            'particular_slug' => $expenseChartDetail->getParticular() ? $expenseChartDetail->getParticular()->getSlug(): null,
+                            'particular_setting_type' => $expenseChartDetail->getParticular() ? $expenseChartDetail->getParticular()->getSettingType(): null,
+                            'particular_expense_payment_type' => $expenseChartDetail->getParticular() ? $expenseChartDetail->getParticular()->getExpensePaymentType(): null,
+                            'payment_duration' => $expenseChartDetail ? $expenseChartDetail->getPaymentDuration(): null,
+                            'amount' => $expenseChartDetail ? $expenseChartDetail->getAmount(): null,
+                            'area_id' => $expenseChartDetail->getArea() ? $expenseChartDetail->getArea()->getId(): null,
+                            'area_name' => $expenseChartDetail->getArea() ? $expenseChartDetail->getArea()->getName(): null,
+                            'area_slug' => $expenseChartDetail->getArea() ? $expenseChartDetail->getArea()->getSlug(): null,
+                    ];
+                    }
+                }
+
+            }
+        }
+
+        return $arrayData;
+    }
+
 
 }

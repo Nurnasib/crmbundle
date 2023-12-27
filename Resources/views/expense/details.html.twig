@@ -121,12 +121,12 @@
                                             {% if expenseParticularAttributes is defined and expenseParticularAttributes is iterable %}
                                                 {% for expenseParticularAttribute in expenseParticularAttributes %}
                                                     <td>
-                                                        {% if expensePaticularAmount['inLine'] is defined and expensePaticularAmount['inLine'][entity.employee.id][entity.id][expenseParticularAttribute.id]['path'] is not empty%}
+                                                        {% if expensePaticularAmount['inLine'] is defined and expensePaticularAmount['inLine'][entity.employee.id][entity.id][expenseParticularAttribute.id] is defined and expensePaticularAmount['inLine'][entity.employee.id][entity.id][expenseParticularAttribute.id]['path'] is not empty%}
                                                             <a title="Attachment Available" href="{{ asset('uploads/expense/'~expensePaticularAmount['inLine'][entity.employee.id][entity.id][expenseParticularAttribute.id]['path']) }}" download>
                                                                 {{ expensePaticularAmount['inLine'] is defined? expensePaticularAmount['inLine'][entity.employee.id][entity.id][expenseParticularAttribute.id]['amount']|number_format(2,'.',','):'0.00' }}
                                                             </a>
                                                         {% else %}
-                                                            {{ expensePaticularAmount['inLine'] is defined? expensePaticularAmount['inLine'][entity.employee.id][entity.id][expenseParticularAttribute.id]['amount']|number_format(2,'.',','):'0.00' }}
+                                                            {{ expensePaticularAmount['inLine'] is defined and expensePaticularAmount['inLine'][entity.employee.id][entity.id][expenseParticularAttribute.id] is defined ? expensePaticularAmount['inLine'][entity.employee.id][entity.id][expenseParticularAttribute.id]['amount']|number_format(2,'.',','):'' }}
                                                         {% endif %}
                                                     </td>
                                                 {% endfor %}

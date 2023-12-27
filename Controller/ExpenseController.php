@@ -28,9 +28,11 @@ use Terminalbd\CrmBundle\Entity\CrmVisit;
 use Terminalbd\CrmBundle\Entity\DmsFile;
 use Terminalbd\CrmBundle\Entity\Expense;
 use Terminalbd\CrmBundle\Entity\ExpenseBatch;
+use Terminalbd\CrmBundle\Entity\ExpenseChart;
 use Terminalbd\CrmBundle\Entity\ExpenseParticular;
 use Terminalbd\CrmBundle\Entity\Setting;
 use Terminalbd\CrmBundle\Form\ExpenseFormType;
+use Terminalbd\CrmBundle\Form\ExpenseVehicleFormType;
 use Terminalbd\CrmBundle\Form\SettingFormType;
 
 /**
@@ -118,6 +120,7 @@ class ExpenseController extends AbstractController
 
 
             $data = $request->request->all();
+//            dd($data);
             $em = $this->getDoctrine()->getManager();
 
             $entity->setStatus(1);
@@ -125,42 +128,45 @@ class ExpenseController extends AbstractController
             $em->persist($entity);
 
             if(isset($data['particular_id']) && sizeof($data['particular_id'])>0){
-                foreach ($data['particular_id'] as $expenseId=>$particulars) {
-                    foreach ($particulars as $particularId=>$particular) {
-                        $particularObj=$this->getDoctrine()->getRepository(Setting::class)->find($particularId);
-                        $requestAmount = $data['amount'][$expenseId][$particularId];
-                        $amount = $requestAmount && $requestAmount!=''?$requestAmount:null;
+                foreach ($data['particular_id'] as $expenseId=>$expenseDetailParticulars) {
+                    foreach ($expenseDetailParticulars as $expenseParticularId => $particulars) {
+                        foreach ($particulars as $particularId=>$particular) {
+                            $particularObj=$this->getDoctrine()->getRepository(Setting::class)->find($particularId);
+                            $requestAmount = isset($data['amount'][$expenseId][$expenseParticularId]) ? $data['amount'][$expenseId][$expenseParticularId][$particularId]: '';
+                            $amount = $requestAmount && $requestAmount!=''?$requestAmount:null;
 
-                        $existingExpenseParticular=$this->getDoctrine()->getRepository(ExpenseParticular::class)->findOneBy(['expense'=>$entity, 'particular'=>$particularObj]);
+                            $existingExpenseParticular=$this->getDoctrine()->getRepository(ExpenseParticular::class)->findOneBy(['expense'=>$entity, 'particular'=>$particularObj, 'expenseChartDetailId'=>$expenseParticularId]);
 
-                        if($existingExpenseParticular){
-                            $expenseParticular=$existingExpenseParticular;
-                        }else{
-                            $expenseParticular= new ExpenseParticular();
-                        }
-
-                        $expenseParticular->setAmount($amount);
-                        $expenseParticular->setExpense($entity);
-                        $expenseParticular->setParticular($particularObj?$particularObj:null);
-
-                        if($_FILES['files']['size'][$expenseId][$particularId] != 0 && $_FILES['files']['error'][$expenseId][$particularId] == 0){
-
-                            $files = empty($_FILES['files']) ? '' : $_FILES['files'];
-
-                            $fileName = $entity->getId() . '-' .$particularId . '-' . time() . "-" . $files['name'][$expenseId][$particularId];
-
-                            $file_tmp = $files['tmp_name'][$expenseId][$particularId];
-                            if (is_dir('uploads/expense/') == false) {
-                                mkdir('uploads/expense/', 0777);        // Create directory if it does not exist
+                            if($existingExpenseParticular){
+                                $expenseParticular=$existingExpenseParticular;
+                            }else{
+                                $expenseParticular= new ExpenseParticular();
                             }
-                            if (is_dir('uploads/expense/' . $fileName) == false) {
-                                move_uploaded_file($file_tmp, 'uploads/expense/' . $fileName);
 
-                                $expenseParticular->setPath($fileName);
+                            $expenseParticular->setAmount($amount);
+                            $expenseParticular->setExpense($entity);
+                            $expenseParticular->setExpenseChartDetailId($expenseParticularId);
+                            $expenseParticular->setParticular($particularObj?$particularObj:null);
+
+                            if( isset($_FILES['files']) && $_FILES['files']['size'][$expenseId][$particularId] != 0 && $_FILES['files']['error'][$expenseId][$particularId] == 0){
+
+                                $files = empty($_FILES['files']) ? '' : $_FILES['files'];
+
+                                $fileName = $entity->getId() . '-' .$particularId . '-' . time() . "-" . $files['name'][$expenseId][$particularId];
+
+                                $file_tmp = $files['tmp_name'][$expenseId][$particularId];
+                                if (is_dir('uploads/expense/') == false) {
+                                    mkdir('uploads/expense/', 0777);        // Create directory if it does not exist
+                                }
+                                if (is_dir('uploads/expense/' . $fileName) == false) {
+                                    move_uploaded_file($file_tmp, 'uploads/expense/' . $fileName);
+
+                                    $expenseParticular->setPath($fileName);
+                                }
                             }
-                        }
 
-                        $em->persist($expenseParticular);
+                            $em->persist($expenseParticular);
+                        }
                     }
 
                 }
@@ -174,12 +180,22 @@ class ExpenseController extends AbstractController
 
         $expenseParticularByExpense = $this->getDoctrine()->getRepository(ExpenseParticular::class)->getExpenseParticularsByExpense($entity);
         $attchments = $this->getDoctrine()->getRepository(DmsFile::class)->getDmsAttchmentFile($entity,'CRM','Expense');
+//dd($expenseParticularByExpense);
+
+        $expenseChartByEmployee = $this->getDoctrine()->getRepository(ExpenseChart::class)->getExpenseChartByEmployee($this->getUser()?$this->getUser()->getId():null);
+        $fixedDailyExpenseParticular = array_filter(array_map(function($n) { if($n['paymentDuration']=='DAILY' && $n['expensePaymentType']=='FIXED') return $n; }, $expenseChartByEmployee));
+        $userDefineDailyExpenseParticular = array_filter(array_map(function($n) { if($n['paymentDuration']=='DAILY' && $n['expensePaymentType']=='USER_DEFINE') return $n; }, $expenseChartByEmployee));
+
         return $this->render('@TerminalbdCrm/expense/new.html.twig', [
             'entity' => $entity,
             'dailyExpenseParticulars' => $dailyExpenseParticulars,
             'attchments' => $attchments,
             'expenseParticulars' => $expenseParticularByExpense,
             'form' => $form->createView(),
+            'userDesignationId' => $this->getUser()->getDesignation()?$this->getUser()->getDesignation()->getId():null,
+            'expenseChart' => $expenseChartByEmployee,
+            'fixedDailyExpenseParticular' => $fixedDailyExpenseParticular,
+            'userDefineDailyExpenseParticular' => $userDefineDailyExpenseParticular,
         ]);
     }
 
@@ -357,5 +373,82 @@ class ExpenseController extends AbstractController
         $em->flush();
 
         return new JsonResponse(['status'=>200, 'message'=>'Success']);
+    }
+
+
+    /**
+     * Displays a form to edit an existing Post entity.
+     *
+     * @Route("/particular/type", methods={"GET"}, name="crm_expense_particular_type")
+     * @param Request $request
+     * @param User $employee
+     * @return Response
+     */
+    public function getExpenseParticular(Request $request): Response
+    {
+        $entities = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType'=>['DAILY_EXPENSE_PARTICULAR', 'MONTHLY_EXPENSE_PARTICULAR']),array('settingType'=>'asc'));
+        return $this->render('@TerminalbdCrm/expense/expense-vehicle.html.twig',[
+            'entities' => $entities
+        ]);
+    }
+
+    /**
+     * @Route("/particular/type/new", methods={"GET", "POST"}, name="crm_expense_vehicle_new")
+     * @param Request $request
+     * @return Response
+     */
+    public function createExpenseParticular(Request $request): Response
+    {
+
+        $entity = new Setting();
+
+        $form = $this->createForm(ExpenseVehicleFormType::class , $entity)
+            ->add('SaveAndCreate', SubmitType::class);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($entity);
+            $em->flush();
+            $this->addFlash('success', 'post.created_successfully');
+            if ($form->get('SaveAndCreate')->isClicked()) {
+                return $this->redirectToRoute('crm_expense_vehicle_new');
+            }
+            return $this->redirectToRoute('crm_expense_particular_type');
+        }
+        return $this->render('@TerminalbdCrm/expense/expense-vehicle-new.html.twig', [
+            'entity' => $entity,
+            'form' => $form->createView(),
+        ]);
+    }
+
+
+    /**
+     * Displays a form to edit an existing Post entity.
+     *
+     * @Route("/particular/type/{id}/edit", methods={"GET", "POST"}, name="crm_expense_vehicle_edit")
+     * @param Request $request
+     * @param Setting $entity
+     * @return Response
+     */
+
+    public function editExpenseParticular(Request $request, Setting $entity): Response
+    {
+        $form = $this->createForm(ExpenseVehicleFormType::class, $entity)
+            ->add('SaveAndCreate', SubmitType::class);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->getDoctrine()->getManager()->flush();
+            $this->addFlash('success', 'post.updated_successfully');
+            //$this->getDoctrine()->getRepository(ItemKeyValue::class)->insertSettingKeyValue($entity,$data);
+            /*if ($form->get('SaveAndCreate')->isClicked()) {
+                return $this->redirectToRoute('crm_setting', ['id' => $entity->getId()]);
+            }*/
+            return $this->redirectToRoute('crm_expense_particular_type');
+        }
+        return $this->render('@TerminalbdCrm/expense/expense-vehicle-new.html.twig', [
+            'entity' => $entity,
+            'form' => $form->createView(),
+        ]);
     }
 }

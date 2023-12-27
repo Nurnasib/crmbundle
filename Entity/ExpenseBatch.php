@@ -47,6 +47,7 @@ class ExpenseBatch
     /**
      * @var Expense
      * @ORM\OneToMany(targetEntity="Terminalbd\CrmBundle\Entity\Expense", mappedBy="expenseBatch")
+     * @ORM\OrderBy({"expenseDate" = "ASC"})
      */
     private $expenses;
 

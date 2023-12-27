@@ -1,0 +1,207 @@
+{% extends 'admin/layout.html.twig' %}
+{#{% block body_id 'kpi_domain_new' %}#}
+{% block body %}
+
+    <div class="pcoded-inner-content">
+        <!-- [ breadcrumb ] start -->
+        <div class="page-header">
+            <div class="page-block">
+                <div class="row align-items-center">
+                    <ul class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/"><i class="feather icon-home"></i></a></li>
+                        <li class="breadcrumb-item"> <a href="{{ path('crm_expense_chart') }}">  {{ 'Expense Chart'|trans }}</a></li>
+                        <li class="breadcrumb-item"> <a href="javascript:">{{ 'Add New'|trans }}</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!-- [ breadcrumb ] end -->
+        <!-- [ Main Content ] start -->
+        <div class="row">
+            <div class="card">
+                <div class="card-header">
+                    <h5>{{ 'Expense Chart'|trans }}</h5>
+                    <div class="card-header-right">
+                        <div class="btn-group btn-group-sm" role="group" aria-label="Button group with nested dropdown">
+                            <a href="{{ path('crm_expense_chart_new') }}" class="btn btn-sm  green-bg white-font"><i class="fas fa-plus"></i>{{ 'Add New'|trans }}</a>
+                            <a href="{{ path('crm_expense_chart') }}" class="btn btn-sm gray-bg white-font"><i class="fa fa-th-list"></i>{{ 'Expense'|trans }}</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="card">
+                <div class="portlet box ">
+                    <div class="portlet-title">
+                        <div class="caption">{{ 'Expense Chart'|trans }} </div>
+                    </div>
+
+                    <div class="portlet-body form expense_form_section" id="expense_form_section">
+                        {{ form_start(form, {'attr': {'action': path('crm_expense_chart_new'), 'id':'expense_form','method':'post','class': 'form-horizontal right','enctype':'multipart/form-data'}}) }}
+                        <div class="row form-body expense_form_body">
+                            <div class="form-inner-no-space">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            {{ form_label(form.designation, 'Designation'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
+                                            <div class="col-md-8">
+                                                <span class="not-blank"> *</span>
+
+                                                {{ form_widget(form.designation) }}
+                                                {{ form_errors(form.designation) }}
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                </div>
+
+                                <div class="clearfix"></div>
+                                <div class="card-body card-body-inner">
+                                    <div class="row">
+                                        {% if dailyExpenseParticulars is defined and dailyExpenseParticulars is not empty %}
+                                            {% set arrayLength= dailyExpenseParticulars|length %}
+                                            {% set arrayLengthHalf= arrayLength/2 %}
+                                            {% set arraySplits = dailyExpenseParticulars|batch(arrayLengthHalf|number_format(0), '') %}
+
+                                            {% if arraySplits|length>0 %}
+
+                                                {% for arraySplit in arraySplits %}
+                                                    <div class="col-md-6">
+                                                        <table class="table table-bordered">
+                                                            <thead>
+                                                            <tr>
+                                                                <th width="20%">Particular Name</th>
+                                                                <th>Payment Type</th>
+                                                                <th width="20%">Amount (TK)</th>
+                                                            </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                {% for dailyExpenseParticular in arraySplit %}
+                                                                    {% if dailyExpenseParticular is iterable %}
+                                                                    <tr>
+                                                                        <td>
+                                                                            {{ dailyExpenseParticular.name }}
+{#                                                                            <input type="hidden" name="particular_id[{{ entity.id }}][{{ dailyExpenseParticular.id }}]" value="{{ dailyExpenseParticular.id }}">#}
+                                                                        </td>
+                                                                        <td>
+                                                                            {{ dailyExpenseParticular.expensePaymentType }}
+                                                                        </td>
+                                                                        <td>
+                                                                            <input class="form-control" type="number" min="0" step="any" name="amount[{{ dailyExpenseParticular.id }}]" value="">
+                                                                        </td>
+                                                                    </tr>
+                                                                    {% endif %}
+                                                                {% endfor %}
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                {% endfor %}
+
+                                            {% endif %}
+
+                                        {% endif %}
+
+                                    </div>
+
+                                </div>
+
+                                <div class="form-actions">
+                                    <div class="col-md-6 ">
+
+                                    </div>
+                                    <div class="col-md-6 text-right">
+                                        <div class="btn-group" role="group" aria-label="Button group with nested dropdown"><button type="reset" class="btn btn-sm yellow-bg white-font"><i class="fa fa-refresh"></i>Restore</button>
+                                            {{ form_widget(form.SaveAndCreate, {type: 'submit',label: 'label.save.continue',value:'label.save.continue', attr: { class: 'btn btn-info form-submit expense_form_button'}}) }}
+                                        </div>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                </div>
+                            </div>
+                        </div>
+                        {{ form_widget(form._token) }}
+                        {{ form_end(form) }}
+                    </div>
+                </div>
+
+                <style>
+                    #expense_form_vehicle .checkbox{
+                        width: unset;
+                        padding-right: 30px;
+                    }
+                </style>
+            </div>
+        </div>
+        <!-- [ Main Content ] end -->
+    </div>
+{% endblock %}
+ {% block cssBlock %}
+     <link rel="stylesheet" href="{{ asset('assets/module/css/app.css') }}">
+     <style type="text/css">
+         .hidden{
+             display: none!important;
+         }
+     </style>
+ {% endblock  %}
+{% block javascripts %}
+    {{ parent() }}
+    <script type="application/javascript" src="{{ asset('assets/module/js/app.js') }}"></script>
+
+    <script type="text/javascript">
+        jQuery(document).ready(function () {
+
+            $('.expense_date').datepicker({
+                changeMonth: true,
+                changeYear: true,
+                dateFormat: "dd-mm-yy",
+                yearRange: "2020:" + new Date().getFullYear(),
+                showOn: "both",
+                showButtonPanel: true,
+                buttonImage: "/assets/images/icon-calendar-green.png",
+                buttonImageOnly: true,
+                maxDate: 0,
+                autoclose: true,
+                orientation: "bottom",
+            });
+
+            var count = 0;
+            var countId = 1;
+            var countIdx = 1;
+            $('.addFile').click(function(e){
+                var $el = $(this);
+                var $cloneBlock = $('#clone-block');
+                var $clone = $cloneBlock.find('.clone:eq(0)').clone();
+                $clone.find('.custom-file-input').attr('id', "file-"+(countId++));
+                $clone.find('.custom-file-label').attr('for', "file-"+(countIdx++));
+                $clone.find(':text,textarea,file' ).val("");
+                $clone.find('.custom-file-label' ).html("Choose file");
+                $clone.attr('id', "added"+(++count));
+                $clone.find('.row-remove').removeClass('hidden');
+                $cloneBlock.append($clone);
+            });
+
+            $('#clone-block').on('click', '.row-remove', function(){
+                $(this).closest('.clone').remove();
+            });
+
+            $(document).on('click', '.existing-row-remove', function () {
+                var element=$(this);
+                var entityId=$(element).attr('data-entity-id');
+                if(entityId==''){
+                    return false;
+                }
+
+                $.get(Routing.generate('crm_expense_attachment_delete',{'id':entityId}),{'status':status})
+                    .done(function(response){
+                        console.log(response)
+                        if(response.status==200){
+                            $(element).closest('.addedAttachmentItem').remove();
+                        }
+
+                    });
+            })
+
+        });
+    </script>
+{% endblock  %}

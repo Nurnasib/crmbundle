@@ -8,7 +8,7 @@
                 <div class="row align-items-center">
                     <ul class="breadcrumb">
                         <li class="breadcrumb-item"><a href="/"><i class="feather icon-home"></i></a></li>
-                        <li class="breadcrumb-item"> <a href="{{ path('crm_setting') }}">  {{ 'Settings'|trans }}</a></li>
+                        <li class="breadcrumb-item"> <a href="{{ path('crm_expense_particular_type') }}">  {{ 'Particular'|trans }}</a></li>
                     </ul>
                 </div>
             </div>
@@ -21,8 +21,8 @@
                     <h5>{{ 'Settings'|trans }}</h5>
                     <div class="card-header-right">
                         <div class="btn-group btn-group-sm" role="group" aria-label="Button group with nested dropdown">
-                            <a href="{{ path('crm_setting_new') }}" class="btn btn-sm  green-bg white-font"><i class="fas fa-plus"></i>{{ 'Add New'|trans }}</a>
-                            <a href="{{ path('crm_setting') }}" class="btn btn-sm gray-bg white-font"><i class="fa fa-th-list"></i>{{ 'Settings'|trans }}</a>
+                            <a href="{{ path('crm_expense_vehicle_new') }}" class="btn btn-sm  green-bg white-font"><i class="fas fa-plus"></i>{{ 'Add New'|trans }}</a>
+                            <a href="{{ path('crm_expense_particular_type') }}" class="btn btn-sm gray-bg white-font"><i class="fa fa-th-list"></i>{{ 'Particular'|trans }}</a>
                         </div>
                     </div>
                 </div>
@@ -37,8 +37,8 @@
                             <th scope="col">S/N</th>
                             <th scope="col">Name</th>
                             <th scope="col">Slug</th>
-                            <th scope="col">Setting Type</th>
-                            <th scope="col">Parent</th>
+                            <th scope="col">Type</th>
+                            <th scope="col">Payment Type</th>
                             <th scope="col">Sort Order</th>
                             <th scope="col">Status</th>
                             <th scope="col text-center"><i class="feather icon-settings"></i></th>
@@ -50,8 +50,11 @@
                             <td>{{ loop.index }}</td>
                             <td>{{ entity.name }}</td>
                             <td>{{ entity.slug|default('') }}</td>
-                            <td>{{ entity.settingType }}</td>
-                            <td>{{ entity.parent.name|default('') }} - {{entity.parent.settingType|default('')  }}</td>
+                            <td>
+                                {{ entity.settingType=='DAILY_EXPENSE_PARTICULAR'? 'Daily':'' }}
+                                {{ entity.settingType=='MONTHLY_EXPENSE_PARTICULAR'? 'Monthly':'' }}
+                            </td>
+                            <td>{{ entity.expensePaymentType|default('') }}</td>
                             <td>
                                 <a
                                         data-type="number"
@@ -66,7 +69,7 @@
                             {#<td>{% if entity.settingType is defined and  entity.settingType is not empty %}{{ entity.settingType.name }}{% endif %}</td>#}
                             <td>{% if entity.status is not empty %}Yes {% else %}No {% endif %}</td>
                             <td>
-                                <a class="btn btn-mini yellow-bg white-font" href="{{ path('crm_setting_edit',{'id':entity.id}) }}"><i class="feather icon-edit"></i> Edit</a>
+                                <a class="btn btn-mini yellow-bg white-font" href="{{ path('crm_expense_vehicle_edit',{'id':entity.id}) }}"><i class="feather icon-edit"></i> Edit</a>
                                 <a class="btn  btn-transparent btn-mini red-font remove" href="javascript:" data-action="{{ path('crm_setting_delete',{'id':entity.id}) }}"><i class="fa fa-remove"></i></a>
                             </td>
 
