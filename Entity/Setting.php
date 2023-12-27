@@ -221,7 +221,7 @@ class Setting
     /**
      * @return string
      */
-    public function getExpensePaymentType(): ?string
+    public function getExpensePaymentType()
     {
         return $this->expensePaymentType;
     }
