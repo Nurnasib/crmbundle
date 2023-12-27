@@ -221,7 +221,7 @@ class Setting
     /**
      * @return string
      */
-    public function getExpensePaymentType(): string
+    public function getExpensePaymentType(): ?string
     {
         return $this->expensePaymentType;
     }
@@ -229,7 +229,7 @@ class Setting
     /**
      * @param string $expensePaymentType
      */
-    public function setExpensePaymentType(string $expensePaymentType): void
+    public function setExpensePaymentType(?string $expensePaymentType): void
     {
         $this->expensePaymentType = $expensePaymentType;
     }
