@@ -218,18 +218,15 @@ class Setting
         $this->sortOrder = $sortOrder;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getExpensePaymentType()
+    public function getExpensePaymentType(): ?string
     {
         return $this->expensePaymentType;
     }
 
     /**
-     * @param mixed $slug
+     * @param string $expensePaymentType
      */
-    public function setExpensePaymentType( $expensePaymentType)
+    public function setExpensePaymentType(?string $expensePaymentType): void
     {
         $this->expensePaymentType = $expensePaymentType;
     }
