@@ -54,7 +54,7 @@
                                 {{ entity.settingType=='DAILY_EXPENSE_PARTICULAR'? 'Daily':'' }}
                                 {{ entity.settingType=='MONTHLY_EXPENSE_PARTICULAR'? 'Monthly':'' }}
                             </td>
-                            <td>{{ entity.expensePaymentType|default('') }}</td>
+                            <td>{{ entity.expensePaymentType is not empty ? entity.expensePaymentType|default(''):'' }}</td>
                             <td>
                                 <a
                                         data-type="number"

@@ -219,17 +219,17 @@ class Setting
     }
 
     /**
-     * @return string|null
+     * @return mixed
      */
-    public function getExpensePaymentType(): ?string
+    public function getExpensePaymentType()
     {
         return $this->expensePaymentType;
     }
 
     /**
-     * @param string $expensePaymentType
+     * @param mixed $slug
      */
-    public function setExpensePaymentType(?string $expensePaymentType): void
+    public function setExpensePaymentType( $expensePaymentType)
     {
         $this->expensePaymentType = $expensePaymentType;
     }
