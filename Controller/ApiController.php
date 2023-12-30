@@ -474,6 +474,30 @@ class ApiController extends AbstractController
 
             $entities['fcr_different_feed_company_for_sonali'] = $this->getDoctrine()->getRepository(Api::class)->fcrDifferentFeedCompanyForSonali();
 
+            $entities['type_of_vehicle'] =
+            [
+                [
+                    'id' => 1,
+                    'slug' => 'car',
+                    'name' => 'Car',
+                ],
+                [
+                    'id' => 2,
+                    'slug' => 'motorcycle',
+                    'name' => 'Motorcycle',
+                ],
+                [
+                    'id' => 3,
+                    'slug' => 'local-Conveyance',
+                    'name' => 'Local Conveyance',
+                ],
+                [
+                    'id' => 4,
+                    'slug' => 'other',
+                    'name' => 'Other',
+                ],
+            ];
+
             $arrayData = [];
 
             if($userId){
