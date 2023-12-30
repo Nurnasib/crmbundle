@@ -338,7 +338,9 @@ class ApiController extends AbstractController
             $crm_expense_chart = $this->employeeExpenseChart($employee?$employee->getId():'');
             $crm_expense_chart_detail = $crm_expense_chart && isset( $crm_expense_chart['details']) ? $crm_expense_chart['details']:[];
             unset($crm_expense_chart['details']);
-            $expenseChartArray[] = $crm_expense_chart && sizeof($crm_expense_chart) ? $crm_expense_chart: [];
+            if($crm_expense_chart && sizeof($crm_expense_chart)>0){
+                $expenseChartArray[] = $crm_expense_chart;
+            }
             $entities['crm_expense_chart'] = $expenseChartArray;
             $entities['crm_expense_chart_detail'] = $crm_expense_chart_detail;
 
