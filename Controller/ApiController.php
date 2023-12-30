@@ -334,10 +334,12 @@ class ApiController extends AbstractController
 
             $employee = $this->getDoctrine()->getRepository(User::class)->find($userId);
 
+            $expenseChartArray = [];
             $crm_expense_chart = $this->employeeExpenseChart($employee?$employee->getId():'');
             $crm_expense_chart_detail = $crm_expense_chart && isset( $crm_expense_chart['details']) ? $crm_expense_chart['details']:[];
             unset($crm_expense_chart['details']);
-            $entities['crm_expense_chart'] = [$crm_expense_chart];
+            $expenseChartArray[] = $crm_expense_chart;
+            $entities['crm_expense_chart'] = $expenseChartArray;
             $entities['crm_expense_chart_detail'] = $crm_expense_chart_detail;
 
             $entities['farmer'] = $this->getDoctrine()->getRepository(Api::class)->searchfarmer($employee);
