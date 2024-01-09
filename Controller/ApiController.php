@@ -474,29 +474,76 @@ class ApiController extends AbstractController
 
             $entities['fcr_different_feed_company_for_sonali'] = $this->getDoctrine()->getRepository(Api::class)->fcrDifferentFeedCompanyForSonali();
 
-            $entities['type_of_vehicle'] =
-            [
-                [
-                    'id' => 1,
-                    'slug' => 'car',
-                    'name' => 'Car',
-                ],
-                [
-                    'id' => 2,
-                    'slug' => 'motorcycle',
-                    'name' => 'Motorcycle',
-                ],
-                [
-                    'id' => 3,
-                    'slug' => 'local-Conveyance',
-                    'name' => 'Local Conveyance',
-                ],
-                [
-                    'id' => 4,
-                    'slug' => 'other',
-                    'name' => 'Other',
-                ],
-            ];
+            if($employee->getExpenseChart() && $employee->getExpenseChart()->getTypeOFVehicle() && $employee->getExpenseChart()->getTypeOFVehicle() == 'car'){
+                $entities['type_of_vehicle'] =
+                    [
+                        [
+                            'id' => 1,
+                            'slug' => 'office-car',
+                            'name' => 'Office Car',
+                        ],
+                        [
+                            'id' => 2,
+                            'slug' => 'car',
+                            'name' => 'Car',
+                        ],
+                        [
+                            'id' => 3,
+                            'slug' => 'local-conveyance',
+                            'name' => 'Local Conveyance',
+                        ],
+                        [
+                            'id' => 4,
+                            'slug' => 'other',
+                            'name' => 'Other',
+                        ],
+                    ];
+            }elseif ( $employee->getExpenseChart() && $employee->getExpenseChart()->getTypeOFVehicle() && $employee->getExpenseChart()->getTypeOFVehicle() == 'motorcycle'){
+                $entities['type_of_vehicle'] =
+                    [
+                        [
+                            'id' => 1,
+                            'slug' => 'office-car',
+                            'name' => 'Office Car',
+                        ],
+                        [
+                            'id' => 2,
+                            'slug' => 'motorcycle',
+                            'name' => 'Motorcycle',
+                        ],
+                        [
+                            'id' => 3,
+                            'slug' => 'local-conveyance',
+                            'name' => 'Local Conveyance',
+                        ],
+                        [
+                            'id' => 4,
+                            'slug' => 'other',
+                            'name' => 'Other',
+                        ],
+                    ];
+            }else{
+                $entities['type_of_vehicle'] =
+                    [
+                        [
+                            'id' => 1,
+                            'slug' => 'office-car',
+                            'name' => 'Office Car',
+                        ],
+                        [
+                            'id' => 2,
+                            'slug' => 'local-conveyance',
+                            'name' => 'Local Conveyance',
+                        ],
+                        [
+                            'id' => 3,
+                            'slug' => 'other',
+                            'name' => 'Other',
+                        ],
+                    ];
+            }
+
+
 
             $arrayData = [];
 
