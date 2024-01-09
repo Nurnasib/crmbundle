@@ -491,12 +491,7 @@ class ApiController extends AbstractController
                             'id' => 3,
                             'slug' => 'local-conveyance',
                             'name' => 'Local Conveyance',
-                        ],
-                        [
-                            'id' => 4,
-                            'slug' => 'other',
-                            'name' => 'Other',
-                        ],
+                        ]
                     ];
             }elseif ( $employee->getExpenseChart() && $employee->getExpenseChart()->getTypeOFVehicle() && $employee->getExpenseChart()->getTypeOFVehicle() == 'motorcycle'){
                 $entities['type_of_vehicle'] =
@@ -515,12 +510,7 @@ class ApiController extends AbstractController
                             'id' => 3,
                             'slug' => 'local-conveyance',
                             'name' => 'Local Conveyance',
-                        ],
-                        [
-                            'id' => 4,
-                            'slug' => 'other',
-                            'name' => 'Other',
-                        ],
+                        ]
                     ];
             }else{
                 $entities['type_of_vehicle'] =
@@ -534,12 +524,7 @@ class ApiController extends AbstractController
                             'id' => 2,
                             'slug' => 'local-conveyance',
                             'name' => 'Local Conveyance',
-                        ],
-                        [
-                            'id' => 3,
-                            'slug' => 'other',
-                            'name' => 'Other',
-                        ],
+                        ]
                     ];
             }
 
