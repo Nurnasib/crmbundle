@@ -474,64 +474,7 @@ class ApiController extends AbstractController
 
             $entities['fcr_different_feed_company_for_sonali'] = $this->getDoctrine()->getRepository(Api::class)->fcrDifferentFeedCompanyForSonali();
 
-            $type_of_vehicle = [];
-            if($employee->getExpenseChart() && $employee->getExpenseChart()->getTypeOfVehicle() && $employee->getExpenseChart()->getTypeOfVehicle() == 'car'){
-                $type_of_vehicle =
-                    [
-                        [
-                            'id' => 1,
-                            'slug' => 'office-car',
-                            'name' => 'Office Car',
-                        ],
-                        [
-                            'id' => 2,
-                            'slug' => 'car',
-                            'name' => 'Car',
-                        ],
-                        [
-                            'id' => 3,
-                            'slug' => 'local-conveyance',
-                            'name' => 'Local Conveyance',
-                        ]
-                    ];
-            }elseif ( $employee->getExpenseChart() && $employee->getExpenseChart()->getTypeOfVehicle() && $employee->getExpenseChart()->getTypeOfVehicle() == 'motorcycle'){
-                $type_of_vehicle =
-                    [
-                        [
-                            'id' => 1,
-                            'slug' => 'office-car',
-                            'name' => 'Office Car',
-                        ],
-                        [
-                            'id' => 2,
-                            'slug' => 'motorcycle',
-                            'name' => 'Motorcycle',
-                        ],
-                        [
-                            'id' => 3,
-                            'slug' => 'local-conveyance',
-                            'name' => 'Local Conveyance',
-                        ]
-                    ];
-            }else{
-                $type_of_vehicle =
-                    [
-                        [
-                            'id' => 1,
-                            'slug' => 'office-car',
-                            'name' => 'Office Car',
-                        ],
-                        [
-                            'id' => 2,
-                            'slug' => 'local-conveyance',
-                            'name' => 'Local Conveyance',
-                        ]
-                    ];
-            }
-
-            $entities['type_of_vehicle'] = $type_of_vehicle;
-
-
+//            $type_of_vehicle = [];
 
             $arrayData = [];
 
