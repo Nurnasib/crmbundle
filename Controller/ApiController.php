@@ -474,8 +474,9 @@ class ApiController extends AbstractController
 
             $entities['fcr_different_feed_company_for_sonali'] = $this->getDoctrine()->getRepository(Api::class)->fcrDifferentFeedCompanyForSonali();
 
+            $type_of_vehicle = [];
             if($employee->getExpenseChart() && $employee->getExpenseChart()->getTypeOfVehicle() && $employee->getExpenseChart()->getTypeOfVehicle() == 'car'){
-                $entities['type_of_vehicle'] =
+                $type_of_vehicle =
                     [
                         [
                             'id' => 1,
@@ -494,7 +495,7 @@ class ApiController extends AbstractController
                         ]
                     ];
             }elseif ( $employee->getExpenseChart() && $employee->getExpenseChart()->getTypeOfVehicle() && $employee->getExpenseChart()->getTypeOfVehicle() == 'motorcycle'){
-                $entities['type_of_vehicle'] =
+                $type_of_vehicle =
                     [
                         [
                             'id' => 1,
@@ -513,7 +514,7 @@ class ApiController extends AbstractController
                         ]
                     ];
             }else{
-                $entities['type_of_vehicle'] =
+                $type_of_vehicle =
                     [
                         [
                             'id' => 1,
@@ -527,6 +528,8 @@ class ApiController extends AbstractController
                         ]
                     ];
             }
+
+            $entities['type_of_vehicle'] = $type_of_vehicle;
 
 
 
