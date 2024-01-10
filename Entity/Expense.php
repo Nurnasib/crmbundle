@@ -373,7 +373,7 @@ class Expense
     /**
      * @return string
      */
-    public function getComments(): string
+    public function getComments(): ?string
     {
         return $this->comments;
     }
@@ -381,7 +381,7 @@ class Expense
     /**
      * @param string $comments
      */
-    public function setComments(string $comments): void
+    public function setComments(?string $comments): void
     {
         $this->comments = $comments;
     }
