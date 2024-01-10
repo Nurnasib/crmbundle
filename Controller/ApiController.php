@@ -4291,7 +4291,7 @@ class ApiController extends AbstractController
             $arrayData = $request->getContent();
             $response = new Response();
             $response->headers->set('Content-Type', 'application/json');
-            $response->setContent(json_decode($arrayData));
+            $response->setContent($arrayData);
             $response->setStatusCode(Response::HTTP_OK);
             return $response;
         }
