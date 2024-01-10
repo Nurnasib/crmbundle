@@ -61,6 +61,12 @@ class Expense
     private $expenseParticulars;
 
     /**
+     * @var ExpenseConveyanceDetails
+     * @ORM\OneToMany(targetEntity="Terminalbd\CrmBundle\Entity\ExpenseConveyanceDetails", mappedBy="expense",  cascade={"persist", "remove"}, orphanRemoval=true)
+     */
+    private $expenseConveyanceDetails;
+
+    /**
      * @var Setting
      * @ORM\ManyToOne(targetEntity="Terminalbd\CrmBundle\Entity\Setting" , inversedBy="expense")
      */
@@ -70,13 +76,7 @@ class Expense
      * @ORM\Column(type="string", nullable=true)
      */
     private $appId;
-
-    /**
-     * @var Setting
-     * @ORM\ManyToMany(targetEntity="Setting")
-     * @ORM\JoinTable(name="crm_expence_purpose")
-     */
-    private $purpose;
+    
     /**
      * @var \DateTime
      * @ORM\Column(name="expense_date", type="date", nullable=true)
@@ -89,20 +89,26 @@ class Expense
      * @ORM\Column(name="created_at", type="datetime", nullable=true)
      */
     private $createdAt;
-    
-    public function __construct()
-    {
-        $this->purpose = new ArrayCollection();
-        $this->vehicle = new ArrayCollection();
-    }
 
     /**
-     * @var Setting
-     * @ORM\ManyToMany(targetEntity="Setting")
-     * @ORM\JoinTable(name="crm_expence_vehicle")
+     * @var string
+     * @ORM\Column( type="text", name="comments", nullable=true)
      */
-    private $vehicle;
+    private $comments;
 
+    /**
+     * @var string
+     * @ORM\Column( type="text", name="details_comments", nullable=true)
+     */
+    private $detailsComments;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(type="smallint", nullable=true)
+     */
+    private $isAreaChange = 0;
+    
     /**
      * @return ExpenseBatch
      */
@@ -170,38 +176,6 @@ class Expense
     public function setScheduleVisit($scheduleVisit)
     {
         $this->scheduleVisit = $scheduleVisit;
-    }
-
-    /**
-     * @return Setting
-     */
-    public function getPurpose()
-    {
-        return $this->purpose;
-    }
-
-    /**
-     * @param Setting $purpose
-     */
-    public function setPurpose($purpose)
-    {
-        $this->purpose = $purpose;
-    }
-
-    /**
-     * @return Setting
-     */
-    public function getVehicle()
-    {
-        return $this->vehicle;
-    }
-
-    /**
-     * @param Setting $vehicle
-     */
-    public function setVehicle($vehicle)
-    {
-        $this->vehicle = $vehicle;
     }
 
     /**
@@ -378,6 +352,70 @@ class Expense
     public function setExpenseParticulars($expenseParticulars): void
     {
         $this->expenseParticulars = $expenseParticulars;
+    }
+
+    /**
+     * @return ExpenseConveyanceDetails
+     */
+    public function getExpenseConveyanceDetails(): ExpenseConveyanceDetails
+    {
+        return $this->expenseConveyanceDetails;
+    }
+
+    /**
+     * @param ExpenseConveyanceDetails $expenseConveyanceDetails
+     */
+    public function setExpenseConveyanceDetails(ExpenseConveyanceDetails $expenseConveyanceDetails): void
+    {
+        $this->expenseConveyanceDetails = $expenseConveyanceDetails;
+    }
+
+    /**
+     * @return string
+     */
+    public function getComments(): string
+    {
+        return $this->comments;
+    }
+
+    /**
+     * @param string $comments
+     */
+    public function setComments(string $comments): void
+    {
+        $this->comments = $comments;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDetailsComments(): string
+    {
+        return $this->detailsComments;
+    }
+
+    /**
+     * @param string $detailsComments
+     */
+    public function setDetailsComments(string $detailsComments): void
+    {
+        $this->detailsComments = $detailsComments;
+    }
+
+    /**
+     * @return int
+     */
+    public function getIsAreaChange(): int
+    {
+        return $this->isAreaChange;
+    }
+
+    /**
+     * @param int $isAreaChange
+     */
+    public function setIsAreaChange(int $isAreaChange): void
+    {
+        $this->isAreaChange = $isAreaChange;
     }
 
 

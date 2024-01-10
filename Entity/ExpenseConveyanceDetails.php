@@ -32,46 +32,23 @@ class ExpenseConveyanceDetails
     private $id;
 
     /**
-     * @var \DateTime
-     * @ORM\Column(name="visiting_date", type="date", nullable=true)
-     */
-    private $visitingDate;
-
-    /**
-     * @var Location
-     * @ORM\ManyToOne(targetEntity="App\Entity\Admin\Location" , inversedBy="expense")
-     */
-    private $visitingArea;
-
-    /**
-     * @var CrmVisit
-     * @ORM\ManyToOne(targetEntity="Terminalbd\CrmBundle\Entity\CrmVisit" , inversedBy="expenseConveyanceDetails")
-     */
-    private $crmVisit;
-
-    /**
      * @var Expense
      * @ORM\ManyToOne(targetEntity="Terminalbd\CrmBundle\Entity\Expense" , inversedBy="expenseConveyanceDetails")
      */
     private $expense;
 
     /**
-     * @var Setting
-     * @ORM\ManyToOne(targetEntity="Setting" , inversedBy="expenseConveyanceDetails")
+     * @var string
+     * @ORM\Column(name="transport_type", nullable=true)
      */
-    private $purpose;
+    private $transportType;
 
     /**
      * @var string
-     * @ORM\Column(name="destination", nullable=true)
+     * @ORM\Column( type="text", name="details", nullable=true)
      */
-    private $destination;
+    private $details;
 
-    /**
-     * @var Setting
-     * @ORM\ManyToOne(targetEntity="Setting" , inversedBy="expenseConveyanceDetails")
-     */
-    private $transportType;
 
     /**
      * @var float
@@ -92,7 +69,7 @@ class ExpenseConveyanceDetails
      *
      * @ORM\Column(name="mileage", type="float")
      */
-    private $mileage=0;
+    private $totalMileage=0;
 
     /**
      * @var float
@@ -100,6 +77,61 @@ class ExpenseConveyanceDetails
      * @ORM\Column(name="amount", type="float")
      */
     private $amount=0;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="mobil_bill", type="float", nullable=true)
+     */
+    private $mobilBill=0;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="maintenance_bill", type="float", nullable=true)
+     */
+    private $maintenanceBill=0;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="servicing_bill", type="float", nullable=true)
+     */
+    private $servicingBill=0;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="toll_bill", type="float", nullable=true)
+     */
+    private $tollBill=0;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="fuel_bill", type="float", nullable=true)
+     */
+    private $fuelBill=0;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="parking_bill", type="float", nullable=true)
+     */
+    private $parkingBill=0;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="others_bill", type="float", nullable=true)
+     */
+    private $othersBill=0;
+
+    /**
+     * @ORM\Column( type="json", name="destination", nullable=true)
+     */
+    private $destination;
+
 
     /**
      * @var \DateTime
@@ -125,57 +157,9 @@ class ExpenseConveyanceDetails
     }
 
     /**
-     * @return \DateTime
-     */
-    public function getVisitingDate()
-    {
-        return $this->visitingDate;
-    }
-
-    /**
-     * @param \DateTime $visitingDate
-     */
-    public function setVisitingDate(\DateTime $visitingDate): void
-    {
-        $this->visitingDate = $visitingDate;
-    }
-
-    /**
-     * @return Location
-     */
-    public function getVisitingArea()
-    {
-        return $this->visitingArea;
-    }
-
-    /**
-     * @param Location $visitingArea
-     */
-    public function setVisitingArea($visitingArea)
-    {
-        $this->visitingArea = $visitingArea;
-    }
-
-    /**
-     * @return CrmVisit
-     */
-    public function getCrmVisit()
-    {
-        return $this->crmVisit;
-    }
-
-    /**
-     * @param CrmVisit $crmVisit
-     */
-    public function setCrmVisit(CrmVisit $crmVisit): void
-    {
-        $this->crmVisit = $crmVisit;
-    }
-
-    /**
      * @return Expense
      */
-    public function getExpense()
+    public function getExpense(): Expense
     {
         return $this->expense;
     }
@@ -189,55 +173,39 @@ class ExpenseConveyanceDetails
     }
 
     /**
-     * @return Setting
-     */
-    public function getPurpose()
-    {
-        return $this->purpose;
-    }
-
-    /**
-     * @param Setting $purpose
-     */
-    public function setPurpose(Setting $purpose): void
-    {
-        $this->purpose = $purpose;
-    }
-
-    /**
      * @return string
      */
-    public function getDestination(): string
-    {
-        return $this->destination;
-    }
-
-    /**
-     * @param string $destination
-     */
-    public function setDestination(string $destination): void
-    {
-        $this->destination = $destination;
-    }
-
-    /**
-     * @return Setting
-     */
-    public function getTransportType()
+    public function getTransportType(): string
     {
         return $this->transportType;
     }
 
     /**
-     * @param Setting $transportType
+     * @param string $transportType
      */
-    public function setTransportType(Setting $transportType): void
+    public function setTransportType(string $transportType): void
     {
         $this->transportType = $transportType;
     }
 
     /**
-     * @return float
+     * @return string
+     */
+    public function getDetails(): string
+    {
+        return $this->details;
+    }
+
+    /**
+     * @param string $details
+     */
+    public function setDetails(string $details): void
+    {
+        $this->details = $details;
+    }
+
+    /**
+     * @return float|int
      */
     public function getMeterReadingFrom()
     {
@@ -245,15 +213,15 @@ class ExpenseConveyanceDetails
     }
 
     /**
-     * @param float $meterReadingFrom
+     * @param float|int $meterReadingFrom
      */
-    public function setMeterReadingFrom(float $meterReadingFrom): void
+    public function setMeterReadingFrom($meterReadingFrom): void
     {
         $this->meterReadingFrom = $meterReadingFrom;
     }
 
     /**
-     * @return float
+     * @return float|int
      */
     public function getMeterReadingTo()
     {
@@ -261,31 +229,31 @@ class ExpenseConveyanceDetails
     }
 
     /**
-     * @param float $meterReadingTo
+     * @param float|int $meterReadingTo
      */
-    public function setMeterReadingTo(float $meterReadingTo): void
+    public function setMeterReadingTo($meterReadingTo): void
     {
         $this->meterReadingTo = $meterReadingTo;
     }
 
     /**
-     * @return float
+     * @return float|int
      */
-    public function getMileage()
+    public function getTotalMileage()
     {
-        return $this->mileage;
+        return $this->totalMileage;
     }
 
     /**
-     * @param float $mileage
+     * @param float|int $totalMileage
      */
-    public function setMileage(float $mileage): void
+    public function setTotalMileage($totalMileage): void
     {
-        $this->mileage = $mileage;
+        $this->totalMileage = $totalMileage;
     }
 
     /**
-     * @return float
+     * @return float|int
      */
     public function getAmount()
     {
@@ -293,17 +261,145 @@ class ExpenseConveyanceDetails
     }
 
     /**
-     * @param float $amount
+     * @param float|int $amount
      */
-    public function setAmount(float $amount): void
+    public function setAmount($amount): void
     {
         $this->amount = $amount;
     }
 
     /**
+     * @return float|int
+     */
+    public function getMobilBill()
+    {
+        return $this->mobilBill;
+    }
+
+    /**
+     * @param float|int $mobilBill
+     */
+    public function setMobilBill($mobilBill): void
+    {
+        $this->mobilBill = $mobilBill;
+    }
+
+    /**
+     * @return float|int
+     */
+    public function getMaintenanceBill()
+    {
+        return $this->maintenanceBill;
+    }
+
+    /**
+     * @param float|int $maintenanceBill
+     */
+    public function setMaintenanceBill($maintenanceBill): void
+    {
+        $this->maintenanceBill = $maintenanceBill;
+    }
+
+    /**
+     * @return float|int
+     */
+    public function getServicingBill()
+    {
+        return $this->servicingBill;
+    }
+
+    /**
+     * @param float|int $servicingBill
+     */
+    public function setServicingBill($servicingBill): void
+    {
+        $this->servicingBill = $servicingBill;
+    }
+
+    /**
+     * @return float|int
+     */
+    public function getTollBill()
+    {
+        return $this->tollBill;
+    }
+
+    /**
+     * @param float|int $tollBill
+     */
+    public function setTollBill($tollBill): void
+    {
+        $this->tollBill = $tollBill;
+    }
+
+    /**
+     * @return float|int
+     */
+    public function getFuelBill()
+    {
+        return $this->fuelBill;
+    }
+
+    /**
+     * @param float|int $fuelBill
+     */
+    public function setFuelBill($fuelBill): void
+    {
+        $this->fuelBill = $fuelBill;
+    }
+
+    /**
+     * @return float|int
+     */
+    public function getParkingBill()
+    {
+        return $this->parkingBill;
+    }
+
+    /**
+     * @param float|int $parkingBill
+     */
+    public function setParkingBill($parkingBill): void
+    {
+        $this->parkingBill = $parkingBill;
+    }
+
+    /**
+     * @return float|int
+     */
+    public function getOthersBill()
+    {
+        return $this->othersBill;
+    }
+
+    /**
+     * @param float|null $othersBill
+     */
+    public function setOthersBill($othersBill): void
+    {
+        $this->othersBill = $othersBill;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDestination()
+    {
+        return $this->destination;
+    }
+
+    /**
+     * @param mixed $destination
+     */
+    public function setDestination($destination): void
+    {
+        $this->destination = $destination;
+    }
+
+    /**
      * @return \DateTime
      */
-    public function getCreatedAt()
+    public function getCreatedAt(): \DateTime
     {
         return $this->createdAt;
     }

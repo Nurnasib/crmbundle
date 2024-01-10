@@ -4277,5 +4277,30 @@ class ApiController extends AbstractController
         return $arrayData;
     }
 
+    /**
+     * @param Request $request
+     * @param ParameterBagInterface $parameterBag
+     * @return JsonResponse
+     * @Route("/employee/expense/insert/using-app", name="crm_employee_expense_insert_using_app")
+     */
+    public function expenseInsertUsingApp(Request $request, ParameterBagInterface $parameterBag){
+
+        set_time_limit(0);
+        ignore_user_abort(true);
+        if ($request->getMethod() == 'POST' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')) {
+            $arrayData = $request->getContent();
+            $response = new Response();
+            $response->headers->set('Content-Type', 'application/json');
+            $response->setContent(json_encode($arrayData));
+            $response->setStatusCode(Response::HTTP_OK);
+            return $response;
+        }
+
+        return new JsonResponse([
+            'status' => 500,
+            'message' => 'Server Error!'
+        ]);
+
+    }
 
 }
