@@ -4355,19 +4355,49 @@ class ApiController extends AbstractController
                             $fuel_bill = isset($value['fuel_bill']) && $value['fuel_bill']!=''?(float)$value['fuel_bill']:0;
                             $toll_bill = isset($value['toll_bill']) && $value['toll_bill']!=''?(float)$value['toll_bill']:0;
                             $parking_bill = isset($value['parking_bill']) && $value['parking_bill']!=''?(float)$value['parking_bill']:0;
-                            $others_bill = isset($value['others_bill']) && $value['others_bill']!=''?(float)$value['others_bill']:0;
+                            $other_bill = isset($value['other_bill']) && $value['other_bill']!=''?(float)$value['other_bill']:0;
                             $maintenance_bill = isset($value['maintenance_bill']) && $value['maintenance_bill']!=''?(float)$value['maintenance_bill']:0;
                             $servicing_bill = isset($value['servicing_bill']) && $value['servicing_bill']!=''?(float)$value['servicing_bill']:0;
-                            $destination = isset($value['destination']) && $value['destination']!=''?(float)$value['destination']:null;
+                            $destination = isset($value['destination'])?$value['destination']:null;
 
-                            $expenseConveyanceDetails = new ExpenseConveyanceDetails();
-                            $expenseConveyanceDetails->setExpense($expense);
-                            $expenseConveyanceDetails->setAmount(isset($value['amount']) && $value['amount']!=''?(float)$value['amount']:0);
-                            $expenseConveyanceDetails->setFuelBill($fuel_bill);
-                            $expenseConveyanceDetails->setTollBill($toll_bill);
-                            $expenseConveyanceDetails->setTransportType($transport_type);
+                            $meter_reading_start = isset($value['meter_reading_start']) && $value['meter_reading_start'] !='' ? (float)$value['meter_reading_start'] : 0;
+                            $meter_reading_end = isset($value['meter_reading_end']) && $value['meter_reading_end'] !='' ? (float)$value['meter_reading_end'] : 0;
+                            $total_reading = isset($value['total_reading']) && $value['total_reading'] !='' ? (float)$value['total_reading'] : 0;
 
-                            $this->getDoctrine()->getManager()->persist($expenseConveyanceDetails);
+                            $details = isset($value['details'])?$value['details']:null;
+
+
+
+                            if($transport_type == 'local-conveyance' || $transport_type=='others') {
+                                if(sizeof($value)>0){
+                                    foreach ($value as $item) {
+                                        $expenseConveyanceDetails = new ExpenseConveyanceDetails();
+                                        $expenseConveyanceDetails->setExpense($expense);
+                                        $expenseConveyanceDetails->setDetails($item['details']);
+                                        $expenseConveyanceDetails->setAmount($item['amount']);
+                                        $expenseConveyanceDetails->setTransportType($transport_type);
+                                        $this->getDoctrine()->getManager()->persist($expenseConveyanceDetails);
+                                    }
+                                }
+
+                            }else{
+                                $expenseConveyanceDetails = new ExpenseConveyanceDetails();
+                                $expenseConveyanceDetails->setExpense($expense);
+                                $expenseConveyanceDetails->setAmount(isset($value['amount']) && $value['amount']!=''?(float)$value['amount']:0);
+                                $expenseConveyanceDetails->setFuelBill($fuel_bill);
+                                $expenseConveyanceDetails->setTollBill($toll_bill);
+                                $expenseConveyanceDetails->setTransportType($transport_type);
+                                $expenseConveyanceDetails->setOthersBill($other_bill);
+                                $expenseConveyanceDetails->setDestination($destination);
+                                $expenseConveyanceDetails->setMeterReadingFrom($meter_reading_start);
+                                $expenseConveyanceDetails->setMeterReadingTo($meter_reading_end);
+                                $expenseConveyanceDetails->setTotalMileage($total_reading);
+                                $expenseConveyanceDetails->setDetails($details);
+                                $this->getDoctrine()->getManager()->persist($expenseConveyanceDetails);
+
+                            }
+
+
                         }
                     }
 

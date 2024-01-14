@@ -191,7 +191,7 @@ class ExpenseConveyanceDetails
     /**
      * @return string
      */
-    public function getDetails(): string
+    public function getDetails(): ?string
     {
         return $this->details;
     }
@@ -199,7 +199,7 @@ class ExpenseConveyanceDetails
     /**
      * @param string $details
      */
-    public function setDetails(string $details): void
+    public function setDetails(?string $details): void
     {
         $this->details = $details;
     }
@@ -381,17 +381,17 @@ class ExpenseConveyanceDetails
     }
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function getDestination()
+    public function getDestination(): ?array
     {
         return $this->destination;
     }
 
     /**
-     * @param mixed $destination
+     * @param string $destination
      */
-    public function setDestination($destination): void
+    public function setDestination(?array $destination): void
     {
         $this->destination = $destination;
     }
