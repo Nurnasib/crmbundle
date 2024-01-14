@@ -403,7 +403,7 @@ class Expense
     /**
      * @param string $detailsComments
      */
-    public function setDetailsComments(string $detailsComments): void
+    public function setDetailsComments(?string $detailsComments): void
     {
         $this->detailsComments = $detailsComments;
     }
