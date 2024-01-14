@@ -108,7 +108,13 @@ class Expense
      * @ORM\Column(type="smallint", nullable=true)
      */
     private $isAreaChange = 0;
-    
+
+    public function __construct()
+    {
+        $this->expenseParticulars = new ArrayCollection();
+        $this->expenseConveyanceDetails = new ArrayCollection();
+    }
+
     /**
      * @return ExpenseBatch
      */
@@ -357,7 +363,7 @@ class Expense
     /**
      * @return ExpenseConveyanceDetails
      */
-    public function getExpenseConveyanceDetails(): ExpenseConveyanceDetails
+    public function getExpenseConveyanceDetails()
     {
         return $this->expenseConveyanceDetails;
     }
@@ -389,7 +395,7 @@ class Expense
     /**
      * @return string
      */
-    public function getDetailsComments(): string
+    public function getDetailsComments(): ?string
     {
         return $this->detailsComments;
     }

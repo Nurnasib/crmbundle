@@ -4427,5 +4427,38 @@ class ApiController extends AbstractController
         ]);
     }
 
+    /**
+     * @param Request $request
+     * @param ParameterBagInterface $parameterBag
+     * @return JsonResponse
+     * @Route("/employee/monthly/expense/data", name="crm_employee_expense_data")
+     */
+    public function getAllExpenseByEmployeeAndMonth( Request $request, ParameterBagInterface $parameterBag)
+    {
+        set_time_limit(0);
+        ignore_user_abort(true);
+        if ($request->getMethod() == 'GET' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')) {
+            $employeeId = $request->query->get('employee_id');
+            $month = $request->query->get('month');
+            $year = $request->query->get('year');
+
+            $expenses = $this->getDoctrine()->getRepository(Expense::class)->getAllExpenseByEmployeeAndMonth($employeeId, $yearMonth = $year.'-'.$month);
+
+            return new JsonResponse([
+                'status' => 200,
+                'message' => 'Success',
+                'data' => $expenses
+            ]);
+
+
+        }
+
+        return new JsonResponse([
+            'status' => 500,
+            'message' => 'Oops! somethings wrong.'
+        ]);
+
+    }
+
 
 }

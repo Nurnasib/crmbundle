@@ -15,7 +15,10 @@ use App\Entity\User;
 use Doctrine\ORM\EntityRepository;
 use Terminalbd\CrmBundle\Entity\DmsFile;
 use Terminalbd\CrmBundle\Entity\Expense;
+use Terminalbd\CrmBundle\Entity\ExpenseConveyanceDetails;
+use Terminalbd\CrmBundle\Entity\ExpenseParticular;
 use function Doctrine\ORM\QueryBuilder;
+use function Symfony\Component\String\s;
 
 /**
  * This custom Doctrine repository contains some methods which are useful when
@@ -154,6 +157,128 @@ class ExpenseRepository extends EntityRepository
         $results= $qb->getQuery()->getArrayResult();
 
         return $results;
+    }
+
+
+    public function getAllExpenseByEmployeeAndMonth($employeeId, $yearMonth){
+        if($employeeId && $yearMonth){
+            $qb = $this->createQueryBuilder('e');
+            $qb->join('e.employee','employee');
+            $qb->where('e.status >=:status')->setParameter('status',1);
+            $qb->andWhere('e.expenseDate IS NOT NULL');
+            $qb->andWhere("DATE_FORMAT(e.expenseDate,'%Y-%m') =:yearMonth")->setParameter('yearMonth', $yearMonth);
+
+            $qb->andWhere('employee.id =:employeeId')->setParameter('employeeId', $employeeId);
+            $qb->orderBy('e.expenseDate','ASC');
+
+            $results= $qb->getQuery()->getResult();
+
+            $returnArray = [];
+            /* @var Expense $result*/
+            foreach ($results as $key => $result) {
+
+                $detailsArray = [];
+                $expenseConveyanceDetails = $result->getExpenseConveyanceDetails();
+                /* @var ExpenseConveyanceDetails $expenseConveyanceDetail*/
+                foreach ($expenseConveyanceDetails as $expenseConveyanceDetail) {
+                    if ($expenseConveyanceDetail->getTransportType() == 'car') {
+                        $detailsArray['car'] = [
+                            'id' => $expenseConveyanceDetail->getId(),
+                            "fuel_bill" => (string)$expenseConveyanceDetail->getFuelBill(),
+                            "parking_bill" => (string)$expenseConveyanceDetail->getParkingBill(),
+                            "toll_bill" => (string)$expenseConveyanceDetail->getTollBill(),
+                            "other_bill" => (string)$expenseConveyanceDetail->getOthersBill(),
+                            "meter_reading_start" => (string)$expenseConveyanceDetail->getMeterReadingFrom(),
+                            "meter_reading_end" => (string)$expenseConveyanceDetail->getMeterReadingTo(),
+                            "total_reading" => (string)$expenseConveyanceDetail->getTotalMileage(),
+                            "destination" => $expenseConveyanceDetail->getDestination(),
+                        ];
+                    }elseif ($expenseConveyanceDetail->getTransportType() == 'motorcycle') {
+                        $detailsArray['motorcycle'] = [
+                            'id' => $expenseConveyanceDetail->getId(),
+                            "fuel_bill" => (string)$expenseConveyanceDetail->getFuelBill(),
+                            "parking_bill" => (string)$expenseConveyanceDetail->getParkingBill(),
+                            "toll_bill" => (string)$expenseConveyanceDetail->getTollBill(),
+                            "other_bill" => (string)$expenseConveyanceDetail->getOthersBill(),
+                            "meter_reading_start" => (string)$expenseConveyanceDetail->getMeterReadingFrom(),
+                            "meter_reading_end" => (string)$expenseConveyanceDetail->getMeterReadingTo(),
+                            "total_reading" => (string)$expenseConveyanceDetail->getTotalMileage(),
+                            "destination" => $expenseConveyanceDetail->getDestination(),
+                        ];
+                    } elseif ($expenseConveyanceDetail->getTransportType() == 'office-car') {
+                        $detailsArray['office-car'] = [
+                            'id' => $expenseConveyanceDetail->getId(),
+                            "fuel_bill" => (string)$expenseConveyanceDetail->getFuelBill(),
+                            "parking_bill" => (string)$expenseConveyanceDetail->getParkingBill(),
+                            "toll_bill" => (string)$expenseConveyanceDetail->getTollBill(),
+                            "other_bill" => (string)$expenseConveyanceDetail->getOthersBill(),
+                            "details" => $expenseConveyanceDetail->getDetails(),
+                        ];
+                    } elseif ($expenseConveyanceDetail->getTransportType() == 'local-conveyance' ){
+                        $detailsArray['local-conveyance'][] = [
+                            'id' => $expenseConveyanceDetail->getId(),
+                            "details" => $expenseConveyanceDetail->getDetails(),
+                            "amount" => (string) $expenseConveyanceDetail->getAmount(),
+                        ];
+                    } elseif ($expenseConveyanceDetail->getTransportType() == 'others'){
+                        $detailsArray['others'][] = [
+                            'id' => $expenseConveyanceDetail->getId(),
+                            "details" => $expenseConveyanceDetail->getDetails(),
+                            "amount" => (string)$expenseConveyanceDetail->getAmount(),
+                        ];
+                    }
+                }
+
+                $particularArray = [];
+                $particulars = $result->getExpenseParticulars();
+
+                if($particulars){
+                    /* @var ExpenseParticular $particular*/
+                    foreach ($particulars as $particular) {
+                        $particularArray[] = [
+                            'id' => $particular->getExpenseChartDetailId() ? $particular->getExpenseChartDetailId() : '',
+                            'expense_particular_id' => $particular->getId(),
+                            'particular_id' => $particular->getParticular() ? $particular->getParticular()->getId():'',
+                            'particular_name' => $particular->getParticular() ? $particular->getParticular()->getName():'',
+                            'particular_slug' => $particular->getParticular() ? $particular->getParticular()->getSlug():'',
+                            'particular_setting_type' => $particular->getParticular() ? $particular->getParticular()->getSettingType():'',
+                            'particular_expense_payment_type' => $particular->getParticular() ? $particular->getParticular()->getExpensePaymentType(): '',
+                            'payment_duration'=> 'DAILY',
+                            'amount' => (string)$particular->getAmount(),
+                            'area_id' => $result->getWorkingArea() ? $result->getWorkingArea()->getId() : null,
+                            'area_name' => $result->getWorkingArea() ? $result->getWorkingArea()->getName() : null,
+                            'area_slug' => $result->getWorkingArea() ? $result->getWorkingArea()->getSlug() : null,
+                        ];
+                    }
+                }
+
+                $returnArray[] = [
+                    "employee_id"=> $result->getEmployee()->getId(),
+                    "visit_date" => $result->getExpenseDate()->format('Y-m-d'),
+                    "visiting_area" => $result->getVisitLocation(),
+                    "comment" => $result->getComments(),
+                    "area" => [
+                        'id' => $result->getWorkingArea()->getId(),
+                        'name' => $result->getWorkingArea()->getName(),
+                        'setting_type' => $result->getWorkingArea()->getSettingType(),
+                        'slug' => $result->getWorkingArea()->getSlug(),
+                        'parent_id' => $result->getWorkingArea()->getParent() ? $result->getWorkingArea()->getParent()->getId(): null,
+                        'parent_name' => $result->getWorkingArea()->getParent() ? $result->getWorkingArea()->getParent()->getName(): null,
+                        'parent_setting_type' => $result->getWorkingArea()->getParent() ? $result->getWorkingArea()->getParent()->getSettingType(): null,
+                        'parent_slug' => $result->getWorkingArea()->getParent() ? $result->getWorkingArea()->getParent()->getSlug():null,
+                        'sort_order' => $result->getWorkingArea()->getSortOrder(),
+                    ],
+                    "change_area" => $result->getIsAreaChange(),
+                    "details_comments" => $result->getDetailsComments(),
+                    "mode_of_transport" => $detailsArray,
+                    'particulars' => $particularArray,
+
+                ];
+            }
+
+            return $returnArray;
+        }
+        return [];
     }
 
 
