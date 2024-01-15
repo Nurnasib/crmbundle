@@ -191,7 +191,7 @@ class ExpenseRepository extends EntityRepository
                             "meter_reading_start" => (string)$expenseConveyanceDetail->getMeterReadingFrom(),
                             "meter_reading_end" => (string)$expenseConveyanceDetail->getMeterReadingTo(),
                             "total_reading" => (string)$expenseConveyanceDetail->getTotalMileage(),
-                            "destination" => $expenseConveyanceDetail->getDestination(),
+                            "destination" => $expenseConveyanceDetail->getDestination()?$expenseConveyanceDetail->getDestination():[],
                         ];
                     }elseif ($expenseConveyanceDetail->getTransportType() == 'motorcycle') {
                         $detailsArray['motorcycle'] = [
@@ -203,7 +203,7 @@ class ExpenseRepository extends EntityRepository
                             "meter_reading_start" => (string)$expenseConveyanceDetail->getMeterReadingFrom(),
                             "meter_reading_end" => (string)$expenseConveyanceDetail->getMeterReadingTo(),
                             "total_reading" => (string)$expenseConveyanceDetail->getTotalMileage(),
-                            "destination" => $expenseConveyanceDetail->getDestination(),
+                            "destination" => $expenseConveyanceDetail->getDestination()?$expenseConveyanceDetail->getDestination():[],
                         ];
                     } elseif ($expenseConveyanceDetail->getTransportType() == 'office-car') {
                         $detailsArray['office-car'] = [

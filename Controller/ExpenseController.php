@@ -50,6 +50,10 @@ class ExpenseController extends AbstractController
         $entities = $this->getDoctrine()->getRepository(Expense::class)->getExpenses($this->getUser());
         $dailyExpenseParticularAttributes = $this->getDoctrine()->getRepository(Setting::class)->getDailyExpenseParticular();
         $expensePaticularTotalAmount = $this->getDoctrine()->getRepository(ExpenseParticular::class)->getTotalAmountExpenseParticular($this->getUser());
+
+        $expenseChartByEmployee = $this->getDoctrine()->getRepository(ExpenseChart::class)->getExpenseChartByEmployee($this->getUser()?$this->getUser()->getId():null);
+        
+        
         return $this->render('@TerminalbdCrm/expense/index.html.twig',[
             'entities' => $entities,
             'expensePaticularTotalAmount' => $expensePaticularTotalAmount,
@@ -185,7 +189,6 @@ class ExpenseController extends AbstractController
         $expenseChartByEmployee = $this->getDoctrine()->getRepository(ExpenseChart::class)->getExpenseChartByEmployee($this->getUser()?$this->getUser()->getId():null);
         $fixedDailyExpenseParticular = array_filter(array_map(function($n) { if($n['paymentDuration']=='DAILY' && $n['expensePaymentType']=='FIXED') return $n; }, $expenseChartByEmployee));
         $userDefineDailyExpenseParticular = array_filter(array_map(function($n) { if($n['paymentDuration']=='DAILY' && $n['expensePaymentType']=='USER_DEFINE') return $n; }, $expenseChartByEmployee));
-
         return $this->render('@TerminalbdCrm/expense/new.html.twig', [
             'entity' => $entity,
             'dailyExpenseParticulars' => $dailyExpenseParticulars,
