@@ -52,12 +52,6 @@ class ExpenseFormType extends AbstractType
                 'label' => 'label.visitLocation',
                 'required' => true
             ])
-            ->add('riding', NumberType::class, [
-                'attr' => ['autofocus' => true],
-                'label' => 'label.riding',
-                'required' => false
-
-            ])
             ->add('workingArea', EntityType::class, [
                 'class' => Setting::class,
                 'required' => true,
@@ -71,31 +65,7 @@ class ExpenseFormType extends AbstractType
                 'choice_label' => 'name',
                 'placeholder' => 'Choose Area',
             ])
-            ->add('purpose', EntityType::class, [
-                'class' => Setting::class,
-                'required' => true,
-                'multiple' => true,
-                'query_builder' => function (EntityRepository $er) {
-                    return $er->createQueryBuilder('e')
-                        ->where('e.settingType = :sType')
-                        ->setParameter('sType','PURPOSE')
-                        ->orderBy('e.name','ASC');
-                },
-                'attr'=>['class'=>'span12 multi-select2'],
-                'choice_label' => 'name',
-                'placeholder' => 'Choose your Purpose',
-            ])
-            ->add('vehicle',EntityType::class,[
-                'class' => Setting::class,
-                'choice_label' => 'name',
-                'query_builder' => function(EntityRepository $er){
-                return $er->createQueryBuilder('e')
-                    ->where("e.settingType = 'VEHICLE'")
-                    ->andWhere("e.status = 1");
-                },
-                'multiple' => true,
-                'expanded' => true,
-            ])
+
             ->add($builder->create('expenseDate', TextType::class, array(
                 'label' => 'Date',
                 'required' => true,

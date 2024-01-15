@@ -80,17 +80,6 @@
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            {{ form_label(form.riding, 'Bike Meter Reading'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
-                                            <div class="col-md-8">
-                                                {{ form_widget(form.riding) }}
-                                                {{ form_errors(form.riding) }}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
                                             {{ form_label(form.workingArea, 'Area'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
                                             <div class="col-md-8">
                                                 <span class="not-blank"> *</span>
@@ -101,32 +90,6 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="form-group">
-                                            {{ form_label(form.purpose, 'Purpose'|trans, {'label_attr': {'class': 'col-md-2'}}) }}
-                                            <div class="col-md-10">
-                                                <span class="not-blank"> *</span>
-
-                                                {{ form_widget(form.purpose) }}
-                                                {{ form_errors(form.purpose) }}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="form-group">
-                                            {{ form_label(form.vehicle, 'Vehicle: '|trans, {'label_attr': {'class': 'col-md-2','style': 'margin-top: -10px;'}}) }}
-                                            <div class="col-md-10">
-                                                {{ form_widget(form.vehicle) }}
-                                                {{ form_errors(form.vehicle) }}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
 
                                 <div class="clearfix"></div>
                                 <div class="card-header grey-bg inner-header">

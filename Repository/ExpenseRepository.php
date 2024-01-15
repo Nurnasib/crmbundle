@@ -253,6 +253,7 @@ class ExpenseRepository extends EntityRepository
                 }
 
                 $returnArray[] = [
+                    "id" => $result->getId(),
                     "employee_id"=> $result->getEmployee()->getId(),
                     "visit_date" => $result->getExpenseDate()->format('Y-m-d'),
                     "visiting_area" => $result->getVisitLocation(),
