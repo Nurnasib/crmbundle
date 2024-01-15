@@ -412,5 +412,41 @@ class ExpenseConveyanceDetails
         $this->createdAt = $createdAt;
     }
 
+    /**
+     * @var float
+     * @ORM\Column(name="total_amount", type="float")
+     */
+    protected $totalAmount=0;
+
+    /**
+     * @return int
+     */
+    public function getTotalAmount(): int
+    {
+        return $this->totalAmount;
+    }
+
+    public function calculateTotalAmount(){
+        $totalAmount = 0;
+        $totalAmount += $this->getAmount();
+        $totalAmount += $this->getMobilBill();
+        $totalAmount += $this->getMaintenanceBill();
+        $totalAmount += $this->getServicingBill();
+        $totalAmount += $this->getTollBill();
+        $totalAmount += $this->getFuelBill();
+        $totalAmount += $this->getParkingBill();
+        $totalAmount += $this->getOthersBill();
+
+        return $totalAmount;
+    }
+
+    /**
+     * @param int $totalAmount
+     */
+    public function setTotalAmount(int $totalAmount): void
+    {
+        $this->totalAmount = $totalAmount;
+    }
+    
 
 }

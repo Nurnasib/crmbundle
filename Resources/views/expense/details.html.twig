@@ -68,21 +68,29 @@
                         <table class="table table-bordered">
                             <thead>
                             <tr>
-                                <th class="hidden-print">SL</th>
-                                <th>Date</th>
-                                <th class="hidden-print">Schedule</th>
-                                <th>Visiting Area</th>
-                                <th>Area</th>
-                                <th class="hidden-print">Purpose</th>
-                                <th class="hidden-print">Vehicle</th>
-                                <th class="hidden-print" title="Riding">Bike Meter Reading (KM)</th>
-                                {% if expenseParticularAttributes is defined and expenseParticularAttributes is iterable %}
-                                    {% for expenseParticularAttribute in expenseParticularAttributes %}
-                                        <th scope="col">{{ expenseParticularAttribute.name }}</th>
+                                <th rowspan="2" class="hidden-print">SL</th>
+                                <th rowspan="2">Date</th>
+                                <th rowspan="2" class="hidden-print">Schedule</th>
+                                <th rowspan="2">Visiting Area</th>
+                                <th rowspan="2">Area</th>
+                                {% if areaWiseExpenseParticulars is defined and areaWiseExpenseParticulars['areaName'] is defined and areaWiseExpenseParticulars['areaName'] is iterable %}
+                                    {% for areaId, expenseParticularAttribute in areaWiseExpenseParticulars['areaName'] %}
+                                        <th colspan="{{ areaWiseExpenseParticulars['chartDetails'][areaId]|length }}" class="text-center" scope="col">{{ expenseParticularAttribute }}</th>
                                     {% endfor %}
                                 {% endif %}
-                                <th title="Total">Total (TK.)</th>
-                                <th class="hidden-print" scope="col text-center"><i class="feather icon-settings"></i></th>
+                                <th rowspan="2">Total</th>
+                                <th rowspan="2" class="hidden-print" scope="col text-center"><i class="feather icon-settings"></i></th>
+                            </tr>
+                            <tr>
+                                {% if areaWiseExpenseParticulars is defined and areaWiseExpenseParticulars['areaName'] is defined and areaWiseExpenseParticulars['areaName'] is iterable %}
+                                    {% for areaId, expenseParticularAttribute in areaWiseExpenseParticulars['areaName'] %}
+                                        {% if areaWiseExpenseParticulars is defined and areaWiseExpenseParticulars['chartDetails'] is defined and areaWiseExpenseParticulars['chartDetails'][areaId] is defined and areaWiseExpenseParticulars['chartDetails'][areaId] is iterable %}
+                                            {% for expenseChart in areaWiseExpenseParticulars['chartDetails'][areaId] %}
+                                                <th class="text-center" scope="col">{{ expenseChart.particularName }}</th>
+                                            {% endfor %}
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endif %}
                             </tr>
                             </thead>
                             {% if entities is defined %}
@@ -90,8 +98,7 @@
                                 {% set totalLineTotal=0 %}
                                 {% if entities is defined and entities is not empty %}
                                     {% for entity in entities %}
-                                    {% set lineTotal= expensePaticularAmount['inLine'] is defined? expensePaticularAmount['inLine'][entity.employee.id][entity.id]|arraySumColWise('amount'):'0.00' %}
-                                    {% set totalLineTotal=totalLineTotal+lineTotal %}
+                                    {% set lineTotal= 0 %}
                                         <tr class="expense_id_{{ entity.id }}">
                                             <td class="hidden-print">
                                                 {{ loop.index }}
@@ -101,36 +108,31 @@
                                             <td class="hidden-print">{{ entity.scheduleVisit }}</td>
                                             <td>{{ entity.visitLocation|default('') }}</td>
                                             <td>{{ entity.workingArea.name|default('') }}</td>
-                                            <td class="hidden-print">
-                                                {% if entity.purpose is defined and entity.purpose is not empty %}
-                                                    {% for purpose in entity.purpose %}
-                                                    {{ purpose.name }}
-                                                        {% if loop.last == false  %}{{ '; ' }} {% endif%}
-                                                    {% endfor %}
-                                                {% endif%}
-                                            </td>
-                                            <td class="hidden-print">
-                                                {% if entity.vehicle is defined and entity.vehicle is not empty %}
-                                                    {% for vehicle in entity.vehicle %}
-                                                    {{ vehicle.name }}
-                                                        {% if loop.last == false  %}{{ '; ' }} {% endif%}
-                                                    {% endfor %}
-                                                {% endif%}
-                                            </td>
-                                            <td class="hidden-print">{{ entity.riding|default('') }}</td>
-                                            {% if expenseParticularAttributes is defined and expenseParticularAttributes is iterable %}
-                                                {% for expenseParticularAttribute in expenseParticularAttributes %}
-                                                    <td>
-                                                        {% if expensePaticularAmount['inLine'] is defined and expensePaticularAmount['inLine'][entity.employee.id][entity.id][expenseParticularAttribute.id] is defined and expensePaticularAmount['inLine'][entity.employee.id][entity.id][expenseParticularAttribute.id]['path'] is not empty%}
-                                                            <a title="Attachment Available" href="{{ asset('uploads/expense/'~expensePaticularAmount['inLine'][entity.employee.id][entity.id][expenseParticularAttribute.id]['path']) }}" download>
-                                                                {{ expensePaticularAmount['inLine'] is defined? expensePaticularAmount['inLine'][entity.employee.id][entity.id][expenseParticularAttribute.id]['amount']|number_format(2,'.',','):'0.00' }}
-                                                            </a>
-                                                        {% else %}
-                                                            {{ expensePaticularAmount['inLine'] is defined and expensePaticularAmount['inLine'][entity.employee.id][entity.id][expenseParticularAttribute.id] is defined ? expensePaticularAmount['inLine'][entity.employee.id][entity.id][expenseParticularAttribute.id]['amount']|number_format(2,'.',','):'' }}
-                                                        {% endif %}
-                                                    </td>
+
+                                            {% if areaWiseExpenseParticulars is defined and areaWiseExpenseParticulars['areaName'] is defined and areaWiseExpenseParticulars['areaName'] is iterable %}
+                                                {% for areaId, expenseParticularAttribute in areaWiseExpenseParticulars['areaName'] %}
+                                                    {% if areaWiseExpenseParticulars is defined and areaWiseExpenseParticulars['chartDetails'] is defined and areaWiseExpenseParticulars['chartDetails'][areaId] is defined and areaWiseExpenseParticulars['chartDetails'][areaId] is iterable %}
+                                                        {% for chartDetailsId, expenseChart in areaWiseExpenseParticulars['chartDetails'][areaId] %}
+                                                            {% set amount = expensePaticularAmount['inLine'] is defined and expensePaticularAmount['inLine'][entity.employee.id][entity.id][chartDetailsId][expenseChart.particularId] is defined ? expensePaticularAmount['inLine'][entity.employee.id][entity.id][chartDetailsId][expenseChart.particularId]['amount']|number_format(2,'.',''):0 %}
+                                                            {% set lineTotal = lineTotal + amount %}
+
+                                                            <td class="text-right">
+                                                                {% if expensePaticularAmount['inLine'] is defined and expensePaticularAmount['inLine'][entity.employee.id][entity.id][chartDetailsId][expenseChart.particularId] is defined and expensePaticularAmount['inLine'][entity.employee.id][entity.id][chartDetailsId][expenseChart.particularId]['path'] is not empty%}
+                                                                    <a title="Attachment Available" href="{{ asset('uploads/expense/'~expensePaticularAmount['inLine'][entity.employee.id][entity.id][chartDetailsId][expenseChart.particularId]['path']) }}" download>
+                                                                        {{ expensePaticularAmount['inLine'] is defined? expensePaticularAmount['inLine'][entity.employee.id][entity.id][chartDetailsId][expenseChart.particularId]['amount']|number_format(2,'.',','):'0.00' }}
+                                                                    </a>
+                                                                {% else %}
+                                                                    {{ expensePaticularAmount['inLine'] is defined and expensePaticularAmount['inLine'][entity.employee.id][entity.id][chartDetailsId][expenseChart.particularId] is defined ? expensePaticularAmount['inLine'][entity.employee.id][entity.id][chartDetailsId][expenseChart.particularId]['amount']|number_format(2,'.',','):'' }}
+                                                                {% endif %}
+                                                            </td>
+
+                                                        {% endfor %}
+                                                    {% endif %}
                                                 {% endfor %}
                                             {% endif %}
+
+
+
                                             <td class="text-right">{{ lineTotal|number_format(2,'.',',') }}</td>
                                             <td class="hidden-print">
                                                 {% if entity.status==1 %}
@@ -145,153 +147,33 @@
                                     {% endfor %}
                                 {% endif %}
                             </tbody>
+
                                 <tfoot>
                                 <tr class="text-right">
-                                    <th class="text-right hidden show-print" colspan="3">Total</th>
-                                    <th class="text-right hidden-print" colspan="8">Total</th>
-                                    {% if expenseParticularAttributes is defined and expenseParticularAttributes is iterable %}
-                                        {% for expenseParticularAttribute in expenseParticularAttributes %}
-                                            <td class="text-right">{{ expensePaticularAmount['grandTolalPerColumn'] is defined?expensePaticularAmount['grandTolalPerColumn'][expenseParticularAttribute.id]|arraySumColWise('amount')|number_format(2,'.',','):'0.00' }}</td>
+                                    <th class="text-right hidden-print" colspan="5">Total</th>
+                                    {% if areaWiseExpenseParticulars is defined and areaWiseExpenseParticulars['areaName'] is defined and areaWiseExpenseParticulars['areaName'] is iterable %}
+                                        {% for areaId, expenseParticularAttribute in areaWiseExpenseParticulars['areaName'] %}
+                                            {% if areaWiseExpenseParticulars is defined and areaWiseExpenseParticulars['chartDetails'] is defined and areaWiseExpenseParticulars['chartDetails'][areaId] is defined and areaWiseExpenseParticulars['chartDetails'][areaId] is iterable %}
+                                                {% for chartDetailsId, expenseChart in areaWiseExpenseParticulars['chartDetails'][areaId] %}
+                                                    {% set totalAmount = expensePaticularAmount['grandTolalPerColumn'] is defined and expensePaticularAmount['grandTolalPerColumn'][chartDetailsId] is defined ?expensePaticularAmount['grandTolalPerColumn'][chartDetailsId][expenseChart.particularId]|arraySumColWise('amount')|number_format(2,'.',''):0 %}
+                                                    {% set totalLineTotal = totalLineTotal + totalAmount %}
+                                                    <td class="text-right">{{ totalAmount|number_format(2,'.',',') }}</td>
+                                                {% endfor %}
+                                            {% endif %}
                                         {% endfor %}
                                     {% endif %}
+
                                     <th class="text-right">{{ totalLineTotal|number_format(2,'.',',') }}</th>
                                     <th class="hidden-print"></th>
 
                                 </tr>
 
-                                {% if monthlyExpenseParticularAttributes is defined and monthlyExpenseParticularAttributes is not empty %}
-                                    {% for monthlyExpenseParticularAttribute in monthlyExpenseParticularAttributes %}
-                                        <tr>
-                                            <th class="text-right hidden show-print" colspan="{{ expenseParticularAttributes|length +3 }}">{{ monthlyExpenseParticularAttribute.name }}</th>
-                                            <th colspan="{{ expenseParticularAttributes|length + 8 }}" class="text-right hidden-print">{{ monthlyExpenseParticularAttribute.name }}</th>
-                                            <td class="text-right">
-                                                {% if monthlyExpensePaticularAmount['inLine'] is defined and monthlyExpensePaticularAmount['inLine'][employee.id][monthlyExpenseParticularAttribute.id]['path'] is not empty%}
-                                                    <a title="Attachment Available" href="{{ asset('uploads/expense/'~monthlyExpensePaticularAmount['inLine'][employee.id][monthlyExpenseParticularAttribute.id]['path']) }}" download>
-                                                        {{ monthlyExpensePaticularAmount['inLine'] is defined and  monthlyExpensePaticularAmount['inLine'][employee.id][monthlyExpenseParticularAttribute.id] is defined? monthlyExpensePaticularAmount['inLine'][employee.id][monthlyExpenseParticularAttribute.id]['amount']|number_format(2,'.',','):'0.00' }}
-                                                    </a>
-                                                {% else %}
-                                                    {{ monthlyExpensePaticularAmount['inLine'] is defined and  monthlyExpensePaticularAmount['inLine'][employee.id][monthlyExpenseParticularAttribute.id] is defined? monthlyExpensePaticularAmount['inLine'][employee.id][monthlyExpenseParticularAttribute.id]['amount']|number_format(2,'.',','):'0.00' }}
-                                                {% endif %}
-
-                                            </td>
-                                            <td class="hidden-print"></td>
-                                        </tr>
-                                    {% endfor %}
-
-                                {% endif %}
-
-                                {% set milesAmount=0 %}
-                                {% if expenseBatch %}
-                                    {% set milesAmount=milesAmount+expenseBatch.totalMilesAmount %}
-                                <tr>
-                                    <th class="text-right hidden show-print" colspan="{{ expenseParticularAttributes|length +3 }}">Bike Miles Amount (Total reading {{ expenseBatch.totalRiding }} KM, Per KM = {{ expenseBatch.perMilesAmount }} Tk.) </th>
-                                    <th colspan="{{ expenseParticularAttributes|length + 8 }}" class="text-right hidden-print">Bike Miles Amount (Total reading {{ expenseBatch.totalRiding }} KM, Per KM = {{ expenseBatch.perMilesAmount }} Tk.) </th>
-                                    <th class="text-right">{{ expenseBatch.totalMilesAmount|number_format(2,'.',',') }}</th>
-                                    <td class="hidden-print"></td>
-                                </tr>
-                                {% endif %}
-
-                                {% set monthlyExpensePaticularTotalAmount= monthlyExpensePaticularAmount['grandTolalPerColumn'] is defined and  monthlyExpensePaticularAmount['grandTolalPerColumn'] is not empty? monthlyExpensePaticularAmount['grandTolalPerColumn']|arraySumColWise('amount')|number_format(2,'.',''):'0.00'  %}
-                                <tr>
-                                    <th class="text-right hidden show-print" colspan="{{ expenseParticularAttributes|length +3 }}">Grand Total</th>
-                                    <th colspan="{{ expenseParticularAttributes|length + 8 }}" class="text-right hidden-print">Grand Total</th>
-                                    <th class="text-right">{{ (totalLineTotal+monthlyExpensePaticularTotalAmount+milesAmount)|number_format(2,'.',',') }}</th>
-                                    <td class="hidden-print"></td>
-                                </tr>
 
                                 </tfoot>
                             {% endif %}
 
                         </table>
                             {% if expenseBatch is null %}
-                            <div class="card-body card-body-inner hidden-print">
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="form-group">
-                                            <label class="col-md-3 control-label" for="meterReading">Meter Reading</label>
-                                            <div class="col-md-3">
-                                                <span style="text-align: left"> {{ 'From'|trans }}</span>
-                                                <p class="form-control">
-                                                    {% set startRiding=0 %}
-                                                    {% set endRiding=0 %}
-                                                    {% if entities is defined and entities|length>0 %}
-                                                        {% set startRiding=entities[0].riding %}
-                                                        {{ entities[0].riding }}
-                                                    {% endif %}
-                                                </p>
-                                            </div>
-                                            <div class="col-md-3">
-                                                <span style="text-align: left;"> {{ 'To'|trans }}</span>
-                                                <p class="form-control">
-                                                    {% if entities is defined and entities|length>1 %}
-                                                        {% set endRiding=entities[entities|length-1].riding %}
-                                                        {{entities[entities|length-1].riding}}
-                                                    {% endif%}
-                                                </p>
-                                            </div>
-                                            <div class="col-md-3">
-                                                <span style="text-align: left;"> {{ 'Total'|trans }}</span>
-                                                <p class="form-control">
-                                                    {% set reading = endRiding-startRiding %}
-                                                    {{ reading>0?reading:0 }}
-                                                    <input type="hidden" name="totalRiding" value="{{ reading>0?reading:0 }}">
-                                                </p>
-                                            </div>
-
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    {% if monthlyExpenseParticularAttributes is defined and monthlyExpenseParticularAttributes is not empty %}
-                                        {% set arrayLength= monthlyExpenseParticularAttributes|length %}
-                                        {% set arrayLengthHalf= arrayLength/2 %}
-                                        {% set arraySplits = monthlyExpenseParticularAttributes|batch(arrayLengthHalf|number_format(0), '') %}
-
-                                        {% if arraySplits|length>0 %}
-
-                                            {% for arraySplit in arraySplits %}
-                                                <div class="col-md-6">
-                                                    <table class="table table-bordered">
-                                                        <thead>
-                                                        <tr>
-                                                            <th width="20%">Particular Name</th>
-                                                            <th width="20%">Amount (TK)</th>
-                                                            <th>Attachment (pdf/image)</th>
-                                                        </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                        {% for monthlyExpenseParticular in arraySplit %}
-                                                            {% if monthlyExpenseParticular is iterable %}
-                                                                <tr>
-                                                                    <td>
-                                                                        {{ monthlyExpenseParticular.name }}
-                                                                        <input type="hidden" name="particular_id[{{ monthlyExpenseParticular.id }}]" value="{{ monthlyExpenseParticular.id }}">
-                                                                    </td>
-                                                                    <td>
-                                                                        <input class="form-control" type="number" min="0" step=".01" name="amount[{{ monthlyExpenseParticular.id }}]">
-                                                                    </td>
-                                                                    <td style="vertical-align: middle">
-                                                                        <div style="height: 30px" class="custom-file">
-                                                                            <input type="file" name="files[{{ monthlyExpenseParticular.id }}]" class="custom-file-input" style="z-index: 0; height: 30px" id="file_{{ monthlyExpenseParticular.id }}" aria-describedby="file">
-                                                                            <label style="margin-bottom: 0px; height: 30px" class="custom-file-label" for="file_{{ monthlyExpenseParticular.id }}">Choose file</label>
-                                                                        </div>
-                                                                    </td>
-
-                                                                </tr>
-                                                            {% endif %}
-                                                        {% endfor %}
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            {% endfor %}
-
-                                        {% endif %}
-
-                                    {% endif %}
-
-                                </div>
-
-                            </div>
 
                             <div class="hidden-print" style="padding-bottom: 20px">
 

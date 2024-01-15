@@ -50,14 +50,25 @@ class ExpenseController extends AbstractController
         $entities = $this->getDoctrine()->getRepository(Expense::class)->getExpenses($this->getUser());
         $dailyExpenseParticularAttributes = $this->getDoctrine()->getRepository(Setting::class)->getDailyExpenseParticular();
         $expensePaticularTotalAmount = $this->getDoctrine()->getRepository(ExpenseParticular::class)->getTotalAmountExpenseParticular($this->getUser());
-
+//dd($expensePaticularTotalAmount);
         $expenseChartByEmployee = $this->getDoctrine()->getRepository(ExpenseChart::class)->getExpenseChartByEmployee($this->getUser()?$this->getUser()->getId():null);
-        
+        $fixedDailyExpenseParticular = array_filter(array_map(function($n) { if($n['paymentDuration']=='DAILY' && $n['expensePaymentType']=='FIXED') return $n; }, $expenseChartByEmployee));
+
+        $areaWiseExpenseParticular = [];
+        if($fixedDailyExpenseParticular && sizeof($fixedDailyExpenseParticular)>0){
+            foreach ($fixedDailyExpenseParticular as $expenseChart) {
+                $areaWiseExpenseParticular['areaName'][$expenseChart['areaId']]=$expenseChart['areaName'];
+                $areaWiseExpenseParticular['chartDetails'][$expenseChart['areaId']][$expenseChart['expenseChartDetailId']]=$expenseChart;
+            }
+        }
+
+//        dd($areaWiseExpenseParticular);
         
         return $this->render('@TerminalbdCrm/expense/index.html.twig',[
             'entities' => $entities,
             'expensePaticularTotalAmount' => $expensePaticularTotalAmount,
             'expenseParticularAttributes' => $dailyExpenseParticularAttributes,
+            'areaWiseExpenseParticulars' => $areaWiseExpenseParticular,
         ]);
     }
 
@@ -69,14 +80,6 @@ class ExpenseController extends AbstractController
     {
 
         $entity = new Expense();
-
-        /*$exitingExpense = $this->getDoctrine()->getRepository(Expense::class)->findOneBy(array('crmVisit'=>$crmVisit));
-        if($exitingExpense){
-            return $this->redirectToRoute('crm_expense_edit', ['id'=>$exitingExpense->getId()]);
-        }
-
-        $entity->setVisitingArea($location);
-        $entity->setCrmVisit($crmVisit);*/
         $entity->setEmployee($this->getUser());
         $em = $this->getDoctrine()->getManager();
         $em->persist($entity);
@@ -228,7 +231,18 @@ class ExpenseController extends AbstractController
 
         $monthlyExpensePaticularAmount = $this->getDoctrine()->getRepository(ExpenseParticular::class)->getMonthlyExpenseParticularAmount($this->getUser(),$yearMonth);
         $crmConfig= $this->getDoctrine()->getRepository(CrmConfig::class)->findOneBy(['slug'=>'bike-miles-per-km','status'=>1]);
-//dd($monthlyExpensePaticularAmount);
+
+        $expenseChartByEmployee = $this->getDoctrine()->getRepository(ExpenseChart::class)->getExpenseChartByEmployee($this->getUser()?$this->getUser()->getId():null);
+        $fixedDailyExpenseParticular = array_filter(array_map(function($n) { if($n['paymentDuration']=='DAILY' && $n['expensePaymentType']=='FIXED') return $n; }, $expenseChartByEmployee));
+
+        $areaWiseExpenseParticular = [];
+        if($fixedDailyExpenseParticular && sizeof($fixedDailyExpenseParticular)>0){
+            foreach ($fixedDailyExpenseParticular as $expenseChart) {
+                $areaWiseExpenseParticular['areaName'][$expenseChart['areaId']]=$expenseChart['areaName'];
+                $areaWiseExpenseParticular['chartDetails'][$expenseChart['areaId']][$expenseChart['expenseChartDetailId']]=$expenseChart;
+            }
+        }
+        
         return $this->render('@TerminalbdCrm/expense/details.html.twig', [
             'entities' => $entities,
             'employee' => $employee,
@@ -239,6 +253,7 @@ class ExpenseController extends AbstractController
             'expensePaticularAmount' => $expensePaticularAmount,
             'monthlyExpensePaticularAmount' => $monthlyExpensePaticularAmount,
             'crmConfig' => $crmConfig,
+            'areaWiseExpenseParticulars' => $areaWiseExpenseParticular,
         ]);
     }
 
@@ -453,5 +468,65 @@ class ExpenseController extends AbstractController
             'entity' => $entity,
             'form' => $form->createView(),
         ]);
+
+    }
+
+    private function typeOfVehicle(User $employee){
+        $type_of_vehicle = [];
+        if ($employee->getExpenseChart() && $employee->getExpenseChart()->getTypeOfVehicle() && $employee->getExpenseChart()->getTypeOfVehicle() == 'car') {
+            $type_of_vehicle =
+                [
+                    [
+                        'id' => 1,
+                        'slug' => 'office-car',
+                        'name' => 'Office Car',
+                    ],
+                    [
+                        'id' => 2,
+                        'slug' => 'car',
+                        'name' => 'Car',
+                    ],
+                    [
+                        'id' => 3,
+                        'slug' => 'local-conveyance',
+                        'name' => 'Local Conveyance',
+                    ]
+                ];
+        } elseif ($employee->getExpenseChart() && $employee->getExpenseChart()->getTypeOfVehicle() && $employee->getExpenseChart()->getTypeOfVehicle() == 'motorcycle') {
+            $type_of_vehicle =
+                [
+                    [
+                        'id' => 1,
+                        'slug' => 'office-car',
+                        'name' => 'Office Car',
+                    ],
+                    [
+                        'id' => 2,
+                        'slug' => 'motorcycle',
+                        'name' => 'Motorcycle',
+                    ],
+                    [
+                        'id' => 3,
+                        'slug' => 'local-conveyance',
+                        'name' => 'Local Conveyance',
+                    ]
+                ];
+        } else {
+            $type_of_vehicle =
+                [
+                    [
+                        'id' => 1,
+                        'slug' => 'office-car',
+                        'name' => 'Office Car',
+                    ],
+                    [
+                        'id' => 2,
+                        'slug' => 'local-conveyance',
+                        'name' => 'Local Conveyance',
+                    ]
+                ];
+        }
+
+        return $type_of_vehicle;
     }
 }

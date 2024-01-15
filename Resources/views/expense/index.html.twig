@@ -35,42 +35,64 @@
                     <table class="table table-striped table-bordered table-hover" id="datatable">
                         <thead class="thead-dark">
                         <tr>
-                            <th scope="col">S/N</th>
-                            <th scope="col">Employee Name</th>
-                            <th scope="col">Expense Month</th>
+                            <th rowspan="2" scope="col">S/N</th>
+                            <th rowspan="2" scope="col">Employee Name</th>
+                            <th rowspan="2" scope="col">Expense Month</th>
 {#                            <th scope="col">Purpose</th>#}
-                            {% if expenseParticularAttributes is defined and expenseParticularAttributes is iterable %}
-                                {% for expenseParticularAttribute in expenseParticularAttributes %}
-                                <th scope="col">{{ expenseParticularAttribute.name }}</th>
+                            {% if areaWiseExpenseParticulars is defined and areaWiseExpenseParticulars['areaName'] is defined and areaWiseExpenseParticulars['areaName'] is iterable %}
+                                {% for areaId, expenseParticularAttribute in areaWiseExpenseParticulars['areaName'] %}
+                                <th colspan="{{ areaWiseExpenseParticulars['chartDetails'][areaId]|length }}" class="text-center" scope="col">{{ expenseParticularAttribute }}</th>
                                 {% endfor %}
                             {% endif %}
-                            <th>Total</th>
+                            <th rowspan="2">Total</th>
 
-                            <th scope="col text-center"><i class="feather icon-settings"></i></th>
+                            <th rowspan="2" scope="col text-center"><i class="feather icon-settings"></i></th>
                         </tr>
+                        <tr>
+                            {% if areaWiseExpenseParticulars is defined and areaWiseExpenseParticulars['areaName'] is defined and areaWiseExpenseParticulars['areaName'] is iterable %}
+                                {% for areaId, expenseParticularAttribute in areaWiseExpenseParticulars['areaName'] %}
+                                    {% if areaWiseExpenseParticulars is defined and areaWiseExpenseParticulars['chartDetails'] is defined and areaWiseExpenseParticulars['chartDetails'][areaId] is defined and areaWiseExpenseParticulars['chartDetails'][areaId] is iterable %}
+                                        {% for expenseChart in areaWiseExpenseParticulars['chartDetails'][areaId] %}
+                                            <th class="text-center" scope="col">{{ expenseChart.particularName }}</th>
+                                        {% endfor %}
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        </tr>
+
+
                         </thead>
                         <tbody>
                         {% for entity in entities %}
-                        <tr>
-                            <td>{{ loop.index }}</td>
-                            <td>{{ entity.employeeName }}</td>
-                            <td>{{ entity.expenseMonthYear|date('M Y')}}</td>
+                            {% set totalAmount=0 %}
+                            <tr>
+                                <td>{{ loop.index }}</td>
+                                <td>{{ entity.employeeName }}</td>
+                                <td>{{ entity.expenseMonthYear|date('M Y')}}</td>
 
-                            {% if expenseParticularAttributes is defined and expenseParticularAttributes is iterable %}
-                                {% for expenseParticularAttribute in expenseParticularAttributes %}
-                                    <td class="text-right">{{ expensePaticularTotalAmount[entity.employeeAutoId] is defined  and  expensePaticularTotalAmount[entity.employeeAutoId][entity.expenseMonthYear|date('Y-m')] is defined and expensePaticularTotalAmount[entity.employeeAutoId][entity.expenseMonthYear|date('Y-m')][expenseParticularAttribute.id] is defined ? expensePaticularTotalAmount[entity.employeeAutoId][entity.expenseMonthYear|date('Y-m')][expenseParticularAttribute.id]['totalAmount']|number_format(2,'.',','):'0.00' }}</td>
-                                {% endfor %}
-                            {% endif %}
+                                {% if areaWiseExpenseParticulars is defined and areaWiseExpenseParticulars['areaName'] is defined and areaWiseExpenseParticulars['areaName'] is iterable %}
+                                    {% for areaId, expenseParticularAttribute in areaWiseExpenseParticulars['areaName'] %}
+                                        {% if areaWiseExpenseParticulars is defined and areaWiseExpenseParticulars['chartDetails'] is defined and areaWiseExpenseParticulars['chartDetails'][areaId] is defined and areaWiseExpenseParticulars['chartDetails'][areaId] is iterable %}
+                                            {% for chartDetailsId, expenseChart in areaWiseExpenseParticulars['chartDetails'][areaId] %}
+                                                {% set amount = expensePaticularTotalAmount[entity.employeeAutoId] is defined  and
+                                                    expensePaticularTotalAmount[entity.employeeAutoId][entity.expenseMonthYear|date('Y-m')] is defined and
+                                                    expensePaticularTotalAmount[entity.employeeAutoId][entity.expenseMonthYear|date('Y-m')][chartDetailsId] is defined  and
+                                                    expensePaticularTotalAmount[entity.employeeAutoId][entity.expenseMonthYear|date('Y-m')][chartDetailsId][expenseChart.particularId] is defined ? expensePaticularTotalAmount[entity.employeeAutoId][entity.expenseMonthYear|date('Y-m')][chartDetailsId][expenseChart.particularId]['totalAmount']|number_format(2,'.',''):'0.00' %}
+                                                {% set totalAmount= totalAmount +  amount%}
+                                                <td class="text-right">{{ amount|number_format(2,'.',',') }}</td>
+                                            {% endfor %}
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endif %}
 
-                            <td class="text-right">
-                                {% set totalAmount= expensePaticularTotalAmount[entity.employeeAutoId] is defined and  expensePaticularTotalAmount[entity.employeeAutoId][entity.expenseMonthYear|date('Y-m')] is defined and  expensePaticularTotalAmount[entity.employeeAutoId][entity.expenseMonthYear|date('Y-m')] is not empty? expensePaticularTotalAmount[entity.employeeAutoId][entity.expenseMonthYear|date('Y-m')]|arraySumColWise('totalAmount')|number_format(2,'.',','):'0.00'  %}
-                                {{ totalAmount }}
-                            </td>
-                            <td>
-                                <a title="Details" class="btn btn-mini blue-bg white-font" href="{{ path('crm_expense_details',{'employee':entity.employeeAutoId, 'monthYear':entity.expenseMonthYear}) }}"><i class="feather icon-eye"></i> Details</a>
-                            </td>
+                                <td class="text-right">
+                                    {{ totalAmount|number_format(2,'.',',') }}
+                                </td>
+                                <td>
+                                    <a title="Details" class="btn btn-mini blue-bg white-font" href="{{ path('crm_expense_details',{'employee':entity.employeeAutoId, 'monthYear':entity.expenseMonthYear}) }}"><i class="feather icon-eye"></i> Details</a>
+                                </td>
 
-                        </tr>
+                            </tr>
                         {% endfor %}
                         </tbody>
                     </table>

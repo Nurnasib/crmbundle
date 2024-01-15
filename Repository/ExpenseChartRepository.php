@@ -65,7 +65,8 @@ class ExpenseChartRepository extends EntityRepository
 
         $qb->where('employee.id =:employee')->setParameter('employee',$employeeId);
 
-        $qb->orderBy('expenseChartDetail.id', 'DESC');
+        $qb->orderBy('area.sortOrder', 'ASC');
+        $qb->addOrderBy('expenseChartDetail.id', 'DESC');
 
         $results= $qb->getQuery()->getArrayResult();
         if($results){

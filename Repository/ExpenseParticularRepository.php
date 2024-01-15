@@ -50,7 +50,7 @@ class ExpenseParticularRepository extends EntityRepository
 
     public function getTotalAmountExpenseParticular(User $user){
         $qb = $this->createQueryBuilder('e');
-        $qb->select('SUM(e.amount) as totalAmount');
+        $qb->select('SUM(e.amount) as totalAmount', 'e.expenseChartDetailId');
         $qb->addSelect("DATE_FORMAT(expense.expenseDate,'%Y-%m') as expenseMonthYear", 'YEAR(expense.expenseDate) as expenseYear', 'MONTH(expense.expenseDate) as expenseMonth');
         $qb->addSelect('employee.id as employeeAutoId');
         $qb->addSelect('particular.id as particularId');
@@ -59,6 +59,7 @@ class ExpenseParticularRepository extends EntityRepository
         $qb->join('expense.employee','employee');
 
         $qb->where('expense.status >=:status')->setParameter('status',1);
+        $qb->andWhere('e.expenseChartDetailId IS NOT NULL');
         $qb->andWhere('expense.expenseDate IS NOT NULL');
 
         $qb->andWhere('employee.id =:employeeId')->setParameter('employeeId', $user->getId());
@@ -67,12 +68,13 @@ class ExpenseParticularRepository extends EntityRepository
 
         $qb->addGroupBy('employee.id');
         $qb->addGroupBy('particular.id');
+        $qb->addGroupBy('e.expenseChartDetailId');
 
         $results= $qb->getQuery()->getArrayResult();
         $returnArray=[];
         if($results){
             foreach ($results as $result) {
-                $returnArray[$result['employeeAutoId']][$result['expenseMonthYear']][$result['particularId']]=$result;
+                $returnArray[$result['employeeAutoId']][$result['expenseMonthYear']][$result['expenseChartDetailId']][$result['particularId']]=$result;
             }
         }
 
@@ -85,7 +87,7 @@ class ExpenseParticularRepository extends EntityRepository
         if($user){
 
             $qb = $this->createQueryBuilder('e');
-            $qb->select('e.amount', 'e.path');
+            $qb->select('e.amount', 'e.path', 'e.expenseChartDetailId');
             $qb->addSelect("DATE_FORMAT(expense.expenseDate,'%Y-%m') as expenseMonthYear", 'YEAR(expense.expenseDate) as expenseYear');
             $qb->addSelect('employee.id as employeeAutoId');
             $qb->addSelect('particular.id as particularId', 'particular.name as particularName');
@@ -112,8 +114,8 @@ class ExpenseParticularRepository extends EntityRepository
 
             if($results){
                 foreach ($results as $result) {
-                    $returnArray['inLine'][$result['employeeAutoId']][$result['expenseId']][$result['particularId']]=$result;
-                    $returnArray['grandTolalPerColumn'][$result['particularId']][]=$result;
+                    $returnArray['inLine'][$result['employeeAutoId']][$result['expenseId']][$result['expenseChartDetailId']][$result['particularId']]=$result;
+                    $returnArray['grandTolalPerColumn'][$result['expenseChartDetailId']][$result['particularId']][]=$result;
                     if(isset($result['amount']) && $result['amount']){
                         $returnArray['expenseParticularAttributes'][$result['particularId']]=['id'=>$result['particularId'], 'name'=>$result['particularName']];
                     }

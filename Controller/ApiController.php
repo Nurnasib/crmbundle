@@ -4376,6 +4376,7 @@ class ApiController extends AbstractController
                                         $expenseConveyanceDetails->setDetails($item['details']);
                                         $expenseConveyanceDetails->setAmount($item['amount']);
                                         $expenseConveyanceDetails->setTransportType($transport_type);
+                                        $expenseConveyanceDetails->setTotalAmount($expenseConveyanceDetails->calculateTotalAmount());
                                         $this->getDoctrine()->getManager()->persist($expenseConveyanceDetails);
                                     }
                                 }
@@ -4393,6 +4394,7 @@ class ApiController extends AbstractController
                                 $expenseConveyanceDetails->setMeterReadingTo($meter_reading_end);
                                 $expenseConveyanceDetails->setTotalMileage($total_reading);
                                 $expenseConveyanceDetails->setDetails($details);
+                                $expenseConveyanceDetails->setTotalAmount($expenseConveyanceDetails->calculateTotalAmount());
                                 $this->getDoctrine()->getManager()->persist($expenseConveyanceDetails);
 
                             }
