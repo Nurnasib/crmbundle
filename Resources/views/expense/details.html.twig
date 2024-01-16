@@ -78,6 +78,13 @@
                                         <th colspan="{{ areaWiseExpenseParticulars['chartDetails'][areaId]|length }}" class="text-center" scope="col">{{ expenseParticularAttribute }}</th>
                                     {% endfor %}
                                 {% endif %}
+
+                                {% if typeOfVehicles is not empty %}
+                                    {% for typeOfVehicle in typeOfVehicles%}
+                                        <th rowspan="2">{{ typeOfVehicle.name }}</th>
+                                    {% endfor %}
+                                {% endif %}
+
                                 <th rowspan="2">Total</th>
                                 <th rowspan="2" class="hidden-print" scope="col text-center"><i class="feather icon-settings"></i></th>
                             </tr>
@@ -132,6 +139,19 @@
                                             {% endif %}
 
 
+                                            {% if typeOfVehicles is not empty %}
+                                                {% for typeOfVehicle in typeOfVehicles%}
+                                                    <td class="text-right">
+                                                        {% set conveyanceAmount = conveyanceDetailsTotalAmount['data'] is defined and conveyanceDetailsTotalAmount['data'][entity.id] is defined and conveyanceDetailsTotalAmount['data'][entity.id][typeOfVehicle.slug] is defined?conveyanceDetailsTotalAmount['data'][entity.id][typeOfVehicle.slug]['totalAmount']|number_format(2,'.',''):0 %}
+
+                                                        {% set lineTotal = lineTotal + conveyanceAmount %}
+
+                                                        {{ conveyanceAmount|number_format(2,'.',',') }}
+                                                    </td>
+                                                {% endfor %}
+                                            {% endif %}
+
+
 
                                             <td class="text-right">{{ lineTotal|number_format(2,'.',',') }}</td>
                                             <td class="hidden-print">
@@ -163,11 +183,23 @@
                                         {% endfor %}
                                     {% endif %}
 
+                                    {% if typeOfVehicles is not empty %}
+                                        {% for typeOfVehicle in typeOfVehicles%}
+                                            <td class="text-right">
+                                                {% set conveyanceTotalAmount = conveyanceDetailsTotalAmount['grandTotal'] is defined and conveyanceDetailsTotalAmount['grandTotal'][typeOfVehicle.slug] is defined ? conveyanceDetailsTotalAmount['grandTotal'][typeOfVehicle.slug]|arraySum()|number_format(2,'.',''):0 %}
+
+                                                {% set totalLineTotal = totalLineTotal + conveyanceTotalAmount %}
+
+                                                {{ conveyanceTotalAmount|number_format(2,'.',',') }}
+                                            </td>
+                                        {% endfor %}
+                                    {% endif %}
+
+
                                     <th class="text-right">{{ totalLineTotal|number_format(2,'.',',') }}</th>
                                     <th class="hidden-print"></th>
 
                                 </tr>
-
 
                                 </tfoot>
                             {% endif %}

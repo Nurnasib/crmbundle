@@ -29,6 +29,7 @@ use Terminalbd\CrmBundle\Entity\DmsFile;
 use Terminalbd\CrmBundle\Entity\Expense;
 use Terminalbd\CrmBundle\Entity\ExpenseBatch;
 use Terminalbd\CrmBundle\Entity\ExpenseChart;
+use Terminalbd\CrmBundle\Entity\ExpenseConveyanceDetails;
 use Terminalbd\CrmBundle\Entity\ExpenseParticular;
 use Terminalbd\CrmBundle\Entity\Setting;
 use Terminalbd\CrmBundle\Form\ExpenseFormType;
@@ -50,6 +51,7 @@ class ExpenseController extends AbstractController
         $entities = $this->getDoctrine()->getRepository(Expense::class)->getExpenses($this->getUser());
         $dailyExpenseParticularAttributes = $this->getDoctrine()->getRepository(Setting::class)->getDailyExpenseParticular();
         $expensePaticularTotalAmount = $this->getDoctrine()->getRepository(ExpenseParticular::class)->getTotalAmountExpenseParticular($this->getUser());
+
 //dd($expensePaticularTotalAmount);
         $expenseChartByEmployee = $this->getDoctrine()->getRepository(ExpenseChart::class)->getExpenseChartByEmployee($this->getUser()?$this->getUser()->getId():null);
         $fixedDailyExpenseParticular = array_filter(array_map(function($n) { if($n['paymentDuration']=='DAILY' && $n['expensePaymentType']=='FIXED') return $n; }, $expenseChartByEmployee));
@@ -62,8 +64,6 @@ class ExpenseController extends AbstractController
             }
         }
 
-//        dd($areaWiseExpenseParticular);
-        
         return $this->render('@TerminalbdCrm/expense/index.html.twig',[
             'entities' => $entities,
             'expensePaticularTotalAmount' => $expensePaticularTotalAmount,
@@ -229,6 +229,8 @@ class ExpenseController extends AbstractController
 
         $expensePaticularAmount = $this->getDoctrine()->getRepository(ExpenseParticular::class)->getDailyExpenseParticularAmount($this->getUser(),$yearMonth);
 
+        $conveyanceDetailsTotalAmount = $this->getDoctrine()->getRepository(ExpenseConveyanceDetails::class)->getTotalAmountConveyanceDetailsByExpense($this->getUser(), $yearMonth);
+
         $monthlyExpensePaticularAmount = $this->getDoctrine()->getRepository(ExpenseParticular::class)->getMonthlyExpenseParticularAmount($this->getUser(),$yearMonth);
         $crmConfig= $this->getDoctrine()->getRepository(CrmConfig::class)->findOneBy(['slug'=>'bike-miles-per-km','status'=>1]);
 
@@ -242,6 +244,8 @@ class ExpenseController extends AbstractController
                 $areaWiseExpenseParticular['chartDetails'][$expenseChart['areaId']][$expenseChart['expenseChartDetailId']]=$expenseChart;
             }
         }
+
+        $typeOfVehicles = $this->typeOfVehicle($employee);
         
         return $this->render('@TerminalbdCrm/expense/details.html.twig', [
             'entities' => $entities,
@@ -254,6 +258,8 @@ class ExpenseController extends AbstractController
             'monthlyExpensePaticularAmount' => $monthlyExpensePaticularAmount,
             'crmConfig' => $crmConfig,
             'areaWiseExpenseParticulars' => $areaWiseExpenseParticular,
+            'conveyanceDetailsTotalAmount' => $conveyanceDetailsTotalAmount,
+            'typeOfVehicles' => $typeOfVehicles,
         ]);
     }
 
@@ -297,47 +303,6 @@ class ExpenseController extends AbstractController
             $em = $this->getDoctrine()->getManager();
             $em->persist($expenseBatch);
             $em->flush();
-
-            if (isset($requestData['particular_id']) && sizeof($requestData['particular_id']) > 0) {
-                foreach ($requestData['particular_id'] as $particularId => $particular) {
-                    $particularObj = $this->getDoctrine()->getRepository(Setting::class)->find($particularId);
-                    $requestAmount = $requestData['amount'][$particularId];
-                    $amount = $requestAmount && $requestAmount != '' ? $requestAmount : null;
-
-                    $existingExpenseParticular = $this->getDoctrine()->getRepository(ExpenseParticular::class)->findOneBy(['expenseBatch' => $expenseBatch, 'particular' => $particularObj]);
-
-                    if ($existingExpenseParticular) {
-                        $expenseParticular = $existingExpenseParticular;
-                    } else {
-                        $expenseParticular = new ExpenseParticular();
-                    }
-
-                    $expenseParticular->setAmount($amount);
-                    $expenseParticular->setExpenseBatch($expenseBatch);
-                    $expenseParticular->setParticular($particularObj ? $particularObj : null);
-
-                    if ($_FILES['files']['size'][$particularId] != 0 && $_FILES['files']['error'][$particularId] == 0) {
-
-                        $files = empty($_FILES['files']) ? '' : $_FILES['files'];
-
-                        $fileName = $expenseBatch->getId() . '-' . $particularId . '-' . time() . "-" . $files['name'][$particularId];
-
-                        $file_tmp = $files['tmp_name'][$particularId];
-                        if (is_dir('uploads/expense/') == false) {
-                            mkdir('uploads/expense/', 0777);        // Create directory if it does not exist
-                        }
-                        if (is_dir('uploads/expense/' . $fileName) == false) {
-                            move_uploaded_file($file_tmp, 'uploads/expense/' . $fileName);
-
-                            $expenseParticular->setPath($fileName);
-                        }
-                    }
-
-                    $em->persist($expenseParticular);
-
-                }
-            }
-
 
             if ($requestData && isset($requestData['expense']) && sizeof($requestData['expense']) > 0) {
                 foreach ($requestData['expense'] as $expenseId => $expense) {
@@ -490,6 +455,11 @@ class ExpenseController extends AbstractController
                         'id' => 3,
                         'slug' => 'local-conveyance',
                         'name' => 'Local Conveyance',
+                    ],
+                    [
+                        'id' => 4,
+                        'slug' => 'others',
+                        'name' => 'others',
                     ]
                 ];
         } elseif ($employee->getExpenseChart() && $employee->getExpenseChart()->getTypeOfVehicle() && $employee->getExpenseChart()->getTypeOfVehicle() == 'motorcycle') {
@@ -509,6 +479,11 @@ class ExpenseController extends AbstractController
                         'id' => 3,
                         'slug' => 'local-conveyance',
                         'name' => 'Local Conveyance',
+                    ],
+                    [
+                        'id' => 4,
+                        'slug' => 'others',
+                        'name' => 'others',
                     ]
                 ];
         } else {
@@ -523,6 +498,11 @@ class ExpenseController extends AbstractController
                         'id' => 2,
                         'slug' => 'local-conveyance',
                         'name' => 'Local Conveyance',
+                    ],
+                    [
+                        'id' => 3,
+                        'slug' => 'others',
+                        'name' => 'others',
                     ]
                 ];
         }

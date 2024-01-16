@@ -4443,8 +4443,13 @@ class ApiController extends AbstractController
             $employeeId = $request->query->get('employee_id');
             $month = $request->query->get('month');
             $year = $request->query->get('year');
-
-            $expenses = $this->getDoctrine()->getRepository(Expense::class)->getAllExpenseByEmployeeAndMonth($employeeId, $yearMonth = $year.'-'.$month);
+            $expenses=[];
+            if($employeeId && $month && $month!="" && $year){
+                $expenses = $this->getDoctrine()->getRepository(Expense::class)->getAllExpenseByEmployeeAndMonth($employeeId, $yearMonth = $year.'-'.$month);
+            }elseif($employeeId && $month=="" && $year){
+                $employee = $this->getDoctrine()->getRepository(User::class)->find($employeeId);
+                $expenses = $this->getEmployeeExpenseMonthly($employee, $year);
+            }
 
             return new JsonResponse([
                 'status' => 200,
@@ -4459,6 +4464,29 @@ class ApiController extends AbstractController
             'status' => 500,
             'message' => 'Oops! somethings wrong.'
         ]);
+
+    }
+
+    private function getEmployeeExpenseMonthly(User $employee , $year){
+        $entities = $this->getDoctrine()->getRepository(Expense::class)->getExpensesByEmployeeAndYear($employee, $year);
+
+        $expensePaticularTotalAmount = $this->getDoctrine()->getRepository(ExpenseParticular::class)->getTotalAmountExpenseParticularWithoutChartDetail($employee, $year);
+
+        $conveyenceTotalAmount = $this->getDoctrine()->getRepository(ExpenseConveyanceDetails::class)->getTotalAmountMonthlyByEmployeeYear($employee, $year);
+        
+        $returnArray = [];
+        
+        if($entities && sizeof($entities)>0){
+            foreach ($entities as $entity) {
+                $entity['particulars']=$expensePaticularTotalAmount[$entity['employeeAutoId']][$entity['expenseMonthYear']];
+
+                $entity['mode_of_transport']=$conveyenceTotalAmount[$entity['employeeAutoId']][$entity['expenseMonthYear']];
+
+                $returnArray[] = $entity;
+            }
+        }
+        
+        return $returnArray;
 
     }
 

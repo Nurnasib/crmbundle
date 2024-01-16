@@ -125,6 +125,32 @@ class ExpenseRepository extends EntityRepository
         return $result;
     }
 
+    public function getExpensesByEmployeeAndYear(User $user, $year){
+        $qb = $this->createQueryBuilder('e');
+//        $qb->select('SUM(e.conveyance) as totalConveyance','SUM(e.mobile) as totalMobile','SUM(e.dailyAllowance) as totalDailyAllowance','SUM(e.hotelRent) as totalHotelRent','SUM(e.tollBill) as totalTollBill','SUM(e.food) as totalFood','SUM(e.courier) as totalCourier','SUM(e.maintenace) as totalMaintenace','SUM(e.serviceCharge) as totalServiceCharge','SUM(e.photostate) as totalPhotostate','SUM(e.others) as totalOthers');
+        $qb->select("DATE_FORMAT(e.expenseDate,'%Y-%m') as expenseMonthYear", 'YEAR(e.expenseDate) as expenseYear');
+        $qb->addSelect('employee.id as employeeAutoId','employee.userId as employeeId','employee.name as employeeName');
+        $qb->join('e.employee','employee');
+
+        $qb->where('e.status >=:status')->setParameter('status',1);
+        $qb->andWhere('e.expenseDate IS NOT NULL');
+
+        /*$rolesString = implode('_', $user->getRoles());
+        if (!str_contains($rolesString, 'ADMIN')){
+            $qb->andWhere('employee.id = :employeeId')->setParameter('employeeId', $user->getId());
+        }*/
+        $qb->andWhere('employee.id =:employeeId')->setParameter('employeeId', $user->getId());
+        $qb->andWhere("DATE_FORMAT(e.expenseDate,'%Y') =:year")->setParameter('year', $year);
+
+        $qb->groupBy('expenseMonthYear');
+//        $qb->addGroupBy('expenseYear');
+        $qb->addGroupBy('employee.id');
+
+        $result= $qb->getQuery()->getResult();
+
+        return $result;
+    }
+
     public function getExpensesByEmployeeAndYearMonth($employee , $yearMonth){
         if($employee && $yearMonth){
             $qb = $this->createQueryBuilder('e');

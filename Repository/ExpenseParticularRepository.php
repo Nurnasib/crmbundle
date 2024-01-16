@@ -81,6 +81,38 @@ class ExpenseParticularRepository extends EntityRepository
         return $returnArray;
     }
 
+    public function getTotalAmountExpenseParticularWithoutChartDetail(User $user, $year){
+        $qb = $this->createQueryBuilder('e');
+        $qb->select('SUM(e.amount) as totalAmount', 'e.expenseChartDetailId');
+        $qb->addSelect("DATE_FORMAT(expense.expenseDate,'%Y-%m') as expenseMonthYear", 'YEAR(expense.expenseDate) as expenseYear', 'MONTH(expense.expenseDate) as expenseMonth');
+        $qb->addSelect('employee.id as employeeAutoId');
+        $qb->addSelect('particular.id as particularId', 'particular.name as particularName');
+        $qb->join('e.expense','expense');
+        $qb->join('e.particular','particular');
+        $qb->join('expense.employee','employee');
+
+        $qb->where('expense.status >=:status')->setParameter('status',1);
+        $qb->andWhere('e.expenseChartDetailId IS NOT NULL');
+        $qb->andWhere('expense.expenseDate IS NOT NULL');
+
+        $qb->andWhere('employee.id =:employeeId')->setParameter('employeeId', $user->getId());
+
+        $qb->groupBy('expenseMonthYear');
+
+        $qb->addGroupBy('employee.id');
+        $qb->addGroupBy('particular.id');
+
+        $results= $qb->getQuery()->getArrayResult();
+        $returnArray=[];
+        if($results){
+            foreach ($results as $result) {
+                $returnArray[$result['employeeAutoId']][$result['expenseMonthYear']][$result['particularId']]=$result;
+            }
+        }
+
+        return $returnArray;
+    }
+
 
     public function getDailyExpenseParticularAmount(User $user, $yearMonth=null, $batch=null){
         $returnArray=[];
