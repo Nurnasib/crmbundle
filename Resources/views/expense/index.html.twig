@@ -44,6 +44,13 @@
                                 <th colspan="{{ areaWiseExpenseParticulars['chartDetails'][areaId]|length }}" class="text-center" scope="col">{{ expenseParticularAttribute }}</th>
                                 {% endfor %}
                             {% endif %}
+
+                            {% if typeOfVehicles is not empty %}
+                                {% for typeOfVehicle in typeOfVehicles%}
+                                    <th rowspan="2">{{ typeOfVehicle.name }}</th>
+                                {% endfor %}
+                            {% endif %}
+
                             <th rowspan="2">Total</th>
 
                             <th rowspan="2" scope="col text-center"><i class="feather icon-settings"></i></th>
@@ -82,6 +89,22 @@
                                                 <td class="text-right">{{ amount|number_format(2,'.',',') }}</td>
                                             {% endfor %}
                                         {% endif %}
+                                    {% endfor %}
+                                {% endif %}
+
+
+                                {% if typeOfVehicles is not empty %}
+                                    {% for typeOfVehicle in typeOfVehicles%}
+                                        <td class="text-right">
+                                            {% set conveyanceAmount = conveyenceTotalAmount is defined and
+                                                conveyenceTotalAmount[entity.employeeAutoId] is defined and
+                                                conveyenceTotalAmount[entity.employeeAutoId][entity.expenseMonthYear|date('Y-m')] is defined and
+                                                conveyenceTotalAmount[entity.employeeAutoId][entity.expenseMonthYear|date('Y-m')][typeOfVehicle.slug] is defined ? conveyenceTotalAmount[entity.employeeAutoId][entity.expenseMonthYear|date('Y-m')][typeOfVehicle.slug]['totalAmount']|number_format(2,'.',''):0 %}
+
+                                            {% set totalAmount= totalAmount +  conveyanceAmount%}
+
+                                            {{ conveyanceAmount|number_format(2,'.',',') }}
+                                        </td>
                                     {% endfor %}
                                 {% endif %}
 

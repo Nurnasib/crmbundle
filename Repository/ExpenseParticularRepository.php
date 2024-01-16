@@ -94,7 +94,7 @@ class ExpenseParticularRepository extends EntityRepository
         $qb->where('expense.status >=:status')->setParameter('status',1);
         $qb->andWhere('e.expenseChartDetailId IS NOT NULL');
         $qb->andWhere('expense.expenseDate IS NOT NULL');
-
+        $qb->andWhere("DATE_FORMAT(expense.expenseDate,'%Y') =:year")->setParameter('year', $year);
         $qb->andWhere('employee.id =:employeeId')->setParameter('employeeId', $user->getId());
 
         $qb->groupBy('expenseMonthYear');

@@ -52,7 +52,8 @@ class ExpenseController extends AbstractController
         $dailyExpenseParticularAttributes = $this->getDoctrine()->getRepository(Setting::class)->getDailyExpenseParticular();
         $expensePaticularTotalAmount = $this->getDoctrine()->getRepository(ExpenseParticular::class)->getTotalAmountExpenseParticular($this->getUser());
 
-//dd($expensePaticularTotalAmount);
+        $conveyenceTotalAmount = $this->getDoctrine()->getRepository(ExpenseConveyanceDetails::class)->getTotalAmountMonthlyByEmployeeYear($this->getUser());
+
         $expenseChartByEmployee = $this->getDoctrine()->getRepository(ExpenseChart::class)->getExpenseChartByEmployee($this->getUser()?$this->getUser()->getId():null);
         $fixedDailyExpenseParticular = array_filter(array_map(function($n) { if($n['paymentDuration']=='DAILY' && $n['expensePaymentType']=='FIXED') return $n; }, $expenseChartByEmployee));
 
@@ -63,12 +64,15 @@ class ExpenseController extends AbstractController
                 $areaWiseExpenseParticular['chartDetails'][$expenseChart['areaId']][$expenseChart['expenseChartDetailId']]=$expenseChart;
             }
         }
+        $typeOfVehicles = $this->typeOfVehicle($this->getUser());
 
         return $this->render('@TerminalbdCrm/expense/index.html.twig',[
             'entities' => $entities,
             'expensePaticularTotalAmount' => $expensePaticularTotalAmount,
             'expenseParticularAttributes' => $dailyExpenseParticularAttributes,
             'areaWiseExpenseParticulars' => $areaWiseExpenseParticular,
+            'conveyenceTotalAmount' => $conveyenceTotalAmount,
+            'typeOfVehicles' => $typeOfVehicles,
         ]);
     }
 

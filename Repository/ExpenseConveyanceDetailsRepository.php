@@ -58,7 +58,7 @@ class ExpenseConveyanceDetailsRepository extends EntityRepository
         return $returnArray;
     }
 
-    public function getTotalAmountMonthlyByEmployeeYear(User $user, $year){
+    public function getTotalAmountMonthlyByEmployeeYear(User $user, $year=null){
         $qb = $this->createQueryBuilder('e');
         $qb->select('e.id', 'e.transportType', 'SUM(e.totalAmount) as totalAmount');
         $qb->addSelect('expense.id as expenseId');
@@ -69,7 +69,9 @@ class ExpenseConveyanceDetailsRepository extends EntityRepository
 
         $qb->where('expense.status >=:status')->setParameter('status',1);
         $qb->andWhere('expense.expenseDate IS NOT NULL');
-        $qb->andWhere("DATE_FORMAT(expense.expenseDate,'%Y') =:year")->setParameter('year', $year);
+        if($year && $year!=''){
+            $qb->andWhere("DATE_FORMAT(expense.expenseDate,'%Y') =:year")->setParameter('year', $year);
+        }
         $qb->andWhere('employee.id =:employeeId')->setParameter('employeeId', $user->getId());
 
 
