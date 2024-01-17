@@ -90,5 +90,27 @@ class ExpenseConveyanceDetailsRepository extends EntityRepository
         return $returnArray;
     }
 
+    public function getLastMileageByEmployeeDate($employeeId, $expenseDate)
+    {
+        $qb = $this->createQueryBuilder('e');
+        $qb->select('e.id', 'e.transportType', 'e.totalMileage', 'e.cumulativeTotalMileageOneHundred', 'e.cumulativeTotalMileageTwoHundred');
+        $qb->join('e.expense', 'expense');
+        $qb->join('expense.employee', 'employee');
+        $qb->where('expense.expenseDate IS NOT NULL');
+        $qb->andWhere("DATE_FORMAT(expense.expenseDate,'%Y-%m-%d') < :expenseDate")->setParameter('expenseDate', $expenseDate);
+
+        $qb->andWhere('e.totalMileage > :totalMileage')->setParameter('totalMileage', 0);
+
+        $qb->andWhere('employee.id =:employeeId')->setParameter('employeeId', $employeeId);
+
+        $qb->andWhere('e.transportType IN (:transportType)')->setParameter('transportType', ['car','motorcycle']);
+
+        $qb->orderBy('expense.expenseDate', 'DESC');
+        $qb->setMaxResults(1);
+        $resutl = $qb->getQuery()->getOneOrNullResult();
+
+        return $resutl;
+    }
+
 
 }

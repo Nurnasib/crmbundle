@@ -140,6 +140,21 @@ class ExpenseConveyanceDetails
      */
     private $createdAt;
 
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="cumulative_total_mileage_one_hundred", type="float")
+     */
+    private $cumulativeTotalMileageOneHundred=0; //100 basis
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="cumulative_total_mileage_two_hundred", type="float")
+     */
+    private $cumulativeTotalMileageTwoHundred=0; //200 basis
+
     /**
      * @return int
      */
@@ -446,6 +461,38 @@ class ExpenseConveyanceDetails
     public function setTotalAmount(int $totalAmount): void
     {
         $this->totalAmount = $totalAmount;
+    }
+
+    /**
+     * @return float|int
+     */
+    public function getCumulativeTotalMileageOneHundred()
+    {
+        return $this->cumulativeTotalMileageOneHundred;
+    }
+
+    /**
+     * @param float|int $cumulativeTotalMileageOneHundred
+     */
+    public function setCumulativeTotalMileageOneHundred($cumulativeTotalMileageOneHundred): void
+    {
+        $this->cumulativeTotalMileageOneHundred = $cumulativeTotalMileageOneHundred;
+    }
+
+    /**
+     * @return float|int
+     */
+    public function getCumulativeTotalMileageTwoHundred()
+    {
+        return $this->cumulativeTotalMileageTwoHundred;
+    }
+
+    /**
+     * @param float|int $cumulativeTotalMileageTwoHundred
+     */
+    public function setCumulativeTotalMileageTwoHundred($cumulativeTotalMileageTwoHundred): void
+    {
+        $this->cumulativeTotalMileageTwoHundred = $cumulativeTotalMileageTwoHundred;
     }
     
 

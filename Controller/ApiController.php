@@ -4328,6 +4328,9 @@ class ApiController extends AbstractController
 
                 $existingExpense = $this->getDoctrine()->getRepository(Expense::class)->findOneBy(['employee' => $employee, 'expenseDate' => new \DateTimeImmutable($vistingDate)]);
                 if (!$existingExpense) {
+
+                    $getLastMileageRecords = $this->getDoctrine()->getRepository(ExpenseConveyanceDetails::class)->getLastMileageByEmployeeDate($employeeId, $vistingDate);
+
                     $expense = new Expense();
                     $expense->setExpenseDate(new \DateTime($vistingDate));
                     $expense->setEmployee($employee);
@@ -4395,10 +4398,36 @@ class ApiController extends AbstractController
                                 $expenseConveyanceDetails->setTotalMileage($total_reading);
                                 $expenseConveyanceDetails->setDetails($details);
                                 $expenseConveyanceDetails->setTotalAmount($expenseConveyanceDetails->calculateTotalAmount());
+
+                                $cumulativeTotalMileageOneHundred = $getLastMileageRecords && isset($getLastMileageRecords['cumulativeTotalMileageOneHundred']) ? $getLastMileageRecords['cumulativeTotalMileageOneHundred'] : 0;
+                                $mileageOneHundred = 0;
+
+                                if($total_reading>0){
+                                    if(($cumulativeTotalMileageOneHundred + $total_reading) == 0) {
+                                        $mileageOneHundred = 0;
+                                    }elseif (($cumulativeTotalMileageOneHundred + $total_reading) > 0 && ($cumulativeTotalMileageOneHundred + $total_reading) < 1000) {
+                                        $mileageOneHundred = $cumulativeTotalMileageOneHundred + $total_reading;
+                                    }elseif (($cumulativeTotalMileageOneHundred + $total_reading) >= 1000) {
+                                        $mileageOneHundred = ($cumulativeTotalMileageOneHundred + $total_reading) - 1000;
+                                    }
+                                    $expenseConveyanceDetails->setCumulativeTotalMileageOneHundred($mileageOneHundred);
+
+                                    $cumulativeTotalMileageTwoHundred = $getLastMileageRecords && isset($getLastMileageRecords['cumulativeTotalMileageTwoHundred']) ? $getLastMileageRecords['cumulativeTotalMileageTwoHundred'] : 0;
+                                    $mileageTwoHundred = 0;
+
+                                    if(($cumulativeTotalMileageTwoHundred + $total_reading) == 0) {
+                                        $mileageTwoHundred = 0;
+                                    }elseif (($cumulativeTotalMileageTwoHundred + $total_reading) > 0 && ($cumulativeTotalMileageTwoHundred + $total_reading) < 2000) {
+                                        $mileageTwoHundred = $cumulativeTotalMileageTwoHundred + $total_reading;
+                                    }elseif (($cumulativeTotalMileageTwoHundred + $total_reading) >= 2000) {
+                                        $mileageTwoHundred = ($cumulativeTotalMileageTwoHundred + $total_reading) - 2000;
+                                    }
+                                    $expenseConveyanceDetails->setCumulativeTotalMileageTwoHundred($mileageTwoHundred);
+                                }
+
                                 $this->getDoctrine()->getManager()->persist($expenseConveyanceDetails);
 
                             }
-
 
                         }
                     }
@@ -4478,15 +4507,63 @@ class ApiController extends AbstractController
         
         if($entities && sizeof($entities)>0){
             foreach ($entities as $entity) {
-                $entity['particulars']=$expensePaticularTotalAmount[$entity['employeeAutoId']][$entity['expenseMonthYear']];
+                $expenseParticulars = isset($expensePaticularTotalAmount[$entity['employeeAutoId']]) && isset($expensePaticularTotalAmount[$entity['employeeAutoId']][$entity['expenseMonthYear']]) ? $expensePaticularTotalAmount[$entity['employeeAutoId']][$entity['expenseMonthYear']]:[];
+                $entity['particulars']= $expenseParticulars;
 
-                $entity['mode_of_transport']=$conveyenceTotalAmount[$entity['employeeAutoId']][$entity['expenseMonthYear']];
+                $conveyenceDetails = isset($conveyenceTotalAmount[$entity['employeeAutoId']]) && isset($conveyenceTotalAmount[$entity['employeeAutoId']][$entity['expenseMonthYear']]) ? $conveyenceTotalAmount[$entity['employeeAutoId']][$entity['expenseMonthYear']]:[];
+                $entity['mode_of_transport']= $conveyenceDetails;
+
+                $grandTotalAmount = 0;
+
+                if($expenseParticulars && sizeof($expenseParticulars)>0){
+                    $grandTotalAmount += array_sum(array_column($expenseParticulars,'totalAmount'));
+                }
+
+                if($conveyenceDetails && sizeof($conveyenceDetails)>0){
+                    $grandTotalAmount += array_sum(array_column($conveyenceDetails,'totalAmount'));
+                }
+
+                $entity['grand_total_amount'] = $grandTotalAmount;
 
                 $returnArray[] = $entity;
             }
         }
         
         return $returnArray;
+
+    }
+
+    /**
+     * @param Request $request
+     * @param ParameterBagInterface $parameterBag
+     * @return JsonResponse
+     * @Route("/employee/last/mileage", name="crm_last_mileage")
+     */
+    public function getLastMileageRecordByEmployeeAndExpenseDate( Request $request, ParameterBagInterface $parameterBag)
+    {
+        set_time_limit(0);
+        ignore_user_abort(true);
+        if ($request->getMethod() == 'GET' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')) {
+            $employeeId = $request->query->get('employee_id');
+            $visitDate = $request->query->get('visit_date');
+            $getLastMileageRecords=[];
+            if($employeeId && $visitDate && $visitDate!=""){
+                $getLastMileageRecords = $this->getDoctrine()->getRepository(ExpenseConveyanceDetails::class)->getLastMileageByEmployeeDate($employeeId, $visitDate);
+            }
+
+            return new JsonResponse([
+                'status' => 200,
+                'message' => 'Success',
+                'data' => $getLastMileageRecords
+            ]);
+
+
+        }
+
+        return new JsonResponse([
+            'status' => 500,
+            'message' => 'Oops! somethings wrong.'
+        ]);
 
     }
 
