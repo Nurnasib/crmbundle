@@ -4359,6 +4359,7 @@ class ApiController extends AbstractController
                             $toll_bill = isset($value['toll_bill']) && $value['toll_bill']!=''?(float)$value['toll_bill']:0;
                             $parking_bill = isset($value['parking_bill']) && $value['parking_bill']!=''?(float)$value['parking_bill']:0;
                             $other_bill = isset($value['other_bill']) && $value['other_bill']!=''?(float)$value['other_bill']:0;
+                            $mobil_bill = isset($value['mobil_bill']) && $value['mobil_bill']!=''?(float)$value['mobil_bill']:0;
                             $maintenance_bill = isset($value['maintenance_bill']) && $value['maintenance_bill']!=''?(float)$value['maintenance_bill']:0;
                             $servicing_bill = isset($value['servicing_bill']) && $value['servicing_bill']!=''?(float)$value['servicing_bill']:0;
                             $destination = isset($value['destination'])?$value['destination']:null;
@@ -4377,7 +4378,7 @@ class ApiController extends AbstractController
                                         $expenseConveyanceDetails = new ExpenseConveyanceDetails();
                                         $expenseConveyanceDetails->setExpense($expense);
                                         $expenseConveyanceDetails->setDetails($item['details']);
-                                        $expenseConveyanceDetails->setAmount($item['amount']);
+                                        $expenseConveyanceDetails->setAmount((float)$item['amount']);
                                         $expenseConveyanceDetails->setTransportType($transport_type);
                                         $expenseConveyanceDetails->setTotalAmount($expenseConveyanceDetails->calculateTotalAmount());
                                         $this->getDoctrine()->getManager()->persist($expenseConveyanceDetails);
@@ -4388,10 +4389,14 @@ class ApiController extends AbstractController
                                 $expenseConveyanceDetails = new ExpenseConveyanceDetails();
                                 $expenseConveyanceDetails->setExpense($expense);
                                 $expenseConveyanceDetails->setAmount(isset($value['amount']) && $value['amount']!=''?(float)$value['amount']:0);
-                                $expenseConveyanceDetails->setFuelBill($fuel_bill);
-                                $expenseConveyanceDetails->setTollBill($toll_bill);
+                                $expenseConveyanceDetails->setFuelBill((float)$fuel_bill);
+                                $expenseConveyanceDetails->setTollBill((float)$toll_bill);
+                                $expenseConveyanceDetails->setMobilBill((float)$mobil_bill);
+                                $expenseConveyanceDetails->setMaintenanceBill((float)$maintenance_bill);
+                                $expenseConveyanceDetails->setParkingBill((float)$parking_bill);
+                                $expenseConveyanceDetails->setServicingBill((float)$servicing_bill);
                                 $expenseConveyanceDetails->setTransportType($transport_type);
-                                $expenseConveyanceDetails->setOthersBill($other_bill);
+                                $expenseConveyanceDetails->setOthersBill((float)$other_bill);
                                 $expenseConveyanceDetails->setDestination($destination);
                                 $expenseConveyanceDetails->setMeterReadingFrom($meter_reading_start);
                                 $expenseConveyanceDetails->setMeterReadingTo($meter_reading_end);
@@ -4550,14 +4555,28 @@ class ApiController extends AbstractController
             if($employeeId && $visitDate && $visitDate!=""){
                 $getLastMileageRecord = $this->getDoctrine()->getRepository(ExpenseConveyanceDetails::class)->getLastMileageByEmployeeDate($employeeId, $visitDate);
                 if($getLastMileageRecord){
-                    $getLastMileageRecords = $getLastMileageRecord;
+                    $getLastMileageRecords = [
+                        'id' => (string)$getLastMileageRecord['id'],
+                        'transportType' => $getLastMileageRecord['transportType'],
+                        'totalMileage' => $getLastMileageRecord['totalMileage'],
+                        'cumulativeTotalMileageOneThousand' => $getLastMileageRecord['cumulativeTotalMileageOneHundred'],
+                        'cumulativeTotalMileageTwoThousand' => $getLastMileageRecord['cumulativeTotalMileageTwoHundred'],
+                        'perKmRate' => '3.50',
+                        'mobil_bill' => '500',
+                        'maintenance_bill' => '500',
+                        'servicing_bill' => '500',
+                    ];
                 }else{
                     $getLastMileageRecords = [
                         "id"=>"",
                         "transportType"=> "",
                         "totalMileage"=> "",
-                        "cumulativeTotalMileageOneHundred"=> "",
-                        "cumulativeTotalMileageTwoHundred"=> ""
+                        "cumulativeTotalMileageOneThousand"=> "",
+                        "cumulativeTotalMileageTwoThousand"=> "",
+                        'perKmRate' => '3.50',
+                        'mobil_bill' => '0',
+                        'maintenance_bill' => '0',
+                        'servicing_bill' => '0',
                     ];
                 }
             }
