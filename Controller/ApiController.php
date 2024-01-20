@@ -4548,7 +4548,18 @@ class ApiController extends AbstractController
             $visitDate = $request->query->get('visit_date');
             $getLastMileageRecords=[];
             if($employeeId && $visitDate && $visitDate!=""){
-                $getLastMileageRecords = $this->getDoctrine()->getRepository(ExpenseConveyanceDetails::class)->getLastMileageByEmployeeDate($employeeId, $visitDate);
+                $getLastMileageRecord = $this->getDoctrine()->getRepository(ExpenseConveyanceDetails::class)->getLastMileageByEmployeeDate($employeeId, $visitDate);
+                if($getLastMileageRecord){
+                    $getLastMileageRecords = $getLastMileageRecord;
+                }else{
+                    $getLastMileageRecords = [
+                        "id"=>"",
+                        "transportType"=> "",
+                        "totalMileage"=> "",
+                        "cumulativeTotalMileageOneHundred"=> "",
+                        "cumulativeTotalMileageTwoHundred"=> ""
+                    ];
+                }
             }
 
             return new JsonResponse([
