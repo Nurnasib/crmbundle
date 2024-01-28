@@ -117,7 +117,7 @@ class CrmVisit
 
     /**
      * @var string
-     * @ORM\Column(name="remarks" , type="text", nullable=true)
+     * @ORM\Column(name="remarks", type="text", nullable=true)
      */
     private $remarks;
 

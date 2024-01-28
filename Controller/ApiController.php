@@ -28,6 +28,7 @@ use Terminalbd\CrmBundle\Entity\ChickLifeCycleDetails;
 use Terminalbd\CrmBundle\Entity\CompanyWiseFeedSale;
 use Terminalbd\CrmBundle\Entity\CrmCustomer;
 use Terminalbd\CrmBundle\Entity\CrmVisit;
+use Terminalbd\CrmBundle\Entity\CrmVisitPlan;
 use Terminalbd\CrmBundle\Entity\Expense;
 use Terminalbd\CrmBundle\Entity\ExpenseApiResponse;
 use Terminalbd\CrmBundle\Entity\ExpenseChart;
@@ -4597,5 +4598,97 @@ class ApiController extends AbstractController
 
     }
 
+
+    /**
+     * @param Request $request
+     * @param ParameterBagInterface $parameterBag
+     * @return JsonResponse
+     * @Route("/employee/monthly/tour-plan/insert/using-app", methods={"POST"}, name="crm_employee_monthly_tour_plan_insert_using_app")
+     */
+    public function createMonthTourPlanUsingApp(Request $request, ParameterBagInterface $parameterBag)
+    {
+
+        set_time_limit(0);
+        ignore_user_abort(true);
+        if ($request->getMethod() == 'POST' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')) {
+            $arrayData = $request->getContent();
+
+            $expenseData = json_decode($arrayData, true);
+            $employeeId = isset($expenseData['employee_id']) && $expenseData['employee_id'] != '' ? $expenseData['employee_id'] : '';
+
+            if ($employeeId) {
+                $employee = $this->getDoctrine()->getRepository(User::class)->find((int)$employeeId);
+                $data = isset($expenseData['data']) && $expenseData['data'] != "" ? $expenseData['data']: [];
+                if(sizeof($data)>0){
+                    foreach ($data as $visitDate => $item) {
+                        $visitDate = date('Y-m-d', strtotime($visitDate));
+                        $exitingVisitPlan = $this->getDoctrine()->getRepository(CrmVisitPlan::class)->findOneBy(['employee' => $employee, 'visitDate' => new \DateTimeImmutable($visitDate)]);
+                        if($exitingVisitPlan){
+                            $visitPlan = $exitingVisitPlan;
+                        }else{
+                            $visitPlan = new CrmVisitPlan();
+                        }
+                        $visitPlan->setEmployee($employee);
+                        $visitPlan->setVisitingArea($item['visitingArea']);
+                        $visitPlan->setVisitDate(new \DateTime($visitDate));
+                        $visitPlan->setAreaList($item['areaList']);
+                        $visitPlan->setAgentList($item['agentList']);
+                        $this->getDoctrine()->getManager()->persist($visitPlan);
+                        $this->getDoctrine()->getManager()->flush();
+
+                    }
+                }
+
+
+                    return new JsonResponse([
+                        'status' => 200,
+                        'message' => 'Success'
+                    ]);
+                }
+                return new JsonResponse([
+                    'status' => 403,
+                    'message' => 'This Date Expense already exist!'
+                ]);
+            }
+            return new JsonResponse([
+                'status' => 500,
+                'message' => 'Employee and Date is required.'
+            ]);
+
+        }
+
+    /**
+     * @param Request $request
+     * @param ParameterBagInterface $parameterBag
+     * @return JsonResponse
+     * @Route("/employee/monthly/tour-plan/find/using-app", name="crm_employee_monthly_tour_plan_get_using_app")
+     */
+        public function getMonthlyTourPlanByEmployeeAndDate(Request $request, ParameterBagInterface $parameterBag)
+        {
+            set_time_limit(0);
+            ignore_user_abort(true);
+            if ($request->getMethod() == 'GET' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')) {
+                $employeeId = $request->query->get('employee_id');
+                $visitingDate = $request->query->get('visiting_date');
+                $type = $request->query->get('type'); // monthly or daily
+                if ($employeeId && $visitingDate && $visitingDate != "" && $type){
+                    $visitPlans = $this->getDoctrine()->getRepository(CrmVisitPlan::class)->getMonthlyTourPlanByEmployeeAndDate($employeeId, $visitingDate, $type);
+
+                    return new JsonResponse([
+                        'status' => 200,
+                        'message' => 'Success',
+                        'data' => $visitPlans
+                    ]);
+                }
+                return new JsonResponse([
+                    'status' => 404,
+                    'message' => 'Employee, visiting date and type id required',
+                ]);
+            }
+            return new JsonResponse([
+                'status' => 500,
+                'message' => 'Oops! somethings wrong.'
+            ]);
+        }
 
 }
