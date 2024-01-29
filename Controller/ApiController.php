@@ -4326,13 +4326,22 @@ class ApiController extends AbstractController
                 if ($areaId) {
                     $area = $this->getDoctrine()->getRepository(Setting::class)->find($areaId);
                 }
+                $existingExpense = null;
+                $expenseIdForUpdate = isset($expenseData['id']) && $expenseData['id']!=""?(int)$expenseData['id']:'';
+                if($expenseIdForUpdate!=''){
+                    $existingExpense = $this->getDoctrine()->getRepository(Expense::class)->find($expenseIdForUpdate);
+                }elseif ($expenseIdForUpdate=='' && $employeeId!='' && $vistingDate!=''){
+                    $existingExpense = $this->getDoctrine()->getRepository(Expense::class)->findOneBy(['employee' => $employee, 'expenseDate' => new \DateTimeImmutable($vistingDate)]);
+                }
+                if ($existingExpense) {
+                    $expense = $existingExpense;
 
-                $existingExpense = $this->getDoctrine()->getRepository(Expense::class)->findOneBy(['employee' => $employee, 'expenseDate' => new \DateTimeImmutable($vistingDate)]);
-                if (!$existingExpense) {
+                }else{
+                    $expense = new Expense();
+                }
 
                     $getLastMileageRecords = $this->getDoctrine()->getRepository(ExpenseConveyanceDetails::class)->getLastMileageByEmployeeDate($employeeId, $vistingDate);
 
-                    $expense = new Expense();
                     $expense->setExpenseDate(new \DateTime($vistingDate));
                     $expense->setEmployee($employee);
                     $expense->setScheduleVisit($visiting_area);
@@ -4345,7 +4354,17 @@ class ApiController extends AbstractController
                     if(isset($expenseData['particulars']) && count($expenseData['particulars'])>0){
                         foreach ($expenseData['particulars'] as $particular) {
 
-                            $expensePerticular = new ExpenseParticular();
+                            $particularId = isset($particular['id']) && $particular['id'] != "" ? $particular['id'] : '';
+                            $expensePerticular = null;
+                            if($particularId!=''){
+                                $exitingEexpensePerticular = $this->getDoctrine()->getRepository(ExpenseParticular::class)->findOneBy([ 'id'=>$particularId, 'expense' => $expense]);
+                                if($exitingEexpensePerticular){
+                                    $expensePerticular = $exitingEexpensePerticular;
+                                }
+                            }elseif ($particularId==''){
+                                $expensePerticular = new ExpenseParticular();
+                            }
+
                             $expensePerticular->setExpense($expense);
                             $expensePerticular->setAmount(isset($particular['amount']) && $particular['amount']!=''?(float)$particular['amount']:0);
                             $expensePerticular->setParticular($this->getDoctrine()->getRepository(Setting::class)->find((int)$particular['particular_id']));
@@ -4376,6 +4395,17 @@ class ApiController extends AbstractController
                             if($transport_type == 'local-conveyance' || $transport_type=='others') {
                                 if(sizeof($value)>0){
                                     foreach ($value as $item) {
+                                        $exitingDetailId = isset($item['id']) && $item['id']!=''?$item['id']:'';
+                                        $expenseConveyanceDetails = null;
+                                        if($exitingDetailId!=''){
+                                            $exitingExpenseConveyanceDetails = $this->getDoctrine()->getRepository(ExpenseConveyanceDetails::class)->findOneBy(['id'=>$exitingDetailId, 'expense'=>$expense]);
+                                            if($exitingExpenseConveyanceDetails){
+                                                $expenseConveyanceDetails = $exitingExpenseConveyanceDetails;
+                                            }
+                                        }elseif ($exitingDetailId==''){
+                                            $expenseConveyanceDetails = new ExpenseConveyanceDetails();
+                                        }
+
                                         $expenseConveyanceDetails = new ExpenseConveyanceDetails();
                                         $expenseConveyanceDetails->setExpense($expense);
                                         $expenseConveyanceDetails->setDetails($item['details']);
@@ -4387,7 +4417,16 @@ class ApiController extends AbstractController
                                 }
 
                             }else{
-                                $expenseConveyanceDetails = new ExpenseConveyanceDetails();
+                                $exitingDetailId = isset($item['id']) && $item['id']!=''?$item['id']:'';
+                                $expenseConveyanceDetails = null;
+                                if($exitingDetailId!=''){
+                                    $exitingExpenseConveyanceDetails = $this->getDoctrine()->getRepository(ExpenseConveyanceDetails::class)->findOneBy(['id'=>$exitingDetailId, 'expense'=>$expense]);
+                                    if($exitingExpenseConveyanceDetails){
+                                        $expenseConveyanceDetails = $exitingExpenseConveyanceDetails;
+                                    }
+                                }elseif ($exitingDetailId==''){
+                                    $expenseConveyanceDetails = new ExpenseConveyanceDetails();
+                                }
                                 $expenseConveyanceDetails->setExpense($expense);
                                 $expenseConveyanceDetails->setAmount(isset($value['amount']) && $value['amount']!=''?(float)$value['amount']:0);
                                 $expenseConveyanceDetails->setFuelBill((float)$fuel_bill);
@@ -4445,11 +4484,7 @@ class ApiController extends AbstractController
                         'status' => 200,
                         'message' => 'Success'
                     ]);
-                }
-                return new JsonResponse([
-                    'status' => 403,
-                    'message' => 'This Date Expense already exist!'
-                ]);
+
             }
             return new JsonResponse([
                 'status' => 404,
