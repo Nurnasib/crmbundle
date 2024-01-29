@@ -25,7 +25,7 @@ use Doctrine\ORM\EntityRepository;
 class CrmVIsitPlanRepository extends EntityRepository
 {
 
-    public function getMonthlyTourPlanByEmployeeAndDate($employeeId, $visitingDate=null, $type){
+    public function getMonthlyTourPlanByEmployeeAndDate($employeeId, $visitingDate=null, $type=null){
         $qb = $this->createQueryBuilder('e');
         $qb->select('e.id', 'e.visitingArea', 'e.visitDate', 'e.agentList', 'e.areaList');
         $qb->addSelect('employee.id as employeeId');
@@ -43,9 +43,10 @@ class CrmVIsitPlanRepository extends EntityRepository
         $returnArray=[];
         if($results){
             foreach ($results as $result) {
+                $visitMonth=$result['visitDate']->format('Y-m');
                 $visitDate=$result['visitDate']->format('Y-m-d');
                 $returnArray['employee_id'] = $result['employeeId'];
-                $returnArray['data'][$visitDate]=[
+                $returnArray['data'][$visitMonth][$visitDate]=[
                     'visitingArea'=>$result['visitingArea'],
                     'agentList' => $result['agentList'],
                     'areaList' => $result['areaList'],

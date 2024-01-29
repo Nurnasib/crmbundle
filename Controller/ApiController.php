@@ -4671,7 +4671,7 @@ class ApiController extends AbstractController
                 $employeeId = $request->query->get('employee_id');
                 $visitingDate = $request->query->get('visiting_date');
                 $type = $request->query->get('type'); // monthly or daily
-                if ($employeeId && $visitingDate && $visitingDate != "" && $type){
+                if ($employeeId){
                     $visitPlans = $this->getDoctrine()->getRepository(CrmVisitPlan::class)->getMonthlyTourPlanByEmployeeAndDate($employeeId, $visitingDate, $type);
 
                     return new JsonResponse([
