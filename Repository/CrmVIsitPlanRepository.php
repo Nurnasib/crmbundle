@@ -38,7 +38,8 @@ class CrmVIsitPlanRepository extends EntityRepository
             }
         }
         $qb->andWhere('employee.id =:employeeId')->setParameter('employeeId', $employeeId);
-        $qb->orderBy('e.visitDate', 'DESC');
+        $qb->orderBy("DATE_FORMAT(e.visitDate,'%Y-%m')", "DESC");
+        $qb->addOrderBy('e.visitDate', 'ASC');
         $results= $qb->getQuery()->getArrayResult();
         $returnArray=[];
         if($results){
