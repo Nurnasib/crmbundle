@@ -4673,11 +4673,16 @@ class ApiController extends AbstractController
                 $type = $request->query->get('type'); // monthly or daily
                 if ($employeeId){
                     $visitPlans = $this->getDoctrine()->getRepository(CrmVisitPlan::class)->getMonthlyTourPlanByEmployeeAndDate($employeeId, $visitingDate, $type);
+                    $dailyExpenseCheck = null;
+                   if($visitingDate && $type=='daily'){
+                       $dailyExpenseCheck=$this->getDoctrine()->getRepository(Expense::class)->getExpenseByEmployeeAndDate( $employeeId, $visitingDate);
+                   }
 
                     return new JsonResponse([
                         'status' => 200,
                         'message' => 'Success',
-                        'data' => $visitPlans
+                        'data' => $visitPlans,
+                        'dailyExpense' => $dailyExpenseCheck?true:false,
                     ]);
                 }
                 return new JsonResponse([

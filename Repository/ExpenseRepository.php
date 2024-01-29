@@ -169,7 +169,22 @@ class ExpenseRepository extends EntityRepository
         return [];
     }
     
-    public function getExpenseByEmployeeAndDate(Expense $entity, User $employee, $expenseDate){
+    public function getExpenseByEmployeeAndDate($employeeId, $expenseDate){
+        $qb = $this->createQueryBuilder('e');
+        $qb->select('e.id');
+        $qb->join('e.employee','employee');
+
+        $qb->where('e.status >=:status')->setParameter('status',1);
+        $qb->andWhere('e.expenseDate IS NOT NULL');
+        $qb->andWhere('e.expenseDate =:expenseDate')->setParameter('expenseDate',$expenseDate);
+        $qb->andWhere('employee.id =:employeeId')->setParameter('employeeId', $employeeId);
+
+        $results= $qb->getQuery()->getArrayResult();
+
+        return $results;
+    }
+    
+    public function duplicateExpenseCheckByEmployeeAndDate(Expense $entity, User $employee, $expenseDate){
         $qb = $this->createQueryBuilder('e');
         $qb->select('e.id');
         $qb->join('e.employee','employee');

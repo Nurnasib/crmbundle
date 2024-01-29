@@ -121,7 +121,7 @@ class ExpenseController extends AbstractController
                 return $this->redirectToRoute('crm_expense_details', ['employee'=>$employee->getId(),'monthYear'=>$yearMonth]);
             }
 
-            $existingExpenseCheck=$this->getDoctrine()->getRepository(Expense::class)->getExpenseByEmployeeAndDate($entity, $this->getUser(),$expenseDate);
+            $existingExpenseCheck=$this->getDoctrine()->getRepository(Expense::class)->duplicateExpenseCheckByEmployeeAndDate($entity, $this->getUser(),$expenseDate);
             if($existingExpenseCheck && sizeof($existingExpenseCheck)>0) {
 
                 $this->addFlash('error', $expenseDate.' date expense already exist.');
