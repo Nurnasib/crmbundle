@@ -4681,8 +4681,8 @@ class ApiController extends AbstractController
                     return new JsonResponse([
                         'status' => 200,
                         'message' => 'Success',
-                        'data' => $visitPlans,
                         'dailyExpense' => $dailyExpenseCheck?true:false,
+                        'data' => $visitPlans,
                     ]);
                 }
                 return new JsonResponse([
