@@ -13,6 +13,7 @@ namespace Terminalbd\CrmBundle\Repository;
 
 use App\Entity\User;
 use Doctrine\ORM\EntityRepository;
+use Terminalbd\CrmBundle\Entity\Expense;
 
 /**
  * This custom Doctrine repository contains some methods which are useful when
@@ -24,6 +25,17 @@ use Doctrine\ORM\EntityRepository;
  */
 class ExpenseConveyanceDetailsRepository extends EntityRepository
 {
+
+    public function deleteAllConveyanceDetailByExpense(Expense $expense)
+    {
+        $query = $this->createQueryBuilder('e')
+            ->delete()
+            ->andWhere('e.expense =:expense')
+            ->setParameter('expense', $expense)
+            ->getQuery();
+
+        return $query->execute();
+    }
 
     public function getTotalAmountConveyanceDetailsByExpense(User $user, $yearMonth=null, $batch=null){
         $qb = $this->createQueryBuilder('e');

@@ -4335,7 +4335,6 @@ class ApiController extends AbstractController
                 }
                 if ($existingExpense) {
                     $expense = $existingExpense;
-
                 }else{
                     $expense = new Expense();
                 }
@@ -4350,20 +4349,12 @@ class ApiController extends AbstractController
                     $expense->setStatus(1);
 
                     $this->getDoctrine()->getManager()->persist($expense);
-                    if(isset($expenseData['particulars']) && count($expenseData['particulars'])>0){
+                    if(isset($expenseData['particulars']) ){
+                        
+                        $this->getDoctrine()->getRepository(ExpenseParticular::class)->deleteAllParticularByExpense($expense);
+
                         foreach ($expenseData['particulars'] as $particular) {
-                            $particularId = isset($particular['id']) && $particular['id'] != "" ? $particular['id'] : '';
-                            $expensePerticular = null;
-                            if($particularId!=''){
-                                $exitingEexpensePerticular = $this->getDoctrine()->getRepository(ExpenseParticular::class)->findOneBy([ 'id'=>$particularId, 'expense' => $expense]);
-                                if($exitingEexpensePerticular){
-                                    $expensePerticular = $exitingEexpensePerticular;
-                                }else{
-                                    $expensePerticular = new ExpenseParticular();
-                                }
-                            }else{
-                                $expensePerticular = new ExpenseParticular();
-                            }
+                            $expensePerticular = new ExpenseParticular();
                             $expensePerticular->setExpense($expense);
                             $expensePerticular->setAmount(isset($particular['amount']) && $particular['amount']!=''?(float)$particular['amount']:0);
                             $expensePerticular->setParticular($this->getDoctrine()->getRepository(Setting::class)->find((int)$particular['particular_id']));
@@ -4372,7 +4363,9 @@ class ApiController extends AbstractController
                         }
                     }
 
-                    if(isset($expenseData['mode_of_transport']) && count($expenseData['mode_of_transport'])>0){
+                    if(isset($expenseData['mode_of_transport'])){
+                        $this->getDoctrine()->getRepository(ExpenseConveyanceDetails::class)->deleteAllConveyanceDetailByExpense($expense);
+                        
                         foreach ($expenseData['mode_of_transport'] as $transport_type => $value) {
                             $fuel_bill = isset($value['fuel_bill']) && $value['fuel_bill']!=''?(float)$value['fuel_bill']:0;
                             $toll_bill = isset($value['toll_bill']) && $value['toll_bill']!=''?(float)$value['toll_bill']:0;
@@ -4394,19 +4387,6 @@ class ApiController extends AbstractController
                             if($transport_type == 'local-conveyance' || $transport_type=='others') {
                                 if(sizeof($value)>0){
                                     foreach ($value as $item) {
-                                        $exitingDetailId = isset($item['id']) && $item['id']!=''?$item['id']:'';
-                                        $expenseConveyanceDetails = null;
-                                        if($exitingDetailId!=''){
-                                            $exitingExpenseConveyanceDetails = $this->getDoctrine()->getRepository(ExpenseConveyanceDetails::class)->findOneBy(['id'=>$exitingDetailId, 'expense'=>$expense]);
-                                            if($exitingExpenseConveyanceDetails){
-                                                $expenseConveyanceDetails = $exitingExpenseConveyanceDetails;
-                                            }else{
-                                                $expenseConveyanceDetails = new ExpenseConveyanceDetails();
-                                            }
-                                        }elseif ($exitingDetailId==''){
-                                            $expenseConveyanceDetails = new ExpenseConveyanceDetails();
-                                        }
-
                                         $expenseConveyanceDetails = new ExpenseConveyanceDetails();
                                         $expenseConveyanceDetails->setExpense($expense);
                                         $expenseConveyanceDetails->setDetails($item['details']);
@@ -4417,18 +4397,8 @@ class ApiController extends AbstractController
                                     }
                                 }
                             }else{
-                                $exitingDetailId = isset($item['id']) && $item['id']!=''?$item['id']:'';
-                                $expenseConveyanceDetails = null;
-                                if($exitingDetailId!=''){
-                                    $exitingExpenseConveyanceDetails = $this->getDoctrine()->getRepository(ExpenseConveyanceDetails::class)->findOneBy(['id'=>$exitingDetailId, 'expense'=>$expense]);
-                                    if($exitingExpenseConveyanceDetails){
-                                        $expenseConveyanceDetails = $exitingExpenseConveyanceDetails;
-                                    }else{
-                                        $expenseConveyanceDetails = new ExpenseConveyanceDetails();
-                                    }
-                                }elseif ($exitingDetailId==''){
-                                    $expenseConveyanceDetails = new ExpenseConveyanceDetails();
-                                }
+                                $expenseConveyanceDetails = new ExpenseConveyanceDetails();
+                                
                                 $expenseConveyanceDetails->setExpense($expense);
                                 $expenseConveyanceDetails->setAmount(isset($value['amount']) && $value['amount']!=''?(float)$value['amount']:0);
                                 $expenseConveyanceDetails->setFuelBill((float)$fuel_bill);

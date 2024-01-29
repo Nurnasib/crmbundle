@@ -24,6 +24,18 @@ use Terminalbd\CrmBundle\Entity\Expense;
 class ExpenseParticularRepository extends EntityRepository
 {
 
+    public function deleteAllParticularByExpense(Expense $expense)
+    {
+        $query = $this->createQueryBuilder('e')
+            ->delete()
+            ->andWhere('e.expense =:expense')
+            ->setParameter('expense', $expense)
+            ->getQuery();
+
+        return $query->execute();
+    }
+    
+
     public function getExpenseParticularsByExpense(Expense $entity){
         $qb = $this->createQueryBuilder('e');
         $qb->select('e.id', 'e.amount', 'e.path', 'e.expenseChartDetailId');
