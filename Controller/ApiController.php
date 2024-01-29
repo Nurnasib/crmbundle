@@ -4339,7 +4339,6 @@ class ApiController extends AbstractController
                 }else{
                     $expense = new Expense();
                 }
-
                     $getLastMileageRecords = $this->getDoctrine()->getRepository(ExpenseConveyanceDetails::class)->getLastMileageByEmployeeDate($employeeId, $vistingDate);
 
                     $expense->setExpenseDate(new \DateTime($vistingDate));
@@ -4353,18 +4352,18 @@ class ApiController extends AbstractController
                     $this->getDoctrine()->getManager()->persist($expense);
                     if(isset($expenseData['particulars']) && count($expenseData['particulars'])>0){
                         foreach ($expenseData['particulars'] as $particular) {
-
                             $particularId = isset($particular['id']) && $particular['id'] != "" ? $particular['id'] : '';
                             $expensePerticular = null;
                             if($particularId!=''){
                                 $exitingEexpensePerticular = $this->getDoctrine()->getRepository(ExpenseParticular::class)->findOneBy([ 'id'=>$particularId, 'expense' => $expense]);
                                 if($exitingEexpensePerticular){
                                     $expensePerticular = $exitingEexpensePerticular;
+                                }else{
+                                    $expensePerticular = new ExpenseParticular();
                                 }
-                            }elseif ($particularId==''){
+                            }else{
                                 $expensePerticular = new ExpenseParticular();
                             }
-
                             $expensePerticular->setExpense($expense);
                             $expensePerticular->setAmount(isset($particular['amount']) && $particular['amount']!=''?(float)$particular['amount']:0);
                             $expensePerticular->setParticular($this->getDoctrine()->getRepository(Setting::class)->find((int)$particular['particular_id']));
@@ -4401,6 +4400,8 @@ class ApiController extends AbstractController
                                             $exitingExpenseConveyanceDetails = $this->getDoctrine()->getRepository(ExpenseConveyanceDetails::class)->findOneBy(['id'=>$exitingDetailId, 'expense'=>$expense]);
                                             if($exitingExpenseConveyanceDetails){
                                                 $expenseConveyanceDetails = $exitingExpenseConveyanceDetails;
+                                            }else{
+                                                $expenseConveyanceDetails = new ExpenseConveyanceDetails();
                                             }
                                         }elseif ($exitingDetailId==''){
                                             $expenseConveyanceDetails = new ExpenseConveyanceDetails();
@@ -4415,7 +4416,6 @@ class ApiController extends AbstractController
                                         $this->getDoctrine()->getManager()->persist($expenseConveyanceDetails);
                                     }
                                 }
-
                             }else{
                                 $exitingDetailId = isset($item['id']) && $item['id']!=''?$item['id']:'';
                                 $expenseConveyanceDetails = null;
@@ -4423,6 +4423,8 @@ class ApiController extends AbstractController
                                     $exitingExpenseConveyanceDetails = $this->getDoctrine()->getRepository(ExpenseConveyanceDetails::class)->findOneBy(['id'=>$exitingDetailId, 'expense'=>$expense]);
                                     if($exitingExpenseConveyanceDetails){
                                         $expenseConveyanceDetails = $exitingExpenseConveyanceDetails;
+                                    }else{
+                                        $expenseConveyanceDetails = new ExpenseConveyanceDetails();
                                     }
                                 }elseif ($exitingDetailId==''){
                                     $expenseConveyanceDetails = new ExpenseConveyanceDetails();
