@@ -210,7 +210,7 @@ class ExpenseRepository extends EntityRepository
             $qb->andWhere("DATE_FORMAT(e.expenseDate,'%Y-%m') =:yearMonth")->setParameter('yearMonth', $yearMonth);
 
             $qb->andWhere('employee.id =:employeeId')->setParameter('employeeId', $employeeId);
-            $qb->orderBy('e.expenseDate','ASC');
+            $qb->orderBy('e.expenseDate','DESC');
 
             $results= $qb->getQuery()->getResult();
 
