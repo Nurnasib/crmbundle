@@ -4351,7 +4351,7 @@ class ApiController extends AbstractController
                     $this->getDoctrine()->getManager()->persist($expense);
                     if(isset($expenseData['particulars']) ){
                         
-                        $this->getDoctrine()->getRepository(ExpenseParticular::class)->deleteAllParticularByExpense($expense);
+//                        $this->getDoctrine()->getRepository(ExpenseParticular::class)->deleteAllParticularByExpense($expense);
 
                         foreach ($expenseData['particulars'] as $particular) {
                             $expensePerticular = new ExpenseParticular();
@@ -4364,7 +4364,7 @@ class ApiController extends AbstractController
                     }
 
                     if(isset($expenseData['mode_of_transport'])){
-                        $this->getDoctrine()->getRepository(ExpenseConveyanceDetails::class)->deleteAllConveyanceDetailByExpense($expense);
+//                        $this->getDoctrine()->getRepository(ExpenseConveyanceDetails::class)->deleteAllConveyanceDetailByExpense($expense);
                         
                         foreach ($expenseData['mode_of_transport'] as $transport_type => $value) {
                             $fuel_bill = isset($value['fuel_bill']) && $value['fuel_bill']!=''?(float)$value['fuel_bill']:0;
