@@ -4350,8 +4350,9 @@ class ApiController extends AbstractController
 
                     $this->getDoctrine()->getManager()->persist($expense);
                     if(isset($expenseData['particulars']) ){
-                        
-//                        $this->getDoctrine()->getRepository(ExpenseParticular::class)->deleteAllParticularByExpense($expense);
+                        if($expense->getExpenseParticulars() && sizeof($expense->getExpenseParticulars()) >0 ){
+                            $this->getDoctrine()->getRepository(ExpenseParticular::class)->deleteAllParticularByExpense($expense);
+                        }                        
 
                         foreach ($expenseData['particulars'] as $particular) {
                             $expensePerticular = new ExpenseParticular();
@@ -4364,8 +4365,10 @@ class ApiController extends AbstractController
                     }
 
                     if(isset($expenseData['mode_of_transport'])){
-//                        $this->getDoctrine()->getRepository(ExpenseConveyanceDetails::class)->deleteAllConveyanceDetailByExpense($expense);
-                        
+                        if($expense->getExpenseConveyanceDetails() && sizeof($expense->getExpenseConveyanceDetails())>0){
+                            $this->getDoctrine()->getRepository(ExpenseConveyanceDetails::class)->deleteAllConveyanceDetailByExpense($expense);
+                        }
+
                         foreach ($expenseData['mode_of_transport'] as $transport_type => $value) {
                             $fuel_bill = isset($value['fuel_bill']) && $value['fuel_bill']!=''?(float)$value['fuel_bill']:0;
                             $toll_bill = isset($value['toll_bill']) && $value['toll_bill']!=''?(float)$value['toll_bill']:0;
