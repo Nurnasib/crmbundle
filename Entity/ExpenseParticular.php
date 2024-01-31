@@ -31,8 +31,7 @@ class ExpenseParticular
     /**
      * @var Expense
      * @ORM\ManyToOne(targetEntity="Terminalbd\CrmBundle\Entity\Expense", inversedBy="expenseParticulars")
-     * @ORM\JoinColumn(name="expense_id", referencedColumnName="id", nullable=true)
-     * @ORM\JoinColumn(onDelete="CASCADE")
+     * @ORM\JoinColumn(name="expense_id", referencedColumnName="id", nullable=true, onDelete="CASCADE")
      */
 
     private $expense;
@@ -40,8 +39,7 @@ class ExpenseParticular
     /**
      * @var ExpenseBatch
      * @ORM\ManyToOne(targetEntity="Terminalbd\CrmBundle\Entity\ExpenseBatch", inversedBy="expenseParticulars")
-     * @ORM\JoinColumn(name="expense_batch_id", referencedColumnName="id", nullable=true)
-     * @ORM\JoinColumn(onDelete="CASCADE")
+     * @ORM\JoinColumn(name="expense_batch_id", referencedColumnName="id", nullable=true, onDelete="CASCADE")
      */
 
     private $expenseBatch;

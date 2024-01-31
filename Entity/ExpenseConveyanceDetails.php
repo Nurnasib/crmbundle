@@ -34,6 +34,7 @@ class ExpenseConveyanceDetails
     /**
      * @var Expense
      * @ORM\ManyToOne(targetEntity="Terminalbd\CrmBundle\Entity\Expense" , inversedBy="expenseConveyanceDetails")
+     * @ORM\JoinColumn(name="expense_id", referencedColumnName="id", nullable=true, onDelete="CASCADE")
      */
     private $expense;
 
