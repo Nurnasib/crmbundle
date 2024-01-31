@@ -4686,10 +4686,24 @@ class ApiController extends AbstractController
                        $dailyExpenseCheck=$this->getDoctrine()->getRepository(Expense::class)->getExpenseByEmployeeAndDate( $employeeId, $visitingDate);
                    }
 
+                   $lastExpense = $this->getDoctrine()->getRepository(Expense::class)->getLastExpenseByEmployee($employeeId);
+                   $lastExpenseDate = $lastExpense && isset($lastExpense['expenseDate']) ?$lastExpense['expenseDate']->format('Y-m-d'):'';
+                     $lastVisitPlan = null;
+                    $lastNextDate = '';
+                   if($lastExpenseDate !=""){
+                       $lastNextDate = date('Y-m-d', strtotime($lastExpenseDate. ' + 1 days'));
+                       $lastNextdateMonth = date('Y-m', strtotime($lastNextDate));
+                       $lastVisitPlan = $this->getDoctrine()->getRepository(CrmVisitPlan::class)->getMonthlyTourPlanByEmployeeAndDate($employeeId, $lastNextDate, 'daily');
+                       $lastVisitPlan = $lastVisitPlan && isset($lastVisitPlan['data']) && isset($lastVisitPlan['data'][$lastNextdateMonth]) && isset($lastVisitPlan['data'][$lastNextdateMonth][$lastNextDate]) ? $lastVisitPlan['data'][$lastNextdateMonth][$lastNextDate] : '';
+                   }
+
                     return new JsonResponse([
                         'status' => 200,
                         'message' => 'Success',
                         'dailyExpense' => $dailyExpenseCheck?true:false,
+                        'lastExpenseDate'=> $lastExpenseDate,
+                        'lastNextExpenseDate' => $lastNextDate,
+                        'lastNextVisitPlan'=> $lastVisitPlan,
                         'data' => $visitPlans,
                     ]);
                 }

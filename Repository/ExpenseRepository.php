@@ -184,6 +184,21 @@ class ExpenseRepository extends EntityRepository
         return $results;
     }
     
+    public function getLastExpenseByEmployee($employeeId){
+        $qb = $this->createQueryBuilder('e');
+        $qb->select('e.id', 'e.expenseDate', 'e.createdAt');
+        $qb->join('e.employee','employee');
+
+        $qb->andWhere('e.expenseDate IS NOT NULL');
+        $qb->andWhere('employee.id =:employeeId')->setParameter('employeeId', $employeeId);
+        $qb->orderBy('e.expenseDate','DESC');
+        $qb->setMaxResults(1);
+
+        $results= $qb->getQuery()->getOneOrNullResult();
+
+        return $results;
+    }
+    
     public function duplicateExpenseCheckByEmployeeAndDate(Expense $entity, User $employee, $expenseDate){
         $qb = $this->createQueryBuilder('e');
         $qb->select('e.id');
