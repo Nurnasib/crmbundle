@@ -4701,8 +4701,8 @@ class ApiController extends AbstractController
                         'status' => 200,
                         'message' => 'Success',
                         'dailyExpense' => $dailyExpenseCheck?true:false,
-                        'lastExpenseDate'=> $lastExpenseDate,
-                        'lastNextExpenseDate' => $lastNextDate,
+                        'lastExpenseDate'=> $lastExpenseDate ? $lastExpenseDate : date('Y-m-d'),
+                        'lastNextExpenseDate' => $lastNextDate ? $lastNextDate : date('Y-m-d'),
                         'lastNextVisitPlan'=> $lastVisitPlan,
                         'data' => $visitPlans,
                     ]);
