@@ -4585,9 +4585,9 @@ class ApiController extends AbstractController
                         "cumulativeTotalMileageOneThousand"=> "",
                         "cumulativeTotalMileageTwoThousand"=> "",
                         'perKmRate' => '3.50',
-                        'mobil_bill' => '0',
-                        'maintenance_bill' => '0',
-                        'servicing_bill' => '0',
+                        'mobil_bill' => '500',
+                        'maintenance_bill' => '500',
+                        'servicing_bill' => '500',
                     ];
                 }
             }
