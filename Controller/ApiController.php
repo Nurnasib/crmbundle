@@ -20,6 +20,7 @@ use Symfony\Component\Validator\Constraints\DateTime;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Terminalbd\CrmBundle\Entity\Api;
 use Terminalbd\CrmBundle\Entity\ApiDetails;
+use Terminalbd\CrmBundle\Entity\AppVersions;
 use Terminalbd\CrmBundle\Entity\BroilerStandard;
 use Terminalbd\CrmBundle\Entity\CattleLifeCycle;
 use Terminalbd\CrmBundle\Entity\CattleLifeCycleDetails;
@@ -549,6 +550,9 @@ class ApiController extends AbstractController
             }
 
             $entities['crm_company_wise_feed_sale'] = $arrayData;
+
+            $appVersion = $this->getDoctrine()->getRepository(AppVersions::class)->getActiveAppVersion();
+            $entities['app_version'] = $appVersion;
 
 
             $response = new Response();
