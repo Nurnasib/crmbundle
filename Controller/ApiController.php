@@ -1757,6 +1757,8 @@ class ApiController extends AbstractController
         $data = $request->request->all();
 
         if ($data) {
+            $appVersion = $this->getDoctrine()->getRepository(AppVersions::class)->getActiveAppVersion();
+
             if (!in_array($data['process'], ['crm_fish_life_cycle_detail_species'])) {
                 $em = $this->getDoctrine()->getManager();
                 $findEmployee = $this->getDoctrine()->getRepository(User::class)->find($data['employee_id']);
@@ -1786,7 +1788,6 @@ class ApiController extends AbstractController
                     $em->persist($apiDetails);
                     $em->flush();
                 }
-                $appVersion = $this->getDoctrine()->getRepository(AppVersions::class)->getActiveAppVersion();
                 return new JsonResponse([
                     'status' => 200,
                     'app_version' => $appVersion
@@ -1794,6 +1795,7 @@ class ApiController extends AbstractController
             }
             return new JsonResponse([
                 'status' => 200,
+                'app_version' => $appVersion
             ]);
         } else {
             return new JsonResponse([
