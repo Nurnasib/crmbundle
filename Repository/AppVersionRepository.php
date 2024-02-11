@@ -22,8 +22,11 @@ class AppVersionRepository extends EntityRepository
         $qb->where('e.status =:status')->setParameter('status', 1);
         $qb->orderBy('e.id', 'DESC');
         $qb->setMaxResults(1);
-        $result = $qb->getQuery()->getOneOrNullResult();
-        return $result;
+        $result = $qb->getQuery()->getArrayResult();
+        if ($result) {
+            return $result;
+        }
+        return [];
 
     }
 

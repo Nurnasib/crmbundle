@@ -1786,9 +1786,10 @@ class ApiController extends AbstractController
                     $em->persist($apiDetails);
                     $em->flush();
                 }
-
+                $appVersion = $this->getDoctrine()->getRepository(AppVersions::class)->getActiveAppVersion();
                 return new JsonResponse([
                     'status' => 200,
+                    'app_version' => $appVersion
                 ]);
             }
             return new JsonResponse([
