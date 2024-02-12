@@ -4575,9 +4575,9 @@ class ApiController extends AbstractController
                     $getLastMileageRecords = [
                         'id' => (string)$getLastMileageRecord['id'],
                         'transportType' => $getLastMileageRecord['transportType'],
-                        'totalMileage' => $getLastMileageRecord['totalMileage'],
-                        'cumulativeTotalMileageOneThousand' => $getLastMileageRecord['cumulativeTotalMileageOneHundred'],
-                        'cumulativeTotalMileageTwoThousand' => $getLastMileageRecord['cumulativeTotalMileageTwoHundred'],
+                        'totalMileage' => (string)$getLastMileageRecord['totalMileage'],
+                        'cumulativeTotalMileageOneThousand' => (string)$getLastMileageRecord['cumulativeTotalMileageOneHundred'],
+                        'cumulativeTotalMileageTwoThousand' =>  (string)$getLastMileageRecord['cumulativeTotalMileageTwoHundred'],
                         'perKmRate' => '3.50',
                         'mobil_bill' => '500',
                         'maintenance_bill' => '500',
