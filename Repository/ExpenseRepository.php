@@ -274,6 +274,9 @@ class ExpenseRepository extends EntityRepository
                             "parking_bill" => (string)$expenseConveyanceDetail->getParkingBill(),
                             "toll_bill" => (string)$expenseConveyanceDetail->getTollBill(),
                             "other_bill" => (string)$expenseConveyanceDetail->getOthersBill(),
+                            "mobil_bill" => (string)$expenseConveyanceDetail->getMobilBill(),
+                            "maintenance_bill" => (string)$expenseConveyanceDetail->getMaintenanceBill(),
+                            "servicing_bill" => (string)$expenseConveyanceDetail->getServicingBill(),
                             "details" => $expenseConveyanceDetail->getDetails(),
                         ];
                     } elseif ($expenseConveyanceDetail->getTransportType() == 'local-conveyance' ){
