@@ -31,7 +31,7 @@ class CrmVIsitPlanRepository extends EntityRepository
         $qb->addSelect('employee.id as employeeId');
         $qb->addSelect('workingMode.id as workingModeId', 'workingMode.name as workingModeName');
         $qb->join('e.employee','employee');
-        $qb->leftJoin('e.e.workingMode','workingMode');
+        $qb->leftJoin('e.workingMode','workingMode');
         if($visitingDate && $visitingDate!=''){
             if($type=='monthly'){
                 $qb->andWhere("DATE_FORMAT(e.visitDate,'%Y-%m') =:yearMonth")->setParameter('yearMonth', date('Y-m', strtotime($visitingDate.'-01')));
