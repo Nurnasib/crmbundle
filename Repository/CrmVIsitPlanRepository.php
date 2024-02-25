@@ -29,7 +29,9 @@ class CrmVIsitPlanRepository extends EntityRepository
         $qb = $this->createQueryBuilder('e');
         $qb->select('e.id', 'e.visitingArea', 'e.visitDate', 'e.agentList', 'e.areaList', 'e.createdAt');
         $qb->addSelect('employee.id as employeeId');
+        $qb->addSelect('workingMode.id as workingModeId', 'workingMode.name as workingModeName');
         $qb->join('e.employee','employee');
+        $qb->leftJoin('e.e.workingMode','workingMode');
         if($visitingDate && $visitingDate!=''){
             if($type=='monthly'){
                 $qb->andWhere("DATE_FORMAT(e.visitDate,'%Y-%m') =:yearMonth")->setParameter('yearMonth', date('Y-m', strtotime($visitingDate.'-01')));
@@ -52,6 +54,7 @@ class CrmVIsitPlanRepository extends EntityRepository
                     'agentList' => $result['agentList'],
                     'areaList' => $result['areaList'],
                     'createdDate' => $result['createdAt']->format('Y-m-d'),
+                    'workingMode'=>$result['workingModeId']
                 ];
             }
         }
