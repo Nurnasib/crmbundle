@@ -4640,7 +4640,7 @@ class ApiController extends AbstractController
                 $data = isset($expenseData['data']) && $expenseData['data'] != "" ? $expenseData['data']: [];
                 if(sizeof($data)>0){
                     foreach ($data as $visitDate => $item) {
-                        $workingMode = $this->getDoctrine()->getRepository(Setting::class)->find((int)$item['workingMode']);
+                        $workingMode = $this->getDoctrine()->getRepository(Setting::class)->find((int)array_column($item['workingMode'],'id'));
                         $visitDate = date('Y-m-d', strtotime($visitDate));
                         $exitingVisitPlan = $this->getDoctrine()->getRepository(CrmVisitPlan::class)->findOneBy(['employee' => $employee, 'visitDate' => new \DateTimeImmutable($visitDate)]);
                         if($exitingVisitPlan){

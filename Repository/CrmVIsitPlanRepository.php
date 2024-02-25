@@ -54,7 +54,10 @@ class CrmVIsitPlanRepository extends EntityRepository
                     'agentList' => $result['agentList'],
                     'areaList' => $result['areaList'],
                     'createdDate' => $result['createdAt']->format('Y-m-d'),
-                    'workingMode'=>$result['workingModeId']
+                    'workingMode'=>[
+                        'id'=>$result['workingModeId'],
+                        'name'=>$result['workingModeName']
+                    ]
                 ];
             }
         }
