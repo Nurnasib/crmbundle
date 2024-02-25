@@ -4396,8 +4396,11 @@ class ApiController extends AbstractController
                             if($transport_type == 'local-conveyance' || $transport_type=='others') {
                                 if(sizeof($value)>0){
                                     foreach ($value as $item) {
+                                        $destination = isset($item['destination'])?$item['destination']:null;
+
                                         $expenseConveyanceDetails = new ExpenseConveyanceDetails();
                                         $expenseConveyanceDetails->setExpense($expense);
+                                        $expenseConveyanceDetails->setDestination($destination);
                                         $expenseConveyanceDetails->setDetails($item['details']);
                                         $expenseConveyanceDetails->setAmount((float)$item['amount']);
                                         $expenseConveyanceDetails->setTransportType($transport_type);

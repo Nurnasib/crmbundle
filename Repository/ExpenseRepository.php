@@ -284,6 +284,7 @@ class ExpenseRepository extends EntityRepository
                             'id' => $expenseConveyanceDetail->getId(),
                             "details" => $expenseConveyanceDetail->getDetails(),
                             "amount" => (string) $expenseConveyanceDetail->getAmount(),
+                            "destination" => $expenseConveyanceDetail->getDestination()?$expenseConveyanceDetail->getDestination():[],
                         ];
                     } elseif ($expenseConveyanceDetail->getTransportType() == 'others'){
                         $detailsArray['others'][] = [

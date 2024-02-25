@@ -41,6 +41,14 @@ class CrmVisitPlan
     private $employee;
 
     /**
+     * @var Setting
+     * @ORM\ManyToOne(targetEntity="Terminalbd\CrmBundle\Entity\Setting", inversedBy="crmVisitPlan")
+     * @ORM\JoinColumn(name="working_mode_id", referencedColumnName="id", onDelete="SET NULL", nullable=true)
+     *
+     */
+    private $workingMode;
+
+    /**
      * @var string
      * @ORM\Column(name="visiting_area", type="string", nullable=true )
      */
@@ -188,6 +196,16 @@ class CrmVisitPlan
     public function setCreatedAt(\DateTime $createdAt): void
     {
         $this->createdAt = $createdAt;
+    }
+
+    public function getWorkingMode(): ?Setting
+    {
+        return $this->workingMode;
+    }
+
+    public function setWorkingMode(?Setting $workingMode): void
+    {
+        $this->workingMode = $workingMode;
     }
 
 }
