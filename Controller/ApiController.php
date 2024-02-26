@@ -4592,9 +4592,9 @@ class ApiController extends AbstractController
                     $getLastMileageRecords = [
                         "id"=>"",
                         "transportType"=> "",
-                        "totalMileage"=> "",
-                        "cumulativeTotalMileageOneThousand"=> "",
-                        "cumulativeTotalMileageTwoThousand"=> "",
+                        "totalMileage"=> "0",
+                        "cumulativeTotalMileageOneThousand"=> "0",
+                        "cumulativeTotalMileageTwoThousand"=> "0",
                         'perKmRate' => '3.50',
                         'mobil_bill' => '500',
                         'maintenance_bill' => '500',
