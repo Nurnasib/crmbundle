@@ -336,6 +336,7 @@ class ExpenseRepository extends EntityRepository
                         'sort_order' => $result->getWorkingArea()->getSortOrder(),
                     ],
                     "change_area" => $result->getIsAreaChange(),
+                    "as_per_attachment" => $result->isAsPerAttachment(),
                     "details_comments" => $result->getDetailsComments(),
                     "mode_of_transport" => $detailsArray,
                     'particulars' => $particularArray,

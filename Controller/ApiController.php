@@ -4353,6 +4353,8 @@ class ApiController extends AbstractController
                     $expense->setComments($comment);
                     $expense->setWorkingArea($area);
                     $expense->setStatus(1);
+                    $expense->setIsAreaChange(isset($expenseData['change_area']) && $expenseData['change_area']==true?1:0);
+                    $expense->setAsPerAttachment(isset($expenseData['as_per_attachment']) ? $expenseData['as_per_attachment']:0);
 
                     $this->getDoctrine()->getManager()->persist($expense);
                     if(isset($expenseData['particulars']) ){

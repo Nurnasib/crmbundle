@@ -108,6 +108,13 @@ class Expense
      * @ORM\Column(type="smallint", nullable=true)
      */
     private $isAreaChange = 0;
+    
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="as_per_attachment", type="boolean", nullable=true)
+     */
+    private $asPerAttachment = false;
 
     public function __construct()
     {
@@ -423,6 +430,18 @@ class Expense
     {
         $this->isAreaChange = $isAreaChange;
     }
+
+    public function isAsPerAttachment(): ?bool
+    {
+        return $this->asPerAttachment;
+    }
+
+    public function setAsPerAttachment(?bool $asPerAttachment): void
+    {
+        $this->asPerAttachment = $asPerAttachment;
+    }
+    
+    
 
 
 }
