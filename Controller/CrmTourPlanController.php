@@ -8,6 +8,7 @@
 namespace Terminalbd\CrmBundle\Controller;
 
 
+use App\Entity\Admin\Location;
 use App\Entity\Core\Agent;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -22,6 +23,7 @@ use Terminalbd\CrmBundle\Entity\CrmVisit;
 use Terminalbd\CrmBundle\Entity\CrmVisitDetails;
 use Terminalbd\CrmBundle\Entity\CrmVisitPlan;
 use Terminalbd\CrmBundle\Entity\Setting;
+use Terminalbd\CrmBundle\Form\CrmTourPlanEditFormType;
 use Terminalbd\CrmBundle\Form\CrmTourPlanFormType;
 use Terminalbd\CrmBundle\Form\CrmVisitFormType;
 
@@ -36,12 +38,14 @@ class CrmTourPlanController extends AbstractController
      */
     public function index(Request $request)
     {
-        $requestDate = $request->query->get('date')?date('Y-m', strtotime($request->query->get('date'))):date('Y-m');
-        $entities = $this->getDoctrine()->getRepository(CrmVisitPlan::class)->getMonthlyTourPlanByEmployeeAndDate($this->getUser()->getId(), $requestDate, 'monthly');
+        $requestDate = $request->query->get('date')?date('Y-m-d', strtotime('01-'.$request->query->get('date'))):date('Y-m-01');
+        $entities = $this->getDoctrine()->getRepository(CrmVisitPlan::class)->getMonthlyTourPlanByEmployeeAndDate($this->getUser()->getId(), date('Y-m', strtotime($requestDate)), 'monthly');
 //        dd($entities);
+//        dd($requestDate);
         return $this->render('@TerminalbdCrm/crmTourPlan/index.html.twig', [
             'entities' => $entities,
-            'requestDate' => $requestDate
+            'requestDate' => date('m-Y', strtotime($requestDate)),
+            'currentDate' => date('Y-m-d')
         ]);
     }
 
@@ -78,6 +82,38 @@ class CrmTourPlanController extends AbstractController
         }
         return $this->render('@TerminalbdCrm/crmTourPlan/create.html.twig', [
             'form' => $form->createView()
+        ]);
+    }
+
+
+    /**
+     * @Route("/update/{id}", methods={"GET", "POST"}, name="crm_tour_plan_update", options={"expose"=true})
+     */
+    public function update(Request $request, CrmVisitPlan $visitPlan)
+    {
+        $form = $this->createForm(CrmTourPlanEditFormType::class, $visitPlan);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $requestVistingArea = $request->request->get('area_list');
+            $location = $this->getDoctrine()->getRepository(Location::class)->getLocationByIds($requestVistingArea);
+            $agents = $this->getDoctrine()->getRepository(Agent::class)->getAgentByIds($request->request->get('agent_list'));
+
+            $visitPlan->setAreaList($location && count($location)>0?$location:null);
+            $visitPlan->setAgentList($agents && count($agents)>0?$agents:null);
+            $this->getDoctrine()->getManager()->flush();
+            $this->addFlash('success', 'Tour Plan Updated Successfully');
+            return $this->redirectToRoute('crm_tour_plan');
+        }
+        $visitAreaList = $this->getLocationByEmployee();
+
+        $agentList = $this->getDoctrine()->getRepository(Agent::class)->getLocationWiseAgentForm($this->getUser());
+
+        return $this->render('@TerminalbdCrm/crmTourPlan/edit.html.twig', [
+            'form' => $form->createView(),
+            'visitAreaList' => $visitAreaList,
+            'agentList' => $agentList,
+            'addedVisitArea' => $visitPlan->getAreaList() && sizeof($visitPlan->getAreaList())>0? array_column($visitPlan->getAreaList(), 'areaId'):[],
+            'addedAgent' => $visitPlan->getAgentList() && sizeof($visitPlan->getAgentList())>0? array_column($visitPlan->getAgentList(), 'id'):[]
         ]);
     }
 
@@ -130,6 +166,52 @@ class CrmTourPlanController extends AbstractController
             'status' => 400,
             'message' => 'error'
         ]);
+    }
+
+
+
+    /**
+     * @Route("/employee-location", name="core_employee_location", options={"expose"=true})
+     * @return JsonResponse
+     */
+    public function getLocationByEmployeeUsingAjax()
+    {
+        $locations = $this->getLocationByEmployee();
+
+        return new JsonResponse($locations);
+    }
+
+
+    private function getLocationByEmployee()
+    {
+        $user = $this->getUser();
+        $returnArray=[];
+        if($user->getUpozila()){
+            /* @var Location $location*/
+            foreach ($user->getUpozila() as $location):
+                $returnArray[$location->getId()]=$location->getName();
+            endforeach;
+        }
+
+        return $returnArray;
+    }
+
+    /**
+     * @Route("/working-mode-select", name="working_mode_select", options={"expose"=true})
+     * @return JsonResponse
+     */
+
+    public function getWorkingModeUsingAjax()
+    {
+        $workingModes = $this->getDoctrine()->getRepository(Setting::class)->findBy(['status' => 1, 'settingType' => 'WORKING_MODE']);
+        $returnArray=[];
+        if ($workingModes){
+            foreach ($workingModes as $workingMode){
+                $returnArray[$workingMode->getId()]=$workingMode->getName();
+            }
+        }
+
+        return new JsonResponse($returnArray);
     }
 
 

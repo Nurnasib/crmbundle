@@ -210,24 +210,6 @@ class SettingController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/working-mode-select", name="working_mode_select", options={"expose"=true})
-     * @return JsonResponse
-     */
-
-    public function getWorkingModeUsingAjax()
-    {
-        $workingModes = $this->getDoctrine()->getRepository(Setting::class)->findBy(['status' => 1, 'settingType' => 'WORKING_MODE']);
-        $returnArray=[];
-        if ($workingModes){
-            foreach ($workingModes as $workingMode){
-                $returnArray[$workingMode->getId()]=$workingMode->getName();
-            }
-        }
-
-        return new JsonResponse($returnArray);
-    }
-
 
 
 }

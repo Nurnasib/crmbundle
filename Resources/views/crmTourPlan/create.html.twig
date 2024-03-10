@@ -19,7 +19,11 @@
             <div class="card">
                 <div class="card-header">
                     <h5>{{ 'Crm Tour Plan'|trans }}</h5>
-
+                    <div class="card-header-right">
+                        <div class="btn-group btn-group-sm" role="group" aria-label="Button group with nested dropdown">
+                            <a href="{{ path('crm_tour_plan') }}" class="btn btn-sm gray-bg white-font"><i class="fa fa-th-list"></i>{{ 'CRM Tour Plan'|trans }}</a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -27,7 +31,7 @@
             <div class="card">
                 <div class="portlet box green ">
                     <div class="portlet-title">
-                        <div class="caption">{{ 'Manage CRM Element'|trans }} </div>
+                        <div class="caption">{{ 'Manage Tour Plan'|trans }} </div>
                     </div>
                     <div class="portlet-body form">
                         {{ form_start(form, {'attr': {'class': 'form-horizontal right'}}) }}
@@ -88,12 +92,14 @@
     <script type="application/javascript" src="{{ asset('bundles/terminalbdcrm/js/crm/fcr.js') }}"></script>
     <script type="application/javascript" src="{{ asset('bundles/terminalbdcrm/js/crm/expense.js') }}"></script>
     <script>
-
+        var currentTime = new Date()
+        var minDate = new Date(currentTime.getYear(), currentTime.getMonth()-1);
         $('.monthYearPicker').datepicker({
             changeMonth: true,
             changeYear: true,
             dateFormat: 'mm-yy',
             autoClose:true,
+            minDate: '-1m',
             onClose: function() {
                 $(this).datepicker('widget').removeClass('hide-calendar');
                 $("#ui-datepicker-div").removeClass('monthYearPicker');

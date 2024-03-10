@@ -33,14 +33,31 @@
         <div class="row">
             <div class="card">
                 <div class="card-block">
+                    <form action="{{ path('crm_tour_plan') }}">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <input type="text" class="form-control datepicker monthYearPicker" id="fromDate" name="date" value="{{ requestDate|default('') }}">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <button class="btn btn-sm btn-success" type="submit" value="search" name="search">
+                                    <i class="fa fa-search"></i>
+                                    {{ 'Search'|trans }}
+                                </button>
+                            </div>
+                        </div>
+                    </form>
                     <table class="table table-striped table-bordered table-hover" id="datatable">
                         <thead class="thead-dark">
                         <tr>
-                            <th style="width: 10%" scope="col">S/N</th>
+                            <th style="width: 5%" scope="col">S/N</th>
                             <th style="width: 10%" scope="col">{{ 'Visiting Date'|trans }}</th>
                             <th style="width: 20%" scope="col">Working Mode</th>
                             <th style="width: 20%" scope="col">Visiting Area</th>
-                            <th style="width: 10%" scope="col" class="text-center" width="12%"><i class="feather icon-settings"></i></th>
+                            <th style="width: 30%" scope="col">Agent List</th>
+                            <th style="width: 30%" scope="col">Area List</th>
+                            <th style="width: 5%" scope="col" class="text-center" width="5%"><i class="feather icon-settings"></i></th>
                         </tr>
                         </thead>
                         <tbody>
@@ -51,7 +68,7 @@
                                         <td>{{ loop.index }}</td>
                                         <td>{{ visitingDate|date('d-m-Y') }}</td>
                                         <td>
-{#                                            {% if entity.workingMode.workingModeId is defined %}#}
+                                            {% if visitingDate|date('d-m-Y') >= currentDate|date('d-m-Y') %}
                                             <a
                                                     data-type="select"
                                                     class="editable"
@@ -65,9 +82,12 @@
                                                     data-original-title="Select Working Mode">
                                                 {{ entity.workingMode.name|default('') }}
                                             </a>
-{#                                            {% endif %}#}
+                                                {% else %}
+                                                {{ entity.workingMode.name|default('') }}
+                                            {% endif %}
                                         </td>
                                         <td>
+                                            {% if visitingDate|date('d-m-Y') >= currentDate|date('d-m-Y') %}
                                             <a
                                                     data-type="text"
                                                     class="editable"
@@ -79,10 +99,37 @@
                                                     data-value="{{ entity.visitingArea|default('') }}">
                                                 {{ entity.visitingArea }}
                                             </a>
-
+                                            {% else %}
+                                                {{ entity.visitingArea|default('') }}
+                                            {% endif %}
                                         </td>
                                         <td>
-    {#                                        <a class="btn btn-transparent btn-mini red-font remove" href="javascript:" data-action="{{ path('crm_visit_delete',{'id':entity.id}) }}"><i class="fa fa-remove"></i></a>#}
+                                            {{  entity.agentNameList|default('') }}
+{#                                            info|join(', ')#}
+                                        </td>
+                                        <td>
+                                            {{  entity.areaNameList|default('') }}
+{#                                            info|join(', ')#}
+                                        </td>
+                                        {#<td>
+                                            <a
+                                                    data-type="select2"
+                                                    class="editable"
+                                                    id="reportMode-{{ entity.id }}"
+                                                    data-name="reportMode"
+                                                    href="#"
+                                                    data-source="{{ path('core_employee_location') }}"
+                                                    data-url=""
+#}{#                                                    data-pk="{{ entity.id }}"#}{#
+#}{#                                                    data-value="{{ entity.reportModeId }}"#}{#
+                                                    data-original-title="Select Upozila">
+                                                {{ entity.areaList|default('') }}
+                                            </a>
+                                        </td>#}
+                                        <td>
+                                            {% if visitingDate|date('d-m-Y') >= currentDate|date('d-m-Y') %}
+                                            <a title="Edit" class="btn btn-transparent btn-sm" href="{{ path('crm_tour_plan_update',{'id':entity.id}) }}"><i class="fa fa-edit"></i></a>
+                                            {% endif %}
                                         </td>
                                     </tr>
                                 {% endfor %}
@@ -105,12 +152,46 @@
             text-decoration: none;
             border-bottom: dashed 1px #0088cc;
         }
+
+        .hide-calendar .ui-datepicker-calendar{
+            display: none;
+        }
     </style>
 {% endblock  %}
 {% block javascripts %}
     {{ parent() }}
     <script type="application/javascript" src="{{ asset('assets/plugins/bootstrap-editable/js/bootstrap4-editable.js') }}"></script>
+    <script type="text/javascript">
+        $('.monthYearPicker').datepicker({
+            changeMonth: true,
+            changeYear: true,
+            dateFormat: 'mm-yy',
+            autoClose:true,
+            onClose: function() {
+                $(this).datepicker('widget').removeClass('hide-calendar');
+                $("#ui-datepicker-div").removeClass('monthYearPicker');
+                var iMonth = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
+                var iYear = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
+                $(this).datepicker('setDate', new Date(iYear, iMonth, 1));
+            },
 
+            beforeShow: function(input) {
+                $(input).datepicker("widget").addClass('hide-calendar');
+                $("#ui-datepicker-div").addClass('monthYearPicker');
+                // console.log($(this).val());
+                if ((selDate = $(this).val()).length > 0)
+                {
+                    iYear = selDate.substring(selDate.length - 4, selDate.length);
+                    iMonth = selDate.substring(0, 2);
+                    // iMonth = jQuery.inArray(selDate.substring(1, 2), $(this).datepicker('option', 'monthNames'));
+                    // console.log(iMonth);
+                    iMonth = iMonth-1;
+                    $(this).datepicker('option', 'defaultDate', new Date(iYear, iMonth, 1));
+                    $(this).datepicker('setDate', new Date(iYear, iMonth, 1));
+                }
+            }
+        });
+    </script>
 
 {% endblock  %}
 

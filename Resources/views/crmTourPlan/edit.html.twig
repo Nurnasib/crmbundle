@@ -1,0 +1,184 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block body %}
+    <div class="pcoded-inner-content">
+        <!-- [ breadcrumb ] start -->
+        <div class="page-header">
+            <div class="page-block">
+                <div class="row align-items-center">
+                    <ul class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/"><i class="feather icon-home"></i></a></li>
+                        {#<li class="breadcrumb-item"> <a href="{{ path('kpi_setup') }}">  {{ 'Employee Sales'|trans }}</a></li>#}
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!-- [ breadcrumb ] end -->
+        <!-- [ Main Content ] start -->
+        <div class="row">
+            <div class="card">
+                <div class="card-header">
+                    <h5>{{ 'Crm Tour Plan'|trans }}</h5>
+                    <div class="card-header-right">
+                        <div class="btn-group btn-group-sm" role="group" aria-label="Button group with nested dropdown">
+                            <a href="{{ path('crm_tour_plan') }}" class="btn btn-sm gray-bg white-font"><i class="fa fa-th-list"></i>{{ 'CRM Tour Plan'|trans }}</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="card">
+                <div class="portlet box green ">
+                    <div class="portlet-title">
+                        <div class="caption">{{ 'Manage CRM Element'|trans }} </div>
+                    </div>
+                    <div class="portlet-body form">
+                        {{ form_start(form, {'attr': {'class': 'form-horizontal right'}}) }}
+                        <div class="row form-body">
+                            <div class="form-inner-no-space">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            {{ form_label(form.workingMode,'Working Mode'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
+                                            <div class="col-md-8">
+                                                <span class="not-blank"> *</span>
+                                                {{ form_widget(form.workingMode) }}
+                                                {{ form_errors(form.workingMode) }}
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            {{ form_label(form.visitingArea,'Visiting Area'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
+                                            <div class="col-md-8">
+                                                <span class="not-blank"> *</span>
+                                                {{ form_widget(form.visitingArea) }}
+                                                {{ form_errors(form.visitingArea) }}
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label for="area_list" class="col-md-2 control-label">Area List</label>
+                                            <div class="col-md-10">
+                                                <select name="area_list[]" id="area_list" class="form-control" multiple>
+                                                    <option value="">Select Area</option>
+                                                    {% if visitAreaList is not empty %}
+                                                        {% for id, area in visitAreaList %}
+                                                            <option value="{{ id }}" {{ id in addedVisitArea?'selected="selected"':'' }}>{{ area }}</option>
+                                                        {% endfor %}
+                                                    {% endif %}
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label for="agent_list" class="col-md-2 control-label">Agent List</label>
+                                            <div class="col-md-10">
+                                                <select name="agent_list[]" id="agent_list" class="form-control" multiple>
+                                                    <option value="">Select Agent</option>
+                                                    {% if agentList is not empty %}
+                                                        {% for agent in agentList %}
+                                                            <option value="{{ agent.id }}" {{ agent.id in addedAgent?'selected="selected"':'' }}>{{ agent.name }}</option>
+                                                        {% endfor %}
+                                                    {% endif %}
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                {#end#}
+
+                                <div class="form-actions">
+                                    <div class="row">
+                                        <div class="col-md-6 "></div>
+                                        <div class="col-md-6 text-right">
+                                            <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                                                <button type="reset" class="btn btn-sm yellow-bg white-font"><i class="fa fa-refresh"></i>Restore</button>
+                                                {{ form_widget(form.Save, {label: 'Save',value:'Save', attr: { class: 'btn btn-primary form-submit'}}) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                </div>
+                            </div>
+                        </div>
+                        {{ form_widget(form._token) }}
+                        {{ form_end(form) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- [ Main Content ] end -->
+    </div>
+    <style>
+        .hide-calendar .ui-datepicker-calendar{
+            display: none;
+        }
+    </style>
+{% endblock %}
+{% block cssBlock %}
+    <link rel="stylesheet" href="{{ asset('assets/module/css/app.css') }}">
+    <link rel="stylesheet" href="{{ asset('bundles/terminalbdcrm/css/crm.css') }}">
+{% endblock  %}
+{% block javascripts %}
+    {{ parent() }}
+    <script type="application/javascript" src="{{ asset('assets/module/js/jquery.quicksearch.js') }}"></script>
+    <script type="application/javascript" src="{{ asset('assets/module/js/app.js') }}"></script>
+
+
+
+{% endblock  %}
+
+{% block documentready %}
+    {{ parent() }}
+    $('#area_list, #agent_list').multiSelect({
+    selectableHeader: "<input type='text' class='form-control' autocomplete='off' placeholder='Search...'>",
+    selectionHeader: "<input type='text' class='form-control' autocomplete='off' placeholder='Search...'>",
+    afterInit: function(ms) {
+    var that = this,
+    $selectableSearch = that.$selectableUl.prev(),
+    $selectionSearch = that.$selectionUl.prev(),
+    selectableSearchString = '#' + that.$container.attr('id') + ' .ms-elem-selectable:not(.ms-selected)',
+    selectionSearchString = '#' + that.$container.attr('id') + ' .ms-elem-selection.ms-selected';
+
+    that.qs1 = $selectableSearch.quicksearch(selectableSearchString)
+    .on('keydown', function(e) {
+    if (e.which === 40) {
+    that.$selectableUl.focus();
+    return false;
+    }
+    });
+
+    that.qs2 = $selectionSearch.quicksearch(selectionSearchString)
+    .on('keydown', function(e) {
+    if (e.which == 40) {
+
+    that.$selectionUl.focus();
+    return false;
+    }
+    });
+    },
+    afterSelect: function() {
+    this.qs1.cache();
+    this.qs2.cache();
+    },
+    afterDeselect: function() {
+    this.qs1.cache();
+    this.qs2.cache();
+    },
+    selectableOptgroup: true
+    });
+{% endblock %}
