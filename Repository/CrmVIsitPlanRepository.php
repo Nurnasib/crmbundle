@@ -50,6 +50,7 @@ class CrmVIsitPlanRepository extends EntityRepository
                 $visitDate=$result['visitDate']->format('Y-m-d');
                 $returnArray['employee_id'] = $result['employeeId'];
                 $returnArray['data'][$visitMonth][$visitDate]=[
+                    'id' => $result['id'],
                     'visitingArea'=>$result['visitingArea'],
                     'agentList' => $result['agentList'],
                     'areaList' => $result['areaList'],
