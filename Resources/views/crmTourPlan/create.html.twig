@@ -1,0 +1,158 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block body %}
+    <div class="pcoded-inner-content">
+        <!-- [ breadcrumb ] start -->
+        <div class="page-header">
+            <div class="page-block">
+                <div class="row align-items-center">
+                    <ul class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/"><i class="feather icon-home"></i></a></li>
+                        {#<li class="breadcrumb-item"> <a href="{{ path('kpi_setup') }}">  {{ 'Employee Sales'|trans }}</a></li>#}
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!-- [ breadcrumb ] end -->
+        <!-- [ Main Content ] start -->
+        <div class="row">
+            <div class="card">
+                <div class="card-header">
+                    <h5>{{ 'Crm Tour Plan'|trans }}</h5>
+
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="card">
+                <div class="portlet box green ">
+                    <div class="portlet-title">
+                        <div class="caption">{{ 'Manage CRM Element'|trans }} </div>
+                    </div>
+                    <div class="portlet-body form">
+                        {{ form_start(form, {'attr': {'class': 'form-horizontal right'}}) }}
+                        <div class="row form-body">
+                            <div class="form-inner-no-space">
+                                <div class="row">
+                                    <div class="col-md-6 offset-1">
+                                        <div class="form-group">
+                                            {{ form_label(form.visitDate,'Month'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
+                                            <div class="col-md-8">
+                                                <span class="not-blank"> *</span>
+                                                {{ form_widget(form.visitDate) }}
+                                                {{ form_errors(form.visitDate) }}
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                {#end#}
+
+                                <div class="form-actions">
+                                    <div class="row">
+                                        <div class="col-md-6 "></div>
+                                        <div class="col-md-6 text-right">
+                                            <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                                                <button type="reset" class="btn btn-sm yellow-bg white-font"><i class="fa fa-refresh"></i>Restore</button>
+                                                {{ form_widget(form.Save, {label: 'Save',value:'Save', attr: { class: 'btn btn-primary form-submit'}}) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="clearfix"></div>
+                                </div>
+                            </div>
+                        </div>
+                        {{ form_widget(form._token) }}
+                        {{ form_end(form) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- [ Main Content ] end -->
+    </div>
+    <style>
+        .hide-calendar .ui-datepicker-calendar{
+            display: none;
+        }
+    </style>
+{% endblock %}
+{% block cssBlock %}
+    <link rel="stylesheet" href="{{ asset('assets/module/css/app.css') }}">
+    <link rel="stylesheet" href="{{ asset('bundles/terminalbdcrm/css/crm.css') }}">
+{% endblock  %}
+{% block javascripts %}
+    {{ parent() }}
+    <script type="application/javascript" src="{{ asset('assets/module/js/app.js') }}"></script>
+    <script type="application/javascript" src="{{ asset('bundles/terminalbdcrm/js/crm/script.js') }}"></script>
+    <script type="application/javascript" src="{{ asset('bundles/terminalbdcrm/js/crm/fcr.js') }}"></script>
+    <script type="application/javascript" src="{{ asset('bundles/terminalbdcrm/js/crm/expense.js') }}"></script>
+    <script>
+
+        $('.monthYearPicker').datepicker({
+            changeMonth: true,
+            changeYear: true,
+            dateFormat: 'mm-yy',
+            autoClose:true,
+            onClose: function() {
+                $(this).datepicker('widget').removeClass('hide-calendar');
+                $("#ui-datepicker-div").removeClass('monthYearPicker');
+                var iMonth = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
+                var iYear = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
+                $(this).datepicker('setDate', new Date(iYear, iMonth, 1));
+            },
+
+            beforeShow: function(input) {
+                $(input).datepicker("widget").addClass('hide-calendar');
+                $("#ui-datepicker-div").addClass('monthYearPicker');
+                // console.log($(this).val());
+                if ((selDate = $(this).val()).length > 0)
+                {
+                    iYear = selDate.substring(selDate.length - 4, selDate.length);
+                    iMonth = selDate.substring(0, 2);
+                    // iMonth = jQuery.inArray(selDate.substring(1, 2), $(this).datepicker('option', 'monthNames'));
+                    // console.log(iMonth);
+                    iMonth = iMonth-1;
+                    $(this).datepicker('option', 'defaultDate', new Date(iYear, iMonth, 1));
+                    $(this).datepicker('setDate', new Date(iYear, iMonth, 1));
+                }
+            }
+        });
+
+
+
+    </script>
+
+
+{% endblock  %}
+
+{% block documentready %}
+    {{ parent() }}
+
+{#    <script>#}
+
+{#    "order": [#}
+{#    [1, "asc"]#}
+{#    ],#}
+{#    'columnDefs': [ {#}
+{#    'targets': 0,#}
+{#    'orderable': false#}
+{#    },#}
+{#    {#}
+{#    'targets': 5,#}
+{#    'orderable': false#}
+{#    },#}
+{#    {#}
+{#    'targets': 4,#}
+{#    'orderable': false#}
+{#    },#}
+{#    {#}
+{#    'targets': 6,#}
+{#    'orderable': false#}
+{#    },#}
+{#    {#}
+{#    'targets': 7,#}
+{#    'orderable': false#}
+{#    }]#}
+    });
+{% endblock %}
