@@ -4657,7 +4657,8 @@ class ApiController extends AbstractController
                         $visitPlan->setVisitingArea($item['visitingArea']);
                         $visitPlan->setVisitDate(new \DateTime($visitDate));
                         $visitPlan->setAreaList($item['areaList']);
-                        $visitPlan->setAgentList($item['agentList']);
+                        $visitPlan->setAgentList(isset($item['agentList']) && $item['agentList'] ? $item['agentList'] : null);
+                        $visitPlan->setAgentInfo(isset($item['agentInfo']) && $item['agentInfo'] ? $item['agentInfo'] : null);
                         $visitPlan->setWorkingMode($workingMode);
                         $this->getDoctrine()->getManager()->persist($visitPlan);
                         $this->getDoctrine()->getManager()->flush();

@@ -39,7 +39,7 @@ class ExpenseConveyanceDetailsRepository extends EntityRepository
 
     public function getTotalAmountConveyanceDetailsByExpense(User $user, $yearMonth=null, $batch=null){
         $qb = $this->createQueryBuilder('e');
-        $qb->select('e.id', 'e.transportType', 'SUM(e.totalAmount) as totalAmount');
+        $qb->select('e.id', 'e.transportType', 'SUM(e.totalAmount) as totalAmount', 'e.totalMileage');
         $qb->addSelect('expense.id as expenseId');
         $qb->join('e.expense','expense');
         $qb->join('expense.employee','employee');
@@ -122,6 +122,27 @@ class ExpenseConveyanceDetailsRepository extends EntityRepository
         $resutl = $qb->getQuery()->getOneOrNullResult();
 
         return $resutl;
+    }
+
+    public function getConveyanceDetailsByExpense(Expense $entity)
+    {
+        $qb = $this->createQueryBuilder('e');
+        $qb->select('e.id', 'e.transportType', 'e.totalAmount', 'e.totalMileage', 'e.cumulativeTotalMileageOneHundred', 'e.cumulativeTotalMileageTwoHundred');
+        $qb->addSelect('e.amount','e.maintenanceBill', 'e.mobilBill', 'e.servicingBill', 'e.fuelBill', 'e.parkingBill', 'e.othersBill', 'e.tollBill');
+        $qb->addSelect('expense.id as expenseId');
+        $qb->join('e.expense', 'expense');
+        $qb->where('expense.id =:expenseId')->setParameter('expenseId', $entity->getId());
+        $results = $qb->getQuery()->getArrayResult();
+
+        $returnArray = [];
+        if($results){
+            foreach ($results as $result) {
+                $returnArray[$result['transportType']][] = $result;
+            }
+        }
+
+        return $returnArray;
+
     }
 
 

@@ -38,7 +38,7 @@ use Terminalbd\CrmBundle\Form\SettingFormType;
 
 /**
  * @Route("/crm/expense")
- * @Security("is_granted('ROLE_CRM_POULTRY_USER') or is_granted('ROLE_CRM_CATTLE_USER') or is_granted('ROLE_CRM_AQUA_USER') or is_granted('ROLE_CRM_SALES_MARKETING_USER') or is_granted('ROLE_DEVELOPER')")
+ * @Security("is_granted('ROLE_LINE_MANAGER') or is_granted('ROLE_CRM_POULTRY_ADMIN') or is_granted('ROLE_CRM_CATTLE_ADMIN') or is_granted('ROLE_CRM_AQUA_ADMIN') or is_granted('ROLE_CRM_POULTRY_USER') or is_granted('ROLE_CRM_CATTLE_USER') or is_granted('ROLE_CRM_AQUA_USER') or is_granted('ROLE_CRM_SALES_MARKETING_USER') or is_granted('ROLE_DEVELOPER')")
  */
 class ExpenseController extends AbstractController
 {
@@ -106,22 +106,29 @@ class ExpenseController extends AbstractController
         $form = $this->createForm(ExpenseFormType::class, $entity)
             ->add('SaveAndCreate', SubmitType::class);
         $form->handleRequest($request);
+//        dd($this->getUser()->getRoles());
+        $employee = $entity && $entity->getEmployee()?$entity->getEmployee():$this->getUser();
         if ($form->isSubmitted() && $form->isValid()) {
             $formData=$form->getData();
             $expenseDate=$formData->getExpenseDate()->format('Y-m-d');
 
-            $employee= $this->getUser();
             $yearMonth = $formData->getExpenseDate()->format('Y-m');
             $expenseMonth = date('Y-m-d',strtotime($yearMonth.'-01'));
 
             $existingExpenseBatch= $this->getDoctrine()->getRepository(ExpenseBatch::class)->findOneBy(['employee'=>$employee, 'expenseMonth'=>new \DateTime($expenseMonth)]);
+            $rolesString = implode('_', $this->getUser()->getRoles());
 
-            if($existingExpenseBatch){
+            if($existingExpenseBatch && !str_contains($rolesString, 'ADMIN') && !in_array('ROLE_LINE_MANAGER', $this->getUser()->getRoles()) ){
+
+                $this->addFlash('error', $yearMonth.' month expense already process.');
+                return $this->redirectToRoute('crm_expense_details', ['employee'=>$employee->getId(),'monthYear'=>$yearMonth]);
+            } elseif($existingExpenseBatch && (str_contains($rolesString, 'ADMIN') || in_array('ROLE_LINE_MANAGER', $this->getUser()->getRoles())) && $entity->getEmployee()->getId()==$this->getUser()->getId()){
                 $this->addFlash('error', $yearMonth.' month expense already process.');
                 return $this->redirectToRoute('crm_expense_details', ['employee'=>$employee->getId(),'monthYear'=>$yearMonth]);
             }
 
-            $existingExpenseCheck=$this->getDoctrine()->getRepository(Expense::class)->duplicateExpenseCheckByEmployeeAndDate($entity, $this->getUser(),$expenseDate);
+
+            $existingExpenseCheck=$this->getDoctrine()->getRepository(Expense::class)->duplicateExpenseCheckByEmployeeAndDate($entity, $employee, $expenseDate);
             if($existingExpenseCheck && sizeof($existingExpenseCheck)>0) {
 
                 $this->addFlash('error', $expenseDate.' date expense already exist.');
@@ -134,7 +141,7 @@ class ExpenseController extends AbstractController
 //            dd($data);
             $em = $this->getDoctrine()->getManager();
 
-            $entity->setStatus(1);
+            $entity->setStatus($entity && $entity->getStatus()?$entity->getStatus():1);
 
             $em->persist($entity);
 
@@ -190,12 +197,17 @@ class ExpenseController extends AbstractController
         $dailyExpenseParticulars = $this->getDoctrine()->getRepository(Setting::class)->getDailyExpenseParticular();
 
         $expenseParticularByExpense = $this->getDoctrine()->getRepository(ExpenseParticular::class)->getExpenseParticularsByExpense($entity);
-        $attchments = $this->getDoctrine()->getRepository(DmsFile::class)->getDmsAttchmentFile($entity,'CRM','Expense');
-//dd($expenseParticularByExpense);
 
-        $expenseChartByEmployee = $this->getDoctrine()->getRepository(ExpenseChart::class)->getExpenseChartByEmployee($this->getUser()?$this->getUser()->getId():null);
+        $expenseConveyanceDetails = $this->getDoctrine()->getRepository(ExpenseConveyanceDetails::class)->getConveyanceDetailsByExpense($entity);
+//dd($expenseConveyanceDetails);
+        $attchments = $this->getDoctrine()->getRepository(DmsFile::class)->getDmsAttchmentFile($entity,'CRM','Expense');
+
+        $expenseChartByEmployee = $this->getDoctrine()->getRepository(ExpenseChart::class)->getExpenseChartByEmployee($entity && $entity->getEmployee()?$entity->getEmployee()->getId():$this->getUser()->getId());
         $fixedDailyExpenseParticular = array_filter(array_map(function($n) { if($n['paymentDuration']=='DAILY' && $n['expensePaymentType']=='FIXED') return $n; }, $expenseChartByEmployee));
         $userDefineDailyExpenseParticular = array_filter(array_map(function($n) { if($n['paymentDuration']=='DAILY' && $n['expensePaymentType']=='USER_DEFINE') return $n; }, $expenseChartByEmployee));
+
+        $typeOfVehicles = $this->typeOfVehicle( $employee );
+
         return $this->render('@TerminalbdCrm/expense/new.html.twig', [
             'entity' => $entity,
             'dailyExpenseParticulars' => $dailyExpenseParticulars,
@@ -206,6 +218,8 @@ class ExpenseController extends AbstractController
             'expenseChart' => $expenseChartByEmployee,
             'fixedDailyExpenseParticular' => $fixedDailyExpenseParticular,
             'userDefineDailyExpenseParticular' => $userDefineDailyExpenseParticular,
+            'expenseConveyanceDetails' => $expenseConveyanceDetails,
+            'typeOfVehicles' => $typeOfVehicles,
         ]);
     }
 
@@ -512,5 +526,28 @@ class ExpenseController extends AbstractController
         }
 
         return $type_of_vehicle;
+    }
+
+    /**
+     *
+     * @Route("/convence-details/update/inline/{id}", methods={"GET", "POST"}, name="crm_expense_convence_details", options={"expose"=true})
+     * @return Response
+     */
+    public function expenseConvenceDetailInlineEdit(Request $request, ExpenseConveyanceDetails $expenseConveyanceDetails): Response
+    {
+        $data = $request->request->all();
+        $em = $this->getDoctrine()->getManager();
+        if($expenseConveyanceDetails){
+            $fieldName = 'set'.$data['name'];
+
+            $expenseConveyanceDetails->$fieldName((int)$data['value']);
+
+            $expenseConveyanceDetails->setTotalAmount($expenseConveyanceDetails->calculateTotalAmount());
+
+            $em->persist($expenseConveyanceDetails);
+            $em->flush();
+            return new JsonResponse(['status'=>200, 'message'=>'Success', 'totalAmount'=>$expenseConveyanceDetails->getTotalAmount()]);
+        }
+        return new JsonResponse(['status'=>400, 'message'=>'Error']);
     }
 }

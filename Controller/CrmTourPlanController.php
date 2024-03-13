@@ -96,24 +96,24 @@ class CrmTourPlanController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $requestVistingArea = $request->request->get('area_list');
             $location = $this->getDoctrine()->getRepository(Location::class)->getLocationByIds($requestVistingArea);
-            $agents = $this->getDoctrine()->getRepository(Agent::class)->getAgentByIds($request->request->get('agent_list'));
+//            $agents = $this->getDoctrine()->getRepository(Agent::class)->getAgentByIds($request->request->get('agent_list'));
 
             $visitPlan->setAreaList($location && count($location)>0?$location:null);
-            $visitPlan->setAgentList($agents && count($agents)>0?$agents:null);
+//            $visitPlan->setAgentList($agents && count($agents)>0?$agents:null);
             $this->getDoctrine()->getManager()->flush();
             $this->addFlash('success', 'Tour Plan Updated Successfully');
             return $this->redirectToRoute('crm_tour_plan');
         }
         $visitAreaList = $this->getLocationByEmployee();
 
-        $agentList = $this->getDoctrine()->getRepository(Agent::class)->getLocationWiseAgentForm($this->getUser());
+//        $agentList = $this->getDoctrine()->getRepository(Agent::class)->getLocationWiseAgentForm($this->getUser());
 
         return $this->render('@TerminalbdCrm/crmTourPlan/edit.html.twig', [
             'form' => $form->createView(),
             'visitAreaList' => $visitAreaList,
-            'agentList' => $agentList,
+//            'agentList' => $agentList,
             'addedVisitArea' => $visitPlan->getAreaList() && sizeof($visitPlan->getAreaList())>0? array_column($visitPlan->getAreaList(), 'areaId'):[],
-            'addedAgent' => $visitPlan->getAgentList() && sizeof($visitPlan->getAgentList())>0? array_column($visitPlan->getAgentList(), 'id'):[]
+//            'addedAgent' => $visitPlan->getAgentList() && sizeof($visitPlan->getAgentList())>0? array_column($visitPlan->getAgentList(), 'id'):[]
         ]);
     }
 

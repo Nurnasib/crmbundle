@@ -59,6 +59,7 @@
                             </div>
                             <div class="col-md-6 text-center">
                                 <h6>Employee Id: {{ employee.userId|default('') }}</h6>
+                                <h6>Vehicle Type: {{ employee.typeOfVehicle|default('')|capitalize }} /  No: {{ employee.vehicleNo|default('') }}</h6>
                             </div>
                         </div>
                         {% if expenseBatch is null %}
@@ -120,6 +121,7 @@
                                                 {% for areaId, expenseParticularAttribute in areaWiseExpenseParticulars['areaName'] %}
                                                     {% if areaWiseExpenseParticulars is defined and areaWiseExpenseParticulars['chartDetails'] is defined and areaWiseExpenseParticulars['chartDetails'][areaId] is defined and areaWiseExpenseParticulars['chartDetails'][areaId] is iterable %}
                                                         {% for chartDetailsId, expenseChart in areaWiseExpenseParticulars['chartDetails'][areaId] %}
+                                                            {% set expenseParticularId = expensePaticularAmount['inLine'] is defined and expensePaticularAmount['inLine'][entity.employee.id][entity.id][chartDetailsId][expenseChart.particularId] is defined ? expensePaticularAmount['inLine'][entity.employee.id][entity.id][chartDetailsId][expenseChart.particularId]['expenseParticularId']:'' %}
                                                             {% set amount = expensePaticularAmount['inLine'] is defined and expensePaticularAmount['inLine'][entity.employee.id][entity.id][chartDetailsId][expenseChart.particularId] is defined ? expensePaticularAmount['inLine'][entity.employee.id][entity.id][chartDetailsId][expenseChart.particularId]['amount']|number_format(2,'.',''):0 %}
                                                             {% set lineTotal = lineTotal + amount %}
 
@@ -129,7 +131,8 @@
                                                                         {{ expensePaticularAmount['inLine'] is defined? expensePaticularAmount['inLine'][entity.employee.id][entity.id][chartDetailsId][expenseChart.particularId]['amount']|number_format(2,'.',','):'0.00' }}
                                                                     </a>
                                                                 {% else %}
-                                                                    {{ expensePaticularAmount['inLine'] is defined and expensePaticularAmount['inLine'][entity.employee.id][entity.id][chartDetailsId][expenseChart.particularId] is defined ? expensePaticularAmount['inLine'][entity.employee.id][entity.id][chartDetailsId][expenseChart.particularId]['amount']|number_format(2,'.',','):'' }}
+                                                                    {{ amount|number_format(2,'.',',') }}
+{#                                                                    == {{ expenseParticularId }}#}
                                                                 {% endif %}
                                                             </td>
 
@@ -159,7 +162,7 @@
                                                     <input type="hidden" name="expense[{{ entity.id }}]" value="{{ entity.id }}">
                                                 <div class="btn-group">
                                                 <a style="margin-right: 2px" class="btn btn-primary btn-mini white-font" href="{{ path('crm_expense_edit',{'id':entity.id}) }}"><i class="fa fa-edit"></i></a>
-                                                <a class="btn btn-danger btn-mini white-font removeReload" href="javascript:" data-action="{{ path('crm_expense_delete',{'id':entity.id}) }}"><i class="fa fa-remove"></i></a>
+{#                                                <a class="btn btn-danger btn-mini white-font removeReload" href="javascript:" data-action="{{ path('crm_expense_delete',{'id':entity.id}) }}"><i class="fa fa-remove"></i></a>#}
                                                 </div>
                                                 {% endif %}
                                             </td>

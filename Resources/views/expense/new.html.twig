@@ -97,6 +97,7 @@
                                     <div class="card-header-right">
                                     </div>
                                 </div>
+
                                 <div class="card-body card-body-inner">
                                     <div class="row">
                                         {% if fixedDailyExpenseParticular is defined and fixedDailyExpenseParticular is not empty %}
@@ -115,13 +116,13 @@
                                                     {% for dailyExpenseParticular in fixedDailyExpenseParticular %}
                                                         <tr>
                                                             <td>
-                                                                <input type="checkbox" name="particular_id[{{ entity.id }}][{{ dailyExpenseParticular.expenseChartDetailId }}][{{ dailyExpenseParticular.particularId }}]" value="{{ dailyExpenseParticular.amount }}" {{ expenseParticulars[entity.id][dailyExpenseParticular.expenseChartDetailId][dailyExpenseParticular.particularId] is defined ? 'checked="checked"':'' }}>
+                                                                <input type="checkbox" name="particular_id[{{ entity.id }}][{{ dailyExpenseParticular.expenseChartDetailId }}][{{ dailyExpenseParticular.particularId }}]" value="{{ expenseParticulars[entity.id][dailyExpenseParticular.expenseChartDetailId][dailyExpenseParticular.particularId] is defined ? expenseParticulars[entity.id][dailyExpenseParticular.expenseChartDetailId][dailyExpenseParticular.particularId]['amount']: dailyExpenseParticular.amount }}" {{ expenseParticulars[entity.id][dailyExpenseParticular.expenseChartDetailId][dailyExpenseParticular.particularId] is defined ? 'checked="checked"':'' }}>
                                                             </td>
                                                             <td>
                                                                 {{ dailyExpenseParticular.particularName }} ( for {{ dailyExpenseParticular.areaName }})
                                                             </td>
                                                             <td>
-                                                                <input class="form-control" type="number" min="0" step="any" name="amount[{{ entity.id }}][{{ dailyExpenseParticular.expenseChartDetailId }}][{{ dailyExpenseParticular.particularId }}]" value="{{ dailyExpenseParticular.amount }}">
+                                                                <input class="form-control" type="number" min="0" step="any" name="amount[{{ entity.id }}][{{ dailyExpenseParticular.expenseChartDetailId }}][{{ dailyExpenseParticular.particularId }}]" value="{{ expenseParticulars[entity.id][dailyExpenseParticular.expenseChartDetailId][dailyExpenseParticular.particularId] is defined ? expenseParticulars[entity.id][dailyExpenseParticular.expenseChartDetailId][dailyExpenseParticular.particularId]['amount']: dailyExpenseParticular.amount }}">
                                                             </td>
                                                             {#<td style="vertical-align: middle">
                                                                 <div style="height: 30px" class="custom-file">
@@ -176,20 +177,179 @@
                                         {% endif %}
 
                                     </div>
+                                    {% if typeOfVehicles is not empty and expenseConveyanceDetails is not empty %}
 
-                                </div>
-
-                                <div class="form-actions">
-                                    <div class="col-md-6 ">
-
-                                    </div>
-                                    <div class="col-md-6 text-right">
-                                        <div class="btn-group" role="group" aria-label="Button group with nested dropdown"><button type="reset" class="btn btn-sm yellow-bg white-font"><i class="fa fa-refresh"></i>Restore</button>
-                                            {{ form_widget(form.SaveAndCreate, {type: 'submit',label: 'label.save.continue',value:'label.save.continue', attr: { class: 'btn btn-info form-submit expense_form_button'}}) }}
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <table class="table table-bordered">
+                                                <thead>
+                                                <tr>
+                                                    <th>Vehicle Type</th>
+                                                    <th>Total Mileage (TK)</th>
+                                                    <th>Local Conveyance</th>
+                                                    <th>Mobil Bill</th>
+                                                    <th>Maintenance Bill</th>
+                                                    <th>Servicing Bill</th>
+                                                    <th>Toll Bill</th>
+                                                    <th>Fuel Bill</th>
+                                                    <th>Parking Bill</th>
+                                                    <th>Others Bill</th>
+                                                    <th>Total Amount</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+{#                                                {{ dump(typeOfVehicles) }}#}
+                                                    {% for typeOfVehicle in typeOfVehicles%}
+                                                        {% if expenseConveyanceDetails[typeOfVehicle.slug] is defined %}
+                                                            {% for expenseConveyanceDetail in expenseConveyanceDetails[typeOfVehicle.slug] %}
+                                                                {% set totalMileageAmount = expenseConveyanceDetail.totalMileage * 3.5 %}
+                                                            <tr>
+                                                                <td>
+                                                                    {{ typeOfVehicle.name }}
+                                                                </td>
+                                                                <td>
+                                                                    {{ totalMileageAmount }}
+                                                                </td>
+                                                                <td>
+                                                                    <a
+                                                                            data-type="text"
+                                                                            class="editable"
+                                                                            id="amount-{{ expenseConveyanceDetail.id|default('') }}"
+                                                                            data-name="Amount"
+                                                                            href="#"
+                                                                            data-url="{{ path('crm_expense_convence_details',{'id':expenseConveyanceDetail.id}) }}"
+                                                                            data-pk="{{ expenseConveyanceDetail.id|default('') }}"
+                                                                            data-value="{{ expenseConveyanceDetail.amount|default('') }}"
+                                                                            data-original-title="Enter amount">
+                                                                        {{ expenseConveyanceDetail.amount }}
+                                                                    </a>
+                                                                </td>
+                                                                <td>
+                                                                    <a
+                                                                            data-type="text"
+                                                                            class="editable"
+                                                                            id="mobilBill-{{ expenseConveyanceDetail.id|default('') }}"
+                                                                            data-name="MobilBill"
+                                                                            href="#"
+                                                                            data-url="{{ path('crm_expense_convence_details',{'id':expenseConveyanceDetail.id}) }}"
+                                                                            data-pk="{{ expenseConveyanceDetail.id|default('') }}"
+                                                                            data-value="{{ expenseConveyanceDetail.mobilBill|default('') }}"
+                                                                            data-original-title="Enter amount">
+                                                                        {{ expenseConveyanceDetail.mobilBill }}
+                                                                    </a>
+                                                                </td>
+                                                                <td>
+                                                                    <a
+                                                                            data-type="text"
+                                                                            class="editable"
+                                                                            id="maintenanceBill-{{ expenseConveyanceDetail.id|default('') }}"
+                                                                            data-name="MaintenanceBill"
+                                                                            href="#"
+                                                                            data-url="{{ path('crm_expense_convence_details',{'id':expenseConveyanceDetail.id}) }}"
+                                                                            data-pk="{{ expenseConveyanceDetail.id|default('') }}"
+                                                                            data-value="{{ expenseConveyanceDetail.maintenanceBill|default('') }}"
+                                                                            data-original-title="Enter amount">
+                                                                        {{ expenseConveyanceDetail.maintenanceBill }}
+                                                                    </a>
+                                                                </td>
+                                                                <td>
+                                                                    <a
+                                                                            data-type="text"
+                                                                            class="editable"
+                                                                            id="servicingBill-{{ expenseConveyanceDetail.id|default('') }}"
+                                                                            data-name="ServicingBill"
+                                                                            href="#"
+                                                                            data-url="{{ path('crm_expense_convence_details',{'id':expenseConveyanceDetail.id}) }}"
+                                                                            data-pk="{{ expenseConveyanceDetail.id|default('') }}"
+                                                                            data-value="{{ expenseConveyanceDetail.servicingBill|default('') }}"
+                                                                            data-original-title="Enter amount">
+                                                                        {{ expenseConveyanceDetail.servicingBill }}
+                                                                    </a>
+                                                                </td>
+                                                                <td>
+                                                                    <a
+                                                                            data-type="text"
+                                                                            class="editable"
+                                                                            id="covnence-{{ expenseConveyanceDetail.id|default('') }}"
+                                                                            data-name="TollBill"
+                                                                            href="#"
+                                                                            data-url="{{ path('crm_expense_convence_details',{'id':expenseConveyanceDetail.id}) }}"
+                                                                            data-pk="{{ expenseConveyanceDetail.id|default('') }}"
+                                                                            data-value="{{ expenseConveyanceDetail.tollBill|default('') }}"
+                                                                            data-original-title="Enter amount">
+                                                                        {{ expenseConveyanceDetail.tollBill }}
+                                                                    </a>
+                                                                </td>
+                                                                <td>
+                                                                    <a
+                                                                            data-type="text"
+                                                                            class="editable"
+                                                                            id="fuelBill-{{ expenseConveyanceDetail.id|default('') }}"
+                                                                            data-name="FuelBill"
+                                                                            href="#"
+                                                                            data-url="{{ path('crm_expense_convence_details',{'id':expenseConveyanceDetail.id}) }}"
+                                                                            data-pk="{{ expenseConveyanceDetail.id|default('') }}"
+                                                                            data-value="{{ expenseConveyanceDetail.fuelBill|default('') }}"
+                                                                            data-original-title="Enter amount">
+                                                                        {{ expenseConveyanceDetail.fuelBill }}
+                                                                    </a>
+                                                                </td>
+                                                                <td>
+                                                                    <a
+                                                                            data-type="text"
+                                                                            class="editable"
+                                                                            id="parkingBill-{{ expenseConveyanceDetail.id|default('') }}"
+                                                                            data-name="ParkingBill"
+                                                                            href="#"
+                                                                            data-url="{{ path('crm_expense_convence_details',{'id':expenseConveyanceDetail.id}) }}"
+                                                                            data-pk="{{ expenseConveyanceDetail.id|default('') }}"
+                                                                            data-value="{{ expenseConveyanceDetail.parkingBill|default('') }}"
+                                                                            data-original-title="Enter amount">
+                                                                        {{ expenseConveyanceDetail.parkingBill }}
+                                                                    </a>
+                                                                </td>
+                                                                <td>
+                                                                    <a
+                                                                            data-type="text"
+                                                                            class="editable"
+                                                                            id="othersBill-{{ expenseConveyanceDetail.id|default('') }}"
+                                                                            data-name="OthersBill"
+                                                                            href="#"
+                                                                            data-url="{{ path('crm_expense_convence_details',{'id':expenseConveyanceDetail.id}) }}"
+                                                                            data-pk="{{ expenseConveyanceDetail.id|default('') }}"
+                                                                            data-value="{{ expenseConveyanceDetail.othersBill|default('') }}"
+                                                                            data-original-title="Enter amount">
+                                                                        {{ expenseConveyanceDetail.othersBill }}
+                                                                    </a>
+                                                                </td>
+                                                                <td class="totalAmount">
+                                                                    {{ expenseConveyanceDetail.totalAmount + totalMileageAmount }}
+                                                                </td>
+                                                            </tr>
+                                                           {% endfor %}
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
                                         </div>
                                     </div>
-                                    <div class="clearfix"></div>
+                                    {% endif %}
+
                                 </div>
+
+{#                                {% if entity and entity.status==1 %}#}
+                                    <div class="form-actions">
+                                        <div class="col-md-6 ">
+
+                                        </div>
+                                        <div class="col-md-6 text-right">
+                                            <div class="btn-group" role="group" aria-label="Button group with nested dropdown"><button type="reset" class="btn btn-sm yellow-bg white-font"><i class="fa fa-refresh"></i>Restore</button>
+                                                {{ form_widget(form.SaveAndCreate, {type: 'submit',label: 'label.save.continue',value:'label.save.continue', attr: { class: 'btn btn-info form-submit expense_form_button'}}) }}
+                                            </div>
+                                        </div>
+                                        <div class="clearfix"></div>
+                                    </div>
+{#                                {% endif %}#}
                             </div>
                         </div>
                         {{ form_widget(form._token) }}
@@ -214,10 +374,21 @@
          .hidden{
              display: none!important;
          }
+
+         .editable-click, a.editable-click, a.editable-click:hover {
+             text-decoration: none;
+             border-bottom: dashed 1px #0088cc;
+         }
+
+         .hide-calendar .ui-datepicker-calendar{
+             display: none;
+         }
      </style>
  {% endblock  %}
 {% block javascripts %}
     {{ parent() }}
+    <script type="application/javascript" src="{{ asset('assets/plugins/bootstrap-editable/js/bootstrap4-editable.js') }}"></script>
+
     <script type="application/javascript" src="{{ asset('assets/module/js/app.js') }}"></script>
 
     <script type="text/javascript">
@@ -274,6 +445,18 @@
                     });
             })
 
+            $.fn.editable.defaults.mode ='inline';
+            {#    $.fn.editable.defaults.mode = 'popover';#}
+            $('.editable').editable(
+                {
+                    success: function(response) {
+                        if(response.status==200){
+                            $(this).closest('tr').find('.totalAmount').html(response.totalAmount);
+                            console.log(response)
+                        }
+                    }
+                }
+            );
         });
     </script>
 {% endblock  %}

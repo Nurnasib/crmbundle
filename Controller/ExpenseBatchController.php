@@ -27,6 +27,8 @@ use Terminalbd\CrmBundle\Entity\CrmVisit;
 use Terminalbd\CrmBundle\Entity\DmsFile;
 use Terminalbd\CrmBundle\Entity\Expense;
 use Terminalbd\CrmBundle\Entity\ExpenseBatch;
+use Terminalbd\CrmBundle\Entity\ExpenseChart;
+use Terminalbd\CrmBundle\Entity\ExpenseConveyanceDetails;
 use Terminalbd\CrmBundle\Entity\ExpenseParticular;
 use Terminalbd\CrmBundle\Entity\Setting;
 use Terminalbd\CrmBundle\Form\ExpenseFormType;
@@ -62,14 +64,109 @@ class ExpenseBatchController extends AbstractController
     {
         $monthlyExpenseParticularAttributes = $this->getDoctrine()->getRepository(Setting::class)->getMonthlyExpenseParticular();
         $expensePaticularAmount = $this->getDoctrine()->getRepository(ExpenseParticular::class)->getDailyExpenseParticularAmount($entity->getEmployee(),null, $entity);
+        $conveyanceDetailsTotalAmount = $this->getDoctrine()->getRepository(ExpenseConveyanceDetails::class)->getTotalAmountConveyanceDetailsByExpense($entity->getEmployee(), null, $entity);
 
+
+        $expenseChartByEmployee = $this->getDoctrine()->getRepository(ExpenseChart::class)->getExpenseChartByEmployee($entity->getEmployee()?$entity->getEmployee()->getId():null);
+        $fixedDailyExpenseParticular = array_filter(array_map(function($n) { if($n['paymentDuration']=='DAILY' && $n['expensePaymentType']=='FIXED') return $n; }, $expenseChartByEmployee));
+
+        $areaWiseExpenseParticular = [];
+        if($fixedDailyExpenseParticular && sizeof($fixedDailyExpenseParticular)>0){
+            foreach ($fixedDailyExpenseParticular as $expenseChart) {
+                $areaWiseExpenseParticular['areaName'][$expenseChart['areaId']]=$expenseChart['areaName'];
+                $areaWiseExpenseParticular['chartDetails'][$expenseChart['areaId']][$expenseChart['expenseChartDetailId']]=$expenseChart;
+            }
+        }
+
+
+        $typeOfVehicles = $this->typeOfVehicle($entity->getEmployee()?$entity->getEmployee():null);
+
+//dd($conveyanceDetailsTotalAmount);
         return $this->render('@TerminalbdCrm/expenseBatch/details.html.twig', [
             'expenseBatch' => $entity,
             'dailyExpenseParticularAttributes' => isset($expensePaticularAmount['expenseParticularAttributes']) && sizeof($expensePaticularAmount['expenseParticularAttributes'])>0?$expensePaticularAmount['expenseParticularAttributes']:[],
             'monthlyExpenseParticularAttributes' => $monthlyExpenseParticularAttributes,
             'expensePaticularAmount' => $expensePaticularAmount,
+            'areaWiseExpenseParticulars' => $areaWiseExpenseParticular,
+            'conveyanceDetailsTotalAmount' => $conveyanceDetailsTotalAmount,
+            'typeOfVehicles' => $typeOfVehicles,
         ]);
     }
+
+    private function typeOfVehicle(User $employee){
+        $type_of_vehicle = [];
+        if ($employee->getExpenseChart() && $employee->getExpenseChart()->getTypeOfVehicle() && $employee->getExpenseChart()->getTypeOfVehicle() == 'car') {
+            $type_of_vehicle =
+                [
+                    [
+                        'id' => 1,
+                        'slug' => 'office-car',
+                        'name' => 'Office Car',
+                    ],
+                    [
+                        'id' => 2,
+                        'slug' => 'car',
+                        'name' => 'Car',
+                    ],
+                    [
+                        'id' => 3,
+                        'slug' => 'local-conveyance',
+                        'name' => 'Local Conveyance',
+                    ],
+                    [
+                        'id' => 4,
+                        'slug' => 'others',
+                        'name' => 'others',
+                    ]
+                ];
+        } elseif ($employee->getExpenseChart() && $employee->getExpenseChart()->getTypeOfVehicle() && $employee->getExpenseChart()->getTypeOfVehicle() == 'motorcycle') {
+            $type_of_vehicle =
+                [
+                    [
+                        'id' => 1,
+                        'slug' => 'office-car',
+                        'name' => 'Office Car',
+                    ],
+                    [
+                        'id' => 2,
+                        'slug' => 'motorcycle',
+                        'name' => 'Motorcycle',
+                    ],
+                    [
+                        'id' => 3,
+                        'slug' => 'local-conveyance',
+                        'name' => 'Local Conveyance',
+                    ],
+                    [
+                        'id' => 4,
+                        'slug' => 'others',
+                        'name' => 'others',
+                    ]
+                ];
+        } else {
+            $type_of_vehicle =
+                [
+                    [
+                        'id' => 1,
+                        'slug' => 'office-car',
+                        'name' => 'Office Car',
+                    ],
+                    [
+                        'id' => 2,
+                        'slug' => 'local-conveyance',
+                        'name' => 'Local Conveyance',
+                    ],
+                    [
+                        'id' => 3,
+                        'slug' => 'others',
+                        'name' => 'others',
+                    ]
+                ];
+        }
+
+        return $type_of_vehicle;
+    }
+
 
     /**
      * Displays a form to edit an existing Post entity.

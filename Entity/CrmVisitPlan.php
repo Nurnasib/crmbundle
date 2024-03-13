@@ -66,6 +66,12 @@ class CrmVisitPlan
     private $agentList;
 
     /**
+     * @var string
+     * @ORM\Column(name="agent_info", type="text", nullable=true )
+     */
+    private $agentInfo;
+
+    /**
      * @ORM\Column( type="json", name="area_list", nullable=true)
      */
     private $areaList;
@@ -206,6 +212,16 @@ class CrmVisitPlan
     public function setWorkingMode(?Setting $workingMode): void
     {
         $this->workingMode = $workingMode;
+    }
+
+    public function getAgentInfo(): ?string
+    {
+        return $this->agentInfo;
+    }
+
+    public function setAgentInfo(?string $agentInfo): void
+    {
+        $this->agentInfo = $agentInfo;
     }
 
 }

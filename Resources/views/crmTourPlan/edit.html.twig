@@ -83,16 +83,9 @@
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="form-group">
-                                            <label for="agent_list" class="col-md-2 control-label">Agent List</label>
+                                            <label for="agent_list" class="col-md-2 control-label">Agent</label>
                                             <div class="col-md-10">
-                                                <select name="agent_list[]" id="agent_list" class="form-control" multiple>
-                                                    <option value="">Select Agent</option>
-                                                    {% if agentList is not empty %}
-                                                        {% for agent in agentList %}
-                                                            <option value="{{ agent.id }}" {{ agent.id in addedAgent?'selected="selected"':'' }}>{{ agent.name }}</option>
-                                                        {% endfor %}
-                                                    {% endif %}
-                                                </select>
+                                                {{ form_widget(form.agentInfo) }}
                                             </div>
                                         </div>
 

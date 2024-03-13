@@ -72,6 +72,14 @@ class CrmTourPlanEditFormType extends AbstractType
                     'class' => 'form-control'
                 ]
             ])
+            ->add('agentInfo', TextareaType::class, [
+                'label' => 'Agent Info',
+                'required' => false,
+                'attr' => [
+                    'class' => 'form-control',
+                    'placeholder' => 'Agent'
+                ]
+            ])
             ->add('Save', SubmitType::class)
         ;
     }

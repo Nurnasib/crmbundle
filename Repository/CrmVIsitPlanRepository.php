@@ -27,7 +27,7 @@ class CrmVIsitPlanRepository extends EntityRepository
 
     public function getMonthlyTourPlanByEmployeeAndDate($employeeId, $visitingDate=null, $type=null){
         $qb = $this->createQueryBuilder('e');
-        $qb->select('e.id', 'e.visitingArea', 'e.visitDate', 'e.agentList', 'e.areaList', 'e.createdAt');
+        $qb->select('e.id', 'e.visitingArea', 'e.visitDate', 'e.agentList', 'e.areaList', 'e.createdAt', 'e.agentInfo');
         $qb->addSelect('employee.id as employeeId');
         $qb->addSelect('workingMode.id as workingModeId', 'workingMode.name as workingModeName');
         $qb->join('e.employee','employee');
@@ -54,6 +54,7 @@ class CrmVIsitPlanRepository extends EntityRepository
                     'visitingArea'=>$result['visitingArea'],
                     'agentList' => $result['agentList'],
                     'areaList' => $result['areaList'],
+                    'agentInfo' => $result['agentInfo'],
                     'areaNameList' => $result['areaList'] && sizeof( $result['areaList'])>0?implode(', ', array_column($result['areaList'], 'areaName')):'',
                     'agentNameList' => $result['agentList'] && sizeof( $result['agentList'])>0?implode(', ', array_column($result['agentList'], 'agentName')):'',
                     'createdDate' => $result['createdAt']->format('Y-m-d'),

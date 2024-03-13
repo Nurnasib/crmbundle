@@ -131,7 +131,7 @@ class ExpenseParticularRepository extends EntityRepository
         if($user){
 
             $qb = $this->createQueryBuilder('e');
-            $qb->select('e.amount', 'e.path', 'e.expenseChartDetailId');
+            $qb->select('e.id as expenseParticularId','e.amount', 'e.path', 'e.expenseChartDetailId');
             $qb->addSelect("DATE_FORMAT(expense.expenseDate,'%Y-%m') as expenseMonthYear", 'YEAR(expense.expenseDate) as expenseYear');
             $qb->addSelect('employee.id as employeeAutoId');
             $qb->addSelect('particular.id as particularId', 'particular.name as particularName');
