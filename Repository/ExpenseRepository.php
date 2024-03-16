@@ -125,6 +125,71 @@ class ExpenseRepository extends EntityRepository
         return $result;
     }
 
+    public function getExpensesByLineManager(User $loggedUser){
+        $monthYear = date('Y-m', strtotime(date('Y-m')." -1 month"));
+        $qb = $this->createQueryBuilder('e');
+//        $qb->select('SUM(e.conveyance) as totalConveyance','SUM(e.mobile) as totalMobile','SUM(e.dailyAllowance) as totalDailyAllowance','SUM(e.hotelRent) as totalHotelRent','SUM(e.tollBill) as totalTollBill','SUM(e.food) as totalFood','SUM(e.courier) as totalCourier','SUM(e.maintenace) as totalMaintenace','SUM(e.serviceCharge) as totalServiceCharge','SUM(e.photostate) as totalPhotostate','SUM(e.others) as totalOthers');
+        $qb->select("DATE_FORMAT(e.expenseDate,'%Y-%m') as expenseMonthYear", 'YEAR(e.expenseDate) as expenseYear');
+        $qb->addSelect('employee.id as employeeAutoId','employee.userId as employeeId','employee.name as employeeName');
+        $qb->join('e.employee','employee');
+
+        $qb->where('e.status >=:status')->setParameter('status',1);
+        $qb->andWhere('e.expenseBatch IS NULL');
+        $qb->andWhere('e.expenseDate IS NOT NULL');
+        $qb->andWhere("DATE_FORMAT(e.expenseDate,'%Y-%m') =:monthYear")->setParameter('monthYear', $monthYear);
+
+        $roleSplitArray = [];
+
+        foreach ($loggedUser->getRoles() as $role) {
+            $roleSplitArray = array_merge(explode('_', $role), $roleSplitArray);
+        }
+
+        if (in_array('ADMIN', $roleSplitArray)) {
+            $userRole = [];
+            if (in_array('ROLE_CRM_POULTRY_ADMIN', $loggedUser->getRoles())) {
+                array_push($userRole, 'ROLE_CRM_POULTRY_USER');
+            }
+            if (in_array('ROLE_CRM_CATTLE_ADMIN', $loggedUser->getRoles())) {
+                array_push($userRole, 'ROLE_CRM_CATTLE_USER');
+            }
+            if (in_array('ROLE_CRM_AQUA_ADMIN', $loggedUser->getRoles())) {
+                array_push($userRole, 'ROLE_CRM_AQUA_USER');
+            }
+            if (in_array('ROLE_CRM_SALES_MARKETING_ADMIN', $loggedUser->getRoles())) {
+                array_push($userRole, 'ROLE_CRM_SALES_MARKETING_USER');
+            }
+            $query = '';
+            if($userRole){
+
+                foreach ($userRole as $key => $role) {
+                    if ($key !== 0) {
+                        $query .= " OR ";
+                    }
+                    $query .= "employee.roles LIKE '%" . $role . "%'";
+
+                }
+                $qb->andWhere($query);
+            }
+
+        } elseif (!in_array('ADMIN', $roleSplitArray) && in_array('ROLE_LINE_MANAGER', $loggedUser->getRoles())) {
+            $employeeIdsByLineManager = $this->_em->getRepository(User::class)->getEmployeesByLineManager($loggedUser);
+            $employeeIs=[];
+            if($employeeIdsByLineManager){
+                $employeeIs=$employeeIdsByLineManager;
+            }
+//            dd($employeeIs);
+            $qb->andWhere('employee.id IN (:employeeIds)')->setParameter('employeeIds', $employeeIs);
+        }
+
+        $qb->groupBy('expenseMonthYear');
+//        $qb->addGroupBy('expenseYear');
+        $qb->addGroupBy('employee.id');
+
+        $result= $qb->getQuery()->getResult();
+
+        return $result;
+    }
+
     public function getExpensesByEmployeeAndYear(User $user, $year){
         $qb = $this->createQueryBuilder('e');
 //        $qb->select('SUM(e.conveyance) as totalConveyance','SUM(e.mobile) as totalMobile','SUM(e.dailyAllowance) as totalDailyAllowance','SUM(e.hotelRent) as totalHotelRent','SUM(e.tollBill) as totalTollBill','SUM(e.food) as totalFood','SUM(e.courier) as totalCourier','SUM(e.maintenace) as totalMaintenace','SUM(e.serviceCharge) as totalServiceCharge','SUM(e.photostate) as totalPhotostate','SUM(e.others) as totalOthers');

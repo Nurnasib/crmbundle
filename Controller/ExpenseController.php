@@ -322,19 +322,17 @@ class ExpenseController extends AbstractController
             $em->persist($expenseBatch);
             $em->flush();
 
-            if ($requestData && isset($requestData['expense']) && sizeof($requestData['expense']) > 0) {
-                foreach ($requestData['expense'] as $expenseId => $expense) {
-                    /* @var Expense $expenseObj */
-                    $expenseObj = $this->getDoctrine()->getRepository(Expense::class)->find($expense);
+            foreach ($requestData['expense'] as $expenseId => $expense) {
+                /* @var Expense $expenseObj */
+                $expenseObj = $this->getDoctrine()->getRepository(Expense::class)->find($expense);
 
-                    $expenseObj->setExpenseBatch($expenseBatch);
-                    $expenseObj->setStatus(2);
+                $expenseObj->setExpenseBatch($expenseBatch);
+                $expenseObj->setStatus(2);
 
-                    $em->persist($expenseObj);
-                    $em->flush();
-                }
-
+                $em->persist($expenseObj);
+                $em->flush();
             }
+
             $this->addFlash('success', 'Expense has been process successfully');
 
             return $this->redirectToRoute('crm_expense_details', ['employee' => $employee->getId(), 'monthYear' => $yearMonth]);

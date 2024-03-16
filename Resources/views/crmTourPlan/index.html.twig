@@ -68,7 +68,7 @@
                                         <td>{{ loop.index }}</td>
                                         <td>{{ visitingDate|date('d-m-Y') }}</td>
                                         <td>
-                                            {% if visitingDate|date('d-m-Y') >= currentDate|date('d-m-Y') %}
+                                            {#{% if visitingDate|date('d-m-Y') >= currentDate|date('d-m-Y') %}
                                             <a
                                                     data-type="select"
                                                     class="editable"
@@ -84,10 +84,12 @@
                                             </a>
                                                 {% else %}
                                                 {{ entity.workingMode.name|default('') }}
-                                            {% endif %}
+                                            {% endif %}#}
+                                            {{ entity.workingMode.name|default('') }}
+
                                         </td>
                                         <td>
-                                            {% if visitingDate|date('d-m-Y') >= currentDate|date('d-m-Y') %}
+                                            {#{% if visitingDate|date('d-m-Y') >= currentDate|date('d-m-Y') %}
                                             <a
                                                     data-type="text"
                                                     class="editable"
@@ -101,15 +103,15 @@
                                             </a>
                                             {% else %}
                                                 {{ entity.visitingArea|default('') }}
-                                            {% endif %}
+                                            {% endif %}#}
+                                            {{ entity.visitingArea|default('') }}
+
                                         </td>
                                         <td>
                                             {{  entity.agentInfo|default('') }}
-{#                                            info|join(', ')#}
                                         </td>
                                         <td>
                                             {{  entity.areaNameList|default('') }}
-{#                                            info|join(', ')#}
                                         </td>
                                         {#<td>
                                             <a

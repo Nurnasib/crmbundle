@@ -21,9 +21,10 @@
                     <h5>{{ 'Monthly Expense'|trans }}</h5>
                     <div class="card-header-right">
                         <div class="btn-group btn-group-sm" role="group" aria-label="Button group with nested dropdown">
-                            <a style="margin-right: 5px" class="btn btn-primary btn-sm" href='{{ path('crm_expense_new') }}' id='' >{{ 'Add Expense' }}</a>
                             <a href="{{ path('crm_expense') }}" class="btn btn-sm gray-bg white-font"><i class="fa fa-th-list"></i>{{ 'Expense'|trans }}</a>
-
+                            {% if is_granted('ROLE_DEVELOPER') or is_granted('ROLE_LINE_MANAGER') or is_granted('ROLE_CRM_POULTRY_ADMIN') or is_granted('ROLE_CRM_CATTLE_ADMIN') or is_granted('ROLE_CRM_AQUA_ADMIN') or is_granted('ROLE_CRM_SALES_MARKETING_ADMIN') %}
+                                <a style="margin-left: 5px" href="{{ path('crm_expense_batch') }}" class="btn btn-sm gray-bg white-font"><i class="fa fa-th-list"></i>{{ 'Expense for Approval'|trans }}</a>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
@@ -31,7 +32,38 @@
         </div>
         <div class="row">
             <div class="card">
+                {% if expenses is not empty %}
+                <div class="card-body">
+                    <h4>Waiting for process</h4>
+                    <table class="table table-striped table-bordered table-hover" id="datatable">
+                        <thead class="thead-dark">
+                        <tr>
+                            <th scope="col">S/N</th>
+                            <th scope="col">Employee Name</th>
+                            <th scope="col">Expense Month</th>
+                            <th scope="col text-center"><i class="feather icon-settings"></i></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for expense in expenses %}
+                            <tr>
+                                <td>{{ loop.index }}</td>
+                                <td>{{ expense.employeeId }} {{ expense.employeeName }}</td>
+                                <td>{{ expense.expenseMonthYear|date('M Y')}}</td>
+                                <td>
+                                    <a title="Details" class="btn btn-mini blue-bg white-font" href="{{ path('crm_expense_details',{'employee':expense.employeeAutoId, 'monthYear':expense.expenseMonthYear}) }}"><i class="feather icon-eye"></i> Details</a>
+                                </td>
+
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+
+                </div>
+                {% endif %}
+
                 <div class="card-block">
+                    <h4>Waiting for approved</h4>
                     <table class="table table-striped table-bordered table-hover" id="datatable">
                         <thead class="thead-dark">
                         <tr>

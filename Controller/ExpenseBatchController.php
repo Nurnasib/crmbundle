@@ -46,9 +46,11 @@ class ExpenseBatchController extends AbstractController
      */
     public function index(): Response
     {
+        $expenses = $this->getDoctrine()->getRepository(Expense::class)->getExpensesByLineManager($this->getUser());
         $entities = $this->getDoctrine()->getRepository(ExpenseBatch::class)->getExpenseBatches($this->getUser());
         return $this->render('@TerminalbdCrm/expenseBatch/index.html.twig',[
-            'entities' => $entities
+            'entities' => $entities,
+            'expenses' => $expenses,
         ]);
     }
 
