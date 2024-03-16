@@ -245,14 +245,14 @@ class ExpenseController extends AbstractController
         $expenseBatch= $this->getDoctrine()->getRepository(ExpenseBatch::class)->findOneBy(['employee'=>$employee, 'expenseMonth'=>new \DateTime($expenseMonth)]);
         $monthlyExpenseParticularAttributes = $this->getDoctrine()->getRepository(Setting::class)->getMonthlyExpenseParticular();
 
-        $expensePaticularAmount = $this->getDoctrine()->getRepository(ExpenseParticular::class)->getDailyExpenseParticularAmount($this->getUser(),$yearMonth);
+        $expensePaticularAmount = $this->getDoctrine()->getRepository(ExpenseParticular::class)->getDailyExpenseParticularAmount($employee, $yearMonth);
 
-        $conveyanceDetailsTotalAmount = $this->getDoctrine()->getRepository(ExpenseConveyanceDetails::class)->getTotalAmountConveyanceDetailsByExpense($this->getUser(), $yearMonth);
+        $conveyanceDetailsTotalAmount = $this->getDoctrine()->getRepository(ExpenseConveyanceDetails::class)->getTotalAmountConveyanceDetailsByExpense($employee, $yearMonth);
 
-        $monthlyExpensePaticularAmount = $this->getDoctrine()->getRepository(ExpenseParticular::class)->getMonthlyExpenseParticularAmount($this->getUser(),$yearMonth);
+        $monthlyExpensePaticularAmount = $this->getDoctrine()->getRepository(ExpenseParticular::class)->getMonthlyExpenseParticularAmount($employee,$yearMonth);
         $crmConfig= $this->getDoctrine()->getRepository(CrmConfig::class)->findOneBy(['slug'=>'bike-miles-per-km','status'=>1]);
 
-        $expenseChartByEmployee = $this->getDoctrine()->getRepository(ExpenseChart::class)->getExpenseChartByEmployee($this->getUser()?$this->getUser()->getId():null);
+        $expenseChartByEmployee = $this->getDoctrine()->getRepository(ExpenseChart::class)->getExpenseChartByEmployee($employee?$employee->getId():null);
         $fixedDailyExpenseParticular = array_filter(array_map(function($n) { if($n['paymentDuration']=='DAILY' && $n['expensePaymentType']=='FIXED') return $n; }, $expenseChartByEmployee));
 
         $areaWiseExpenseParticular = [];
