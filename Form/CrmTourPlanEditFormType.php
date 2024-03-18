@@ -63,7 +63,7 @@ class CrmTourPlanEditFormType extends AbstractType
                         ->setParameter('type', 'WORKING_MODE')
                         ->andWhere('s.status = :status')
                         ->setParameter('status', 1)
-                        ->orderBy('s.name', 'ASC');
+                        ->orderBy('s.sortOrder', 'ASC');
                 },
                 'choice_label' => 'name',
                 'label' => 'Working Mode',
