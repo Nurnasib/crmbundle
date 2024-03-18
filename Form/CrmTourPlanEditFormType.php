@@ -47,9 +47,9 @@ class CrmTourPlanEditFormType extends AbstractType
     {
         $builder
 
-            ->add('visitingArea', TextType::class, [
-                'label' => 'Visiting Area',
-                'required' => true,
+            ->add('visitingArea', TextareaType::class, [
+                'label' => 'Purpose',
+                'required' => false,
                 'attr' => [
                     'class' => 'form-control',
                     'placeholder' => 'Visiting Area'

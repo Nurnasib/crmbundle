@@ -50,7 +50,7 @@ class CrmVisitPlan
 
     /**
      * @var string
-     * @ORM\Column(name="visiting_area", type="string", nullable=true )
+     * @ORM\Column(name="visiting_area", type="text", nullable=true )
      */
     private $visitingArea;
 

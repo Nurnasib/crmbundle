@@ -49,17 +49,7 @@
                                         </div>
 
                                     </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            {{ form_label(form.visitingArea,'Visiting Area'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
-                                            <div class="col-md-8">
-                                                <span class="not-blank"> *</span>
-                                                {{ form_widget(form.visitingArea) }}
-                                                {{ form_errors(form.visitingArea) }}
-                                            </div>
-                                        </div>
 
-                                    </div>
                                 </div>
 
                                 <div class="row">
@@ -86,6 +76,17 @@
                                             <label for="agent_list" class="col-md-2 control-label">Agent</label>
                                             <div class="col-md-10">
                                                 {{ form_widget(form.agentInfo) }}
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label for="agent_list" class="col-md-2 control-label">Purpose</label>
+                                            <div class="col-md-10">
+                                                {{ form_widget(form.visitingArea) }}
                                             </div>
                                         </div>
 
