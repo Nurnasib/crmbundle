@@ -53,7 +53,7 @@ class CrmVIsitPlanRepository extends EntityRepository
                     'id' => $result['id'],
                     'visitingArea'=>$result['visitingArea'],
                     'agentList' => $result['agentList'],
-                    'areaList' => $result['areaList'],
+                    'areaList' => $result['areaList']?$result['areaList']:[],
                     'agentInfo' => $result['agentInfo'],
                     'areaNameList' => $result['areaList'] && sizeof( $result['areaList'])>0?implode(', ', array_column($result['areaList'], 'areaName')):'',
                     'agentNameList' => $result['agentList'] && sizeof( $result['agentList'])>0?implode(', ', array_column($result['agentList'], 'agentName')):'',
