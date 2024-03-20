@@ -104,6 +104,12 @@ class CrmTourPlanController extends AbstractController
             $this->addFlash('success', 'Tour Plan Updated Successfully');
             return $this->redirectToRoute('crm_tour_plan');
         }
+
+        if($visitPlan->getVisitDate()->format('Y-m-d') <= date('Y-m-d')){
+            $this->addFlash('error', 'You can not edit past date tour plan');
+            return $this->redirectToRoute('crm_tour_plan');
+        }
+
         $visitAreaList = $this->getLocationByEmployee();
 
 //        $agentList = $this->getDoctrine()->getRepository(Agent::class)->getLocationWiseAgentForm($this->getUser());

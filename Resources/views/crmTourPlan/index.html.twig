@@ -129,7 +129,7 @@
                                             </a>
                                         </td>#}
                                         <td>
-                                            {% if visitingDate|date('d-m-Y') >= currentDate|date('d-m-Y') %}
+                                            {% if visitingDate|date('Y-m-d') > currentDate|date('Y-m-d') %}
                                             <a title="Edit" class="btn btn-transparent btn-sm" href="{{ path('crm_tour_plan_update',{'id':entity.id}) }}"><i class="fa fa-edit"></i></a>
                                             {% endif %}
                                         </td>
