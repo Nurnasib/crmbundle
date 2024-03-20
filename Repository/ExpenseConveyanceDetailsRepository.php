@@ -75,7 +75,7 @@ class ExpenseConveyanceDetailsRepository extends EntityRepository
         $qb->select('e.id', 'e.transportType', 'SUM(e.totalAmount) as totalAmount');
         $qb->addSelect('SUM(e.mobilBill) as totalMobileBill','SUM(e.maintenanceBill) as totalMaintenanceBill','SUM(e.tollBill) as totalTollBill','SUM(e.servicingBill) as totalServicingBill','SUM(e.fuelBill) as totalFuelBill', 'SUM(e.parkingBill) as totalParkingBill', 'SUM(e.othersBill) as totalOthersBill', 'SUM(e.amount) as amount');
         $qb->addSelect('expense.id as expenseId');
-        $qb->addSelect("DATE_FORMAT(expense.expenseDate,'%Y-%b') as expenseWordMonthYear", "DATE_FORMAT(expense.expenseDate,'%Y-%m') as expenseMonthYear", 'YEAR(expense.expenseDate) as expenseYear', 'MONTH(expense.expenseDate) as expenseMonth');
+        $qb->addSelect("DATE_FORMAT(expense.expenseDate,'%b,%y') as expenseWordMonthYear", "DATE_FORMAT(expense.expenseDate,'%Y-%m') as expenseMonthYear", 'YEAR(expense.expenseDate) as expenseYear', 'MONTH(expense.expenseDate) as expenseMonth');
         $qb->addSelect('employee.id as employeeAutoId');
         $qb->join('e.expense','expense');
         $qb->join('expense.employee','employee');

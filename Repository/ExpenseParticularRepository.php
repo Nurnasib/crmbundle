@@ -96,7 +96,7 @@ class ExpenseParticularRepository extends EntityRepository
     public function getTotalAmountExpenseParticularWithoutChartDetail(User $user, $year){
         $qb = $this->createQueryBuilder('e');
         $qb->select('SUM(e.amount) as totalAmount', 'e.expenseChartDetailId');
-        $qb->addSelect("DATE_FORMAT(expense.expenseDate,'%Y-%b') as expenseWordMonthYear", "DATE_FORMAT(expense.expenseDate,'%Y-%m') as expenseMonthYear", 'YEAR(expense.expenseDate) as expenseYear', 'MONTH(expense.expenseDate) as expenseMonth');
+        $qb->addSelect("DATE_FORMAT(expense.expenseDate,'%b,%y') as expenseWordMonthYear", "DATE_FORMAT(expense.expenseDate,'%Y-%m') as expenseMonthYear", 'YEAR(expense.expenseDate) as expenseYear', 'MONTH(expense.expenseDate) as expenseMonth');
         $qb->addSelect('employee.id as employeeAutoId');
         $qb->addSelect('particular.id as particularId', 'particular.name as particularName');
         $qb->join('e.expense','expense');
