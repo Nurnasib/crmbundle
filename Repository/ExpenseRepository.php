@@ -193,7 +193,7 @@ class ExpenseRepository extends EntityRepository
     public function getExpensesByEmployeeAndYear(User $user, $year){
         $qb = $this->createQueryBuilder('e');
 //        $qb->select('SUM(e.conveyance) as totalConveyance','SUM(e.mobile) as totalMobile','SUM(e.dailyAllowance) as totalDailyAllowance','SUM(e.hotelRent) as totalHotelRent','SUM(e.tollBill) as totalTollBill','SUM(e.food) as totalFood','SUM(e.courier) as totalCourier','SUM(e.maintenace) as totalMaintenace','SUM(e.serviceCharge) as totalServiceCharge','SUM(e.photostate) as totalPhotostate','SUM(e.others) as totalOthers');
-        $qb->select("DATE_FORMAT(e.expenseDate,'%Y-%m') as expenseMonthYear", 'YEAR(e.expenseDate) as expenseYear');
+        $qb->select("DATE_FORMAT(e.expenseDate,'%Y-%b') as expenseWordMonthYear", "DATE_FORMAT(e.expenseDate,'%Y-%m') as expenseMonthYear", 'YEAR(e.expenseDate) as expenseYear');
         $qb->addSelect('employee.id as employeeAutoId','employee.userId as employeeId','employee.name as employeeName');
         $qb->join('e.employee','employee');
 
