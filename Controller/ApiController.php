@@ -4575,6 +4575,7 @@ class ApiController extends AbstractController
             $visitDate = $request->query->get('visit_date');
             $getLastMileageRecords=[];
             if($employeeId && $visitDate && $visitDate!=""){
+                $employee = $this->getDoctrine()->getRepository(User::class)->find($employeeId);
                 $getLastMileageRecord = $this->getDoctrine()->getRepository(ExpenseConveyanceDetails::class)->getLastMileageByEmployeeDate($employeeId, $visitDate);
                 if($getLastMileageRecord){
                     $getLastMileageRecords = [
@@ -4585,7 +4586,7 @@ class ApiController extends AbstractController
                         'lastMeterEndReading' => (string)$getLastMileageRecord['meterReadingTo'],
                         'cumulativeTotalMileageOneThousand' => (string)$getLastMileageRecord['cumulativeTotalMileageOneHundred'],
                         'cumulativeTotalMileageTwoThousand' =>  (string)$getLastMileageRecord['cumulativeTotalMileageTwoHundred'],
-                        'perKmRate' => '3.50',
+                        'perKmRate' => $employee->getExpenseChart() && $employee->getExpenseChart()->getTypeOfVehicle()=='motorcycle' ? '3.50':'0.00',
                         'mobil_bill' => '500',
                         'maintenance_bill' => '500',
                         'servicing_bill' => '500',
@@ -4599,7 +4600,7 @@ class ApiController extends AbstractController
                         'lastMeterEndReading' => "0",
                         "cumulativeTotalMileageOneThousand"=> "0",
                         "cumulativeTotalMileageTwoThousand"=> "0",
-                        'perKmRate' => '3.50',
+                        'perKmRate' => $employee->getExpenseChart() && $employee->getExpenseChart()->getTypeOfVehicle()=='motorcycle' ? '3.50':'0.00',
                         'mobil_bill' => '500',
                         'maintenance_bill' => '500',
                         'servicing_bill' => '500',
