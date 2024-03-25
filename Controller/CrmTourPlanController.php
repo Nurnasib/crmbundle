@@ -102,7 +102,7 @@ class CrmTourPlanController extends AbstractController
 //            $visitPlan->setAgentList($agents && count($agents)>0?$agents:null);
             $this->getDoctrine()->getManager()->flush();
             $this->addFlash('success', 'Tour Plan Updated Successfully');
-            return $this->redirectToRoute('crm_tour_plan');
+            return $this->redirectToRoute('crm_tour_plan', ['date'=>date('m-Y', strtotime($visitPlan->getVisitDate()->format('Y-m-d')))]);
         }
 
         if($visitPlan->getVisitDate()->format('Y-m-d') <= date('Y-m-d')){
