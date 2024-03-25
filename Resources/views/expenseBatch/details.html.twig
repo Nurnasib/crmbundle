@@ -151,11 +151,13 @@
                                         {% for typeOfVehicle in typeOfVehicles%}
                                             <td class="text-right">
                                                 {% set conveyanceAmount = conveyanceDetailsTotalAmount['data'] is defined and conveyanceDetailsTotalAmount['data'][entity.id] is defined and conveyanceDetailsTotalAmount['data'][entity.id][typeOfVehicle.slug] is defined?conveyanceDetailsTotalAmount['data'][entity.id][typeOfVehicle.slug]['totalAmount']|number_format(2,'.',''):0 %}
+                                                {% if typeOfVehicle.slug=='motorcycle' %}
                                                 {% set totalMileageKm = conveyanceDetailsTotalAmount['data'] is defined and conveyanceDetailsTotalAmount['data'][entity.id] is defined and conveyanceDetailsTotalAmount['data'][entity.id][typeOfVehicle.slug] is defined?conveyanceDetailsTotalAmount['data'][entity.id][typeOfVehicle.slug]['totalMileage']:0 %}
+                                                    {% set totalMilage = totalMilage + totalMileageKm %}
+                                                {% endif %}
 
                                                 {% set lineTotal = lineTotal + conveyanceAmount %}
                                                 {% set totalLineTotal = totalLineTotal + conveyanceAmount %}
-                                                {% set totalMilage = totalMilage + totalMileageKm %}
 
                                                 {{ conveyanceAmount|number_format(2,'.',',') }}
                                             </td>

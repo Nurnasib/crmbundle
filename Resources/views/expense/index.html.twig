@@ -53,6 +53,9 @@
                                     <th rowspan="2">{{ typeOfVehicle.name }}</th>
                                 {% endfor %}
                             {% endif %}
+                            {% if employeeVehicleType == 'motorcycle' %}
+                            <th rowspan="2">Total Milage (Tk.)</th>
+                            {% endif %}
 
                             <th rowspan="2">Total</th>
 
@@ -95,6 +98,7 @@
                                     {% endfor %}
                                 {% endif %}
 
+                                {% set totalMilage = 0 %}
 
                                 {% if typeOfVehicles is not empty %}
                                     {% for typeOfVehicle in typeOfVehicles%}
@@ -104,6 +108,15 @@
                                                 conveyenceTotalAmount[entity.employeeAutoId][entity.expenseMonthYear|date('Y-m')] is defined and
                                                 conveyenceTotalAmount[entity.employeeAutoId][entity.expenseMonthYear|date('Y-m')][typeOfVehicle.slug] is defined ? conveyenceTotalAmount[entity.employeeAutoId][entity.expenseMonthYear|date('Y-m')][typeOfVehicle.slug]['totalAmount']|number_format(2,'.',''):0 %}
 
+                                            {% if typeOfVehicle.slug=='motorcycle' %}
+                                                {% set milage = conveyenceTotalAmount is defined and
+                                                    conveyenceTotalAmount[entity.employeeAutoId] is defined and
+                                                    conveyenceTotalAmount[entity.employeeAutoId][entity.expenseMonthYear|date('Y-m')] is defined and
+                                                    conveyenceTotalAmount[entity.employeeAutoId][entity.expenseMonthYear|date('Y-m')][typeOfVehicle.slug] is defined ? conveyenceTotalAmount[entity.employeeAutoId][entity.expenseMonthYear|date('Y-m')][typeOfVehicle.slug]['totalMileage']|number_format(2,'.',''):0 %}
+
+                                                {% set totalMilage = totalMilage + milage %}
+                                            {% endif %}
+
                                             {% set totalAmount= totalAmount +  conveyanceAmount%}
 
                                             {{ conveyanceAmount|number_format(2,'.',',') }}
@@ -111,8 +124,14 @@
                                     {% endfor %}
                                 {% endif %}
 
+                                {% if employeeVehicleType == 'motorcycle' %}
+                                    <td>
+                                        {{ (totalMilage*3.5)|number_format(2,'.',',') }}
+                                    </td>
+                                {% endif %}
+
                                 <td class="text-right">
-                                    {{ totalAmount|number_format(2,'.',',') }}
+                                    {{ (totalAmount+(totalMilage*3.5))|number_format(2,'.',',') }}
                                 </td>
                                 <td>
                                     <a title="Details" class="btn btn-mini blue-bg white-font" href="{{ path('crm_expense_details',{'employee':entity.employeeAutoId, 'monthYear':entity.expenseMonthYear}) }}"><i class="feather icon-eye"></i> Details</a>

@@ -89,6 +89,8 @@
                                     {% endfor %}
                                 {% endif %}
 
+                                <th rowspan="2">Total Milage (Tk.)</th>
+                                <th rowspan="2">Total Milage (Km)</th>
                                 <th rowspan="2">Total</th>
                                 <th rowspan="2" class="hidden-print" scope="col text-center"><i class="feather icon-settings"></i></th>
                             </tr>
@@ -107,6 +109,7 @@
                             {% if entities is defined %}
                             <tbody>
                                 {% set totalLineTotal=0 %}
+                                {% set grandTotalMilage=0 %}
                                 {% if entities is defined and entities is not empty %}
                                     {% for entity in entities %}
                                     {% set lineTotal= 0 %}
@@ -144,12 +147,18 @@
                                                 {% endfor %}
                                             {% endif %}
 
-
+                                            {% set totalMilage = 0 %}
                                             {% if typeOfVehicles is not empty %}
                                                 {% for typeOfVehicle in typeOfVehicles%}
                                                     <td class="text-right">
                                                         {% set conveyanceAmount = conveyanceDetailsTotalAmount['data'] is defined and conveyanceDetailsTotalAmount['data'][entity.id] is defined and conveyanceDetailsTotalAmount['data'][entity.id][typeOfVehicle.slug] is defined?conveyanceDetailsTotalAmount['data'][entity.id][typeOfVehicle.slug]['totalAmount']|number_format(2,'.',''):0 %}
 
+                                                        {% if typeOfVehicle.slug=='motorcycle' %}
+                                                            {% set totalMileageKm = conveyanceDetailsTotalAmount['data'] is defined and conveyanceDetailsTotalAmount['data'][entity.id] is defined and conveyanceDetailsTotalAmount['data'][entity.id][typeOfVehicle.slug] is defined?conveyanceDetailsTotalAmount['data'][entity.id][typeOfVehicle.slug]['totalMileage']:0 %}
+                                                            {% set totalMilage = totalMilage + totalMileageKm %}
+                                                            {% set grandTotalMilage=grandTotalMilage+totalMilage %}
+
+                                                        {% endif %}
                                                         {% set lineTotal = lineTotal + conveyanceAmount %}
 
                                                         {{ conveyanceAmount|number_format(2,'.',',') }}
@@ -157,9 +166,11 @@
                                                 {% endfor %}
                                             {% endif %}
 
-
-
-                                            <td class="text-right">{{ lineTotal|number_format(2,'.',',') }}</td>
+                                            <td class="text-right">
+                                                {{ (totalMilage*3.5)|number_format(2,'.',',') }}
+                                            </td>
+                                            <td class="text-right">{{ totalMilage }}</td>
+                                            <td class="text-right">{{ (lineTotal+(totalMilage*3.5))|number_format(2,'.',',') }}</td>
                                             <td class="hidden-print">
                                                 {% if entity.status==1 %}
                                                     <input type="hidden" name="expense[{{ entity.id }}]" value="{{ entity.id }}">
@@ -201,8 +212,9 @@
                                         {% endfor %}
                                     {% endif %}
 
-
-                                    <th class="text-right">{{ totalLineTotal|number_format(2,'.',',') }}</th>
+                                    <td>{{ (grandTotalMilage*3.5)|number_format(2,'.',',') }}</td>
+                                    <td>{{ grandTotalMilage }}</td>
+                                    <th class="text-right">{{ (totalLineTotal+(grandTotalMilage*3.5))|number_format(2,'.',',') }}</th>
                                     <th class="hidden-print"></th>
 
                                 </tr>

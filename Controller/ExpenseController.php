@@ -73,6 +73,7 @@ class ExpenseController extends AbstractController
             'areaWiseExpenseParticulars' => $areaWiseExpenseParticular,
             'conveyenceTotalAmount' => $conveyenceTotalAmount,
             'typeOfVehicles' => $typeOfVehicles,
+            'employeeVehicleType' => $this->getUser()->getExpenseChart()?$this->getUser()->getExpenseChart()->getTypeOfVehicle():'',
         ]);
     }
 
