@@ -52,7 +52,7 @@ class CrmTourPlanEditFormType extends AbstractType
                 'required' => false,
                 'attr' => [
                     'class' => 'form-control',
-                    'placeholder' => 'Visiting Area'
+                    'placeholder' => 'Purpose'
                 ]
             ])
             ->add('workingMode', EntityType::class, [
