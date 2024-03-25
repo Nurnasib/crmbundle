@@ -205,7 +205,7 @@
                                                     {% for typeOfVehicle in typeOfVehicles%}
                                                         {% if expenseConveyanceDetails[typeOfVehicle.slug] is defined %}
                                                             {% for expenseConveyanceDetail in expenseConveyanceDetails[typeOfVehicle.slug] %}
-                                                                {% set totalMileageAmount = expenseConveyanceDetail.totalMileage * 3.5 %}
+                                                                {% set totalMileageAmount =  typeOfVehicle.slug=='motorcycle' ? expenseConveyanceDetail.totalMileage * 3.5 : 0 %}
                                                             <tr>
                                                                 <td>
                                                                     {{ typeOfVehicle.name }}
