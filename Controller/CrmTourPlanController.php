@@ -63,10 +63,11 @@ class CrmTourPlanController extends AbstractController
             $monthYear = date('Y-m-d', strtotime('01-'.$date['visitDate']));
 
             $startDate = isset( $date['visitDate']) &&  $date['visitDate'] !=''? (new \DateTime( $monthYear))->format('t'): date('t');
-
             $em = $this->getDoctrine()->getManager();
             for($i=1; $i<=$startDate; $i++){
-                $existings = $this->getDoctrine()->getRepository(CrmVisitPlan::class)->findOneBy(['visitDate'=>new \DateTime( date('Y-m', strtotime($date['visitDate'])).'-'.$i), 'employee'=>$this->getUser()]);
+               $visitingDate =  new \DateTime( date('Y-m-d', strtotime($monthYear)));
+
+                $existings = $this->getDoctrine()->getRepository(CrmVisitPlan::class)->findOneBy(['visitDate'=>$visitingDate, 'employee'=>$this->getUser()]);
                 if($existings){
                     continue;
                 }
