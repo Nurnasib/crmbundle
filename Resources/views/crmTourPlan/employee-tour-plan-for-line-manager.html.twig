@@ -8,7 +8,7 @@
                 <div class="row align-items-center">
                     <ul class="breadcrumb">
                         <li class="breadcrumb-item"><a href="/"><i class="feather icon-home"></i></a></li>
-                        {#<li class="breadcrumb-item"> <a href="{{ path('kpi_setup') }}">  {{ 'Employee Sales'|trans }}</a></li>#}
+                        <li class="breadcrumb-item"> <strong>{{ 'Tour Plan'|trans }}</strong></li>
                     </ul>
                 </div>
             </div>
@@ -17,34 +17,21 @@
         <!-- [ Main Content ] start -->
         <div class="row">
             <div class="card">
-                <div class="card-header">
-                    <h5>{{ 'Crm Visit'|trans }}</h5>
-                    <div class="card-header-right">
-                        {% if is_granted('ROLE_CRM_POULTRY_USER') or is_granted('ROLE_CRM_CATTLE_USER') or is_granted('ROLE_CRM_AQUA_USER') or is_granted('ROLE_CRM_SALES_MARKETING_USER')  or is_granted('ROLE_USER')  or is_granted('ROLE_CORE') %}
-                        <div class="btn-group btn-group-sm" role="group" aria-label="Button group with nested dropdown">
-                            <a href="{{ path('crm_tour_plan_create') }}" class="btn btn-sm  green-bg white-font"><i class="fas fa-plus"></i>{{ 'Add New'|trans }}</a>
-                            <a href="{{ path('crm_tour_plan') }}" class="btn btn-sm gray-bg white-font"><i class="fa fa-th-list"></i>{{ 'CRM Tour Plan'|trans }}</a>
-                        </div>
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="card">
                 <div class="card-block">
-                    <form action="{{ path('crm_tour_plan') }}">
+                    {{ form_start(form, { 'attr' : { 'class': 'sales_marketing_search_form' } }) }}
                         <div class="row">
                             <div class="col-md-3">
                                 <div class="form-group">
-                                    <input type="text" class="form-control datepicker monthYearPicker" id="fromDate" name="date" value="{{ requestDate|default('') }}">
+                                    {{ form_widget(form.visitDate) }}
                                 </div>
                             </div>
                             <div class="col-md-3">
-                                <button class="btn btn-sm btn-success" type="submit" value="search" name="search">
-                                    <i class="fa fa-search"></i>
-                                    {{ 'Search'|trans }}
-                                </button>
+                                <div class="form-group">
+                                    {{ form_widget(form.employee) }}                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                {{ form_widget(form._token) }}
+                                <button type="submit" name="search" class="btn btn-primary btn-sm" title="Search" value="search"><i class="fa fa-search" aria-hidden="true"></i></button>
                             </div>
                         </div>
                     </form>
@@ -57,7 +44,6 @@
                             <th style="width: 20%" scope="col">Purpose</th>
                             <th style="width: 30%" scope="col">Agent List</th>
                             <th style="width: 30%" scope="col">Area List</th>
-                            <th style="width: 5%" scope="col" class="text-center" width="5%"><i class="feather icon-settings"></i></th>
                         </tr>
                         </thead>
                         <tbody>
@@ -128,15 +114,16 @@
                                                 {{ entity.areaList|default('') }}
                                             </a>
                                         </td>#}
-                                        <td>
-                                            {% if visitingDate|date('Y-m') >= currentDate|date('Y-m') %}
-                                            <a title="Edit" class="btn btn-transparent btn-sm" href="{{ path('crm_tour_plan_update',{'id':entity.id}) }}"><i class="fa fa-edit"></i></a>
-                                            {% endif %}
-                                        </td>
+
                                     </tr>
                                 {% endfor %}
 
                             {% endfor %}
+                            {% else %}
+                            
+                            <tr>
+                                <td colspan="6" class="text-center">No data found</td>
+                            </tr>
                         {% endif %}
                         </tbody>
                     </table>

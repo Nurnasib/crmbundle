@@ -19,6 +19,10 @@
                 <li><a class="dropdown-item" href="{{ path('crm_expense_batch') }}"><i
                                 class="feather icon-edit"></i>{{ 'Expense For Approval'|trans }}</a></li>
             {% endif %}
+            {% if is_granted('ROLE_CRM_POULTRY_ADMIN') or is_granted('ROLE_CRM_CATTLE_ADMIN') or is_granted('ROLE_CRM_AQUA_ADMIN') or is_granted('ROLE_CRM_SALES_MARKETING_ADMIN') or is_granted('ROLE_DEVELOPER') or is_granted('ROLE_LINE_MANAGER') %}
+                <li><a class="dropdown-item" href="{{ path('crm_employee_tour_plan') }}"><i
+                                class="feather icon-edit"></i>{{ 'Tour Plan Status'|trans }}</a></li>
+            {% endif %}
             {% if is_granted('ROLE_DEVELOPER') or is_granted('ROLE_CRM_POULTRY_ADMIN') or is_granted('ROLE_CRM_CATTLE_ADMIN') or is_granted('ROLE_CRM_AQUA_ADMIN') or is_granted('ROLE_CRM_SALES_MARKETING_ADMIN') %}
                 <li><a class="dropdown-item" href="{{ path('crm_expense_particular_type') }}"><i
                                 class="feather icon-edit"></i>{{ 'Particular Type'|trans }}</a></li>

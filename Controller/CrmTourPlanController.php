@@ -10,6 +10,7 @@ namespace Terminalbd\CrmBundle\Controller;
 
 use App\Entity\Admin\Location;
 use App\Entity\Core\Agent;
+use App\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -25,6 +26,7 @@ use Terminalbd\CrmBundle\Entity\CrmVisitPlan;
 use Terminalbd\CrmBundle\Entity\Setting;
 use Terminalbd\CrmBundle\Form\CrmTourPlanEditFormType;
 use Terminalbd\CrmBundle\Form\CrmTourPlanFormType;
+use Terminalbd\CrmBundle\Form\CrmTourPlanSearchFormType;
 use Terminalbd\CrmBundle\Form\CrmVisitFormType;
 
 /**
@@ -48,6 +50,34 @@ class CrmTourPlanController extends AbstractController
             'currentDate' => date('Y-m-d')
         ]);
     }
+    
+    /**
+     * @Route("/employee-tour-plan", methods={"GET","POST"}, name="crm_employee_tour_plan", options={"expose"=true})
+     */    
+    public function employeeTourPlanForLineManager(Request $request)
+    {
+        $requestDate = $request->query->get('date')?date('Y-m-d', strtotime('01-'.$request->query->get('date'))):date('Y-m-01');
+        $entities = [];
+        $userRepo = $this->getDoctrine()->getRepository(User::class);
+        $form = $this->createForm(CrmTourPlanSearchFormType::class, null, ['loggedUser' => $this->getUser(),'userRepo'=>$userRepo]);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted()) {
+            $filterBy = $form->getData();
+            $employeeId = isset( $filterBy['employee']) &&  $filterBy['employee']!='' ? $filterBy['employee']->getId():null;
+            $requestDate = isset($filterBy['visitDate'])?$filterBy['visitDate']->format("Y-m-d"):date('Y-m-01');
+            if($employeeId && $requestDate){
+                $entities = $this->getDoctrine()->getRepository(CrmVisitPlan::class)->getMonthlyTourPlanByEmployeeAndDate($employeeId, date('Y-m', strtotime($requestDate)), 'monthly');
+            }
+        }
+        return $this->render('@TerminalbdCrm/crmTourPlan/employee-tour-plan-for-line-manager.html.twig', [
+            'entities' => $entities,
+            'requestDate' => date('m-Y', strtotime($requestDate)),
+            'currentDate' => date('Y-m-d'),
+            'form' => $form->createView(),
+        ]);
+    }
+    
 
     /**
      * @Route("/create", methods={"GET", "POST"}, name="crm_tour_plan_create", options={"expose"=true})
@@ -106,7 +136,7 @@ class CrmTourPlanController extends AbstractController
             return $this->redirectToRoute('crm_tour_plan', ['date'=>date('m-Y', strtotime($visitPlan->getVisitDate()->format('Y-m-d')))]);
         }
 
-        if($visitPlan->getVisitDate()->format('Y-m-d') <= date('Y-m-d')){
+        if($visitPlan->getVisitDate()->format('Y-m') < date('Y-m')){
             $this->addFlash('error', 'You can not edit past date tour plan');
             return $this->redirectToRoute('crm_tour_plan');
         }
