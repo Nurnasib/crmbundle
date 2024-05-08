@@ -4314,7 +4314,7 @@ class ApiController extends AbstractController
             $arrayData = $request->getContent();
 
             $expenseData = json_decode($arrayData, true);
-            $employeeId = isset($expenseData['employee_id']) && $expenseData['employee_id'] != '' ? $expenseData['employee_id'] : '';
+            $employeeId = isset($expenseData['employee_id']) && $expenseData['employee_id'] != '' ? $expenseData['employee_id'] : null;
 
             $vistingDate = isset($expenseData['visit_date']) && $expenseData['visit_date'] != "" ? date('Y-m-d', strtotime($expenseData['visit_date'])) : '';
             if ($employeeId && $vistingDate) {
