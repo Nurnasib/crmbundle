@@ -68,5 +68,73 @@ class CrmVIsitPlanRepository extends EntityRepository
         return $returnArray;
     }
 
+    public function getMonthlyTourPlanSummeryByEmployeeAndDate($employee, $visitingDate=null, User $loggedUser){
+        $qb = $this->createQueryBuilder('e');
+        $qb->select('e.id', 'e.visitingArea', 'e.visitDate', 'e.agentList', 'e.areaList', 'e.createdAt', 'e.agentInfo');
+        $qb->addSelect('employee.id as employeeId', 'employee.name as employeeName' , 'employee.userId as employeeUserId' );
+        $qb->addSelect('workingMode.id as workingModeId', 'workingMode.name as workingModeName');
+        $qb->join('e.employee','employee');
+        $qb->leftJoin('e.workingMode','workingMode');
+        $qb->andWhere("DATE_FORMAT(e.visitDate,'%Y-%m') =:yearMonth")->setParameter('yearMonth', date('Y-m', strtotime($visitingDate.'-01')));
+        $qb->andWhere('e.workingMode IS NOT NULL');
+
+
+        $roleSplitArray = [];
+
+        foreach ($loggedUser->getRoles() as $role) {
+            $roleSplitArray = array_merge(explode('_', $role), $roleSplitArray);
+        }
+        if (in_array('ADMIN', $roleSplitArray) && !$employee) {
+            $userRole = [];
+            if (in_array('ROLE_CRM_POULTRY_ADMIN', $loggedUser->getRoles())) {
+                array_push($userRole, 'ROLE_CRM_POULTRY_USER');
+            }
+            if (in_array('ROLE_CRM_CATTLE_ADMIN', $loggedUser->getRoles())) {
+                array_push($userRole, 'ROLE_CRM_CATTLE_USER');
+            }
+            if (in_array('ROLE_CRM_AQUA_ADMIN', $loggedUser->getRoles())) {
+                array_push($userRole, 'ROLE_CRM_AQUA_USER');
+            }
+            if (in_array('ROLE_CRM_SALES_MARKETING_ADMIN', $loggedUser->getRoles())) {
+                array_push($userRole, 'ROLE_CRM_SALES_MARKETING_USER');
+            }
+            $query = '';
+            foreach ($userRole as $key => $role) {
+                if ($key !== 0) {
+                    $query .= " OR ";
+                }
+                $query .= "employee.roles LIKE '%" . $role . "%'";
+
+            }
+            $qb->andWhere($query);
+
+        } elseif (!in_array('ADMIN', $roleSplitArray) && in_array('ROLE_LINE_MANAGER', $loggedUser->getRoles()) && !$employee) {
+            $employeeIdsByLineManager = $this->_em->getRepository(User::class)->getEmployeesByLineManager($loggedUser);
+            $employeeIs=[];
+            if($employeeIdsByLineManager){
+                $employeeIs=$employeeIdsByLineManager;
+            }
+            $qb->andWhere('employee.id IN (:employeeIds)')->setParameter('employeeIds', $employeeIs);
+        } elseif (!in_array('ADMIN', $roleSplitArray) && !in_array('ROLE_LINE_MANAGER', $loggedUser->getRoles())) {
+            $qb->andWhere('e.employee = :employee')->setParameter('employee', $loggedUser);
+        }
+
+        if($employee) {
+            $qb->andWhere('employee.id =:employeeId')->setParameter('employeeId', $employee);
+        }
+
+        $qb->orderBy("DATE_FORMAT(e.visitDate,'%Y-%m')", "DESC");
+        $qb->addOrderBy('e.visitDate', 'ASC');
+        $results= $qb->getQuery()->getArrayResult();
+        $returnArray=[];
+        if($results){
+            foreach ($results as $result) {
+                $visitDate=$result['visitDate']->format('Y-m-d');
+                $returnArray[$result['employeeId']][$visitDate]=$result;
+            }
+        }
+        return $returnArray;
+    }
+
 
 }

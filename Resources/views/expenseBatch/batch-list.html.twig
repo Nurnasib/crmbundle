@@ -1,0 +1,117 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block body %}
+    <div class="pcoded-inner-content">
+        <!-- [ breadcrumb ] start -->
+        <div class="page-header">
+            <div class="page-block">
+                <div class="row align-items-center">
+                    <ul class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/"><i class="feather icon-home"></i></a></li>
+                        <li class="breadcrumb-item"> <a href="{{ path('crm_expense') }}">  {{ 'Expense'|trans }}</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!-- [ breadcrumb ] end -->
+        <!-- [ Main Content ] start -->
+        <div class="row">
+            <div class="card">
+                <div class="card-header">
+                    <h5>{{ 'Monthly Expense'|trans }}</h5>
+                    <div class="card-header-right">
+                        <div class="btn-group btn-group-sm" role="group" aria-label="Button group with nested dropdown">
+                            <a href="{{ path('crm_expense') }}" class="btn btn-sm gray-bg white-font"><i class="fa fa-th-list"></i>{{ 'Expense'|trans }}</a>
+                            {% if is_granted('ROLE_DEVELOPER') or is_granted('ROLE_LINE_MANAGER') or is_granted('ROLE_CRM_POULTRY_ADMIN') or is_granted('ROLE_CRM_CATTLE_ADMIN') or is_granted('ROLE_CRM_AQUA_ADMIN') or is_granted('ROLE_CRM_SALES_MARKETING_ADMIN') %}
+                                <a style="margin-left: 5px" href="{{ path('crm_expense_batch') }}" class="btn btn-sm gray-bg white-font"><i class="fa fa-th-list"></i>{{ 'Expense for Process'|trans }}</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="card">
+
+                <div class="card-block">
+                    <h4>Waiting for approved</h4>
+                    <div class="row">
+                        <div class="col-md-12">
+                            {{ form_start(form, {'attr' : { 'class': 'sales_marketing_search_form' } }) }}
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        {{ form_widget(form.employee, {'attr': {'required': false }, 'required': false}) }}
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        {{ form_widget(form.status) }}
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    {{ form_widget(form._token) }}
+                                    <button type="submit" name="search" class="btn btn-primary btn-sm" title="Search" value="search"><i class="fa fa-search" aria-hidden="true"></i></button>
+                                </div>
+                            </div>
+                            </form>
+                        </div>
+                    </div>
+                    <table class="table table-striped table-bordered table-hover" id="datatable">
+                        <thead class="thead-dark">
+                        <tr>
+                            <th scope="col">S/N</th>
+                            <th scope="col">Employee Name</th>
+                            <th scope="col">Expense Month</th>
+                            <th scope="col">Status</th>
+                            <th scope="col text-center"><i class="feather icon-settings"></i></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            {% if entities is defined and entities is not empty %}
+                                {% set offset = entities.getItemNumberPerPage * (entities.currentPageNumber - 1) %}
+                                {% for entity in entities %}
+                                <tr>
+                                    <td>{{ loop.index + offset }}</td>
+                                    <td>{{ entity.employee.userId }} {{ entity.employee.name }}</td>
+                                    <td>{{ entity.expenseMonth|date('M Y')}}</td>
+                                    <td>{{ entity.status==2?'Approved':'Created' }}</td>
+                                    <td>
+                                        <a title="Details" class="btn btn-mini blue-bg white-font" href="{{ path('crm_expense_batch_details',{'id':entity.id}) }}"><i class="feather icon-eye"></i> Details</a>
+                                    </td>
+
+                                </tr>
+                                {% endfor %}
+                            {% endif %}
+                        </tbody>
+                    </table>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="count">
+                                Total Records: {{ entities.getTotalItemCount }}
+                            </div>
+                        </div>
+                        <div class="col-md-6 navigation" style="text-align: right">
+                            {{ knp_pagination_render(entities) }}
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <!-- [ Main Content ] end -->
+    </div>
+{% endblock %}
+{% block cssBlock %}
+    <style>
+        .navigation nav .pagination{
+            float: right!important;
+        }
+    </style>
+    <link rel="stylesheet" href="{{ asset('assets/module/css/app.css') }}">
+{% endblock  %}
+{% block javascripts %}
+    {{ parent() }}
+    <script type="application/javascript" src="{{ asset('assets/module/js/app.js') }}"></script>
+{% endblock  %}
+

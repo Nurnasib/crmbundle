@@ -14,9 +14,11 @@ namespace Terminalbd\CrmBundle\Controller;
 use App\Entity\Admin\Location;
 use App\Entity\User;
 use DoctrineExtensions\Query\Mysql\Date;
+use Knp\Component\Pager\PaginatorInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -31,6 +33,7 @@ use Terminalbd\CrmBundle\Entity\ExpenseChart;
 use Terminalbd\CrmBundle\Entity\ExpenseConveyanceDetails;
 use Terminalbd\CrmBundle\Entity\ExpenseParticular;
 use Terminalbd\CrmBundle\Entity\Setting;
+use Terminalbd\CrmBundle\Form\CrmTourPlanSearchFormType;
 use Terminalbd\CrmBundle\Form\ExpenseFormType;
 use Terminalbd\CrmBundle\Form\SettingFormType;
 
@@ -47,10 +50,51 @@ class ExpenseBatchController extends AbstractController
     public function index(): Response
     {
         $expenses = $this->getDoctrine()->getRepository(Expense::class)->getExpensesByLineManager($this->getUser());
-        $entities = $this->getDoctrine()->getRepository(ExpenseBatch::class)->getExpenseBatches($this->getUser());
+//        $entities = $this->getDoctrine()->getRepository(ExpenseBatch::class)->getExpenseBatches($this->getUser());
         return $this->render('@TerminalbdCrm/expenseBatch/index.html.twig',[
-            'entities' => $entities,
+//            'entities' => $entities,
             'expenses' => $expenses,
+        ]);
+    }
+
+    /**
+     * @Route("/list", methods={"GET", "POST"}, name="crm_expense_batch_list")
+     * @return Response
+     */
+    public function expenseBatchList(Request $request, PaginatorInterface $paginator): Response
+    {
+        $entities = $this->getDoctrine()->getRepository(ExpenseBatch::class)->getExpenseBatches($this->getUser());
+        $userRepo = $this->getDoctrine()->getRepository(User::class);
+        $form = $this->createForm(CrmTourPlanSearchFormType::class, null, ['loggedUser' => $this->getUser(),'userRepo'=>$userRepo]);
+        $form->remove('visitDate');
+        $form->add('status', ChoiceType::class, [
+            'choices' => [
+                'Created' => 1,
+                'Approved' => 2,
+            ],
+            'required' => false,
+            'placeholder' => 'All Status',
+            'attr' => [
+                'class' => 'form-control',
+            ]
+        ]);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted()) {
+            $filterBy = $form->getData();
+            $employeeId = isset($filterBy['employee']) && $filterBy['employee'] != '' ? $filterBy['employee']->getId() : null;
+            $status = isset($filterBy['status']) && $filterBy['status'] != '' ? $filterBy['status'] : null;
+            $entities = $this->getDoctrine()->getRepository(ExpenseBatch::class)->getExpenseBatches($this->getUser(), $employeeId, $status);            
+        }
+
+            $data = $paginator->paginate(
+            $entities,
+            $request->query->get('page', 1)/*page number*/,
+            25  /*limit per page*/
+        );
+        return $this->render('@TerminalbdCrm/expenseBatch/batch-list.html.twig',[
+            'entities' => $data,
+            'form' => $form->createView(),
         ]);
     }
 
@@ -197,7 +241,7 @@ class ExpenseBatchController extends AbstractController
         $em->flush();
 
         $this->addFlash('success', 'Expense has been approved.');
-        return $this->redirectToRoute('crm_expense_batch');
+        return $this->redirectToRoute('crm_expense_batch_list');
     }
 
 }

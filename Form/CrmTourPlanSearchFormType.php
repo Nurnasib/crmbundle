@@ -103,8 +103,8 @@ class CrmTourPlanSearchFormType extends AbstractType
                     /**  @var User $employee */
                     return '(' . $employee->getUserId() . ') ' . $employee->getName();
                 },
-                'placeholder' => '- Select Employee -',
-                'required' => true,
+                'placeholder' => '- All Employee -',
+//                'required' => true,
                 'attr' => [
                     'class' => 'select2'
                 ]

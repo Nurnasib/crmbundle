@@ -296,19 +296,22 @@ class ExpenseController extends AbstractController
         $yearMonth = isset($requestData['monthYear'])&&$requestData['monthYear']!=''?$requestData['monthYear']:date('Y-m');
         $expenseMonth = date('Y-m-d',strtotime($yearMonth.'-01'));
 
-        $existingExpenseBatch= $this->getDoctrine()->getRepository(ExpenseBatch::class)->findOneBy(['employee'=>$employee, 'expenseMonth'=>new \DateTime($expenseMonth)]);
 
-        if($existingExpenseBatch){
-            $this->addFlash('error', $yearMonth.' month expense already process.');
-            return $this->redirectToRoute('crm_expense_details', ['employee'=>$employee->getId(),'monthYear'=>$yearMonth]);
-        }
         $crmConfig= $this->getDoctrine()->getRepository(CrmConfig::class)->findOneBy(['slug'=>'bike-miles-per-km','status'=>1]);
         if ($requestData && isset($requestData['expense']) && sizeof($requestData['expense'])>0) {
-            $expenseBatch = new ExpenseBatch();
+//            $expenseBatch = new ExpenseBatch();
+            $existingExpenseBatch= $this->getDoctrine()->getRepository(ExpenseBatch::class)->findOneBy(['employee'=>$employee, 'expenseMonth'=>new \DateTime($expenseMonth)]);
 
-            $expenseBatch->setEmployee($employee);
+            if($existingExpenseBatch){
+                $expenseBatch = $existingExpenseBatch;
+            }else{
+                $expenseBatch = new ExpenseBatch();
+                $expenseBatch->setEmployee($employee);
+                $expenseBatch->setExpenseMonth(new \DateTime($expenseMonth));
+            }
+
             $expenseBatch->setStatus(1);
-            $expenseBatch->setExpenseMonth(new \DateTime($expenseMonth));
+
             $totalReading = isset($requestData['totalRiding']) && $requestData['totalRiding'] != '' && $requestData['totalRiding'] > 0 ? $requestData['totalRiding'] : '0';
             $expenseBatch->setTotalRiding($totalReading);
 
@@ -326,13 +329,14 @@ class ExpenseController extends AbstractController
             foreach ($requestData['expense'] as $expenseId => $expense) {
                 /* @var Expense $expenseObj */
                 $expenseObj = $this->getDoctrine()->getRepository(Expense::class)->find($expense);
-
-                $expenseObj->setExpenseBatch($expenseBatch);
-                $expenseObj->setStatus(2);
+                if($expenseObj->getExpenseBatch()==null){
+                    $expenseObj->setExpenseBatch($expenseBatch);
+                    $expenseObj->setStatus(2);
+                }
 
                 $em->persist($expenseObj);
-                $em->flush();
             }
+            $em->flush();
 
             $this->addFlash('success', 'Expense has been process successfully');
 
@@ -358,6 +362,21 @@ class ExpenseController extends AbstractController
         $em->flush();
         $this->addFlash('success', 'Expense has been deleted successfully.');
         return new Response('Success');
+    }
+
+    /**
+     * Deletes a Expense entity.
+     * @Route("/{expense}/{id}/delete", methods={"GET"}, name="crm_expense_particular_delete")
+     * @return Response
+     */
+    public function expenseParticularDelete(Expense $expense, ExpenseParticular $expenseParticular): Response
+    {
+        $entity = $this->getDoctrine()->getRepository(ExpenseParticular::class)->findOneBy(['expense'=>$expense, 'id'=>$expenseParticular->getId()]);
+        $em = $this->getDoctrine()->getManager();
+        $em->remove($entity);
+        $em->flush();
+        $this->addFlash('success', 'Expense has been deleted successfully.');
+        return $this->redirectToRoute('crm_expense_edit', ['id' => $expense->getId()]);
     }
 
 

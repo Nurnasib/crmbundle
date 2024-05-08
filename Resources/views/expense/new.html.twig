@@ -127,6 +127,18 @@
                                                             <td>
                                                                 <input class="form-control" type="number" min="0" step="any" name="amount[{{ entity.id }}][{{ dailyExpenseParticular.expenseChartDetailId }}][{{ dailyExpenseParticular.particularId }}]" value="{{ expenseParticulars[entity.id][dailyExpenseParticular.expenseChartDetailId][dailyExpenseParticular.particularId] is defined ? expenseParticulars[entity.id][dailyExpenseParticular.expenseChartDetailId][dailyExpenseParticular.particularId]['amount']: dailyExpenseParticular.amount }}">
                                                             </td>
+                                                            <td>
+                                                                {% if expenseParticulars[entity.id][dailyExpenseParticular.expenseChartDetailId][dailyExpenseParticular.particularId] is defined %}
+                                                                    <a onclick="return confirm('Press a button!')" href="{{ path('crm_expense_particular_delete',
+                                                                        {
+                                                                            'expense':entity.id,
+                                                                            'id': expenseParticulars[entity.id][dailyExpenseParticular.expenseChartDetailId][dailyExpenseParticular.particularId]['id']
+                                                                        }) }}" class="btn btn-sm btn-danger">
+                                                                        X
+                                                                    </a>
+
+                                                                {% endif %}
+                                                            </td>
                                                             {#<td style="vertical-align: middle">
                                                                 <div style="height: 30px" class="custom-file">
                                                                     <input type="file" name="files[{{ entity.id }}][{{ dailyExpenseParticular.expenseChartDetailId }}][{{ dailyExpenseParticular.particularId }}]" class="custom-file-input" style="z-index: 0; height: 30px" id="file_{{ dailyExpenseParticular.particularId }}" aria-describedby="file">

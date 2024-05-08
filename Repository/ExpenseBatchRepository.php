@@ -28,7 +28,7 @@ use function Doctrine\ORM\QueryBuilder;
 class ExpenseBatchRepository extends EntityRepository
 {
 
-    public function getExpenseBatches(User $loggedUser){
+    public function getExpenseBatches(User $loggedUser, $employeeId = null, $status= null){
 
         $qb = $this->createQueryBuilder('e');
         $qb->join('e.employee', 'employee');
@@ -39,7 +39,7 @@ class ExpenseBatchRepository extends EntityRepository
             $roleSplitArray = array_merge(explode('_', $role), $roleSplitArray);
         }
 
-        if (in_array('ADMIN', $roleSplitArray)) {
+        if (in_array('ADMIN', $roleSplitArray) && !$employeeId) {
             $userRole = [];
             if (in_array('ROLE_CRM_POULTRY_ADMIN', $loggedUser->getRoles())) {
                 array_push($userRole, 'ROLE_CRM_POULTRY_USER');
@@ -66,7 +66,7 @@ class ExpenseBatchRepository extends EntityRepository
                 $qb->andWhere($query);
             }
 
-        } elseif (!in_array('ADMIN', $roleSplitArray) && in_array('ROLE_LINE_MANAGER', $loggedUser->getRoles())) {
+        } elseif (!in_array('ADMIN', $roleSplitArray) && in_array('ROLE_LINE_MANAGER', $loggedUser->getRoles()) && !$employeeId) {
             $employeeIdsByLineManager = $this->_em->getRepository(User::class)->getEmployeesByLineManager($loggedUser);
             $employeeIs=[];
             if($employeeIdsByLineManager){
@@ -75,10 +75,14 @@ class ExpenseBatchRepository extends EntityRepository
 //            dd($employeeIs);
             $qb->andWhere('employee.id IN (:employeeIds)')->setParameter('employeeIds', $employeeIs);
         }
+        if($employeeId){
+            $qb->andWhere('employee.id = :employeeId')->setParameter('employeeId', $employeeId);
+        }
+        if($status){
+            $qb->andWhere('e.status = :status')->setParameter('status', $status);
+        }
 
-        $results = $qb->getQuery()->getResult();
-//        dd($results);
-        return $results;
+        return $qb->getQuery();
     }
 
 

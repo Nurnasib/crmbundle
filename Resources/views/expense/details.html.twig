@@ -25,7 +25,7 @@
 {#                            <a href="{{ path('crm_expense_new') }}" class="btn btn-sm  green-bg white-font"><i class="fas fa-plus"></i>{{ 'Add New'|trans }}</a>#}
                             <a href="{{ path('crm_expense') }}" class="btn btn-sm gray-bg white-font"><i class="fa fa-th-list"></i>{{ 'Expense'|trans }}</a>
                             {% if is_granted('ROLE_DEVELOPER') or is_granted('ROLE_LINE_MANAGER') or is_granted('ROLE_CRM_POULTRY_ADMIN') or is_granted('ROLE_CRM_CATTLE_ADMIN') or is_granted('ROLE_CRM_AQUA_ADMIN') or is_granted('ROLE_CRM_SALES_MARKETING_ADMIN') %}
-                                <a style="margin-left: 5px" href="{{ path('crm_expense_batch') }}" class="btn btn-sm gray-bg white-font"><i class="fa fa-th-list"></i>{{ 'Expense for Approval'|trans }}</a>
+                                <a style="margin-left: 5px" href="{{ path('crm_expense_batch') }}" class="btn btn-sm gray-bg white-font"><i class="fa fa-th-list"></i>{{ 'Expense for Process'|trans }}</a>
                             {% endif %}
                         </div>
                     </div>
@@ -65,10 +65,10 @@
                                 <h6>Vehicle Type: {{ employee.typeOfVehicle|default('')|capitalize }} /  No: {{ employee.vehicleNo|default('') }}</h6>
                             </div>
                         </div>
-                        {% if expenseBatch is null %}
+{#                        {% if expenseBatch is null %}#}
                         <form class="form-horizontal right" method="post" enctype="multipart/form-data" action="{{ path('crm_expense_process',{'employee':employee.id}) }}">
                             <input type="hidden" name="monthYear" value="{{ yearMonth }}">
-                            {% endif %}
+{#                      {% endif %}#}
                         <table class="table table-bordered">
                             <thead>
                             <tr>
@@ -223,7 +223,7 @@
                             {% endif %}
 
                         </table>
-                            {% if expenseBatch is null %}
+{#                            {% if expenseBatch is null %}#}
 
                             <div class="hidden-print" style="padding-bottom: 20px">
 
@@ -236,7 +236,7 @@
                                 <div class="clearfix"></div>
                             </div>
                         </form>
-                        {% endif %}
+{#                        {% endif %}#}
                     </div>
 
                     {% if expenseBatch is not null and expenseBatch.status>1 %}
