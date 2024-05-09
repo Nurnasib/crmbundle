@@ -126,7 +126,7 @@ class ExpenseRepository extends EntityRepository
     }
 
     public function getExpensesByLineManager(User $loggedUser){
-        $monthYear = date('Y-m', strtotime(date('Y-m')." -1 month"));
+//        $monthYear = date('Y-m', strtotime(date('Y-m')." -1 month"));
         $qb = $this->createQueryBuilder('e');
 //        $qb->select('SUM(e.conveyance) as totalConveyance','SUM(e.mobile) as totalMobile','SUM(e.dailyAllowance) as totalDailyAllowance','SUM(e.hotelRent) as totalHotelRent','SUM(e.tollBill) as totalTollBill','SUM(e.food) as totalFood','SUM(e.courier) as totalCourier','SUM(e.maintenace) as totalMaintenace','SUM(e.serviceCharge) as totalServiceCharge','SUM(e.photostate) as totalPhotostate','SUM(e.others) as totalOthers');
         $qb->select("DATE_FORMAT(e.expenseDate,'%Y-%m') as expenseMonthYear", 'YEAR(e.expenseDate) as expenseYear');
@@ -136,7 +136,7 @@ class ExpenseRepository extends EntityRepository
         $qb->where('e.status >=:status')->setParameter('status',1);
         $qb->andWhere('e.expenseBatch IS NULL');
         $qb->andWhere('e.expenseDate IS NOT NULL');
-        $qb->andWhere("DATE_FORMAT(e.expenseDate,'%Y-%m') =:monthYear")->setParameter('monthYear', $monthYear);
+//        $qb->andWhere("DATE_FORMAT(e.expenseDate,'%Y-%m') =:monthYear")->setParameter('monthYear', $monthYear);
 
         $roleSplitArray = [];
 
