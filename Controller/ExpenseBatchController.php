@@ -44,16 +44,37 @@ use Terminalbd\CrmBundle\Form\SettingFormType;
 class ExpenseBatchController extends AbstractController
 {
     /**
-     * @Route("/", methods={"GET"}, name="crm_expense_batch")
+     * @Route("/", methods={"GET", "POST"}, name="crm_expense_batch")
      * @return Response
      */
-    public function index(): Response
+    public function index(Request $request, PaginatorInterface $paginator): Response
     {
         $expenses = $this->getDoctrine()->getRepository(Expense::class)->getExpensesByLineManager($this->getUser());
+
+        $userRepo = $this->getDoctrine()->getRepository(User::class);
+        $form = $this->createForm(CrmTourPlanSearchFormType::class, null, ['loggedUser' => $this->getUser(),'userRepo'=>$userRepo]);
+        $form->remove('visitDate');
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted()) {
+            $filterBy = $form->getData();
+            $employeeId = isset($filterBy['employee']) && $filterBy['employee'] != '' ? $filterBy['employee']->getId() : null;
+//            $entities = $this->getDoctrine()->getRepository(ExpenseBatch::class)->getExpenseBatches($this->getUser(), $employeeId, $status);
+            $expenses = $this->getDoctrine()->getRepository(Expense::class)->getExpensesByLineManager($this->getUser(), $employeeId);
+        }
+
+        $data = $paginator->paginate(
+            $expenses,
+            $request->query->get('page', 1)/*page number*/,
+            25  /*limit per page*/
+        );
+        
 //        $entities = $this->getDoctrine()->getRepository(ExpenseBatch::class)->getExpenseBatches($this->getUser());
         return $this->render('@TerminalbdCrm/expenseBatch/index.html.twig',[
 //            'entities' => $entities,
-            'expenses' => $expenses,
+            'expenses' => $data,
+            'form' => $form->createView(),
         ]);
     }
 

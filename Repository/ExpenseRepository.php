@@ -125,7 +125,8 @@ class ExpenseRepository extends EntityRepository
         return $result;
     }
 
-    public function getExpensesByLineManager(User $loggedUser){
+    public function getExpensesByLineManager(User $loggedUser, $employeeId=null){
+        $qb = $this->createQueryBuilder('e');
 //        $monthYear = date('Y-m', strtotime(date('Y-m')." -1 month"));
         $qb = $this->createQueryBuilder('e');
 //        $qb->select('SUM(e.conveyance) as totalConveyance','SUM(e.mobile) as totalMobile','SUM(e.dailyAllowance) as totalDailyAllowance','SUM(e.hotelRent) as totalHotelRent','SUM(e.tollBill) as totalTollBill','SUM(e.food) as totalFood','SUM(e.courier) as totalCourier','SUM(e.maintenace) as totalMaintenace','SUM(e.serviceCharge) as totalServiceCharge','SUM(e.photostate) as totalPhotostate','SUM(e.others) as totalOthers');
@@ -179,6 +180,9 @@ class ExpenseRepository extends EntityRepository
             }
 //            dd($employeeIs);
             $qb->andWhere('employee.id IN (:employeeIds)')->setParameter('employeeIds', $employeeIs);
+        }
+        if($employeeId){
+            $qb->andWhere('employee.id = :employeeId')->setParameter('employeeId', $employeeId);
         }
 
         $qb->groupBy('expenseMonthYear');

@@ -10,7 +10,7 @@
         <li><a class="dropdown-item" href="{{ path('crm_expense_batch') }}"><i
                         class="feather icon-edit"></i>{{ 'Expense For Process'|trans }}</a></li>
 
-        <li><a class="dropdown-item" href="{{ path('crm_expense_batch') }}"><i
+        <li><a class="dropdown-item" href="{{ path('crm_expense_batch_list') }}"><i
                         class="feather icon-edit"></i>{{ 'Expense For Approval'|trans }}</a></li>
     {% endif %}
     {% if is_granted('ROLE_CRM_POULTRY_ADMIN') or is_granted('ROLE_CRM_CATTLE_ADMIN') or is_granted('ROLE_CRM_AQUA_ADMIN') or is_granted('ROLE_CRM_SALES_MARKETING_ADMIN') or is_granted('ROLE_DEVELOPER') or is_granted('ROLE_LINE_MANAGER') %}
