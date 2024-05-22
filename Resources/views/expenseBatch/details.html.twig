@@ -130,7 +130,6 @@
                                                     {% set expenseParticularId = expensePaticularAmount['inLine'] is defined and expensePaticularAmount['inLine'][entity.employee.id][entity.id][chartDetailsId][expenseChart.particularId] is defined ? expensePaticularAmount['inLine'][entity.employee.id][entity.id][chartDetailsId][expenseChart.particularId]['expenseParticularId']:'' %}
                                                     {% set amount = expensePaticularAmount['inLine'] is defined and expensePaticularAmount['inLine'][entity.employee.id][entity.id][chartDetailsId][expenseChart.particularId] is defined ? expensePaticularAmount['inLine'][entity.employee.id][entity.id][chartDetailsId][expenseChart.particularId]['amount']|number_format(2,'.',''):0 %}
                                                     {% set lineTotal = lineTotal + amount %}
-                                                    {% set totalLineTotal = totalLineTotal + amount %}
 
                                                     <td class="text-right">
                                                         {% if expensePaticularAmount['inLine'] is defined and expensePaticularAmount['inLine'][entity.employee.id][entity.id][chartDetailsId][expenseChart.particularId] is defined and expensePaticularAmount['inLine'][entity.employee.id][entity.id][chartDetailsId][expenseChart.particularId]['path'] is not empty%}
@@ -157,12 +156,14 @@
                                                 {% endif %}
 
                                                 {% set lineTotal = lineTotal + conveyanceAmount %}
-                                                {% set totalLineTotal = totalLineTotal + conveyanceAmount %}
+{#                                                {% set totalLineTotal = totalLineTotal + conveyanceAmount %}#}
 
                                                 {{ conveyanceAmount|number_format(2,'.',',') }}
                                             </td>
                                         {% endfor %}
                                     {% endif %}
+{#                                    {% set totalLineTotal = totalLineTotal + lineTotal %}#}
+                                    
                                     <th class="text-right">{{ lineTotal|number_format(2,'.',',') }}</th>
                                     <td class="hidden-print">
 {#                                        {% if expenseBatch.status<2 %}#}
@@ -179,8 +180,30 @@
                                 <tfoot>
                                     <tr class="text-right">
 {#                                        <th class="text-right hidden show-print" colspan="3">Total</th>#}
-                                        <th class="text-right hidden show-print" colspan="{{ 4 + (areaWiseExpenseParticulars['chartDetails'] is defined? areaWiseExpenseParticulars['chartDetails']|multiArrayLength: 0)+ typeOfVehicles|length }}">Total</th>
-                                        <th class="text-right hidden-print" colspan="{{ 5 + (areaWiseExpenseParticulars['chartDetails'] is defined? areaWiseExpenseParticulars['chartDetails']|multiArrayLength: 0)+ typeOfVehicles|length }}">Total</th>
+                                        <th class="text-right hidden show-print" colspan="{{ 4 }}">Total</th>
+                                        <th class="text-right hidden-print" colspan="{{ 5 }}">Total</th>
+                                        {% if areaWiseExpenseParticulars is defined and areaWiseExpenseParticulars['areaName'] is defined and areaWiseExpenseParticulars['areaName'] is iterable %}
+                                            {% for areaId, expenseParticularAttribute in areaWiseExpenseParticulars['areaName'] %}
+                                                {% if areaWiseExpenseParticulars is defined and areaWiseExpenseParticulars['chartDetails'] is defined and areaWiseExpenseParticulars['chartDetails'][areaId] is defined and areaWiseExpenseParticulars['chartDetails'][areaId] is iterable %}
+                                                    {% for chartDetailsId, expenseChart in areaWiseExpenseParticulars['chartDetails'][areaId] %}
+                                                        {% set totalAmount = expensePaticularAmount['grandTolalPerColumn'] is defined and expensePaticularAmount['grandTolalPerColumn'][chartDetailsId] is defined ?expensePaticularAmount['grandTolalPerColumn'][chartDetailsId][expenseChart.particularId]|arraySumColWise('amount')|number_format(2,'.',''):0 %}
+                                                        {% set totalLineTotal = totalLineTotal + totalAmount %}
+                                                        <td class="text-right">{{ totalAmount|number_format(2,'.',',') }}</td>
+                                                    {% endfor %}
+                                                {% endif %}
+                                            {% endfor %}
+                                        {% endif %}
+                                        {% if typeOfVehicles is not empty %}
+                                            {% for typeOfVehicle in typeOfVehicles%}
+                                                <td class="text-right">
+                                                    {% set conveyanceTotalAmount = conveyanceDetailsTotalAmount['grandTotal'] is defined and conveyanceDetailsTotalAmount['grandTotal'][typeOfVehicle.slug] is defined ? conveyanceDetailsTotalAmount['grandTotal'][typeOfVehicle.slug]|arraySum()|number_format(2,'.',''):0 %}
+
+                                                    {% set totalLineTotal = totalLineTotal + conveyanceTotalAmount %}
+
+                                                    {{ conveyanceTotalAmount|number_format(2,'.',',') }}
+                                                </td>
+                                            {% endfor %}
+                                        {% endif %}
 
                                         <th>{{ totalLineTotal|number_format(2,'.',',') }}</th>
                                         <th class="hidden-print"></th>
