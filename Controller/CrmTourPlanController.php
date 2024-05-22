@@ -124,9 +124,18 @@ class CrmTourPlanController extends AbstractController
             }elseif (!in_array('ADMIN', $roleSplitArray) && in_array('ROLE_LINE_MANAGER', $this->getUser()->getRoles())){
                 $employeeArray = $this->getDoctrine()->getRepository(User::class)->getEmployeesByEmployeeIds($this->getUser());
             }
+            $uniqueEmployees = [];
             if(isset($employeeArray['employee']) && sizeof($employeeArray['employee'])>0){
-                $employees = $this->unique_array($employeeArray['employee'], 'id');
+                $uniqueEmployees = $this->unique_array($employeeArray['employee'], 'id');
             }
+            if(sizeof($uniqueEmployees)>0){
+                foreach ($uniqueEmployees as $employee) {
+                    $employees[$employee['lineManagerId']][] = $employee;
+                }
+            }
+//            dd($employees);
+
+
 
             if($requestDate){
                 $entities = $this->getDoctrine()->getRepository(CrmVisitPlan::class)->getMonthlyTourPlanSummeryByEmployeeAndDate($employeeId, date('Y-m', strtotime($requestDate)), $this->getUser());
@@ -141,7 +150,7 @@ class CrmTourPlanController extends AbstractController
             $arrayDays[$start->format('Y-m-d')] = $start->format('d');
             $start->modify('+1 day');
         }
-//        dd($entities);
+//        dd($employees);
         return $this->render('@TerminalbdCrm/crmTourPlan/employee-tour-plan-summery-for-line-manager.html.twig', [
             'entities' => $entities,
             'requestDate' => date('m-Y', strtotime($requestDate)),

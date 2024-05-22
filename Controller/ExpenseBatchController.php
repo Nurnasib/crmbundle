@@ -44,7 +44,9 @@ use Terminalbd\CrmBundle\Form\SettingFormType;
 class ExpenseBatchController extends AbstractController
 {
     /**
-     * @Route("/", methods={"GET", "POST"}, name="crm_expense_batch")
+     * @Route("/", methods={"GET"}, name="crm_expense_batch")
+     * @param Request $request
+     * @param PaginatorInterface $paginator
      * @return Response
      */
     public function index(Request $request, PaginatorInterface $paginator): Response
@@ -52,16 +54,17 @@ class ExpenseBatchController extends AbstractController
         $expenses = $this->getDoctrine()->getRepository(Expense::class)->getExpensesByLineManager($this->getUser());
 
         $userRepo = $this->getDoctrine()->getRepository(User::class);
-        $form = $this->createForm(CrmTourPlanSearchFormType::class, null, ['loggedUser' => $this->getUser(),'userRepo'=>$userRepo]);
-        $form->remove('visitDate');
+        $form = $this->createForm(CrmTourPlanSearchFormType::class, null, ['loggedUser' => $this->getUser(),'userRepo'=>$userRepo, 'method' => 'GET']);
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {
             $filterBy = $form->getData();
             $employeeId = isset($filterBy['employee']) && $filterBy['employee'] != '' ? $filterBy['employee']->getId() : null;
+            $requestDate = isset($filterBy['visitDate'])?$filterBy['visitDate']->format("Y-m"):null;
+
 //            $entities = $this->getDoctrine()->getRepository(ExpenseBatch::class)->getExpenseBatches($this->getUser(), $employeeId, $status);
-            $expenses = $this->getDoctrine()->getRepository(Expense::class)->getExpensesByLineManager($this->getUser(), $employeeId);
+            $expenses = $this->getDoctrine()->getRepository(Expense::class)->getExpensesByLineManager($this->getUser(), $employeeId, $requestDate);
         }
 
         $data = $paginator->paginate(
@@ -86,8 +89,8 @@ class ExpenseBatchController extends AbstractController
     {
         $entities = $this->getDoctrine()->getRepository(ExpenseBatch::class)->getExpenseBatches($this->getUser());
         $userRepo = $this->getDoctrine()->getRepository(User::class);
-        $form = $this->createForm(CrmTourPlanSearchFormType::class, null, ['loggedUser' => $this->getUser(),'userRepo'=>$userRepo]);
-        $form->remove('visitDate');
+        $form = $this->createForm(CrmTourPlanSearchFormType::class, null, ['loggedUser' => $this->getUser(),'userRepo'=>$userRepo, 'method' => 'GET']);
+//        $form->remove('visitDate');
         $form->add('status', ChoiceType::class, [
             'choices' => [
                 'Created' => 1,
@@ -105,7 +108,9 @@ class ExpenseBatchController extends AbstractController
             $filterBy = $form->getData();
             $employeeId = isset($filterBy['employee']) && $filterBy['employee'] != '' ? $filterBy['employee']->getId() : null;
             $status = isset($filterBy['status']) && $filterBy['status'] != '' ? $filterBy['status'] : null;
-            $entities = $this->getDoctrine()->getRepository(ExpenseBatch::class)->getExpenseBatches($this->getUser(), $employeeId, $status);            
+            $requestDate = isset($filterBy['visitDate'])?$filterBy['visitDate']->format("Y-m"):null;
+
+            $entities = $this->getDoctrine()->getRepository(ExpenseBatch::class)->getExpenseBatches($this->getUser(), $employeeId, $status, $requestDate);
         }
 
             $data = $paginator->paginate(

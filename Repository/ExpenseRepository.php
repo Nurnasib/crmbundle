@@ -125,7 +125,7 @@ class ExpenseRepository extends EntityRepository
         return $result;
     }
 
-    public function getExpensesByLineManager(User $loggedUser, $employeeId=null){
+    public function getExpensesByLineManager(User $loggedUser, $employeeId=null, $yearMonth=null){
         $qb = $this->createQueryBuilder('e');
 //        $monthYear = date('Y-m', strtotime(date('Y-m')." -1 month"));
         $qb = $this->createQueryBuilder('e');
@@ -137,6 +137,9 @@ class ExpenseRepository extends EntityRepository
         $qb->where('e.status >=:status')->setParameter('status',1);
         $qb->andWhere('e.expenseBatch IS NULL');
         $qb->andWhere('e.expenseDate IS NOT NULL');
+        if($yearMonth){
+            $qb->andWhere("DATE_FORMAT(e.expenseDate,'%Y-%m') =:monthYear")->setParameter('monthYear', $yearMonth);
+        }
 //        $qb->andWhere("DATE_FORMAT(e.expenseDate,'%Y-%m') =:monthYear")->setParameter('monthYear', $monthYear);
 
         $roleSplitArray = [];

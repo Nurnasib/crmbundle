@@ -118,7 +118,7 @@ class CrmTourPlanSearchFormType extends AbstractType
                     'autocomplete' => 'off',
                     'placeholder' => 'm-Y'
                 ),
-                'empty_data' => new \DateTime(),
+//                'empty_data' => new \DateTime(),
             ))->addViewTransformer(new DateTimeToStringTransformer(null, null, 'm-Y')))
             ->add('Save', SubmitType::class)
         ;

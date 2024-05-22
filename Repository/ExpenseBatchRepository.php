@@ -28,10 +28,14 @@ use function Doctrine\ORM\QueryBuilder;
 class ExpenseBatchRepository extends EntityRepository
 {
 
-    public function getExpenseBatches(User $loggedUser, $employeeId = null, $status= null){
+    public function getExpenseBatches(User $loggedUser, $employeeId = null, $status= null, $requestDate=null){
 
         $qb = $this->createQueryBuilder('e');
         $qb->join('e.employee', 'employee');
+
+        if($requestDate){
+            $qb->andWhere("DATE_FORMAT(e.expenseMonth,'%Y-%m') =:monthYear")->setParameter('monthYear', $requestDate);
+        }
 
         $roleSplitArray = [];
 

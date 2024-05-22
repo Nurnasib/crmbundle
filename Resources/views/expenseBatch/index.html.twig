@@ -38,9 +38,14 @@
                         <div class="col-md-12">
                             {{ form_start(form, {'attr' : { 'class': 'sales_marketing_search_form' } }) }}
                             <div class="row">
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <div class="form-group">
                                         {{ form_widget(form.employee, {'attr': {'required': false }, 'required': false}) }}
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        {{ form_widget(form.visitDate, {'attr': {'required': false }, 'required': false}) }}
                                     </div>
                                 </div>
                                 <div class="col-md-3">
@@ -108,9 +113,48 @@
 {% endblock %}
 {% block cssBlock %}
     <link rel="stylesheet" href="{{ asset('assets/module/css/app.css') }}">
+    <style>
+        .hide-calendar .ui-datepicker-calendar{
+            display: none;
+        }
+    </style>
 {% endblock  %}
 {% block javascripts %}
     {{ parent() }}
     <script type="application/javascript" src="{{ asset('assets/module/js/app.js') }}"></script>
+    <script>
+        $(document).ready(function () {
+
+            $('.monthYearPicker').datepicker({
+                changeMonth: true,
+                changeYear: true,
+                dateFormat: 'mm-yy',
+                autoClose:true,
+                onClose: function() {
+                    $(this).datepicker('widget').removeClass('hide-calendar');
+                    $("#ui-datepicker-div").removeClass('monthYearPicker');
+                    var iMonth = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
+                    var iYear = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
+                    $(this).datepicker('setDate', new Date(iYear, iMonth, 1));
+                },
+
+                beforeShow: function(input) {
+                    $(input).datepicker("widget").addClass('hide-calendar');
+                    $("#ui-datepicker-div").addClass('monthYearPicker');
+                    // console.log($(this).val());
+                    if ((selDate = $(this).val()).length > 0)
+                    {
+                        iYear = selDate.substring(selDate.length - 4, selDate.length);
+                        iMonth = selDate.substring(0, 2);
+                        // iMonth = jQuery.inArray(selDate.substring(1, 2), $(this).datepicker('option', 'monthNames'));
+                        // console.log(iMonth);
+                        iMonth = iMonth-1;
+                        $(this).datepicker('option', 'defaultDate', new Date(iYear, iMonth, 1));
+                        $(this).datepicker('setDate', new Date(iYear, iMonth, 1));
+                    }
+                }
+            });
+        });
+    </script>
 {% endblock  %}
 
