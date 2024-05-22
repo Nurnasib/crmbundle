@@ -109,6 +109,7 @@
                                 {% set totalLineTotal=0 %}
                                 {% set totalMilage=0 %}
                                 {% for entity in expenseBatch.expenses %}
+                                    {% set lineTotal = 0 %}
 
 {#                                    {% set lineTotal= expensePaticularAmount['inLine'] is defined? expensePaticularAmount['inLine'][entity.employee.id][entity.id]|arraySumColWise('amount'):'0.00' %}#}
 {##}
@@ -122,8 +123,8 @@
                                     <td class="hidden-print">{{ entity.scheduleVisit }}</td>
                                     <td>{{ entity.visitLocation|default('') }}</td>
                                     <td>{{ entity.workingArea.name|default('') }}</td>
+
                                     {% if areaWiseExpenseParticulars is defined and areaWiseExpenseParticulars['areaName'] is defined and areaWiseExpenseParticulars['areaName'] is iterable %}
-                                        {% set lineTotal = 0 %}
                                         {% for areaId, expenseParticularAttribute in areaWiseExpenseParticulars['areaName'] %}
                                             {% if areaWiseExpenseParticulars is defined and areaWiseExpenseParticulars['chartDetails'] is defined and areaWiseExpenseParticulars['chartDetails'][areaId] is defined and areaWiseExpenseParticulars['chartDetails'][areaId] is iterable %}
                                                 {% for chartDetailsId, expenseChart in areaWiseExpenseParticulars['chartDetails'][areaId] %}
@@ -163,7 +164,7 @@
                                         {% endfor %}
                                     {% endif %}
 {#                                    {% set totalLineTotal = totalLineTotal + lineTotal %}#}
-                                    
+
                                     <th class="text-right">{{ lineTotal|number_format(2,'.',',') }}</th>
                                     <td class="hidden-print">
 {#                                        {% if expenseBatch.status<2 %}#}
