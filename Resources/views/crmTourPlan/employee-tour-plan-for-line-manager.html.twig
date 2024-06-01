@@ -3,7 +3,7 @@
 {% block body %}
     <div class="pcoded-inner-content">
         <!-- [ breadcrumb ] start -->
-        <div class="page-header">
+        <div class="page-header hidden-print">
             <div class="page-block">
                 <div class="row align-items-center">
                     <ul class="breadcrumb">
@@ -18,7 +18,7 @@
         <div class="row">
             <div class="card">
                 <div class="card-block">
-                    <div class="row">
+                    <div class="row hidden-print">
                         <div class="col-md-10">
                             {{ form_start(form, { 'attr' : { 'class': 'sales_marketing_search_form' } }) }}
                             <div class="row">
@@ -45,7 +45,31 @@
 
                     </div>
                     <table class="table table-striped table-bordered table-hover download-excel" id="datatable">
-                        <thead class="thead-dark">
+                        <thead>
+
+                        {% if entities is defined and entities['employeeInfo'] is defined and entities['employeeInfo'] is not empty %}
+                            <tr>
+                                <th data-a-h="center" class="text-center border-0" align="center" colspan="6">
+                                    Nourish Poultry & Hatchery Ltd.
+                                </th>
+                            </tr>
+                            <tr>
+                                <th data-a-h="center" class="text-center border-0" align="center" colspan="6">
+                                    Month: {{ requestFormatedDate }}
+                                </th>
+                            </tr>
+                        <tr>
+                            <th colspan="2">
+                                Employee ID:  {{ entities['employeeInfo']['userId'] }}
+                            </th>
+                            <th colspan="2">
+                                Employee Name: {{ entities['employeeInfo']['name'] }}
+                            </th>
+                            <th colspan="2">
+                                Employee Designation: {{ entities['employeeInfo']['designationName'] }}
+                            </th>
+                        </tr>
+                        {% endif %}
                         <tr>
                             <th style="width: 5%" scope="col">S/N</th>
                             <th style="width: 10%" scope="col">{{ 'Visiting Date'|trans }}</th>

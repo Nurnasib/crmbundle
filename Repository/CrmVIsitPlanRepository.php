@@ -28,9 +28,11 @@ class CrmVIsitPlanRepository extends EntityRepository
     public function getMonthlyTourPlanByEmployeeAndDate($employeeId, $visitingDate=null, $type=null){
         $qb = $this->createQueryBuilder('e');
         $qb->select('e.id', 'e.visitingArea', 'e.visitDate', 'e.agentList', 'e.areaList', 'e.createdAt', 'e.agentInfo');
-        $qb->addSelect('employee.id as employeeId');
+        $qb->addSelect('employee.id as employeeId', 'employee.name as employeeName' , 'employee.userId as employeeUserId' );
         $qb->addSelect('workingMode.id as workingModeId', 'workingMode.name as workingModeName');
+        $qb->addSelect('designation.id as designationId', 'designation.name as designationName');
         $qb->join('e.employee','employee');
+        $qb->leftJoin('employee.designation','designation');
         $qb->leftJoin('e.workingMode','workingMode');
         if($visitingDate && $visitingDate!=''){
             if($type=='monthly'){
@@ -49,6 +51,13 @@ class CrmVIsitPlanRepository extends EntityRepository
                 $visitMonth=$result['visitDate']->format('Y-m');
                 $visitDate=$result['visitDate']->format('Y-m-d');
                 $returnArray['employee_id'] = $result['employeeId'];
+                $returnArray['employeeInfo'] = [
+                    'id' => $result['employeeId'],
+                    'name' => $result['employeeName'],
+                    'userId' => $result['employeeUserId'],
+                    'designationId' => $result['designationId'],
+                    'designationName' => $result['designationName']
+                ];
                 $returnArray['data'][$visitMonth][$visitDate]=[
                     'id' => $result['id'],
                     'visitingArea'=>$result['visitingArea'],

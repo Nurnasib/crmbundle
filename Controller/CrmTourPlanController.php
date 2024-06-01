@@ -73,6 +73,7 @@ class CrmTourPlanController extends AbstractController
         return $this->render('@TerminalbdCrm/crmTourPlan/employee-tour-plan-for-line-manager.html.twig', [
             'entities' => $entities,
             'requestDate' => date('m-Y', strtotime($requestDate)),
+            'requestFormatedDate' => date('F, Y', strtotime($requestDate)),
             'currentDate' => date('Y-m-d'),
             'form' => $form->createView(),
         ]);
