@@ -87,13 +87,14 @@ class ExpenseBatchController extends AbstractController
      */
     public function expenseBatchList(Request $request, PaginatorInterface $paginator): Response
     {
-        $entities = $this->getDoctrine()->getRepository(ExpenseBatch::class)->getExpenseBatches($this->getUser());
+//        $entities = $this->getDoctrine()->getRepository(ExpenseBatch::class)->getExpenseBatches($this->getUser());
+        $entities = [];
         $userRepo = $this->getDoctrine()->getRepository(User::class);
         $form = $this->createForm(CrmTourPlanSearchFormType::class, null, ['loggedUser' => $this->getUser(),'userRepo'=>$userRepo, 'method' => 'GET']);
 //        $form->remove('visitDate');
         $form->add('status', ChoiceType::class, [
             'choices' => [
-                'Created' => 1,
+                'Waiting for approved' => 1,
                 'Approved' => 2,
             ],
             'required' => false,
@@ -104,23 +105,64 @@ class ExpenseBatchController extends AbstractController
         ]);
         $form->handleRequest($request);
 
+        $employees=[];
+        $requestDate = date('Y-m');
+
         if ($form->isSubmitted()) {
             $filterBy = $form->getData();
             $employeeId = isset($filterBy['employee']) && $filterBy['employee'] != '' ? $filterBy['employee']->getId() : null;
             $status = isset($filterBy['status']) && $filterBy['status'] != '' ? $filterBy['status'] : null;
-            $requestDate = isset($filterBy['visitDate'])?$filterBy['visitDate']->format("Y-m"):null;
+            $requestDate = isset($filterBy['visitDate'])?$filterBy['visitDate']->format("Y-m"):date('Y-m');
+
+            $roleSplitArray = [];
+            $userRoles = [];
+            $employeeArray=[];
+
+            foreach ($this->getUser()->getRoles() as $role) {
+                $roleSplitArray = array_merge(explode('_', $role), $roleSplitArray);
+            }
+
+            if (in_array('ADMIN', $roleSplitArray)) {
+                if (in_array('ROLE_CRM_POULTRY_ADMIN', $this->getUser()->getRoles())) {
+                    array_push($userRoles, 'ROLE_CRM_POULTRY_USER');
+                }
+                if (in_array('ROLE_CRM_CATTLE_ADMIN', $this->getUser()->getRoles())) {
+                    array_push($userRoles, 'ROLE_CRM_CATTLE_USER');
+                }
+                if (in_array('ROLE_CRM_AQUA_ADMIN', $this->getUser()->getRoles())) {
+                    array_push($userRoles, 'ROLE_CRM_AQUA_USER');
+                }
+                if (in_array('ROLE_CRM_SALES_MARKETING_ADMIN', $this->getUser()->getRoles())) {
+                    array_push($userRoles, 'ROLE_CRM_SALES_MARKETING_USER');
+                }
+                $employeeArray = $this->getDoctrine()->getRepository(User::class)->getRoleWiseEmployees($userRoles);
+            }elseif (!in_array('ADMIN', $roleSplitArray) && in_array('ROLE_LINE_MANAGER', $this->getUser()->getRoles())){
+                $employeeArray = $this->getDoctrine()->getRepository(User::class)->getEmployeesByEmployeeIds($this->getUser());
+            }
+            $uniqueEmployees = [];
+            if(isset($employeeArray['employee']) && sizeof($employeeArray['employee'])>0){
+                $uniqueEmployees = $this->unique_array($employeeArray['employee'], 'id');
+            }
+            if(sizeof($uniqueEmployees)>0){
+                foreach ($uniqueEmployees as $employee) {
+                    $employees[$employee['lineManagerId']][] = $employee;
+                }
+            }
 
             $entities = $this->getDoctrine()->getRepository(ExpenseBatch::class)->getExpenseBatches($this->getUser(), $employeeId, $status, $requestDate);
         }
 
-            $data = $paginator->paginate(
+            /*$data = $paginator->paginate(
             $entities,
-            $request->query->get('page', 1)/*page number*/,
-            25  /*limit per page*/
-        );
+            $request->query->get('page', 1),
+            25
+            );*/
         return $this->render('@TerminalbdCrm/expenseBatch/batch-list.html.twig',[
-            'entities' => $data,
+            'entities' => $entities,
             'form' => $form->createView(),
+            'employees' => $employees,
+            'requestDate' => $requestDate,
+            'requestFormatedDate' => date('F, Y', strtotime($requestDate)),
         ]);
     }
 
@@ -268,6 +310,26 @@ class ExpenseBatchController extends AbstractController
 
         $this->addFlash('success', 'Expense has been approved.');
         return $this->redirectToRoute('crm_expense_batch_list');
+    }
+
+
+    public function unique_array($my_array, $key) {
+        $result = array();   // Initialize an empty array to store the unique values
+        $i = 0;              // Initialize a counter
+        $key_array = array(); // Initialize an array to keep track of encountered keys
+
+        // Iterate through each element in the input array
+        foreach($my_array as $val) {
+            // Check if the key value is not already present in the key array
+            if (!in_array($val[$key], $key_array)) {
+                $key_array[$i] = $val[$key];  // Store the key value in the key array
+                $result[$i] = $val;           // Store the entire element in the result array
+            }
+            $i++;  // Increment the counter
+        }
+
+        // Return the array containing unique values based on the specified key
+        return $result;
     }
 
 }

@@ -31,6 +31,8 @@ class ExpenseBatchRepository extends EntityRepository
     public function getExpenseBatches(User $loggedUser, $employeeId = null, $status= null, $requestDate=null){
 
         $qb = $this->createQueryBuilder('e');
+        $qb->select('e.id', 'e.expenseMonth', 'e.status', 'e.createdAt', 'e.approvedAt', 'e.totalRiding', 'e.perMilesAmount', 'e.totalMilesAmount');
+        $qb->addSelect('employee.id as employeeId', 'employee.name as employeeName' , 'employee.userId as employeeUserId' );
         $qb->join('e.employee', 'employee');
 
         if($requestDate){
@@ -86,7 +88,16 @@ class ExpenseBatchRepository extends EntityRepository
             $qb->andWhere('e.status = :status')->setParameter('status', $status);
         }
 
-        return $qb->getQuery();
+        $results= $qb->getQuery()->getArrayResult();
+
+        $returnArray=[];
+        if($results){
+            foreach ($results as $result) {
+                $expenseMonth=$result['expenseMonth']->format('Y-m');
+                $returnArray[$expenseMonth][$result['employeeId']]=$result;
+            }
+        }
+        return $returnArray;
     }
 
 

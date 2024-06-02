@@ -3,7 +3,7 @@
 {% block body %}
     <div class="pcoded-inner-content">
         <!-- [ breadcrumb ] start -->
-        <div class="page-header">
+        <div class="page-header hidden-print">
             <div class="page-block">
                 <div class="row align-items-center">
                     <ul class="breadcrumb">
@@ -15,7 +15,7 @@
         </div>
         <!-- [ breadcrumb ] end -->
         <!-- [ Main Content ] start -->
-        <div class="row">
+        <div class="row hidden-print">
             <div class="card">
                 <div class="card-header">
                     <h5>{{ 'Monthly Expense'|trans }}</h5>
@@ -34,8 +34,8 @@
             <div class="card">
 
                 <div class="card-block">
-                    <h4>Waiting for approved</h4>
-                    <div class="row">
+                    <h4>Expense Batch List</h4>
+                    <div class="row hidden-print">
                         <div class="col-md-12">
                             {{ form_start(form, {'attr' : { 'class': 'sales_marketing_search_form' } }) }}
                             <div class="row">
@@ -62,35 +62,75 @@
                             </form>
                         </div>
                     </div>
+                    <h5 class="text-center">{{ requestFormatedDate }}</h5>
+
                     <table class="table table-striped table-bordered table-hover" id="datatable">
                         <thead class="thead-dark">
                         <tr>
+                            <th rowspan="2" style="width: 15%" scope="col">Line Manager</th>
+                            <th rowspan="2" style="width: 3%" scope="col">S/N</th>
+                            <th colspan="2" scope="col">{{ 'Employee'|trans }}</th>
+                            <th rowspan="2" scope="col">Expense Month</th>
+                            <th rowspan="2" scope="col">Status</th>
+                            <th class="text-center hidden-print" rowspan="2" scope="col"><i class="feather icon-settings"></i></th>
+                        </tr>
+                        <tr>
+                            <th style="width: 5%" scope="col">{{ 'Id'|trans }}</th>
+                            <th style="width: 25%" scope="col">{{ 'Name'|trans }}</th>
+                        </tr>
+                        {#<tr>
                             <th scope="col">S/N</th>
                             <th scope="col">Employee Name</th>
                             <th scope="col">Expense Month</th>
                             <th scope="col">Status</th>
                             <th scope="col text-center"><i class="feather icon-settings"></i></th>
-                        </tr>
+                        </tr>#}
                         </thead>
                         <tbody>
-                            {% if entities is defined and entities is not empty %}
-                                {% set offset = entities.getItemNumberPerPage * (entities.currentPageNumber - 1) %}
-                                {% for entity in entities %}
-                                <tr>
-                                    <td>{{ loop.index + offset }}</td>
-                                    <td>{{ entity.employee.userId }} {{ entity.employee.name }}</td>
-                                    <td>{{ entity.expenseMonth|date('M Y')}}</td>
-                                    <td>{{ entity.status==2?'Approved':'Created' }}</td>
-                                    <td>
-                                        <a title="Details" class="btn btn-mini blue-bg white-font" href="{{ path('crm_expense_batch_details',{'id':entity.id}) }}"><i class="feather icon-eye"></i> Details</a>
-                                    </td>
 
-                                </tr>
-                                {% endfor %}
-                            {% endif %}
+                        {% if employees is defined and  employees is not empty %}
+                            {% for lineManagerId, lineManagerData in employees %}
+                                {% if lineManagerData is not empty %}
+                                    {% for index, employee in lineManagerData %}
+                                        <tr>
+                                            {% if loop.first %}
+                                                <td rowspan="{{ lineManagerData|length }}">{{ employee.lineManagerName }}</td>
+                                            {% endif %}
+                                            {#                                            <td>{{ employee.lineManagerName }} == {{ lineManagerData|length }}</td>#}
+                                            <td>{{ index+1 }}</td>
+                                            <td>{{ employee.userId }}</td>
+                                            <td>{{ employee.name }}</td>
+                                            <td class="text-center" scope="col">
+                                                {{ entities is defined and entities is not empty and entities[requestDate] is defined and entities[requestDate][employee.id] is defined and entities[requestDate][employee.id]  is not empty ? entities[requestDate][employee.id]['expenseMonth']|date('F, Y') : '<span style="color:red">X</span>'}}
+                                            </td>
+                                            <td>
+                                                {% if entities is defined and entities is not empty and entities[requestDate] is defined and entities[requestDate][employee.id] is defined and entities[requestDate][employee.id]  is not empty %}
+                                                    {% if entities[requestDate][employee.id]['status'] == 1 %}
+                                                        <span class="badge badge-primary px-2 py-1">Waiting for approved</span>
+                                                    {% elseif entities[requestDate][employee.id]['status'] == 2 %}
+                                                        <span class="badge badge-success px-2 py-1">Approved</span>
+                                                    {% endif %}
+                                                {% endif %}
+                                            </td>
+                                            <td class="hidden-print">
+                                                {% if entities is defined and entities is not empty and entities[requestDate] is defined and entities[requestDate][employee.id] is defined and entities[requestDate][employee.id]  is not empty %}
+                                                <a title="Details" class="btn btn-mini blue-bg white-font" href="{{ path('crm_expense_batch_details',{'id':entities is defined and entities is not empty and entities[requestDate] is defined and entities[requestDate][employee.id] is defined and entities[requestDate][employee.id]  is not empty?entities[requestDate][employee.id]['id']:""}) }}"><i class="feather icon-eye"></i> Details</a>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                {% endif %}
+                            {% endfor %}
+                        {% else %}
+
+                            <tr>
+                                <td colspan="35" class="text-center">No data found</td>
+                            </tr>
+                        {% endif %}
+
                         </tbody>
                     </table>
-                    <div class="row">
+                    {#<div class="row">
                         <div class="col-md-6">
                             <div class="count">
                                 Total Records: {{ entities.getTotalItemCount }}
@@ -99,7 +139,7 @@
                         <div class="col-md-6 navigation" style="text-align: right">
                             {{ knp_pagination_render(entities) }}
                         </div>
-                    </div>
+                    </div>#}
                 </div>
 
             </div>
