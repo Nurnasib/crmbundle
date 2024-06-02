@@ -87,9 +87,9 @@ class ExpenseBatchController extends AbstractController
                 if (in_array('ROLE_CRM_SALES_MARKETING_ADMIN', $this->getUser()->getRoles())) {
                     array_push($userRoles, 'ROLE_CRM_SALES_MARKETING_USER');
                 }
-                $employeeArray = $this->getDoctrine()->getRepository(User::class)->getRoleWiseEmployees($userRoles);
+                $employeeArray = $this->getDoctrine()->getRepository(User::class)->getRoleWiseEmployees($userRoles, $employeeId);
             }elseif (!in_array('ADMIN', $roleSplitArray) && in_array('ROLE_LINE_MANAGER', $this->getUser()->getRoles())){
-                $employeeArray = $this->getDoctrine()->getRepository(User::class)->getEmployeesByEmployeeIds($this->getUser());
+                $employeeArray = $this->getDoctrine()->getRepository(User::class)->getEmployeesByEmployeeIds($this->getUser(), $employeeId);
             }
             $uniqueEmployees = [];
             if(isset($employeeArray['employee']) && sizeof($employeeArray['employee'])>0){
@@ -170,9 +170,9 @@ class ExpenseBatchController extends AbstractController
                 if (in_array('ROLE_CRM_SALES_MARKETING_ADMIN', $this->getUser()->getRoles())) {
                     array_push($userRoles, 'ROLE_CRM_SALES_MARKETING_USER');
                 }
-                $employeeArray = $this->getDoctrine()->getRepository(User::class)->getRoleWiseEmployees($userRoles);
+                $employeeArray = $this->getDoctrine()->getRepository(User::class)->getRoleWiseEmployees($userRoles, $employeeId);
             }elseif (!in_array('ADMIN', $roleSplitArray) && in_array('ROLE_LINE_MANAGER', $this->getUser()->getRoles())){
-                $employeeArray = $this->getDoctrine()->getRepository(User::class)->getEmployeesByEmployeeIds($this->getUser());
+                $employeeArray = $this->getDoctrine()->getRepository(User::class)->getEmployeesByEmployeeIds($this->getUser(), $employeeId);
             }
             $uniqueEmployees = [];
             if(isset($employeeArray['employee']) && sizeof($employeeArray['employee'])>0){
