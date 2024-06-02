@@ -51,33 +51,68 @@ class ExpenseBatchController extends AbstractController
      */
     public function index(Request $request, PaginatorInterface $paginator): Response
     {
-        $expenses = $this->getDoctrine()->getRepository(Expense::class)->getExpensesByLineManager($this->getUser());
+//        $expenses = $this->getDoctrine()->getRepository(Expense::class)->getExpensesByLineManager($this->getUser());
+        $expenses = [];
 
         $userRepo = $this->getDoctrine()->getRepository(User::class);
         $form = $this->createForm(CrmTourPlanSearchFormType::class, null, ['loggedUser' => $this->getUser(),'userRepo'=>$userRepo, 'method' => 'GET']);
 
         $form->handleRequest($request);
-
+        $employees=[];
+        $requestDate = date('Y-m');
+        
         if ($form->isSubmitted()) {
             $filterBy = $form->getData();
             $employeeId = isset($filterBy['employee']) && $filterBy['employee'] != '' ? $filterBy['employee']->getId() : null;
-            $requestDate = isset($filterBy['visitDate'])?$filterBy['visitDate']->format("Y-m"):null;
+            $requestDate = isset($filterBy['visitDate'])?$filterBy['visitDate']->format("Y-m"):date('Y-m');
 
-//            $entities = $this->getDoctrine()->getRepository(ExpenseBatch::class)->getExpenseBatches($this->getUser(), $employeeId, $status);
+            $roleSplitArray = [];
+            $userRoles = [];
+            $employeeArray=[];
+
+            foreach ($this->getUser()->getRoles() as $role) {
+                $roleSplitArray = array_merge(explode('_', $role), $roleSplitArray);
+            }
+
+            if (in_array('ADMIN', $roleSplitArray)) {
+                if (in_array('ROLE_CRM_POULTRY_ADMIN', $this->getUser()->getRoles())) {
+                    array_push($userRoles, 'ROLE_CRM_POULTRY_USER');
+                }
+                if (in_array('ROLE_CRM_CATTLE_ADMIN', $this->getUser()->getRoles())) {
+                    array_push($userRoles, 'ROLE_CRM_CATTLE_USER');
+                }
+                if (in_array('ROLE_CRM_AQUA_ADMIN', $this->getUser()->getRoles())) {
+                    array_push($userRoles, 'ROLE_CRM_AQUA_USER');
+                }
+                if (in_array('ROLE_CRM_SALES_MARKETING_ADMIN', $this->getUser()->getRoles())) {
+                    array_push($userRoles, 'ROLE_CRM_SALES_MARKETING_USER');
+                }
+                $employeeArray = $this->getDoctrine()->getRepository(User::class)->getRoleWiseEmployees($userRoles);
+            }elseif (!in_array('ADMIN', $roleSplitArray) && in_array('ROLE_LINE_MANAGER', $this->getUser()->getRoles())){
+                $employeeArray = $this->getDoctrine()->getRepository(User::class)->getEmployeesByEmployeeIds($this->getUser());
+            }
+            $uniqueEmployees = [];
+            if(isset($employeeArray['employee']) && sizeof($employeeArray['employee'])>0){
+                $uniqueEmployees = $this->unique_array($employeeArray['employee'], 'id');
+            }
+            if(sizeof($uniqueEmployees)>0){
+                foreach ($uniqueEmployees as $employee) {
+                    $employees[$employee['lineManagerId']][] = $employee;
+                }
+            }
+
             $expenses = $this->getDoctrine()->getRepository(Expense::class)->getExpensesByLineManager($this->getUser(), $employeeId, $requestDate);
         }
-
-        $data = $paginator->paginate(
-            $expenses,
-            $request->query->get('page', 1)/*page number*/,
-            25  /*limit per page*/
-        );
+        
         
 //        $entities = $this->getDoctrine()->getRepository(ExpenseBatch::class)->getExpenseBatches($this->getUser());
         return $this->render('@TerminalbdCrm/expenseBatch/index.html.twig',[
 //            'entities' => $entities,
-            'expenses' => $data,
+            'entities' => $expenses,
             'form' => $form->createView(),
+            'employees' => $employees,
+            'requestDate' => $requestDate,
+            'requestFormatedDate' => date('F, Y', strtotime($requestDate)),
         ]);
     }
 

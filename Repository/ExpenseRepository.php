@@ -130,7 +130,7 @@ class ExpenseRepository extends EntityRepository
 //        $monthYear = date('Y-m', strtotime(date('Y-m')." -1 month"));
         $qb = $this->createQueryBuilder('e');
 //        $qb->select('SUM(e.conveyance) as totalConveyance','SUM(e.mobile) as totalMobile','SUM(e.dailyAllowance) as totalDailyAllowance','SUM(e.hotelRent) as totalHotelRent','SUM(e.tollBill) as totalTollBill','SUM(e.food) as totalFood','SUM(e.courier) as totalCourier','SUM(e.maintenace) as totalMaintenace','SUM(e.serviceCharge) as totalServiceCharge','SUM(e.photostate) as totalPhotostate','SUM(e.others) as totalOthers');
-        $qb->select("DATE_FORMAT(e.expenseDate,'%Y-%m') as expenseMonthYear", 'YEAR(e.expenseDate) as expenseYear');
+        $qb->select( "e.expenseDate", "DATE_FORMAT(e.expenseDate,'%Y-%m') as expenseMonthYear", 'YEAR(e.expenseDate) as expenseYear');
         $qb->addSelect('employee.id as employeeAutoId','employee.userId as employeeId','employee.name as employeeName');
         $qb->join('e.employee','employee');
 
@@ -193,8 +193,14 @@ class ExpenseRepository extends EntityRepository
         $qb->addGroupBy('employee.id');
 
         $result= $qb->getQuery()->getResult();
-
-        return $result;
+        $returnArray = [];
+        if($result){
+            foreach ($result as $key => $value) {
+                $returnArray[$value['expenseMonthYear']][$value['employeeAutoId']] = $value;
+            }
+        }
+        
+        return $returnArray;
     }
 
     public function getExpensesByEmployeeAndYear(User $user, $year){
