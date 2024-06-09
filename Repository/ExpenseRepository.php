@@ -428,5 +428,42 @@ class ExpenseRepository extends EntityRepository
     }
 
 
+    public function getExpensesByCompanyMonthYear($companyId, $yearMonth=null, $employeeIds=null){
+        $qb = $this->createQueryBuilder('e');
+        $qb->select( "e.expenseDate", "DATE_FORMAT(e.expenseDate,'%Y-%m') as expenseMonthYear", 'YEAR(e.expenseDate) as expenseYear');
+        $qb->addSelect('employee.id as employeeAutoId','employee.userId as employeeId','employee.name as employeeName', 'employee.bankBranch', 'employee.accountNumber');
+        $qb->addSelect('bank.name as bankName');
+        $qb->addSelect('company.companyName as companyName');
+        $qb->join('e.expenseBatch', 'expenseBatch');
+        $qb->join('e.employee','employee');
+        $qb->join('employee.company', 'company');
+        $qb->leftJoin('employee.bank', 'bank');
+
+        $qb->where('expenseBatch.status >=:status')->setParameter('status',2);
+        $qb->andWhere('e.expenseDate IS NOT NULL');
+        $qb->andWhere("DATE_FORMAT(e.expenseDate,'%Y-%m') =:monthYear")->setParameter('monthYear', $yearMonth);
+        $qb->andWhere("company.id =:companyId")->setParameter('companyId', $companyId);
+
+        if($employeeIds){
+            $qb->andWhere('employee.id IN (:employeeIds)')->setParameter('employeeIds', $employeeIds);
+        }
+
+        $qb->groupBy('expenseMonthYear');
+//        $qb->addGroupBy('expenseYear');
+        $qb->addGroupBy('employee.id');
+
+        $result= $qb->getQuery()->getResult();
+        $returnArray = [];
+        if($result){
+            foreach ($result as $key => $value) {
+                $returnArray[$value['employeeAutoId']] = $value;
+            }
+        }
+
+        return $returnArray;
+    }
+
+
+
 
 }

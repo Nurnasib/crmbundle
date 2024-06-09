@@ -205,4 +205,39 @@ class ExpenseParticularRepository extends EntityRepository
     }
 
 
+
+    public function getExpenseParticularTotalAmount($companyId, $monthYear, $employeeIds=null){
+        $qb = $this->createQueryBuilder('e');
+        $qb->select('SUM(e.amount) as totalAmount');
+        $qb->addSelect("DATE_FORMAT(expense.expenseDate,'%b,%y') as expenseWordMonthYear", "DATE_FORMAT(expense.expenseDate,'%Y-%m') as expenseMonthYear", 'YEAR(expense.expenseDate) as expenseYear', 'MONTH(expense.expenseDate) as expenseMonth');
+        $qb->addSelect('employee.id as employeeAutoId');
+        $qb->join('e.expense','expense');
+        $qb->join('expense.expenseBatch','expenseBatch');
+        $qb->join('expense.employee','employee');
+        $qb->join('employee.company','company');
+        $qb->where('expense.expenseDate IS NOT NULL');
+        $qb->andWhere('expenseBatch.status >=:status')->setParameter('status',2);
+
+        $qb->andWhere('company.id =:companyId')->setParameter('companyId', $companyId);
+        $qb->andWhere("DATE_FORMAT(expense.expenseDate,'%Y-%m') =:monthYear")->setParameter('monthYear', $monthYear);
+
+        if($employeeIds){
+            $qb->andWhere('employee.id IN (:employeeIds)')->setParameter('employeeIds', $employeeIds);
+        }
+
+        $qb->groupBy('expenseMonthYear');
+        $qb->addGroupBy('employee.id');
+
+        $results= $qb->getQuery()->getArrayResult();
+        $returnArray=[];
+        if($results){
+            foreach ($results as $result) {
+                $returnArray[$result['employeeAutoId']]=$result;
+            }
+        }
+
+        return $returnArray;
+    }
+
+
 }

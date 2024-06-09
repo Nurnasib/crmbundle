@@ -1,0 +1,246 @@
+{% extends 'admin/layout.html.twig' %}
+{% block body %}
+
+    <div class="pcoded-inner-content">
+        <!-- [ breadcrumb ] start -->
+        <div class="page-header hidden-print">
+            <div class="page-block">
+                <div class="row align-items-center">
+                    <ul class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/"><i class="feather icon-home"></i></a></li>
+                        <li class="breadcrumb-item"> <a href="javascript:">{{ 'Expense Report'|trans }}</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!-- [ breadcrumb ] end -->
+        <!-- [ Main Content ] start -->
+        <div class="row hidden-print">
+            <div class="card">
+                <div class="card-header">
+                    <h5>{{ 'Expense Report'|trans }}</h5>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="card">
+                <div class="portlet box ">
+                    <div class="portlet-title">
+                        <div class="caption">{{ 'Expense Report'|trans }} </div>
+                        <div style="float: right; padding-right: 15px" class="caption hidden-print">
+                            <div class="pull-right">
+                                {% if entities is defined and entities is not empty %}
+                                    <button type="submit" name="excel" class="btn blue-bg btn-sm white-font" title="Excel" value="excel" id="button-excel"><i class="fa fa-file-excel" aria-hidden="true"></i> {{ 'Excel'|trans }}</button>
+                                    <button class="btn btn-info btn-sm" id="windowPrint"><i class="fa fa-print"></i> </button>
+
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="portlet-body form expense_form_section expense_body" id="expense_form_section">
+
+                        {{ form_start(form, {'attr' : { 'class': 'sales_marketing_search_form' } }) }}
+
+                        <div class="row hidden-print">
+                            <div class="col-md-12">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                {{ form_widget(form.company) }}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                {{ form_widget(form.visitDate) }}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            {{ form_widget(form._token) }}
+                                            <button type="submit" name="search" class="btn btn-primary btn-sm" title="Search" value="search"><i class="fa fa-search" aria-hidden="true"></i></button>
+                                        </div>
+                                    </div>
+                            </div>
+                        </div>
+
+                        {% if entities is defined and entities is not empty %}
+                            <table data-cols-width="5,8,10,35,25,30,22,10,15" class="table table-bordered download-excel">
+                                <thead>
+                                <tr>
+                                    <td colspan="12" class="text-center border-0" data-a-h="center">
+                                        <h4>Nourish Poultry & Hatchery Ltd.</h4>
+                                    </td>
+                                </tr>
+                                <tr class="border-0">
+                                    <td colspan="12" class="text-center border-0" data-a-h="center">
+                                        <h6>Uttara, Dhaka</h6>
+                                    </td>
+                                </tr>
+                                <tr class="border-0">
+                                    <td colspan="12" class="text-center border-0" data-a-h="center">
+                                        <h6>Ta & Da Bill for Marketing, Sales & Service People</h6>
+                                    </td>
+                                </tr>
+                                <tr class="border-0">
+                                    <td colspan="12" class="text-center border-0" data-a-h="center">
+                                        <h6>Month: {{ yearMonth|date('F Y') }}</h6>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th class="text-center hidden-print">
+                                        #
+                                    </th>
+                                    <th>SL No.</th>
+                                    <th>ID No.</th>
+                                    <th>Name</th>
+                                    <th>Name Of Bank</th>
+                                    <th>Name Of Branch</th>
+                                    <th>A/C No.</th>
+                                    <th>Unpaid bills Of <br> September</th>
+                                    <th>Payable Amount <br> (October)</th>
+                                    <th>Payable Amount <br> (September+October)</th>
+                                    <th>Remarks</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% set totalAmount = 0 %}
+                                {% for employeeId, entity in entities %}
+                                    {% set expenseParticularsAmount = expenseParticulars[employeeId] is defined ? expenseParticulars[employeeId]['totalAmount'] : 0 %}
+                                    {% set convenceDetailsAmount = convenceDetails[employeeId] is defined ? convenceDetails[employeeId]['totalAmount'] : 0 %}
+                                    {% set totalMileage =  convenceDetails[employeeId] is defined ? convenceDetails[employeeId]['totalMileage'] : 0 %}
+                                    {% set totalMileageAmount = totalMileage*3.5 %}
+                                    {% set lineTotalAmount = expenseParticularsAmount + convenceDetailsAmount + totalMileageAmount %}
+
+                                    {% set totalAmount = totalAmount + lineTotalAmount %}
+                                    <tr>
+                                        <td class="hidden-print">
+                                            <input type="checkbox" class="form-control employee"
+                                                   name="employeeId[]" value="{{ employeeId }}" checked
+{#                                                    {{ employeeIds is defined and employeeIds is not empty and employeeId in employeeIds ? 'checked':'' }}#}
+                                            >
+                                        </td>
+                                        <td>{{ loop.index }}</td>
+                                        <td>{{ entity.employeeId }}</td>
+                                        <td>{{ entity.employeeName }}</td>
+                                        <td>{{ entity.bankName }}</td>
+                                        <td>{{ entity.bankBranch }}</td>
+                                        <td data-t="s">{{ entity.accountNumber }}</td>
+                                        <td></td>
+                                        <td data-t="s" data-a-h="right" class="text-right">{{ lineTotalAmount|number_format('2') }}</td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                {% endfor %}
+                                <tr>
+                                    <td class="hidden-print"></td>
+                                    <th data-a-h="right" colspan="6" style="text-align: right"><strong style="font-weight: 700">Total</strong></th>
+                                    <td></td>
+                                    <th data-a-h="right" class="text-right">
+                                        <strong style="font-weight: 700">{{ totalAmount|number_format('2') }}</strong>
+                                    </th>
+                                    <td colspan="4"></td>
+                                </tr>
+                                </tbody>
+
+                            </table>
+                        {% endif %}
+
+                        {{ form_end(form) }}
+
+                    </div>
+
+                </div>
+
+                <style>
+                    #expense_form_vehicle .checkbox{
+                        width: unset;
+                        padding-right: 30px;
+                    }
+                </style>
+            </div>
+        </div>
+        <!-- [ Main Content ] end -->
+    </div>
+{% endblock %}
+ {% block cssBlock %}
+     <link rel="stylesheet" href="{{ asset('assets/module/css/app.css') }}">
+     <style>
+         .hide-calendar .ui-datepicker-calendar{
+             display: none;
+         }
+         @media print {
+             .border-0 {
+                 border: 0!important;
+             }
+             .hidden-print {
+                 display: none!important;
+             }
+             .show-print {
+                 display: table-cell!important;
+             }
+
+             .expense_body{
+                 min-height: 1250px!important;
+             }
+         }
+     </style>
+ {% endblock  %}
+{% block javascripts %}
+    {{ parent() }}
+    <script type="application/javascript" src="{{ asset('assets/module/js/app.js') }}"></script>
+    <script src="{{ asset('assets/js/tableToExcel.js') }}"></script>
+
+    <script>
+
+
+        let button = document.querySelector("#button-excel");
+
+        if(button){
+            button.addEventListener("click", e => {
+                e.preventDefault();
+                let table = document.querySelector(".download-excel");
+                TableToExcel.convert(table, {
+                    name: "{{ yearMonth|date('F Y') }}_ta_da.xlsx",
+                    sheet: {
+                        name: "Sheet 1"
+                    }
+                });
+            });
+        }
+
+        $('#windowPrint').on('click', function () {
+            window.print();
+        })
+
+
+        $('.monthYearPicker').datepicker({
+            changeMonth: true,
+            changeYear: true,
+            dateFormat: 'mm-yy',
+            autoClose:true,
+            onClose: function() {
+                $(this).datepicker('widget').removeClass('hide-calendar');
+                $("#ui-datepicker-div").removeClass('monthYearPicker');
+                var iMonth = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
+                var iYear = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
+                $(this).datepicker('setDate', new Date(iYear, iMonth, 1));
+            },
+
+            beforeShow: function(input) {
+                $(input).datepicker("widget").addClass('hide-calendar');
+                $("#ui-datepicker-div").addClass('monthYearPicker');
+                // console.log($(this).val());
+                if ((selDate = $(this).val()).length > 0)
+                {
+                    iYear = selDate.substring(selDate.length - 4, selDate.length);
+                    iMonth = selDate.substring(0, 2);
+                    // iMonth = jQuery.inArray(selDate.substring(1, 2), $(this).datepicker('option', 'monthNames'));
+                    // console.log(iMonth);
+                    iMonth = iMonth-1;
+                    $(this).datepicker('option', 'defaultDate', new Date(iYear, iMonth, 1));
+                    $(this).datepicker('setDate', new Date(iYear, iMonth, 1));
+                }
+            }
+        });
+    </script>
+{% endblock  %}

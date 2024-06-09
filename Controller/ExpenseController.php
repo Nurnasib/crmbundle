@@ -12,6 +12,7 @@
 namespace Terminalbd\CrmBundle\Controller;
 
 use App\Entity\Admin\Location;
+use App\Entity\Core\Company;
 use App\Entity\User;
 use DoctrineExtensions\Query\Mysql\Date;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -33,6 +34,7 @@ use Terminalbd\CrmBundle\Entity\ExpenseConveyanceDetails;
 use Terminalbd\CrmBundle\Entity\ExpenseParticular;
 use Terminalbd\CrmBundle\Entity\Setting;
 use Terminalbd\CrmBundle\Form\ExpenseFormType;
+use Terminalbd\CrmBundle\Form\ExpenseReportSearchFormType;
 use Terminalbd\CrmBundle\Form\ExpenseVehicleFormType;
 use Terminalbd\CrmBundle\Form\SettingFormType;
 
@@ -567,5 +569,66 @@ class ExpenseController extends AbstractController
             return new JsonResponse(['status'=>200, 'message'=>'Success', 'totalAmount'=>$expenseConveyanceDetails->getTotalAmount()]);
         }
         return new JsonResponse(['status'=>400, 'message'=>'Error']);
+    }
+
+
+
+    /**
+     * Displays a form to edit an existing Post entity.
+     *
+     * @Route("/report", methods={"GET", "POST"}, name="crm_expense_report")
+     * @param Request $request
+     * @return Response
+     */
+    public function expenseReport(Request $request): Response
+    {
+        $form = $this->createForm(ExpenseReportSearchFormType::class, null, ['method' => 'POST']);
+
+        $form->handleRequest($request);
+
+        $yearMonth = date('Y-m');
+        $entities = [];
+        $expenseParticulars = [];
+        $convenceDetails = [];
+
+        $company = null;
+        $employeeIds = null;
+        if ($form->isSubmitted()) {
+            $filterBy = $form->getData();
+            $data = $request->request->all();
+
+            $yearMonth = isset($data['expense_report_search_form']['visitDate'])&&$data['expense_report_search_form']['visitDate']!=''?date('Y-m', strtotime('01-'.$data['expense_report_search_form']['visitDate'])):date('Y-m');
+            $company = isset($data['expense_report_search_form']['company'])&&$data['expense_report_search_form']['company']!=''?$data['expense_report_search_form']['company']:null;
+
+            $employeeIds = isset($data['employeeId']) && sizeof($data['employeeId']) > 0 ? $data['employeeId'] : null;
+
+            $entities = $this->getDoctrine()->getRepository(Expense::class)->getExpensesByCompanyMonthYear($company, $yearMonth, $employeeIds);
+
+            $expenseParticulars = $this->getDoctrine()->getRepository(ExpenseParticular::class)->getExpenseParticularTotalAmount($company, $yearMonth, $employeeIds);
+
+            $convenceDetails = $this->getDoctrine()->getRepository(ExpenseConveyanceDetails::class)->getConveyanceDetailsTotalAmount($company, $yearMonth, $employeeIds);
+
+
+
+            /*if($entities && sizeof($entities)>0){
+                foreach ($entities as $entity) {
+                    $entities[$entity['employeeAutoId']]['particularTotalAmount']= isset($expenseParticulars[$entity['employeeAutoId']]) ? $expenseParticulars[$entity['employeeAutoId']]['totalAmount']: 0;
+                    $entities[$entity['employeeAutoId']]['totalMileage']= isset($convenceDetails[$entity['employeeAutoId']]) ? $convenceDetails[$entity['employeeAutoId']]['totalMileage']: 0;
+                    $entities[$entity['employeeAutoId']]['totalConvenceAmount']= isset($convenceDetails[$entity['employeeAutoId']]) ? $convenceDetails[$entity['employeeAutoId']]['totalAmount']: 0;
+                }
+            }*/
+        }
+
+
+        return $this->render('@TerminalbdCrm/expense/report.html.twig', [
+            'form' => $form->createView(),
+            'entities' => $entities,
+            'company' => $company,
+            'yearMonth' => $yearMonth,
+            'convenceDetails' => $convenceDetails,
+            'expenseParticulars' => $expenseParticulars,
+            'employeeIds' => $employeeIds,
+        ]);
+
     }
 }
