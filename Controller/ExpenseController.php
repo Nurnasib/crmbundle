@@ -592,6 +592,7 @@ class ExpenseController extends AbstractController
         $convenceDetails = [];
 
         $company = null;
+        $companyObj = null;
         $employeeIds = null;
         if ($form->isSubmitted()) {
             $filterBy = $form->getData();
@@ -617,6 +618,7 @@ class ExpenseController extends AbstractController
                     $entities[$entity['employeeAutoId']]['totalConvenceAmount']= isset($convenceDetails[$entity['employeeAutoId']]) ? $convenceDetails[$entity['employeeAutoId']]['totalAmount']: 0;
                 }
             }*/
+            $companyObj = $this->getDoctrine()->getRepository(Company::class)->find($company);
         }
 
 
@@ -628,6 +630,7 @@ class ExpenseController extends AbstractController
             'convenceDetails' => $convenceDetails,
             'expenseParticulars' => $expenseParticulars,
             'employeeIds' => $employeeIds,
+            'companyObj' => $companyObj,
         ]);
 
     }
