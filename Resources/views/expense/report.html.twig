@@ -107,7 +107,7 @@
                                 {% for employeeId, entity in entities %}
                                     {% set expenseParticularsAmount = expenseParticulars[employeeId] is defined ? expenseParticulars[employeeId]['totalAmount'] : 0 %}
                                     {% set convenceDetailsAmount = convenceDetails[employeeId] is defined ? convenceDetails[employeeId]['totalAmount'] : 0 %}
-                                    {% set totalMileage =  convenceDetails[employeeId] is defined ? convenceDetails[employeeId]['totalMileage'] : 0 %}
+                                    {% set totalMileage = entity.typeOfVehicle is defined and entity.typeOfVehicle=='motorcycle' and convenceDetails[employeeId] is defined ? convenceDetails[employeeId]['totalMileage'] : 0 %}
                                     {% set totalMileageAmount = totalMileage*3.5 %}
                                     {% set lineTotalAmount = expenseParticularsAmount + convenceDetailsAmount + totalMileageAmount %}
 

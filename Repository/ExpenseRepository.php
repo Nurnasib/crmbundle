@@ -434,10 +434,12 @@ class ExpenseRepository extends EntityRepository
         $qb->addSelect('employee.id as employeeAutoId','employee.userId as employeeId','employee.name as employeeName', 'employee.bankBranch', 'employee.accountNumber');
         $qb->addSelect('bank.name as bankName');
         $qb->addSelect('company.companyName as companyName');
+        $qb->addSelect('expenseChart.typeOfVehicle as typeOfVehicle');
         $qb->join('e.expenseBatch', 'expenseBatch');
         $qb->join('e.employee','employee');
         $qb->join('employee.company', 'company');
         $qb->leftJoin('employee.bank', 'bank');
+        $qb->leftJoin('employee.expenseChart', 'expenseChart');
 
         $qb->where('expenseBatch.status >=:status')->setParameter('status',2);
         $qb->andWhere('e.expenseDate IS NOT NULL');
