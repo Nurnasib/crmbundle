@@ -112,16 +112,16 @@
                     <td data-t="s">{{ detail.visitingWeek|week|default('N/A') }}</td>
                     <td data-t="n">{{ currentTotalBird }}</td>
                     <td data-t="n">{{ detail.ageDays|default(0) }}</td>
-                    <td data-t="n">{{ detail.mortalityPes|number_format(2)|default(0) }}</td>
-                    <td data-t="n">{{ mortalityPercentage|number_format(2) }}</td>
-                    <td data-t="n">{{ detail.weightStandard|number_format(2)|default('') }}</td>
-                    <td data-t="n">{{ detail.weightAchieved|number_format(2)|default(0) }}</td>
-                    <td data-t="n">{{ totalFeedKg|number_format(2) }}</td>
-                    <td data-t="n">{{ perBirdGm|number_format(2) }}</td>
-                    <td data-t="n">{{ detail.feedStandard|number_format(2)|default('') }}</td>
-                    <td data-t="n">{{ calculateWithoutMortality|number_format(2) }}</td>
-                    <td data-t="n">{{ calculateWithMortality|number_format(2) }}</td>
-                    <td data-t="n">{{ detail.weightStandard>0?(detail.feedStandard/detail.weightStandard)|number_format(2)|default(0):'' }}</td>
+                    <td data-t="n">{{ detail.mortalityPes|number_format(2,'.','')|default(0) }}</td>
+                    <td data-t="n">{{ mortalityPercentage|number_format(2,'.','') }}</td>
+                    <td data-t="n">{{ detail.weightStandard|number_format(2,'.','')|default('') }}</td>
+                    <td data-t="n">{{ detail.weightAchieved|number_format(2,'.','')|default(0) }}</td>
+                    <td data-t="n">{{ totalFeedKg|number_format(2,'.','') }}</td>
+                    <td data-t="n">{{ perBirdGm|number_format(2,'.','') }}</td>
+                    <td data-t="n">{{ detail.feedStandard|number_format(2,'.','')|default('') }}</td>
+                    <td data-t="n">{{ calculateWithoutMortality|number_format(2,'.','') }}</td>
+                    <td data-t="n">{{ calculateWithMortality|number_format(2,'.','') }}</td>
+                    <td data-t="n">{{ detail.weightStandard>0?(detail.feedStandard/detail.weightStandard)|number_format(2,'.','')|default(0):'' }}</td>
                     {% if loop.first %}
                         <td data-a-v="middle" valign="middle"
                             rowspan="{{ lifeCycle.details|length }}">{{ lifeCycle.parent.hatcheryName }}</td>

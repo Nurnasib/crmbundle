@@ -79,16 +79,16 @@
                 <td data-t="n">{{ lifeCycle.parent.totalBirds|default(0) }}</td>
                 <td data-t="n">{{ detail.deadBird|default(0) }}</td>
                 <td data-t="n">{{ presentBird|default(0) }}</td>
-                <td data-t="n">{{ detail.avgWeight|number_format(2)|default(0) }}</td>
-                <td data-t="n">{{ detail.targetWeight|number_format(2)|default(0) }}</td>
-                <td data-t="n">{{ detail.uniformity|number_format(2)|default(0) }}</td>
-                <td data-t="n">{{ detail.feedPerBird|number_format(2)|default(0) }}</td>
-                <td data-t="n">{{ detail.targetFeedPerBird|number_format(2)|default(0) }}</td>
-                <td data-t="n">{{ detail.totalEggs|number_format(2)|default(0) }}</td>
-                <td data-t="n">{{ eggProductionPercentage|number_format(2) }}</td>
-                <td data-t="n">{{ detail.targetEggProduction|number_format(2)|default(0) }}</td>
-                <td data-t="n">{{ detail.eggWeightActual|number_format(2)|default(0) }}</td>
-                <td data-t="n">{{ detail.eggWeightStandard|number_format(2)|default(0) }}</td>
+                <td data-t="n">{{ detail.avgWeight|number_format(2,'.','')|default(0) }}</td>
+                <td data-t="n">{{ detail.targetWeight|number_format(2,'.','')|default(0) }}</td>
+                <td data-t="n">{{ detail.uniformity|number_format(2,'.','')|default(0) }}</td>
+                <td data-t="n">{{ detail.feedPerBird|number_format(2,'.','')|default(0) }}</td>
+                <td data-t="n">{{ detail.targetFeedPerBird|number_format(2,'.','')|default(0) }}</td>
+                <td data-t="n">{{ detail.totalEggs|number_format(2,'.','')|default(0) }}</td>
+                <td data-t="n">{{ eggProductionPercentage|number_format(2,'.','') }}</td>
+                <td data-t="n">{{ detail.targetEggProduction|number_format(2,'.','')|default(0) }}</td>
+                <td data-t="n">{{ detail.eggWeightActual|number_format(2,'.','')|default(0) }}</td>
+                <td data-t="n">{{ detail.eggWeightStandard|number_format(2,'.','')|default(0) }}</td>
                 <td>{{ detail.feedTypeName|default(0) }}</td>
                 <td data-t="s">{{ detail.productionDate|date('d-m-Y')|default(0) }}</td>
                 <td>{{ detail.batch_no|default(0) }}</td>
