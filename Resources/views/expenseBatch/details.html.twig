@@ -51,15 +51,33 @@
                             <h6>Month: {{ expenseBatch.expenseMonth|date('F Y') }}</h6>
                         </div>
                         <div class="row">
-                            <div class="col-md-6">
-                                <h6>Name: {{ expenseBatch.employee.name|default('')}}</h6>
-                                <h6>Designation: {{ expenseBatch.employee.designation.name|default('')}}</h6>
+                            <div class="col-md-12">
+                                <table class="table table-borderless" border="0">
+                                    <tr>
+                                        <td>
+                                            <strong>Name:</strong> {{ expenseBatch.employee.name|default('') }}
+                                        </td>
+                                        <td class="text-center">
+                                            <strong>Employee Id:</strong> {{ expenseBatch.employee.userId|default('') }}
+                                        </td>
+                                        <td>
+                                            <strong>Working Station:</strong> {{ expenseBatch.employee.address|default('') }}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <strong>Designation:</strong> {{ expenseBatch.employee.designation.name|default('') }}
+                                        </td>
+                                        <td class="text-center">
+                                            <strong>Vehicle Type:</strong> {{ expenseBatch.employee.typeOfVehicle|default('')|capitalize }} /  No: {{ expenseBatch.employee.vehicleNo|default('') }}
+                                        </td>
+                                        <td>
+                                            <strong>Responsible of:</strong> {{ expenseBatch.employee.responsibleOf.name|default('') }}
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
 
-                            </div>
-                            <div class="col-md-6 text-center">
-                                <h6>Employee Id: {{ expenseBatch.employee.userId|default('') }}</h6>
-                                <h6>Vehicle Type: {{ expenseBatch.employee.typeOfVehicle|default('')|capitalize }} /  No: {{ expenseBatch.employee.vehicleNo|default('') }}</h6>
-                            </div>
                         </div>
 
                         <table class="table table-bordered">
