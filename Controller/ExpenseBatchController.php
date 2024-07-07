@@ -230,7 +230,8 @@ class ExpenseBatchController extends AbstractController
 
         $typeOfVehicles = $this->typeOfVehicle($entity->getEmployee()?$entity->getEmployee():null);
 
-//dd($conveyanceDetailsTotalAmount);
+        $transportTypeConveyanceDetails = $this->getDoctrine()->getRepository(ExpenseConveyanceDetails::class)->getConveyanceDetailsByMonthEmployee($entity->getEmployee()->getId(), $entity->getExpenseMonth()->format('Y-m'));
+
         return $this->render('@TerminalbdCrm/expenseBatch/details.html.twig', [
             'expenseBatch' => $entity,
             'dailyExpenseParticularAttributes' => isset($expensePaticularAmount['expenseParticularAttributes']) && sizeof($expensePaticularAmount['expenseParticularAttributes'])>0?$expensePaticularAmount['expenseParticularAttributes']:[],
@@ -239,6 +240,7 @@ class ExpenseBatchController extends AbstractController
             'areaWiseExpenseParticulars' => $areaWiseExpenseParticular,
             'conveyanceDetailsTotalAmount' => $conveyanceDetailsTotalAmount,
             'typeOfVehicles' => $typeOfVehicles,
+            'transportTypeConveyanceDetails' => $transportTypeConveyanceDetails,
         ]);
     }
 
