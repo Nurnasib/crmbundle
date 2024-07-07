@@ -316,33 +316,47 @@
 
                                         <div style="page-break-after: always "></div>
 
-                                        <div style="text-align: center">
-                                            <h4>Nourish Poultry & Hatchery Ltd.</h4>
-                                            <h6>Uttara, Dhaka</h6>
-                                            <h6>{{ typeOfVehicle.name }}</h6>
-                                            <h6>Month: {{ expenseBatch.expenseMonth|date('F Y') }}</h6>
-                                        </div>
-                                        <table class="table table-borderless" border="0">
-                                            <tr>
+                                        <button type="submit" name="excel" class="btn blue-bg btn-sm white-font pull-right hidden-print" title="Excel" value="excel" id="button-excel-motorcycle"><i class="fa fa-file-excel" aria-hidden="true"></i> {{ 'Excel'|trans }}</button>
 
-                                                <td>
+                                        <table data-cols-width="35,25" class="table table-bordered download-excel-motorcycle">
+                                            <thead>
+                                            <tr class="border-0">
+                                                <td colspan="2" class="text-center border-0" data-a-h="center">
+                                                    <h4>Nourish Poultry & Hatchery Ltd.</h4>
+                                                </td>
+                                            </tr>
+                                            <tr class="border-0">
+                                                <td colspan="2" class="text-center border-0" data-a-h="center">
+                                                    <h6>Uttara, Dhaka</h6>
+                                                </td>
+                                            </tr>
+                                            <tr class="border-0">
+                                                <td colspan="2" class="text-center border-0" data-a-h="center">
+                                                    <h6>{{ typeOfVehicle.name }}</h6>
+                                                </td>
+                                            </tr>
+                                            <tr class="border-0">
+                                                <td colspan="2" class="text-center border-0" data-a-h="center">
+                                                    <h6>Month: {{ expenseBatch.expenseMonth|date('F Y') }}</h6>
+                                                </td>
+                                            </tr>
+                                            <tr class="border-0">
+
+                                                <td class="border-0">
                                                     <strong>Employee Id:</strong> {{ expenseBatch.employee.userId|default('') }}
                                                 </td>
-                                                <td>
+                                                <td class="border-0">
                                                     <strong>Designation:</strong> {{ expenseBatch.employee.designation.name|default('') }}
                                                 </td>
                                             </tr>
                                             <tr>
-                                                <td>
+                                                <td class="border-0">
                                                     <strong>Name:</strong> {{ expenseBatch.employee.name|default('') }}
                                                 </td>
-                                                <td>
+                                                <td class="border-0">
                                                     <strong>Station:</strong> {{ expenseBatch.employee.address|default('') }}
                                                 </td>
                                             </tr>
-                                        </table>
-                                        <table class="table table-bordered">
-                                            <thead>
                                             <tr>
                                                 <th> Particulars</th>
                                                 <th>Amount</th>
@@ -432,34 +446,48 @@
 
                                     {% if transportTypeConveyanceDetails[typeOfVehicle.slug] is defined and  transportTypeConveyanceDetails[typeOfVehicle.slug] is not empty  %}
                                         <div style="page-break-after: always "></div>
+                                        <button type="submit" name="excel" class="btn blue-bg btn-sm white-font pull-right hidden-print" title="Excel" value="excel" id="button-excel-car"><i class="fa fa-file-excel" aria-hidden="true"></i> {{ 'Excel'|trans }}</button>
 
-                                        <div style="text-align: center">
-                                            <h4>Nourish Poultry & Hatchery Ltd.</h4>
-                                            <h6>Uttara, Dhaka</h6>
-                                            <h6>{{ typeOfVehicle.name }}</h6>
-                                            <h6>Month: {{ expenseBatch.expenseMonth|date('F Y') }}</h6>
-                                        </div>
-                                        <table class="table table-borderless" border="0">
+                                        <table data-cols-width="8,12,10,10,10,10,15" class="table table-bordered download-excel-car">
+                                            <thead>
+
                                             <tr>
-
-                                                <td>
+                                                <td colspan="7" class="text-center border-0" data-a-h="center">
+                                                    <h4>Nourish Poultry & Hatchery Ltd.</h4>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="7" class="text-center border-0" data-a-h="center">
+                                                    <h6>Uttara, Dhaka</h6>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="7" class="text-center border-0" data-a-h="center">
+                                                    <h6>{{ typeOfVehicle.name }}</h6>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="7" class="text-center border-0" data-a-h="center">
+                                                    <h6>Month: {{ expenseBatch.expenseMonth|date('F Y') }}</h6>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="border-0" colspan="3">
                                                     <strong>Employee Id:</strong> {{ expenseBatch.employee.userId|default('') }}
                                                 </td>
-                                                <td>
+                                                <td class="border-0" colspan="3">
                                                     <strong>Designation:</strong> {{ expenseBatch.employee.designation.name|default('') }}
                                                 </td>
                                             </tr>
                                             <tr>
-                                                <td>
+                                                <td class="border-0" colspan="4">
                                                     <strong>Name:</strong> {{ expenseBatch.employee.name|default('') }}
                                                 </td>
-                                                <td>
+                                                <td class="border-0" colspan="4">
                                                     <strong>Station:</strong> {{ expenseBatch.employee.address|default('') }}
                                                 </td>
                                             </tr>
-                                        </table>
-                                        <table class="table table-bordered">
-                                            <thead>
+
                                             <tr>
                                                 <th>SL</th>
                                                 <th>Visiting Date</th>
@@ -525,33 +553,46 @@
                                     {% if transportTypeConveyanceDetails[typeOfVehicle.slug] is defined and  transportTypeConveyanceDetails[typeOfVehicle.slug] is not empty  %}
                                         <div style="page-break-after: always "></div>
 
-                                        <div style="text-align: center">
-                                            <h4>Nourish Poultry & Hatchery Ltd.</h4>
-                                            <h6>Uttara, Dhaka</h6>
-                                            <h6>{{ typeOfVehicle.name }}</h6>
-                                            <h6>Month: {{ expenseBatch.expenseMonth|date('F Y') }}</h6>
-                                        </div>
-                                        <table class="table table-borderless" border="0">
+                                        <button type="submit" name="excel" class="btn blue-bg btn-sm white-font pull-right hidden-print" title="Excel" value="excel" id="button-excel-office-car"><i class="fa fa-file-excel" aria-hidden="true"></i> {{ 'Excel'|trans }}</button>
+                                        <table data-cols-width="8,12,10,10,10,10,15" class="table table-bordered download-excel-office-car">
+                                            <thead>
                                             <tr>
-
-                                                <td>
+                                                <td colspan="7" class="text-center border-0" data-a-h="center">
+                                                    <h4>Nourish Poultry & Hatchery Ltd.</h4>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="7" class="text-center border-0" data-a-h="center">
+                                                    <h6>Uttara, Dhaka</h6>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="7" class="text-center border-0" data-a-h="center">
+                                                    <h6>{{ typeOfVehicle.name }}</h6>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="7" class="text-center border-0" data-a-h="center">
+                                                    <h6>Month: {{ expenseBatch.expenseMonth|date('F Y') }}</h6>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="border-0" colspan="4">
                                                     <strong>Employee Id:</strong> {{ expenseBatch.employee.userId|default('') }}
                                                 </td>
-                                                <td>
+                                                <td class="border-0" colspan="3">
                                                     <strong>Designation:</strong> {{ expenseBatch.employee.designation.name|default('') }}
                                                 </td>
                                             </tr>
                                             <tr>
-                                                <td>
+                                                <td class="border-0" colspan="4">
                                                     <strong>Name:</strong> {{ expenseBatch.employee.name|default('') }}
                                                 </td>
-                                                <td>
+                                                <td class="border-0" colspan="3">
                                                     <strong>Station:</strong> {{ expenseBatch.employee.address|default('') }}
                                                 </td>
                                             </tr>
-                                        </table>
-                                        <table class="table table-bordered">
-                                            <thead>
+
                                             <tr>
                                                 <th>SL</th>
                                                 <th>Visiting Date</th>
@@ -590,7 +631,7 @@
                                             </tbody>
                                             <tfoot>
                                             <tr>
-                                                <th class="text-right" colspan="2">Total</th>
+                                                <th class="text-right" colspan="2" data-a-h="right">Total</th>
                                                 <td>
                                                     {{ transportTypeConveyanceDetails[typeOfVehicle.slug]|arraySumColWise('totalFuelBill')|number_format(2,'.','') }}
                                                 </td>
@@ -615,34 +656,48 @@
                                 {% elseif typeOfVehicle.slug == 'local-conveyance' %}
                                     {% if transportTypeConveyanceDetails[typeOfVehicle.slug] is defined and  transportTypeConveyanceDetails[typeOfVehicle.slug] is not empty  %}
                                         <div style="page-break-after: always "></div>
+                                        <button type="submit" name="excel" class="btn blue-bg btn-sm white-font pull-right hidden-print" title="Excel" value="excel" id="button-excel-local-conveyance"><i class="fa fa-file-excel" aria-hidden="true"></i> {{ 'Excel'|trans }}</button>
 
-                                    <div style="text-align: center">
-                                        <h4>Nourish Poultry & Hatchery Ltd.</h4>
-                                        <h6>Uttara, Dhaka</h6>
-                                        <h6>{{ typeOfVehicle.name }}</h6>
-                                        <h6>Month: {{ expenseBatch.expenseMonth|date('F Y') }}</h6>
-                                    </div>
-                                    <table class="table table-borderless" border="0">
+                                    <table data-cols-width="8,15,35,35,35,20" class="table table-bordered download-excel-local-conveyance">
+                                        <thead>
+
                                         <tr>
-
-                                            <td>
+                                            <td colspan="6" class="text-center border-0" data-a-h="center">
+                                                <h4>Nourish Poultry & Hatchery Ltd.</h4>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="6" class="text-center border-0" data-a-h="center">
+                                                <h6>Uttara, Dhaka</h6>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="6" class="text-center border-0" data-a-h="center">
+                                                <h6>{{ typeOfVehicle.name }}</h6>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="6" class="text-center border-0" data-a-h="center">
+                                                <h6>Month: {{ expenseBatch.expenseMonth|date('F Y') }}</h6>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="border-0" colspan="3">
                                                 <strong>Employee Id:</strong> {{ expenseBatch.employee.userId|default('') }}
                                             </td>
-                                            <td>
+                                            <td class="border-0" colspan="3">
                                                 <strong>Designation:</strong> {{ expenseBatch.employee.designation.name|default('') }}
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td>
+                                            <td class="border-0" colspan="3">
                                                 <strong>Name:</strong> {{ expenseBatch.employee.name|default('') }}
                                             </td>
-                                            <td>
+                                            <td class="border-0" colspan="3">
                                                 <strong>Station:</strong> {{ expenseBatch.employee.address|default('') }}
                                             </td>
                                         </tr>
-                                    </table>
-                                    <table class="table table-bordered">
-                                        <thead>
+
                                         <tr>
                                             <th>SL</th>
                                             <th>Visiting Date</th>
@@ -703,34 +758,46 @@
 
                                     {% if transportTypeConveyanceDetails[typeOfVehicle.slug] is defined and  transportTypeConveyanceDetails[typeOfVehicle.slug] is not empty  %}
                                         <div style="page-break-after: always "></div>
+                                        <button type="submit" name="excel" class="btn blue-bg btn-sm white-font pull-right hidden-print" title="Excel" value="excel" id="button-excel-others"><i class="fa fa-file-excel" aria-hidden="true"></i> {{ 'Excel'|trans }}</button>
 
-                                        <div style="text-align: center">
-                                            <h4>Nourish Poultry & Hatchery Ltd.</h4>
-                                            <h6>Uttara, Dhaka</h6>
-                                            <h6>{{ typeOfVehicle.name }} bill supportings</h6>
-                                            <h6>Month: {{ expenseBatch.expenseMonth|date('F Y') }}</h6>
-                                        </div>
-                                        <table class="table table-borderless" border="0">
+                                        <table data-cols-width="8,35,35,35,20" class="table table-bordered download-excel-others">
+                                            <thead>
                                             <tr>
-
-                                                <td>
+                                                <td colspan="5" class="text-center border-0" data-a-h="center">
+                                                    <h4>Nourish Poultry & Hatchery Ltd.</h4>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="5" class="text-center border-0" data-a-h="center">
+                                                    <h6>Uttara, Dhaka</h6>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="5" class="text-center border-0" data-a-h="center">
+                                                    <h6>{{ typeOfVehicle.name }} bill supportings</h6>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="5" class="text-center border-0" data-a-h="center">
+                                                    <h6>Month: {{ expenseBatch.expenseMonth|date('F Y') }}</h6>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="border-0" colspan="3">
                                                     <strong>Employee Id:</strong> {{ expenseBatch.employee.userId|default('') }}
                                                 </td>
-                                                <td>
+                                                <td class="border-0" colspan="2">
                                                     <strong>Designation:</strong> {{ expenseBatch.employee.designation.name|default('') }}
                                                 </td>
                                             </tr>
                                             <tr>
-                                                <td>
+                                                <td class="border-0" colspan="3">
                                                     <strong>Name:</strong> {{ expenseBatch.employee.name|default('') }}
                                                 </td>
-                                                <td>
+                                                <td class="border-0" colspan="2">
                                                     <strong>Station:</strong> {{ expenseBatch.employee.address|default('') }}
                                                 </td>
                                             </tr>
-                                        </table>
-                                        <table class="table table-bordered">
-                                            <thead>
                                             <tr>
                                                 <th>SL</th>
                                                 <th>Visiting Date</th>
@@ -791,6 +858,9 @@
      <link rel="stylesheet" href="{{ asset('assets/module/css/app.css') }}">
      <style>
          @media print {
+             .border-0 {
+                 border: 0!important;
+             }
              .hidden-print {
                  display: none!important;
              }
@@ -806,9 +876,87 @@
 {% block javascripts %}
     {{ parent() }}
     <script type="application/javascript" src="{{ asset('assets/module/js/app.js') }}"></script>
+    <script src="{{ asset('assets/js/tableToExcel.js') }}"></script>
+
     <script>
         $('#windowPrint').on('click', function () {
             window.print();
         })
+
+
+        let buttonOfficeCar = document.querySelector("#button-excel-office-car");
+
+        if(buttonOfficeCar){
+            buttonOfficeCar.addEventListener("click", e => {
+                e.preventDefault();
+                let table = document.querySelector(".download-excel-office-car");
+                TableToExcel.convert(table, {
+                    name: "office_car.xlsx",
+                    sheet: {
+                        name: "Sheet 1"
+                    }
+                });
+            });
+        }
+        //buttonMotorcycle
+        let buttonMotorcycle = document.querySelector("#button-excel-motorcycle");
+
+        if(buttonMotorcycle){
+            buttonMotorcycle.addEventListener("click", e => {
+                e.preventDefault();
+                let table = document.querySelector(".download-excel-motorcycle");
+                TableToExcel.convert(table, {
+                    name: "motorcycle.xlsx",
+                    sheet: {
+                        name: "Sheet 1"
+                    }
+                });
+            });
+        }
+        //buttonCar
+        let buttonCar = document.querySelector("#button-excel-car");
+
+        if(buttonCar){
+            buttonCar.addEventListener("click", e => {
+                e.preventDefault();
+                let table = document.querySelector(".download-excel-car");
+                TableToExcel.convert(table, {
+                    name: "car.xlsx",
+                    sheet: {
+                        name: "Sheet 1"
+                    }
+                });
+            });
+        }
+        //buttonLocalConveyance
+        let buttonLocalConveyance = document.querySelector("#button-excel-local-conveyance");
+
+        if(buttonLocalConveyance){
+            buttonLocalConveyance.addEventListener("click", e => {
+                e.preventDefault();
+                let table = document.querySelector(".download-excel-local-conveyance");
+                TableToExcel.convert(table, {
+                    name: "local-conveyance.xlsx",
+                    sheet: {
+                        name: "Sheet 1"
+                    }
+                });
+            });
+        }
+        //buttonLocalOthers
+        let buttonLocalConveyance = document.querySelector("#button-excel-others");
+
+        if(buttonLocalConveyance){
+            buttonLocalConveyance.addEventListener("click", e => {
+                e.preventDefault();
+                let table = document.querySelector(".download-excel-others");
+                TableToExcel.convert(table, {
+                    name: "others.xlsx",
+                    sheet: {
+                        name: "Sheet 1"
+                    }
+                });
+            });
+        }
     </script>
 {% endblock  %}
