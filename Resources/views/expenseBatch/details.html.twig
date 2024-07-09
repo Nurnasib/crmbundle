@@ -551,10 +551,11 @@
                                 {% elseif typeOfVehicle.slug == 'office-car' %}
 
                                     {% if transportTypeConveyanceDetails[typeOfVehicle.slug] is defined and  transportTypeConveyanceDetails[typeOfVehicle.slug] is not empty  %}
-                                        <div style="page-break-after: always "></div>
+                                        {% if (transportTypeConveyanceDetails[typeOfVehicle.slug]|arraySumColWise('grandTotalAmount') > 0) %}
+                                            <div style="page-break-after: always "></div>
 
-                                        <button type="submit" name="excel" class="btn blue-bg btn-sm white-font pull-right hidden-print" title="Excel" value="excel" id="button-excel-office-car"><i class="fa fa-file-excel" aria-hidden="true"></i> {{ 'Excel'|trans }}</button>
-                                        <table data-cols-width="8,12,10,10,10,10,15" class="table table-bordered download-excel-office-car">
+                                            <button type="submit" name="excel" class="btn blue-bg btn-sm white-font pull-right hidden-print" title="Excel" value="excel" id="button-excel-office-car"><i class="fa fa-file-excel" aria-hidden="true"></i> {{ 'Excel'|trans }}</button>
+                                            <table data-cols-width="8,12,10,10,10,10,15" class="table table-bordered download-excel-office-car">
                                             <thead>
                                             <tr>
                                                 <td colspan="7" class="text-center border-0" data-a-h="center">
@@ -650,6 +651,7 @@
                                             </tr>
                                             </tfoot>
                                         </table>
+                                        {% endif %}
 
                                     {% endif %}
 
@@ -944,10 +946,10 @@
             });
         }
         //buttonLocalOthers
-        let buttonLocalConveyance = document.querySelector("#button-excel-others");
+        let buttonOthers = document.querySelector("#button-excel-others");
 
-        if(buttonLocalConveyance){
-            buttonLocalConveyance.addEventListener("click", e => {
+        if(buttonOthers){
+            buttonOthers.addEventListener("click", e => {
                 e.preventDefault();
                 let table = document.querySelector(".download-excel-others");
                 TableToExcel.convert(table, {
