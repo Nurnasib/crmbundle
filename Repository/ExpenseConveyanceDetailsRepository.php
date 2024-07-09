@@ -204,6 +204,7 @@ class ExpenseConveyanceDetailsRepository extends EntityRepository
         $qb->andWhere('expenseBatch.status >=:status')->setParameter('status',2);
         $qb->andWhere('employee.id =:employeeId')->setParameter('employeeId', $employeeId);
         $qb->andWhere("DATE_FORMAT(expense.expenseDate,'%Y-%m') =:expenseDate")->setParameter('expenseDate', $expenseDate);
+        $qb->andWhere('e.totalAmount > 0');
         $qb->groupBy('e.transportType');
         $qb->addGroupBy('expense.id');
         $results = $qb->getQuery()->getArrayResult();
