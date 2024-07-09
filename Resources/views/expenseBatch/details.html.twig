@@ -606,6 +606,7 @@
                                             </thead>
                                             <tbody>
                                             {% for dateIndex, entity in transportTypeConveyanceDetails[typeOfVehicle.slug] %}
+                                                {% if entity.grandTotalAmount is defined and entity.grandTotalAmount > 0 %}
                                                 <tr>
                                                     <td>{{ loop.index }}</td>
                                                     <td>
@@ -627,7 +628,7 @@
                                                         {{ entity.grandTotalAmount|default('') }}
                                                     </td>
                                                 </tr>
-
+                                                {% endif %}
                                             {% endfor %}
                                             </tbody>
                                             <tfoot>
