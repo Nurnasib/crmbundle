@@ -318,126 +318,146 @@
 
                                         <button type="submit" name="excel" class="btn blue-bg btn-sm white-font pull-right hidden-print" title="Excel" value="excel" id="button-excel-motorcycle"><i class="fa fa-file-excel" aria-hidden="true"></i> {{ 'Excel'|trans }}</button>
 
-                                        <table data-cols-width="35,25" class="table table-bordered download-excel-motorcycle">
-                                            <thead>
-                                            <tr class="border-0">
-                                                <td colspan="2" class="text-center border-0" data-a-h="center">
-                                                    <h4>Nourish Poultry & Hatchery Ltd.</h4>
-                                                </td>
-                                            </tr>
-                                            <tr class="border-0">
-                                                <td colspan="2" class="text-center border-0" data-a-h="center">
-                                                    <h6>Uttara, Dhaka</h6>
-                                                </td>
-                                            </tr>
-                                            <tr class="border-0">
-                                                <td colspan="2" class="text-center border-0" data-a-h="center">
-                                                    <h6>{{ typeOfVehicle.name }}</h6>
-                                                </td>
-                                            </tr>
-                                            <tr class="border-0">
-                                                <td colspan="2" class="text-center border-0" data-a-h="center">
-                                                    <h6>Month: {{ expenseBatch.expenseMonth|date('F Y') }}</h6>
-                                                </td>
-                                            </tr>
-                                            <tr class="border-0">
+                                        <div class="expense_body print-margin-top-100">
+                                            <table data-cols-width="35,25" class="table table-bordered download-excel-motorcycle">
+                                                <thead>
+                                                <tr class="border-0">
+                                                    <td colspan="2" class="text-center border-0" data-a-h="center">
+                                                        <h4>Nourish Poultry & Hatchery Ltd.</h4>
+                                                    </td>
+                                                </tr>
+                                                <tr class="border-0">
+                                                    <td colspan="2" class="text-center border-0" data-a-h="center">
+                                                        <h6>Uttara, Dhaka</h6>
+                                                    </td>
+                                                </tr>
+                                                <tr class="border-0">
+                                                    <td colspan="2" class="text-center border-0" data-a-h="center">
+                                                        <h6>{{ typeOfVehicle.name }}</h6>
+                                                    </td>
+                                                </tr>
+                                                <tr class="border-0">
+                                                    <td colspan="2" class="text-center border-0" data-a-h="center">
+                                                        <h6>Month: {{ expenseBatch.expenseMonth|date('F Y') }}</h6>
+                                                    </td>
+                                                </tr>
+                                                <tr class="border-0">
 
-                                                <td class="border-0">
-                                                    <strong>Employee Id:</strong> {{ expenseBatch.employee.userId|default('') }}
-                                                </td>
-                                                <td class="border-0">
-                                                    <strong>Designation:</strong> {{ expenseBatch.employee.designation.name|default('') }}
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td class="border-0">
-                                                    <strong>Name:</strong> {{ expenseBatch.employee.name|default('') }}
-                                                </td>
-                                                <td class="border-0">
-                                                    <strong>Station:</strong> {{ expenseBatch.employee.address|default('') }}
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <th> Particulars</th>
-                                                <th>Amount</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            <tr>
-                                                <td>
-                                                    Present Meter Reading
-                                                </td>
-                                                <td>
-                                                    {{ presentReading }}
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    Previous Meter Reading
-                                                </td>
-                                                <td>
-                                                    {{ previousReading }}
+                                                    <td class="border-0">
+                                                        <strong>Employee Id:</strong> {{ expenseBatch.employee.userId|default('') }}
+                                                    </td>
+                                                    <td class="border-0">
+                                                        <strong>Designation:</strong> {{ expenseBatch.employee.designation.name|default('') }}
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="border-0">
+                                                        <strong>Name:</strong> {{ expenseBatch.employee.name|default('') }}
+                                                    </td>
+                                                    <td class="border-0">
+                                                        <strong>Station:</strong> {{ expenseBatch.employee.address|default('') }}
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <th> Particulars</th>
+                                                    <th>Amount</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr>
+                                                    <td>
+                                                        Present Meter Reading
+                                                    </td>
+                                                    <td>
+                                                        {{ presentReading }}
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        Previous Meter Reading
+                                                    </td>
+                                                    <td>
+                                                        {{ previousReading }}
 
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    Used Reading
-                                                </td>
-                                                <td>
-                                                    {{ transportTypeConveyanceDetails[typeOfVehicle.slug]|arraySumColWise('totalMileage')|number_format(0,'.','') }}
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    Used Reading Bill
-                                                </td>
-                                                <td>
-                                                    {{ usedReadingBill }}
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    Mobil Bill (After 1000 km)
-                                                </td>
-                                                <td>
-                                                    {{ totalMobileBill }}
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    Maintenance Bill (Minimum 1000 km)
-                                                </td>
-                                                <td>
-                                                    {{ totalMaintenanceBill }}
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    Servicing Bill (After 2000 km)
-                                                </td>
-                                                <td>
-                                                    {{ totalServicingBill }}
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    Toll Bill
-                                                </td>
-                                                <td>
-                                                    {{ totalTollBill }}
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td class="text-right">
-                                                    Total Bill (Taka)
-                                                </td>
-                                                <td>
-                                                    {{ grandTotalBill }}
-                                                </td>
-                                            </tr>
-                                            </tbody>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        Used Reading
+                                                    </td>
+                                                    <td>
+                                                        {{ transportTypeConveyanceDetails[typeOfVehicle.slug]|arraySumColWise('totalMileage')|number_format(0,'.','') }}
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        Used Reading Bill
+                                                    </td>
+                                                    <td>
+                                                        {{ usedReadingBill }}
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        Mobil Bill (After 1000 km)
+                                                    </td>
+                                                    <td>
+                                                        {{ totalMobileBill }}
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        Maintenance Bill (Minimum 1000 km)
+                                                    </td>
+                                                    <td>
+                                                        {{ totalMaintenanceBill }}
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        Servicing Bill (After 2000 km)
+                                                    </td>
+                                                    <td>
+                                                        {{ totalServicingBill }}
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        Toll Bill
+                                                    </td>
+                                                    <td>
+                                                        {{ totalTollBill }}
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="text-right">
+                                                        Total Bill (Taka)
+                                                    </td>
+                                                    <td>
+                                                        {{ grandTotalBill }}
+                                                    </td>
+                                                </tr>
+                                                </tbody>
 
+                                            </table>
+                                        </div>
+                                        <table width="100%" class="no-bordered" style="margin-bottom: 20px">
+                                            <tr>
+                                                <th style="text-align: center; color: #000">{{ expenseBatch.employee.name|default('') }}</th>
+                                                <th style="text-align: center; color: #000"></th>
+                                                <th style="text-align: center; color: #000"></th>
+                                                <th style="text-align: center; color: #000"></th>
+                                                <th style="text-align: center; color: #000"></th>
+                                                <th style="text-align: center; color: #000"></th>
+                                            </tr>
+                                            <tr>
+                                                <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">Submited by</span></th>
+                                                <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">Supervisor/ Authorized Official</span></th>
+                                                <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">Junior AGM</span></th>
+                                                <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">Senior DGM (S&S)</span></th>
+                                                <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">GM(S&M)</span></th>
+                                                <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">Avp (S&M</span></th>
+                                            </tr>
                                         </table>
 
                                     {% endif %}
@@ -448,7 +468,8 @@
                                         <div style="page-break-after: always "></div>
                                         <button type="submit" name="excel" class="btn blue-bg btn-sm white-font pull-right hidden-print" title="Excel" value="excel" id="button-excel-car"><i class="fa fa-file-excel" aria-hidden="true"></i> {{ 'Excel'|trans }}</button>
 
-                                        <table data-cols-width="8,12,10,10,10,10,15" class="table table-bordered download-excel-car">
+                                        <div class="expense_body print-margin-top-100">
+                                            <table data-cols-width="8,12,10,10,10,10,15" class="table table-bordered download-excel-car">
                                             <thead>
 
                                             <tr>
@@ -545,6 +566,26 @@
                                             </tr>
                                             </tfoot>
                                         </table>
+                                        </div>
+
+                                        <table width="100%" class="no-bordered" style="margin-bottom: 20px">
+                                            <tr>
+                                                <th style="text-align: center; color: #000">{{ expenseBatch.employee.name|default('') }}</th>
+                                                <th style="text-align: center; color: #000"></th>
+                                                <th style="text-align: center; color: #000"></th>
+                                                <th style="text-align: center; color: #000"></th>
+                                                <th style="text-align: center; color: #000"></th>
+                                                <th style="text-align: center; color: #000"></th>
+                                            </tr>
+                                            <tr>
+                                                <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">Submited by</span></th>
+                                                <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">Supervisor/ Authorized Official</span></th>
+                                                <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">Junior AGM</span></th>
+                                                <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">Senior DGM (S&S)</span></th>
+                                                <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">GM(S&M)</span></th>
+                                                <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">Avp (S&M</span></th>
+                                            </tr>
+                                        </table>
 
                                     {% endif %}
 
@@ -555,103 +596,124 @@
                                             <div style="page-break-after: always "></div>
 
                                             <button type="submit" name="excel" class="btn blue-bg btn-sm white-font pull-right hidden-print" title="Excel" value="excel" id="button-excel-office-car"><i class="fa fa-file-excel" aria-hidden="true"></i> {{ 'Excel'|trans }}</button>
-                                            <table data-cols-width="8,12,10,10,10,10,15" class="table table-bordered download-excel-office-car">
-                                            <thead>
-                                            <tr>
-                                                <td colspan="7" class="text-center border-0" data-a-h="center">
-                                                    <h4>Nourish Poultry & Hatchery Ltd.</h4>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td colspan="7" class="text-center border-0" data-a-h="center">
-                                                    <h6>Uttara, Dhaka</h6>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td colspan="7" class="text-center border-0" data-a-h="center">
-                                                    <h6>{{ typeOfVehicle.name }}</h6>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td colspan="7" class="text-center border-0" data-a-h="center">
-                                                    <h6>Month: {{ expenseBatch.expenseMonth|date('F Y') }}</h6>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td class="border-0" colspan="4">
-                                                    <strong>Employee Id:</strong> {{ expenseBatch.employee.userId|default('') }}
-                                                </td>
-                                                <td class="border-0" colspan="3">
-                                                    <strong>Designation:</strong> {{ expenseBatch.employee.designation.name|default('') }}
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td class="border-0" colspan="4">
-                                                    <strong>Name:</strong> {{ expenseBatch.employee.name|default('') }}
-                                                </td>
-                                                <td class="border-0" colspan="3">
-                                                    <strong>Station:</strong> {{ expenseBatch.employee.address|default('') }}
-                                                </td>
-                                            </tr>
-
-                                            <tr>
-                                                <th>SL</th>
-                                                <th>Visiting Date</th>
-                                                <th>Fuel/Gas</th>
-                                                <th>Toll/Ferry</th>
-                                                <th>Parking</th>
-                                                <th>Others</th>
-                                                <th>Total Amount</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            {% for dateIndex, entity in transportTypeConveyanceDetails[typeOfVehicle.slug] %}
-                                                {% if entity.grandTotalAmount is defined and entity.grandTotalAmount > 0 %}
+                                            <div class="expense_body print-margin-top-100">
+                                                <table data-cols-width="8,12,10,10,10,10,15" class="table table-bordered download-excel-office-car">
+                                                <thead>
                                                 <tr>
-                                                    <td>{{ loop.index }}</td>
-                                                    <td>
-                                                        {{ entity.expenseDate|date('d-m-Y') }}
-                                                    </td>
-                                                    <td>
-                                                        {{ entity.totalFuelBill|default('') }}
-                                                    </td>
-                                                    <td>
-                                                        {{ entity.totalTollBill|default('') }}
-                                                    </td>
-                                                    <td>
-                                                        {{ entity.totalParkingBill|default('') }}
-                                                    </td>
-                                                    <td>
-                                                        {{ entity.totalOthersBill|default('') }}
-                                                    </td>
-                                                    <td>
-                                                        {{ entity.grandTotalAmount|default('') }}
+                                                    <td colspan="7" class="text-center border-0" data-a-h="center">
+                                                        <h4>Nourish Poultry & Hatchery Ltd.</h4>
                                                     </td>
                                                 </tr>
-                                                {% endif %}
-                                            {% endfor %}
-                                            </tbody>
-                                            <tfoot>
-                                            <tr>
-                                                <th class="text-right" colspan="2" data-a-h="right">Total</th>
-                                                <td>
-                                                    {{ transportTypeConveyanceDetails[typeOfVehicle.slug]|arraySumColWise('totalFuelBill')|number_format(2,'.','') }}
-                                                </td>
-                                                <td>
-                                                    {{ transportTypeConveyanceDetails[typeOfVehicle.slug]|arraySumColWise('totalTollBill')|number_format(2,'.','') }}
-                                                </td>
-                                                <td>
-                                                    {{ transportTypeConveyanceDetails[typeOfVehicle.slug]|arraySumColWise('totalParkingBill')|number_format(2,'.','') }}
-                                                </td>
-                                                <td>
-                                                    {{ transportTypeConveyanceDetails[typeOfVehicle.slug]|arraySumColWise('totalOthersBill')|number_format(2,'.','') }}
-                                                </td>
-                                                <td>
-                                                    {{ transportTypeConveyanceDetails[typeOfVehicle.slug]|arraySumColWise('grandTotalAmount')|number_format(2,'.','') }}
-                                                </td>
-                                            </tr>
-                                            </tfoot>
-                                        </table>
+                                                <tr>
+                                                    <td colspan="7" class="text-center border-0" data-a-h="center">
+                                                        <h6>Uttara, Dhaka</h6>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td colspan="7" class="text-center border-0" data-a-h="center">
+                                                        <h6>{{ typeOfVehicle.name }}</h6>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td colspan="7" class="text-center border-0" data-a-h="center">
+                                                        <h6>Month: {{ expenseBatch.expenseMonth|date('F Y') }}</h6>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="border-0" colspan="4">
+                                                        <strong>Employee Id:</strong> {{ expenseBatch.employee.userId|default('') }}
+                                                    </td>
+                                                    <td class="border-0" colspan="3">
+                                                        <strong>Designation:</strong> {{ expenseBatch.employee.designation.name|default('') }}
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="border-0" colspan="4">
+                                                        <strong>Name:</strong> {{ expenseBatch.employee.name|default('') }}
+                                                    </td>
+                                                    <td class="border-0" colspan="3">
+                                                        <strong>Station:</strong> {{ expenseBatch.employee.address|default('') }}
+                                                    </td>
+                                                </tr>
+
+                                                <tr>
+                                                    <th>SL</th>
+                                                    <th>Visiting Date</th>
+                                                    <th>Fuel/Gas</th>
+                                                    <th>Toll/Ferry</th>
+                                                    <th>Parking</th>
+                                                    <th>Others</th>
+                                                    <th>Total Amount</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                {% for dateIndex, entity in transportTypeConveyanceDetails[typeOfVehicle.slug] %}
+                                                    {% if entity.grandTotalAmount is defined and entity.grandTotalAmount > 0 %}
+                                                    <tr>
+                                                        <td>{{ loop.index }}</td>
+                                                        <td>
+                                                            {{ entity.expenseDate|date('d-m-Y') }}
+                                                        </td>
+                                                        <td>
+                                                            {{ entity.totalFuelBill|default('') }}
+                                                        </td>
+                                                        <td>
+                                                            {{ entity.totalTollBill|default('') }}
+                                                        </td>
+                                                        <td>
+                                                            {{ entity.totalParkingBill|default('') }}
+                                                        </td>
+                                                        <td>
+                                                            {{ entity.totalOthersBill|default('') }}
+                                                        </td>
+                                                        <td>
+                                                            {{ entity.grandTotalAmount|default('') }}
+                                                        </td>
+                                                    </tr>
+                                                    {% endif %}
+                                                {% endfor %}
+                                                </tbody>
+                                                <tfoot>
+                                                <tr>
+                                                    <th class="text-right" colspan="2" data-a-h="right">Total</th>
+                                                    <td>
+                                                        {{ transportTypeConveyanceDetails[typeOfVehicle.slug]|arraySumColWise('totalFuelBill')|number_format(2,'.','') }}
+                                                    </td>
+                                                    <td>
+                                                        {{ transportTypeConveyanceDetails[typeOfVehicle.slug]|arraySumColWise('totalTollBill')|number_format(2,'.','') }}
+                                                    </td>
+                                                    <td>
+                                                        {{ transportTypeConveyanceDetails[typeOfVehicle.slug]|arraySumColWise('totalParkingBill')|number_format(2,'.','') }}
+                                                    </td>
+                                                    <td>
+                                                        {{ transportTypeConveyanceDetails[typeOfVehicle.slug]|arraySumColWise('totalOthersBill')|number_format(2,'.','') }}
+                                                    </td>
+                                                    <td>
+                                                        {{ transportTypeConveyanceDetails[typeOfVehicle.slug]|arraySumColWise('grandTotalAmount')|number_format(2,'.','') }}
+                                                    </td>
+                                                </tr>
+                                                </tfoot>
+                                            </table>
+                                            </div>
+
+                                            <table width="100%" class="no-bordered" style="margin-bottom: 20px">
+                                                <tr>
+                                                    <th style="text-align: center; color: #000">{{ expenseBatch.employee.name|default('') }}</th>
+                                                    <th style="text-align: center; color: #000"></th>
+                                                    <th style="text-align: center; color: #000"></th>
+                                                    <th style="text-align: center; color: #000"></th>
+                                                    <th style="text-align: center; color: #000"></th>
+                                                    <th style="text-align: center; color: #000"></th>
+                                                </tr>
+                                                <tr>
+                                                    <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">Submited by</span></th>
+                                                    <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">Supervisor/ Authorized Official</span></th>
+                                                    <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">Junior AGM</span></th>
+                                                    <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">Senior DGM (S&S)</span></th>
+                                                    <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">GM(S&M)</span></th>
+                                                    <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">Avp (S&M</span></th>
+                                                </tr>
+                                            </table>
                                         {% endif %}
 
                                     {% endif %}
@@ -660,8 +722,8 @@
                                     {% if transportTypeConveyanceDetails[typeOfVehicle.slug] is defined and  transportTypeConveyanceDetails[typeOfVehicle.slug] is not empty  %}
                                         <div style="page-break-after: always "></div>
                                         <button type="submit" name="excel" class="btn blue-bg btn-sm white-font pull-right hidden-print" title="Excel" value="excel" id="button-excel-local-conveyance"><i class="fa fa-file-excel" aria-hidden="true"></i> {{ 'Excel'|trans }}</button>
-
-                                    <table data-cols-width="8,15,35,35,35,20" class="table table-bordered download-excel-local-conveyance">
+                                            <div class="expense_body print-margin-top-100">
+                                                <table data-cols-width="8,15,35,35,35,20" class="table table-bordered download-excel-local-conveyance">
                                         <thead>
 
                                         <tr>
@@ -754,6 +816,26 @@
                                         </tr>
                                         </tfoot>
                                     </table>
+                                            </div>
+
+                                        <table width="100%" class="no-bordered" style="margin-bottom: 20px">
+                                            <tr>
+                                                <th style="text-align: center; color: #000">{{ expenseBatch.employee.name|default('') }}</th>
+                                                <th style="text-align: center; color: #000"></th>
+                                                <th style="text-align: center; color: #000"></th>
+                                                <th style="text-align: center; color: #000"></th>
+                                                <th style="text-align: center; color: #000"></th>
+                                                <th style="text-align: center; color: #000"></th>
+                                            </tr>
+                                            <tr>
+                                                <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">Submited by</span></th>
+                                                <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">Supervisor/ Authorized Official</span></th>
+                                                <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">Junior AGM</span></th>
+                                                <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">Senior DGM (S&S)</span></th>
+                                                <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">GM(S&M)</span></th>
+                                                <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">Avp (S&M</span></th>
+                                            </tr>
+                                        </table>
 
                                     {% endif %}
 
@@ -762,8 +844,8 @@
                                     {% if transportTypeConveyanceDetails[typeOfVehicle.slug] is defined and  transportTypeConveyanceDetails[typeOfVehicle.slug] is not empty  %}
                                         <div style="page-break-after: always "></div>
                                         <button type="submit" name="excel" class="btn blue-bg btn-sm white-font pull-right hidden-print" title="Excel" value="excel" id="button-excel-others"><i class="fa fa-file-excel" aria-hidden="true"></i> {{ 'Excel'|trans }}</button>
-
-                                        <table data-cols-width="8,35,35,35,20" class="table table-bordered download-excel-others">
+                                        <div class="expense_body print-margin-top-100">
+                                            <table data-cols-width="8,35,35,35,20" class="table table-bordered download-excel-others">
                                             <thead>
                                             <tr>
                                                 <td colspan="5" class="text-center border-0" data-a-h="center">
@@ -830,6 +912,25 @@
                                             {% endfor %}
                                             </tbody>
                                         </table>
+                                        </div>
+                                        <table width="100%" class="no-bordered" style="margin-bottom: 20px">
+                                            <tr>
+                                                <th style="text-align: center; color: #000">{{ expenseBatch.employee.name|default('') }}</th>
+                                                <th style="text-align: center; color: #000"></th>
+                                                <th style="text-align: center; color: #000"></th>
+                                                <th style="text-align: center; color: #000"></th>
+                                                <th style="text-align: center; color: #000"></th>
+                                                <th style="text-align: center; color: #000"></th>
+                                            </tr>
+                                            <tr>
+                                                <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">Submited by</span></th>
+                                                <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">Supervisor/ Authorized Official</span></th>
+                                                <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">Junior AGM</span></th>
+                                                <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">Senior DGM (S&S)</span></th>
+                                                <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">GM(S&M)</span></th>
+                                                <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">Avp (S&M</span></th>
+                                            </tr>
+                                        </table>
 
                                     {% endif %}
 
@@ -872,6 +973,15 @@
              }
              .expense_body{
                  min-height: 1250px!important;
+             }
+             .print-margin-top-100{
+                margin-top: 100px;
+             }
+             .print-margin-top-80{
+                margin-top: 80px;
+             }
+             .print-margin-top-50{
+                margin-top: 50px;
              }
          }
      </style>
