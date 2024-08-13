@@ -106,6 +106,7 @@
                                         <th scope="col">{{ dailyExpenseParticularAttribute.name }}</th>
                                     {% endfor %}
                                 {% endif %}#}
+                                <th rowspan="2" title="Total">Total Milage (Km)</th>
                                 <th rowspan="2" title="Total">Total (TK.)</th>
                                 <th class="hidden-print" rowspan="2"></th>
                             </tr>
@@ -165,6 +166,7 @@
                                             {% endif %}
                                         {% endfor %}
                                     {% endif %}
+                                    {% set lineTotalMilage=0 %}
                                     {% if typeOfVehicles is not empty %}
                                         {% for typeOfVehicle in typeOfVehicles%}
                                             <td class="text-right">
@@ -172,6 +174,7 @@
                                                 {% if typeOfVehicle.slug=='motorcycle' %}
                                                 {% set totalMileageKm = conveyanceDetailsTotalAmount['data'] is defined and conveyanceDetailsTotalAmount['data'][entity.id] is defined and conveyanceDetailsTotalAmount['data'][entity.id][typeOfVehicle.slug] is defined?conveyanceDetailsTotalAmount['data'][entity.id][typeOfVehicle.slug]['totalMileage']:0 %}
                                                     {% set totalMilage = totalMilage + totalMileageKm %}
+                                                    {% set lineTotalMilage = lineTotalMilage + totalMileageKm %}
                                                 {% endif %}
 
                                                 {% set lineTotal = lineTotal + conveyanceAmount %}
@@ -183,6 +186,7 @@
                                     {% endif %}
 {#                                    {% set totalLineTotal = totalLineTotal + lineTotal %}#}
 
+                                    <td class="text-right">{{ lineTotalMilage }}</td>
                                     <th class="text-right">{{ lineTotal|number_format(2,'.',',') }}</th>
                                     <td class="hidden-print">
 {#                                        {% if expenseBatch.status<2 %}#}
@@ -223,16 +227,16 @@
                                                 </td>
                                             {% endfor %}
                                         {% endif %}
-
+                                        <td>{{ totalMilage }}</td>
                                         <th>{{ totalLineTotal|number_format(2,'.',',') }}</th>
                                         <th class="hidden-print"></th>
                                     </tr>
 
                                     <tr>
-                                        <th class="text-right hidden show-print" colspan="{{ 4 + (areaWiseExpenseParticulars['chartDetails'] is defined? areaWiseExpenseParticulars['chartDetails']|multiArrayLength: 0)+ typeOfVehicles|length }}">
+                                        <th class="text-right hidden show-print" colspan="{{ 5 + (areaWiseExpenseParticulars['chartDetails'] is defined? areaWiseExpenseParticulars['chartDetails']|multiArrayLength: 0)+ typeOfVehicles|length }}">
                                             Bike Miles Amount (Total reading {{ totalMilage }} KM, Per KM = {{ expenseBatch.perMilesAmount }} Tk.)
                                         </th>
-                                        <th class="text-right hidden-print" colspan="{{ 5 + (areaWiseExpenseParticulars['chartDetails'] is defined? areaWiseExpenseParticulars['chartDetails']|multiArrayLength: 0)+ typeOfVehicles|length }}">
+                                        <th class="text-right hidden-print" colspan="{{ 6 + (areaWiseExpenseParticulars['chartDetails'] is defined? areaWiseExpenseParticulars['chartDetails']|multiArrayLength: 0)+ typeOfVehicles|length }}">
                                             Bike Miles Amount (Total reading {{ totalMilage }} KM, Per KM = {{ expenseBatch.perMilesAmount }} Tk.)
                                         </th>
                                         <th class="text-right">{{ (totalMilage*3.5)|number_format(2) }}</th>
@@ -240,12 +244,13 @@
                                     </tr>
 
                                 <tr>
-                                    <th class="text-right hidden show-print" colspan="{{ 4 + (areaWiseExpenseParticulars['chartDetails'] is defined? areaWiseExpenseParticulars['chartDetails']|multiArrayLength: 0)+ typeOfVehicles|length }}">
+                                    <th class="text-right hidden show-print" colspan="{{ 5 + (areaWiseExpenseParticulars['chartDetails'] is defined? areaWiseExpenseParticulars['chartDetails']|multiArrayLength: 0)+ typeOfVehicles|length }}">
                                         Grand Total
                                     </th>
-                                    <th class="text-right hidden-print" colspan="{{ 5 + (areaWiseExpenseParticulars['chartDetails'] is defined? areaWiseExpenseParticulars['chartDetails']|multiArrayLength: 0)+ typeOfVehicles|length }}">
+                                    <th class="text-right hidden-print" colspan="{{ 6 + (areaWiseExpenseParticulars['chartDetails'] is defined? areaWiseExpenseParticulars['chartDetails']|multiArrayLength: 0)+ typeOfVehicles|length }}">
                                         Grand Total
                                     </th>
+
 {#                                    <th colspan="{{ dailyExpenseParticularAttributes|length + typeOfVehicles|length }}" class="text-right hidden-print">Grand Total</th>#}
                                     <th class="text-right">{{ (totalLineTotal+(totalMilage*3.5))|number_format(2,'.',',') }}</th>
                                     <th class="hidden-print"></th>
