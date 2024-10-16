@@ -281,14 +281,18 @@
                                 <th style="text-align: center; color: #000"></th>
                                 <th style="text-align: center; color: #000"></th>
                                 <th style="text-align: center; color: #000"></th>
+                                <th style="text-align: center; color: #000"></th>
+                                <th style="text-align: center; color: #000"></th>
                             </tr>
                             <tr>
                                 <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">Submited by</span></th>
-                                <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">Supervisor/ Authorized Official</span></th>
-                                <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">Junior AGM</span></th>
+                                <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">Regional/Zonal/Sector Head's Approval</span></th>
+                                <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">Cheked by(H/O)</span></th>
+                                <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">Hr & Admin</span></th>
+                                <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">Junior AGM(MKT Info )</span></th>
                                 <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">Senior DGM (S&S)</span></th>
-                                <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">GM(S&M)</span></th>
-                                <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">Avp (S&M</span></th>
+                                <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">GM (S&M)</span></th>
+                                <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">AVP (S&M)</span></th>
                             </tr>
                         </table>
                     {% endif %}
@@ -449,6 +453,8 @@
                                         <table width="100%" class="no-bordered" style="margin-bottom: 20px">
                                             <tr>
                                                 <th style="text-align: center; color: #000">{{ expenseBatch.employee.name|default('') }}</th>
+                                                <th style="text-align: center; color: #000">{{ expenseBatch.approvedBy.name|default('') }}</th>
+                                                <th style="text-align: center; color: #000"></th>
                                                 <th style="text-align: center; color: #000"></th>
                                                 <th style="text-align: center; color: #000"></th>
                                                 <th style="text-align: center; color: #000"></th>
@@ -457,11 +463,13 @@
                                             </tr>
                                             <tr>
                                                 <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">Submited by</span></th>
-                                                <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">Supervisor/ Authorized Official</span></th>
-                                                <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">Junior AGM</span></th>
+                                                <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">Regional/Zonal/Sector Head's Approval</span></th>
+                                                <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">Cheked by(H/O)</span></th>
+                                                <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">Hr & Admin</span></th>
+                                                <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">Junior AGM(MKT Info )</span></th>
                                                 <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">Senior DGM (S&S)</span></th>
-                                                <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">GM(S&M)</span></th>
-                                                <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">Avp (S&M</span></th>
+                                                <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">GM (S&M)</span></th>
+                                                <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">AVP (S&M)</span></th>
                                             </tr>
                                         </table>
 
@@ -576,6 +584,8 @@
                                         <table width="100%" class="no-bordered" style="margin-bottom: 20px">
                                             <tr>
                                                 <th style="text-align: center; color: #000">{{ expenseBatch.employee.name|default('') }}</th>
+                                                <th style="text-align: center; color: #000">{{ expenseBatch.approvedBy.name|default('') }}</th>
+                                                <th style="text-align: center; color: #000"></th>
                                                 <th style="text-align: center; color: #000"></th>
                                                 <th style="text-align: center; color: #000"></th>
                                                 <th style="text-align: center; color: #000"></th>
@@ -584,11 +594,13 @@
                                             </tr>
                                             <tr>
                                                 <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">Submited by</span></th>
-                                                <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">Supervisor/ Authorized Official</span></th>
-                                                <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">Junior AGM</span></th>
+                                                <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">Regional/Zonal/Sector Head's Approval</span></th>
+                                                <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">Cheked by(H/O)</span></th>
+                                                <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">Hr & Admin</span></th>
+                                                <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">Junior AGM(MKT Info )</span></th>
                                                 <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">Senior DGM (S&S)</span></th>
-                                                <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">GM(S&M)</span></th>
-                                                <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">Avp (S&M</span></th>
+                                                <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">GM (S&M)</span></th>
+                                                <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">AVP (S&M)</span></th>
                                             </tr>
                                         </table>
 
@@ -704,6 +716,8 @@
                                             <table width="100%" class="no-bordered" style="margin-bottom: 20px">
                                                 <tr>
                                                     <th style="text-align: center; color: #000">{{ expenseBatch.employee.name|default('') }}</th>
+                                                    <th style="text-align: center; color: #000">{{ expenseBatch.approvedBy.name|default('') }}</th>
+                                                    <th style="text-align: center; color: #000"></th>
                                                     <th style="text-align: center; color: #000"></th>
                                                     <th style="text-align: center; color: #000"></th>
                                                     <th style="text-align: center; color: #000"></th>
@@ -712,11 +726,13 @@
                                                 </tr>
                                                 <tr>
                                                     <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">Submited by</span></th>
-                                                    <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">Supervisor/ Authorized Official</span></th>
-                                                    <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">Junior AGM</span></th>
+                                                    <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">Regional/Zonal/Sector Head's Approval</span></th>
+                                                    <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">Cheked by(H/O)</span></th>
+                                                    <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">Hr & Admin</span></th>
+                                                    <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">Junior AGM(MKT Info )</span></th>
                                                     <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">Senior DGM (S&S)</span></th>
-                                                    <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">GM(S&M)</span></th>
-                                                    <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">Avp (S&M</span></th>
+                                                    <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">GM (S&M)</span></th>
+                                                    <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">AVP (S&M)</span></th>
                                                 </tr>
                                             </table>
                                         {% endif %}
@@ -826,6 +842,8 @@
                                         <table width="100%" class="no-bordered" style="margin-bottom: 20px">
                                             <tr>
                                                 <th style="text-align: center; color: #000">{{ expenseBatch.employee.name|default('') }}</th>
+                                                <th style="text-align: center; color: #000">{{ expenseBatch.approvedBy.name|default('') }}</th>
+                                                <th style="text-align: center; color: #000"></th>
                                                 <th style="text-align: center; color: #000"></th>
                                                 <th style="text-align: center; color: #000"></th>
                                                 <th style="text-align: center; color: #000"></th>
@@ -834,11 +852,13 @@
                                             </tr>
                                             <tr>
                                                 <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">Submited by</span></th>
-                                                <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">Supervisor/ Authorized Official</span></th>
-                                                <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">Junior AGM</span></th>
+                                                <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">Regional/Zonal/Sector Head's Approval</span></th>
+                                                <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">Cheked by(H/O)</span></th>
+                                                <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">Hr & Admin</span></th>
+                                                <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">Junior AGM(MKT Info )</span></th>
                                                 <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">Senior DGM (S&S)</span></th>
-                                                <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">GM(S&M)</span></th>
-                                                <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">Avp (S&M</span></th>
+                                                <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">GM (S&M)</span></th>
+                                                <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">AVP (S&M)</span></th>
                                             </tr>
                                         </table>
 
@@ -921,6 +941,8 @@
                                         <table width="100%" class="no-bordered" style="margin-bottom: 20px">
                                             <tr>
                                                 <th style="text-align: center; color: #000">{{ expenseBatch.employee.name|default('') }}</th>
+                                                <th style="text-align: center; color: #000">{{ expenseBatch.approvedBy.name|default('') }}</th>
+                                                <th style="text-align: center; color: #000"></th>
                                                 <th style="text-align: center; color: #000"></th>
                                                 <th style="text-align: center; color: #000"></th>
                                                 <th style="text-align: center; color: #000"></th>
@@ -929,11 +951,13 @@
                                             </tr>
                                             <tr>
                                                 <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">Submited by</span></th>
-                                                <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">Supervisor/ Authorized Official</span></th>
-                                                <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">Junior AGM</span></th>
+                                                <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">Regional/Zonal/Sector Head's Approval</span></th>
+                                                <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">Cheked by(H/O)</span></th>
+                                                <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">Hr & Admin</span></th>
+                                                <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">Junior AGM(MKT Info )</span></th>
                                                 <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">Senior DGM (S&S)</span></th>
-                                                <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">GM(S&M)</span></th>
-                                                <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">Avp (S&M</span></th>
+                                                <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">GM (S&M)</span></th>
+                                                <th style="text-align: center; color: #000"><span style="border-top: 1px solid #000">AVP (S&M)</span></th>
                                             </tr>
                                         </table>
 

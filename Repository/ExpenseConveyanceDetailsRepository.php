@@ -189,7 +189,7 @@ class ExpenseConveyanceDetailsRepository extends EntityRepository
         $qb = $this->createQueryBuilder('e');
 
         $qb->select('e.id', 'e.transportType', 'group_concat(
-    IF(e.meterReadingFrom > 0 and e.meterReadingTo > 0, e.meterReadingFrom, null)) as meterReadingFromConcat', 'group_concat(
+    IF(e.meterReadingTo > 0, e.meterReadingFrom, null)) as meterReadingFromConcat', 'group_concat(
     IF(e.meterReadingTo > 0, e.meterReadingTo, NULL)) as meterReadingToConcat', 'CAST(SUM(e.totalAmount) as decimal(10,2)) as grandTotalAmount');
         $qb->addSelect('group_concat(e.details) as detailsConcat', 'group_concat(e.destination) AS destinationConcat', 'group_concat(e.totalAmount) as totalAmountConcat');
         $qb->addSelect('CAST(SUM(e.mobilBill) as decimal(10,2)) as totalMobileBill','CAST(SUM(e.maintenanceBill) as decimal(10,2)) as totalMaintenanceBill','CAST(SUM(e.tollBill) as decimal(10,2)) as totalTollBill','CAST(SUM(e.servicingBill) as decimal(10,2)) as totalServicingBill','CAST(SUM(e.fuelBill) as decimal(10,2)) as totalFuelBill', 'CAST(SUM(e.parkingBill) as decimal(10,2)) as totalParkingBill', 'CAST(SUM(e.othersBill) as decimal(10,2)) as totalOthersBill', 'CAST(SUM(e.amount) as decimal(10,2)) as amount', 'CAST(SUM(e.totalMileage) as decimal(10,2)) as totalMileage');
