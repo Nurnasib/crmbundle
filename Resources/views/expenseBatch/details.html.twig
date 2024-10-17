@@ -130,118 +130,118 @@
                                 {% for entity in expenseBatch.expenses %}
                                     {% set lineTotal = 0 %}
 
-{#                                    {% set lineTotal= expensePaticularAmount['inLine'] is defined? expensePaticularAmount['inLine'][entity.employee.id][entity.id]|arraySumColWise('amount'):'0.00' %}#}
-{##}
-{#                                    {% set totalLineTotal=totalLineTotal+lineTotal %}#}
-                                <tr>
-                                    <td class="show-print">
-                                        {{ loop.index }}
+                                    {#                                    {% set lineTotal= expensePaticularAmount['inLine'] is defined? expensePaticularAmount['inLine'][entity.employee.id][entity.id]|arraySumColWise('amount'):'0.00' %}#}
+                                    {##}
+                                    {#                                    {% set totalLineTotal=totalLineTotal+lineTotal %}#}
+                                    <tr>
+                                        <td class="show-print">
+                                            {{ loop.index }}
 
-                                    </td>
-                                    <td>{{ entity.expenseDate|date('d-m-Y') }}</td>
-                                    <td class="hidden-print">{{ entity.scheduleVisit }}</td>
-                                    <td>{{ entity.visitLocation|default('') }}</td>
-                                    <td>{{ entity.workingArea.name|default('') }}</td>
+                                        </td>
+                                        <td>{{ entity.expenseDate|date('d-m-Y') }}</td>
+                                        <td class="hidden-print">{{ entity.scheduleVisit }}</td>
+                                        <td>{{ entity.visitLocation|default('') }}</td>
+                                        <td>{{ entity.workingArea.name|default('') }}</td>
 
-                                    {% if areaWiseExpenseParticulars is defined and areaWiseExpenseParticulars['areaName'] is defined and areaWiseExpenseParticulars['areaName'] is iterable %}
-                                        {% for areaId, expenseParticularAttribute in areaWiseExpenseParticulars['areaName'] %}
-                                            {% if areaWiseExpenseParticulars is defined and areaWiseExpenseParticulars['chartDetails'] is defined and areaWiseExpenseParticulars['chartDetails'][areaId] is defined and areaWiseExpenseParticulars['chartDetails'][areaId] is iterable %}
-                                                {% for chartDetailsId, expenseChart in areaWiseExpenseParticulars['chartDetails'][areaId] %}
-                                                    {% set expenseParticularId = expensePaticularAmount['inLine'] is defined and expensePaticularAmount['inLine'][entity.employee.id][entity.id][chartDetailsId][expenseChart.particularId] is defined ? expensePaticularAmount['inLine'][entity.employee.id][entity.id][chartDetailsId][expenseChart.particularId]['expenseParticularId']:'' %}
-                                                    {% set amount = expensePaticularAmount['inLine'] is defined and expensePaticularAmount['inLine'][entity.employee.id][entity.id][chartDetailsId][expenseChart.particularId] is defined ? expensePaticularAmount['inLine'][entity.employee.id][entity.id][chartDetailsId][expenseChart.particularId]['amount']|number_format(2,'.',''):0 %}
-                                                    {% set lineTotal = lineTotal + amount %}
-
-                                                    <td class="text-right">
-                                                        {% if expensePaticularAmount['inLine'] is defined and expensePaticularAmount['inLine'][entity.employee.id][entity.id][chartDetailsId][expenseChart.particularId] is defined and expensePaticularAmount['inLine'][entity.employee.id][entity.id][chartDetailsId][expenseChart.particularId]['path'] is not empty%}
-                                                            <a title="Attachment Available" href="{{ asset('uploads/expense/'~expensePaticularAmount['inLine'][entity.employee.id][entity.id][chartDetailsId][expenseChart.particularId]['path']) }}" download>
-                                                                {{ expensePaticularAmount['inLine'] is defined? expensePaticularAmount['inLine'][entity.employee.id][entity.id][chartDetailsId][expenseChart.particularId]['amount']|number_format(2,'.',','):'0.00' }}
-                                                            </a>
-                                                        {% else %}
-                                                            {{ amount|number_format(2,'.',',') }}
-                                                            {#                                                                    == {{ expenseParticularId }}#}
-                                                        {% endif %}
-                                                    </td>
-
-                                                {% endfor %}
-                                            {% endif %}
-                                        {% endfor %}
-                                    {% endif %}
-                                    {% set lineTotalMilage=0 %}
-                                    {% if typeOfVehicles is not empty %}
-                                        {% for typeOfVehicle in typeOfVehicles%}
-                                            <td class="text-right">
-                                                {% set conveyanceAmount = conveyanceDetailsTotalAmount['data'] is defined and conveyanceDetailsTotalAmount['data'][entity.id] is defined and conveyanceDetailsTotalAmount['data'][entity.id][typeOfVehicle.slug] is defined?conveyanceDetailsTotalAmount['data'][entity.id][typeOfVehicle.slug]['totalAmount']|number_format(2,'.',''):0 %}
-                                                {% if typeOfVehicle.slug=='motorcycle' %}
-                                                {% set totalMileageKm = conveyanceDetailsTotalAmount['data'] is defined and conveyanceDetailsTotalAmount['data'][entity.id] is defined and conveyanceDetailsTotalAmount['data'][entity.id][typeOfVehicle.slug] is defined?conveyanceDetailsTotalAmount['data'][entity.id][typeOfVehicle.slug]['totalMileage']:0 %}
-                                                    {% set totalMilage = totalMilage + totalMileageKm %}
-                                                    {% set lineTotalMilage = lineTotalMilage + totalMileageKm %}
-                                                {% endif %}
-
-                                                {% set lineTotal = lineTotal + conveyanceAmount %}
-{#                                                {% set totalLineTotal = totalLineTotal + conveyanceAmount %}#}
-
-                                                {{ conveyanceAmount|number_format(2,'.',',') }}
-                                            </td>
-                                        {% endfor %}
-                                    {% endif %}
-{#                                    {% set totalLineTotal = totalLineTotal + lineTotal %}#}
-
-                                    <td class="text-right">{{ lineTotalMilage }}</td>
-                                    <th class="text-right">{{ lineTotal|number_format(2,'.',',') }}</th>
-                                    <td class="hidden-print">
-{#                                        {% if expenseBatch.status<2 %}#}
-{#                                            <input type="hidden" name="expense[{{ entity.id }}]" value="{{ entity.id }}">#}
-                                            <div class="btn-group">
-                                                <a style="margin-right: 2px" class="btn btn-primary btn-mini white-font" href="{{ path('crm_expense_edit',{'id':entity.id}) }}"><i class="fa fa-edit"></i></a>
-                                                {#                                                <a class="btn btn-danger btn-mini white-font removeReload" href="javascript:" data-action="{{ path('crm_expense_delete',{'id':entity.id}) }}"><i class="fa fa-remove"></i></a>#}
-                                            </div>
-{#                                        {% endif %}#}
-                                    </td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                                <tfoot>
-                                    <tr class="text-right">
-{#                                        <th class="text-right hidden show-print" colspan="3">Total</th>#}
-                                        <th class="text-right hidden show-print" colspan="{{ 4 }}">Total</th>
-                                        <th class="text-right hidden-print" colspan="{{ 5 }}">Total</th>
                                         {% if areaWiseExpenseParticulars is defined and areaWiseExpenseParticulars['areaName'] is defined and areaWiseExpenseParticulars['areaName'] is iterable %}
                                             {% for areaId, expenseParticularAttribute in areaWiseExpenseParticulars['areaName'] %}
                                                 {% if areaWiseExpenseParticulars is defined and areaWiseExpenseParticulars['chartDetails'] is defined and areaWiseExpenseParticulars['chartDetails'][areaId] is defined and areaWiseExpenseParticulars['chartDetails'][areaId] is iterable %}
                                                     {% for chartDetailsId, expenseChart in areaWiseExpenseParticulars['chartDetails'][areaId] %}
-                                                        {% set totalAmount = expensePaticularAmount['grandTolalPerColumn'] is defined and expensePaticularAmount['grandTolalPerColumn'][chartDetailsId] is defined ?expensePaticularAmount['grandTolalPerColumn'][chartDetailsId][expenseChart.particularId]|arraySumColWise('amount')|number_format(2,'.',''):0 %}
-                                                        {% set totalLineTotal = totalLineTotal + totalAmount %}
-                                                        <td class="text-right">{{ totalAmount|number_format(2,'.',',') }}</td>
+                                                        {% set expenseParticularId = expensePaticularAmount['inLine'] is defined and expensePaticularAmount['inLine'][entity.employee.id][entity.id][chartDetailsId][expenseChart.particularId] is defined ? expensePaticularAmount['inLine'][entity.employee.id][entity.id][chartDetailsId][expenseChart.particularId]['expenseParticularId']:'' %}
+                                                        {% set amount = expensePaticularAmount['inLine'] is defined and expensePaticularAmount['inLine'][entity.employee.id][entity.id][chartDetailsId][expenseChart.particularId] is defined ? expensePaticularAmount['inLine'][entity.employee.id][entity.id][chartDetailsId][expenseChart.particularId]['amount']|number_format(2,'.',''):0 %}
+                                                        {% set lineTotal = lineTotal + amount %}
+
+                                                        <td class="text-right">
+                                                            {% if expensePaticularAmount['inLine'] is defined and expensePaticularAmount['inLine'][entity.employee.id][entity.id][chartDetailsId][expenseChart.particularId] is defined and expensePaticularAmount['inLine'][entity.employee.id][entity.id][chartDetailsId][expenseChart.particularId]['path'] is not empty%}
+                                                                <a title="Attachment Available" href="{{ asset('uploads/expense/'~expensePaticularAmount['inLine'][entity.employee.id][entity.id][chartDetailsId][expenseChart.particularId]['path']) }}" download>
+                                                                    {{ expensePaticularAmount['inLine'] is defined? expensePaticularAmount['inLine'][entity.employee.id][entity.id][chartDetailsId][expenseChart.particularId]['amount']|number_format(2,'.',','):'0.00' }}
+                                                                </a>
+                                                            {% else %}
+                                                                {{ amount|number_format(2,'.',',') }}
+                                                                {#                                                                    == {{ expenseParticularId }}#}
+                                                            {% endif %}
+                                                        </td>
+
                                                     {% endfor %}
                                                 {% endif %}
                                             {% endfor %}
                                         {% endif %}
+                                        {% set lineTotalMilage=0 %}
                                         {% if typeOfVehicles is not empty %}
                                             {% for typeOfVehicle in typeOfVehicles%}
                                                 <td class="text-right">
-                                                    {% set conveyanceTotalAmount = conveyanceDetailsTotalAmount['grandTotal'] is defined and conveyanceDetailsTotalAmount['grandTotal'][typeOfVehicle.slug] is defined ? conveyanceDetailsTotalAmount['grandTotal'][typeOfVehicle.slug]|arraySum()|number_format(2,'.',''):0 %}
+                                                    {% set conveyanceAmount = conveyanceDetailsTotalAmount['data'] is defined and conveyanceDetailsTotalAmount['data'][entity.id] is defined and conveyanceDetailsTotalAmount['data'][entity.id][typeOfVehicle.slug] is defined?conveyanceDetailsTotalAmount['data'][entity.id][typeOfVehicle.slug]['totalAmount']|number_format(2,'.',''):0 %}
+                                                    {% if typeOfVehicle.slug=='motorcycle' %}
+                                                        {% set totalMileageKm = conveyanceDetailsTotalAmount['data'] is defined and conveyanceDetailsTotalAmount['data'][entity.id] is defined and conveyanceDetailsTotalAmount['data'][entity.id][typeOfVehicle.slug] is defined?conveyanceDetailsTotalAmount['data'][entity.id][typeOfVehicle.slug]['totalMileage']:0 %}
+                                                        {% set totalMilage = totalMilage + totalMileageKm %}
+                                                        {% set lineTotalMilage = lineTotalMilage + totalMileageKm %}
+                                                    {% endif %}
 
-                                                    {% set totalLineTotal = totalLineTotal + conveyanceTotalAmount %}
+                                                    {% set lineTotal = lineTotal + conveyanceAmount %}
+                                                    {#                                                {% set totalLineTotal = totalLineTotal + conveyanceAmount %}#}
 
-                                                    {{ conveyanceTotalAmount|number_format(2,'.',',') }}
+                                                    {{ conveyanceAmount|number_format(2,'.',',') }}
                                                 </td>
                                             {% endfor %}
                                         {% endif %}
-                                        <td>{{ totalMilage }}</td>
-                                        <th>{{ totalLineTotal|number_format(2,'.',',') }}</th>
-                                        <th class="hidden-print"></th>
-                                    </tr>
+                                        {#                                    {% set totalLineTotal = totalLineTotal + lineTotal %}#}
 
-                                    <tr>
-                                        <th class="text-right hidden show-print" colspan="{{ 5 + (areaWiseExpenseParticulars['chartDetails'] is defined? areaWiseExpenseParticulars['chartDetails']|multiArrayLength: 0)+ typeOfVehicles|length }}">
-                                            Bike Miles Amount (Total reading {{ totalMilage }} KM, Per KM = {{ expenseBatch.perMilesAmount }} Tk.)
-                                        </th>
-                                        <th class="text-right hidden-print" colspan="{{ 6 + (areaWiseExpenseParticulars['chartDetails'] is defined? areaWiseExpenseParticulars['chartDetails']|multiArrayLength: 0)+ typeOfVehicles|length }}">
-                                            Bike Miles Amount (Total reading {{ totalMilage }} KM, Per KM = {{ expenseBatch.perMilesAmount }} Tk.)
-                                        </th>
-                                        <th class="text-right">{{ (totalMilage*3.5)|number_format(2) }}</th>
-                                        <th class="hidden-print"></th>
+                                        <td class="text-right">{{ lineTotalMilage }}</td>
+                                        <th class="text-right">{{ lineTotal|number_format(2,'.',',') }}</th>
+                                        <td class="hidden-print">
+                                            {#                                        {% if expenseBatch.status<2 %}#}
+                                            {#                                            <input type="hidden" name="expense[{{ entity.id }}]" value="{{ entity.id }}">#}
+                                            <div class="btn-group">
+                                                <a style="margin-right: 2px" class="btn btn-primary btn-mini white-font" href="{{ path('crm_expense_edit',{'id':entity.id}) }}"><i class="fa fa-edit"></i></a>
+                                                {#                                                <a class="btn btn-danger btn-mini white-font removeReload" href="javascript:" data-action="{{ path('crm_expense_delete',{'id':entity.id}) }}"><i class="fa fa-remove"></i></a>#}
+                                            </div>
+                                            {#                                        {% endif %}#}
+                                        </td>
                                     </tr>
+                                {% endfor %}
+                                </tbody>
+                                <tfoot>
+                                <tr class="text-right">
+                                    {#                                        <th class="text-right hidden show-print" colspan="3">Total</th>#}
+                                    <th class="text-right hidden show-print" colspan="{{ 4 }}">Total</th>
+                                    <th class="text-right hidden-print" colspan="{{ 5 }}">Total</th>
+                                    {% if areaWiseExpenseParticulars is defined and areaWiseExpenseParticulars['areaName'] is defined and areaWiseExpenseParticulars['areaName'] is iterable %}
+                                        {% for areaId, expenseParticularAttribute in areaWiseExpenseParticulars['areaName'] %}
+                                            {% if areaWiseExpenseParticulars is defined and areaWiseExpenseParticulars['chartDetails'] is defined and areaWiseExpenseParticulars['chartDetails'][areaId] is defined and areaWiseExpenseParticulars['chartDetails'][areaId] is iterable %}
+                                                {% for chartDetailsId, expenseChart in areaWiseExpenseParticulars['chartDetails'][areaId] %}
+                                                    {% set totalAmount = expensePaticularAmount['grandTolalPerColumn'] is defined and expensePaticularAmount['grandTolalPerColumn'][chartDetailsId] is defined ?expensePaticularAmount['grandTolalPerColumn'][chartDetailsId][expenseChart.particularId]|arraySumColWise('amount')|number_format(2,'.',''):0 %}
+                                                    {% set totalLineTotal = totalLineTotal + totalAmount %}
+                                                    <td class="text-right">{{ totalAmount|number_format(2,'.',',') }}</td>
+                                                {% endfor %}
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% endif %}
+                                    {% if typeOfVehicles is not empty %}
+                                        {% for typeOfVehicle in typeOfVehicles%}
+                                            <td class="text-right">
+                                                {% set conveyanceTotalAmount = conveyanceDetailsTotalAmount['grandTotal'] is defined and conveyanceDetailsTotalAmount['grandTotal'][typeOfVehicle.slug] is defined ? conveyanceDetailsTotalAmount['grandTotal'][typeOfVehicle.slug]|arraySum()|number_format(2,'.',''):0 %}
+
+                                                {% set totalLineTotal = totalLineTotal + conveyanceTotalAmount %}
+
+                                                {{ conveyanceTotalAmount|number_format(2,'.',',') }}
+                                            </td>
+                                        {% endfor %}
+                                    {% endif %}
+                                    <td>{{ totalMilage }}</td>
+                                    <th>{{ totalLineTotal|number_format(2,'.',',') }}</th>
+                                    <th class="hidden-print"></th>
+                                </tr>
+
+                                <tr>
+                                    <th class="text-right hidden show-print" colspan="{{ 5 + (areaWiseExpenseParticulars['chartDetails'] is defined? areaWiseExpenseParticulars['chartDetails']|multiArrayLength: 0)+ typeOfVehicles|length }}">
+                                        Bike Miles Amount (Total reading {{ totalMilage }} KM, Per KM = {{ expenseBatch.perMilesAmount }} Tk.)
+                                    </th>
+                                    <th class="text-right hidden-print" colspan="{{ 6 + (areaWiseExpenseParticulars['chartDetails'] is defined? areaWiseExpenseParticulars['chartDetails']|multiArrayLength: 0)+ typeOfVehicles|length }}">
+                                        Bike Miles Amount (Total reading {{ totalMilage }} KM, Per KM = {{ expenseBatch.perMilesAmount }} Tk.)
+                                    </th>
+                                    <th class="text-right">{{ (totalMilage*3.5)|number_format(2) }}</th>
+                                    <th class="hidden-print"></th>
+                                </tr>
 
                                 <tr>
                                     <th class="text-right hidden show-print" colspan="{{ 5 + (areaWiseExpenseParticulars['chartDetails'] is defined? areaWiseExpenseParticulars['chartDetails']|multiArrayLength: 0)+ typeOfVehicles|length }}">
@@ -251,7 +251,7 @@
                                         Grand Total
                                     </th>
 
-{#                                    <th colspan="{{ dailyExpenseParticularAttributes|length + typeOfVehicles|length }}" class="text-right hidden-print">Grand Total</th>#}
+                                    {#                                    <th colspan="{{ dailyExpenseParticularAttributes|length + typeOfVehicles|length }}" class="text-right hidden-print">Grand Total</th>#}
                                     <th class="text-right">{{ (totalLineTotal+(totalMilage*3.5))|number_format(2,'.',',') }}</th>
                                     <th class="hidden-print"></th>
                                 </tr>
@@ -483,102 +483,102 @@
 
                                         <div class="expense_body print-margin-top-100">
                                             <table data-cols-width="8,12,10,10,10,10,15" class="table table-bordered download-excel-car">
-                                            <thead>
+                                                <thead>
 
-                                            <tr>
-                                                <td colspan="7" class="text-center border-0" data-a-h="center">
-                                                    <h4>Nourish Poultry & Hatchery Ltd.</h4>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td colspan="7" class="text-center border-0" data-a-h="center">
-                                                    <h6>Uttara, Dhaka</h6>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td colspan="7" class="text-center border-0" data-a-h="center">
-                                                    <h6>{{ typeOfVehicle.name }}</h6>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td colspan="7" class="text-center border-0" data-a-h="center">
-                                                    <h6>Month: {{ expenseBatch.expenseMonth|date('F Y') }}</h6>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td class="border-0" colspan="3">
-                                                    <strong>Employee Id:</strong> {{ expenseBatch.employee.userId|default('') }}
-                                                </td>
-                                                <td class="border-0" colspan="3">
-                                                    <strong>Designation:</strong> {{ expenseBatch.employee.designation.name|default('') }}
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td class="border-0" colspan="4">
-                                                    <strong>Name:</strong> {{ expenseBatch.employee.name|default('') }}
-                                                </td>
-                                                <td class="border-0" colspan="4">
-                                                    <strong>Station:</strong> {{ expenseBatch.employee.address|default('') }}
-                                                </td>
-                                            </tr>
-
-                                            <tr>
-                                                <th>SL</th>
-                                                <th>Visiting Date</th>
-                                                <th>Fuel/Gas</th>
-                                                <th>Toll/Ferry</th>
-                                                <th>Parking</th>
-                                                <th>Others</th>
-                                                <th>Total Amount</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            {% for dateIndex, entity in transportTypeConveyanceDetails[typeOfVehicle.slug] %}
                                                 <tr>
-                                                    <td>{{ loop.index }}</td>
-                                                    <td>
-                                                        {{ entity.expenseDate|date('d-m-Y') }}
+                                                    <td colspan="7" class="text-center border-0" data-a-h="center">
+                                                        <h4>Nourish Poultry & Hatchery Ltd.</h4>
                                                     </td>
-                                                    <td>
-                                                        {{ entity.totalFuelBill|default('') }}
+                                                </tr>
+                                                <tr>
+                                                    <td colspan="7" class="text-center border-0" data-a-h="center">
+                                                        <h6>Uttara, Dhaka</h6>
                                                     </td>
-                                                    <td>
-                                                        {{ entity.totalTollBill|default('') }}
+                                                </tr>
+                                                <tr>
+                                                    <td colspan="7" class="text-center border-0" data-a-h="center">
+                                                        <h6>{{ typeOfVehicle.name }}</h6>
                                                     </td>
-                                                    <td>
-                                                        {{ entity.totalParkingBill|default('') }}
+                                                </tr>
+                                                <tr>
+                                                    <td colspan="7" class="text-center border-0" data-a-h="center">
+                                                        <h6>Month: {{ expenseBatch.expenseMonth|date('F Y') }}</h6>
                                                     </td>
-                                                    <td>
-                                                        {{ entity.totalOthersBill|default('') }}
+                                                </tr>
+                                                <tr>
+                                                    <td class="border-0" colspan="3">
+                                                        <strong>Employee Id:</strong> {{ expenseBatch.employee.userId|default('') }}
                                                     </td>
-                                                    <td>
-                                                        {{ entity.grandTotalAmount|default('') }}
+                                                    <td class="border-0" colspan="3">
+                                                        <strong>Designation:</strong> {{ expenseBatch.employee.designation.name|default('') }}
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="border-0" colspan="4">
+                                                        <strong>Name:</strong> {{ expenseBatch.employee.name|default('') }}
+                                                    </td>
+                                                    <td class="border-0" colspan="4">
+                                                        <strong>Station:</strong> {{ expenseBatch.employee.address|default('') }}
                                                     </td>
                                                 </tr>
 
-                                            {% endfor %}
-                                            </tbody>
-                                            <tfoot>
-                                            <tr>
-                                                <th class="text-right" colspan="2">Total</th>
-                                                <td>
-                                                    {{ transportTypeConveyanceDetails[typeOfVehicle.slug]|arraySumColWise('totalFuelBill')|number_format(2,'.','') }}
-                                                </td>
-                                                <td>
-                                                    {{ transportTypeConveyanceDetails[typeOfVehicle.slug]|arraySumColWise('totalTollBill')|number_format(2,'.','') }}
-                                                </td>
-                                                <td>
-                                                    {{ transportTypeConveyanceDetails[typeOfVehicle.slug]|arraySumColWise('totalParkingBill')|number_format(2,'.','') }}
-                                                </td>
-                                                <td>
-                                                    {{ transportTypeConveyanceDetails[typeOfVehicle.slug]|arraySumColWise('totalOthersBill')|number_format(2,'.','') }}
-                                                </td>
-                                                <td>
-                                                    {{ transportTypeConveyanceDetails[typeOfVehicle.slug]|arraySumColWise('grandTotalAmount')|number_format(2,'.','') }}
-                                                </td>
-                                            </tr>
-                                            </tfoot>
-                                        </table>
+                                                <tr>
+                                                    <th>SL</th>
+                                                    <th>Visiting Date</th>
+                                                    <th>Fuel/Gas</th>
+                                                    <th>Toll/Ferry</th>
+                                                    <th>Parking</th>
+                                                    <th>Others</th>
+                                                    <th>Total Amount</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                {% for dateIndex, entity in transportTypeConveyanceDetails[typeOfVehicle.slug] %}
+                                                    <tr>
+                                                        <td>{{ loop.index }}</td>
+                                                        <td>
+                                                            {{ entity.expenseDate|date('d-m-Y') }}
+                                                        </td>
+                                                        <td>
+                                                            {{ entity.totalFuelBill|default('') }}
+                                                        </td>
+                                                        <td>
+                                                            {{ entity.totalTollBill|default('') }}
+                                                        </td>
+                                                        <td>
+                                                            {{ entity.totalParkingBill|default('') }}
+                                                        </td>
+                                                        <td>
+                                                            {{ entity.totalOthersBill|default('') }}
+                                                        </td>
+                                                        <td>
+                                                            {{ entity.grandTotalAmount|default('') }}
+                                                        </td>
+                                                    </tr>
+
+                                                {% endfor %}
+                                                </tbody>
+                                                <tfoot>
+                                                <tr>
+                                                    <th class="text-right" colspan="2">Total</th>
+                                                    <td>
+                                                        {{ transportTypeConveyanceDetails[typeOfVehicle.slug]|arraySumColWise('totalFuelBill')|number_format(2,'.','') }}
+                                                    </td>
+                                                    <td>
+                                                        {{ transportTypeConveyanceDetails[typeOfVehicle.slug]|arraySumColWise('totalTollBill')|number_format(2,'.','') }}
+                                                    </td>
+                                                    <td>
+                                                        {{ transportTypeConveyanceDetails[typeOfVehicle.slug]|arraySumColWise('totalParkingBill')|number_format(2,'.','') }}
+                                                    </td>
+                                                    <td>
+                                                        {{ transportTypeConveyanceDetails[typeOfVehicle.slug]|arraySumColWise('totalOthersBill')|number_format(2,'.','') }}
+                                                    </td>
+                                                    <td>
+                                                        {{ transportTypeConveyanceDetails[typeOfVehicle.slug]|arraySumColWise('grandTotalAmount')|number_format(2,'.','') }}
+                                                    </td>
+                                                </tr>
+                                                </tfoot>
+                                            </table>
                                         </div>
 
                                         <table width="100%" class="no-bordered" style="margin-bottom: 20px">
@@ -615,102 +615,102 @@
                                             <button type="submit" name="excel" class="btn blue-bg btn-sm white-font pull-right hidden-print" title="Excel" value="excel" id="button-excel-office-car"><i class="fa fa-file-excel" aria-hidden="true"></i> {{ 'Excel'|trans }}</button>
                                             <div class="expense_body print-margin-top-100">
                                                 <table data-cols-width="8,12,10,10,10,10,15" class="table table-bordered download-excel-office-car">
-                                                <thead>
-                                                <tr>
-                                                    <td colspan="7" class="text-center border-0" data-a-h="center">
-                                                        <h4>Nourish Poultry & Hatchery Ltd.</h4>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td colspan="7" class="text-center border-0" data-a-h="center">
-                                                        <h6>Uttara, Dhaka</h6>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td colspan="7" class="text-center border-0" data-a-h="center">
-                                                        <h6>{{ typeOfVehicle.name }}</h6>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td colspan="7" class="text-center border-0" data-a-h="center">
-                                                        <h6>Month: {{ expenseBatch.expenseMonth|date('F Y') }}</h6>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="border-0" colspan="4">
-                                                        <strong>Employee Id:</strong> {{ expenseBatch.employee.userId|default('') }}
-                                                    </td>
-                                                    <td class="border-0" colspan="3">
-                                                        <strong>Designation:</strong> {{ expenseBatch.employee.designation.name|default('') }}
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="border-0" colspan="4">
-                                                        <strong>Name:</strong> {{ expenseBatch.employee.name|default('') }}
-                                                    </td>
-                                                    <td class="border-0" colspan="3">
-                                                        <strong>Station:</strong> {{ expenseBatch.employee.address|default('') }}
-                                                    </td>
-                                                </tr>
-
-                                                <tr>
-                                                    <th>SL</th>
-                                                    <th>Visiting Date</th>
-                                                    <th>Fuel/Gas</th>
-                                                    <th>Toll/Ferry</th>
-                                                    <th>Parking</th>
-                                                    <th>Others</th>
-                                                    <th>Total Amount</th>
-                                                </tr>
-                                                </thead>
-                                                <tbody>
-                                                {% for dateIndex, entity in transportTypeConveyanceDetails[typeOfVehicle.slug] %}
-                                                    {% if entity.grandTotalAmount is defined and entity.grandTotalAmount > 0 %}
+                                                    <thead>
                                                     <tr>
-                                                        <td>{{ loop.index }}</td>
-                                                        <td>
-                                                            {{ entity.expenseDate|date('d-m-Y') }}
-                                                        </td>
-                                                        <td>
-                                                            {{ entity.totalFuelBill|default('') }}
-                                                        </td>
-                                                        <td>
-                                                            {{ entity.totalTollBill|default('') }}
-                                                        </td>
-                                                        <td>
-                                                            {{ entity.totalParkingBill|default('') }}
-                                                        </td>
-                                                        <td>
-                                                            {{ entity.totalOthersBill|default('') }}
-                                                        </td>
-                                                        <td>
-                                                            {{ entity.grandTotalAmount|default('') }}
+                                                        <td colspan="7" class="text-center border-0" data-a-h="center">
+                                                            <h4>Nourish Poultry & Hatchery Ltd.</h4>
                                                         </td>
                                                     </tr>
-                                                    {% endif %}
-                                                {% endfor %}
-                                                </tbody>
-                                                <tfoot>
-                                                <tr>
-                                                    <th class="text-right" colspan="2" data-a-h="right">Total</th>
-                                                    <td>
-                                                        {{ transportTypeConveyanceDetails[typeOfVehicle.slug]|arraySumColWise('totalFuelBill')|number_format(2,'.','') }}
-                                                    </td>
-                                                    <td>
-                                                        {{ transportTypeConveyanceDetails[typeOfVehicle.slug]|arraySumColWise('totalTollBill')|number_format(2,'.','') }}
-                                                    </td>
-                                                    <td>
-                                                        {{ transportTypeConveyanceDetails[typeOfVehicle.slug]|arraySumColWise('totalParkingBill')|number_format(2,'.','') }}
-                                                    </td>
-                                                    <td>
-                                                        {{ transportTypeConveyanceDetails[typeOfVehicle.slug]|arraySumColWise('totalOthersBill')|number_format(2,'.','') }}
-                                                    </td>
-                                                    <td>
-                                                        {{ transportTypeConveyanceDetails[typeOfVehicle.slug]|arraySumColWise('grandTotalAmount')|number_format(2,'.','') }}
-                                                    </td>
-                                                </tr>
-                                                </tfoot>
-                                            </table>
+                                                    <tr>
+                                                        <td colspan="7" class="text-center border-0" data-a-h="center">
+                                                            <h6>Uttara, Dhaka</h6>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td colspan="7" class="text-center border-0" data-a-h="center">
+                                                            <h6>{{ typeOfVehicle.name }}</h6>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td colspan="7" class="text-center border-0" data-a-h="center">
+                                                            <h6>Month: {{ expenseBatch.expenseMonth|date('F Y') }}</h6>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="border-0" colspan="4">
+                                                            <strong>Employee Id:</strong> {{ expenseBatch.employee.userId|default('') }}
+                                                        </td>
+                                                        <td class="border-0" colspan="3">
+                                                            <strong>Designation:</strong> {{ expenseBatch.employee.designation.name|default('') }}
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="border-0" colspan="4">
+                                                            <strong>Name:</strong> {{ expenseBatch.employee.name|default('') }}
+                                                        </td>
+                                                        <td class="border-0" colspan="3">
+                                                            <strong>Station:</strong> {{ expenseBatch.employee.address|default('') }}
+                                                        </td>
+                                                    </tr>
+
+                                                    <tr>
+                                                        <th>SL</th>
+                                                        <th>Visiting Date</th>
+                                                        <th>Fuel/Gas</th>
+                                                        <th>Toll/Ferry</th>
+                                                        <th>Parking</th>
+                                                        <th>Others</th>
+                                                        <th>Total Amount</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    {% for dateIndex, entity in transportTypeConveyanceDetails[typeOfVehicle.slug] %}
+                                                        {% if entity.grandTotalAmount is defined and entity.grandTotalAmount > 0 %}
+                                                            <tr>
+                                                                <td>{{ loop.index }}</td>
+                                                                <td>
+                                                                    {{ entity.expenseDate|date('d-m-Y') }}
+                                                                </td>
+                                                                <td>
+                                                                    {{ entity.totalFuelBill|default('') }}
+                                                                </td>
+                                                                <td>
+                                                                    {{ entity.totalTollBill|default('') }}
+                                                                </td>
+                                                                <td>
+                                                                    {{ entity.totalParkingBill|default('') }}
+                                                                </td>
+                                                                <td>
+                                                                    {{ entity.totalOthersBill|default('') }}
+                                                                </td>
+                                                                <td>
+                                                                    {{ entity.grandTotalAmount|default('') }}
+                                                                </td>
+                                                            </tr>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                    </tbody>
+                                                    <tfoot>
+                                                    <tr>
+                                                        <th class="text-right" colspan="2" data-a-h="right">Total</th>
+                                                        <td>
+                                                            {{ transportTypeConveyanceDetails[typeOfVehicle.slug]|arraySumColWise('totalFuelBill')|number_format(2,'.','') }}
+                                                        </td>
+                                                        <td>
+                                                            {{ transportTypeConveyanceDetails[typeOfVehicle.slug]|arraySumColWise('totalTollBill')|number_format(2,'.','') }}
+                                                        </td>
+                                                        <td>
+                                                            {{ transportTypeConveyanceDetails[typeOfVehicle.slug]|arraySumColWise('totalParkingBill')|number_format(2,'.','') }}
+                                                        </td>
+                                                        <td>
+                                                            {{ transportTypeConveyanceDetails[typeOfVehicle.slug]|arraySumColWise('totalOthersBill')|number_format(2,'.','') }}
+                                                        </td>
+                                                        <td>
+                                                            {{ transportTypeConveyanceDetails[typeOfVehicle.slug]|arraySumColWise('grandTotalAmount')|number_format(2,'.','') }}
+                                                        </td>
+                                                    </tr>
+                                                    </tfoot>
+                                                </table>
                                             </div>
 
                                             <table width="100%" class="no-bordered" style="margin-bottom: 20px">
@@ -743,101 +743,101 @@
                                     {% if transportTypeConveyanceDetails[typeOfVehicle.slug] is defined and  transportTypeConveyanceDetails[typeOfVehicle.slug] is not empty  %}
                                         <div style="page-break-after: always "></div>
                                         <button type="submit" name="excel" class="btn blue-bg btn-sm white-font pull-right hidden-print" title="Excel" value="excel" id="button-excel-local-conveyance"><i class="fa fa-file-excel" aria-hidden="true"></i> {{ 'Excel'|trans }}</button>
-                                            <div class="expense_body print-margin-top-100">
-                                                <table data-cols-width="8,15,35,35,35,20" class="table table-bordered download-excel-local-conveyance">
-                                        <thead>
+                                        <div class="expense_body print-margin-top-100">
+                                            <table data-cols-width="8,15,35,35,35,20" class="table table-bordered download-excel-local-conveyance">
+                                                <thead>
 
-                                        <tr>
-                                            <td colspan="6" class="text-center border-0" data-a-h="center">
-                                                <h4>Nourish Poultry & Hatchery Ltd.</h4>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td colspan="6" class="text-center border-0" data-a-h="center">
-                                                <h6>Uttara, Dhaka</h6>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td colspan="6" class="text-center border-0" data-a-h="center">
-                                                <h6>{{ typeOfVehicle.name }}</h6>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td colspan="6" class="text-center border-0" data-a-h="center">
-                                                <h6>Month: {{ expenseBatch.expenseMonth|date('F Y') }}</h6>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="border-0" colspan="3">
-                                                <strong>Employee Id:</strong> {{ expenseBatch.employee.userId|default('') }}
-                                            </td>
-                                            <td class="border-0" colspan="3">
-                                                <strong>Designation:</strong> {{ expenseBatch.employee.designation.name|default('') }}
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="border-0" colspan="3">
-                                                <strong>Name:</strong> {{ expenseBatch.employee.name|default('') }}
-                                            </td>
-                                            <td class="border-0" colspan="3">
-                                                <strong>Station:</strong> {{ expenseBatch.employee.address|default('') }}
-                                            </td>
-                                        </tr>
+                                                <tr>
+                                                    <td colspan="6" class="text-center border-0" data-a-h="center">
+                                                        <h4>Nourish Poultry & Hatchery Ltd.</h4>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td colspan="6" class="text-center border-0" data-a-h="center">
+                                                        <h6>Uttara, Dhaka</h6>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td colspan="6" class="text-center border-0" data-a-h="center">
+                                                        <h6>{{ typeOfVehicle.name }}</h6>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td colspan="6" class="text-center border-0" data-a-h="center">
+                                                        <h6>Month: {{ expenseBatch.expenseMonth|date('F Y') }}</h6>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="border-0" colspan="3">
+                                                        <strong>Employee Id:</strong> {{ expenseBatch.employee.userId|default('') }}
+                                                    </td>
+                                                    <td class="border-0" colspan="3">
+                                                        <strong>Designation:</strong> {{ expenseBatch.employee.designation.name|default('') }}
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="border-0" colspan="3">
+                                                        <strong>Name:</strong> {{ expenseBatch.employee.name|default('') }}
+                                                    </td>
+                                                    <td class="border-0" colspan="3">
+                                                        <strong>Station:</strong> {{ expenseBatch.employee.address|default('') }}
+                                                    </td>
+                                                </tr>
 
-                                        <tr>
-                                            <th>SL</th>
-                                            <th>Visiting Date</th>
-                                            <th>Visiting Area</th>
-                                            <th>All Transports Used <br>
-                                                (Comma separated)</th>
-                                            <th>All Amounts (Details)<br>
-                                                (Comma Separated)</th>
-                                            <th>Amount (TK.)</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        {% for dateIndex, entity in transportTypeConveyanceDetails[typeOfVehicle.slug] %}
-                                            <tr>
-                                                <td>{{ loop.index }}</td>
-                                                <td>
-                                                    {{ entity.expenseDate|date('d-m-Y') }}
-                                                </td>
-                                                <td>
-                                                    <ol style="margin-bottom: 2px; padding-left: 20px">
-                                                        {% if entity.destinationConcat is not empty %}
-                                                            {% for destinations in entity.destinationConcat %}
-                                                                {% for destination in destinations %}
-                                                                    <li>{{ 'From: '~ destination['destinationStart']|default('') }} {{ ' To: '~ destination['destinationEnd']|default('')}}</li>
-                                                                {% endfor %}
-                                                            {% endfor %}
-                                                        {% endif %}
+                                                <tr>
+                                                    <th>SL</th>
+                                                    <th>Visiting Date</th>
+                                                    <th>Visiting Area</th>
+                                                    <th>All Transports Used <br>
+                                                        (Comma separated)</th>
+                                                    <th>All Amounts (Details)<br>
+                                                        (Comma Separated)</th>
+                                                    <th>Amount (TK.)</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                {% for dateIndex, entity in transportTypeConveyanceDetails[typeOfVehicle.slug] %}
+                                                    <tr>
+                                                        <td>{{ loop.index }}</td>
+                                                        <td>
+                                                            {{ entity.expenseDate|date('d-m-Y') }}
+                                                        </td>
+                                                        <td>
+                                                            <ol style="margin-bottom: 2px; padding-left: 20px">
+                                                                {% if entity.destinationConcat is not empty %}
+                                                                    {% for destinations in entity.destinationConcat %}
+                                                                        {% for destination in destinations %}
+                                                                            <li>{{ 'From: '~ destination['destinationStart']|default('') }} {{ ' To: '~ destination['destinationEnd']|default('')}}</li>
+                                                                        {% endfor %}
+                                                                    {% endfor %}
+                                                                {% endif %}
 
-                                                    </ol>
+                                                            </ol>
 
-                                                </td>
-                                                <td>
-                                                    {{ entity.detailsConcat|default('') }}
-                                                </td>
-                                                <td>
-                                                    {{ entity.totalAmountConcat|default('') }}
-                                                </td>
-                                                <td>
-                                                    {{ entity.grandTotalAmount|default('') }}
-                                                </td>
-                                            </tr>
+                                                        </td>
+                                                        <td>
+                                                            {{ entity.detailsConcat|default('') }}
+                                                        </td>
+                                                        <td>
+                                                            {{ entity.totalAmountConcat|default('') }}
+                                                        </td>
+                                                        <td>
+                                                            {{ entity.grandTotalAmount|default('') }}
+                                                        </td>
+                                                    </tr>
 
-                                        {% endfor %}
-                                        </tbody>
-                                        <tfoot>
-                                        <tr>
-                                            <th class="text-right" colspan="5">Total</th>
-                                            <td>
-                                                {{ transportTypeConveyanceDetails[typeOfVehicle.slug]|arraySumColWise('grandTotalAmount')|number_format(2,'.','') }}
-                                            </td>
-                                        </tr>
-                                        </tfoot>
-                                    </table>
-                                            </div>
+                                                {% endfor %}
+                                                </tbody>
+                                                <tfoot>
+                                                <tr>
+                                                    <th class="text-right" colspan="5">Total</th>
+                                                    <td>
+                                                        {{ transportTypeConveyanceDetails[typeOfVehicle.slug]|arraySumColWise('grandTotalAmount')|number_format(2,'.','') }}
+                                                    </td>
+                                                </tr>
+                                                </tfoot>
+                                            </table>
+                                        </div>
 
                                         <table width="100%" class="no-bordered" style="margin-bottom: 20px">
                                             <tr>
@@ -871,72 +871,82 @@
                                         <button type="submit" name="excel" class="btn blue-bg btn-sm white-font pull-right hidden-print" title="Excel" value="excel" id="button-excel-others"><i class="fa fa-file-excel" aria-hidden="true"></i> {{ 'Excel'|trans }}</button>
                                         <div class="expense_body print-margin-top-100">
                                             <table data-cols-width="8,35,35,35,20" class="table table-bordered download-excel-others">
-                                            <thead>
-                                            <tr>
-                                                <td colspan="5" class="text-center border-0" data-a-h="center">
-                                                    <h4>Nourish Poultry & Hatchery Ltd.</h4>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td colspan="5" class="text-center border-0" data-a-h="center">
-                                                    <h6>Uttara, Dhaka</h6>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td colspan="5" class="text-center border-0" data-a-h="center">
-                                                    <h6>{{ typeOfVehicle.name }} bill supportings</h6>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td colspan="5" class="text-center border-0" data-a-h="center">
-                                                    <h6>Month: {{ expenseBatch.expenseMonth|date('F Y') }}</h6>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td class="border-0" colspan="3">
-                                                    <strong>Employee Id:</strong> {{ expenseBatch.employee.userId|default('') }}
-                                                </td>
-                                                <td class="border-0" colspan="2">
-                                                    <strong>Designation:</strong> {{ expenseBatch.employee.designation.name|default('') }}
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td class="border-0" colspan="3">
-                                                    <strong>Name:</strong> {{ expenseBatch.employee.name|default('') }}
-                                                </td>
-                                                <td class="border-0" colspan="2">
-                                                    <strong>Station:</strong> {{ expenseBatch.employee.address|default('') }}
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <th>SL</th>
-                                                <th>Visiting Date</th>
-                                                <th>Particulars</th>
-                                                <th>Particulars (Amount) </th>
-                                                <th>Total Amount</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            {% for dateIndex, entity in transportTypeConveyanceDetails[typeOfVehicle.slug] %}
+                                                <thead>
                                                 <tr>
-                                                    <td>{{ loop.index }}</td>
-                                                    <td>
-                                                        {{ entity.expenseDate|date('d-m-Y') }}
-                                                    </td>
-                                                    <td>
-                                                        {{ entity.detailsConcat|default('') }}
-                                                    </td>
-                                                    <td>
-                                                        {{ entity.totalAmountConcat|default('') }}
-                                                    </td>
-                                                    <td>
-                                                        {{ entity.grandTotalAmount|default('') }}
+                                                    <td colspan="5" class="text-center border-0" data-a-h="center">
+                                                        <h4>Nourish Poultry & Hatchery Ltd.</h4>
                                                     </td>
                                                 </tr>
+                                                <tr>
+                                                    <td colspan="5" class="text-center border-0" data-a-h="center">
+                                                        <h6>Uttara, Dhaka</h6>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td colspan="5" class="text-center border-0" data-a-h="center">
+                                                        <h6>{{ typeOfVehicle.name }} bill supportings</h6>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td colspan="5" class="text-center border-0" data-a-h="center">
+                                                        <h6>Month: {{ expenseBatch.expenseMonth|date('F Y') }}</h6>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="border-0" colspan="3">
+                                                        <strong>Employee Id:</strong> {{ expenseBatch.employee.userId|default('') }}
+                                                    </td>
+                                                    <td class="border-0" colspan="2">
+                                                        <strong>Designation:</strong> {{ expenseBatch.employee.designation.name|default('') }}
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="border-0" colspan="3">
+                                                        <strong>Name:</strong> {{ expenseBatch.employee.name|default('') }}
+                                                    </td>
+                                                    <td class="border-0" colspan="2">
+                                                        <strong>Station:</strong> {{ expenseBatch.employee.address|default('') }}
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <th>SL</th>
+                                                    <th>Visiting Date</th>
+                                                    <th>Particulars</th>
+                                                    <th>Particulars (Amount) </th>
+                                                    <th>Total Amount</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                {% for dateIndex, entity in transportTypeConveyanceDetails[typeOfVehicle.slug] %}
+                                                    <tr>
+                                                        <td>{{ loop.index }}</td>
+                                                        <td>
+                                                            {{ entity.expenseDate|date('d-m-Y') }}
+                                                        </td>
+                                                        <td>
+                                                            {{ entity.detailsConcat|default('') }}
+                                                        </td>
+                                                        <td>
+                                                            {{ entity.totalAmountConcat|default('') }}
+                                                        </td>
+                                                        <td>
+                                                            {{ entity.grandTotalAmount|default('') }}
+                                                        </td>
+                                                    </tr>
 
-                                            {% endfor %}
-                                            </tbody>
-                                        </table>
+                                                {% endfor %}
+
+
+                                                </tbody>
+                                                <tfoot>
+                                                <tr>
+                                                    <th class="text-right" colspan="4" data-a-h="right">Total</th>
+                                                    <td>
+                                                        {{ transportTypeConveyanceDetails[typeOfVehicle.slug]|arraySumColWise('grandTotalAmount')|number_format(2,'.','') }}
+                                                    </td>
+                                                </tr>
+                                                </tfoot>
+                                            </table>
                                         </div>
                                         <table width="100%" class="no-bordered" style="margin-bottom: 20px">
                                             <tr>
@@ -1004,13 +1014,13 @@
                  min-height: 1250px!important;
              }
              .print-margin-top-100{
-                margin-top: 100px;
+                 margin-top: 100px;
              }
              .print-margin-top-80{
-                margin-top: 80px;
+                 margin-top: 80px;
              }
              .print-margin-top-50{
-                margin-top: 50px;
+                 margin-top: 50px;
              }
          }
      </style>
