@@ -4337,7 +4337,13 @@ class ApiController extends AbstractController
                 if($expenseIdForUpdate!=''){
                     $existingExpense = $this->getDoctrine()->getRepository(Expense::class)->find($expenseIdForUpdate);
                 }elseif ($expenseIdForUpdate=='' && $employeeId!='' && $vistingDate!=''){
-                    $existingExpense = $this->getDoctrine()->getRepository(Expense::class)->findOneBy(['employee' => $employee, 'expenseDate' => new \DateTimeImmutable($vistingDate)]);
+//                    $existingExpense = $this->getDoctrine()->getRepository(Expense::class)->findOneBy(['employee' => $employee, 'expenseDate' => new \DateTimeImmutable($vistingDate)]);
+                    $dailyExpenseCheck=$this->getDoctrine()->getRepository(Expense::class)->getExpenseByEmployeeAndDate( $employeeId, $vistingDate);
+                    if($dailyExpenseCheck && sizeof($dailyExpenseCheck)>0){
+                    $existingExpense = $this->getDoctrine()->getRepository(Expense::class)->findOneBy(['employee' => $employee, 'id'=>$dailyExpenseCheck[0]['id']]);
+                    }else{
+                        $existingExpense = $this->getDoctrine()->getRepository(Expense::class)->findOneBy(['employee' => $employee, 'expenseDate' => new \DateTimeImmutable($vistingDate)]);
+                    }
                 }
                 if ($existingExpense) {
                     $expense = $existingExpense;
