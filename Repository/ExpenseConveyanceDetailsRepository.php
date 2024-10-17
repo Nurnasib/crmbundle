@@ -222,7 +222,7 @@ class ExpenseConveyanceDetailsRepository extends EntityRepository
                 $date = $result['expenseDate']->format('Y-m-d');
 
                 if($result['transportType'] == 'motorcycle'){
-                    if($result['meterReadingFromConcat']!=''){
+                    if($result['meterReadingFromConcat']!=""){
                         $returnArray[$result['transportType']][$date] = $result;
                     }
                 }
