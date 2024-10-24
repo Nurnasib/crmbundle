@@ -23,7 +23,21 @@
     {% if is_granted('ROLE_DEVELOPER') or is_granted('ROLE_CRM_POULTRY_ADMIN') or is_granted('ROLE_CRM_CATTLE_ADMIN') or is_granted('ROLE_CRM_AQUA_ADMIN') or is_granted('ROLE_CRM_SALES_MARKETING_ADMIN') %}
         <li><a class="dropdown-item" href="{{ path('crm_expense_particular_type') }}"><i
                         class="feather icon-edit"></i>{{ 'Particular Type'|trans }}</a></li>
-        <li><a class="dropdown-item" href="{{ path('crm_expense_report') }}"><i
-                                class="feather icon-edit"></i>{{ 'Expense Report'|trans }}</a></li>
+
+        <li>
+
+            <a class="dropdown-item" href="javascript:">{{ 'Expense Report'|trans }}</a>
+            <ul>
+                <li>
+                    <a class="dropdown-item" href="{{ path('crm_expense_report') }}"><i
+                                class="feather icon-edit"></i>{{ 'Company Wise'|trans }}</a>
+                </li>
+                <li>
+                    <a class="dropdown-item" href="{{ path('crm_expense_line_manager_wise_summery') }}"><i
+                                class="feather icon-edit"></i>{{ 'Line Manager Wise'|trans }}</a>
+                </li>
+            </ul>
+
+        </li>
     {% endif %}
 </ul>

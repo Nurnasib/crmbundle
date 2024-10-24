@@ -30,7 +30,7 @@ class ExpenseChartRepository extends EntityRepository
         $qb->join('expenseChartDetail.particular','particular');
 
         $qb->where('designation.id =:designation')->setParameter('designation',$designationId);
-        
+
         $qb->orderBy('expenseChartDetail.id', 'DESC');
 
         $results= $qb->getQuery()->getArrayResult();
