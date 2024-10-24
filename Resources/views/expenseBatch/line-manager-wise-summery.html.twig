@@ -1,0 +1,438 @@
+{% extends 'admin/layout.html.twig' %}
+{% block body %}
+
+    <div class="pcoded-inner-content">
+        <!-- [ breadcrumb ] start -->
+        <div class="page-header hidden-print">
+            <div class="page-block">
+                <div class="row align-items-center">
+                    <ul class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/"><i class="feather icon-home"></i></a></li>
+                        <li class="breadcrumb-item"> <a href="javascript:">{{ 'Summery'|trans }}</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!-- [ breadcrumb ] end -->
+        <!-- [ Main Content ] start -->
+        <div class="row hidden-print">
+            <div class="card">
+                <div class="card-header">
+                    <h5>{{ 'Line Manage Wise Expense Summery'|trans }}</h5>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="card">
+                <div class="portlet box">
+                    <div class="portlet-title hidden-print">
+                        <div class="caption ">{{'Monthly Expense Details'|trans}} </div>
+                        <div style="float: right; padding-right: 15px" class="caption hidden-print">
+                            <div class="pull-right">
+                                <button class="btn btn-info btn-sm" id="windowPrint"><i class="fa fa-print"></i> </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row hidden-print">
+                        <div class="col-md-12">
+                            {{ form_start(form, {'attr' : { 'class': 'sales_marketing_search_form' } }) }}
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        {{ form_widget(form.lineManager, {'attr': {'required': false }, 'required': false}) }}
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        {{ form_widget(form.fromDate, {'attr': {'required': true }, 'required': true}) }}
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        {{ form_widget(form.toDate, {'attr': {'required': true }, 'required': true}) }}
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    {{ form_widget(form._token) }}
+                                    <button type="submit" name="search" class="btn btn-primary btn-sm" title="Search" value="search"><i class="fa fa-search" aria-hidden="true"></i></button>
+                                </div>
+                            </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="portlet-body form expense_body" id="expense_form_section">
+
+                        <div style="text-align: center">
+                            <h4>Nourish Poultry & Hatchery Ltd.</h4>
+                            <h6>Uttara, Dhaka</h6>
+                            <h6>Monthly TA DA Bill</h6>
+{#                            <h6>Month: {{ expenseBatch.expenseMonth|date('F Y') }}</h6>#}
+                        </div>
+                        {% if filterBy is defined and filterBy is not empty %}
+                        <div class="row mb-2">
+                            <div class="col-md-11">
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h6>Line Manager: {{ filterBy.lineManager is defined ? filterBy.lineManager.name:'' }}</h6>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <h6>From: {{ filterBy.fromDate is defined ? filterBy.fromDate|date('F-Y'):'' }}</h6>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <h6>To: {{ filterBy.toDate is defined ? filterBy.toDate|date('F-Y'):'' }}</h6>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="col-md-1">
+                                <div style="float: right; padding-right: 15px" class="caption hidden-print">
+                                    <div class="pull-right">
+                                        <button type="submit" name="excel" class="btn blue-bg btn-sm white-font pull-right hidden-print" title="Excel" value="excel" id="button-excel-office-car"><i class="fa fa-file-excel" aria-hidden="true"></i> {{ 'Excel'|trans }}</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        {% endif %}
+
+                        <table class="table table-bordered download-excel-office-car">
+                            <thead>
+                            <tr>
+                                <th class="text-center" rowspan="2" style="width: 10%" scope="col">Line Manager</th>
+                                <th rowspan="2" style="width: 3%" scope="col">S/N</th>
+                                <th class="text-center" colspan="4" scope="col">{{ 'Employee'|trans }}</th>
+                                <th rowspan="2">Month</th>
+                                {% if areaWiseExpenseParticulars is defined and areaWiseExpenseParticulars['areaName'] is defined and areaWiseExpenseParticulars['areaName'] is iterable %}
+                                    {% for areaId, areaName in areaWiseExpenseParticulars['areaName'] %}
+                                        <th rowspan="2">{{ areaName }}</th>
+                                    {% endfor %}
+                                {% endif %}
+
+
+                                {% if areaWiseExpenseParticulars is defined and areaWiseExpenseParticulars['particulars'] is defined and areaWiseExpenseParticulars['particulars'] is iterable %}
+                                    {% for particularId, particularName in areaWiseExpenseParticulars['particulars'] %}
+                                        <th rowspan="2">{{ particularName }}</th>
+                                    {% endfor %}
+                                {% endif %}
+
+                                {% if typeOfVehicles is not empty %}
+                                    {% for typeOfVehicle in typeOfVehicles%}
+                                        {% if typeOfVehicle.slug=='car' %}
+                                            <th class="text-center" colspan="4">{{ typeOfVehicle.name }}</th>
+                                        {% elseif typeOfVehicle.slug=='motorcycle' %}
+                                            <th class="text-center" colspan="5">{{ typeOfVehicle.name }}</th>
+                                        {% else %}
+                                            <th rowspan="2">{{ typeOfVehicle.name }}</th>
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endif %}
+
+                                <th rowspan="2" title="Total">Fuel Cost</th>
+                                <th rowspan="2" title="Total">Total Milage (Km)</th>
+                                <th rowspan="2" title="Total">Total (TK.)</th>
+                            </tr>
+                            <tr>
+                                <th style="width: 5%" scope="col">{{ 'Id'|trans }}</th>
+                                <th style="width: 10%" scope="col">{{ 'Name'|trans }}</th>
+                                <th style="width: 10%" scope="col">{{ 'Design'|trans }}</th>
+                                <th scope="col">{{ 'Vehicle Type'|trans }}</th>
+                                {#{% if areaWiseExpenseParticulars is defined and areaWiseExpenseParticulars['areaName'] is defined and areaWiseExpenseParticulars['areaName'] is iterable %}
+                                    {% for areaId, expenseParticularAttribute in areaWiseExpenseParticulars['areaName'] %}
+                                        {% if areaWiseExpenseParticulars is defined and areaWiseExpenseParticulars['chartDetails'] is defined and areaWiseExpenseParticulars['chartDetails'][areaId] is defined and areaWiseExpenseParticulars['chartDetails'][areaId] is iterable %}
+                                            {% for expenseChart in areaWiseExpenseParticulars['chartDetails'][areaId] %}
+                                                <th class="text-center" scope="col">{{ expenseChart.particularName }}</th>
+                                            {% endfor %}
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endif %}#}
+
+                                {% if typeOfVehicles is not empty %}
+                                    {% for typeOfVehicle in typeOfVehicles%}
+                                        {% if typeOfVehicle.slug=='car' %}
+                                            <th>Fuel/Gas</th>
+                                            <th>Parking</th>
+                                            <th>Toll Bill</th>
+                                            <th>Other Bill</th>
+                                        {% elseif typeOfVehicle.slug=='motorcycle' %}
+                                            <th>Fuel</th>
+                                            <th>Toll Bill</th>
+                                            <th>Mobil</th>
+                                            <th>Maintence</th>
+                                            <th>Servicing</th>
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endif %}
+                            </tr>
+                            </thead>
+
+                            <tbody>
+
+                            {% if employees is defined and  employees is not empty %}
+                                {% for lineManagerId, lineManagerData in employees %}
+                                    {% if lineManagerData is not empty %}
+                                        {% for index, employee in lineManagerData %}
+                                            {% for monthKey, monthName in months %}
+                                                {% set lineTotal = 0 %}
+
+                                            <tr>
+{#                                                {% if index==0 %}#}
+                                                <td>{{ employee.lineManagerName }}</td>
+{#                                                {% endif %}#}
+                                                {#                                            <td>{{ employee.lineManagerName }} == {{ lineManagerData|length }}</td>#}
+                                                <td>{{ index+1 }}</td>
+                                                <td>{{ employee.userId }}</td>
+                                                <td>{{ employee.name }}</td>
+                                                <td>{{ employee.designationName|default('') }}</td>
+                                                <td>{{ employee.typeOfVehicle|default('')|capitalize }}</td>
+                                                <td>{{ monthName }}</td>
+
+                                                {% if areaWiseExpenseParticulars is defined and areaWiseExpenseParticulars['areaName'] is defined and areaWiseExpenseParticulars['areaName'] is iterable %}
+                                                    {% for areaId, areaName in areaWiseExpenseParticulars['areaName'] %}
+                                                        {% set totalDays = expenseDays[employee.id][monthKey][areaId] is defined ? expenseDays[employee.id][monthKey][areaId]['totalDays']:0 %}
+                                                        <td>{{ totalDays }}</td>
+                                                    {% endfor %}
+                                                {% endif %}
+
+                                                {% if areaWiseExpenseParticulars is defined and areaWiseExpenseParticulars['particulars'] is defined and areaWiseExpenseParticulars['particulars'] is iterable %}
+                                                    {% for particularId, particularName in areaWiseExpenseParticulars['particulars'] %}
+                                                        {% set amount = expensePaticularAmount[employee.id][monthKey][particularId] is defined ? expensePaticularAmount[employee.id][monthKey][particularId]['totalAmount']|number_format(2,'.',''):0 %}
+                                                        {% set lineTotal = lineTotal + amount %}
+
+                                                        <td class="text-right">
+                                                            {{ amount }}
+                                                        </td>
+                                                    {% endfor %}
+                                                {% endif %}
+
+                                                {% set lineTotalMilage=0 %}
+                                                {% if typeOfVehicles is not empty %}
+                                                    {% for typeOfVehicle in typeOfVehicles%}
+                                                        {% set conveyanceAmount = conveyanceDetailsTotalAmount[employee.id] is defined and conveyanceDetailsTotalAmount[employee.id][monthKey][typeOfVehicle.slug] is defined?conveyanceDetailsTotalAmount[employee.id][monthKey][typeOfVehicle.slug]['totalAmount']:0 %}
+                                                        {% set totalFuelBill = conveyanceDetailsTotalAmount[employee.id] is defined and conveyanceDetailsTotalAmount[employee.id][monthKey][typeOfVehicle.slug] is defined?conveyanceDetailsTotalAmount[employee.id][monthKey][typeOfVehicle.slug]['totalFuelBill']:0 %}
+                                                        {% set totalMobileBill = conveyanceDetailsTotalAmount[employee.id] is defined and conveyanceDetailsTotalAmount[employee.id][monthKey][typeOfVehicle.slug] is defined?conveyanceDetailsTotalAmount[employee.id][monthKey][typeOfVehicle.slug]['totalMobileBill']:0 %}
+                                                        {% set totalMaintenanceBill = conveyanceDetailsTotalAmount[employee.id] is defined and conveyanceDetailsTotalAmount[employee.id][monthKey][typeOfVehicle.slug] is defined?conveyanceDetailsTotalAmount[employee.id][monthKey][typeOfVehicle.slug]['totalMaintenanceBill']:0 %}
+                                                        {% set totalServicingBill = conveyanceDetailsTotalAmount[employee.id] is defined and conveyanceDetailsTotalAmount[employee.id][monthKey][typeOfVehicle.slug] is defined?conveyanceDetailsTotalAmount[employee.id][monthKey][typeOfVehicle.slug]['totalServicingBill']:0 %}
+                                                        {% set totalParkingBill = conveyanceDetailsTotalAmount[employee.id] is defined and conveyanceDetailsTotalAmount[employee.id][monthKey][typeOfVehicle.slug] is defined?conveyanceDetailsTotalAmount[employee.id][monthKey][typeOfVehicle.slug]['totalParkingBill']:0 %}
+                                                        {% set totalTollBill = conveyanceDetailsTotalAmount[employee.id] is defined and conveyanceDetailsTotalAmount[employee.id][monthKey][typeOfVehicle.slug] is defined?conveyanceDetailsTotalAmount[employee.id][monthKey][typeOfVehicle.slug]['totalTollBill']:0 %}
+                                                        {% set totalOthersBill = conveyanceDetailsTotalAmount[employee.id] is defined and conveyanceDetailsTotalAmount[employee.id][monthKey][typeOfVehicle.slug] is defined?conveyanceDetailsTotalAmount[employee.id][monthKey][typeOfVehicle.slug]['totalOthersBill']:0 %}
+                                                        {% if typeOfVehicle.slug=='motorcycle' %}
+                                                            {% set totalMileageKm = conveyanceDetailsTotalAmount[employee.id] is defined and conveyanceDetailsTotalAmount[employee.id][monthKey][typeOfVehicle.slug] is defined?conveyanceDetailsTotalAmount[employee.id][monthKey][typeOfVehicle.slug]['totalMotorcycleMileage']:0 %}
+                                                            {% set lineTotalMilage = totalMileageKm %}
+                                                        {% endif %}
+                                                        {% set lineTotal = lineTotal + conveyanceAmount %}
+                                                        {% if typeOfVehicle.slug=='car' %}
+                                                            <td>{{ totalFuelBill|number_format(2, '.', '') }}</td>
+                                                            <td>{{ totalParkingBill|number_format(2, '.', '') }}</td>
+                                                            <td>{{ totalTollBill|number_format(2, '.', '') }}</td>
+                                                            <td>{{ totalOthersBill|number_format(2, '.', '') }}</td>
+                                                        {% elseif typeOfVehicle.slug=='motorcycle' %}
+                                                            <td>{{ totalFuelBill|number_format(2, '.', '') }}</td>
+                                                            <td>{{ totalTollBill|number_format(2, '.', '') }}</td>
+                                                            <td>{{ totalMobileBill|number_format(2, '.', '') }}</td>
+                                                            <td>{{ totalMaintenanceBill|number_format(2, '.', '') }}</td>
+                                                            <td>{{ totalServicingBill|number_format(2, '.', '') }}</td>
+                                                        {% else %}
+                                                                <td class="text-right">{{ conveyanceAmount|number_format(2,'.','') }}</td>
+                                                        {% endif %}
+
+                                                    {% endfor %}
+                                                {% endif %}
+                                                <td class="text-right">
+                                                    {{ (lineTotalMilage*3.5)|number_format(2,'.',',') }}
+                                                    {% set lineTotal = lineTotal + (lineTotalMilage*3.5) %}
+                                                </td>
+                                                <td class="text-right">{{ lineTotalMilage }}</td>
+                                                <td class="text-right">
+                                                    {{ lineTotal|number_format(2,'.',',') }}
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        {% endfor %}
+                                    {% endif %}
+                                {% endfor %}
+                            {% else %}
+
+                                <tr>
+                                    <td colspan="8" class="text-center">No data found</td>
+                                </tr>
+                            {% endif %}
+
+                            </tbody>
+
+                        </table>
+
+
+
+                    </div>
+
+                </div>
+
+                <style>
+                    #expense_form_vehicle .checkbox{
+                        width: unset;
+                        padding-right: 30px;
+                    }
+                </style>
+            </div>
+        </div>
+        <!-- [ Main Content ] end -->
+    </div>
+{% endblock %}
+ {% block cssBlock %}
+     <link rel="stylesheet" href="{{ asset('assets/module/css/app.css') }}">
+     <style>
+         .navigation nav .pagination{
+             float: right!important;
+         }
+         .hide-calendar .ui-datepicker-calendar{
+             display: none;
+         }
+         @media print {
+             .border-0 {
+                 border: 0!important;
+             }
+             .hidden-print {
+                 display: none!important;
+             }
+             .show-print {
+                 display: table-cell!important;
+             }
+             .expense_body{
+                 min-height: 1250px!important;
+             }
+             .print-margin-top-100{
+                margin-top: 100px;
+             }
+             .print-margin-top-80{
+                margin-top: 80px;
+             }
+             .print-margin-top-50{
+                margin-top: 50px;
+             }
+         }
+     </style>
+ {% endblock  %}
+{% block javascripts %}
+    {{ parent() }}
+    <script type="application/javascript" src="{{ asset('assets/module/js/app.js') }}"></script>
+    <script src="{{ asset('assets/js/tableToExcel.js') }}"></script>
+
+    <script>
+
+        $('.monthYearPicker').datepicker({
+            changeMonth: true,
+            changeYear: true,
+            dateFormat: 'mm-yy',
+            autoClose:true,
+            onClose: function() {
+                $(this).datepicker('widget').removeClass('hide-calendar');
+                $("#ui-datepicker-div").removeClass('monthYearPicker');
+                var iMonth = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
+                var iYear = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
+                $(this).datepicker('setDate', new Date(iYear, iMonth, 1));
+            },
+
+            beforeShow: function(input) {
+                $(input).datepicker("widget").addClass('hide-calendar');
+                $("#ui-datepicker-div").addClass('monthYearPicker');
+                // console.log($(this).val());
+                if ((selDate = $(this).val()).length > 0)
+                {
+                    iYear = selDate.substring(selDate.length - 4, selDate.length);
+                    iMonth = selDate.substring(0, 2);
+                    // iMonth = jQuery.inArray(selDate.substring(1, 2), $(this).datepicker('option', 'monthNames'));
+                    // console.log(iMonth);
+                    iMonth = iMonth-1;
+                    $(this).datepicker('option', 'defaultDate', new Date(iYear, iMonth, 1));
+                    $(this).datepicker('setDate', new Date(iYear, iMonth, 1));
+                }
+            }
+        });
+
+        $('#windowPrint').on('click', function () {
+            window.print();
+        })
+
+
+        let buttonOfficeCar = document.querySelector("#button-excel-office-car");
+
+        if(buttonOfficeCar){
+            buttonOfficeCar.addEventListener("click", e => {
+                e.preventDefault();
+                let table = document.querySelector(".download-excel-office-car");
+                TableToExcel.convert(table, {
+                    name: "office_car.xlsx",
+                    sheet: {
+                        name: "Sheet 1"
+                    }
+                });
+            });
+        }
+        //buttonMotorcycle
+        let buttonMotorcycle = document.querySelector("#button-excel-motorcycle");
+
+        if(buttonMotorcycle){
+            buttonMotorcycle.addEventListener("click", e => {
+                e.preventDefault();
+                let table = document.querySelector(".download-excel-motorcycle");
+                TableToExcel.convert(table, {
+                    name: "motorcycle.xlsx",
+                    sheet: {
+                        name: "Sheet 1"
+                    }
+                });
+            });
+        }
+        //buttonCar
+        let buttonCar = document.querySelector("#button-excel-car");
+
+        if(buttonCar){
+            buttonCar.addEventListener("click", e => {
+                e.preventDefault();
+                let table = document.querySelector(".download-excel-car");
+                TableToExcel.convert(table, {
+                    name: "car.xlsx",
+                    sheet: {
+                        name: "Sheet 1"
+                    }
+                });
+            });
+        }
+        //buttonLocalConveyance
+        let buttonLocalConveyance = document.querySelector("#button-excel-local-conveyance");
+
+        if(buttonLocalConveyance){
+            buttonLocalConveyance.addEventListener("click", e => {
+                e.preventDefault();
+                let table = document.querySelector(".download-excel-local-conveyance");
+                TableToExcel.convert(table, {
+                    name: "local-conveyance.xlsx",
+                    sheet: {
+                        name: "Sheet 1"
+                    }
+                });
+            });
+        }
+        //buttonLocalOthers
+        let buttonOthers = document.querySelector("#button-excel-others");
+
+        if(buttonOthers){
+            buttonOthers.addEventListener("click", e => {
+                e.preventDefault();
+                let table = document.querySelector(".download-excel-others");
+                TableToExcel.convert(table, {
+                    name: "others.xlsx",
+                    sheet: {
+                        name: "Sheet 1"
+                    }
+                });
+            });
+        }
+    </script>
+{% endblock  %}

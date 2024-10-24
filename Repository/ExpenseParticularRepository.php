@@ -239,5 +239,48 @@ class ExpenseParticularRepository extends EntityRepository
         return $returnArray;
     }
 
+    public function getTotalAmountExpenseParticularMonthWise($startDate, $endDate, $employeeIds=null){
+        $ids = implode(',', $employeeIds);
+
+        $qb = $this->createQueryBuilder('e');
+        $qb->select('SUM(e.amount) as totalAmount', 'e.expenseChartDetailId')
+            ->addSelect("DATE_FORMAT(expense.expenseDate, '%b,%y') as expenseWordMonthYear")
+            ->addSelect("DATE_FORMAT(expense.expenseDate, '%Y-%m') as expenseMonthYear")
+            ->addSelect('YEAR(expense.expenseDate) as expenseYear')
+            ->addSelect('MONTH(expense.expenseDate) as expenseMonth')
+            ->addSelect('employee.id as employeeAutoId')
+            ->addSelect('particular.id as particularId', 'particular.name as particularName')
+            ->join('e.expense', 'expense')
+            ->join('e.particular', 'particular')
+            ->join('expense.employee', 'employee')
+            ->where('expense.status >= :status')
+            ->andWhere('expense.expenseDate IS NOT NULL')
+            ->andWhere('e.expenseChartDetailId IS NOT NULL')
+            ->andWhere('expense.expenseDate >= :startDate')
+            ->andWhere('expense.expenseDate <= :endDate')
+            ->andWhere('employee.id IN (:employeeIds)')
+            ->groupBy('expenseMonthYear')
+            ->addGroupBy('employee.id')
+            ->addGroupBy('particular.id')
+            ->setParameter('status', 1)
+            ->setParameter('startDate', $startDate)
+            ->setParameter('endDate', $endDate)
+            ->setParameter('employeeIds', $employeeIds);
+
+        $query = $qb->getQuery();
+        $results = $query->getArrayResult();
+
+
+        $returnArray=[];
+        if($results){
+            $returnArray = array_reduce($results, function($carry, $result) {
+                $carry[$result['employeeAutoId']][$result['expenseMonthYear']][$result['particularId']] = $result;
+                return $carry;
+            }, []);
+        }
+
+        return $returnArray;
+    }
+
 
 }

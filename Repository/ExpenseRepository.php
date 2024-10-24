@@ -465,6 +465,40 @@ class ExpenseRepository extends EntityRepository
         return $returnArray;
     }
 
+    public function getTotalDaysExpenseMonthWise($startDate, $endDate, $employeeIds=null)
+    {
+
+        $qb = $this->createQueryBuilder('e');
+        $qb->select( "e.expenseDate", "DATE_FORMAT(e.expenseDate,'%Y-%m') as expenseMonthYear", 'YEAR(e.expenseDate) as expenseYear');
+        $qb->addSelect('COUNT(e.id) as totalDays');
+        $qb->addSelect('employee.id as employeeAutoId','employee.userId as employeeId','employee.name as employeeName');
+        $qb->addSelect('workingArea.id as areaId','workingArea.name as areaName');
+
+        $qb->join('e.employee','employee');
+        $qb->join('e.workingArea','workingArea');
+        $qb->where('e.status >= :status')->setParameter('status',1);
+        $qb->andWhere('e.expenseDate IS NOT NULL');
+        $qb->andWhere('e.expenseDate >= :startDate')->setParameter('startDate', $startDate);
+        $qb->andWhere('e.expenseDate <= :endDate')->setParameter('endDate', $endDate);
+        $qb->andWhere('employee.id IN (:employeeIds)')->setParameter('employeeIds', $employeeIds);
+
+        $qb->groupBy('expenseMonthYear');
+        $qb->addGroupBy('employee.id');
+        $qb->addGroupBy('workingArea.id');
+
+        $results= $qb->getQuery()->getArrayResult();
+        $returnArray=[];
+        if($results){
+            $returnArray = array_reduce($results, function($carry, $result) {
+                $carry[$result['employeeAutoId']][$result['expenseMonthYear']][$result['areaId']] = $result;
+                return $carry;
+            }, []);
+        }
+
+        return $returnArray;
+
+    }
+
 
 
 

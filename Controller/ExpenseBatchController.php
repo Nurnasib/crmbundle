@@ -33,6 +33,7 @@ use Terminalbd\CrmBundle\Entity\ExpenseChart;
 use Terminalbd\CrmBundle\Entity\ExpenseConveyanceDetails;
 use Terminalbd\CrmBundle\Entity\ExpenseParticular;
 use Terminalbd\CrmBundle\Entity\Setting;
+use Terminalbd\CrmBundle\Form\CrmLineManagerWiseExpenseSummerySearchFormType;
 use Terminalbd\CrmBundle\Form\CrmTourPlanSearchFormType;
 use Terminalbd\CrmBundle\Form\ExpenseFormType;
 use Terminalbd\CrmBundle\Form\SettingFormType;
@@ -60,7 +61,7 @@ class ExpenseBatchController extends AbstractController
         $form->handleRequest($request);
         $employees=[];
         $requestDate = date('Y-m');
-        
+
         if ($form->isSubmitted()) {
             $filterBy = $form->getData();
             $employeeId = isset($filterBy['employee']) && $filterBy['employee'] != '' ? $filterBy['employee']->getId() : null;
@@ -103,8 +104,8 @@ class ExpenseBatchController extends AbstractController
 
             $expenses = $this->getDoctrine()->getRepository(Expense::class)->getExpensesByLineManager($this->getUser(), $employeeId, $requestDate);
         }
-        
-        
+
+
 //        $entities = $this->getDoctrine()->getRepository(ExpenseBatch::class)->getExpenseBatches($this->getUser());
         return $this->render('@TerminalbdCrm/expenseBatch/index.html.twig',[
 //            'entities' => $entities,
@@ -187,11 +188,11 @@ class ExpenseBatchController extends AbstractController
             $entities = $this->getDoctrine()->getRepository(ExpenseBatch::class)->getExpenseBatches($this->getUser(), $employeeId, $status, $requestDate);
         }
 
-            /*$data = $paginator->paginate(
-            $entities,
-            $request->query->get('page', 1),
-            25
-            );*/
+        /*$data = $paginator->paginate(
+        $entities,
+        $request->query->get('page', 1),
+        25
+        );*/
         return $this->render('@TerminalbdCrm/expenseBatch/batch-list.html.twig',[
             'entities' => $entities,
             'form' => $form->createView(),
@@ -242,6 +243,164 @@ class ExpenseBatchController extends AbstractController
             'typeOfVehicles' => $typeOfVehicles,
             'transportTypeConveyanceDetails' => $transportTypeConveyanceDetails,
         ]);
+    }
+
+    /**
+     * Displays a form to edit an existing Post entity.
+     *
+     * @Route("/line-manager/wise/summery", methods={"GET", "POST"}, name="crm_expense_line_manager_wise_summery")
+     * @param Request $request
+     * @return Response
+     */
+    public function lineManagerWiseSummery(Request $request): Response
+    {
+
+//        $expensePaticularAmount = $this->getDoctrine()->getRepository(ExpenseParticular::class)->getDailyExpenseParticularAmount($entity->getEmployee(),null, $entity);
+        $userRepo = $this->getDoctrine()->getRepository(User::class);
+        $form = $this->createForm(CrmLineManagerWiseExpenseSummerySearchFormType::class, null, ['userRepo'=>$userRepo, 'method' => 'GET']);
+
+        $form->handleRequest($request);
+
+        $employees=[];
+        $fromDate = date('Y-m');
+        $toDate = date('Y-m');
+        $months=[];
+        $expensePaticularDays = [];
+        $expensePaticularAmount = [];
+        $conveyanceDetailsTotalAmount = [];
+        $filterBy = [];
+
+        if ($form->isSubmitted()) {
+            $filterBy = $form->getData();
+            $lineManager = isset($filterBy['lineManager']) && $filterBy['lineManager'] != '' ? $filterBy['lineManager'] : null;
+            $fromDate = isset($filterBy['fromDate']) ? $filterBy['fromDate']->format("Y-m") : date('Y-m');
+            $toDate = isset($filterBy['toDate']) ? $filterBy['toDate']->format("Y-m") : date('Y-m');
+            $roleSplitArray = [];
+            $userRoles = [];
+            $employeeArray=[];
+
+            foreach ($this->getUser()->getRoles() as $role) {
+                $roleSplitArray = array_merge(explode('_', $role), $roleSplitArray);
+            }
+
+            if (in_array('ADMIN', $roleSplitArray)) {
+                if (in_array('ROLE_CRM_POULTRY_ADMIN', $this->getUser()->getRoles())) {
+                    array_push($userRoles, 'ROLE_CRM_POULTRY_USER');
+                }
+                if (in_array('ROLE_CRM_CATTLE_ADMIN', $this->getUser()->getRoles())) {
+                    array_push($userRoles, 'ROLE_CRM_CATTLE_USER');
+                }
+                if (in_array('ROLE_CRM_AQUA_ADMIN', $this->getUser()->getRoles())) {
+                    array_push($userRoles, 'ROLE_CRM_AQUA_USER');
+                }
+                if (in_array('ROLE_CRM_SALES_MARKETING_ADMIN', $this->getUser()->getRoles())) {
+                    array_push($userRoles, 'ROLE_CRM_SALES_MARKETING_USER');
+                }
+                $employeeArray = $this->getDoctrine()->getRepository(User::class)->getRoleWiseEmployees($userRoles);
+            }elseif (!in_array('ADMIN', $roleSplitArray) && in_array('ROLE_LINE_MANAGER', $this->getUser()->getRoles())){
+                $employeeArray = $this->getDoctrine()->getRepository(User::class)->getEmployeesByEmployeeIds($this->getUser());
+            }
+            if($lineManager){
+                $employeeArray = $this->getDoctrine()->getRepository(User::class)->getEmployeesByEmployeeIds($lineManager);
+            }
+
+            $uniqueEmployees = [];
+            if(isset($employeeArray['employee']) && sizeof($employeeArray['employee'])>0){
+                $uniqueEmployees = $this->unique_array($employeeArray['employee'], 'id');
+            }
+            if(sizeof($uniqueEmployees)>0){
+                foreach ($uniqueEmployees as $employee) {
+                    $employees[$employee['lineManagerId']][] = $employee;
+                }
+            }
+
+
+            $startDate = date('Y-m-01', strtotime($fromDate));
+            $endDate = date('Y-m-t', strtotime($toDate));
+            $months = $this->getMonthsInRange($startDate, $endDate);
+
+            $employeeIds = array_column($uniqueEmployees, 'id');
+
+            $expensePaticularDays = $this->getDoctrine()->getRepository(Expense::class)->getTotalDaysExpenseMonthWise($startDate, $endDate, $employeeIds);
+            $conveyanceDetailsTotalAmount = $this->getDoctrine()->getRepository(ExpenseConveyanceDetails::class)->getTotalAmountMonthlyByDateRange($employeeIds, $startDate, $endDate);
+
+            $expensePaticularAmount = $this->getDoctrine()->getRepository(ExpenseParticular::class)->getTotalAmountExpenseParticularMonthWise($startDate, $endDate, $employeeIds);
+
+
+        }
+
+
+        $expenseChart = $this->getDoctrine()->getRepository(ExpenseChart::class)->getExpenseChart();
+        $fixedDailyExpenseParticular = array_filter(array_map(function($n) { if($n['paymentDuration']=='DAILY' && $n['expensePaymentType']=='FIXED') return $n; }, $expenseChart));
+
+        $areaWiseExpenseParticular = [];
+        if($fixedDailyExpenseParticular && sizeof($fixedDailyExpenseParticular)>0){
+            foreach ($fixedDailyExpenseParticular as $expenseChartParticular) {
+                $areaWiseExpenseParticular['areaName'][$expenseChartParticular['areaId']]=$expenseChartParticular['areaName'];
+                $areaWiseExpenseParticular['chartDetails'][$expenseChartParticular['areaId']][$expenseChartParticular['expenseChartDetailId']]=$expenseChartParticular;
+                $areaWiseExpenseParticular['particulars'][$expenseChartParticular['particularId']]=$expenseChartParticular['particularName'];
+            }
+        }
+
+        $typeOfVehicles =
+            [
+                [
+                    'id' => 1,
+                    'slug' => 'office-car',
+                    'name' => 'Office Car',
+                ],
+                [
+                    'id' => 2,
+                    'slug' => 'motorcycle',
+                    'name' => 'Motorcycle',
+                ],
+                [
+                    'id' => 3,
+                    'slug' => 'car',
+                    'name' => 'Car',
+                ],
+                [
+                    'id' => 4,
+                    'slug' => 'local-conveyance',
+                    'name' => 'Local Conv.',
+                ],
+                [
+                    'id' => 5,
+                    'slug' => 'others',
+                    'name' => 'others',
+                ]
+            ];
+//dd($areaWiseExpenseParticular['chartDetails']);
+//        $transportTypeConveyanceDetails = $this->getDoctrine()->getRepository(ExpenseConveyanceDetails::class)->getConveyanceDetailsByMonthEmployee($entity->getEmployee()->getId(), $entity->getExpenseMonth()->format('Y-m'));
+        return $this->render('@TerminalbdCrm/expenseBatch/line-manager-wise-summery.html.twig', [
+            'areaWiseExpenseParticulars' => $areaWiseExpenseParticular,
+            'typeOfVehicles' => $typeOfVehicles,
+            'employees' => $employees,
+            'form' => $form->createView(),
+            'fromDate' => $fromDate,
+            'toDate' => $toDate,
+            'months' => $months,
+            'expenseDays' => $expensePaticularDays,
+            'conveyanceDetailsTotalAmount' => $conveyanceDetailsTotalAmount,
+            'expensePaticularAmount' => $expensePaticularAmount,
+            'filterBy' => $filterBy,
+        ]);
+    }
+
+   private function getMonthsInRange($startDate, $endDate) {
+        $start = new \DateTime($startDate);
+        $end = new \DateTime($endDate);
+        $end->modify('first day of next month');
+
+        $interval = new \DateInterval('P1M');
+        $datePeriod = new \DatePeriod($start, $interval, $end);
+
+        $months = [];
+        foreach ($datePeriod as $date) {
+            $months[$date->format('Y-m')] = $date->format('M Y');
+        }
+
+        return $months;
     }
 
     private function typeOfVehicle(User $employee){

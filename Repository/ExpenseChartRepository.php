@@ -78,6 +78,36 @@ class ExpenseChartRepository extends EntityRepository
         return $returnArray;
     }
 
+    public function getExpenseChart()
+    {
+        $returnArray=[];
+        $qb = $this->createQueryBuilder('e');
+
+        $qb->select('e.id', 'e.createdAt');
+        $qb->addSelect('expenseChartDetail.id as expenseChartDetailId','expenseChartDetail.amount as amount','expenseChartDetail.amount_type as amountType', 'expenseChartDetail.paymentDuration');
+        $qb->addSelect('particular.id as particularId','particular.name as particularName','particular.expensePaymentType as expensePaymentType');
+        $qb->addSelect('area.id as areaId','area.name as areaName');
+        $qb->join('e.expenseChartDetails','expenseChartDetail');
+        $qb->join('expenseChartDetail.particular','particular');
+        $qb->join('expenseChartDetail.area','area');
+
+        $qb->orderBy('area.sortOrder', 'ASC');
+        $qb->addOrderBy('expenseChartDetail.id', 'DESC');
+        $qb->groupBy('expenseChartDetail.paymentDuration');
+        $qb->addGroupBy('particular.id');
+        $qb->addGroupBy('area.id');
+
+
+        $results= $qb->getQuery()->getArrayResult();
+        if($results){
+            foreach ($results as $result) {
+                $returnArray[] = $result;
+            }
+        }
+
+        return $returnArray;
+    }
+
     /**
      * @throws ORMException
      * @throws OptimisticLockException

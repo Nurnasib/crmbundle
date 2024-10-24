@@ -241,4 +241,40 @@ class ExpenseConveyanceDetailsRepository extends EntityRepository
     }
 
 
+
+    public function getTotalAmountMonthlyByDateRange($employeeIds, $startDate, $endDate){
+        $qb = $this->createQueryBuilder('e');
+        $qb->select('e.id', 'e.transportType', 'CAST(SUM(e.totalAmount) as decimal(10,2)) as totalAmount');
+        $qb->addSelect('CAST(SUM(e.mobilBill) as decimal(10,2)) as totalMobileBill','CAST(SUM(e.maintenanceBill) as decimal(10,2)) as totalMaintenanceBill','CAST(SUM(e.tollBill) as decimal(10,2)) as totalTollBill','CAST(SUM(e.servicingBill) as decimal(10,2)) as totalServicingBill','CAST(SUM(e.fuelBill) as decimal(10,2)) as totalFuelBill', 'CAST(SUM(e.parkingBill) as decimal(10,2)) as totalParkingBill', 'CAST(SUM(e.othersBill) as decimal(10,2)) as totalOthersBill', 'CAST(SUM(e.amount) as decimal(10,2)) as amount', 'CAST(SUM(e.totalMileage) as decimal(10,2)) as totalMileage');
+        $qb->addSelect('SUM(IF(e.transportType=\'motorcycle\', e.totalMileage, 0)) as totalMotorcycleMileage', 'SUM(IF(e.transportType=\'car\', e.totalMileage, 0)) as totalCarMileage');
+        $qb->addSelect('expense.id as expenseId');
+        $qb->addSelect("DATE_FORMAT(expense.expenseDate,'%b,%y') as expenseWordMonthYear", "DATE_FORMAT(expense.expenseDate,'%Y-%m') as expenseMonthYear", 'YEAR(expense.expenseDate) as expenseYear', 'MONTH(expense.expenseDate) as expenseMonth');
+        $qb->addSelect('employee.id as employeeAutoId');
+        $qb->join('e.expense','expense');
+        $qb->join('expense.employee','employee');
+
+        $qb->where('expense.status >=:status')->setParameter('status',1);
+        $qb->andWhere('expense.expenseDate IS NOT NULL');
+        $qb->andWhere('employee.id IN (:employeeIds)')->setParameter('employeeIds', $employeeIds);
+
+        $qb->andWhere('expense.expenseDate >= :startDate')->setParameter('startDate', $startDate);
+        $qb->andWhere('expense.expenseDate <= :endDate')->setParameter('endDate', $endDate);
+
+        $qb->groupBy('expenseMonthYear');
+        $qb->addGroupBy('e.transportType');
+        $qb->addGroupBy('employee.id');
+
+        $results= $qb->getQuery()->getArrayResult();
+
+        $returnArray=[];
+        if($results){
+            foreach ($results as $result) {
+                $returnArray[$result['employeeAutoId']][$result['expenseMonthYear']][$result['transportType']]=$result;
+            }
+        }
+
+        return $returnArray;
+    }
+
+
 }
