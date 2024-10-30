@@ -273,6 +273,7 @@ class ExpenseBatchController extends AbstractController
         if ($form->isSubmitted()) {
             $filterBy = $form->getData();
             $lineManager = isset($filterBy['lineManager']) && $filterBy['lineManager'] != '' ? $filterBy['lineManager'] : null;
+            $employee = isset($filterBy['employee']) && $filterBy['employee'] != '' ? $filterBy['employee'] : null;
             $fromDate = isset($filterBy['fromDate']) ? $filterBy['fromDate']->format("Y-m") : date('Y-m');
             $toDate = isset($filterBy['toDate']) ? $filterBy['toDate']->format("Y-m") : date('Y-m');
             $roleSplitArray = [];
@@ -302,6 +303,9 @@ class ExpenseBatchController extends AbstractController
             }
             if($lineManager){
                 $employeeArray = $this->getDoctrine()->getRepository(User::class)->getEmployeesByEmployeeIds($lineManager);
+            }
+            if($employee){
+                $employeeArray = $this->getDoctrine()->getRepository(User::class)->getEmployeesByEmployeeIds($employee, $employee->getId());
             }
 
             $uniqueEmployees = [];

@@ -48,7 +48,26 @@ class CrmLineManagerWiseExpenseSummerySearchFormType extends AbstractType
     {
         $userRepo = $options['userRepo'];
         $builder
+            //employee 
+            ->add('employee', EntityType::class, [
+                'class' => User::class,
+                'choice_label' => function($user){
+                    return '(' . $user->getUserId() . ') ' . $user->getName();
+                },
+                'query_builder' => function (EntityRepository $er) {
+                    return $er->createQueryBuilder('e')
+                        ->join('e.userGroup', 'userGroup')
+                        ->andWhere("userGroup.slug = :slug")->setParameter('slug', 'employee')
+                        ->orderBy('e.name', 'ASC');
 
+                },
+                'attr'=>[
+                    'class'=>'select2'
+                ],
+                'placeholder' => '- Select Employee -',
+                'required' => false,
+
+            ])
             ->add('lineManager', EntityType::class, array(
                 'required'    => false,
                 'class' => User::class,
