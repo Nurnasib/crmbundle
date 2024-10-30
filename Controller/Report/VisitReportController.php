@@ -151,7 +151,7 @@ class VisitReportController extends AbstractController
                 'entities' => $entities,
             ]);
         }
-
+        return true;
     }
 
     /**
