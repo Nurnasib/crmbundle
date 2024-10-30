@@ -174,18 +174,19 @@
                             <tbody>
 
                             {% if employees is defined and  employees is not empty %}
+                                {% set loopCount = 0 %}
                                 {% for lineManagerId, lineManagerData in employees %}
                                     {% if lineManagerData is not empty %}
                                         {% for index, employee in lineManagerData %}
                                             {% for monthKey, monthName in months %}
                                                 {% set lineTotal = 0 %}
-
+                                                {% set loopCount = loopCount + 1 %}
                                             <tr>
 {#                                                {% if index==0 %}#}
                                                 <td>{{ employee.lineManagerName }}</td>
 {#                                                {% endif %}#}
                                                 {#                                            <td>{{ employee.lineManagerName }} == {{ lineManagerData|length }}</td>#}
-                                                <td>{{ index+1 }}</td>
+                                                <td>{{ loopCount }}</td>
                                                 <td>{{ employee.userId }}</td>
                                                 <td>{{ employee.name }}</td>
                                                 <td>{{ employee.designationName|default('') }}</td>
