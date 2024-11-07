@@ -224,4 +224,56 @@ class CompanyWiseFeedSaleRepository extends BaseRepository
         return $data;
     }
 
+
+    public function getCompanyWiseFeedSaleByEmployeeIdsMonthRange($startDate, $endDate, $employeeIds)
+    {
+
+        $data = [];
+
+        if($employeeIds){
+
+            $year = isset($filterBy['year']) && $filterBy['year']!=''?$filterBy['year']:date('Y');
+
+            $qb = $this->createQueryBuilder('e');
+            $qb->join('e.feedCompany', 'feedCompany');
+            $qb->join('e.employee', 'employee');
+
+            $qb->select('e.year', 'e.breedName as breedName', 'e.productWiseQty', 'e.totalQty', 'e.monthYear', "DATE_FORMAT(e.monthYear,'%Y-%m') as reportMonthYear");
+            $qb->addSelect('feedCompany.id AS feedCompanyId', 'feedCompany.name AS feedCompanyName');
+            $qb->addSelect('employee.id AS employeeId','employee.userId','employee.name AS employeeName');
+
+            $qb->where('e.totalQty >0');
+
+            $qb->andWhere('e.monthYear >= :startDate')->setParameter('startDate', $startDate);
+            $qb->andWhere('e.monthYear <= :endDate')->setParameter('endDate', $endDate);
+
+            $qb->andWhere('employee.id IN (:employeeIds)')->setParameter('employeeIds', $employeeIds);
+
+            $qb->groupBy('reportMonthYear');
+            $qb->addGroupBy('employeeId');
+            $qb->addGroupBy('feedCompanyId');
+            $qb->addGroupBy('breedName');
+
+
+            $results = $qb->getQuery()->getArrayResult();
+
+
+            if($results){
+                foreach ($results as $result) {
+                    $reportMonthYear = $result['reportMonthYear'];
+                    $species = json_decode($result['productWiseQty'], true);
+                    if(sizeof($species) > 0 ){
+                        foreach ($species as $key => $value) {
+                            if($value>0){
+                                $data[$reportMonthYear][$result['employeeId']][$key][] = $value;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return $data;
+    }
+
 }

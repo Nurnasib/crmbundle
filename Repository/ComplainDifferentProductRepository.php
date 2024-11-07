@@ -48,4 +48,43 @@ class ComplainDifferentProductRepository extends EntityRepository
         return array();
     }
 
+
+    public function getComplainBreedAndFeedByType($type)
+    {
+        $qb = $this->createQueryBuilder('e');
+        $qb->leftJoin('e.breed', 'breed');
+        $qb->leftJoin('breed.parent','breedParent');
+        //feedId
+        $qb->leftJoin('e.feed', 'feed');
+        $qb->leftJoin('feed.parent', 'feedParent');
+
+
+        $qb->select('breed.name as breedName');
+        $qb->addSelect('breedParent.name as breedParentName', 'breedParent.id as breedParentId');
+        $qb->addSelect('feed.name as feedName');
+        $qb->addSelect('feedParent.name as feedParentName', 'feedParent.id as feedParentId');
+
+        if($type == 'COMPLAIN_DOC'){
+            $qb->where('e.breed IS NOT NULL');
+            $qb->addGroupBy('breedParentId');
+        }elseif ($type == 'COMPLAIN_FEED'){
+            $qb->where('e.feed IS NOT NULL');
+            $qb->addGroupBy('feedParentId');
+        }
+        $results = $qb->getQuery()->getArrayResult();
+
+        $data = [];
+        foreach ($results as $result) {
+            if ($type == 'COMPLAIN_DOC') {
+                $data[$result['breedParentId']]= $result['breedParentName'];
+            }
+            if ($type == 'COMPLAIN_FEED') {
+                $data[$result['feedParentId']]= $result['feedParentName'];
+            }
+
+        }
+        return $data;
+    }
+
+
 }

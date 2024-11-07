@@ -98,7 +98,6 @@ class ChallengerRepository extends EntityRepository
     public function getChallengerByEmployeeForKpiMonthlyReport($report, $filterBy)
     {
         $returnArray=[];
-//dd($filterBy);
         if(!empty($report) && $filterBy['employee'] !=""){
             $qb = $this->createQueryBuilder('e');
 
@@ -150,4 +149,57 @@ class ChallengerRepository extends EntityRepository
         }
         return $returnArray;
     }
+
+    public function getChallengerByMonthRangeAndEmployeeIdsForKpiMonthlyReport($report, $startDate, $endDate, $employeeIds)
+    {
+        $returnArray=[];
+//        dd($employeeIds);
+        if(!empty($report) && !empty($employeeIds)){
+            $qb = $this->createQueryBuilder('e');
+
+            $qb->select('e.id', 'COUNT(e.id) as totalRecords', 'e.createdAt',"DATE_FORMAT(e.createdAt,'%Y-%m') as reportMonthYear", 'e.challengerType','e.name','e.description', 'e.problemOn');
+
+            $qb->addSelect('employee.id AS employeeId');
+            $qb->addSelect('employee.name AS employeeName');
+            $qb->addSelect('designation.name AS designationName');
+            $qb->addSelect('challengerFeed.name AS feedName');
+
+            $qb->join('e.employee','employee');
+            $qb->join('employee.designation','designation');
+            $qb->leftJoin('e.challengerFeedName','challengerFeed');
+
+            if($report=='challenges-problem'){
+                $qb->where('e.challengerType =:challengerType')->setParameter('challengerType','Problems');
+            }elseif ($report=='challenges-idea'){
+                $qb->where('e.challengerType =:challengerType')->setParameter('challengerType','Idea');
+            }elseif ($report=='competitors-activity'){
+                $qb->where('e.challengerType =:challengerType')->setParameter('challengerType','Competitor Activity');
+            }
+
+            $qb->andWhere('employee.id IN (:employeeIds)')->setParameter('employeeIds', $employeeIds);
+
+            $qb->andWhere('e.createdAt >= :reportingMonthStart')->setParameter('reportingMonthStart', $startDate);
+            $qb->andWhere('e.createdAt <= :reportingMonthEnd')->setParameter('reportingMonthEnd', $endDate);
+
+            $qb->groupBy('reportMonthYear');
+            $qb->addGroupBy('employeeId');
+
+            $results = $qb->getQuery()->getArrayResult();
+            if($results){
+                foreach ($results as $result){
+                    $reportingMonth = $result['createdAt']->format('Y-m');
+                    if($report=='challenges-problem'){
+                        $returnArray[$reportingMonth][$result['employeeId']]=$result;
+                    }elseif ($report=='challenges-idea'){
+                        $returnArray[$reportingMonth][$result['employeeId']]=$result;
+                    }elseif ($report=='competitors-activity'){
+                        $returnArray[$reportingMonth][$result['employeeId']]=$result;
+                    }
+
+                }
+            }
+        }
+        return $returnArray;
+    }
+
 }

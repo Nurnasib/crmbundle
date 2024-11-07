@@ -305,7 +305,7 @@ class ExpenseBatchController extends AbstractController
                 $employeeArray = $this->getDoctrine()->getRepository(User::class)->getEmployeesByEmployeeIds($lineManager);
             }
             if($employee){
-                $employeeArray = $this->getDoctrine()->getRepository(User::class)->getEmployeesByEmployeeIds($employee, $employee->getId());
+                $employeeArray = $this->getDoctrine()->getRepository(User::class)->getEmployeesByEmployeeIds($employee->getLineManager(), $employee->getId());
             }
 
             $uniqueEmployees = [];

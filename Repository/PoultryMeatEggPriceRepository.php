@@ -314,4 +314,35 @@ class PoultryMeatEggPriceRepository extends EntityRepository
 
     }
 
+    public function getMeatEggPriceByEmployeeIdsAndDateRangeWiseReport($startDate, $endDate, $employeeIds)
+    {
+        $qb = $this->createQueryBuilder('e');
+        $qb->join('e.breedType', 'breed_type');
+        $qb->join('e.employee', 'employee');
+        $qb->select('COUNT(e.id) AS totalRecords', 'MONTH(e.reportingDate) AS month', 'YEAR(e.reportingDate) AS year', 'e.reportingDate' , "DATE_FORMAT(e.reportingDate,'%Y-%m') as reportingMonthYear");
+        $qb->addSelect('breed_type.id AS breedTypeId', 'breed_type.name AS breedTypeName');
+        $qb->addSelect('employee.id as employeeAutoId', 'employee.userId', 'employee.name as employeeName');
+
+        $qb->where('e.reportingDate >= :start')->setParameter('start', $startDate);
+        $qb->andWhere('e.reportingDate <= :end')->setParameter('end', $endDate);
+//        $qb->andWhere('user_group.slug = :userGroupSlug')->setParameter('userGroupSlug', 'employee');
+        $qb->andWhere('e.price > :price')->setParameter('price', 0);
+
+        $qb->andWhere('employee.id IN (:employeeIds)')->setParameter('employeeIds', $employeeIds);
+
+        $qb->groupBy('reportingMonthYear');
+        $qb->addGroupBy('breedTypeId');
+        $qb->addGroupBy('employee.id');
+
+
+        $results = $qb->getQuery()->getArrayResult();
+        $data = [];
+        foreach ($results as $result) {
+            $reportingDate = $result['reportingDate']->format('Y-m');
+            $data[$reportingDate][$result['employeeAutoId']][$result['breedTypeId']] = $result;
+        }
+        return $data;
+
+    }
+
 }

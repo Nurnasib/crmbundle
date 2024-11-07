@@ -191,4 +191,61 @@ class ComplainDifferentProductDetailsRepository extends EntityRepository
         return $data;
 
     }
+
+
+    public function getComplainReportByMonthRangeAndEmployeeIds($startDate, $endDate, $employeeIds, $type)
+    {
+        $qb = $this->createQueryBuilder('e');
+
+        $qb->join('e.complain', 'parent');
+        $qb->join('e.ComplainParameter', 'parameter');
+        $qb->join('parent.employee', 'employee');
+        $qb->leftJoin('employee.designation', 'designation');
+        $qb->leftJoin('parent.breed', 'breed');
+        $qb->leftJoin('breed.parent','breedParent');
+        //feedId
+        $qb->leftJoin('parent.feed', 'feed');
+        $qb->leftJoin('feed.parent', 'feedParent');
+
+
+        $qb->select('COUNT(e.id) as totalRecords');
+        $qb->addSelect('parent.id as parentId','parent.boxNo', 'parent.batchNo', 'parent.createdAt', "DATE_FORMAT(parent.createdAt,'%Y-%m') as reportMonthYear");
+        $qb->addSelect('breed.name as breedName');
+        $qb->addSelect('breedParent.name as breedParentName', 'breedParent.id as breedParentId');
+        $qb->addSelect('feed.name as feedName');
+        $qb->addSelect('feedParent.name as feedParentName', 'feedParent.id as feedParentId');
+        $qb->addSelect('employee.name as employeeName', 'employee.id as employeeAutoId', 'employee.userId as userId');
+        $qb->addSelect('designation.name as designationName');
+
+        $qb->where('parameter.type = :type')->setParameter('type', $type);
+
+        $qb->andWhere('employee.id IN (:employeeIds)')->setParameter('employeeIds', $employeeIds);
+        $qb->andWhere('parent.createdAt >= :start')->setParameter('start', $startDate);
+        $qb->andWhere('parent.createdAt <= :end')->setParameter('end', $endDate);
+
+        if($type=='COMPLAIN_DOC'){
+            $qb->andWhere('e.quantity > 0 OR e.day > 0');
+        }
+
+        $qb->groupBy('reportMonthYear');
+        $qb->addGroupBy('employeeAutoId');
+        $qb->addGroupBy('breedParentId');
+
+
+        $results = $qb->getQuery()->getArrayResult();
+
+        $data = [];
+        foreach ($results as $result) {
+            $monthYear = $result['createdAt']->format('Y-m');
+            if ($type == 'COMPLAIN_DOC') {
+                $data[$monthYear][$result['employeeAutoId']][$result['breedParentId']] = $result;
+            }
+            if ($type == 'COMPLAIN_FEED') {
+                $data[$monthYear][$result['employeeAutoId']][$result['feedParentId']]= $result;
+            }
+
+        }
+        return $data;
+    }
+
 }

@@ -13,6 +13,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 /**
  * @ORM\Table(name="crm_company_wise_feed_sale")
  * @ORM\Entity(repositoryClass="Terminalbd\CrmBundle\Repository\CompanyWiseFeedSaleRepository")
+ * @ORM\HasLifecycleCallbacks()
  */
 class CompanyWiseFeedSale
 {
@@ -74,6 +75,24 @@ class CompanyWiseFeedSale
      * @ORM\Column(name="created_at", type="datetime")
      */
     private $createdAt;
+
+    //monthYear
+    /**
+     * @var \DateTime
+     * @Orm\Column(type="date", nullable=true, options={"generated": true})
+     */
+    private $monthYear;
+
+    /**
+     * @ORM\PrePersist
+     * @ORM\PreUpdate
+     * @ORM\PostUpdate
+     * @ORM\PostPersist
+     */
+    public function onPostUpdate(): void
+    {
+        $this->updateMonthYear();
+    }
 
     /**
      * @return int
@@ -137,6 +156,7 @@ class CompanyWiseFeedSale
     public function setMonthName(string $monthName): void
     {
         $this->monthName = $monthName;
+//        $this->updateMonthYear();
     }
 
     /**
@@ -169,6 +189,7 @@ class CompanyWiseFeedSale
     public function setTotalQty(float $totalQty): void
     {
         $this->totalQty = $totalQty;
+//        $this->updateMonthYear();
     }
 
     /**
@@ -217,6 +238,38 @@ class CompanyWiseFeedSale
     public function setYear(int $year): void
     {
         $this->year = $year;
+//        $this->updateMonthYear();
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getMonthYear()
+    {
+        return $this->monthYear;
+    }
+
+    /**
+     * @param \DateTime $monthYear
+     */
+    public function setMonthYear(\DateTime $monthYear): void
+    {
+        $this->monthYear = $monthYear;
+    }
+
+
+    /**
+     * Update the monthYear field by concatenating monthName and year and converting to date format.
+     */
+    private function updateMonthYear(): void
+    {
+        if ($this->getMonthName() !== null && $this->getYear() !== null) {
+            $dateString = '01 ' . $this->getMonthName() . ' ' . $this->getYear();
+            $date = \DateTime::createFromFormat('d F Y', $dateString);
+            if ($date) {
+                $this->monthYear = new \DateTime($date->format('Y-m-d'));
+            }
+        }
     }
 
 }

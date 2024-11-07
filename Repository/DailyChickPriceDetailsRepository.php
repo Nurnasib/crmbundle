@@ -449,6 +449,44 @@ class DailyChickPriceDetailsRepository extends EntityRepository
         return $data;
 
     }
+
+    public function getDocPriceByMonthRangeWise($startDate, $endDate, $employeeIds)
+    {
+
+        $qb = $this->createQueryBuilder('e');
+        $qb->join('e.crmDailyChickPrice', 'parent');
+        $qb->join('parent.employee', 'employee');
+        $qb->leftJoin('employee.designation', 'designation');
+        $qb->join('e.chickType', 'chick_type');
+        $qb->join('e.feed', 'feed');
+
+//        $qb->select('employee.id','employee.userId', 'employee.name');
+        $qb->select('COUNT(e.id) AS totalRecords');
+        $qb->addSelect('employee.id as employeeAutoId','employee.userId', 'employee.name');
+        $qb->addSelect('feed.id AS feedId', 'feed.name AS feedName');
+        $qb->addSelect('parent.reportingDate', 'MONTH(parent.reportingDate) AS month', 'YEAR(parent.reportingDate) AS year', "DATE_FORMAT(parent.reportingDate,'%Y-%m') as reportMonthYear");
+        $qb->addSelect('designation.name as designationName');
+        $qb->addSelect('chick_type.id AS chickTypeId', 'chick_type.name AS chickTypeName');
+
+        $qb->where('parent.reportingDate >= :start')->setParameter('start', $startDate);
+        $qb->andWhere('parent.reportingDate <= :end')->setParameter('end', $endDate);
+        //employee.id IN (:employeeIds)
+        $qb->andWhere('employee.id IN (:employeeIds)')->setParameter('employeeIds', $employeeIds);
+        $qb->andWhere('e.price > :price')->setParameter('price', 0);
+
+        $qb->groupBy('reportMonthYear');
+        $qb->addGroupBy('employee.id');
+        $results = $qb->getQuery()->getArrayResult();
+
+        $data = [];
+
+        foreach ($results as $result) {
+            $month = $result['reportingDate']->format('Y-m');
+            $data[$month][$result['employeeAutoId']][$result['chickTypeId']] = $result['totalRecords'];
+        }
+        return $data;
+
+    }
     
 
 }
