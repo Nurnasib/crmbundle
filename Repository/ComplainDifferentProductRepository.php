@@ -67,7 +67,8 @@ class ComplainDifferentProductRepository extends EntityRepository
         if($type == 'COMPLAIN_DOC'){
             $qb->where('e.breed IS NOT NULL');
             $qb->addGroupBy('breedParentId');
-        }elseif ($type == 'COMPLAIN_FEED'){
+        }
+        if ($type == 'COMPLAIN_FEED'){
             $qb->where('e.feed IS NOT NULL');
             $qb->addGroupBy('feedParentId');
         }
@@ -75,10 +76,10 @@ class ComplainDifferentProductRepository extends EntityRepository
 
         $data = [];
         foreach ($results as $result) {
-            if ($type == 'COMPLAIN_DOC') {
+            if ($type == 'COMPLAIN_DOC' && $result['breedParentId']) {
                 $data[$result['breedParentId']]= $result['breedParentName'];
             }
-            if ($type == 'COMPLAIN_FEED') {
+            if ($type == 'COMPLAIN_FEED' && $result['feedParentId']) {
                 $data[$result['feedParentId']]= $result['feedParentName'];
             }
 

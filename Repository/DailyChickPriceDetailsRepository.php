@@ -476,6 +476,7 @@ class DailyChickPriceDetailsRepository extends EntityRepository
 
         $qb->groupBy('reportMonthYear');
         $qb->addGroupBy('employee.id');
+        $qb->addGroupBy('chickTypeId');
         $results = $qb->getQuery()->getArrayResult();
 
         $data = [];

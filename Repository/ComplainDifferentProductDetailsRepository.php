@@ -229,14 +229,17 @@ class ComplainDifferentProductDetailsRepository extends EntityRepository
 
         $qb->groupBy('reportMonthYear');
         $qb->addGroupBy('employeeAutoId');
-        $qb->addGroupBy('breedParentId');
-
+        if($type=='COMPLAIN_DOC'){
+            $qb->addGroupBy('breedParentId');
+        }
+        if($type=='COMPLAIN_FEED'){
+            $qb->addGroupBy('feedParentId');
+        }
 
         $results = $qb->getQuery()->getArrayResult();
-
         $data = [];
         foreach ($results as $result) {
-            $monthYear = $result['createdAt']->format('Y-m');
+            $monthYear = $result['reportMonthYear'];
             if ($type == 'COMPLAIN_DOC') {
                 $data[$monthYear][$result['employeeAutoId']][$result['breedParentId']] = $result;
             }
