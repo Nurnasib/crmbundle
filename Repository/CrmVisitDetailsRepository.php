@@ -257,4 +257,55 @@ class CrmVisitDetailsRepository extends EntityRepository
         }
         return $data;
     }
+    public function getAgentVisitMonitors($begin,$end,$employeeId)
+    {
+        $qb = $this->createQueryBuilder('e');
+        $qb->join('e.crmVisit', 'crmVisit');
+        $qb->join('crmVisit.employee', 'employee');
+        $qb->leftJoin('employee.designation', 'employeeDesignation');
+        $qb->join('e.agent', 'agent');
+        $qb->leftJoin('agent.agentGroup', 'agentGroup');
+        $qb->leftJoin('agent.district', 'agentDistrict');
+        $qb->leftJoin('agent.parent', 'nourishAgent');
+        $qb->select('e.farmCapacity', 'e.process', 'e.comments', 'e.purposeMultiple', 'e.reportDesc');
+        $qb->addSelect('agent.id AS agentAutoId','agent.name AS agentName','agent.agentId', 'agent.address AS agentAddress', 'agent.mobile AS agentMobile');
+        $qb->addSelect('agentGroup.name AS agentGroupName', 'agentGroup.slug AS agentGroupSlug');
+        $qb->addSelect('employee.id as employeeAutoId','employee.userId','employee.name AS employeeName');
+        $qb->addSelect('crmVisit.created AS visitCreatedDate', 'crmVisit.visitDate', 'crmVisit.visitTime');
+        $qb->addSelect('nourishAgent.name AS nourishAgentName');
+        $qb->addSelect('agentDistrict.name AS agentDistrictName');
+        $qb->addSelect('employeeDesignation.name AS employeeDesignationName');
+        $qb->where('crmVisit.created >=:begin')->setParameter('begin', $begin);
+        $qb->andWhere('crmVisit.created <=:end')->setParameter('end', $end);
+
+        $qb->andWhere('employee.id =:employeeId')->setParameter('employeeId', $employeeId);
+
+        $qb->orderBy('crmVisit.created', 'ASC');
+
+        $results = $qb->getQuery()->getArrayResult();
+
+        $data = [];
+        if($results){
+            foreach ($results as $result) {
+                $data['employeeInfo'][$result['employeeAutoId']]= [
+                    'employeeName'=> $result['employeeName'],
+                    'userId'=> $result['userId'],
+                    'designationName'=> $result['employeeDesignationName']
+                ];
+                $data['agentInfo'][$result['agentAutoId']]= [
+                    'agentName'=> $result['agentName'],
+                    'agentId'=> $result['agentGroupSlug']=='other-agent' || $result['agentGroupSlug']=='sub-agent' ? $result['agentGroupName'] : $result['agentId'],
+                    'agentAddress'=> $result['agentAddress'],
+                    'agentMobile'=> $result['agentMobile'],
+                    'nourishAgentName'=> $result['nourishAgentName'],
+                    'agentDistrictName'=> $result['agentDistrictName']
+                ];
+                $data['records'][$result['agentAutoId']][] = $result['visitCreatedDate']->format('d-m-Y');
+                $data['visitCreatedDate']= ['begin' => $begin,'end' => $end];
+
+            }
+        }
+
+        return $data;
+    }
 }

@@ -258,4 +258,38 @@ class VisitReportController extends AbstractController
             
         ]);
     }
+
+    /**
+     * @Route("/crm/agent-visit-monitor", name="agent_visit_monitor")
+     */
+    public function agentVisitMonitor(Request $request)
+    {
+        $selectedEmployee = null;
+        $startDate = date('Y-m-01');
+        $endDate = date('Y-m-t');
+        $userRepo = $this->getDoctrine()->getRepository(User::class);
+        $form = $this->createForm(SearchFilterFormTypeForVisitReport::class, null, ['loggedUser' => $this->getUser(),'userRepo'=>$userRepo]);
+        $form->handleRequest($request);
+        $records = [];
+        if ($form->isSubmitted()){
+            $selectedEmployee = $form->getData()['employee'];
+            $startDate = $form->getData()['startDate'] ? new \DateTime($form->getData()['startDate']) : new \DateTime('now');
+            $endDate = $form->getData()['endDate'] ? new \DateTime($form->getData()['endDate']) : new \DateTime('now');
+
+            $startDate = $startDate->format('Y-m-d 00:00:00');
+            $endDate = $endDate->format('Y-m-d 23:59:59');
+          $records = $this->getDoctrine()->getRepository(CrmVisitDetails::class)->getAgentVisitMonitors( $startDate, $endDate, $selectedEmployee);
+
+//            $maxSize = max(array_map('count', $records['records']));
+
+//            dd($maxSize);
+        }
+        
+        return $this->render("@TerminalbdCrm/report/visit-status/agent-visit-monitor.html.twig",[
+            'records' => $records,
+            'form' => $form->createView(),
+            'selectedEmployee' => $selectedEmployee,
+
+        ]);
+    }
 }
