@@ -300,7 +300,7 @@ class CrmVisitDetailsRepository extends EntityRepository
                     'nourishAgentName'=> $result['nourishAgentName'],
                     'agentDistrictName'=> $result['agentDistrictName']
                 ];
-                $data['records'][$result['agentAutoId']][] = $result['visitCreatedDate']->format('d-m-Y');
+                $data['records'][$result['agentAutoId']][$result['visitCreatedDate']->format('d-m-Y')] = $result['visitCreatedDate']->format('d-m-Y');
                 $data['visitCreatedDate']= ['begin' => $begin,'end' => $end];
 
             }
