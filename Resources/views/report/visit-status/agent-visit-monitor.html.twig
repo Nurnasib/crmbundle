@@ -43,21 +43,21 @@
                     <table class="table table-striped table-bordered table-hover details-table download-excel" width="100%">
                         <thead class="thead-dark">
                         <tr>
-                            <th data-a-h="center" class="border-0" colspan="6"><h3 class="text-center">NOURISH POULTRY AND HATCHERY LTD</h3></th>
+                            <th data-a-h="center" class="border-0" colspan="7"><h3 class="text-center">NOURISH POULTRY AND HATCHERY LTD</h3></th>
                         </tr>
                         <tr>
-                            <th data-a-h="center" class="border-0" colspan="6"><h5 class="text-center">UTTARA, DHAKA.</h5></th>
+                            <th data-a-h="center" class="border-0" colspan="7"><h5 class="text-center">UTTARA, DHAKA.</h5></th>
                         </tr>
 
                         <tr>
-                            <td data-a-h="center" class="border-0" colspan="{{ 6 }}" align="center"><h5 class="text-center">Visit Status Report </h5></td>
+                            <td data-a-h="center" class="border-0" colspan="{{ 7 }}" align="center"><h5 class="text-center">Visit Status Report </h5></td>
                         </tr>
                         {% if selectedEmployee is defined and selectedEmployee is not empty %}
 
                             <tr>
                                 <td colspan="2">ID: {{ selectedEmployee.userId }}</td>
                                 <td colspan="2">Name: {{ selectedEmployee.name }}</td>
-                                <td colspan="2">Designation: {{ selectedEmployee.designation.name|default('') }}</td>
+                                <td colspan="3">Designation: {{ selectedEmployee.designation.name|default('') }}</td>
                             </tr>
 
                         {% endif %}
@@ -67,6 +67,7 @@
                             <th>Name</th>
                             <th>District</th>
                             <th>Total (days)</th>
+                            <th>Frequency</th>
                             <th>Visit Date</th>
                         </tr>
                         </thead>
@@ -74,6 +75,8 @@
 
                         {% set i = 1 %}
                         {% if records['agentInfo'] is defined and records['agentInfo'] is not empty %}
+                            {% set totalVisitingDate = records['records'] is defined and records['records'] is not empty ? records['records']|multiArrayLength : 0 %}
+
                         {% for agentId, agent in records['agentInfo'] %}
                             {% set visitingDate = records['records'][agentId] is defined and records['records'][agentId] is not empty ? records['records'][agentId] : []   %}
                             <tr>
@@ -82,6 +85,7 @@
                                 <td>{{ agent.agentName }}</td>
                                 <td>{{ agent.agentDistrictName|default('') }}</td>
                                 <td>{{ visitingDate|length }}</td>
+                                <td>{{ (totalVisitingDate>0? visitingDate|length/totalVisitingDate:0)|number_format(4) }}</td>
                                 <td>
                                     {% if visitingDate is not empty %}
                                         {% for date in visitingDate %}
