@@ -85,7 +85,7 @@
                                 <td>{{ agent.agentName }}</td>
                                 <td>{{ agent.agentDistrictName|default('') }}</td>
                                 <td>{{ visitingDate|length }}</td>
-                                <td>{{ (totalVisitingDate>0? visitingDate|length/totalVisitingDate:0)|number_format(4) }}</td>
+                                <td>{{ totalVisitingDate>0? ((visitingDate|length/totalVisitingDate)*100)|number_format(2):0 }}%</td>
                                 <td>
                                     {% if visitingDate is not empty %}
                                         {% for date in visitingDate %}
