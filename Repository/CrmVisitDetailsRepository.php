@@ -308,4 +308,44 @@ class CrmVisitDetailsRepository extends EntityRepository
 
         return $data;
     }
+
+
+    public function getVisitDetailsSummery($begin, $end, $employeeIds)
+    {
+        $qb = $this->createQueryBuilder('e');
+        $qb->join('e.crmVisit', 'crmVisit');
+        $qb->join('crmVisit.employee', 'employee');
+        $qb->leftJoin('e.crmCustomer', 'farmer');
+        $qb->leftJoin('e.agent', 'agent');
+        $qb->leftJoin('agent.agentGroup', 'agentGroup');
+//        $qb->leftJoin('agent.parent', 'nourishAgent');
+        $qb->select('e.id', 'e.process');
+        $qb->addSelect('farmer.id AS farmerId','farmer.name AS farmerName', 'farmer.address AS farmerAddress', 'farmer.mobile AS farmerMobile');
+        $qb->addSelect('agent.id AS agentAutoId','agent.name AS agentName','agent.agentId', 'agent.address AS agentAddress', 'agent.mobile AS agentMobile');
+        $qb->addSelect('agentGroup.name AS agentGroupName', 'agentGroup.slug AS agentGroupSlug');
+        $qb->addSelect('employee.id AS employeeAutoId','employee.userId','employee.name AS employeeName');
+        $qb->addSelect('crmVisit.created AS visitCreatedDate', 'crmVisit.visitDate', 'crmVisit.visitTime');
+//        $qb->addSelect('nourishAgent.name AS nourishAgentName');
+        $qb->where('crmVisit.created >=:begin')->setParameter('begin', $begin);
+        $qb->andWhere('crmVisit.created <=:end')->setParameter('end', $end);
+        if($employeeIds){
+            $qb->andWhere('employee.id IN (:employeeIds)')->setParameter('employeeIds', $employeeIds);
+        }
+        $results = $qb->getQuery()->getArrayResult();
+
+        $data = [];
+        foreach ($results as $result) {
+            if ($result['farmerId']){
+                $data[$result['employeeAutoId']]['farmer'][$result['visitCreatedDate']->format('F')][$result['farmerId']] = $result;
+            }
+            if ($result['agentAutoId'] && ( $result['agentGroupSlug'] == 'feed' || $result['agentGroupSlug'] == 'chick')){
+                $data[$result['employeeAutoId']]['agent'][$result['visitCreatedDate']->format('F')][$result['agentAutoId']] = $result;
+            }elseif ($result['agentAutoId'] && $result['agentGroupSlug'] == 'other-agent'){
+                $data[$result['employeeAutoId']]['other-agent'][$result['visitCreatedDate']->format('F')][$result['agentAutoId']] = $result;
+            }elseif ($result['agentAutoId'] && $result['agentGroupSlug'] == 'sub-agent'){
+                $data[$result['employeeAutoId']]['sub-agent'][$result['visitCreatedDate']->format('F')][$result['agentAutoId']] = $result;
+            }
+        }
+        return $data;
+    }
 }

@@ -192,6 +192,15 @@
 
     <script>
 
+        $('.employee').click(function(){
+            if($(this).prop("checked") == true){
+                $(this).closest('tr').removeClass('hidden-print');
+                $(this).closest('tr').attr('data-exclude', 'false');
+            }else if($(this).prop("checked") == false){
+                $(this).closest('tr').addClass('hidden-print');
+                $(this).closest('tr').attr('data-exclude', 'true');
+            }
+        });
 
         let button = document.querySelector("#button-excel");
 

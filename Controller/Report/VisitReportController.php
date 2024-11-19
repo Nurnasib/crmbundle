@@ -17,6 +17,7 @@ use Terminalbd\CrmBundle\Entity\CrmVisit;
 use Terminalbd\CrmBundle\Entity\CrmVisitDetails;
 use Terminalbd\CrmBundle\Form\SearchFilterFormType;
 use Terminalbd\CrmBundle\Form\SearchFilterFormTypeForVisitReport;
+use Terminalbd\CrmBundle\Form\SearchFilterFormTypeForVisitSummeryReport;
 
 /**
  * Class VisitReportController
@@ -291,5 +292,144 @@ class VisitReportController extends AbstractController
             'selectedEmployee' => $selectedEmployee,
 
         ]);
+    }
+
+    /**
+     * @Route("/crm/visit-summery-report", name="visit_summery_report")
+     */
+    public function visitSummeryReport(Request $request)
+    {
+        $selectedEmployee = null;
+
+        $userRepo = $this->getDoctrine()->getRepository(User::class);
+        $form = $this->createForm(SearchFilterFormTypeForVisitSummeryReport::class, null, ['loggedUser' => $this->getUser(),'userRepo'=>$userRepo]);
+        $form->handleRequest($request);
+        $records = [];
+        $startDate = @strtotime(date('F') . ' ' . (int)date('Y'));
+        $endDate = @strtotime(date('F') . ' ' . (int)date('Y'));
+
+        $months = $this->monthRange($startDate, $endDate);
+//        dd($months);
+        $data=[];
+
+        $filterBy = [
+            'loggedUser' => $this->getUser(),
+            'startMonth' => date('F'),
+            'endMonth' => date('F'),
+            'year' => (int)date('Y'),
+        ];
+        $employees=[];
+
+        if ($form->isSubmitted()){
+            $startDate = @strtotime($form->get('startMonth')->getData() . ' ' . $form->get('year')->getData());
+            $endDate = @strtotime($form->get('endMonth')->getData() . ' ' . $form->get('year')->getData());
+            $months = $this->monthRange($startDate, $endDate);
+
+            $requestData = $form->getData();
+            $lineManager = isset($requestData['lineManager']) && $requestData['lineManager'] != '' ? $requestData['lineManager'] : null;
+            $employee = isset($requestData['employee']) && $requestData['employee'] != '' ? $requestData['employee'] : null;
+
+            $filterBy['employee'] = $employee;
+            $filterBy['lineManager'] = $lineManager;
+            $filterBy['year'] = (int)$form->get('year')->getData();
+            $filterBy['months'] = $months;
+            $filterBy['startMonth'] = $form->get('startMonth')->getData();
+            $filterBy['endMonth'] = $form->get('endMonth')->getData();
+
+            $employeeArray=[];
+            $roleSplitArray = [];
+            $userRoles = [];
+            foreach ($this->getUser()->getRoles() as $role) {
+                $roleSplitArray = array_merge(explode('_', $role), $roleSplitArray);
+            }
+            if (in_array('ADMIN', $roleSplitArray)) {
+                if (in_array('ROLE_CRM_POULTRY_ADMIN', $this->getUser()->getRoles())) {
+                    array_push($userRoles, 'ROLE_CRM_POULTRY_USER');
+                }
+                if (in_array('ROLE_CRM_CATTLE_ADMIN', $this->getUser()->getRoles())) {
+                    array_push($userRoles, 'ROLE_CRM_CATTLE_USER');
+                }
+                if (in_array('ROLE_CRM_AQUA_ADMIN', $this->getUser()->getRoles())) {
+                    array_push($userRoles, 'ROLE_CRM_AQUA_USER');
+                }
+                if (in_array('ROLE_CRM_SALES_MARKETING_ADMIN', $this->getUser()->getRoles())) {
+                    array_push($userRoles, 'ROLE_CRM_SALES_MARKETING_USER');
+                }
+                $employeeArray = $this->getDoctrine()->getRepository(User::class)->getRoleWiseEmployees($userRoles);
+            }elseif (!in_array('ADMIN', $roleSplitArray) && in_array('ROLE_LINE_MANAGER', $this->getUser()->getRoles())){
+                $employeeArray = $this->getDoctrine()->getRepository(User::class)->getEmployeesByEmployeeIds($this->getUser());
+            }
+            if($lineManager){
+                $employeeArray = $this->getDoctrine()->getRepository(User::class)->getEmployeesByEmployeeIds($lineManager);
+            }
+            if($employee){
+                $employeeArray = $this->getDoctrine()->getRepository(User::class)->getEmployeesByEmployeeIds($employee->getLineManager(), $employee->getId());
+            }
+
+            $uniqueEmployees = [];
+            if(isset($employeeArray['employee']) && sizeof($employeeArray['employee'])>0){
+                $uniqueEmployees = $this->unique_array($employeeArray['employee'], 'id');
+            }
+            if(sizeof($uniqueEmployees)>0){
+                foreach ($uniqueEmployees as $employee) {
+                    $employees[$employee['lineManagerId']][] = $employee;
+                }
+            }
+
+            $employeeIds = array_column($uniqueEmployees, 'id');
+
+            $startDate = date('Y-m-d', strtotime($filterBy['year'] . '-' . $filterBy['startMonth'] . '-01'));
+            $endDate = date('Y-m-t', strtotime($filterBy['year'] . '-' . $filterBy['endMonth'] . '-01'));
+            $records = $this->getDoctrine()->getRepository(CrmVisitDetails::class)->getVisitDetailsSummery($startDate, $endDate, $employeeIds);
+        }
+        $processes = ['agent', 'sub-agent', 'other-agent', 'farmer'];
+
+        return $this->render("@TerminalbdCrm/report/visit-status/visit-summery-report.html.twig",[
+            'records' => $records,
+            'form' => $form->createView(),
+            'selectedEmployee' => $selectedEmployee,
+            'filterBy' => $filterBy,
+            'months' => $months,
+            'employees' => $employees,
+            'processes' => $processes,
+        ]);
+    }
+
+    private function unique_array($my_array, $key) {
+        $result = array();   // Initialize an empty array to store the unique values
+        $i = 0;              // Initialize a counter
+        $key_array = array(); // Initialize an array to keep track of encountered keys
+
+        // Iterate through each element in the input array
+        foreach($my_array as $val) {
+            // Check if the key value is not already present in the key array
+            if (!in_array($val[$key], $key_array)) {
+                $key_array[$i] = $val[$key];  // Store the key value in the key array
+                $result[$i] = $val;           // Store the entire element in the result array
+            }
+            $i++;  // Increment the counter
+        }
+
+        // Return the array containing unique values based on the specified key
+        return $result;
+    }
+
+    private function monthRange($start, $end)
+    {
+
+        $current = $start;
+        $data = [];
+        while ($current <= $end) {
+
+//            $next = @date('Y-M-01', $current) . "+1 month";
+            $next = @date('Y-M-01', $current);
+            $current = @strtotime($next);
+
+            $data[] = date('F', $current);
+
+            $next = @date('Y-M-01', $current) . "+1 month";
+            $current = @strtotime($next);
+        }
+        return $data;
     }
 }
