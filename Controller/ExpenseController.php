@@ -267,6 +267,8 @@ class ExpenseController extends AbstractController
         }
 
         $typeOfVehicles = $this->typeOfVehicle($employee);
+
+        $statusIsOneEntities = array_filter($entities, function($n) { if($n->getStatus()==1) return $n; });
         
         return $this->render('@TerminalbdCrm/expense/details.html.twig', [
             'entities' => $entities,
@@ -281,6 +283,7 @@ class ExpenseController extends AbstractController
             'areaWiseExpenseParticulars' => $areaWiseExpenseParticular,
             'conveyanceDetailsTotalAmount' => $conveyanceDetailsTotalAmount,
             'typeOfVehicles' => $typeOfVehicles,
+            'statusIsOneEntities' => $statusIsOneEntities,
         ]);
     }
 
@@ -344,7 +347,7 @@ class ExpenseController extends AbstractController
 
             return $this->redirectToRoute('crm_expense_details', ['employee' => $employee->getId(), 'monthYear' => $yearMonth]);
         }else{
-            $this->addFlash('error', 'Oop! Something wrong.');
+            $this->addFlash('error', 'This month expense already process.');
             return $this->redirectToRoute('crm_expense_details', ['employee' => $employee->getId(), 'monthYear' => $yearMonth]);
         }
 

@@ -65,7 +65,7 @@
                                 <h6>Vehicle Type: {{ employee.typeOfVehicle|default('')|capitalize }} /  No: {{ employee.vehicleNo|default('') }}</h6>
                             </div>
                         </div>
-                        {% if expenseBatch is null or ( expenseBatch and expenseBatch.approvedAt is null )%}
+                        {% if statusIsOneEntities is defined and statusIsOneEntities|length > 0 %}
                         <form class="form-horizontal right" method="post" enctype="multipart/form-data" action="{{ path('crm_expense_process',{'employee':employee.id}) }}">
                             <input type="hidden" name="monthYear" value="{{ yearMonth }}">
                       {% endif %}
@@ -183,9 +183,6 @@
                                         </tr>
                                     {% endfor %}
                                 {% endif %}
-                            </tbody>
-
-                                <tfoot>
                                 <tr class="text-right">
                                     <th class="text-right hidden show-print" colspan="3">Total</th>
                                     <th class="text-right hidden-print" colspan="5">Total</th>
@@ -219,13 +216,12 @@
                                     <th class="hidden-print"></th>
 
                                 </tr>
-
-                                </tfoot>
+                            </tbody>
                             {% endif %}
 
                         </table>
 {#                            {% if expenseBatch is null %}#}
-                            {% if expenseBatch is null or ( expenseBatch and expenseBatch.approvedAt is null )%}
+                            {% if statusIsOneEntities is defined and statusIsOneEntities|length > 0 %}
                             <div class="hidden-print" style="padding-bottom: 20px">
 
                                 <div class="col-md-12 text-right">
