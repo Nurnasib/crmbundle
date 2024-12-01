@@ -18,6 +18,7 @@ use Terminalbd\CrmBundle\Entity\CrmVisitDetails;
 use Terminalbd\CrmBundle\Form\SearchFilterFormType;
 use Terminalbd\CrmBundle\Form\SearchFilterFormTypeForVisitReport;
 use Terminalbd\CrmBundle\Form\SearchFilterFormTypeForVisitSummeryReport;
+use Terminalbd\KpiBundle\Entity\AgentCategory;
 
 /**
  * Class VisitReportController
@@ -272,6 +273,7 @@ class VisitReportController extends AbstractController
         $form = $this->createForm(SearchFilterFormTypeForVisitReport::class, null, ['loggedUser' => $this->getUser(),'userRepo'=>$userRepo]);
         $form->handleRequest($request);
         $records = [];
+        $agentSales=[];
         if ($form->isSubmitted()){
             $selectedEmployee = $form->getData()['employee'];
             $startDate = $form->getData()['startDate'] ? new \DateTime($form->getData()['startDate']) : new \DateTime('now');
@@ -280,16 +282,19 @@ class VisitReportController extends AbstractController
             $startDate = $startDate->format('Y-m-d 00:00:00');
             $endDate = $endDate->format('Y-m-d 23:59:59');
           $records = $this->getDoctrine()->getRepository(CrmVisitDetails::class)->getAgentVisitMonitors( $startDate, $endDate, $selectedEmployee);
+          $agentIds = isset($records['agentInfo']) && sizeof($records['agentInfo'])>0 ? array_keys($records['agentInfo']) : [];
 
-//            $maxSize = max(array_map('count', $records['records']));
+           if(sizeof($agentIds)>0){
+               $agentSales = $this->getDoctrine()->getRepository(AgentCategory::class)->getAgentCategoryByAgentIds($agentIds, $startDate, $endDate);
+           }
 
-//            dd($maxSize);
         }
         
         return $this->render("@TerminalbdCrm/report/visit-status/agent-visit-monitor.html.twig",[
             'records' => $records,
             'form' => $form->createView(),
             'selectedEmployee' => $selectedEmployee,
+            'agentSales' => $agentSales,
 
         ]);
     }

@@ -69,6 +69,12 @@
                             <th>Total (days)</th>
                             <th>Frequency</th>
                             <th>Visit Date</th>
+                            {% if agentSales['year'] is defined and agentSales['year'] is not empty %}
+                                {% for year in agentSales['year'] %}
+                                    <th>{{ 'Yearly sales ('~year~')' }}</th>
+                                {% endfor %}
+
+                            {% endif %}
                         </tr>
                         </thead>
                         <tbody>
@@ -95,6 +101,13 @@
                                         {% endfor %}
                                     {% endif %}
                                 </td>
+                                {% if agentSales['year'] is defined and agentSales['year'] is not empty %}
+                                    {% for year in agentSales['year'] %}
+                                        {% set salesAvg = agentSales['data'] is defined and agentSales['data'][agentId] is defined and agentSales['data'][agentId][year] is defined ? agentSales['data'][agentId][year]['avgQuantity'] : ''  %}
+                                        <td>{{ salesAvg ? salesAvg|number_format(2) : '' }}</td>
+                                    {% endfor %}
+
+                                {% endif %}
                             </tr>
                             {% set i = i + 1 %}
                         {% endfor %}
@@ -103,6 +116,12 @@
                                 <th>{{ totalVisitingDate }}</th>
                                 <td></td>
                                 <td></td>
+                                {% if agentSales['year'] is defined and agentSales['year'] is not empty %}
+                                    {% for year in agentSales['year'] %}
+                                        <td></td>
+                                    {% endfor %}
+
+                                {% endif %}
                             </tr>
 
                         {% endif %}

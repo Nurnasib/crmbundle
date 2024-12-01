@@ -65,15 +65,15 @@
                                 <h6>Vehicle Type: {{ employee.typeOfVehicle|default('')|capitalize }} /  No: {{ employee.vehicleNo|default('') }}</h6>
                             </div>
                         </div>
-{#                        {% if expenseBatch is null %}#}
+                        {% if expenseBatch is null or ( expenseBatch and expenseBatch.approvedAt is null )%}
                         <form class="form-horizontal right" method="post" enctype="multipart/form-data" action="{{ path('crm_expense_process',{'employee':employee.id}) }}">
                             <input type="hidden" name="monthYear" value="{{ yearMonth }}">
-{#                      {% endif %}#}
+                      {% endif %}
                         <table class="table table-bordered">
                             <thead>
                             <tr>
                                 <th rowspan="2" class="hidden-print">SL</th>
-                                <th rowspan="2">Date</th>
+                                <th class="w-80" rowspan="2">Date</th>
                                 <th rowspan="2" class="hidden-print">Schedule</th>
                                 <th rowspan="2">Visiting Area</th>
                                 <th rowspan="2">Area</th>
@@ -118,7 +118,7 @@
                                                 {{ loop.index }}
 
                                             </td>
-                                            <td>{{ entity.expenseDate|date('d-m-Y') }}</td>
+                                            <td class="w-80">{{ entity.expenseDate|date('d-m-Y') }}</td>
                                             <td class="hidden-print">{{ entity.scheduleVisit }}</td>
                                             <td>{{ entity.visitLocation|default('') }}</td>
                                             <td>{{ entity.workingArea.name|default('') }}</td>
@@ -187,6 +187,7 @@
 
                                 <tfoot>
                                 <tr class="text-right">
+                                    <th class="text-right hidden show-print" colspan="3">Total</th>
                                     <th class="text-right hidden-print" colspan="5">Total</th>
                                     {% if areaWiseExpenseParticulars is defined and areaWiseExpenseParticulars['areaName'] is defined and areaWiseExpenseParticulars['areaName'] is iterable %}
                                         {% for areaId, expenseParticularAttribute in areaWiseExpenseParticulars['areaName'] %}
@@ -224,7 +225,7 @@
 
                         </table>
 {#                            {% if expenseBatch is null %}#}
-
+                            {% if expenseBatch is null or ( expenseBatch and expenseBatch.approvedAt is null )%}
                             <div class="hidden-print" style="padding-bottom: 20px">
 
                                 <div class="col-md-12 text-right">
@@ -236,11 +237,11 @@
                                 <div class="clearfix"></div>
                             </div>
                         </form>
-{#                        {% endif %}#}
+                        {% endif %}
                     </div>
 
                     {% if expenseBatch is not null and expenseBatch.status>1 %}
-                        <table width="100%" class="no-bordered" style="margin-bottom: 20px">
+                        <table width="100%" class="no-bordered" style="margin-bottom: 20px; margin-top: 30px">
                             <tr>
                                 <th style="text-align: center; color: #000">{{ expenseBatch.employee.name|default('') }}</th>
                                 <th style="text-align: center; color: #000">{{ expenseBatch.approvedBy.name|default('') }}</th>
@@ -285,6 +286,9 @@
 
              .expense_body{
                  min-height: 1250px!important;
+             }
+             .w-80{
+                    width: 80px!important;
              }
          }
      </style>
