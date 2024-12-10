@@ -8,7 +8,7 @@
     <title>Daily Visit Report</title>
     <style>
         body {
-            font-size: 12px;
+            font-size: 11px;
         }
     </style>
 </head>
@@ -113,7 +113,7 @@
                         <table border="1" cellspacing="0" cellpadding="5" width="100%" style="margin-top: 10px">
                             <thead style="background-color: #CCCCCC">
                             <tr>
-                                <th width="10">S/N</th>
+{#                                <th width="10">S/N</th>#}
                                 <th>Visited Date & Time</th>
 {#                                <th>Visited Time</th>#}
                                 <th>{{ 'Agent Id'|trans }}</th>
@@ -129,13 +129,11 @@
                             </thead>
                             <tbody>
                             {% for dateMonthYear, entity in employee['agent'] %}
-                                <tr>
-                                    <th colspan="11">{{ dateMonthYear }}</th>
-                                </tr>
+
                                 {% if entity is not empty %}
                                     {% for data in entity %}
                                         <tr>
-                                            <td align="center">{{ loop.index }}</td>
+{#                                            <td align="center">{{ loop.index }}</td>#}
                                             <td>{{ data.visitDate|date('d-m-Y') }} {{ data.visitTime|default('') }}</td>
 {#                                            <td>{{ data.visitTime|default('') }}</td>#}
                                             <td>{{ data.agentId|default('') }}</td>
@@ -146,11 +144,9 @@
                                             <td>
                                                 {% if data.purposeMultiple is not empty %}
                                                     {% set purposes=data.purposeMultiple|json_decode %}
-                                                    <ol style="padding-left: 15px;">
-                                                        {% for purpose in purposes %}
-                                                            <li>{{ purpose }}</li>
-                                                        {% endfor %}
-                                                    </ol>
+                                                    {% for purpose in purposes %}
+                                                        {{ purpose }}, <br>
+                                                    {% endfor %}
                                                 {% else %}
                                                     {{ data.purposeName }}
                                                 {% endif %}

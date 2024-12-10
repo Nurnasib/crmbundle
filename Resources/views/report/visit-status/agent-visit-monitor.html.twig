@@ -83,15 +83,15 @@
                         {% if records['agentInfo'] is defined and records['agentInfo'] is not empty %}
                             {% set totalVisitingDate = records['records'] is defined and records['records'] is not empty ? records['records']|multiArrayLength : 0 %}
 
-                        {% for agentId, agent in records['agentInfo'] %}
-                            {% set visitingDate = records['records'][agentId] is defined and records['records'][agentId] is not empty ? records['records'][agentId] : []   %}
+                        {% for agent in records['agentInfo'] %}
+                            {% set visitingDate = records['records'][agent.agentAutoId] is defined and records['records'][agent.agentAutoId] is not empty ? records['records'][agent.agentAutoId] : []   %}
                             <tr>
                                 <td>{{ i }}</td>
                                 <td>{{ agent.agentId }}</td>
                                 <td>{{ agent.agentName }}</td>
                                 <td>{{ agent.agentDistrictName|default('') }}</td>
-                                <td>{{ visitingDate|length }}</td>
-                                <td>{{ totalVisitingDate>0? ((visitingDate|length/totalVisitingDate)*100)|number_format(2):0 }}%</td>
+                                <td>{{ agent.visitCount }}</td>
+                                <td>{{ totalVisitingDate > 0 ? ((agent.visitCount/totalVisitingDate)*100)|number_format(2):0 }}%</td>
                                 <td>
                                     {% if visitingDate is not empty %}
                                         {% for date in visitingDate %}
@@ -103,7 +103,7 @@
                                 </td>
                                 {% if agentSales['year'] is defined and agentSales['year'] is not empty %}
                                     {% for year in agentSales['year'] %}
-                                        {% set salesAvg = agentSales['data'] is defined and agentSales['data'][agentId] is defined and agentSales['data'][agentId][year] is defined ? agentSales['data'][agentId][year]['avgQuantity'] : ''  %}
+                                        {% set salesAvg = agentSales['data'] is defined and agentSales['data'][agent.agentAutoId] is defined and agentSales['data'][agent.agentAutoId][year] is defined ? agentSales['data'][agent.agentAutoId][year]['avgQuantity'] : ''  %}
                                         <td>{{ salesAvg ? salesAvg|number_format(2) : '' }}</td>
                                     {% endfor %}
 

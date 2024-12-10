@@ -282,9 +282,9 @@ class VisitReportController extends AbstractController
             $startDate = $startDate->format('Y-m-d 00:00:00');
             $endDate = $endDate->format('Y-m-d 23:59:59');
           $records = $this->getDoctrine()->getRepository(CrmVisitDetails::class)->getAgentVisitMonitors( $startDate, $endDate, $selectedEmployee);
-          $agentIds = isset($records['agentInfo']) && sizeof($records['agentInfo'])>0 ? array_keys($records['agentInfo']) : [];
+          $agentIds = isset($records['records']) && sizeof($records['records'])>0 ? array_keys($records['records']) : [];
 
-           if(sizeof($agentIds)>0){
+           if( sizeof($agentIds) > 0 ){
                $agentSales = $this->getDoctrine()->getRepository(AgentCategory::class)->getAgentCategoryByAgentIds($agentIds, $startDate, $endDate);
            }
 

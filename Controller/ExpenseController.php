@@ -33,6 +33,7 @@ use Terminalbd\CrmBundle\Entity\ExpenseChart;
 use Terminalbd\CrmBundle\Entity\ExpenseConveyanceDetails;
 use Terminalbd\CrmBundle\Entity\ExpenseParticular;
 use Terminalbd\CrmBundle\Entity\Setting;
+use Terminalbd\CrmBundle\Form\CrmTourPlanSearchFormType;
 use Terminalbd\CrmBundle\Form\ExpenseFormType;
 use Terminalbd\CrmBundle\Form\ExpenseReportSearchFormType;
 use Terminalbd\CrmBundle\Form\ExpenseVehicleFormType;
@@ -637,4 +638,105 @@ class ExpenseController extends AbstractController
         ]);
 
     }
+
+
+    /**
+     * @Route("/employee-expense-status", methods={"GET","POST"}, name="crm_employee_expense_status", options={"expose"=true})
+     */
+    public function employeeExpenseStatusForLineManager(Request $request)
+    {
+        $requestDate = $request->query->get('date')?date('Y-m-d', strtotime('01-'.$request->query->get('date'))):date('Y-m-01');
+        $entities = [];
+        $userRepo = $this->getDoctrine()->getRepository(User::class);
+        $form = $this->createForm(CrmTourPlanSearchFormType::class, null, ['loggedUser' => $this->getUser(),'userRepo'=>$userRepo]);
+        $form->handleRequest($request);
+        $lastDayOfMonth = date('Y-m-t');
+        $employees=[];
+
+        if ($form->isSubmitted()) {
+            $filterBy = $form->getData();
+            $employeeId = isset( $filterBy['employee']) &&  $filterBy['employee']!='' ? $filterBy['employee']->getId():null;
+
+            $requestDate = isset($filterBy['visitDate'])?$filterBy['visitDate']->format("Y-m-d"):date('Y-m-01');
+
+            $lastDayOfMonth = date('Y-m-t', strtotime($requestDate));
+            $roleSplitArray = [];
+            $userRoles = [];
+            $employeeArray=[];
+
+            foreach ($this->getUser()->getRoles() as $role) {
+                $roleSplitArray = array_merge(explode('_', $role), $roleSplitArray);
+            }
+
+            if (in_array('ADMIN', $roleSplitArray)) {
+                if (in_array('ROLE_CRM_POULTRY_ADMIN', $this->getUser()->getRoles())) {
+                    array_push($userRoles, 'ROLE_CRM_POULTRY_USER');
+                }
+                if (in_array('ROLE_CRM_CATTLE_ADMIN', $this->getUser()->getRoles())) {
+                    array_push($userRoles, 'ROLE_CRM_CATTLE_USER');
+                }
+                if (in_array('ROLE_CRM_AQUA_ADMIN', $this->getUser()->getRoles())) {
+                    array_push($userRoles, 'ROLE_CRM_AQUA_USER');
+                }
+                if (in_array('ROLE_CRM_SALES_MARKETING_ADMIN', $this->getUser()->getRoles())) {
+                    array_push($userRoles, 'ROLE_CRM_SALES_MARKETING_USER');
+                }
+                $employeeArray = $this->getDoctrine()->getRepository(User::class)->getRoleWiseEmployees($userRoles, $employeeId);
+            }elseif (!in_array('ADMIN', $roleSplitArray) && in_array('ROLE_LINE_MANAGER', $this->getUser()->getRoles())){
+                $employeeArray = $this->getDoctrine()->getRepository(User::class)->getEmployeesByEmployeeIds($this->getUser(), $employeeId);
+            }
+            $uniqueEmployees = [];
+            if(isset($employeeArray['employee']) && sizeof($employeeArray['employee'])>0){
+                $uniqueEmployees = $this->unique_array($employeeArray['employee'], 'id');
+            }
+            if(sizeof($uniqueEmployees)>0){
+                foreach ($uniqueEmployees as $employee) {
+                    $employees[$employee['lineManagerId']][] = $employee;
+                }
+            }
+
+            if($requestDate){
+                $entities = $this->getDoctrine()->getRepository(Expense::class)->getExpenseStatusByEmployeeAndDate( $employeeId, date('Y-m', strtotime($requestDate)), $this->getUser() );
+            }
+        }
+
+        $start = new \DateTime($requestDate);
+        $end = new \DateTime($lastDayOfMonth);
+        $arrayDays = [];
+
+        while ($start <= $end) {
+            $arrayDays[$start->format('Y-m-d')] = $start->format('d');
+            $start->modify('+1 day');
+        }
+//        dd($employees);
+        return $this->render('@TerminalbdCrm/expense/employee-expense-status-for-line-manager.html.twig', [
+            'entities' => $entities,
+            'requestDate' => date('m-Y', strtotime($requestDate)),
+            'currentDate' => date('Y-m-d'),
+            'form' => $form->createView(),
+            'arrayDays' => $arrayDays,
+            'employees' => $employees
+        ]);
+    }
+
+
+    public function unique_array($my_array, $key) {
+        $result = array();   // Initialize an empty array to store the unique values
+        $i = 0;              // Initialize a counter
+        $key_array = array(); // Initialize an array to keep track of encountered keys
+
+        // Iterate through each element in the input array
+        foreach($my_array as $val) {
+            // Check if the key value is not already present in the key array
+            if (!in_array($val[$key], $key_array)) {
+                $key_array[$i] = $val[$key];  // Store the key value in the key array
+                $result[$i] = $val;           // Store the entire element in the result array
+            }
+            $i++;  // Increment the counter
+        }
+
+        // Return the array containing unique values based on the specified key
+        return $result;
+    }
+
 }

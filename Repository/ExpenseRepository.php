@@ -499,7 +499,73 @@ class ExpenseRepository extends EntityRepository
 
     }
 
+    public function getExpenseStatusByEmployeeAndDate($employee, $expenseDate=null, User $loggedUser){
+        $qb = $this->createQueryBuilder('e');
+        $qb->select('e.id', 'e.expenseDate', 'e.status' );
+        $qb->addSelect('employee.id as employeeId', 'employee.name as employeeName', 'employee.userId as employeeUserId' );
+        $qb->join('e.employee','employee' );
+        
+        $qb->andWhere("DATE_FORMAT(e.expenseDate,'%Y-%m') =:yearMonth")->setParameter('yearMonth', date('Y-m', strtotime($expenseDate)));
+        $qb->andWhere('e.expenseDate IS NOT NULL');
 
+
+        $roleSplitArray = [];
+
+        foreach ($loggedUser->getRoles() as $role) {
+            $roleSplitArray = array_merge(explode('_', $role), $roleSplitArray);
+        }
+        if (in_array('ADMIN', $roleSplitArray) && !$employee) {
+            $userRole = [];
+            if (in_array('ROLE_CRM_POULTRY_ADMIN', $loggedUser->getRoles())) {
+                array_push($userRole, 'ROLE_CRM_POULTRY_USER');
+            }
+            if (in_array('ROLE_CRM_CATTLE_ADMIN', $loggedUser->getRoles())) {
+                array_push($userRole, 'ROLE_CRM_CATTLE_USER');
+            }
+            if (in_array('ROLE_CRM_AQUA_ADMIN', $loggedUser->getRoles())) {
+                array_push($userRole, 'ROLE_CRM_AQUA_USER');
+            }
+            if (in_array('ROLE_CRM_SALES_MARKETING_ADMIN', $loggedUser->getRoles())) {
+                array_push($userRole, 'ROLE_CRM_SALES_MARKETING_USER');
+            }
+            $query = '';
+            foreach ($userRole as $key => $role) {
+                if ($key !== 0) {
+                    $query .= " OR ";
+                }
+                $query .= "employee.roles LIKE '%" . $role . "%'";
+
+            }
+            $qb->andWhere($query);
+
+        } elseif (!in_array('ADMIN', $roleSplitArray) && in_array('ROLE_LINE_MANAGER', $loggedUser->getRoles()) && !$employee) {
+            $employeeIdsByLineManager = $this->_em->getRepository(User::class)->getEmployeesByLineManager($loggedUser);
+            $employeeIs=[];
+            if($employeeIdsByLineManager){
+                $employeeIs=$employeeIdsByLineManager;
+            }
+            $qb->andWhere('employee.id IN (:employeeIds)')->setParameter('employeeIds', $employeeIs);
+        } elseif (!in_array('ADMIN', $roleSplitArray) && !in_array('ROLE_LINE_MANAGER', $loggedUser->getRoles())) {
+            $qb->andWhere('e.employee = :employee')->setParameter('employee', $loggedUser);
+        }
+
+        if($employee) {
+            $qb->andWhere('employee.id =:employeeId')->setParameter('employeeId', $employee);
+        }
+
+        $qb->orderBy('e.expenseDate', 'ASC');
+
+        $results= $qb->getQuery()->getArrayResult();
+//        dd($results);
+        $returnArray=[];
+        if($results){
+            foreach ($results as $result) {
+                $visitDate= $result['expenseDate']->format('Y-m-d');
+                $returnArray[$result['employeeId']][$visitDate]=$result;
+            }
+        }
+        return $returnArray;
+    }
 
 
 }

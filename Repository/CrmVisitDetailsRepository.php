@@ -294,6 +294,7 @@ class CrmVisitDetailsRepository extends EntityRepository
                 ];
                 $data['agentInfo'][$result['agentAutoId']]= [
                     'agentName'=> $result['agentName'],
+                    'agentAutoId'=> $result['agentAutoId'],
                     'agentId'=> $result['agentGroupSlug']=='other-agent' || $result['agentGroupSlug']=='sub-agent' ? $result['agentGroupName'] : $result['agentId'],
                     'agentAddress'=> $result['agentAddress'],
                     'agentMobile'=> $result['agentMobile'],
@@ -304,8 +305,17 @@ class CrmVisitDetailsRepository extends EntityRepository
                 $data['visitCreatedDate']= ['begin' => $begin,'end' => $end];
 
             }
-        }
+            // sort $data['agentInfo'][$result['agentAutoId']] by count of visit date
+            foreach ($data['records'] as $key => $value){
+                $data['agentInfo'][$key]['visitCount'] = count($value);
+            }
 
+            usort($data['agentInfo'], function($a, $b) {
+                return $b['visitCount'] <=> $a['visitCount'];
+            });
+
+        }
+        
         return $data;
     }
 
