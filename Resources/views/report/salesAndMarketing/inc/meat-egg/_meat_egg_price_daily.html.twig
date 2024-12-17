@@ -58,9 +58,9 @@
                             {% for reportingDate in entities['dateRange'] %}
                                 <td data-t="n" align="center">
                                     {% if details[reportingDate] is defined %}
-                                        {{ details[reportingDate]|number_format(2) }}
+                                        {{ details[reportingDate]|number_format(2, '.', '') }}
                                     {% else %}
-                                        0
+                                        {{ 0|number_format(2, '.', '') }}
                                     {% endif %}
                                 </td>
                             {% endfor %}

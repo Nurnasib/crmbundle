@@ -48,9 +48,9 @@
                             {% for month in entities['monthRange'] %}
                                 <td data-t="n" align="center">
                                     {% if details[month|date('F-Y')] is defined %}
-                                        {{ details[month|date('F-Y')]|number_format(2) }}
+                                        {{ details[month|date('F-Y')]|number_format(2, '.', '') }}
                                     {% else %}
-                                        0
+                                        {{ 0|number_format(2, '.', '') }}
                                     {% endif %}
                                 </td>
                             {% endfor %}
