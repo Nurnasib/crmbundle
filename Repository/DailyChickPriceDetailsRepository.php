@@ -32,6 +32,7 @@ class DailyChickPriceDetailsRepository extends EntityRepository
         $end = isset($filterBy['endDate']) ? (new \DateTime($filterBy['endDate']))->format('Y-m-d') : date('Y-m-d');
         $employeeId = isset($filterBy['employeeId']) ? $filterBy['employeeId'] : null;
         $poultryFramType = isset($filterBy['poultryFramType']) ? $filterBy['poultryFramType'] : '';
+        $chickType = isset($filterBy['chickType']) ? $filterBy['chickType'] : '';
         $region = isset($filterBy['region']) && $filterBy['region']!='' ? $filterBy['region'] : '';
 
         $qb = $this->createQueryBuilder('e');
@@ -47,6 +48,7 @@ class DailyChickPriceDetailsRepository extends EntityRepository
         $qb->select('employee.id','employee.userId', 'employee.name');
         $qb->addSelect('e.price');
         $qb->addSelect('chick_type_parent.id AS chickTypeParentId', 'chick_type_parent.name AS chickTypeParentName');
+        $qb->addSelect('chick_type.name AS chickTypeName', 'chick_type.id AS chickTypeId');
         $qb->addSelect('feed.id AS feedId', 'feed.name AS feedName');
         $qb->addSelect('parent.reportingDate', 'MONTH(parent.reportingDate) AS month', 'YEAR(parent.reportingDate) AS year');
         $qb->addSelect('designation.name as designationName');
@@ -79,6 +81,10 @@ class DailyChickPriceDetailsRepository extends EntityRepository
         if($poultryFramType){
            $qb->andWhere('chick_type_parent.id =:docType')->setParameter('docType', $poultryFramType);
         }
+
+        if($chickType){
+            $qb->andWhere('chick_type.id =:chickType')->setParameter('chickType', $chickType);
+        }
         
         if($region){
             $qb->andWhere('regional.id = :regionId')->setParameter('regionId', $region);
@@ -91,9 +97,9 @@ class DailyChickPriceDetailsRepository extends EntityRepository
         foreach ($results as $result) {
             $reportingDate = $result['reportingDate']->format('d-m-Y');
 //            $data[$result['chickTypeParentName']][$result['userId'] . '~' . $result['name']][$result['feedName']][$reportingDate] = $result['price'];
-            $data['records'][$result['chickTypeParentName']][$result['userId']][$result['feedId']][$reportingDate] = $result['price'];
-            $data['feedCompany'][$result['chickTypeParentName']][$result['userId']][$result['feedId']] = $result['feedName'];
-            $data['employeeInfo'][$result['chickTypeParentName']][$result['userId']] = ['employeeId'=>$result['userId'], 'employeeName'=>$result['name'], 'designationName'=>$result['designationName'], 'regionalName'=>$result['regionalName']];
+            $data['records'][$result['chickTypeName']][$result['userId']][$result['feedId']][$reportingDate] = $result['price'];
+            $data['feedCompany'][$result['chickTypeName']][$result['userId']][$result['feedId']] = $result['feedName'];
+            $data['employeeInfo'][$result['chickTypeName']][$result['userId']] = ['employeeId'=>$result['userId'], 'employeeName'=>$result['name'], 'designationName'=>$result['designationName'], 'regionalName'=>$result['regionalName']];
 
         }
         $data['dateRange']=$this->getBetweenDates($start, $end);
@@ -146,6 +152,7 @@ class DailyChickPriceDetailsRepository extends EntityRepository
         $end = isset($filterBy['endMonth']) ? (new \DateTime($filterBy['endMonth']))->format('Y-m-d') : date('Y-12-31');
         $employeeId = isset($filterBy['employeeId']) ? $filterBy['employeeId'] : null;
         $poultryFramType = isset($filterBy['poultryFramType']) ? $filterBy['poultryFramType'] : '';
+        $chickType = isset($filterBy['chickType']) ? $filterBy['chickType'] : '';
         $region = isset($filterBy['region']) && $filterBy['region']!='' ? $filterBy['region'] : '';
         
         $qb = $this->createQueryBuilder('e');
@@ -160,6 +167,7 @@ class DailyChickPriceDetailsRepository extends EntityRepository
 
         $qb->select('employee.id','employee.userId', 'employee.name');
         $qb->addSelect('AVG(e.price) AS avgPrice');
+        $qb->addSelect('chick_type.name AS chickTypeName', 'chick_type.id AS chickTypeId');
         $qb->addSelect('chick_type_parent.id AS chickTypeParentId', 'chick_type_parent.name AS chickTypeParentName');
         $qb->addSelect('feed.id AS feedId', 'feed.name AS feedName');
         $qb->addSelect('parent.reportingDate', 'MONTH(parent.reportingDate) AS month', 'YEAR(parent.reportingDate) AS year');
@@ -198,6 +206,9 @@ class DailyChickPriceDetailsRepository extends EntityRepository
         if($poultryFramType){
             $qb->andWhere('chick_type_parent.id =:docType')->setParameter('docType', $poultryFramType);
         }
+        if($chickType){
+            $qb->andWhere('chick_type.id =:chickType')->setParameter('chickType', $chickType);
+        }
         if($region){
             $qb->andWhere('regional.id = :regionId')->setParameter('regionId', $region);
         }
@@ -208,9 +219,9 @@ class DailyChickPriceDetailsRepository extends EntityRepository
 
         foreach ($results as $result) {
             $month = $result['reportingDate']->format('F-Y');
-            $data['records'][$result['chickTypeParentName']][$result['userId']][$result['feedId']][$month] = $result['avgPrice'];
-            $data['feedCompany'][$result['chickTypeParentName']][$result['userId']][$result['feedId']] = $result['feedName'];
-            $data['employeeInfo'][$result['chickTypeParentName']][$result['userId']] = ['employeeId'=>$result['userId'], 'employeeName'=>$result['name'], 'designationName'=>$result['designationName'], 'regionalName'=>$result['regionalName']];
+            $data['records'][$result['chickTypeName']][$result['userId']][$result['feedId']][$month] = $result['avgPrice'];
+            $data['feedCompany'][$result['chickTypeName']][$result['userId']][$result['feedId']] = $result['feedName'];
+            $data['employeeInfo'][$result['chickTypeName']][$result['userId']] = ['employeeId'=>$result['userId'], 'employeeName'=>$result['name'], 'designationName'=>$result['designationName'], 'regionalName'=>$result['regionalName']];
 
         }
         $data['monthRange']=$this->getMonthBetweenDates($start, $end);

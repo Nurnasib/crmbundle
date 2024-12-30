@@ -62,7 +62,7 @@ class DailyChickPriceController extends AbstractController
         }
 
         $feeds = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType'=>'HATCHERY', 'status' => 1));
-        $chickTypes = $this->getDoctrine()->getRepository(Setting::class)->findBy(array('settingType'=>'CHICK_TYPE', 'status' => 1));
+        $chickTypes = $this->getDoctrine()->getRepository(Setting::class)->findBy( array('settingType'=>'CHICK_TYPE', 'status' => 1) );
 
         $parent = $this->getDoctrine()->getRepository(DailyChickPriceDetails::class)->findOneBy(array('crmDailyChickPrice' => $entity));
 

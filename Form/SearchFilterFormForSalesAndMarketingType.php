@@ -220,6 +220,22 @@ class SearchFilterFormForSalesAndMarketingType extends AbstractType
                 'required' => false
 
             ])
+            ->add('chickType', EntityType::class,[
+                'class' => Setting::class,
+                'choice_label' => 'name',
+                'placeholder' => '- All DOC Type-',
+                'query_builder' => function(EntityRepository $er){
+                    return $er->createQueryBuilder('e')
+                        ->where('e.settingType = :settingType')->setParameter('settingType', 'CHICK_TYPE')
+                        ->andWhere('e.status = 1')
+                        ->orderBy('e.name');
+                },
+                'attr' => [
+                    'class' => 'select2'
+                ],
+                'required' => false
+
+            ])
             ->add('meatEggBreedType', EntityType::class,[
                 'class' => Setting::class,
                 'choice_label' => 'name',

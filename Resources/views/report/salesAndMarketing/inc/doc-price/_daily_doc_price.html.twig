@@ -20,7 +20,7 @@
             {% for chickType, entity in entities['records'] %}
                 <thead>
                 <tr>
-                    <th class="border-0" scope="col" colspan="{{ entities['dateRange'] is defined ? entities['dateRange']|length+6 :0 }}" style="text-align: left; background-color: yellow; font-size: 20px">{{ chickType }} DOC</th>
+                    <th class="border-0" scope="col" colspan="{{ entities['dateRange'] is defined ? entities['dateRange']|length+6 :0 }}" style="text-align: left; background-color: yellow; font-size: 20px">{{ chickType|replace({' (Pcs)': ''}) }} Doc</th>
                 </tr>
                 </thead>
                 <thead class="thead-dark">

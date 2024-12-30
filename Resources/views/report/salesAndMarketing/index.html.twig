@@ -48,8 +48,10 @@
                             {{ form_widget(form.region) }}
                         </th>
                         <th>
-                            {{ form_label(form.poultryFramType, 'Doc Type:') }}
-                            {{ form_widget(form.poultryFramType) }}
+                            {#{{ form_label(form.poultryFramType, 'Doc Type:') }}
+                            {{ form_widget(form.poultryFramType) }}#}
+                            {{ form_label(form.chickType, 'Doc Type:') }}
+                            {{ form_widget(form.chickType) }}
                         </th>
                         {% endif %}
                         {% if report=='meat-egg-price-daily' or report=='meat-egg-price-monthly' %}

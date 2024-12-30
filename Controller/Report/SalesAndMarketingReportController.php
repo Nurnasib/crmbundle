@@ -69,6 +69,7 @@ class SalesAndMarketingReportController extends AbstractController
             $filterBy['startDate'] = $form->getData()['startDate'];
             $filterBy['endDate'] = $form->getData()['endDate'];
             $filterBy['poultryFramType'] = $form->getData()['poultryFramType'];
+            $filterBy['chickType'] = $form->getData()['chickType'];
             $filterBy['meatEggBreedType'] = $form->getData()['meatEggBreedType'];
 //            $filterBy['employee'] = $form->getData()['employee'] ? $form->getData()['employee'] : '';
             $filterBy['employeeId'] = $form->getData()['employee'] ? $form->getData()['employee']->getId() : '';
