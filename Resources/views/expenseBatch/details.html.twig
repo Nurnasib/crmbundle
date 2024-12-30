@@ -320,7 +320,7 @@
                                         {% set totalMobileBill = transportTypeConveyanceDetails[typeOfVehicle.slug]|arraySumColWise('totalMobileBill')|number_format(2,'.','')   %}
                                         {% set totalMaintenanceBill = transportTypeConveyanceDetails[typeOfVehicle.slug]|arraySumColWise('totalMaintenanceBill')|number_format(2,'.','') %}
                                         {% set totalServicingBill = transportTypeConveyanceDetails[typeOfVehicle.slug]|arraySumColWise('totalServicingBill')|number_format(2,'.','') %}
-                                        {% set totalTollBill = transportTypeConveyanceDetails[typeOfVehicle.slug]|arraySumColWise('totalTollBill')|default(0)|number_format(2,'.','') %}
+                                        {% set totalTollBill = transportTypeConveyanceDetails[typeOfVehicle.slug]['tollBill']|arraySumColWise('totalTollBill')|default(0)|number_format(2,'.','') %}
                                         {% set grandTotalBill = usedReadingBill + totalMobileBill + totalMaintenanceBill + totalServicingBill +totalTollBill %}
 
                                         <div style="page-break-after: always "></div>

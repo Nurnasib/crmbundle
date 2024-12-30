@@ -225,6 +225,9 @@ class ExpenseConveyanceDetailsRepository extends EntityRepository
                     if($result['meterReadingFromConcat']!=""){
                         $returnArray[$result['transportType']][$date] = $result;
                     }
+                    if( $result['totalTollBill'] > 0 ){
+                        $returnArray[$result['transportType']]['tollBill'][$date] = $result;
+                    }
                 }
                 else{
                     if($result['grandTotalAmount'] > 0){
