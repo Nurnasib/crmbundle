@@ -46,7 +46,7 @@
                             <td data-t="n" >{{ details|length>0?((details|arraySum)/(details|length))|number_format(2,'.',''):'' }}</td>
                             {% if entities['dateRange'] is defined and entities['dateRange'] is not empty %}
                                 {% for reportingDate in entities['dateRange'] %}
-                                    <th data-t="s" align="center">
+                                    <th data-t="n" align="center">
             {#                            {{ reportingDate }}#}
                                         {% if details[reportingDate] is defined %}
                                             {{ details[reportingDate]|number_format(2,'.','') }}
