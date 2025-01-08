@@ -51,9 +51,9 @@
                                 <td data-t="n" >{{ details|length>0?((details|arraySum)/(details|length))|number_format(2,'.',''):'' }}</td>
                                 {% if entities['monthRange'] is defined and entities['monthRange'] is not empty %}
                                     {% for month in entities['monthRange'] %}
-                                        <td data-t="n" align="center">
+                                        <td data-t="s" align="center">
                                             {% if details[month|date('F-Y')] is defined %}
-                                                {{ details[month|date('F-Y')]|number_format(2) }}
+                                                {{ details[month|date('F-Y')]|number_format(2,'.','') }}
                                             {% else %}
                                                 0
                                             {% endif %}
