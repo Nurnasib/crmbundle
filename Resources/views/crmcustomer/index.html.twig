@@ -82,7 +82,9 @@
                             <th rowspan="2" scope="col">Name</th>
                             <th rowspan="2" scope="col">Mobile</th>
                             <th rowspan="2" scope="col">Address</th>
+                            <th rowspan="2" scope="col">Agent Id</th>
                             <th rowspan="2" scope="col">Agent</th>
+                            <th rowspan="2" scope="col">Agent Location</th>
                             <th rowspan="2" scope="col">Feed</th>
                             <th rowspan="2" scope="col">Location</th>
                             <th class="text-center" colspan="{{ species|length }}" scope="col">Capacity</th>
@@ -109,7 +111,15 @@
                                 <td>{{ entity.name }}</td>
                                 <td>{{ entity.mobile }}</td>
                                 <td>{{ entity.address }}</td>
+                                <td>{{ entity.agentId }}</td>
                                 <td>{{ entity.agentName }}</td>
+
+                                <td>
+                                    {{ (entity.thanaName|default('')) ~
+                                    (entity.thanaName and entity.districtName ? ',' : '') ~
+                                    (entity.districtName|default('')) }}
+                                </td>
+
                                 <td>{{ entity.feedName|default('') }}</td>
                                 <td>{{ entity.locationName }}</td>
 {#                                <td>{{ entity.farmerTypeName|default('') }}</td>#}

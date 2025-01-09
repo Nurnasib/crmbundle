@@ -69,14 +69,20 @@ class CrmCustomerRepository extends EntityRepository
         $qb->leftJoin('e.location','location');
         $qb->join('e.customerGroup','s');
         $qb->leftJoin('e.agent','agent');
+
+        $qb->leftJoin('agent.upozila','thana');
+        $qb->leftJoin('thana.parent','district');
+
         $qb->join('e.farmerIntroduce','farmerIntroduce');
         $qb->leftJoin('farmerIntroduce.feed', 'feed');
         $qb->leftJoin('farmerIntroduce.farmerType','farmerType');
 
-        $qb->select('e.id as id','e.name as name','e.address as address','e.mobile as mobile', 'agent.name AS agentName', 'location.name AS locationName');
+        $qb->select('e.id as id','e.name as name','e.address as address','e.mobile as mobile', 'agent.name AS agentName', 'agent.agentId as agentId','agent.address as agentLocation' , 'location.name AS locationName');
         $qb->addSelect('farmerType.name as farmerTypeName');
         $qb->addSelect('farmerIntroduce.cultureSpeciesItemAndQty');
         $qb->addSelect('feed.name as feedName');
+
+        $qb->addSelect('thana.name as thanaName','district.name as districtName');
 
         $qb->where('s.slug = :slug')->setParameter('slug',$pram);
         $qb->andWhere('farmerType.slug =:farmerTypeSlug')->setParameter('farmerTypeSlug', $customerType.'-breed');
@@ -108,7 +114,6 @@ class CrmCustomerRepository extends EntityRepository
         if(isset($filterBy['feedCompany']) && $filterBy['feedCompany'] != ""){
             $qb->andWhere('feed.id = :feedId')->setParameter('feedId', $filterBy['feedCompany']->getId());
         }
-
         return $qb->getQuery()->getArrayResult();
 
     }
