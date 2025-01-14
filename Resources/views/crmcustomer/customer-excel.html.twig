@@ -23,13 +23,12 @@
                             <th data-a-v="middle" rowspan="2" scope="col">Name</th>
                             <th data-a-v="middle" rowspan="2" scope="col">Mobile</th>
                             <th data-a-v="middle" rowspan="2" scope="col">Address</th>
-                            <th data-a-v="middle" rowspan="2" scope="col">Agent Id</th>
-                            <th data-a-v="middle" rowspan="2" scope="col">Agent</th>
-                            <th  data-a-v="middle" rowspan="2" scope="col">Location</th>
-                            <th data-a-v="middle" rowspan="2" scope="col">Feed</th>
                             <th data-a-v="middle" rowspan="2" scope="col">Location</th>
+                            <th data-a-v="middle" rowspan="2" scope="col">Agent ID</th>
+                            <th data-a-v="middle" rowspan="2" scope="col">Agent Name</th>
+                            <th  data-a-v="middle" rowspan="2" scope="col">Agent Location</th>
+                            <th data-a-v="middle" rowspan="2" scope="col">Feed</th>
                             <th data-a-h="center" class="text-center" colspan="{{ species|length }}" scope="col">Capacity</th>
-
                         </tr>
                         <tr>
                             {% if species is defined and species is not empty %}
@@ -51,6 +50,7 @@
                                 <td>{{ entity.name }}</td>
                                 <td>{{ entity.mobile }}</td>
                                 <td>{{ entity.address }}</td>
+                                <td>{{ entity.locationName }}</td>
                                 <td>{{ entity.agentId }}</td>
                                 <td>{{ entity.agentName }}</td>
                                 <td>
@@ -59,7 +59,6 @@
                                     (entity.districtName|default('')) }}
                                 </td>
                                 <td>{{ entity.feedName|default('') }}</td>
-                                <td>{{ entity.locationName }}</td>
                                 {% if species is defined and species is not empty %}
 
                                     {% for specie in species %}
