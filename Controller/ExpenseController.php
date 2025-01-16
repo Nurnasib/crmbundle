@@ -87,13 +87,13 @@ class ExpenseController extends AbstractController
     public function new(Request $request): Response
     {
 
-        $entity = new Expense();
-        $entity->setEmployee($this->getUser());
-        $em = $this->getDoctrine()->getManager();
-        $em->persist($entity);
-        $em->flush();
+//        $entity = new Expense();
+//        $entity->setEmployee($this->getUser());
+//        $em = $this->getDoctrine()->getManager();
+//        $em->persist($entity);
+//        $em->flush();
 //        $this->addFlash('success', 'post.created_successfully');
-        return $this->redirectToRoute('crm_expense_edit', ['id'=>$entity->getId()]);
+//        return $this->redirectToRoute('crm_expense_edit', ['id'=>$entity->getId()]);
     }
 
     /**

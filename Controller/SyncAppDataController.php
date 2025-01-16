@@ -1587,7 +1587,7 @@ VALUES (:total_birds, :hatchery_date, :created, :updated, :customer_id, :employe
     }
     private function processExpense($reports, Api $batch)
     {
-        foreach ($reports as $report) {
+        /*foreach ($reports as $report) {
             $findVisit = $this->getDoctrine()->getRepository(CrmVisit::class)->findOneBy(['appBatch' => $batch, 'appId' => $report['crm_visit_id']]);
             if ($findVisit){
                 $sql = "INSERT INTO `crm_expense`(`schedule_visit`, `conveyance`, `daily_allowance`, `hotel_rent`, `photostate`, `courier`, `food`, `mobile`, `maintenace`, `toll_bill`, `service_charge`, `others`, `visiting_area_id`, `crm_visit_id`, `status`, `app_id`) 
@@ -1614,7 +1614,7 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
 
                 $stmt->execute();
             }
-        }
+        }*/
     }
     private function processExpensePurpose($reports, Api $batch)
     {
