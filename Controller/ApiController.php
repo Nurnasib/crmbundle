@@ -4317,9 +4317,9 @@ class ApiController extends AbstractController
             $employeeId = isset($expenseData['employee_id']) && $expenseData['employee_id'] != '' ? $expenseData['employee_id'] : null;
 
             $vistingDate = isset($expenseData['visit_date']) && $expenseData['visit_date'] != "" ? date('Y-m-d', strtotime($expenseData['visit_date'])) : '';
-            if ($employeeId && $vistingDate) {
-                $employee = $this->getDoctrine()->getRepository(User::class)->find($employeeId);
+            $employee = $this->getDoctrine()->getRepository(User::class)->find($employeeId);
 
+            if ($employeeId && $vistingDate && $employee) {
                 $expenseApiResponse = new ExpenseApiResponse();
                 $expenseApiResponse->setEmployee($employee);
                 $expenseApiResponse->setJsonResponse($arrayData);
@@ -4334,22 +4334,24 @@ class ApiController extends AbstractController
                 }
                 $existingExpense = null;
                 $expenseIdForUpdate = isset($expenseData['id']) && $expenseData['id']!=""?(int)$expenseData['id']:'';
+
                 if($expenseIdForUpdate!=''){
                     $existingExpense = $this->getDoctrine()->getRepository(Expense::class)->find($expenseIdForUpdate);
                 }elseif ($expenseIdForUpdate=='' && $employeeId!='' && $vistingDate!=''){
-//                    $existingExpense = $this->getDoctrine()->getRepository(Expense::class)->findOneBy(['employee' => $employee, 'expenseDate' => new \DateTimeImmutable($vistingDate)]);
                     $dailyExpenseCheck=$this->getDoctrine()->getRepository(Expense::class)->getExpenseByEmployeeAndDate( $employeeId, $vistingDate);
                     if($dailyExpenseCheck && sizeof($dailyExpenseCheck)>0){
-                    $existingExpense = $this->getDoctrine()->getRepository(Expense::class)->findOneBy(['employee' => $employee, 'id'=>$dailyExpenseCheck[0]['id']]);
+                        $existingExpense = $this->getDoctrine()->getRepository(Expense::class)->findOneBy(['employee' => $employee, 'id'=>$dailyExpenseCheck[0]['id']]);
                     }else{
                         $existingExpense = $this->getDoctrine()->getRepository(Expense::class)->findOneBy(['employee' => $employee, 'expenseDate' => new \DateTimeImmutable($vistingDate)]);
                     }
                 }
+
                 if ($existingExpense) {
                     $expense = $existingExpense;
                 }else{
                     $expense = new Expense();
                 }
+
                     $getLastMileageRecords = $this->getDoctrine()->getRepository(ExpenseConveyanceDetails::class)->getLastMileageByEmployeeDate($employeeId, $vistingDate);
 
                     $expense->setExpenseDate(new \DateTime($vistingDate));

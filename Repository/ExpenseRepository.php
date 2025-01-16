@@ -246,7 +246,21 @@ class ExpenseRepository extends EntityRepository
         }
         return [];
     }
-    
+
+    /*function by raju*/
+    public function getExpenseByEmployeeAndDateForUpdate($employeeId, $visitingDate)
+    {
+        return $this->createQueryBuilder('e')
+            ->where('e.status >=:status')->setParameter('status',1)
+            ->andWhere('e.employee = :employeeId')
+            ->andWhere('e.expenseDate = :visitingDate')
+            ->setParameter('employeeId', $employeeId)
+            ->setParameter('visitingDate', new \DateTimeImmutable($visitingDate))
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+
     public function getExpenseByEmployeeAndDate($employeeId, $expenseDate){
         $qb = $this->createQueryBuilder('e');
         $qb->select('e.id');
