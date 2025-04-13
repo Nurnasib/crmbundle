@@ -19,6 +19,9 @@ use Terminalbd\CrmBundle\Form\SearchFilterFormType;
 use Terminalbd\CrmBundle\Form\SearchFilterFormTypeForVisitReport;
 use Terminalbd\CrmBundle\Form\SearchFilterFormTypeForVisitSummeryReport;
 use Terminalbd\KpiBundle\Entity\AgentCategory;
+use DateTime;
+use DatePeriod;
+use DateInterval;
 
 /**
  * Class VisitReportController
@@ -297,6 +300,62 @@ class VisitReportController extends AbstractController
             'agentSales' => $agentSales,
 
         ]);
+    }
+
+    /**
+     * @Route("/crm/agent-visit-monitor-date-wise", name="agent_visit_monitor_date_wise")
+     */
+    public function agentVisitMonitorDateWise(Request $request)
+    {
+        $selectedEmployee = null;
+        $startDate = date('Y-m-01');
+        $endDate = date('Y-m-t');
+        $userRepo = $this->getDoctrine()->getRepository(User::class);
+        $form = $this->createForm(SearchFilterFormTypeForVisitReport::class, null, ['loggedUser' => $this->getUser(),'userRepo'=>$userRepo]);
+        $form->handleRequest($request);
+        $records = [];
+        $agentSales=[];
+        $getAllDates=[];
+        if ($form->isSubmitted()){
+            $selectedEmployee = $form->getData()['employee'];
+            $startDate = $form->getData()['startDate'] ? new \DateTime($form->getData()['startDate']) : new \DateTime('now');
+            $endDate = $form->getData()['endDate'] ? new \DateTime($form->getData()['endDate']) : new \DateTime('now');
+
+            $startDate = $startDate->format('Y-m-d 00:00:00');
+            $endDate = $endDate->format('Y-m-d 23:59:59');
+
+            $getAllDates = $this->getDatesBetween($startDate, $endDate);
+
+          $records = $this->getDoctrine()->getRepository(CrmVisitDetails::class)->getAgentVisitMonitorsDateWise( $startDate, $endDate, $selectedEmployee);
+        }
+        
+        return $this->render("@TerminalbdCrm/report/visit-status/agent-visit-monitor-date-wise.html.twig",[
+            'records' => $records,
+            'form' => $form->createView(),
+            'selectedEmployee' => $selectedEmployee,
+//            'agentSales' => $agentSales,
+            'allDates' => $getAllDates,
+
+        ]);
+    }
+
+    function getDatesBetween(string $startDate, string $endDate): array
+    {
+        $start = new DateTime($startDate);
+        $end = new DateTime($endDate);
+
+        $interval = new DateInterval('P1D'); // 1-day interval
+        $dates = [];
+
+        while ($start <= $end) { // Ensure last date is included
+            $dates[] = [
+                'day'  => $start->format('l'),    // Example: "Wednesday"
+                'date' => $start->format('d-m-Y') // Example: "26-02-2025"
+            ];
+            $start->add($interval);
+        }
+
+        return $dates;
     }
 
     /**
