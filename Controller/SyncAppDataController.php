@@ -3005,7 +3005,7 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
 
             $sql = "INSERT INTO `crm_customer_service_report` (`report_id`, `employee_id`, `visit_id`, `agent_id`, `customer_id`,`app_batch_id`, `farmer_comments`, `visitor_comments`, `customer_service_type`, `created_at`) 
                     VALUES (:report_id, :employee_id, :visit_id, :agent_id, :customer_id, :app_batch_id, :farmer_comments, :visitor_comments, :customer_service_type, :created_at)";
-            dd($report, $customer_service_type);
+
             $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
 
             $stmt->bindValue('report_id', $report['report_id']);
