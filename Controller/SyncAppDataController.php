@@ -240,6 +240,9 @@ class SyncAppDataController extends AbstractController
                     case "crm_challenges":
                         $this->processChallengers($jsonToArray, $batch);
                         break;
+                    case "crm_customer_service_report":
+                        $this->processCustomerServiceReport($jsonToArray, $batch);
+                        break;
                 }
                 $detail->setStatus(true);
                 $em->persist($detail);
@@ -2985,6 +2988,38 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
 
                 $stmt->execute();
             }
+        }
+    }
+
+
+    private function processCustomerServiceReport($reports, Api $batch)
+    {
+        foreach ($reports as $report) {
+            $customer_service_type = $report['customer_service_type'] ? json_decode($report['customer_service_type'], true ) : [];
+
+            $findVisit = $this->getDoctrine()->getRepository(CrmVisit::class)->findOneBy(['appBatch' => $batch, 'appId' => $report['visit_id']]);
+
+
+            $createdAt = $report['created_at'] ? (new \DateTime($report['created_at']))->format('Y-m-d H:i:s') : null;
+
+            $sql = "INSERT INTO `crm_customer_service_report` (`report_id`, `employee_id`, `visit_id`, `agent_id`, `customer_id`,`app_batch_id`, `farmer_comments`, `visitor_comments`, `customer_service_type`, `created_at`) 
+                    VALUES (:report_id, :employee_id, :visit_id, :agent_id, :customer_id, :app_batch_id, :farmer_comments, :visitor_comments, :customer_service_type, :created_at)";
+
+            $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
+
+            $stmt->bindValue('report_id', $report['report_id']);
+            $stmt->bindValue('employee_id', $report['employee_id']);
+            $stmt->bindValue('visit_id', $findVisit?$findVisit->getId():null);
+            $stmt->bindValue('agent_id', $report['agent_id']);
+            $stmt->bindValue('customer_id', $report['customer_id']);
+            $stmt->bindValue('app_batch_id', $batch->getId() );
+            $stmt->bindValue('farmer_comments', $report['farmer_comments']);
+            $stmt->bindValue('visitor_comments', $report['visitor_comments']);
+            $stmt->bindValue('customer_service_type', $customer_service_type ? json_encode($customer_service_type) : null);
+            $stmt->bindValue('created_at', $createdAt);
+
+            $stmt->execute();
+
         }
     }
 
