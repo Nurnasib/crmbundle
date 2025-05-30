@@ -4327,6 +4327,7 @@ class ApiController extends AbstractController
 
                 $visiting_area = isset($expenseData['visiting_area']) && $expenseData['visiting_area'] != '' ? $expenseData['visiting_area'] : '';
                 $comment = isset($expenseData['comment']) && $expenseData['comment'] != '' ? $expenseData['comment'] : null;
+                $details_comments = isset($expenseData['details_comments']) && $expenseData['details_comments'] != '' ? $expenseData['details_comments'] : null;
                 $areaId = isset($expenseData['area']) && $expenseData['area'] != '' ? $expenseData['area']['id'] : '';
                 $area = null;
                 if ($areaId) {
@@ -4359,6 +4360,7 @@ class ApiController extends AbstractController
                     $expense->setScheduleVisit($visiting_area);
                     $expense->setVisitLocation($visiting_area);
                     $expense->setComments($comment);
+                    $expense->setDetailsComments($details_comments);
                     $expense->setWorkingArea($area);
                     $expense->setStatus(1);
                     $expense->setIsAreaChange(isset($expenseData['change_area']) && $expenseData['change_area']==true?1:0);

@@ -100,7 +100,7 @@ class SettingFormType extends AbstractType
                     'Monthly Expense Particular'=>'MONTHLY_EXPENSE_PARTICULAR',
                     'FCR Different Company for Sonali'=>'FCR_DIFF_COMPANY_SONALI',
                     'FCR Different Company for Broiler'=>'FCR_DIFF_COMPANY_BROILER',
-
+                    'Customer Service Type'=>'CUSTOMER_SERVICE_TYPE',
                 ],
                 'attr' => [
                     'class' => 'select2'
