@@ -2995,7 +2995,8 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
     private function processCustomerServiceReport($reports, Api $batch)
     {
         foreach ($reports as $report) {
-            $customer_service_type = $report['customer_service_type'] ? json_decode($report['customer_service_type'], true ) : [];
+
+            $customer_service_type = !$report['customer_service_type'] ? [] : $report['customer_service_type'];
 
             $findVisit = $this->getDoctrine()->getRepository(CrmVisit::class)->findOneBy(['appBatch' => $batch, 'appId' => $report['visit_id']]);
 
@@ -3004,7 +3005,7 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
 
             $sql = "INSERT INTO `crm_customer_service_report` (`report_id`, `employee_id`, `visit_id`, `agent_id`, `customer_id`,`app_batch_id`, `farmer_comments`, `visitor_comments`, `customer_service_type`, `created_at`) 
                     VALUES (:report_id, :employee_id, :visit_id, :agent_id, :customer_id, :app_batch_id, :farmer_comments, :visitor_comments, :customer_service_type, :created_at)";
-
+            dd($report, $customer_service_type);
             $stmt = $this->getDoctrine()->getConnection()->prepare($sql);
 
             $stmt->bindValue('report_id', $report['report_id']);
@@ -3015,7 +3016,7 @@ VALUES (:schedule_visit, :conveyance, :daily_allowance, :hotel_rent, :photostate
             $stmt->bindValue('app_batch_id', $batch->getId() );
             $stmt->bindValue('farmer_comments', $report['farmer_comments']);
             $stmt->bindValue('visitor_comments', $report['visitor_comments']);
-            $stmt->bindValue('customer_service_type', $customer_service_type ? json_encode($customer_service_type) : null);
+            $stmt->bindValue('customer_service_type', $customer_service_type ? $customer_service_type : null);
             $stmt->bindValue('created_at', $createdAt);
 
             $stmt->execute();
