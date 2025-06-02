@@ -91,6 +91,7 @@ class ApiController extends AbstractController
 
                     $teamMembers = $this->getDoctrine()->getRepository(User::class)->getAllTeamMemberByLineManager( $findUser );
 
+
                     $userMobile = str_replace('-', '', $findUser->getMobile());
 
                     $otp = (string)mt_rand(1000, 9999);
