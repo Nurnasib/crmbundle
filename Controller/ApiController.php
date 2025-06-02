@@ -89,7 +89,7 @@ class ApiController extends AbstractController
                         return $response;
                     }
 
-                    $teamMembers = $this->getDoctrine()->getRepository(User::class)->getPermanentTeamMemberByLineManager( $findUser );
+                    $teamMembers = $this->getDoctrine()->getRepository(User::class)->getAllTeamMemberByLineManager( $findUser );
 
                     $userMobile = str_replace('-', '', $findUser->getMobile());
 
@@ -4775,7 +4775,7 @@ class ApiController extends AbstractController
                             'message' => 'Employee not found',
                         ]);
                     }
-                    $teamMembers = $this->getDoctrine()->getRepository(User::class)->getPermanentTeamMemberByLineManager( $user );
+                    $teamMembers = $this->getDoctrine()->getRepository(User::class)->getAllTeamMemberByLineManager( $user );
 
 
                     return new JsonResponse([
