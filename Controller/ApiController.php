@@ -4781,7 +4781,7 @@ class ApiController extends AbstractController
                     return new JsonResponse([
                         'status' => 200,
                         'message' => 'Success',
-                        'data' => $teamMembers,
+                        'data' => $teamMembers ? array_values($teamMembers) : [],
                     ]);
                 }
                 return new JsonResponse([
