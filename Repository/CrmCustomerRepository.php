@@ -184,8 +184,13 @@ ORDER BY `c`.`agent_id` ASC";
     }
 
 
-    public function getCustomerByEmployeeIds( $employeeIds )
+    public function getCustomerByEmployeeIds( $employeeIds, $filterBy )
     {
+
+        $startDate = isset($filterBy['startDate']) ? date('Y-m-d', strtotime($filterBy['startDate'])) : date('Y-m-01');
+        $endDate = isset($filterBy['endDate']) ? date('Y-m-d', strtotime($filterBy['endDate'])) : date('Y-m-t');
+
+
         $qb = $this->createQueryBuilder('e');
         $qb->join('e.customerGroup','s');
         $qb->join('e.farmerIntroduce','farmerIntroduce');
@@ -201,6 +206,11 @@ ORDER BY `c`.`agent_id` ASC";
         $qb->andWhere('e.deletedAt IS NULL');
         $qb->andWhere('e.deletedBy IS NULL');
         $qb->andWhere('employee.id IN (:employeeIds)')->setParameter('employeeIds', $employeeIds);
+
+        //create date range condition
+        $qb->andWhere('e.created BETWEEN :startDate AND :endDate')
+            ->setParameter('startDate', $startDate .' 00:00:00')
+            ->setParameter('endDate', $endDate .' 23:59:59');
         
         $results = $qb->getQuery()->getArrayResult();
         
@@ -230,8 +240,11 @@ ORDER BY `c`.`agent_id` ASC";
 
     }
 
-    public function getCustomerByIntroduceByIds( $employeeIds )
+    public function getCustomerByIntroduceByIds( $employeeIds, $filterBy )
     {
+        $startDate = isset($filterBy['startDate']) ? date('Y-m-d', strtotime($filterBy['startDate'])) : date('Y-m-01');
+        $endDate = isset($filterBy['endDate']) ? date('Y-m-d', strtotime($filterBy['endDate'])) : date('Y-m-t');
+
         $qb = $this->createQueryBuilder('e');
         $qb->join('e.customerGroup','s');
         $qb->join('e.farmerIntroduce','farmerIntroduce');
@@ -248,6 +261,10 @@ ORDER BY `c`.`agent_id` ASC";
 
         $qb->andWhere('farmerIntroduce.introduceDate IS NOT NULL');
         $qb->andWhere('employee.id IN (:employeeIds)')->setParameter('employeeIds', $employeeIds);
+
+        $qb->andWhere('farmerIntroduce.introduceDate BETWEEN :startDate AND :endDate')
+            ->setParameter('startDate', $startDate .' 00:00:00')
+            ->setParameter('endDate', $endDate .' 23:59:59');
 
         $results = $qb->getQuery()->getArrayResult();
 

@@ -70,11 +70,10 @@ class FarmerReportController extends AbstractController
             $filterBy = $form->getData();
 
             $employee = $form->getData()['employee'];
-            dd($filterBy);
 
             $filterBy['employeeId'] = $form->getData()['employee'] ? $form->getData()['employee']->getId() : '';
 
-            $entities = $userRepo->getRegionalHeadEmployee();
+            $entities = $userRepo->getRegionalHeadEmployee( $filterBy );
             
         }
 

@@ -4808,14 +4808,13 @@ class ApiController extends AbstractController
             ignore_user_abort(true);
             if ($request->getMethod() == 'GET' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')) {
                 $employeeId = $request->query->get('employee_id');
-                $type = $request->query->get('type'); // monthly or daily
                 if ($employeeId){
-                   $teamMembers = $this->getDoctrine()->getRepository(Expense::class)->getExpensesWaitingForApprovalByEmployeeId( (int)$employeeId );
+                   $expensesWaitingForApproval = $this->getDoctrine()->getRepository(Expense::class)->getExpensesWaitingForApprovalByEmployeeId( (int)$employeeId );
 
                     return new JsonResponse([
                         'status' => 200,
                         'message' => 'Success',
-                        'data' => $teamMembers,
+                        'data' => $expensesWaitingForApproval,
                     ]);
                 }
                 return new JsonResponse([
@@ -4842,7 +4841,7 @@ class ApiController extends AbstractController
         ignore_user_abort(true);
         if ($request->getMethod() == 'POST' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')) {
             $expenseId = $request->request->get('expense_id');
-            $logedInUserId = $request->request->get('loged_in_user_id');
+            $logedInUserId = $request->request->get('logged_in_user_id');
             $employeeId = $request->request->get('employee_id');
             $logedInUser = $this->getDoctrine()->getRepository(User::class)->find((int)$logedInUserId);
             $employee = $this->getDoctrine()->getRepository(User::class)->find((int)$employeeId);
