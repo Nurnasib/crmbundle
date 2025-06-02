@@ -27,36 +27,34 @@ class CustomerServiceReport
 
     /**
      * @var Setting
-     * @ORM\ManyToOne(targetEntity="Setting", inversedBy="fcr")
+     * @ORM\ManyToOne(targetEntity="Setting", inversedBy="customerServiceReport")
      * @ORM\JoinColumn(name="report_id", referencedColumnName="id", onDelete="SET NULL", nullable=true)
      */
     private $report;
 
     /**
      * @var User
-     * @ORM\ManyToOne(targetEntity="App\Entity\User" , inversedBy="fcr")
+     * @ORM\ManyToOne(targetEntity="App\Entity\User" , inversedBy="customerServiceReport")
      */
     private $employee;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Terminalbd\CrmBundle\Entity\CrmVisit" , inversedBy="fcr")
+     * @ORM\ManyToOne(targetEntity="Terminalbd\CrmBundle\Entity\CrmVisit" , inversedBy="customerServiceReport")
      * @ORM\JoinColumn(referencedColumnName="id", onDelete="CASCADE")
      */
     private $visit;
 
     /**
      * @var Agent
-     * @ORM\ManyToOne(targetEntity="App\Entity\Core\Agent" , inversedBy="fcrDetails")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Core\Agent" , inversedBy="customerServiceReport")
      */
     private $agent;
 
     /**
      * @var CrmCustomer
-     * @ORM\ManyToOne(targetEntity="CrmCustomer" , inversedBy="fcrDetails")
+     * @ORM\ManyToOne(targetEntity="CrmCustomer" , inversedBy="customerServiceReport")
      */
     private $customer;
-
-    //farmer_comments for text area
 
     /**
      * @var string
@@ -70,7 +68,6 @@ class CustomerServiceReport
      */
     private $visitorComments;
 
-    //customer_service_type json_field for json data
     /**
      * @var string
      * @Orm\Column(name="customer_service_type", type="json", nullable=true)

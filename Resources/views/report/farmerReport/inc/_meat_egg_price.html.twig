@@ -1,0 +1,68 @@
+
+<table class="table table-striped table-bordered table-hover download-excel">
+    {% if entities is defined %}
+        <thead>
+        <tr>
+            <th data-a-h="center" class="border-0" colspan="{{ entities['monthRange']|length+5 }}"><h3 class="text-center">NOURISH POULTRY AND HATCHERY LTD</h3></th>
+        </tr>
+        <tr>
+            <th data-a-h="center" class="border-0" colspan="{{ entities['monthRange']|length+5 }}"><h5 class="text-center">UTTARA, DHAKA.</h5></th>
+        </tr>
+
+        <tr>
+            <td data-a-h="center" class="border-0" colspan="{{ entities['monthRange']|length+5 }}" align="center"><h6>{{ 'Meat & Egg Price Monthly Report' |upper }}</h6></td>
+        </tr>
+        <tr>
+            <td data-a-h="center" class="border-0" colspan="{{ entities['monthRange']|length+5 }}" align="center"><h6>{{ filterBy['startMonth'] is defined and filterBy['startMonth'] is not empty? 'Month: '~ filterBy['startMonth']|date('F-Y'):'' }} {{ filterBy['endMonth'] is defined and filterBy['endMonth'] is not empty? ' To '~ filterBy['endMonth']|date('F-Y'):'' }}</h6></td>
+        </tr>
+        </thead>
+        {% if entities['records'] is defined and entities['records'] is not empty %}
+            {% for chickType, entity in entities['records'] %}
+                <thead class="thead-dark">
+                <tr>
+                    <th scope="col" colspan="{{ entities['monthRange']|length+5 }}" style="text-align: left; background-color: yellow; font-size: 20px">{{ chickType }}</th>
+                </tr>
+                <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">Employee ID</th>
+                    <th scope="col">Designation</th>
+                    <th scope="col">Region</th>
+                    <th scope="col">Avg. Price</th>
+                    {% if entities['monthRange'] is defined and entities['monthRange'] is not empty %}
+                        {% for month in entities['monthRange'] %}
+                            <th scope="col" style="text-align: center"><span style="display:block; transform: rotate(-30deg);text-align: center; min-width: 65px; padding: 0!important;">{{ month|date('F') }}</span></th>
+                        {% endfor %}
+                    {% endif %}
+                </tr>
+                </thead>
+                <tbody>
+                {% for employeeId, details in entity %}
+                    <tr>
+                        <td data-a-v="middle">{{ entities['employeeInfo'][chickType][employeeId]['employeeName']|default('') }}</td>
+                        <td data-a-v="middle">{{ entities['employeeInfo'][chickType][employeeId]['employeeId']|default('') }}</td>
+                        <td data-a-v="middle">{{ entities['employeeInfo'][chickType][employeeId]['designationName']|default('') }}</td>
+                        <td data-a-v="middle">{{ entities['employeeInfo'][chickType][employeeId]['regionName']|default('') }}</td>
+                        <td data-t="n" >{{ details|length>0?((details|arraySum)/(details|length))|number_format(2,'.',''):'' }}</td>
+                        {% if entities['monthRange'] is defined and entities['monthRange'] is not empty %}
+                            {% for month in entities['monthRange'] %}
+                                <td data-t="n" align="center">
+                                    {% if details[month|date('F-Y')] is defined %}
+                                        {{ details[month|date('F-Y')]|number_format(2) }}
+                                    {% else %}
+                                        0
+                                    {% endif %}
+                                </td>
+                            {% endfor %}
+                        {% endif %}
+
+                    </tr>
+                {% endfor %}
+                </tbody>
+            {% endfor %}
+            {% else %}
+            <tbody>
+            <td colspan="{{ entities['monthRange']|length+5 }}"><h4>No record found.</h4></td>
+            </tbody>
+        {% endif %}
+    {% endif %}
+</table>

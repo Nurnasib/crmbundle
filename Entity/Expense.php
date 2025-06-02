@@ -116,6 +116,25 @@ class Expense
      */
     private $asPerAttachment = false;
 
+    /**
+     * @var User
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="expense")
+     */
+    private $approvedBy;
+
+    /**
+     * @var \DateTime
+     * @ORM\Column(name="approved_at", type="datetime", nullable=true)
+     */
+    private $approvedAt;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(type="boolean")
+     */
+    private $isApproved= false;
+
     public function __construct()
     {
         $this->expenseParticulars = new ArrayCollection();
@@ -440,7 +459,36 @@ class Expense
     {
         $this->asPerAttachment = $asPerAttachment;
     }
-    
+
+    public function getApprovedBy()
+    {
+        return $this->approvedBy;
+    }
+
+    public function setApprovedBy(User $approvedBy): void
+    {
+        $this->approvedBy = $approvedBy;
+    }
+
+    public function getApprovedAt()
+    {
+        return $this->approvedAt;
+    }
+
+    public function setApprovedAt(?\DateTime $approvedAt): void
+    {
+        $this->approvedAt = $approvedAt;
+    }
+
+    public function isApproved(): bool
+    {
+        return $this->isApproved;
+    }
+
+    public function setIsApproved(bool $isApproved): void
+    {
+        $this->isApproved = $isApproved;
+    }
     
 
 

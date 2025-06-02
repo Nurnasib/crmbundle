@@ -1,0 +1,42 @@
+{% if entities is defined and entities is not empty %}
+    {% if filterBy['otherReport'] is same as 'farmer-survey-poultry' %}
+        {% include '@TerminalbdCrm/report/others/inc/_farmer_survey.html.twig'%}
+
+    {% elseif filterBy['otherReport'] is same as 'lab-service-poultry' %}
+        {% include '@TerminalbdCrm/report/others/inc/_lab_service.html.twig'%}
+
+    {% elseif filterBy['otherReport'] is same as 'fcr-different-companies-poultry' %}
+        {% include '@TerminalbdCrm/report/others/inc/_fcr_different_companies.html.twig'%}
+
+    {% elseif filterBy['otherReport'] in ['company-wise-feed-sale-poultry','company-wise-boiler-chick','company-wise-layer-chick','company-wise-feed-sale-cattle','company-wise-feed-sale-fish'] %}
+        {% include '@TerminalbdCrm/report/others/inc/_company_wise_feed_sale.html.twig'%}
+
+    {% elseif filterBy['otherReport'] in ['farmer-training-poultry','farmer-training-cattle','farmer-training-fish'] %}
+        {% include '@TerminalbdCrm/report/others/inc/_farmer_training.html.twig'%}
+
+    {% elseif filterBy['otherReport'] is same as 'doc-price' %}
+        {% include '@TerminalbdCrm/report/others/inc/_doc_price.html.twig'%}
+
+    {% elseif filterBy['otherReport'] is same as 'doc-price-daily' %}
+        {% include '@TerminalbdCrm/report/others/inc/_doc_price.html.twig'%}
+
+    {% elseif filterBy['otherReport'] is same as 'meat-egg-price' %}
+        {% include '@TerminalbdCrm/report/others/inc/_meat_egg_price.html.twig'%}
+
+    {% elseif filterBy['otherReport'] is same as 'expense' %}
+        {% include '@TerminalbdCrm/report/others/inc/_expense.html.twig'%}
+
+    {% elseif filterBy['otherReport'] in ['new-agent-upgradation-cattle','new-agent-upgradation-fish'] %}
+        {% include '@TerminalbdCrm/report/others/inc/_agent_upgradation.html.twig'%}
+
+    {% elseif filterBy['otherReport'] is same as 'fish-sales-price' %}
+        {% include '@TerminalbdCrm/report/others/inc/_fish_sales_price.html.twig'%}
+
+    {% elseif filterBy['otherReport'] is same as 'fish-tilapia-fry-sales' %}
+        {% include '@TerminalbdCrm/report/others/inc/_fish_tilapia_fry_sales.html.twig'%}
+
+    {% elseif filterBy['otherReport'] in ['doc-complain', 'feed-complain'] %}
+        {% include '@TerminalbdCrm/report/others/inc/_complain.html.twig'%}
+
+    {% endif %}
+{% endif %}

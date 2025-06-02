@@ -183,6 +183,83 @@ ORDER BY `c`.`agent_id` ASC";
 
     }
 
+
+    public function getCustomerByEmployeeIds( $employeeIds )
+    {
+        $qb = $this->createQueryBuilder('e');
+        $qb->join('e.customerGroup','s');
+        $qb->join('e.farmerIntroduce','farmerIntroduce');
+        $qb->join('farmerIntroduce.employee','employee');        
+
+        $qb->select('e.id as id','e.name as name','e.address as address','e.mobile as mobile' );
+        
+        $qb->addSelect('farmerIntroduce.cultureSpeciesItemAndQty');
+        $qb->addSelect('employee.id as employeeId', 'employee.name as employeeName', 'employee.userId as employeeUserId');
+
+        $qb->where('s.slug = :slug')->setParameter('slug','farmer');
+        
+        $qb->andWhere('e.deletedAt IS NULL');
+        $qb->andWhere('e.deletedBy IS NULL');
+        $qb->andWhere('employee.id IN (:employeeIds)')->setParameter('employeeIds', $employeeIds);
+        
+        $results = $qb->getQuery()->getArrayResult();
+        
+        //group by employee
+        $returnArray = [];
+        foreach ($results as $result) {
+            //sum json value cultureSpeciesItemAndQty
+            if (isset($result['cultureSpeciesItemAndQty']) && $result['cultureSpeciesItemAndQty'] && $result['cultureSpeciesItemAndQty'] != null) {
+                $cultureSpeciesItemAndQty = json_decode($result['cultureSpeciesItemAndQty'], true);
+                if (is_array($cultureSpeciesItemAndQty)) {
+                    $cultureSpeciesItemAndQty = array_filter($cultureSpeciesItemAndQty, function ($value) {
+                        return $value !== null && $value !== '';
+                    });
+                } else {
+                    $cultureSpeciesItemAndQty = [];
+                }
+                $arrayValues = array_values($cultureSpeciesItemAndQty);
+                $numericValues = array_map('intval', $arrayValues);
+                $result['cultureSpeciesItemAndQtySum'] = sizeof($numericValues) > 0 ? array_sum($numericValues) : 0;
+            } else {
+                $result['cultureSpeciesItemAndQtySum'] = 0;
+            }
+
+            $returnArray[$result['employeeId']][] = $result;
+        }
+        return    $returnArray;
+
+    }
+
+    public function getCustomerByIntroduceByIds( $employeeIds )
+    {
+        $qb = $this->createQueryBuilder('e');
+        $qb->join('e.customerGroup','s');
+        $qb->join('e.farmerIntroduce','farmerIntroduce');
+        $qb->join('farmerIntroduce.introduceBy','employee');
+
+        $qb->select('e.id as id','e.name as name','e.address as address','e.mobile as mobile' );
+
+        $qb->addSelect('employee.id as employeeId', 'employee.name as employeeName', 'employee.userId as employeeUserId');
+
+        $qb->where('s.slug = :slug')->setParameter('slug','farmer');
+
+        $qb->andWhere('e.deletedAt IS NULL');
+        $qb->andWhere('e.deletedBy IS NULL');
+
+        $qb->andWhere('farmerIntroduce.introduceDate IS NOT NULL');
+        $qb->andWhere('employee.id IN (:employeeIds)')->setParameter('employeeIds', $employeeIds);
+
+        $results = $qb->getQuery()->getArrayResult();
+
+        //group by employee
+        $returnArray = [];
+        foreach ($results as $result) {
+            $returnArray[$result['employeeId']][] = $result;
+        }
+        return    $returnArray;
+
+    }
+
 //    public function broilerLifeCycleReport()
 //    {
 //        $qb = $this->_em->createQueryBuilder();

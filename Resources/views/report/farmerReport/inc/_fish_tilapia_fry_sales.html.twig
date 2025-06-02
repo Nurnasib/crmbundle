@@ -1,0 +1,205 @@
+{% for year, entity in entities %}
+    <table class="table table-striped table-bordered table-hover download-excel">
+        <thead>
+        <tr>
+            <th data-a-h="center" class="border-0" colspan="15"><h3 class="text-center">NOURISH POULTRY AND HATCHERY LTD</h3></th>
+        </tr>
+        <tr>
+            <th data-a-h="center" class="border-0" colspan="15"><h5 class="text-center">UTTARA, DHAKA.</h5></th>
+        </tr>
+        <tr>
+            <td data-a-h="center" class="border-0" colspan="15" align="center"><h6>Agent wise Tilapia Fry Sales - {{ year }}</h6></td>
+        </tr>
+        </thead>
+
+        {% for employeeId, details in entity %}
+
+            <thead class="thead-dark">
+            <tr>
+                <th colspan="5" class="border-0">{{ 'ID' }}: {{ details['userId'] }}</th>
+                <th colspan="5" class="border-0">{{ 'Name of CSO' }}: {{ details['employeeName'] }}</th>
+                <th colspan="5" class="border-0">{{ 'Designation' }}: {{ details['employeeDesignationName'] }}</th>
+            </tr>
+            </thead>
+
+            {% if details['items'] is defined %}
+
+                <thead>
+                <tr>
+                    <td data-a-h="center" colspan="15"><h4 class="text-center">{{ "Nourish Tilapia Fry Sales  (pcs) by Nourish Agent's"|trans }}</h4></td>
+                </tr>
+                <tr class="text-center">
+                    <th>SL</th>
+                    <th>Agent Name</th>
+                    {% for month in arrayMonth %}
+                        <th>{{month}}</th>
+                    {% endfor %}
+                    <th>{{ 'Total'|trans }}</th>
+                </tr>
+
+                </thead>
+                <tbody class="tilapiaFrySales_body_section">
+                {% for agentId ,agent in details['agents'] %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td>{{ agent|default('') }}</td>
+                        {% set lineTotal=0 %}
+                        {% for month in arrayMonth %}
+                            <td class="text-right">{{details['items'][agentId][month].qty|default(0)|number_format(2,'.',',')}}</td>
+                            {% set lineTotal=lineTotal+details['items'][agentId][month].qty|default(0) %}
+                        {% endfor %}
+                        <td class="text-right">{{ lineTotal|number_format(2,'.',',') }}</td>
+                    </tr>
+                {% endfor %}
+                <tr>
+                    <th colspan="2">Grand Total</th>
+                    {% set grandTotal=0 %}
+                    {% for month in arrayMonth %}
+                        <th class="text-right">
+                            {% if details['grandTotal'][month] is defined %}
+                                {{details['grandTotal'][month]|arraySum|number_format(2,'.',',')}}
+                                {% set grandTotal=grandTotal+ details['grandTotal'][month]|arraySum%}
+                            {% else %}
+                                {{ 0|number_format(2,'.',',') }}
+                            {% endif %}
+
+                        </th>
+                    {% endfor %}
+                    <th class="text-right">{{ grandTotal|number_format(2,'.',',') }}</th>
+                </tr>
+                </tbody>
+
+            {% endif %}
+
+            {% if details['competitorItems'] is defined %}
+
+                <thead>
+                <tr>
+                    <td data-a-h="center" colspan="{{ details['competitorFeeds'] is defined? (details['competitorFeeds']|length) + 3:'3' }}"><h4 class="text-center">{{ "Others Company Tilapia Fry Sales (pcs) by Nourish Agent's"|trans }}</h4></td>
+                </tr>
+                <tr class="text-center">
+                    <th>SL</th>
+                    <th>Agent Name</th>
+                    {% if details['competitorFeeds'] is defined %}
+                        {% for feed in details['competitorFeeds'] %}
+                            <th>{{feed|default('')}}</th>
+                        {% endfor %}
+                    {% endif %}
+                    <th>{{ 'Total'|trans }}</th>
+                </tr>
+
+                </thead>
+                <tbody class="tilapiaFrySales_competitor_body_section">
+                {% if details['competitorMonths'] is not empty %}
+                    {% for month in details['competitorMonths'] %}
+                        <tr>
+                            <th data-a-h="center" colspan="{{ details['competitorFeeds'] is defined? (details['competitorFeeds']|length) + 3:'3' }}">{{ month }}</th>
+                        </tr>
+                        {% if details['competitorAgents'][month] is defined %}
+                            {% for agentId ,agent in details['competitorAgents'][month] %}
+                                <tr>
+                                    <td>{{ loop.index }}</td>
+                                    <td>{{ agent|default('') }}</td>
+                                    {% set lineTotal=0 %}
+                                    {% for feedId, feed in details['competitorFeeds'] %}
+                                        <td class="text-right">{{details['competitorItems'][month][agentId][feedId].qty|default(0)|number_format(2,'.',',')}}</td>
+                                        {% set lineTotal=lineTotal+details['competitorItems'][month][agentId][feedId].qty|default(0) %}
+                                    {% endfor %}
+                                    <td class="text-right">{{ lineTotal|number_format(2,'.',',') }}</td>
+                                </tr>
+                            {% endfor %}
+
+                        {% endif %}
+                        <tr>
+                            <th colspan="2"> Grand Total</th>
+                            {% set competitorGrandTotal=0 %}
+                            {% if details['competitorFeeds'] is defined %}
+                                {% for feedId, feed in details['competitorFeeds'] %}
+                                    <th class="text-right">
+                                        {% if details['competitorGrandTotal'][month][feedId] is defined  %}
+                                            {{details['competitorGrandTotal'][month][feedId]|arraySum|number_format(2,'.',',')}}
+
+                                            {% set competitorGrandTotal=competitorGrandTotal+details['competitorGrandTotal'][month][feedId]|arraySum %}
+                                        {% else %}
+                                            {{ 0|number_format(2,'.',',') }}
+                                        {% endif %}
+                                    </th>
+                                {% endfor %}
+                            {% endif %}
+                            <th class="text-right">{{ competitorGrandTotal|number_format(2,'.',',') }}</th>
+                        </tr>
+                    {% endfor %}
+                {% endif %}
+                </tbody>
+
+            {% endif %}
+
+            {% if details['otherAgentItems'] is defined %}
+                <thead>
+                <tr>
+                    <td data-a-h="center" colspan="{{ details['otherAgentMonths'] is defined? (details['otherAgentMonths']|length) + 3:'3' }}"><h4 class="text-center">{{ "Tilapia Fry Sales of Competitors in your Area"|trans }}</h4></td>
+                </tr>
+                <tr class="text-center">
+                    <th>SL</th>
+                    <th>Company Name</th>
+                    {% if details['otherAgentMonths'] is not empty %}
+                        {% for month in details['otherAgentMonths'] %}
+                            <th>{{ month }}</th>
+                        {% endfor %}
+                    {% endif %}
+                    <td>{{ 'Total'|trans }}</td>
+                </tr>
+
+                </thead>
+                <tbody class="tilapiaFrySales_competitor_other_agent_body_section">
+                {% if details['otherAgentFeeds'] is defined %}
+                    {% set grandLineTotal=0 %}
+
+                    <tr>
+                        <th>1</th>
+                        <th>Nourish</th>
+                        {% set grandTotal=0 %}
+                        {% for month in arrayMonth %}
+                            {% if details['grandTotal'][month] is defined %}
+                                {#                                    {{details['grandTotal'][month]|arraySum|number_format(2,'.',',')}}#}
+                                {% set grandTotal=grandTotal+ details['grandTotal'][month]|arraySum%}
+                            {% endif %}
+                        {% endfor %}
+                        {% set grandLineTotal=grandLineTotal+grandTotal %}
+                        <th style="text-align: right" colspan="{{ details['otherAgentMonths'] is defined? (details['otherAgentMonths']|length) + 1:'' }}" class="text-right">{{ grandTotal|number_format(2,'.',',') }}</th>
+                    </tr>
+
+                    {% for feedId, feed in details['otherAgentFeeds'] %}
+                        <tr>
+                            <th>{{loop.index}}</th>
+                            <th>{{feed|default('')}}</th>
+                            {% set lineTotal=0 %}
+                            {% if details['otherAgentMonths'] is not empty %}
+                                {% for month in details['otherAgentMonths'] %}
+                                    <th class="text-right">{{ details['otherAgentItems'][feedId][month].qty|default(0)|number_format(2,'.',',') }}</th>
+
+                                    {% set lineTotal=lineTotal+details['otherAgentItems'][feedId][month].qty|default(0) %}
+                                {% endfor %}
+                            {% endif %}
+                            {% set grandLineTotal=grandLineTotal+lineTotal %}
+                            <th class="text-right">{{ lineTotal|number_format(2,'.',',') }}</th>
+                        </tr>
+                    {% endfor %}
+                    <tr>
+                        <th colspan="2">Total</th>
+                        {% if details['otherAgentMonths'] is not empty %}
+                            {% for month in details['otherAgentMonths'] %}
+                                <th class="text-right">{{ details['otherAgentGrandTotal'][month]|arraySum|default(0)|number_format(2,'.',',') }}</th>
+                            {% endfor %}
+                        {% endif %}
+                        <th class="text-right">{{ grandLineTotal|number_format(2,'.',',') }}</th>
+                    </tr>
+                {% endif %}
+                </tbody>
+            {% endif %}
+
+
+        {% endfor %}
+
+    </table>
+{% endfor %}

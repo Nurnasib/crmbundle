@@ -1,0 +1,100 @@
+{% for year, entity in entities %}
+    {% for month, data in entity %}
+        <table width="100%">
+            <tr>
+                <th colspan="15"><h3 class="text-center">NOURISH POULTRY AND HATCHERY LTD</h3></th>
+            </tr>
+            <tr>
+                <th colspan="15"><h5 class="text-center">UTTARA, DHAKA.</h5></th>
+            </tr>
+
+            <tr>
+                <td colspan="15" align="center"><h6>{{ filterBy['otherReport']|replace({'-': ' '}) |upper }}</h6></td>
+            </tr>
+        </table>
+        <table width="100%" class="table table-bordered">
+            <thead class="thead-dark">
+            <tr>
+                <th>Officer's ID: {{ data['employee'].userId }}</th>
+                <th>Officer's Name: {{ data['employee'].name }}</th>
+                <th>Designation: {{ data['employee'].designation }}</th>
+                <th>Month: {{ year|split('-')|last ~ '-' ~ year|split('-')|first }}</th>
+            </tr>
+            </thead>
+        </table>
+
+        <table class="table table-striped table-bordered table-hover">
+            <thead class="thead-dark">
+            <tr>
+                <th scope="col">S/N</th>
+                <th scope="col">Visiting Date</th>
+                <th scope="col">Visiting Area</th>
+                <th scope="col">Purpose</th>
+                <th scope="col">Vehicle</th>
+                <th scope="col">Schedule Visit</th>
+                <th scope="col">Conveyance</th>
+                <th scope="col">Daily Allowance</th>
+                <th scope="col">Food</th>
+                <th scope="col">Courier</th>
+                <th scope="col">Hotel Rent</th>
+                <th scope="col">Photostat</th>
+                <th scope="col">Mobil</th>
+                <th scope="col">Maintenance</th>
+                <th scope="col">Toll Bill</th>
+                <th scope="col">Service Charge</th>
+                <th scope="col">Others</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for item in data['details'] %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ item.visitedDate|date('d-m-Y') }}</td>
+                    <td>{{ item.visitingAreaName }}</td>
+                    <td style="vertical-align: top !important;">
+
+                        {% if item.purpose is defined %}
+                            <ul style="padding-inline-start: 25px !important; list-style-type: square">
+                                {% for purpose in item.purpose %}
+
+                                    <li>{{ purpose }}</li>
+
+                                {% endfor %}
+                            </ul>
+
+                        {% endif %}
+
+                    </td>
+                    <td style="vertical-align: top !important;">
+
+                        {% if item.vehicle is defined %}
+                            <ul style="padding-inline-start: 25px !important; list-style-type: square">
+
+                                {% for vehicle in item.vehicle %}
+
+                                    <li>{{ vehicle }}</li>
+
+                                {% endfor %}
+                            </ul>
+
+                        {% endif %}
+
+                    </td>
+                    <td>{{ item.scheduleVisit }}</td>
+                    <td>{{ item.conveyance }}</td>
+                    <td>{{ item.dailyAllowance }}</td>
+                    <td>{{ item.hotelRent }}</td>
+                    <td>{{ item.food }}</td>
+                    <td>{{ item.courier }}</td>
+                    <td>{{ item.photostate }}</td>
+                    <td>{{ item.mobile }}</td>
+                    <td>{{ item.maintenace }}</td>
+                    <td>{{ item.tollBill }}</td>
+                    <td>{{ item.serviceCharge }}</td>
+                    <td>{{ item.others }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% endfor %}
+{% endfor %}

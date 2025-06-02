@@ -88,6 +88,9 @@ class ApiController extends AbstractController
                         $response->setStatusCode(Response::HTTP_NOT_FOUND);
                         return $response;
                     }
+
+                    $teamMembers = $this->getDoctrine()->getRepository(User::class)->getPermanentTeamMemberByLineManager( $findUser );
+
                     $userMobile = str_replace('-', '', $findUser->getMobile());
 
                     $otp = (string)mt_rand(1000, 9999);
@@ -124,6 +127,7 @@ class ApiController extends AbstractController
                         'upozilas' => $upozilas,
                         'status' => '200',
                         'otp' => $otp,
+                        'isLineManager' => $teamMembers && sizeof($teamMembers) > 0 ? true : false,
                     ];
                     $response = new Response();
                     $response->headers->set('Content-Type', 'application/json');
@@ -4749,5 +4753,142 @@ class ApiController extends AbstractController
                 'message' => 'Oops! somethings wrong.'
             ]);
         }
+
+    /**
+     * @param Request $request
+     * @param ParameterBagInterface $parameterBag
+     * @return JsonResponse
+     * @Route("/employee/team-members", name="crm_employee_team_members_using_app")
+     */
+        public function getTeamMembersByEmployee(Request $request, ParameterBagInterface $parameterBag)
+        {
+            set_time_limit(0);
+            ignore_user_abort(true);
+            if ($request->getMethod() == 'GET' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')) {
+                $employeeId = $request->query->get('employee_id');
+                $type = $request->query->get('type'); // monthly or daily
+                if ($employeeId){
+                    $user = $this->getDoctrine()->getRepository(User::class)->find((int)$employeeId);
+                    if(!$user){
+                        return new JsonResponse([
+                            'status' => 404,
+                            'message' => 'Employee not found',
+                        ]);
+                    }
+                    $teamMembers = $this->getDoctrine()->getRepository(User::class)->getPermanentTeamMemberByLineManager( $user );
+
+
+                    return new JsonResponse([
+                        'status' => 200,
+                        'message' => 'Success',
+                        'data' => $teamMembers,
+                    ]);
+                }
+                return new JsonResponse([
+                    'status' => 404,
+                    'message' => 'Employee id is required',
+                ]);
+            }
+            return new JsonResponse([
+                'status' => 500,
+                'message' => 'Oops! somethings wrong.'
+            ]);
+        }
+
+    /**
+     * @param Request $request
+     * @param ParameterBagInterface $parameterBag
+     * @return JsonResponse
+     * @Route("/employee/expense/waiting-for-approval", name="crm_employee_expense_waiting_for_approval_using_app")
+     */
+        public function getExpensesWaitingForApproval(Request $request, ParameterBagInterface $parameterBag)
+        {
+            set_time_limit(0);
+            ignore_user_abort(true);
+            if ($request->getMethod() == 'GET' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')) {
+                $employeeId = $request->query->get('employee_id');
+                $type = $request->query->get('type'); // monthly or daily
+                if ($employeeId){
+                   $teamMembers = $this->getDoctrine()->getRepository(Expense::class)->getExpensesWaitingForApprovalByEmployeeId( (int)$employeeId );
+
+                    return new JsonResponse([
+                        'status' => 200,
+                        'message' => 'Success',
+                        'data' => $teamMembers,
+                    ]);
+                }
+                return new JsonResponse([
+                    'status' => 404,
+                    'message' => 'Employee id is required',
+                ]);
+            }
+            return new JsonResponse([
+                'status' => 500,
+                'message' => 'Oops! somethings wrong.'
+            ]);
+        }
+
+        //expense update for approved
+    /**
+     * @param Request $request
+     * @param ParameterBagInterface $parameterBag
+     * @return JsonResponse
+     * @Route("/employee/expense/approved", name="crm_employee_expense_approved_using_app")
+     */
+    public function expenseApprovedUsingApp(Request $request, ParameterBagInterface $parameterBag)
+    {
+        set_time_limit(0);
+        ignore_user_abort(true);
+        if ($request->getMethod() == 'POST' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')) {
+            $expenseId = $request->request->get('expense_id');
+            $logedInUserId = $request->request->get('loged_in_user_id');
+            $employeeId = $request->request->get('employee_id');
+            $logedInUser = $this->getDoctrine()->getRepository(User::class)->find((int)$logedInUserId);
+            $employee = $this->getDoctrine()->getRepository(User::class)->find((int)$employeeId);
+            if (!$logedInUser) {
+                return new JsonResponse([
+                    'status' => 404,
+                    'message' => 'Employee not found'
+                ]);
+            }
+
+            if ( !$employee ) {
+                return new JsonResponse([
+                    'status' => 404,
+                    'message' => 'Employee not found'
+                ]);
+            }
+
+            if ( $employeeId && $expenseId ) {
+                $expense = $this->getDoctrine()->getRepository(Expense::class)->findOneBy([ 'id' => $expenseId, 'employee' => $employee ]);
+                if ($expense) {
+                    $expense->setApprovedBy( $logedInUser );
+                    $expense->setApprovedAt(new \DateTime());
+                    $expense->setIsApproved(true);
+
+                    $this->getDoctrine()->getManager()->persist($expense);
+                    $this->getDoctrine()->getManager()->flush();
+
+                    return new JsonResponse([
+                        'status' => 200,
+                        'message' => 'Expense approved successfully'
+                    ]);
+                }
+                return new JsonResponse([
+                    'status' => 404,
+                    'message' => 'Expense not found'
+                ]);
+            }
+            return new JsonResponse([
+                'status' => 400,
+                'message' => 'Expense ID is required'
+            ]);
+        }
+
+        return new JsonResponse([
+            'status' => 500,
+            'message' => 'Oops! somethings wrong.'
+        ]);
+    }
 
 }

@@ -1,0 +1,134 @@
+<table class="table table-striped table-bordered table-hover download-excel" id="fcrReportDetails">
+    <thead>
+    <tr>
+        <th data-a-h="center" class="border-0" colspan="22"><h3 class="text-center">NOURISH POULTRY AND HATCHERY LTD</h3></th>
+    </tr>
+    <tr>
+        <th data-a-h="center" class="border-0" colspan="22"><h5 class="text-center">UTTARA, DHAKA.</h5></th>
+    </tr>
+
+    <tr>
+        <td data-a-h="center" class="border-0" colspan="22" align="center"><h6>{{ reportSlug is defined ? reportSlug|replace({'-': ' '}) |upper:'' }}</h6></td>
+    </tr>
+    </thead>
+    {% if entities is defined and entities['records'] is defined and entities['records'] is not empty %}
+        <thead class="thead-dark">
+        <tr>
+            <th scope="col" style="width: 100px">Date</th>
+
+            <th scope="col">Employee Name</th>
+            <th scope="col">Employee ID</th>
+            <th scope="col">Designation</th>
+            <th scope="col" width="50">Issue No</th>
+            <th scope="col">Agent Name</th>
+            <th scope="col">Agent ID</th>
+            <th scope="col">Area</th>
+            <th scope="col">Hatchery Name</th>
+            <th scope="col">Hatching date</th>
+            <th scope="col">Box No</th>
+            <th scope="col">Age Days</th>
+            <th scope="col">Receieved Quantity</th>
+            <th scope="col">Transpoted By</th>
+            <th scope="col">Breed Name</th>
+            <th scope="col">Breed Category</th>
+            <th scope="col">Complains</th>
+            <th scope="col">Days</th>
+            <th scope="col">Quantity</th>
+            <th scope="col">Diseases</th>
+            <th scope="col">Obsevation</th>
+            <th scope="col">Comments</th>
+        </tr>
+        </thead>
+
+        {% for monthYear, monthlyData in entities['records'] %}
+            <tr>
+                <td data-t="s" data-fill-color="#ffff00" colspan="22">{{ monthYear }}</td>
+            </tr>
+
+            {% for createdDate, dailyData in monthlyData %}
+                {% set dateWiseCount=1 %}
+                {% for employeeId, employeeData in dailyData %}
+
+                    {% set issueCount=1 %}
+                    {% set employeeWiseCount=1 %}
+
+                    {% for parentId, details in employeeData %}
+
+                        {% for index, detail in details %}
+
+                            {% set dateWiseRowspan = entities['dateWiseLength'] is defined and entities['dateWiseLength'][monthYear] is defined and  entities['dateWiseLength'][monthYear][createdDate] is defined ? entities['dateWiseLength'][monthYear][createdDate]|length:0  %}
+                            {% set employeeWiseRowspan = entities['employeeWiseLength'] is defined and entities['employeeWiseLength'][monthYear] is defined and  entities['employeeWiseLength'][monthYear][createdDate] is defined and  entities['employeeWiseLength'][monthYear][createdDate][employeeId] is defined ? entities['employeeWiseLength'][monthYear][createdDate][employeeId]|length:0  %}
+
+                            <tr>
+
+                                {#{% if dateWiseCount==1 %}
+                                <td data-a-v="middle" rowspan="{{ dateWiseRowspan }}">{{ createdDate }} </td>
+                                {% endif %}#}
+                                <td data-a-v="middle">{{ createdDate }} </td>
+
+                                {#{% if employeeWiseCount==1 %}
+                                    <td data-a-v="middle" rowspan="{{ employeeWiseRowspan }}">{{ detail.employeeName|default('') }} {{ employeeWiseCount }}</td>
+                                    <td data-a-v="middle" rowspan="{{ employeeWiseRowspan }}">{{ detail.userId|default('') }}</td>
+                                    <td data-a-v="middle" rowspan="{{ employeeWiseRowspan }}">{{ detail.designationName|default('') }}</td>
+                                {% endif %}#}
+                                <td data-a-v="middle">{{ detail.employeeName|default('') }} {{ employeeWiseCount }}</td>
+                                <td data-a-v="middle">{{ detail.userId|default('') }}</td>
+                                <td data-a-v="middle">{{ detail.designationName|default('') }}</td>
+
+                                {#{% if index==0 %}
+                                    <td data-t="n" data-a-v="middle" rowspan="{{ details|length }}">{{ parentId }}</td>
+                                    <td data-a-v="middle" rowspan="{{ details|length }}">{{ detail.agentName|default('') }}</td>
+                                    <td data-t="s" data-a-v="middle" rowspan="{{ details|length }}">{{ detail.agentId ? detail.agentId : ( detail.agentGroupName|default() ) }}</td>
+                                    <td data-a-v="middle" rowspan="{{ details|length }}">{{ detail.agentDistrictName|default('') }}</td>
+                                    <td data-a-v="middle" rowspan="{{ details|length }}">{{ detail.hatcheryName|default('') }}</td>
+                                    <td data-a-v="middle" rowspan="{{ details|length }}">{{ detail.hatchingDate?detail.hatchingDate|date('d-m-Y'):(detail.productionDate?detail.productionDate|date('d-m-Y'):'') }}</td>
+                                    <td data-t="s" data-a-v="middle" rowspan="{{ details|length }}">{{ detail.boxNo|default('') }}</td>
+                                    <td data-t="s" data-a-v="middle" rowspan="{{ details|length }}">{{ detail.ageDays|default('') }}</td>
+                                    <td data-a-v="middle" rowspan="{{ details|length }}">{{ detail.receivedDocQty|default('') }}</td>
+                                    <td data-a-v="middle" rowspan="{{ details|length }}">{{ detail.transportName|default('') }}</td>
+                                    <td data-a-v="middle" rowspan="{{ details|length }}">{{ detail.breedParentName|default('') }}</td>
+                                    <td data-a-v="middle" rowspan="{{ details|length }}">{{ detail.breedName|default('') }}</td>
+                                {% endif %}#}
+                                <td data-t="n" data-a-v="middle">{{ detail.id }}</td>
+                                <td data-a-v="middle">{{ detail.agentName|default('') }}</td>
+                                <td data-t="s" data-a-v="middle">{{ detail.agentId ? detail.agentId : ( detail.agentGroupName|default() ) }}</td>
+                                <td data-a-v="middle">{{ detail.agentDistrictName|default('') }}</td>
+                                <td data-a-v="middle">{{ detail.hatcheryName|default('') }}</td>
+                                <td data-a-v="middle">{{ detail.hatchingDate?detail.hatchingDate|date('d-m-Y'):(detail.productionDate?detail.productionDate|date('d-m-Y'):'') }}</td>
+                                <td data-t="s" data-a-v="middle">{{ detail.boxNo|default('') }}</td>
+                                <td data-t="s" data-a-v="middle">{{ detail.ageDays|default('') }}</td>
+                                <td data-a-v="middle">{{ detail.receivedDocQty|default('') }}</td>
+                                <td data-a-v="middle">{{ detail.transportName|default('') }}</td>
+                                <td data-a-v="middle">{{ detail.breedParentName|default('') }}</td>
+                                <td data-a-v="middle">{{ detail.breedName|default('') }}</td>
+
+
+                                <td>{{ detail.parameterName|default('') }}</td>
+                                <td data-t="s">{{ detail.day|default('') }}</td>
+                                <td data-t="n">{{ detail.quantity|default('') }}</td>
+
+                                {#{% if index==0 %}
+                                <td data-a-v="middle" rowspan="{{ details|length }}">{{ detail.diseases|default('') }}</td>
+                                <td data-a-v="middle" rowspan="{{ details|length }}">{{ detail.observation|default('') }}</td>
+                                <td data-a-v="middle" rowspan="{{ details|length }}">{{ detail.complains|default('') }}</td>
+                                {% endif %}#}
+                                <td data-a-v="middle">{{ detail.diseases|default('') }}</td>
+                                <td data-a-v="middle">{{ detail.observation|default('') }}</td>
+                                <td data-a-v="middle">{{ detail.complains|default('') }}</td>
+
+                            </tr>
+                            {% set employeeWiseCount=employeeWiseCount+1 %}
+                            {% set dateWiseCount=dateWiseCount+1 %}
+                        {% endfor %}
+                        {% set issueCount=issueCount+1 %}
+                    {% endfor %}
+
+                {% endfor %}
+
+            {% endfor %}
+
+        {% endfor %}
+
+    {% endif %}
+</table>
+

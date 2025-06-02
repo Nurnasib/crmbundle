@@ -1,0 +1,67 @@
+{% for year, entity in entities %}
+{% set totalCol = fishSizes ? fishSizes|multiArrayLength+3:1 %}
+    <table class="table table-striped table-bordered table-hover download-excel">
+        <thead>
+        <tr>
+            <th data-a-h="center" class="border-0" colspan="{{ totalCol }}"><h3 class="text-center">NOURISH POULTRY AND HATCHERY LTD</h3></th>
+        </tr>
+        <tr>
+            <th data-a-h="center" class="border-0" colspan="{{ totalCol }}"><h5 class="text-center">UTTARA, DHAKA.</h5></th>
+        </tr>
+        <tr>
+            <td data-a-h="center" class="border-0" colspan="{{ totalCol }}" align="center"><h6>Average Fish Sale Price (Farmer Price) {{ year }}</h6></td>
+        </tr>
+        </thead>
+        {% for employeeId, details in entity %}
+            <thead class="thead-dark">
+            <tr>
+                <th colspan="{{ totalCol/3|number_format(0) }}" class="border-0">{{ 'ID' }}: {{ details['userId'] }}</th>
+                <th colspan="{{ totalCol/3|number_format(0) }}" class="border-0">{{ 'Name of CSO' }}: {{ details['employeeName'] }}</th>
+                <th colspan="{{ totalCol/3|number_format(0) }}" class="border-0">{{ 'Designation' }}: {{ details['employeeDesignationName'] }}</th>
+            </tr>
+            <tr>
+                <th data-a-v="middle" rowspan="2">{{ 'Month'|trans }}</th>
+                {% if speciesTypes is not empty%}
+                    {% for speciesType in speciesTypes %}
+                        <th data-a-h="center" class="text-center" colspan="{{ fishSizes[speciesType.id] is defined?fishSizes[speciesType.id]|length:'' }}">{{ speciesType.name }}</th>
+                    {% endfor %}
+
+                {% endif %}
+            </tr>
+            <tr>
+                {% if speciesTypes is not empty%}
+                    {% for speciesType in speciesTypes %}
+                        {% if fishSizes[speciesType.id] is defined %}
+                            {% for fishSize in fishSizes[speciesType.id] %}
+                                <th>{{ fishSize.name }}</th>
+                            {% endfor %}
+                        {% endif %}
+                    {% endfor %}
+
+                {% endif %}
+            </tr>
+            </thead>
+
+            <tbody>
+            {% for month in arrayMonth %}
+                <tr>
+                    <td data-a-v="middle">{{month}}</td>
+                    {% if speciesTypes is not empty%}
+                        {% for speciesType in speciesTypes %}
+                            {% if fishSizes[speciesType.id] is defined %}
+                                {% for fishSize in fishSizes[speciesType.id] %}
+                                    <td data-t="n">
+                                        {{ details['details'][month][fishSize.id].price|default(0) }}
+                                    </td>
+                                {% endfor %}
+                            {% endif %}
+                        {% endfor %}
+
+                    {% endif %}
+                </tr>
+            {% endfor %}
+            </tbody>
+
+        {% endfor %}
+    </table>
+{% endfor %}

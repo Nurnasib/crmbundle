@@ -581,5 +581,23 @@ class ExpenseRepository extends EntityRepository
         return $returnArray;
     }
 
+    //getExpensesWaitingForApprovalByEmployeeId
+    public function getExpensesWaitingForApprovalByEmployeeId($employeeId, $status = 1)
+    {
+        $qb = $this->createQueryBuilder('e');
+        $qb->select('e.id', 'e.expenseDate', 'e.status');
+        $qb->addSelect('employee.id as employeeId', 'employee.name as employeeName', 'employee.userId as employeeUserId');
+        $qb->join('e.employee', 'employee');
+
+        $qb->where('e.expenseDate IS NOT NULL');
+        $qb->andWhere( 'e.approvedAt IS NULL');
+        $qb->andWhere('e.isApproved = :isApproved')->setParameter('isApproved', false);
+        $qb->andWhere('e.status = :status')->setParameter('status', $status);
+        $qb->andWhere('employee.id = :employeeId')->setParameter('employeeId', $employeeId);
+
+        return $qb->getQuery()->getArrayResult();
+    }
+
+
 
 }
