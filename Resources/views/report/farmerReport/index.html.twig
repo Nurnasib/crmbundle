@@ -30,6 +30,9 @@
                             <div class="btn-group" style="margin-top: 25px">
                                 <button type="submit" name="search" class="btn btn-primary btn-sm" title="Search" value="search"><i class="fa fa-search" aria-hidden="true"></i></button>
                                 <a href="{{ path('farmar_summary_report') }}" class="btn purple-bg btn-sm white-font" title="Reset" value="reset"><i class="fa fa-refresh" aria-hidden="true"></i></a>
+                                {% if entities is defined and entities is not empty %}
+                                    <button type="submit" name="excel" class="btn blue-bg btn-sm white-font" title="Excel" value="excel" id="button-excel"><i class="fa fa-file-excel" aria-hidden="true"></i> {{ 'Excel'|trans }}</button>
+                                {% endif %}
                             </div>
                         </th>
                     </tr>
@@ -85,19 +88,19 @@
                                         <tr>
 {#                                            first loop index#}
                                             {% if loopCount ==1  %}
-                                            <td rowspan="{{ totalTeamMembers }}">{{ regionIndex }}</td>
-                                            <td rowspan="{{ totalTeamMembers }}">{{ employeeData.regionName }}</td>
-                                            <td rowspan="{{ totalTeamMembers }}">{{ employeeData.userId }}</td>
-                                            <td rowspan="{{ totalTeamMembers }}">{{ employeeData.name }}</td>
+                                            <td data-a-v="middle" data-t="n" rowspan="{{ totalTeamMembers }}">{{ regionIndex }}</td>
+                                            <td data-a-v="middle" rowspan="{{ totalTeamMembers }}">{{ employeeData.regionName }}</td>
+                                            <td data-a-v="middle" rowspan="{{ totalTeamMembers }}">{{ employeeData.userId }}</td>
+                                            <td data-a-v="middle" rowspan="{{ totalTeamMembers }}">{{ employeeData.name }}</td>
 {#                                            <td rowspan="{{ totalTeamMembers }}">{{ totalTeamMembers }}</td>#}
                                             {% endif %}
                                             <td>{{ teamMember.userId }}</td>
                                             <td>{{ teamMember.name }}</td>
                                             <td>{{ teamMember.designationName }}</td>
-                                            <td>{{ teamMember.noOfCustomer }}</td>
-                                            <td>{{ teamMember.customerTotalCapacity }}</td>
-                                            <td>{{ teamMember.noOfCustomer }}</td>
-                                            <td>{{ teamMember.noOfCustomerintroduceBy }}</td>
+                                            <td data-t="n">{{ teamMember.noOfCustomer }}</td>
+                                            <td data-t="n">{{ teamMember.customerTotalCapacity }}</td>
+                                            <td data-t="n">{{ teamMember.noOfCustomer }}</td>
+                                            <td data-t="n">{{ teamMember.noOfCustomerintroduceBy }}</td>
 
                                         </tr>
                                         {% set loopCount = loopCount + 1 %}
@@ -130,20 +133,12 @@
     <link rel="stylesheet" href="{{ asset('assets/module/css/app.css') }}">
 
     <style>
-        /*        table.filter-result thead {
-                    position: sticky;
-                    top: -1px;
-                    background-color: #dbdee3 !important;
-                    border-bottom: 2px solid #4C9EE7!important;
-                }*/
-        table thead tr.data-header th{
 
+        table thead tr.data-header th{
             border: 2px solid #b5b5b5 !important;
             border-bottom-color: #b5b5b5 !important;
         }
-        /*        table.filter thead th{
-                    border: 0 !important;
-                }*/
+
     </style>
 {% endblock  %}
 {% block javascripts %}
@@ -151,7 +146,6 @@
     <script type="application/javascript" src="{{ asset('assets/module/js/app.js') }}"></script>
     <script src="{{ asset('assets/js/tableToExcel.js') }}"></script>
     <script>
-
 
         $('#start-date, #end-date').datepicker(
             {
@@ -162,7 +156,6 @@
             }
         );
 
-
         let button = document.querySelector("#button-excel");
 
         // Check if the button exists before adding the event listener
@@ -171,7 +164,7 @@
                 e.preventDefault();
                 let table = document.querySelector(".download-excel");
                 TableToExcel.convert(table, {
-                    name: "{{ report is defined and report is not null ? report : ''}}{{ filterBy['startDate'] is defined and filterBy['startDate'] is not empty ? '('~filterBy['startDate']:'' }} {{ filterBy['endDate'] is defined and filterBy['endDate'] is not empty ? ' to '~filterBy['endDate']~')':'' }}{{ filterBy['year'] is defined and filterBy['year'] is not empty ? '('~filterBy['year']~')':'' }}.xlsx",
+                    name: "farmer_summary_report.xlsx",
                     sheet: {
                         name: "Sheet 1"
                     }

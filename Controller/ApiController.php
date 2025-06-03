@@ -4807,7 +4807,7 @@ class ApiController extends AbstractController
             set_time_limit(0);
             ignore_user_abort(true);
             if ($request->getMethod() == 'GET' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')) {
-                $employeeId = $request->query->get('employee_id');
+                $employeeId = $request->query->get('team_member_id');
                 if ($employeeId){
                    $expensesWaitingForApproval = $this->getDoctrine()->getRepository(Expense::class)->getExpensesWaitingForApprovalByEmployeeId( (int)$employeeId );
 
@@ -4841,10 +4841,10 @@ class ApiController extends AbstractController
         ignore_user_abort(true);
         if ($request->getMethod() == 'POST' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')) {
             $expenseId = $request->request->get('expense_id');
-            $logedInUserId = $request->request->get('logged_in_user_id');
-            $employeeId = $request->request->get('employee_id');
+            $teamMemberId = $request->request->get('team_member_id');
+            $logedInUserId = $request->request->get('employee_id');
             $logedInUser = $this->getDoctrine()->getRepository(User::class)->find((int)$logedInUserId);
-            $employee = $this->getDoctrine()->getRepository(User::class)->find((int)$employeeId);
+            $employee = $this->getDoctrine()->getRepository(User::class)->find((int)$teamMemberId);
             if (!$logedInUser) {
                 return new JsonResponse([
                     'status' => 404,
@@ -4859,7 +4859,7 @@ class ApiController extends AbstractController
                 ]);
             }
 
-            if ( $employeeId && $expenseId ) {
+            if ( $expenseId ) {
                 $expense = $this->getDoctrine()->getRepository(Expense::class)->findOneBy([ 'id' => $expenseId, 'employee' => $employee ]);
                 if ($expense) {
                     $expense->setApprovedBy( $logedInUser );

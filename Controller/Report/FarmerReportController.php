@@ -90,4 +90,49 @@ class FarmerReportController extends AbstractController
         ]);
     }
 
+    /**
+     * @Route("/details", name="farmar_details_report")
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function details(Request $request)
+    {
+        $filterBy = [];
+        $entities = [];
+        $species = [];
+        $trainingMaterials = [];
+        $employee = null;
+        $speciesTypesByParent=[];
+        $arrFishSizes=[];
+        $arrayMonth=[];
+
+//        $form = $this->createForm(SearchFilterFormType::class, null, ['loggedUser' => $this->getUser()]);
+        $userRepo = $this->getDoctrine()->getRepository(User::class);
+        $form = $this->createForm(SearchFilterFormType::class, null, ['loggedUser' => $this->getUser(),'userRepo'=>$userRepo]);
+        $form->handleRequest($request);
+
+        if($form->isSubmitted()){
+            $filterBy = $form->getData();
+
+            $employee = $form->getData()['employee'];
+
+            $filterBy['employeeId'] = $form->getData()['employee'] ? $form->getData()['employee']->getId() : '';
+
+            $entities = $userRepo->getRegionalHeadEmployee( $filterBy );
+
+        }
+
+        return $this->render('@TerminalbdCrm/report/farmerReport/details.html.twig',[
+            'form' => $form->createView(),
+            'entities' => $entities,
+            'filterBy' => $filterBy,
+            'species' => $species,
+            'trainingMaterials' => $trainingMaterials,
+            'employee'=> $employee,
+            'speciesTypes' => $speciesTypesByParent,
+            'fishSizes' => $arrFishSizes,
+            'arrayMonth' => $arrayMonth,
+        ]);
+    }
+
 }
