@@ -585,10 +585,13 @@ class ExpenseRepository extends EntityRepository
     public function getExpensesWaitingForApprovalByEmployeeId($employeeId, $status = 1)
     {
         $qb = $this->createQueryBuilder('e');
-        $qb->select('e.id', 'e.status');
+        $qb->select('e.id', 'e.status', 'e.comments', 'e.detailsComments', 'e.scheduleVisit', 'e.visitLocation', 'e.asPerAttachment', 'e.isAreaChange', 'e.isApproved');
         $qb->addSelect("DATE_FORMAT(e.expenseDate, '%Y-%m-%d') as expenseDate");
+        $qb->addSelect("DATE_FORMAT(e.approvedAt, '%Y-%m-%d') as approvedAt");
         $qb->addSelect('employee.id as employeeId', 'employee.name as employeeName', 'employee.userId as employeeUserId');
+        $qb->addSelect('workingArea.id as workingAreaId', 'workingArea.name as workingAreaName', 'workingArea.slug as workingAreaSlug');
         $qb->join('e.employee', 'employee');
+        $qb->leftJoin('e.workingArea', 'workingArea');
 
         $qb->where('e.expenseDate IS NOT NULL');
         $qb->andWhere( 'e.approvedAt IS NULL');
