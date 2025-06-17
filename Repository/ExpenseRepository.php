@@ -585,17 +585,64 @@ class ExpenseRepository extends EntityRepository
     public function getExpensesWaitingForApprovalByEmployeeId($employeeId, $status = 1)
     {
         $qb = $this->createQueryBuilder('e');
-        $qb->select('e.id', 'e.expenseDate', 'e.status');
+        $qb->select('e.id', 'e.status');
+        $qb->addSelect("DATE_FORMAT(e.expenseDate, '%Y-%m-%d') as expenseDate");
         $qb->addSelect('employee.id as employeeId', 'employee.name as employeeName', 'employee.userId as employeeUserId');
         $qb->join('e.employee', 'employee');
 
         $qb->where('e.expenseDate IS NOT NULL');
         $qb->andWhere( 'e.approvedAt IS NULL');
-        $qb->andWhere('e.isApproved = :isApproved')->setParameter('isApproved', false);
+        $qb->andWhere('e.isApproved = :isApproved')->setParameter('isApproved', 0);
         $qb->andWhere('e.status = :status')->setParameter('status', $status);
         $qb->andWhere('employee.id = :employeeId')->setParameter('employeeId', $employeeId);
+//  get single result latest
+        $qb->orderBy('e.expenseDate', 'DESC');
+        $qb->setMaxResults(1);
 
-        return $qb->getQuery()->getArrayResult();
+        $result = $qb->getQuery()->getOneOrNullResult();
+
+        if ($result) {
+            $expenseParticulars = $this->_em->getRepository(ExpenseParticular::class)->findBy(['expense' => $result['id']]);
+            $result['particulars'] = [];
+            foreach ($expenseParticulars as $particular) {
+                $result['particulars'][] = [
+                    'id' => $particular->getId(),
+                    'particular' => $particular->getParticular() ? $particular->getParticular()->getName() : '',
+                    'amount' => (string)$particular->getAmount(),
+                ];
+            }
+
+            // Get conveyance details
+            $expenseConveyanceDetails = $this->_em->getRepository(ExpenseConveyanceDetails::class)->findBy(['expense' => $result['id']]);
+            $result['conveyanceDetails'] = [];
+            /** @var ExpenseConveyanceDetails $conveyanceDetail*/
+            foreach ($expenseConveyanceDetails as $conveyanceDetail) {
+
+                $result['conveyanceDetails'][] = [
+                    'id' => $conveyanceDetail->getId(),
+                    'destination' => $conveyanceDetail->getDestination() ? $conveyanceDetail->getDestination() : [],
+                    'meterReadingFrom' => $conveyanceDetail->getMeterReadingFrom(),
+                    'meterReadingTo' => $conveyanceDetail->getMeterReadingTo(),
+                    'mileage' => $conveyanceDetail->getTotalMileage(),
+                    'amount' => $conveyanceDetail->getAmount(),
+                    'transportType' => $conveyanceDetail->getTransportType(),
+                    'fuelBill' => $conveyanceDetail->getFuelBill(),
+                    'parkingBill' => $conveyanceDetail->getParkingBill(),
+                    'tollBill' => $conveyanceDetail->getTollBill(),
+                    'othersBill' => $conveyanceDetail->getOthersBill(),
+                    'mobilBill' => $conveyanceDetail->getMobilBill(),
+                    'maintenanceBill' => $conveyanceDetail->getMaintenanceBill(),
+                    'servicingBill' => $conveyanceDetail->getServicingBill(),
+                    'meterReadingFrom' => $conveyanceDetail->getMeterReadingFrom(),
+                    'meterReadingTo' => $conveyanceDetail->getMeterReadingTo(),
+                    'totalMileage' => $conveyanceDetail->getTotalMileage(),
+                    'details' => $conveyanceDetail->getDetails(),
+                ];
+            }
+        }
+
+
+        return $result;
     }
 
 

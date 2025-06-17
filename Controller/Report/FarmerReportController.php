@@ -122,6 +122,8 @@ class FarmerReportController extends AbstractController
 
         }
 
+        $speciesTypesByParent = $this->getDoctrine()->getRepository(Setting::class)->getSpeciesTypeByParentSlug('poultry-breed');
+
         return $this->render('@TerminalbdCrm/report/farmerReport/details.html.twig',[
             'form' => $form->createView(),
             'entities' => $entities,

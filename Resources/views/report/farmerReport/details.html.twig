@@ -69,10 +69,19 @@
                             <th scope="col">Employee ID</th>
                             <th scope="col">Employee Name</th>
                             <th scope="col">Designation</th>
-                            <th scope="col">No Of Farm Added</th>
-                            <th scope="col">Capacity</th>
-                            <th scope="col">New</th>
-                            <th scope="col">Convert</th>
+                            <th scope="col">Sl.</th>
+                            <th scope="col">Farmer Name</th>
+                            <th scope="col">Address</th>
+                            <th scope="col">Mobile</th>
+                            <th scope="col">Total Capacity</th>
+                            {% if speciesTypes is not empty %}
+                                {% for speciesType in speciesTypes %}
+                                    <th scope="col">{{ speciesType.name }}</th>
+                                {% endfor %}
+                            {% endif %}
+                            <th scope="col">Cattle</th>
+                            <th scope="col">Fish</th>
+{#                            <th scope="col">Convert</th>#}
                         </tr>
                         </thead>
 
@@ -84,26 +93,61 @@
                                 {% set loopCount = 1 %}
                                 {% set totalTeamMembers = employeeData.teamMembers|length %}
                                 {% if totalTeamMembers > 0 %}
-                                    {% for teamMember in employeeData.teamMembers %}
-                                        <tr>
-{#                                            first loop index#}
-                                            {% if loopCount ==1  %}
-                                            <td data-a-v="middle" data-t="n" rowspan="{{ totalTeamMembers }}">{{ regionIndex }}</td>
-                                            <td data-a-v="middle" rowspan="{{ totalTeamMembers }}">{{ employeeData.regionName }}</td>
-                                            <td data-a-v="middle" rowspan="{{ totalTeamMembers }}">{{ employeeData.userId }}</td>
-                                            <td data-a-v="middle" rowspan="{{ totalTeamMembers }}">{{ employeeData.name }}</td>
-{#                                            <td rowspan="{{ totalTeamMembers }}">{{ totalTeamMembers }}</td>#}
-                                            {% endif %}
-                                            <td>{{ teamMember.userId }}</td>
-                                            <td>{{ teamMember.name }}</td>
-                                            <td>{{ teamMember.designationName }}</td>
-                                            <td data-t="n">{{ teamMember.noOfCustomer }}</td>
-                                            <td data-t="n">{{ teamMember.customerTotalCapacity }}</td>
-                                            <td data-t="n">{{ teamMember.noOfCustomer }}</td>
-                                            <td data-t="n">{{ teamMember.noOfCustomerintroduceBy }}</td>
+                                    {% set grandTotalTeamMembers = employeeData.teamMembers|arraySumColWise('noOfCustomer')  %}
 
-                                        </tr>
-                                        {% set loopCount = loopCount + 1 %}
+                                    {% for teamMember in employeeData.teamMembers %}
+
+                                        {% if teamMember.customers|length > 0 %}
+                                            {% for customer in teamMember.customers %}
+                                                <tr>
+                                                    {#                                            first loop index#}
+                                                    {% if loopCount ==1  %}
+                                                        <td data-a-v="middle" data-t="n" rowspan="{{ grandTotalTeamMembers }}">{{ regionIndex }} </td>
+                                                        <td data-a-v="middle" rowspan="{{ grandTotalTeamMembers }}">{{ employeeData.regionName }}</td>
+                                                        <td data-a-v="middle" rowspan="{{ grandTotalTeamMembers }}">{{ employeeData.userId }}</td>
+                                                        <td data-a-v="middle" rowspan="{{ grandTotalTeamMembers }}">{{ employeeData.name }}</td>
+                                                        {#                                            <td rowspan="{{ totalTeamMembers }}">{{ totalTeamMembers }}</td>#}
+                                                    {% endif %}
+
+                                                    {% if loop.index ==1 %}
+
+                                                    <td rowspan="{{ teamMember.noOfCustomer }}">{{ teamMember.userId }}</td>
+                                                    <td rowspan="{{ teamMember.noOfCustomer }}">{{ teamMember.name }}</td>
+                                                    <td rowspan="{{ teamMember.noOfCustomer }}">{{ teamMember.designationName }}</td>
+
+                                                    {% endif %}
+
+                                                    <td data-t="n">{{ loop.index }}</td>
+                                                    <td data-t="n">{{ customer.name }}</td>
+                                                    <td data-t="n">{{ customer.address }}</td>
+                                                    <td data-t="n">{{ customer.mobile }}</td>
+                                                    <td data-t="n">{{ customer.cultureSpeciesItemAndQtySum }}</td>
+
+                                                    {% if speciesTypes is not empty %}
+                                                        {% for speciesType in speciesTypes %}
+                                                            <td data-t="n">
+                                                                {% if customer.farmerTypeSlug == 'poultry-breed' %}
+{#                                                                    check in array decodedCultureSpeciesItemAndQty #}
+                                                                    {% if customer.decodedCultureSpeciesItemAndQty[speciesType.id] is defined %}
+                                                                        {{ customer.decodedCultureSpeciesItemAndQty[speciesType.id] }}
+                                                                    {% endif %}
+                                                                {% endif %}
+                                                            </td>
+                                                        {% endfor %}
+                                                    {% endif %}
+
+                                                    <td data-t="n">{{ customer.farmerTypeSlug == 'cattle-breed' ? customer.cultureSpeciesItemAndQtySum : '' }}</td>
+                                                    <td data-t="n">{{ customer.farmerTypeSlug == 'fish-breed' ? customer.cultureSpeciesItemAndQtySum : '' }}</td>
+
+{#                                                    <td data-t="n">{{ teamMember.noOfCustomerintroduceBy }}</td>#}
+
+                                                </tr>
+                                                {% set loopCount = loopCount + 1 %}
+
+                                            {% endfor %}
+
+                                        {% endif %}
+
 
                                     {% endfor %}
                                 {% endif %}

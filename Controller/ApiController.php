@@ -4778,6 +4778,14 @@ class ApiController extends AbstractController
                     }
                     $teamMembers = $this->getDoctrine()->getRepository(User::class)->getAllTeamMemberByLineManager( $user );
 
+                    if ( $teamMembers && sizeof($teamMembers) > 0 ) {
+                        foreach ($teamMembers as $key => $teamMember) {
+                            $employeeId = $teamMember['id'];
+                            $expensesWaitingForApproval = $this->getDoctrine()->getRepository(Expense::class)->getExpensesWaitingForApprovalByEmployeeId( (int)$employeeId );
+                            $teamMembers[$key]['expensesWaitingForApproval'] = $expensesWaitingForApproval;
+                        }
+                    }
+
 
                     return new JsonResponse([
                         'status' => 200,

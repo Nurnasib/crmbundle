@@ -393,4 +393,16 @@ class SettingRepository extends EntityRepository
         return $qb->getQuery()->getArrayResult();
     }
 
+    //SPECIES_TYPE
+    public function getSpeciesTypeByParentSlug($parentSlug)
+    {
+        $qb = $this->createQueryBuilder('e');
+        $qb->select('e.id', 'e.name', 'e.slug');
+        $qb->join('e.parent', 'parent');
+        $qb->where("e.settingType = 'SPECIES_TYPE'");
+        $qb->andWhere('e.status = 1');
+        $qb->andWhere('parent.slug = :parentSlug')->setParameter('parentSlug', $parentSlug);
+        return $qb->getQuery()->getArrayResult();
+    }
+
 }

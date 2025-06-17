@@ -194,12 +194,14 @@ ORDER BY `c`.`agent_id` ASC";
         $qb = $this->createQueryBuilder('e');
         $qb->join('e.customerGroup','s');
         $qb->join('e.farmerIntroduce','farmerIntroduce');
-        $qb->join('farmerIntroduce.employee','employee');        
+        $qb->join('farmerIntroduce.employee','employee');
+        $qb->join('farmerIntroduce.farmerType','farmerType');
 
         $qb->select('e.id as id','e.name as name','e.address as address','e.mobile as mobile' );
         
         $qb->addSelect('farmerIntroduce.cultureSpeciesItemAndQty');
         $qb->addSelect('employee.id as employeeId', 'employee.name as employeeName', 'employee.userId as employeeUserId');
+        $qb->addSelect('farmerType.name as farmerTypeName', 'farmerType.slug as farmerTypeSlug');
 
         $qb->where('s.slug = :slug')->setParameter('slug','farmer');
         
@@ -218,6 +220,7 @@ ORDER BY `c`.`agent_id` ASC";
         $returnArray = [];
         foreach ($results as $result) {
             //sum json value cultureSpeciesItemAndQty
+            $cultureSpeciesItemAndQty = [];
             if (isset($result['cultureSpeciesItemAndQty']) && $result['cultureSpeciesItemAndQty'] && $result['cultureSpeciesItemAndQty'] != null) {
                 $cultureSpeciesItemAndQty = json_decode($result['cultureSpeciesItemAndQty'], true);
                 if (is_array($cultureSpeciesItemAndQty)) {
@@ -233,6 +236,8 @@ ORDER BY `c`.`agent_id` ASC";
             } else {
                 $result['cultureSpeciesItemAndQtySum'] = 0;
             }
+
+            $result['decodedCultureSpeciesItemAndQty'] = $cultureSpeciesItemAndQty;
 
             $returnArray[$result['employeeId']][] = $result;
         }
