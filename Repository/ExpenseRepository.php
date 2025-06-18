@@ -590,7 +590,9 @@ class ExpenseRepository extends EntityRepository
         $qb->addSelect("DATE_FORMAT(e.approvedAt, '%Y-%m-%d') as approvedAt");
         $qb->addSelect('employee.id as employeeId', 'employee.name as employeeName', 'employee.userId as employeeUserId');
         $qb->addSelect('workingArea.id as workingAreaId', 'workingArea.name as workingAreaName', 'workingArea.slug as workingAreaSlug');
+        $qb->addSelect('expenseChart.typeOfVehicle as typeOfVehicle');
         $qb->join('e.employee', 'employee');
+        $qb->join ( 'employee.expenseChart' , 'expenseChart' );
         $qb->leftJoin('e.workingArea', 'workingArea');
 
         $qb->where('e.expenseDate IS NOT NULL');
@@ -620,6 +622,14 @@ class ExpenseRepository extends EntityRepository
             $result['conveyanceDetails'] = [];
             /** @var ExpenseConveyanceDetails $conveyanceDetail*/
             foreach ($expenseConveyanceDetails as $conveyanceDetail) {
+
+                $employeeTransportType = $result['typeOfVehicle'];
+
+                if ($employeeTransportType == 'car' && $conveyanceDetail->getTransportType() == 'motorcycle') {
+                    continue; // Skip motorcycle details for car employees
+                } elseif ($employeeTransportType == 'motorcycle' && $conveyanceDetail->getTransportType() == 'car') {
+                    continue; // Skip car details for motorcycle employees
+                }
 
                 $result['conveyanceDetails'][] = [
                     'id' => $conveyanceDetail->getId(),
