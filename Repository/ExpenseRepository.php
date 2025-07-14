@@ -207,6 +207,7 @@ class ExpenseRepository extends EntityRepository
         $qb = $this->createQueryBuilder('e');
 //        $qb->select('SUM(e.conveyance) as totalConveyance','SUM(e.mobile) as totalMobile','SUM(e.dailyAllowance) as totalDailyAllowance','SUM(e.hotelRent) as totalHotelRent','SUM(e.tollBill) as totalTollBill','SUM(e.food) as totalFood','SUM(e.courier) as totalCourier','SUM(e.maintenace) as totalMaintenace','SUM(e.serviceCharge) as totalServiceCharge','SUM(e.photostate) as totalPhotostate','SUM(e.others) as totalOthers');
         $qb->select("DATE_FORMAT(e.expenseDate,'%b,%y') as expenseWordMonthYear", "DATE_FORMAT(e.expenseDate,'%Y-%m') as expenseMonthYear", 'YEAR(e.expenseDate) as expenseYear');
+        $qb->addSelect('e.approvedAt', 'e.isApproved');
         $qb->addSelect('employee.id as employeeAutoId','employee.userId as employeeId','employee.name as employeeName');
         $qb->join('e.employee','employee');
 
@@ -263,7 +264,7 @@ class ExpenseRepository extends EntityRepository
 
     public function getExpenseByEmployeeAndDate($employeeId, $expenseDate){
         $qb = $this->createQueryBuilder('e');
-        $qb->select('e.id');
+        $qb->select('e.id', 'e.approvedAt', 'e.isApproved');
         $qb->join('e.employee','employee');
 
         $qb->where('e.status >=:status')->setParameter('status',1);
@@ -278,7 +279,7 @@ class ExpenseRepository extends EntityRepository
     
     public function getLastExpenseByEmployee($employeeId){
         $qb = $this->createQueryBuilder('e');
-        $qb->select('e.id', 'e.expenseDate', 'e.createdAt');
+        $qb->select('e.id', 'e.expenseDate', 'e.createdAt', 'e.approvedAt', 'e.isApproved');
         $qb->join('e.employee','employee');
 
         $qb->andWhere('e.expenseDate IS NOT NULL');
@@ -416,6 +417,8 @@ class ExpenseRepository extends EntityRepository
                     "visit_date" => $result->getExpenseDate()->format('Y-m-d'),
                     "visiting_area" => $result->getVisitLocation(),
                     "comment" => $result->getComments(),
+                    "approved_at" => $result->getApprovedAt() ? $result->getApprovedAt()->format('Y-m-d H:i:s') : null,
+                    "is_approved" => $result->isApproved(),
                     "area" => [
                         'id' => $result->getWorkingArea()->getId(),
                         'name' => $result->getWorkingArea()->getName(),
