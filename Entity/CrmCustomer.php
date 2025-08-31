@@ -95,6 +95,36 @@ class CrmCustomer
     private $farmerIntroduce;
 
     /**
+     * @var string
+     * @ORM\Column(name="status", type="string", nullable=true)
+     */
+    private $status = 'active';
+
+    /**
+     * @var float
+     * @ORM\Column(name="approximate_feed_consume", type="float", nullable=true)
+     */
+    private $approximateFeedConsume;
+
+    /**
+     * @var \DateTime
+     * @ORM\Column(name="enlisted_on", type="date", nullable=true)
+     */
+    private $enlistedOn;
+
+    /**
+     * @var \DateTime
+     * @ORM\Column(name="business_starts_from", type="date", nullable=true)
+     */
+    private $businessStartsFrom;
+
+    /**
+     * @var string
+     * @ORM\Column(name="business_type", type="string", nullable=true)
+     */
+    private $businessType; //e.g. cash, credit, all etc.
+
+    /**
      * @return int
      */
     public function getId()
@@ -345,6 +375,56 @@ class CrmCustomer
     public function setDeletedBy(User $deletedBy): void
     {
         $this->deletedBy = $deletedBy;
+    }
+
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    public function setStatus(string $status): void
+    {
+        $this->status = $status;
+    }
+
+    public function getApproximateFeedConsume()
+    {
+        return $this->approximateFeedConsume;
+    }
+
+    public function setApproximateFeedConsume( $approximateFeedConsume): void
+    {
+        $this->approximateFeedConsume = $approximateFeedConsume;
+    }
+
+    public function getEnlistedOn()
+    {
+        return $this->enlistedOn;
+    }
+
+    public function setEnlistedOn(?\DateTime $enlistedOn): void
+    {
+        $this->enlistedOn = $enlistedOn;
+    }
+
+    public function getBusinessStartsFrom()
+    {
+        return $this->businessStartsFrom;
+    }
+
+    public function setBusinessStartsFrom(?\DateTime $businessStartsFrom): void
+    {
+        $this->businessStartsFrom = $businessStartsFrom;
+    }
+
+    public function getBusinessType(): string
+    {
+        return $this->businessType;
+    }
+
+    public function setBusinessType(?string $businessType): void
+    {
+        $this->businessType = $businessType;
     }
 
 

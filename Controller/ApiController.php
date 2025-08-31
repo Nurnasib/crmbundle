@@ -3339,6 +3339,17 @@ class ApiController extends AbstractController
                     $newFarmer->setOtherAgent($otherAgent);
                     $newFarmer->setLocation($location);
                     $newFarmer->setCustomerGroup($farmerGroup);
+                    //enlistedOn format is 'Y-m-d' or 'Y-m-d H:i:s'
+                    $enlistedOn =  isset($parameters['enlisted_on']) ? date('Y-m-d', strtotime($parameters['enlisted_on'])) : null;
+                    $businessStartsFrom =  isset($parameters['business_starts_from']) ? date('Y-m-d', strtotime($parameters['business_starts_from'])) : null;
+
+                    $newFarmer->setStatus('active');
+                    $newFarmer->setEnlistedOn( $enlistedOn ? new \DateTime($enlistedOn) : null );
+                    $newFarmer->setBusinessStartsFrom($businessStartsFrom ? new \DateTime($businessStartsFrom) : null);
+                    $newFarmer->setApproximateFeedConsume( isset($parameters['approximate_feed_consume']) ? (float)$parameters['approximate_feed_consume'] : null );
+                    $newFarmer->setBusinessType( isset($parameters['business_type']) ? (string)$parameters['business_type'] : null );
+
+
                     $newFarmer->setCreated(new \DateTime('now'));
                     $this->getDoctrine()->getManager()->persist($newFarmer);
                     $this->getDoctrine()->getManager()->flush();
@@ -4718,10 +4729,12 @@ class ApiController extends AbstractController
                 $type = $request->query->get('type'); // monthly or daily
                 if ($employeeId){
                     $visitPlans = $this->getDoctrine()->getRepository(CrmVisitPlan::class)->getMonthlyTourPlanByEmployeeAndDate($employeeId, $visitingDate, $type);
-                    $dailyExpenseCheck = null;
-                   if($visitingDate && $type=='daily'){
+//                    $dailyExpenseCheck = null;
+                   /*if($visitingDate && $type=='daily'){
                        $dailyExpenseCheck=$this->getDoctrine()->getRepository(Expense::class)->getExpenseByEmployeeAndDate( $employeeId, $visitingDate);
-                   }
+                   }*/
+                    $dailyExpenseCheck=$this->getDoctrine()->getRepository(Expense::class)->checkWaitingForApprovalExpenseByEmployee( $employeeId );
+
 
                    $lastExpense = $this->getDoctrine()->getRepository(Expense::class)->getLastExpenseByEmployee($employeeId);
                    $lastExpenseDate = $lastExpense && isset($lastExpense['expenseDate']) ?$lastExpense['expenseDate']->format('Y-m-d'):'';
@@ -4898,5 +4911,18 @@ class ApiController extends AbstractController
             'message' => 'Oops! somethings wrong.'
         ]);
     }
+
+    //customer status log
+    /**
+     * @param Request $request
+     * @param ParameterBagInterface $parameterBag
+     * @return JsonResponse
+     * @Route("/customer/status/log", name="crm_customer_status_log")
+     */
+    public function customerStatusLog(Request $request, ParameterBagInterface $parameterBag)
+    {
+
+    }
+
 
 }

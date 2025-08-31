@@ -176,7 +176,7 @@ class ApiRepository extends BaseRepository
         $qb->leftJoin('ca.agentGroup','agentGroup');
         $qb->Join('e.location', 'l');
         $qb->Join('l.parent', 'dis');
-        $qb->select('e.id as id', 'e.name as name', 'e.mobile as mobile', 'e.address as address');
+        $qb->select('e.id as id', 'e.name as name', 'e.mobile as mobile', 'e.address as address', 'e.status as customerStatus');
         $qb->addSelect('cg.name as customerGroup');
         $qb->addSelect('ca.id as agentId', 'ca.name as agentName');
         $qb->addSelect('l.name as upozila', 'l.id as upozilaId');
@@ -222,6 +222,7 @@ class ApiRepository extends BaseRepository
             $data[$key]['name'] = (string)$row['name'] . '' . $customerType;
             $data[$key]['mobile'] = (string)$row['mobile'];
             $data[$key]['address'] = (string)$row['address'];
+            $data[$key]['status'] = (string)$row['customerStatus'];
             $data[$key]['customerGroup'] = (string)$row['customerGroup'];
             $data[$key]['agent'] = (string)$row['agentName'];
             $data[$key]['agentId'] = (string)$row['agentId'];
@@ -1169,7 +1170,7 @@ class ApiRepository extends BaseRepository
         $qb->join('fi.farmerType', 'farmerType');
         $qb->leftJoin('fi.feed','feed');
 
-        $qb->select('e.id as id', 'e.name as name', 'e.address as address', 'e.mobile as mobile');
+        $qb->select('e.id as id', 'e.name as name', 'e.address as address', 'e.mobile as mobile', 'e.status as customerStatus');
         $qb->addSelect('a.id as agentId', 'a.name as agentName', 'farmerType.name AS farmerTypeName');
         $qb->addSelect('feed.name as feedName');
         $qb->addSelect('agentGroup.name as agentGroupName', 'agentGroup.slug as agentGroupSlug');
@@ -1201,6 +1202,7 @@ class ApiRepository extends BaseRepository
             $data[$key]['agentName'] = (string)$row['agentName'];
 //            $data[$key]['feedName'] = (string)$row['feedName'];
             $data[$key]['isIntroduce'] = (string)$isNew;
+            $data[$key]['status'] = (string)$row['customerStatus'];
         }
         return $data;
     }

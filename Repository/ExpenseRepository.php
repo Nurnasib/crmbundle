@@ -277,6 +277,27 @@ class ExpenseRepository extends EntityRepository
         return $results;
     }
     
+    public function checkWaitingForApprovalExpenseByEmployee( $employeeId ){
+        $qb = $this->createQueryBuilder('e');
+        $qb->select('e.id', 'e.approvedAt', 'e.isApproved');
+        $qb->join('e.employee','employee');
+
+        $qb->where('e.expenseDate IS NOT NULL');
+        $qb->andWhere(
+            $qb->expr()->orX(
+                'e.isApproved = :isApproved',
+                'e.approvedAt IS NULL',
+                'e.approvedBy IS NULL'
+            )
+        )->setParameter('isApproved', false);
+        $qb->andWhere('employee.id =:employeeId')->setParameter('employeeId', $employeeId);
+
+        $qb->setMaxResults(1);
+        $result= $qb->getQuery()->getOneOrNullResult();
+
+        return $result;
+    }
+    
     public function getLastExpenseByEmployee($employeeId){
         $qb = $this->createQueryBuilder('e');
         $qb->select('e.id', 'e.expenseDate', 'e.createdAt', 'e.approvedAt', 'e.isApproved');
@@ -599,10 +620,19 @@ class ExpenseRepository extends EntityRepository
         $qb->leftJoin('e.workingArea', 'workingArea');
 
         $qb->where('e.expenseDate IS NOT NULL');
-        $qb->andWhere( 'e.approvedAt IS NULL');
-        $qb->andWhere('e.isApproved = :isApproved')->setParameter('isApproved', 0);
-        $qb->andWhere('e.status = :status')->setParameter('status', $status);
         $qb->andWhere('employee.id = :employeeId')->setParameter('employeeId', $employeeId);
+//        $qb->andWhere( 'e.approvedAt IS NULL');
+//        $qb->andWhere('e.isApproved = :isApproved')->setParameter('isApproved', 0);
+//        $qb->andWhere('e.status = :status')->setParameter('status', $status);
+        
+        $qb->andWhere(
+            $qb->expr()->orX(
+                'e.isApproved = :isApproved',
+                'e.approvedAt IS NULL',
+                'e.approvedBy IS NULL'
+            )
+        )->setParameter('isApproved', false);
+        
 //  get single result latest
         $qb->orderBy('e.expenseDate', 'DESC');
         $qb->setMaxResults(1);
