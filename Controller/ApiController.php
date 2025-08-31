@@ -2198,6 +2198,15 @@ class ApiController extends AbstractController
         ignore_user_abort(true);
 
         if ($request->getMethod() == 'POST' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')) {
+
+            //max code for sub-agent
+            $maxCodeEntity = $this->getDoctrine()->getRepository(Agent::class)->findOneBy(array('agentGroup' => $this->getDoctrine()->getRepository(Setting::class)->findOneBy(array('slug' => 'sub-agent'))), array('otherAndSubAgentId' => 'DESC'));
+            if ($maxCodeEntity && $maxCodeEntity->getOtherAndSubAgentId()) {
+                $code = $this->incrementCode($maxCodeEntity->getOtherAndSubAgentId());
+            } else {
+                $code = 'SA-00001';
+            }
+
             $entity = new Agent();
             $allRequestData = $request->request->all();
 
@@ -2209,6 +2218,7 @@ class ApiController extends AbstractController
             $entity->setAgentGroup($group);
             $entity->setUpozila($location);
             $entity->setDistrict($location->getParent());
+            $entity->setOtherAndSubAgentId($code);
             if ($allRequestData['agent']) {
                 $agent = $this->getDoctrine()->getRepository(Agent::class)->find($allRequestData['agent']);
                 $entity->setParent($agent);
@@ -2251,6 +2261,14 @@ class ApiController extends AbstractController
         ignore_user_abort(true);
 
         if ($request->getMethod() == 'POST' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')) {
+
+            $maxCodeEntity = $this->getDoctrine()->getRepository(Agent::class)->findOneBy(array('agentGroup' => $this->getDoctrine()->getRepository(Setting::class)->findOneBy(array('slug' => 'other-agent'))), array('otherAndSubAgentId' => 'DESC'));
+            if ($maxCodeEntity && $maxCodeEntity->getOtherAndSubAgentId()) {
+                $code = $this->incrementCode($maxCodeEntity->getOtherAndSubAgentId());
+            } else {
+                $code = 'OA-00001';
+            }
+
             $entity = new Agent();
             $allRequestData = $request->request->all();
             $group = $this->getDoctrine()->getRepository(\App\Entity\Core\Setting::class)->findOneBy(array('slug' => 'other-agent'));
@@ -2262,6 +2280,9 @@ class ApiController extends AbstractController
             $entity->setUpozila($location);
             $entity->setDistrict($location->getParent());
             $entity->setCreated(new \DateTime('now'));
+
+            $entity->setOtherAndSubAgentId($code);
+
             $em = $this->getDoctrine()->getManager();
 
             try {
@@ -2285,6 +2306,19 @@ class ApiController extends AbstractController
             'status' => 500,
             'message' => 'Server Error!'
         ]);
+    }
+
+   private function incrementCode($code) {
+        if (!strpos($code, '-')) {
+            return null;
+        }
+
+        list($prefix, $number) = explode('-', $code);
+
+        // increment and always keep 5 digits
+        $next = str_pad(((int)$number) + 1, 5, "0", STR_PAD_LEFT);
+
+        return $prefix . '-' . $next;
     }
 
     /**

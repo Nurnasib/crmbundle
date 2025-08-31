@@ -77,8 +77,8 @@ class ApiRepository extends BaseRepository
         $qb->Join('e.agentGroup', 'ag');
         $qb->Join('e.upozila', 'up');
         $qb->leftJoin('up.parent', 'dis');
-        $qb->select('e.id as id', 'e.name as name', 'e.mobile as mobile', 'e.email as email', 'e.name as companyName', 'e.agentId as agentId', 'e.address as address');
-        $qb->addSelect('ag.name as agentGroup');
+        $qb->select('e.id as id', 'e.name as name', 'e.mobile as mobile', 'e.email as email', 'e.name as companyName', 'e.agentId as agentId', 'e.address as address', 'e.otherAndSubAgentId');
+        $qb->addSelect('ag.name as agentGroup', 'ag.slug as agentGroupSlug');
         $qb->addSelect('up.name as upozila', 'up.id as upozilaId');
         $qb->addSelect('dis.name as district', 'dis.id as districtId');
 
@@ -100,10 +100,12 @@ class ApiRepository extends BaseRepository
             $data[$key]['email'] = (string)$row['email'];
             $data[$key]['address'] = (string)$row['address'];
             $data[$key]['agentGroup'] = (string)$row['agentGroup'];
+            $data[$key]['agentGroupSlug'] = (string)$row['agentGroupSlug'];
             $data[$key]['upozila'] = (string)$row['upozila'];
             $data[$key]['upozilaId'] = (string)$row['upozilaId'];
             $data[$key]['district'] = (string)$row['district'];
             $data[$key]['districtId'] = (string)$row['districtId'];
+            $data[$key]['otherAndSubAgentId'] = (string)$row['otherAndSubAgentId'];
         }
         return $data;
     }
@@ -239,7 +241,8 @@ class ApiRepository extends BaseRepository
             $data[$key]['previousFeedName'] = (string)$row['previousFeedName'];
             $data[$key]['culture_species_item_and_qty'] = (string)$row['cultureSpeciesItemAndQty'];
             $data[$key]['isIntroduce'] = (string)$isNew;
-
+            //customer id
+            $data[$key]['customerId'] = CrmCustomer::getCustomerCode($row['id']);
 
         }
         return $data;
@@ -260,8 +263,8 @@ class ApiRepository extends BaseRepository
         $qb->Join('e.agentGroup', 'ag');
         $qb->Join('e.upozila', 'up');
         $qb->leftJoin('up.parent', 'dis');
-        $qb->select('e.id as id', 'e.name as name', 'e.mobile as mobile', 'e.email as email', 'e.name as companyName', 'e.agentId as agentId', 'e.address as address');
-        $qb->addSelect('ag.name as agentGroup');
+        $qb->select('e.id as id', 'e.name as name', 'e.mobile as mobile', 'e.email as email', 'e.name as companyName', 'e.agentId as agentId', 'e.address as address', 'e.otherAndSubAgentId as otherAndSubAgentId');
+        $qb->addSelect('ag.name as agentGroup', 'ag.slug as agentGroupSlug');
         $qb->addSelect('up.name as upozila', 'up.id as upozilaId');
         $qb->addSelect('dis.name as district', 'dis.id as districtId');
 
@@ -283,10 +286,12 @@ class ApiRepository extends BaseRepository
             $data[$key]['email'] = (string)$row['email'];
             $data[$key]['address'] = (string)$row['address'];
             $data[$key]['agentGroup'] = (string)$row['agentGroup'];
+            $data[$key]['agentGroupSlug'] = (string)$row['agentGroupSlug'];
             $data[$key]['upozila'] = (string)$row['upozila'];
             $data[$key]['upozilaId'] = (string)$row['upozilaId'];
             $data[$key]['district'] = (string)$row['district'];
             $data[$key]['districtId'] = (string)$row['districtId'];
+            $data[$key]['otherAndSubAgentId'] = isset($row['otherAndSubAgentId']) && $row['otherAndSubAgentId'] !="" ? (string)$row['otherAndSubAgentId']:null;
         }
         return $data;
     }
@@ -1203,6 +1208,7 @@ class ApiRepository extends BaseRepository
 //            $data[$key]['feedName'] = (string)$row['feedName'];
             $data[$key]['isIntroduce'] = (string)$isNew;
             $data[$key]['status'] = (string)$row['customerStatus'];
+            $data[$key]['customerId'] = CrmCustomer::getCustomerCode($row['id']);
         }
         return $data;
     }

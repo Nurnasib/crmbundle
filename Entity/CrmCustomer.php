@@ -426,6 +426,12 @@ class CrmCustomer
     {
         $this->businessType = $businessType;
     }
+    
+    //generated customer code using id and strto_pad
+    public static function getCustomerCode( $id ): string
+    {
+        return 'F-' . str_pad($id, 6, '0', STR_PAD_LEFT);
+    }
 
 
 }
