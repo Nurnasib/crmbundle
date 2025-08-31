@@ -115,7 +115,7 @@ class CrmCustomerStatusLog
         return $this->customer;
     }
 
-    public function setCustomer(?CrmCustomer $customer): void
+    public function setCustomer( CrmCustomer $customer ): void
     {
         $this->customer = $customer;
     }

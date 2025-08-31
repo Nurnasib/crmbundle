@@ -28,6 +28,7 @@ use Terminalbd\CrmBundle\Entity\ChickLifeCycle;
 use Terminalbd\CrmBundle\Entity\ChickLifeCycleDetails;
 use Terminalbd\CrmBundle\Entity\CompanyWiseFeedSale;
 use Terminalbd\CrmBundle\Entity\CrmCustomer;
+use Terminalbd\CrmBundle\Entity\CrmCustomerStatusLog;
 use Terminalbd\CrmBundle\Entity\CrmVisit;
 use Terminalbd\CrmBundle\Entity\CrmVisitPlan;
 use Terminalbd\CrmBundle\Entity\Expense;
@@ -4917,10 +4918,76 @@ class ApiController extends AbstractController
      * @param Request $request
      * @param ParameterBagInterface $parameterBag
      * @return JsonResponse
-     * @Route("/customer/status/log", name="crm_customer_status_log")
+     * @Route("/customer/status/log", methods={"POST"}, name="crm_customer_status_log")
      */
     public function customerStatusLog(Request $request, ParameterBagInterface $parameterBag)
     {
+        set_time_limit(0);
+        ignore_user_abort(true);
+        if ($request->getMethod() == 'POST' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')) {
+            $arrayData = $request->getContent();
+
+            $logData = json_decode($arrayData, true);
+            $employeeId = isset($logData['employee_id']) && $logData['employee_id'] != '' ? $logData['employee_id'] : '';
+            $customerId = isset($logData['customer_id']) && $logData['customer_id'] != '' ? $logData['customer_id'] : '';
+            $cause_id = isset($logData['cause_id']) && $logData['cause_id'] != '' ? $logData['cause_id'] : '';
+            $status = isset($logData['status']) && $logData['status'] != '' ? $logData['status'] : '';
+            $reason = isset($logData['reason']) && $logData['reason'] != '' ? $logData['reason'] : '';
+            $companyName = isset($logData['company_name']) && $logData['company_name'] != '' ? $logData['company_name'] : '';
+
+            if ($employeeId && $customerId && $status) {
+                $employee = $this->getDoctrine()->getRepository(User::class)->find((int)$employeeId);
+                if (!$employee) {
+                    return new JsonResponse([
+                        'status' => 404,
+                        'message' => 'Employee not found'
+                    ]);
+                }
+                $customer = $this->getDoctrine()->getRepository(CrmCustomer::class)->find((int)$customerId);
+                if (!$customer) {
+                    return new JsonResponse([
+                        'status' => 404,
+                        'message' => 'Customer not found'
+                    ]);
+                }
+
+                if( $customer->getStatus() == $status ){
+                    return new JsonResponse([
+                        'status' => 403,
+                        'message' => 'This customer already '. ($status == 'active' ? 'active' : 'closed') .'!'
+                    ]);
+                }
+
+                $cause = null;
+                if($cause_id) {
+                    $cause = $this->getDoctrine()->getRepository(Setting::class )->find((int)$cause_id);
+                }
+
+                $customerStatusLog = new CrmCustomerStatusLog();
+                $customerStatusLog->setEmployee($employee);
+                $customerStatusLog->setCustomer($customer);
+                $customerStatusLog->setCause($cause ? $cause : null);
+                $customerStatusLog->setStatus($status);
+                $customerStatusLog->setReason($reason);
+                $customerStatusLog->setCompanyName($companyName);
+
+                $this->getDoctrine()->getManager()->persist($customerStatusLog);
+
+                $customer->setStatus($status);
+                $this->getDoctrine()->getManager()->persist($customer);
+
+                $this->getDoctrine()->getManager()->flush();
+
+                return new JsonResponse([
+                    'status' => 200,
+                    'message' => 'Customer status log created successfully'
+                ]);
+            }
+            return new JsonResponse([
+                'status' => 400,
+                'message' => 'Employee ID, Customer ID and Status are required'
+            ]);
+        }
 
     }
 

@@ -101,6 +101,8 @@ class SettingFormType extends AbstractType
                     'FCR Different Company for Sonali'=>'FCR_DIFF_COMPANY_SONALI',
                     'FCR Different Company for Broiler'=>'FCR_DIFF_COMPANY_BROILER',
                     'Customer Service Type'=>'CUSTOMER_SERVICE_TYPE',
+                    'Farmer Closing Cause'=>'CLOSING_CAUSE',
+                    'Farmer Back to Nourish Cause'=>'BACK_TO_NOURISH_CAUSE',
                 ],
                 'attr' => [
                     'class' => 'select2'
