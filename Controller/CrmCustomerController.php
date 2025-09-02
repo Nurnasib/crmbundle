@@ -59,7 +59,6 @@ class CrmCustomerController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted()){
             $filterBy = $form->getData();
-
             $entities = $this->getDoctrine()->getRepository(CrmCustomer::class)->getCustomerByLocationAndType($filterBy, $customerType, $this->getUser(), 'farmer');
 //            dd($entities);
         }

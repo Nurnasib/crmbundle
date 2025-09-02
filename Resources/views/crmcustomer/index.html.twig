@@ -45,6 +45,10 @@
                         <thead class="thead-dark">
                         <tr role="row" class="filter">
                             <th colspan="2">
+                                {{ form_label(form.customerId, 'Id') }}
+                                {{ form_widget(form.customerId) }}
+                            </th>
+                            <th colspan="2">
                                 {{ form_label(form.customerName, 'Name') }}
                                 {{ form_widget(form.customerName) }}
                             </th>
@@ -79,6 +83,7 @@
                         <thead class="thead-dark">
                         <tr>
                             <th rowspan="2" scope="col">SL.</th>
+                            <th rowspan="2" scope="col">Farmer ID</th>
                             <th rowspan="2" scope="col">Name</th>
                             <th rowspan="2" scope="col">Mobile</th>
                             <th rowspan="2" scope="col">Address</th>
@@ -88,6 +93,7 @@
                             <th rowspan="2" scope="col">Agent Location</th>
                             <th rowspan="2" scope="col">Feed</th>
                             <th class="text-center" colspan="{{ species|length }}" scope="col">Capacity</th>
+                            <th rowspan="2">Status</th>
                             <th rowspan="2">Action</th>
 
                         </tr>
@@ -108,11 +114,17 @@
 
                             <tr>
                                 <td>{{ loop.index }}</td>
-                                <td>{{ entity.name }}</td>
+                                <td>{{ 'F-' ~ '%06d'|format(entity.id) }}</td>                                <td>{{ entity.name }}</td>
                                 <td>{{ entity.mobile }}</td>
                                 <td>{{ entity.address }}</td>
                                 <td>{{ entity.locationName }}</td>
-                                <td>{{ entity.agentId }}</td>
+                                <td>
+                                    {% if entity.agentGroupSlug =='sub-agent' or entity.agentGroupSlug == 'other-agent' %}
+                                        {{ entity.otherAndSubAgentId }}
+                                    {% else %}
+                                        {{ entity.agentId }}
+                                    {% endif %}
+                                </td>
                                 <td>{{ entity.agentName }}</td>
 
                                 <td>
@@ -129,6 +141,10 @@
                                         <td>{{ cultureSpeciesItemAndQty[specie.id]|default('') }}</td>
                                     {% endfor %}
                                 {% endif %}
+
+                                <td>
+                                    {{ entity.status }}
+                                </td>
 
                                 <td>
                                     <a class="btn btn-mini yellow-bg white-font" href="{{path('crm_customer_edit', {id: entity.id})}}"><i class="feather icon-edit"></i> Edit</a>

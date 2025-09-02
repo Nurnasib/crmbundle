@@ -69,6 +69,7 @@ class CrmCustomerRepository extends EntityRepository
         $qb->leftJoin('e.location','location');
         $qb->join('e.customerGroup','s');
         $qb->leftJoin('e.agent','agent');
+        $qb->leftJoin('agent.agentGroup','agentGroup');
 
         $qb->leftJoin('agent.upozila','thana');
         $qb->leftJoin('thana.parent','district');
@@ -77,10 +78,12 @@ class CrmCustomerRepository extends EntityRepository
         $qb->leftJoin('farmerIntroduce.feed', 'feed');
         $qb->leftJoin('farmerIntroduce.farmerType','farmerType');
 
-        $qb->select('e.id as id','e.name as name','e.address as address','e.mobile as mobile', 'agent.name AS agentName', 'agent.agentId as agentId','agent.address as agentLocation' , 'location.name AS locationName');
+        $qb->select('e.id as id','e.name as name','e.address as address','e.mobile as mobile', 'location.name AS locationName', 'e.status');
         $qb->addSelect('farmerType.name as farmerTypeName');
         $qb->addSelect('farmerIntroduce.cultureSpeciesItemAndQty');
         $qb->addSelect('feed.name as feedName');
+        $qb->addSelect( 'agent.name AS agentName', 'agent.agentId as agentId','agent.address as agentLocation', 'agent.otherAndSubAgentId' );
+        $qb->addSelect('agentGroup.name AS agentGroupName', 'agentGroup.slug AS agentGroupSlug' );
 
         $qb->addSelect('thana.name as thanaName','district.name as districtName');
 
@@ -114,7 +117,20 @@ class CrmCustomerRepository extends EntityRepository
         if(isset($filterBy['feedCompany']) && $filterBy['feedCompany'] != ""){
             $qb->andWhere('feed.id = :feedId')->setParameter('feedId', $filterBy['feedCompany']->getId());
         }
-        return $qb->getQuery()->getArrayResult();
+
+        if(isset($filterBy['customerId']) && $filterBy['customerId'] != ""){
+            //	F-000082 how to trim F- and left 0 from the string
+            $customerIf = str_replace('F-', '', strtoupper($filterBy['customerId']));
+            $customerIf = ltrim($customerIf, '0');
+
+            $qb->andWhere('e.id=:customerId')
+               ->setParameter('customerId', (int)$customerIf);
+        }
+
+        $results = $qb->getQuery()->getArrayResult();
+        //
+
+        return $results;
 
     }
 

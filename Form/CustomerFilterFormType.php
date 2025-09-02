@@ -25,6 +25,12 @@ class CustomerFilterFormType extends AbstractType
     {
 
             $builder
+                ->add('customerId', TextType::class,[
+                'attr' => [
+                    'placeholder' => '- Farmer Id -'
+                ],
+                'required' => false
+            ])
                 ->add('customerName', TextType::class,[
                 'attr' => [
                     'placeholder' => '- Farmer Name -'
