@@ -62,6 +62,17 @@ class CustomerFilterFormType extends AbstractType
                         ->orderBy('e.sortOrder', 'ASC');
                 },
                 ))
+                //status
+                ->add('status', ChoiceType::class, [
+                    'choices'  => [
+                        'Active' => 'active',
+                        'Close' => 'close',
+//                        'Delete' => 'delete'
+                    ],
+                    'placeholder' => '- Select Status -',
+                    'required' => false,
+                    'attr'=>array('class'=>'select2 span12 m-wrap'),
+                ])
 
             ->setMethod('get')
         ;

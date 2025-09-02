@@ -127,6 +127,10 @@ class CrmCustomerRepository extends EntityRepository
                ->setParameter('customerId', (int)$customerIf);
         }
 
+        if (isset($filterBy['status']) && $filterBy['status'] != ""){
+            $qb->andWhere('e.status = :status')->setParameter('status', $filterBy['status']);
+        }
+
         $results = $qb->getQuery()->getArrayResult();
         //
 
