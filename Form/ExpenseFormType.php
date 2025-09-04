@@ -19,6 +19,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\DataTransformer\DateTimeToStringTransformer;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -64,6 +65,12 @@ class ExpenseFormType extends AbstractType
                 'attr'=>['class'=>'span12 select2'],
                 'choice_label' => 'name',
                 'placeholder' => 'Choose Area',
+            ])
+            //comments field
+            ->add('comments', TextareaType::class, [
+                'attr' => ['autofocus' => true],
+                'label' => 'label.comments',
+                'required' => false
             ])
 
             ->add($builder->create('expenseDate', TextType::class, array(

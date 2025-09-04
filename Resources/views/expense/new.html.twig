@@ -94,6 +94,19 @@
                                     </div>
                                 </div>
 
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            {{ form_label(form.comments, 'Reason for change area'|trans, {'label_attr': {'class': 'col-md-4'}}) }}
+                                            <div class="col-md-8">
+                                                {{ form_widget(form.comments, { 'attr': { 'rows': 3 } }) }}
+                                                {{ form_errors(form.comments) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
                                 <div class="clearfix"></div>
                                 <div class="card-header grey-bg inner-header">
                                     <h5>Conveyance</h5>
