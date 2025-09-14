@@ -4772,6 +4772,11 @@ class ApiController extends AbstractController
 
 
                    $lastExpense = $this->getDoctrine()->getRepository(Expense::class)->getLastExpenseByEmployee($employeeId);
+
+                   if ( !$lastExpense ) {
+                       $lastExpense = $this->getDoctrine()->getRepository(CrmVisitPlan::class)->getFirstVisitPlanByEmployee($employeeId);
+                   }
+
                    $lastExpenseDate = $lastExpense && isset($lastExpense['expenseDate']) ?$lastExpense['expenseDate']->format('Y-m-d'):'';
                      $lastVisitPlan = null;
                     $lastNextDate = '';

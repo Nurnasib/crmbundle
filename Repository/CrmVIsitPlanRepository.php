@@ -144,6 +144,23 @@ class CrmVIsitPlanRepository extends EntityRepository
         }
         return $returnArray;
     }
+    
+    
+    public function getFirstVisitPlanByEmployee($employeeId)
+    {
+        $qb = $this->createQueryBuilder('e');
+        $qb->select('e.id', 'e.visitingArea', 'e.visitDate', 'e.createdAt');
+        $qb->addSelect('employee.id as employeeId', 'employee.name as employeeName', 'employee.userId as employeeUserId');
+        $qb->addSelect('workingMode.id as workingModeId', 'workingMode.name as workingModeName');
+        $qb->join('e.employee', 'employee');
+        $qb->leftJoin('e.workingMode', 'workingMode');
+        $qb->andWhere('employee.id =:employeeId')->setParameter('employeeId', $employeeId);
+        $qb->orderBy('e.visitDate', 'ASC');
+        $qb->setMaxResults(1);
+        $result = $qb->getQuery()->getOneOrNullResult();
+        return $result;
+    }
+    
 
 
 }
