@@ -149,7 +149,7 @@ class CrmVIsitPlanRepository extends EntityRepository
     public function getFirstVisitPlanByEmployee($employeeId)
     {
         $qb = $this->createQueryBuilder('e');
-        $qb->select('e.id', 'e.visitingArea', 'e.visitDate as expenseDate', 'e.createdAt');
+        $qb->select('e.id', 'e.visitingArea', 'e.visitDate', 'e.createdAt');
         $qb->addSelect('employee.id as employeeId', 'employee.name as employeeName', 'employee.userId as employeeUserId');
         $qb->addSelect('workingMode.id as workingModeId', 'workingMode.name as workingModeName');
         $qb->join('e.employee', 'employee');
@@ -158,6 +158,9 @@ class CrmVIsitPlanRepository extends EntityRepository
         $qb->orderBy('e.visitDate', 'ASC');
         $qb->setMaxResults(1);
         $result = $qb->getQuery()->getOneOrNullResult();
+        if ($result) {
+            $result['expenseDate'] = $result['visitDate']->modify('-1 day');
+        }
         return $result;
     }
     
