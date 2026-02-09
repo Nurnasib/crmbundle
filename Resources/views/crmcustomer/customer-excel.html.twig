@@ -20,6 +20,7 @@
                         </tr>
                         <tr>
                             <th data-a-v="middle" rowspan="2" scope="col">SL.</th>
+                            <th data-a-v="middle" rowspan="2" scope="col">Farmer ID</th>
                             <th data-a-v="middle" rowspan="2" scope="col">Name</th>
                             <th data-a-v="middle" rowspan="2" scope="col">Mobile</th>
                             <th data-a-v="middle" rowspan="2" scope="col">Address</th>
@@ -47,6 +48,7 @@
 
                             <tr>
                                 <td>{{ loop.index }}</td>
+                                <td>{{ 'F-' ~ '%06d'|format(entity.id) }}</td>
                                 <td>{{ entity.name }}</td>
                                 <td>{{ entity.mobile }}</td>
                                 <td>{{ entity.address }}</td>
