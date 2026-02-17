@@ -249,6 +249,14 @@
                         <li><a class="dropdown-item" href="{{ path('farmar_details_report') }}">{{ 'Details'|trans }}</a></li>
                     </ul>
                 </li>
+                <li>
+                    <a class="dropdown-item" href="javascript:">{{ 'Agent Report'|trans }}</a>
+                    <ul class="sub-menu">
+                        <li><a class="dropdown-item" href="{{ path('farmer_region_report') }}">{{ 'Region Wise'|trans }}</a></li>
+                        <li><a class="dropdown-item" href="{{ path('farmer_national_total_report') }}">{{ 'National Total'|trans }}</a></li>
+                        <li><a class="dropdown-item" href="{{ path('employee_farmer_report') }}">{{ 'Employee'|trans }}</a></li>
+                    </ul>
+                </li>
 
             </ul>
 
