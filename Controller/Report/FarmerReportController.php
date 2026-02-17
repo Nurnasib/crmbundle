@@ -156,7 +156,7 @@ class FarmerReportController extends AbstractController
 //        $form = $this->createForm(SearchFilterFormType::class, null, ['loggedUser' => $this->getUser()]);
         $userRepo = $this->getDoctrine()->getRepository(User::class);
         $loggedUser = $this->getUser();
-        $loggedUserDesignation = $loggedUser?->getDesignation()?->getName() ?? 'N/A';
+        //$loggedUserDesignation = $loggedUser?->getDesignation()?->getName() ?? 'N/A';
         $form = $this->createForm(SearchFilterFormType::class, null, ['loggedUser' => $loggedUser,'userRepo'=>$userRepo]);
         $form->handleRequest($request);
 
