@@ -166,9 +166,10 @@ class FarmerReportController extends AbstractController
             $employee = $form->getData()['employee'];
 
             $filterBy['employeeId'] = $form->getData()['employee'] ? $form->getData()['employee']->getId() : '';
+            $filterBy['loggedUser'] = $loggedUser;
 
             $entities = $userRepo->getLineManagerEmployee( $filterBy );
-            //dd($entities);
+            //dd($filterBy);
 
         }
         return $this->render('@TerminalbdCrm/report/farmerReport/region_wise_index.html.twig',[
@@ -200,8 +201,9 @@ class FarmerReportController extends AbstractController
         $arrayMonth=[];
 
 //        $form = $this->createForm(SearchFilterFormType::class, null, ['loggedUser' => $this->getUser()]);
+        $loggedUser = $this->getUser();
         $userRepo = $this->getDoctrine()->getRepository(User::class);
-        $form = $this->createForm(SearchFilterFormType::class, null, ['loggedUser' => $this->getUser(),'userRepo'=>$userRepo]);
+        $form = $this->createForm(SearchFilterFormType::class, null, ['loggedUser' => $loggedUser,'userRepo'=>$userRepo]);
         $form->handleRequest($request);
 
         if($form->isSubmitted()){
@@ -210,6 +212,7 @@ class FarmerReportController extends AbstractController
             $employee = $form->getData()['employee'];
 
             $filterBy['employeeId'] = $form->getData()['employee'] ? $form->getData()['employee']->getId() : '';
+            $filterBy['loggedUser'] = $loggedUser;
 
             $entities = $userRepo->getLineManagerEmployee( $filterBy );
             //dd($entities);
@@ -245,6 +248,7 @@ class FarmerReportController extends AbstractController
         $arrayMonth=[];
 
 //        $form = $this->createForm(SearchFilterFormType::class, null, ['loggedUser' => $this->getUser()]);
+        $userRepo = $this->getUser();
         $userRepo = $this->getDoctrine()->getRepository(User::class);
         $form = $this->createForm(SearchFilterFormType::class, null, ['loggedUser' => $this->getUser(),'userRepo'=>$userRepo]);
         $form->handleRequest($request);
@@ -255,6 +259,7 @@ class FarmerReportController extends AbstractController
             $employee = $form->getData()['employee'];
 
             $filterBy['employeeId'] = $form->getData()['employee'] ? $form->getData()['employee']->getId() : '';
+            $filterBy['loggedUser'] = $loggedUser;
 
             $entities = $userRepo->getLineManagerEmployee( $filterBy );
 

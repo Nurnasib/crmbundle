@@ -19,14 +19,13 @@
                             {{ form_label(form.region, 'Region:') }}
                             {{ form_widget(form.region) }}
                         </th>
-
                         <th>
-                            {{ form_label(form.startDate, 'Start Date:') }}
-                            {{ form_widget(form.startDate,{'id':'start-date', 'attr':{'placeholder': 'dd-mm-YYYY'}}) }}
+                            {{ form_label(form.month, 'Month') }}
+                            {{ form_widget(form.month) }}
                         </th>
                         <th>
-                            {{ form_label(form.endDate, 'End Date:') }}
-                            {{ form_widget(form.endDate,{'id':'end-date', 'attr':{'placeholder': 'dd-mm-YYYY'}}) }}
+                            {{ form_label(form.year, 'Year') }}
+                            {{ form_widget(form.year) }}
                         </th>
 
                         <th colspan="1">
