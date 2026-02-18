@@ -248,7 +248,7 @@ class FarmerReportController extends AbstractController
         $arrayMonth=[];
 
 //        $form = $this->createForm(SearchFilterFormType::class, null, ['loggedUser' => $this->getUser()]);
-        $userRepo = $this->getUser();
+        $loggedUser = $this->getUser();
         $userRepo = $this->getDoctrine()->getRepository(User::class);
         $form = $this->createForm(SearchFilterFormType::class, null, ['loggedUser' => $this->getUser(),'userRepo'=>$userRepo]);
         $form->handleRequest($request);
