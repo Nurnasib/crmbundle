@@ -261,7 +261,8 @@ class FarmerReportController extends AbstractController
             $filterBy['employeeId'] = $form->getData()['employee'] ? $form->getData()['employee']->getId() : '';
             $filterBy['loggedUser'] = $loggedUser;
 
-            $entities = $userRepo->getLineManagerEmployee( $filterBy );
+            $entities = $userRepo->getEmployeeReport( $filterBy );
+            //dd($entities);
 
         }
 
