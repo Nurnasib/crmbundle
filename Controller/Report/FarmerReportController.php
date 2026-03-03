@@ -168,8 +168,8 @@ class FarmerReportController extends AbstractController
             $filterBy['employeeId'] = $form->getData()['employee'] ? $form->getData()['employee']->getId() : '';
             $filterBy['loggedUser'] = $loggedUser;
 
-            $entities = $userRepo->getLineManagerEmployee( $filterBy );
-            //dd($filterBy);
+            $entities = $userRepo->getLineManagerEmployeeRegionReport( $filterBy );
+            //dd($entities);
 
         }
         return $this->render('@TerminalbdCrm/report/farmerReport/region_wise_index.html.twig',[
@@ -214,7 +214,7 @@ class FarmerReportController extends AbstractController
             $filterBy['employeeId'] = $form->getData()['employee'] ? $form->getData()['employee']->getId() : '';
             $filterBy['loggedUser'] = $loggedUser;
 
-            $entities = $userRepo->getLineManagerEmployee( $filterBy );
+            $entities = $userRepo->getLineManagerEmployeeNationalTotal( $filterBy );
             //dd($entities);
 
         }
@@ -262,6 +262,7 @@ class FarmerReportController extends AbstractController
             $filterBy['loggedUser'] = $loggedUser;
 
             $entities = $userRepo->getEmployeeReport( $filterBy );
+
             //dd($entities);
 
         }
