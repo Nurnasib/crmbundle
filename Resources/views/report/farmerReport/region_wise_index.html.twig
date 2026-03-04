@@ -12,8 +12,8 @@
 
                     <tr>
                         <th style="min-width: 200px">
-                            {{ form_label(form.employee, 'Employee:') }}
-                            {{ form_widget(form.employee) }}
+                            {{ form_label(form.line_managers, 'Line Manager:') }}
+                            {{ form_widget(form.line_managers) }}
                         </th>
 
                         <th>
@@ -148,7 +148,10 @@
                                         <td data-t="n">{{ totalNew }}</td>
                                         <td data-t="n">{{ totalConvert }}</td>
                                     </tr>
-
+                                {% else %}
+                                    <tr>
+                                        <td colspan="11" class="text-center">No data found</td>
+                                    </tr>
                                 {% endif %}
                                 {% set regionIndex = regionIndex + 1 %}
 

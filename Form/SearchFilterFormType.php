@@ -365,6 +365,71 @@ class SearchFilterFormType extends AbstractType
                     'class' => 'select2'
                 ]
             ])
+            ->add('line_managers', EntityType::class,[
+                'class' => User::class,
+                'query_builder' => function(EntityRepository $repository) use($user, $userRepo){
+                    $qb = $repository->createQueryBuilder('e');
+                    $qb->join('e.userGroup', 'userGroup');
+                    $qb->where("userGroup.slug = 'employee'");
+                    $qb->andWhere("e.enabled = 1");
+                    $qb->andWhere($qb->expr()->orX(
+                        $qb->expr()->like("e.roles", ':lineManager')
+                    ))
+                    ->setParameters([
+                        'lineManager' => '%ROLE_LINE_MANAGER%'
+                    ]);
+
+                    $rolesString = implode('_', $user->getRoles());
+
+//                    if (!str_contains($rolesString,'ADMIN')){
+//                        if (!in_array('ROLE_LINE_MANAGER', $user->getRoles())){
+//                            $qb->andWhere('e.id = :employeeId')->setParameter('employeeId', $user->getId());
+//                        }else{
+//                            $employeeIds=$userRepo->getEmployeesByLineManager($user);
+//                                $qb->andWhere('e.id IN (:employeeIds)')->setParameter('employeeIds', $employeeIds);
+////                            $qb->andWhere("e.lineManager = :lineManager")->setParameter('lineManager', $user);
+//                        }
+//                    }else{
+//                        $userRole = [];
+//                        if (in_array('ROLE_CRM_POULTRY_ADMIN', $user->getRoles())){
+//                            array_push($userRole, 'ROLE_CRM_POULTRY_USER');
+//                        }
+//                        if (in_array('ROLE_CRM_CATTLE_ADMIN', $user->getRoles())){
+//                            array_push($userRole, 'ROLE_CRM_CATTLE_USER');
+//                        }
+//                        if (in_array('ROLE_CRM_AQUA_ADMIN', $user->getRoles())){
+//                            array_push($userRole, 'ROLE_CRM_AQUA_USER');
+//                        }
+//                        if (in_array('ROLE_CRM_SALES_MARKETING_ADMIN', $user->getRoles())){
+//                            array_push($userRole, 'ROLE_CRM_SALES_MARKETING_USER');
+//                        }
+//                        if($userRole){
+//                            $query = '';
+//                            foreach ($userRole as $key => $role) {
+//                                if ($key !== 0){
+//                                    $query .= " OR ";
+//                                }
+//                                $query .= "e.roles LIKE '%" . $role . "%'";
+//
+//                            }
+//                            $qb->andWhere($query);
+//                        }
+//
+//                    }
+
+                    $qb->orderBy('e.name');
+                    return $qb;
+                },
+                'choice_label' => function($employee){
+                    /**  @var User $employee */
+                return '(' . $employee->getUserId() . ') ' . $employee->getName();
+                },
+                'placeholder' => '- All Employee -',
+                'required' => false,
+                'attr' => [
+                    'class' => 'select2'
+                ]
+            ])
             ->add('month', ChoiceType::class,[
                 'choices' => [
                     'January' => '01',
