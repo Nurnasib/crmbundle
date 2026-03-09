@@ -224,6 +224,11 @@ ORDER BY `c`.`agent_id` ASC";
         $qb->addSelect('farmerType.name as farmerTypeName', 'farmerType.slug as farmerTypeSlug');
 
         $qb->where('s.slug = :slug')->setParameter('slug','farmer');
+
+        //dd($filterBy['type']);
+        if (isset($filterBy['type'])){
+            $qb->andWhere('farmerType.slug = :type')->setParameter('type',$filterBy['type']);
+        }
         
         $qb->andWhere('e.deletedAt IS NULL');
         $qb->andWhere('e.deletedBy IS NULL');
@@ -274,12 +279,18 @@ ORDER BY `c`.`agent_id` ASC";
         $qb->join('e.customerGroup','s');
         $qb->join('e.farmerIntroduce','farmerIntroduce');
         $qb->join('farmerIntroduce.introduceBy','employee');
+        $qb->join('farmerIntroduce.farmerType','farmerType');
 
         $qb->select('e.id as id','e.name as name','e.address as address','e.mobile as mobile' );
 
         $qb->addSelect('employee.id as employeeId', 'employee.name as employeeName', 'employee.userId as employeeUserId');
+        $qb->addSelect('farmerType.name as farmerTypeName', 'farmerType.slug as farmerTypeSlug');
 
         $qb->where('s.slug = :slug')->setParameter('slug','farmer');
+
+        if (isset($filterBy['type'])){
+            $qb->andWhere('farmerType.slug = :type')->setParameter('type',$filterBy['type']);
+        }
 
         $qb->andWhere('e.deletedAt IS NULL');
         $qb->andWhere('e.deletedBy IS NULL');

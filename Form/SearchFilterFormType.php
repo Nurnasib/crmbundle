@@ -430,6 +430,15 @@ class SearchFilterFormType extends AbstractType
                     'class' => 'select2'
                 ]
             ])
+            ->add('type', ChoiceType::class,[
+                'choices' => [
+                    'Poultry' => 'poultry-breed',
+                    'Cattle' => 'cattle-breed',
+                    'Fish' => 'fish-breed',
+                ],
+                'placeholder' => '- Select Type -',
+                'required' => false,
+            ])
             ->add('month', ChoiceType::class,[
                 'choices' => [
                     'January' => '01',

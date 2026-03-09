@@ -28,6 +28,10 @@
                             {{ form_label(form.year, 'Year') }}
                             {{ form_widget(form.year) }}
                         </th>
+                        <th>
+                            {{ form_label(form.type, 'Type') }}
+                            {{ form_widget(form.type) }}
+                        </th>
 
                         <th colspan="1">
                             <div class="btn-group" style="margin-top: 25px">
@@ -119,9 +123,9 @@
 
                             {% endfor %}
                         {% else %}
-                            <tr>
-                                <td colspan="9" class="text-center">No data found</td>
-                            </tr>
+{#                            <tr>#}
+{#                                <td colspan="9" class="text-center">No data found</td>#}
+{#                            </tr>#}
                         {% endif %}
 
                         </tbody>

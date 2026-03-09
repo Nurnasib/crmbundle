@@ -36,6 +36,10 @@
                             {{ form_label(form.year, 'Year') }}
                             {{ form_widget(form.year) }}
                         </th>
+                        <th>
+                            {{ form_label(form.type, 'Type') }}
+                            {{ form_widget(form.type) }}
+                        </th>
 
 
                         <th colspan="1">
@@ -149,17 +153,17 @@
                                         <td data-t="n">{{ totalConvert }}</td>
                                     </tr>
                                 {% else %}
-                                    <tr>
-                                        <td colspan="11" class="text-center">No data found</td>
-                                    </tr>
+{#                                    <tr>#}
+{#                                        <td colspan="11" class="text-center">No data found</td>#}
+{#                                    </tr>#}
                                 {% endif %}
                                 {% set regionIndex = regionIndex + 1 %}
 
                             {% endfor %}
                         {% else %}
-                            <tr>
-                                <td colspan="11" class="text-center">No data found</td>
-                            </tr>
+{#                            <tr>#}
+{#                                <td colspan="11" class="text-center">No data found</td>#}
+{#                            </tr>#}
                         {% endif %}
 
 
