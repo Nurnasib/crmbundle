@@ -209,6 +209,7 @@ ORDER BY `c`.`agent_id` ASC";
 
         $startDate = isset($filterBy['startDate']) ? date('Y-m-d', strtotime($filterBy['startDate'])) : date('Y-m-01');
         $endDate = isset($filterBy['endDate']) ? date('Y-m-d', strtotime($filterBy['endDate'])) : date('Y-m-t');
+        $typeId = isset($filterBy['type']) ? $filterBy['type']->getId() : null;
 
 
         $qb = $this->createQueryBuilder('e');
@@ -217,7 +218,7 @@ ORDER BY `c`.`agent_id` ASC";
         $qb->join('farmerIntroduce.employee','employee');
         $qb->join('farmerIntroduce.farmerType','farmerType');
 
-        $qb->select('e.id as id','e.name as name','e.address as address','e.mobile as mobile' );
+        $qb->select('e.id as id','e.name as name','e.address as address','e.mobile as mobile','e.status as status' );
         
         $qb->addSelect('farmerIntroduce.cultureSpeciesItemAndQty');
         $qb->addSelect('employee.id as employeeId', 'employee.name as employeeName', 'employee.userId as employeeUserId');
@@ -226,8 +227,10 @@ ORDER BY `c`.`agent_id` ASC";
         $qb->where('s.slug = :slug')->setParameter('slug','farmer');
 
         //dd($filterBy['type']);
-        if (isset($filterBy['type'])){
-            $qb->andWhere('farmerType.slug = :type')->setParameter('type',$filterBy['type']);
+        if (isset($typeId)){
+            //dd($filterBy['type']);
+            $qb->andWhere('farmerIntroduce.cultureSpeciesItemAndQty LIKE :type')->setParameter('type', '%' . $typeId . '%');
+            //$qb->andWhere('e.slug = :type')->setParameter('type',$filterBy['type']->getSlug());
         }
         
         $qb->andWhere('e.deletedAt IS NULL');
@@ -249,6 +252,9 @@ ORDER BY `c`.`agent_id` ASC";
             if (isset($result['cultureSpeciesItemAndQty']) && $result['cultureSpeciesItemAndQty'] && $result['cultureSpeciesItemAndQty'] != null) {
                 $cultureSpeciesItemAndQty = json_decode($result['cultureSpeciesItemAndQty'], true);
                 if (is_array($cultureSpeciesItemAndQty)) {
+                    if (isset($typeId) && isset($cultureSpeciesItemAndQty[$typeId])) {
+                        $cultureSpeciesItemAndQty = [$typeId => $cultureSpeciesItemAndQty[$typeId]];
+                    }
                     $cultureSpeciesItemAndQty = array_filter($cultureSpeciesItemAndQty, function ($value) {
                         return $value !== null && $value !== '';
                     });
@@ -266,6 +272,7 @@ ORDER BY `c`.`agent_id` ASC";
 
             $returnArray[$result['employeeId']][] = $result;
         }
+        //dd($returnArray);
         return    $returnArray;
 
     }

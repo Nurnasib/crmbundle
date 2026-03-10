@@ -79,6 +79,7 @@
                             <th scope="col">Capacity</th>
                             <th scope="col">New</th>
                             <th scope="col">Convert</th>
+                            <th scope="col">Closed</th>
                         </tr>
                         </thead>
 
@@ -94,16 +95,16 @@
                                 {% set totalCapacity = 0 %}
                                 {% set totalNew = 0 %}
                                 {% set totalConvert = 0 %}
+                                {% set totalClosed = 0 %}
 
                                 {% for teamMember in employeeData.teamMembers %}
-                                    {% if teamMember.noOfCustomer > 0 %}
-                                        {% set totalEmployees = totalEmployees + 1 %}
-                                    {% endif %}
+                                    {% set totalEmployees = totalEmployees + 1 %}
 
                                     {% set totalFarms = totalFarms + teamMember.noOfCustomer %}
                                     {% set totalCapacity = totalCapacity + teamMember.customerTotalCapacity %}
                                     {% set totalNew = totalNew + teamMember.noOfCustomer %}
                                     {% set totalConvert = totalConvert + teamMember.noOfCustomerintroduceBy %}
+                                    {% set totalClosed = totalClosed + teamMember.noOfCustomerClosed %}
                                 {% endfor %}
 
                                 <tr class="font-weight-bold">
@@ -117,6 +118,7 @@
                                     <td data-t="n">{{ totalCapacity }}</td>
                                     <td data-t="n">{{ totalNew }}</td>
                                     <td data-t="n">{{ totalConvert }}</td>
+                                    <td data-t="n">{{ totalClosed }}</td>
                                 </tr>
 
                                 {% set regionIndex = regionIndex + 1 %}

@@ -263,20 +263,36 @@ class FarmerReportController extends AbstractController
 
             $entities = $userRepo->getEmployeeReport( $filterBy );
 
-            //dd($entities);
+            //dd($entities[6] ?? null);
 
         }
+        $speciesTypes = $this->getDoctrine()->getRepository(Setting::class)->getSpeciesTypeOfPoultryCattleFish();
+        $filterableSpeciesType = [];
+        //dd($filterBy['type']);
+        if (isset($filterBy['type'])) {
+            $filterableSpeciesType = [[
+                'id' => $filterBy['type']->getId(),
+                'name' => $filterBy['type']->getName()
+            ]];
+        }
+        //dd($filterableSpeciesType);
 
-        //$speciesTypesByParent = $this->getDoctrine()->getRepository(Setting::class)->getSpeciesTypeByParentSlug('poultry-breed');
+//        $speciesTypesOfPoultry = $this->getDoctrine()->getRepository(Setting::class)->getSpeciesTypeByParentSlug('poultry-breed');
+//        $speciesTypesOfCattle = $this->getDoctrine()->getRepository(Setting::class)->getSpeciesTypeByParentSlug('cattle-breed');
+//        $speciesTypesOfFish = $this->getDoctrine()->getRepository(Setting::class)->getSpeciesTypeByParentSlug('fish-breed');
 
         return $this->render('@TerminalbdCrm/report/farmerReport/employee_farmer_index.html.twig',[
             'form' => $form->createView(),
             'entities' => $entities,
             'filterBy' => $filterBy,
             'species' => $species,
+            'speciesTypes' => $speciesTypes,
+            'filterableSpeciesType' => $filterableSpeciesType,
             'trainingMaterials' => $trainingMaterials,
             'employee'=> $employee,
-            //'speciesTypes' => $speciesTypesByParent,
+//            'speciesPoultry' => $speciesTypesOfPoultry,
+//            'speciesCattle' => $speciesTypesOfCattle,
+//            'speciesFish' => $speciesTypesOfFish,
             'fishSizes' => $arrFishSizes,
             'arrayMonth' => $arrayMonth,
         ]);

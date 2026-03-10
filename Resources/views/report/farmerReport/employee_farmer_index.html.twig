@@ -80,14 +80,15 @@
                             <th scope="col">Address</th>
                             <th scope="col">Mobile</th>
                             <th scope="col">Total Capacity</th>
-{#                            {% if speciesTypes is not empty %}#}
-{#                                {% for speciesType in speciesTypes %}#}
-{#                                    <th scope="col">{{ speciesType.name }}</th>#}
-{#                                {% endfor %}#}
-{#                            {% endif %}#}
-                            <th scope="col">Poultry</th>
-                            <th scope="col">Cattle</th>
-                            <th scope="col">Fish</th>
+                            {% if filterableSpeciesType is not empty %}
+                                {% for speciesType in filterableSpeciesType %}
+                                    <th scope="col">{{ speciesType.name }}</th>
+                                {% endfor %}
+                            {% endif %}
+
+{#                            <th scope="col">Poultry</th>#}
+{#                            <th scope="col">Cattle</th>#}
+{#                            <th scope="col">Fish</th>#}
                             {#                            <th scope="col">Convert</th>#}
                         </tr>
                         </thead>
@@ -130,22 +131,22 @@
                                                     <td data-t="n">{{ customer.mobile }}</td>
                                                     <td data-t="n">{{ customer.cultureSpeciesItemAndQtySum }}</td>
 
-{#                                                    {% if speciesTypes is not empty %}#}
-{#                                                        {% for speciesType in speciesTypes %}#}
-{#                                                            <td data-t="n">#}
+                                                    {% if filterableSpeciesType is not empty %}
+                                                        {% for speciesType in filterableSpeciesType %}
+                                                            <td data-t="n">
 {#                                                                {% if customer.farmerTypeSlug == 'poultry-breed' %}#}
-{#                                                                    #}{#                                                                    check in array decodedCultureSpeciesItemAndQty #}
-{#                                                                    {% if customer.decodedCultureSpeciesItemAndQty[speciesType.id] is defined %}#}
-{#                                                                        {{ customer.decodedCultureSpeciesItemAndQty[speciesType.id] }}#}
-{#                                                                    {% endif %}#}
+{#                                                                                                                                        check in array decodedCultureSpeciesItemAndQty#}
+                                                                    {% if customer.decodedCultureSpeciesItemAndQty[speciesType.id] is defined %}
+                                                                        {{ customer.decodedCultureSpeciesItemAndQty[speciesType.id] }}
+                                                                    {% endif %}
 {#                                                                {% endif %}#}
-{#                                                            </td>#}
-{#                                                        {% endfor %}#}
-{#                                                    {% endif %}#}
+                                                            </td>
+                                                        {% endfor %}
+                                                    {% endif %}
 
-                                                    <td data-t="n">{{ customer.farmerTypeSlug == 'poultry-breed' ? customer.cultureSpeciesItemAndQtySum : '' }}</td>
-                                                    <td data-t="n">{{ customer.farmerTypeSlug == 'cattle-breed' ? customer.cultureSpeciesItemAndQtySum : '' }}</td>
-                                                    <td data-t="n">{{ customer.farmerTypeSlug == 'fish-breed' ? customer.cultureSpeciesItemAndQtySum : '' }}</td>
+{#                                                    <td data-t="n">{{ customer.farmerTypeSlug == 'poultry-breed' ? customer.cultureSpeciesItemAndQtySum : '' }}</td>#}
+{#                                                    <td data-t="n">{{ customer.farmerTypeSlug == 'cattle-breed' ? customer.cultureSpeciesItemAndQtySum : '' }}</td>#}
+{#                                                    <td data-t="n">{{ customer.farmerTypeSlug == 'fish-breed' ? customer.cultureSpeciesItemAndQtySum : '' }}</td>#}
 
                                                     {#                                                    <td data-t="n">{{ teamMember.noOfCustomerintroduceBy }}</td>#}
 

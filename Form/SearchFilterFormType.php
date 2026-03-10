@@ -430,15 +430,51 @@ class SearchFilterFormType extends AbstractType
                     'class' => 'select2'
                 ]
             ])
-            ->add('type', ChoiceType::class,[
-                'choices' => [
-                    'Poultry' => 'poultry-breed',
-                    'Cattle' => 'cattle-breed',
-                    'Fish' => 'fish-breed',
-                ],
+//            ->add('type', ChoiceType::class,[
+//                'choices' => [
+//                    'pp'=>'uu'
+//                ],
+//                'placeholder' => '- Select Type -',
+//                'required' => false,
+//            ])
+            ->add('type', EntityType::class,[
+                'class' => Setting::class,
+                'choice_label' => 'name',
                 'placeholder' => '- Select Type -',
-                'required' => false,
+                'query_builder' => function(EntityRepository $qb){
+                    return $qb->createQueryBuilder('e')
+                        ->join('e.parent', 'parent')
+                        ->where("e.settingType = 'SPECIES_TYPE'")
+                        ->andWhere('e.status = 1')
+                        ->andWhere('parent.slug IN (:parentSlug)')
+                        ->setParameter('parentSlug', [
+                            'poultry-breed',
+                            'fish-breed',
+                            'cattle-breed'
+                        ]);
+                },
+                'attr' => [
+                    'class' => 'select2'
+                ],
+                'required' => false
+
             ])
+//            ->add('region', EntityType::class,[
+//                'class' => Location::class,
+//                'choice_label' => 'name',
+//                'placeholder' => '- Select Region -',
+//                'query_builder' => function(EntityRepository $er){
+//                    return $er->createQueryBuilder('e')
+//                        ->where('e.level = :level')->setParameter('level', 3)
+//                        ->andWhere('e.parent IS NOT NULL')
+//                        ->orderBy('e.name');
+//                },
+//                'attr' => [
+//                    'class' => 'select2'
+//                ],
+//                'required' => false
+//
+//            ])
             ->add('month', ChoiceType::class,[
                 'choices' => [
                     'January' => '01',
