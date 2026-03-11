@@ -444,6 +444,14 @@ class SearchFilterFormType extends AbstractType
                 'query_builder' => function(EntityRepository $qb){
                     return $qb->createQueryBuilder('e')
                         ->join('e.parent', 'parent')
+                        ->addSelect("
+                CASE 
+                    WHEN parent.slug = 'poultry-breed' THEN 1
+                    WHEN parent.slug = 'cattle-breed' THEN 2
+                    WHEN parent.slug = 'fish-breed' THEN 3
+                    ELSE 4
+                END AS HIDDEN sortOrder
+            ")
                         ->where("e.settingType = 'SPECIES_TYPE'")
                         ->andWhere('e.status = 1')
                         ->andWhere('parent.slug IN (:parentSlug)')
@@ -451,13 +459,14 @@ class SearchFilterFormType extends AbstractType
                             'poultry-breed',
                             'fish-breed',
                             'cattle-breed'
-                        ]);
+                        ])
+                        ->orderBy('sortOrder', 'ASC')
+                        ->addOrderBy('e.name','ASC');
                 },
                 'attr' => [
                     'class' => 'select2'
                 ],
                 'required' => false
-
             ])
 //            ->add('region', EntityType::class,[
 //                'class' => Location::class,
