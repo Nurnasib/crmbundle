@@ -12,13 +12,13 @@
 
                     <tr>
                         <th style="min-width: 200px">
-                            {{ form_label(form.line_managers, 'Employee:') }}
-                            {{ form_widget(form.line_managers) }}
+                            {{ form_label(form.employee, 'Employee:') }}
+                            {{ form_widget(form.employee) }}
                         </th>
-                        <th>
-                            {{ form_label(form.region, 'Region:') }}
-                            {{ form_widget(form.region) }}
-                        </th>
+{#                        <th>#}
+{#                            {{ form_label(form.region, 'Region:') }}#}
+{#                            {{ form_widget(form.region) }}#}
+{#                        </th>#}
                         <th>
                             {{ form_label(form.month, 'Month') }}
                             {{ form_widget(form.month) }}
@@ -35,7 +35,7 @@
                         <th colspan="1">
                             <div class="btn-group" style="margin-top: 25px">
                                 <button type="submit" name="search" class="btn btn-primary btn-sm" title="Search" value="search"><i class="fa fa-search" aria-hidden="true"></i></button>
-                                <a href="{{ path('employee_farmer_report') }}" class="btn purple-bg btn-sm white-font" title="Reset" value="reset"><i class="fa fa-refresh" aria-hidden="true"></i></a>
+                                <a href="{{ path('single_employee_farmer_report') }}" class="btn purple-bg btn-sm white-font" title="Reset" value="reset"><i class="fa fa-refresh" aria-hidden="true"></i></a>
                                 {% if entities is defined and entities is not empty %}
                                     <button type="submit" name="excel" class="btn blue-bg btn-sm white-font" title="Excel" value="excel" id="button-excel"><i class="fa fa-file-excel" aria-hidden="true"></i> {{ 'Excel'|trans }}</button>
                                 {% endif %}
@@ -69,12 +69,11 @@
 
                         <tr>
                             <th scope="col">Sl.</th>
-                            <th scope="col">Region</th>
-                            <th scope="col">Line Manager ID</th>
-                            <th scope="col">Line Manager Name</th>
                             <th scope="col">Employee ID</th>
                             <th scope="col">Employee Name</th>
                             <th scope="col">Designation</th>
+                            <th scope="col">Line Manager ID</th>
+                            <th scope="col">Line Manager Name</th>
                             <th scope="col">Sl.</th>
                             <th scope="col">Farmer Name</th>
                             <th scope="col">Address</th>
@@ -96,7 +95,7 @@
                         <tbody>
 
                         {% if entities is not empty %}
-                            {% set regionIndex = 1 %}
+                            {% set regionIndex = 0 %}
                             {% for employeeId, employeeData in entities %}
                                 {% set loopCount = 1 %}
                                 {% set totalTeamMembers = employeeData.teamMembers|length %}
@@ -108,20 +107,14 @@
                                         {% if teamMember.customers|length > 0 %}
                                             {% for customer in teamMember.customers %}
                                                 <tr>
-                                                    {#                                            first loop index#}
-                                                    {% if loopCount ==1  %}
-                                                        <td data-a-v="middle" data-t="n" rowspan="{{ grandTotalTeamMembers }}">{{ regionIndex }} </td>
-                                                        <td data-a-v="middle" rowspan="{{ grandTotalTeamMembers }}">{{ employeeData.regionName }}</td>
-                                                        <td data-a-v="middle" rowspan="{{ grandTotalTeamMembers }}">{{ employeeData.userId }}</td>
-                                                        <td data-a-v="middle" rowspan="{{ grandTotalTeamMembers }}">{{ employeeData.name }}</td>
-                                                        {#                                            <td rowspan="{{ totalTeamMembers }}">{{ totalTeamMembers }}</td>#}
-                                                    {% endif %}
-
                                                     {% if loop.index ==1 %}
 
+                                                        <td rowspan="{{ teamMember.noOfCustomer }}">{{ regionIndex }}</td>
                                                         <td rowspan="{{ teamMember.noOfCustomer }}">{{ teamMember.userId }}</td>
                                                         <td rowspan="{{ teamMember.noOfCustomer }}">{{ teamMember.name }}</td>
                                                         <td rowspan="{{ teamMember.noOfCustomer }}">{{ teamMember.designationName }}</td>
+                                                        <td rowspan="{{ teamMember.noOfCustomer }}">{{ teamMember.lineManagerUserId }}</td>
+                                                        <td rowspan="{{ teamMember.noOfCustomer }}">{{ teamMember.lineManagerName }}</td>
 
                                                     {% endif %}
 
@@ -157,10 +150,10 @@
 
                                         {% endif %}
 
-
+                                        {% set regionIndex = regionIndex + 1 %}
                                     {% endfor %}
                                 {% endif %}
-                                {% set regionIndex = regionIndex + 1 %}
+
 
                             {% endfor %}
                         {% else %}

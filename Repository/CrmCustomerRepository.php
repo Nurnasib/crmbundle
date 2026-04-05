@@ -226,28 +226,25 @@ ORDER BY `c`.`agent_id` ASC";
 
         $qb->where('s.slug = :slug')->setParameter('slug','farmer');
 
-        //dd($filterBy['type']);
         if (isset($typeId)){
-            //dd($filterBy['type']);
             $qb->andWhere('farmerIntroduce.cultureSpeciesItemAndQty LIKE :type')->setParameter('type', '%' . $typeId . '%');
-            //$qb->andWhere('e.slug = :type')->setParameter('type',$filterBy['type']->getSlug());
         }
         
         $qb->andWhere('e.deletedAt IS NULL');
         $qb->andWhere('e.deletedBy IS NULL');
         $qb->andWhere('employee.id IN (:employeeIds)')->setParameter('employeeIds', $employeeIds);
 
-        //create date range condition
         $qb->andWhere('e.created BETWEEN :startDate AND :endDate')
             ->setParameter('startDate', $startDate .' 00:00:00')
             ->setParameter('endDate', $endDate .' 23:59:59');
         
         $results = $qb->getQuery()->getArrayResult();
+        //dd($results);
         
         //group by employee
         $returnArray = [];
         foreach ($results as $result) {
-            //sum json value cultureSpeciesItemAndQty
+            $empId = (int)$result['employeeId'];
             $cultureSpeciesItemAndQty = [];
             if (isset($result['cultureSpeciesItemAndQty']) && $result['cultureSpeciesItemAndQty'] && $result['cultureSpeciesItemAndQty'] != null) {
                 $cultureSpeciesItemAndQty = json_decode($result['cultureSpeciesItemAndQty'], true);
@@ -270,7 +267,7 @@ ORDER BY `c`.`agent_id` ASC";
 
             $result['decodedCultureSpeciesItemAndQty'] = $cultureSpeciesItemAndQty;
 
-            $returnArray[$result['employeeId']][] = $result;
+            $returnArray[$empId][] = $result;
         }
         //dd($returnArray);
         return    $returnArray;
@@ -310,12 +307,123 @@ ORDER BY `c`.`agent_id` ASC";
             ->setParameter('endDate', $endDate .' 23:59:59');
 
         $results = $qb->getQuery()->getArrayResult();
-
-        //group by employee
+//        dd($results);
         $returnArray = [];
         foreach ($results as $result) {
             $returnArray[$result['employeeId']][] = $result;
         }
+        return    $returnArray;
+
+    }
+    public function getFarmCapacityByEmployeeIds($employeeIds, $filterBy)
+    {
+        $startDate = isset($filterBy['startDate'])
+            ? date('Y-m-d', strtotime($filterBy['startDate']))
+            : date('Y-m-01');
+        $endDate = isset($filterBy['endDate'])
+            ? date('Y-m-d', strtotime($filterBy['endDate']))
+            : date('Y-m-t');
+
+        $typeId = isset($filterBy['type']) ? $filterBy['type']->getId() : null;
+
+        $qb = $this->createQueryBuilder('e');
+        $qb->join('e.customerGroup', 's');
+        $qb->join('e.farmerIntroduce', 'fi');
+        $qb->join('fi.employee', 'employee');
+        $qb->select('employee.id AS employeeId');
+        $qb->addSelect('MONTH(e.created) AS month');
+        $qb->addSelect('fi.cultureSpeciesItemAndQty AS cultureSpeciesItemAndQty');
+        $qb->where('s.slug = :slug')->setParameter('slug', 'farmer');
+        $qb->andWhere('e.deletedAt IS NULL');
+        $qb->andWhere('e.deletedBy IS NULL');
+        $qb->andWhere('e.created IS NOT NULL');
+        $qb->andWhere('employee.id IN (:employeeIds)')
+            ->setParameter('employeeIds', $employeeIds);
+        $qb->andWhere('e.created BETWEEN :startDate AND :endDate')
+            ->setParameter('startDate', $startDate . ' 00:00:00')
+            ->setParameter('endDate', $endDate . ' 23:59:59');
+
+        $results = $qb->getQuery()->getArrayResult();
+
+        $returnArray = [];
+
+        $monthlyCapacity = [];
+
+        foreach ($results as $result) {
+            $empId = (int)$result['employeeId'];
+            $month = (int)$result['month'];
+
+            $capacity = 0;
+            if (!empty($result['cultureSpeciesItemAndQty'])) {
+                $cultureSpeciesItemAndQty = json_decode($result['cultureSpeciesItemAndQty'], true);
+
+                if (is_array($cultureSpeciesItemAndQty)) {
+                    // Apply type filter if set
+                    if (isset($typeId) && isset($cultureSpeciesItemAndQty[$typeId])) {
+                        $cultureSpeciesItemAndQty = [$typeId=> $cultureSpeciesItemAndQty[$typeId]];
+                    }
+                    $cultureSpeciesItemAndQty = array_filter($cultureSpeciesItemAndQty, function ($value) {
+                        return $value !== null && $value !== '';
+                    });
+                    $numericValues = array_map('intval', array_values($cultureSpeciesItemAndQty));
+                    $capacity = array_sum($numericValues);
+                }
+            }
+
+            $monthlyCapacity[$empId][$month] = ($monthlyCapacity[$empId][$month] ?? 0) + $capacity;
+        }
+        //dd($monthlyCapacity);
+        return $monthlyCapacity;
+    }
+    public function getFarmByEmployeeIds($employeeIds, $filterBy)
+    {
+        $startDate = isset($filterBy['startDate'])
+            ? date('Y-m-d', strtotime($filterBy['startDate']))
+            : date('Y-m-01');
+        $endDate = isset($filterBy['endDate'])
+            ? date('Y-m-d', strtotime($filterBy['endDate']))
+            : date('Y-m-t');
+
+        $typeId = isset($filterBy['type']) ? $filterBy['type']->getId() : null;
+
+        $qb = $this->createQueryBuilder('e');
+        $qb->join('e.customerGroup', 's');
+        $qb->join('e.farmerIntroduce', 'fi');
+        $qb->join('fi.employee','employee');
+        $qb->select('employee.id AS employeeId, e.id as farmerId');
+        $qb->addSelect('MONTH(e.created) AS month');
+        $qb->addSelect('fi.cultureSpeciesItemAndQty AS cultureSpeciesItemAndQty');
+        $qb->where('s.slug = :slug')->setParameter('slug', 'farmer');
+        $qb->andWhere('e.deletedAt IS NULL');
+        $qb->andWhere('e.deletedBy IS NULL');
+        if (isset($typeId)){
+            $qb->andWhere('fi.cultureSpeciesItemAndQty LIKE :type')->setParameter('type', '%' . $typeId . '%');
+        }
+        $qb->andWhere('employee.id IN (:employeeIds)')
+            ->setParameter('employeeIds', $employeeIds);
+        $qb->andWhere('e.created BETWEEN :startDate AND :endDate')
+            ->setParameter('startDate', $startDate . ' 00:00:00')
+            ->setParameter('endDate', $endDate . ' 23:59:59');
+
+        $results = $qb->getQuery()->getArrayResult();
+        $returnArray = [];
+        foreach ($results as $result) {
+            $empId = (int)$result['employeeId'];
+            $month = (int)$result['month'];
+
+            if (!empty($result['cultureSpeciesItemAndQty'])) {
+                $cultureSpeciesItemAndQty = json_decode($result['cultureSpeciesItemAndQty'], true);
+
+                if (is_array($cultureSpeciesItemAndQty)) {
+                    if (isset($typeId) && isset($cultureSpeciesItemAndQty[$typeId])) {
+                        $returnArray[$empId][$month] = ($returnArray[$empId][$month] ?? 0) + 1;
+                    }else{
+                        $returnArray[$empId][$month] = ($returnArray[$empId][$month] ?? 0) + 1;
+                    }
+                }
+            }
+        }
+        //dd($returnArray);
         return    $returnArray;
 
     }

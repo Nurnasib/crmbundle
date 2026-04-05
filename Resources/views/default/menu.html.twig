@@ -254,7 +254,17 @@
                     <ul class="sub-menu">
                         <li><a class="dropdown-item" href="{{ path('farmer_region_report') }}">{{ 'Region Wise'|trans }}</a></li>
                         <li><a class="dropdown-item" href="{{ path('farmer_national_total_report') }}">{{ 'National Total'|trans }}</a></li>
-                        <li><a class="dropdown-item" href="{{ path('employee_farmer_report') }}">{{ 'Employee'|trans }}</a></li>
+                        <li><a class="dropdown-item" href="{{ path('employee_farmer_report') }}">{{ 'All Employee'|trans }}</a></li>
+                        <li><a class="dropdown-item" href="{{ path('single_employee_farmer_report') }}">{{ 'Single Employee'|trans }}</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a class="dropdown-item" href="javascript:">{{ 'New Farmer Opening'|trans }}</a>
+                    <ul class="sub-menu">
+                        <li><a class="dropdown-item" href="{{ path('new_farm_capacity_report') }}">{{ 'Region Wise Capacity'|trans }}</a></li>
+                        <li><a class="dropdown-item" href="{{ path('new_farm_report') }}">{{ 'Region Wise Farmers'|trans }}</a></li>
+{#                        <li><a class="dropdown-item" href="{{ path('farmer_national_total_report') }}">{{ 'Employee Wise'|trans }}</a></li>#}
+{#                        <li><a class="dropdown-item" href="{{ path('employee_farmer_report') }}">{{ 'Employee'|trans }}</a></li>#}
                     </ul>
                 </li>
 

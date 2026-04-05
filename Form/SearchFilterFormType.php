@@ -503,6 +503,44 @@ class SearchFilterFormType extends AbstractType
                 'required' => false,
 //                'data' => date('m')
             ])
+            ->add('start_month', ChoiceType::class,[
+                'choices' => [
+                    'January' => '01',
+                    'February' => '02',
+                    'March' => '03',
+                    'April' => '04',
+                    'May' => '05',
+                    'June' => '06',
+                    'July' => '07',
+                    'August' => '08',
+                    'September' => '09',
+                    'October' => '10',
+                    'November' => '11',
+                    'December' => '12',
+                ],
+                'placeholder' => '- Select month -',
+                'required' => false,
+//                'data' => date('m')
+            ])
+            ->add('end_month', ChoiceType::class,[
+                'choices' => [
+                    'January' => '01',
+                    'February' => '02',
+                    'March' => '03',
+                    'April' => '04',
+                    'May' => '05',
+                    'June' => '06',
+                    'July' => '07',
+                    'August' => '08',
+                    'September' => '09',
+                    'October' => '10',
+                    'November' => '11',
+                    'December' => '12',
+                ],
+                'placeholder' => '- Select month -',
+                'required' => false,
+//                'data' => date('m')
+            ])
             ->add('monthName', ChoiceType::class,[
                 'choices' => [
                     'January' => 'January',
