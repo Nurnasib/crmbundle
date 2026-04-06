@@ -551,6 +551,194 @@ class FarmerReportController extends AbstractController
             'arrayMonth' => $arrayMonth,
         ]);
     }
+    /**
+     * @Route("/employee_farm_capacity_report", name="employee_farm_capacity_report")
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function employeeFarmCapacityReport(Request $request)
+    {
+        $filterBy = [];
+        $entities = [];
+        $species = [];
+        $trainingMaterials = [];
+        $employee = null;
+        $speciesTypesByParent=[];
+        $arrFishSizes=[];
+        $arrayMonth=[];
+
+//        $form = $this->createForm(SearchFilterFormType::class, null, ['loggedUser' => $this->getUser()]);
+        $loggedUser = $this->getUser();
+        $userRepo = $this->getDoctrine()->getRepository(User::class);
+        $form = $this->createForm(SearchFilterFormType::class, null, ['loggedUser' => $loggedUser,'userRepo'=>$userRepo]);
+        $form->handleRequest($request);
+
+        if($form->isSubmitted()){
+            $filterBy = $form->getData();
+
+            $employee = $form->getData()['employee'];
+
+            $filterBy['employeeId'] = $form->getData()['employee'] ? $form->getData()['employee']->getId() : '';
+            $filterBy['loggedUser'] = $loggedUser;
+
+            $entities = $userRepo->getNewFarmCapacity( $filterBy );
+//            dd($entities[17]);
+
+        }
+
+        return $this->render('@TerminalbdCrm/report/farmerReport/employee_farm_capacity.html.twig',[
+            'form' => $form->createView(),
+            'entities' => $entities,
+            'filterBy' => $filterBy,
+            'species' => $species,
+            'trainingMaterials' => $trainingMaterials,
+            'employee'=> $employee,
+            'speciesTypes' => $speciesTypesByParent,
+            'fishSizes' => $arrFishSizes,
+            'arrayMonth' => $arrayMonth,
+        ]);
+    }
+    /**
+     * @Route("/employee_farm_report", name="employee_farm_report")
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function employeeFarmReport(Request $request)
+    {
+        $filterBy = [];
+        $entities = [];
+        $species = [];
+        $trainingMaterials = [];
+        $employee = null;
+        $speciesTypesByParent=[];
+        $arrFishSizes=[];
+        $arrayMonth=[];
+
+//        $form = $this->createForm(SearchFilterFormType::class, null, ['loggedUser' => $this->getUser()]);
+        $loggedUser = $this->getUser();
+        $userRepo = $this->getDoctrine()->getRepository(User::class);
+        $form = $this->createForm(SearchFilterFormType::class, null, ['loggedUser' => $loggedUser,'userRepo'=>$userRepo]);
+        $form->handleRequest($request);
+
+        if($form->isSubmitted()){
+            $filterBy = $form->getData();
+
+            $employee = $form->getData()['employee'];
+
+            $filterBy['employeeId'] = $form->getData()['employee'] ? $form->getData()['employee']->getId() : '';
+            $filterBy['loggedUser'] = $loggedUser;
+
+            $entities = $userRepo->getNewFarmCapacity( $filterBy );
+//            dd($entities);
+
+        }
+
+        return $this->render('@TerminalbdCrm/report/farmerReport/employee_farm.html.twig',[
+            'form' => $form->createView(),
+            'entities' => $entities,
+            'filterBy' => $filterBy,
+            'species' => $species,
+            'trainingMaterials' => $trainingMaterials,
+            'employee'=> $employee,
+            'speciesTypes' => $speciesTypesByParent,
+            'fishSizes' => $arrFishSizes,
+            'arrayMonth' => $arrayMonth,
+        ]);
+    }
+    /**
+     * @Route("/employee_daily_farm_capacity_report", name="employee_daily_farm_capacity_report")
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function employeeDailyFarmCapacityReport(Request $request)
+    {
+        $filterBy = [];
+        $entities = [];
+        $species = [];
+        $trainingMaterials = [];
+        $employee = null;
+        $speciesTypesByParent=[];
+        $arrFishSizes=[];
+        $arrayMonth=[];
+
+//        $form = $this->createForm(SearchFilterFormType::class, null, ['loggedUser' => $this->getUser()]);
+        $loggedUser = $this->getUser();
+        $userRepo = $this->getDoctrine()->getRepository(User::class);
+        $form = $this->createForm(SearchFilterFormType::class, null, ['loggedUser' => $loggedUser,'userRepo'=>$userRepo]);
+        $form->handleRequest($request);
+
+        if($form->isSubmitted()){
+            $filterBy = $form->getData();
+
+            $employee = $form->getData()['employee'];
+
+            $filterBy['employeeId'] = $form->getData()['employee'] ? $form->getData()['employee']->getId() : '';
+            $filterBy['loggedUser'] = $loggedUser;
+
+            $entities = $userRepo->getDailyFarmCapacity( $filterBy );
+            //dd($entities);
+
+        }
+
+        return $this->render('@TerminalbdCrm/report/farmerReport/employee_daily_farm_capacity.html.twig',[
+            'form' => $form->createView(),
+            'entities' => $entities,
+            'filterBy' => $filterBy,
+            'species' => $species,
+            'trainingMaterials' => $trainingMaterials,
+            'employee'=> $employee,
+            'speciesTypes' => $speciesTypesByParent,
+            'fishSizes' => $arrFishSizes,
+            'arrayMonth' => $arrayMonth,
+        ]);
+    }
+    /**
+     * @Route("/employee_daily_farm_report", name="employee_daily_farm_report")
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function employeeDailyFarmReport(Request $request)
+    {
+        $filterBy = [];
+        $entities = [];
+        $species = [];
+        $trainingMaterials = [];
+        $employee = null;
+        $speciesTypesByParent=[];
+        $arrFishSizes=[];
+        $arrayMonth=[];
+
+//        $form = $this->createForm(SearchFilterFormType::class, null, ['loggedUser' => $this->getUser()]);
+        $loggedUser = $this->getUser();
+        $userRepo = $this->getDoctrine()->getRepository(User::class);
+        $form = $this->createForm(SearchFilterFormType::class, null, ['loggedUser' => $loggedUser,'userRepo'=>$userRepo]);
+        $form->handleRequest($request);
+
+        if($form->isSubmitted()){
+            $filterBy = $form->getData();
+
+            $employee = $form->getData()['employee'];
+
+            $filterBy['employeeId'] = $form->getData()['employee'] ? $form->getData()['employee']->getId() : '';
+            $filterBy['loggedUser'] = $loggedUser;
+
+            $entities = $userRepo->getDailyFarmCapacity( $filterBy );
+//            dd($entities);
+
+        }
+
+        return $this->render('@TerminalbdCrm/report/farmerReport/employee_daily_farm.html.twig',[
+            'form' => $form->createView(),
+            'entities' => $entities,
+            'filterBy' => $filterBy,
+            'species' => $species,
+            'trainingMaterials' => $trainingMaterials,
+            'employee'=> $employee,
+            'speciesTypes' => $speciesTypesByParent,
+            'fishSizes' => $arrFishSizes,
+            'arrayMonth' => $arrayMonth,
+        ]);
+    }
 
 
 }
