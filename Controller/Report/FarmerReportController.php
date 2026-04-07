@@ -739,6 +739,59 @@ class FarmerReportController extends AbstractController
             'arrayMonth' => $arrayMonth,
         ]);
     }
+    /**
+     * @Route("/summery_farm_report", name="summery_farm_report")
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function summeryFarmReport(Request $request)
+    {
+        $filterBy = [];
+        $entities = [];
+        $species = [];
+        $trainingMaterials = [];
+        $employee = null;
+        $speciesTypesByParent=[];
+        $arrFishSizes=[];
+        $arrayMonth=[];
+
+//        $form = $this->createForm(SearchFilterFormType::class, null, ['loggedUser' => $this->getUser()]);
+        $loggedUser = $this->getUser();
+        $userRepo = $this->getDoctrine()->getRepository(User::class);
+        $form = $this->createForm(SearchFilterFormType::class, null, ['loggedUser' => $loggedUser,'userRepo'=>$userRepo]);
+        $form->handleRequest($request);
+
+        $species = $this->getDoctrine()->getRepository(Setting::class)->getSpeciesTypeIds();
+        $speciesIds = array_map('intval', array_column($species, 'id'));
+
+        if($form->isSubmitted()){
+            $filterBy = $form->getData();
+
+            $employee = $form->getData()['employee'];
+
+            $filterBy['start_month'] = 1;
+            $filterBy['end_month'] = 12;
+
+            $filterBy['employeeId'] = $form->getData()['employee'] ? $form->getData()['employee']->getId() : '';
+            $filterBy['loggedUser'] = $loggedUser;
+
+            $entities = $userRepo->getSummeryFarm( $filterBy, $speciesIds );
+//            dd($entities);
+
+        }
+
+        return $this->render('@TerminalbdCrm/report/farmerReport/summery_farm.html.twig',[
+            'form' => $form->createView(),
+            'entities' => $entities,
+            'filterBy' => $filterBy,
+            'species' => $species,
+            'trainingMaterials' => $trainingMaterials,
+            'employee'=> $employee,
+            'speciesTypes' => $speciesTypesByParent,
+            'fishSizes' => $arrFishSizes,
+            'arrayMonth' => $arrayMonth,
+        ]);
+    }
 
 
 }

@@ -422,4 +422,33 @@ class SettingRepository extends EntityRepository
         return $qb->getQuery()->getArrayResult();
     }
 
+    public function getSpeciesTypeIds(): array
+    {
+        $rows = $this->createQueryBuilder('e')
+            ->select('e.id, e.name')
+            ->join('e.parent', 'parent')
+            ->addSelect("
+            CASE 
+                WHEN parent.slug = 'poultry-breed' THEN 1
+                WHEN parent.slug = 'cattle-breed' THEN 2
+                WHEN parent.slug = 'fish-breed' THEN 3
+                ELSE 4
+            END AS HIDDEN sortOrder
+        ")
+            ->where("e.settingType = 'SPECIES_TYPE'")
+            ->andWhere('e.status = 1')
+            ->andWhere('parent.slug IN (:parentSlug)')
+            ->setParameter('parentSlug', [
+                'poultry-breed',
+                'fish-breed',
+                'cattle-breed'
+            ])
+            ->orderBy('sortOrder', 'ASC')
+            ->addOrderBy('e.name', 'ASC')
+            ->getQuery()
+            ->getArrayResult();
+
+        return $rows;
+    }
+
 }
