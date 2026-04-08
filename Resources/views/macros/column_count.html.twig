@@ -1,0 +1,9 @@
+{% macro totalColumns(filterBy, fixedColumns) %}
+    {% set total = fixedColumns %}
+
+    {% if filterBy.startDate is defined and filterBy.endDate is defined %}
+        {% set total = total + ((filterBy.endDate|date('j')) - (filterBy.startDate|date('j')) + 1) %}
+    {% endif %}
+
+    {{ total }}
+{% endmacro %}
