@@ -42,7 +42,7 @@
                         <th colspan="1">
                             <div class="btn-group" style="margin-top: 25px">
                                 <button type="submit" name="search" class="btn btn-primary btn-sm" title="Search" value="search"><i class="fa fa-search" aria-hidden="true"></i></button>
-                                <a href="{{ path('new_farm_report') }}" class="btn purple-bg btn-sm white-font" title="Reset" value="reset"><i class="fa fa-refresh" aria-hidden="true"></i></a>
+                                <a href="{{ path('closed_farm_capacity_report') }}" class="btn purple-bg btn-sm white-font" title="Reset" value="reset"><i class="fa fa-refresh" aria-hidden="true"></i></a>
                                 {% if entities is defined and entities is not empty %}
                                     <button type="submit" name="excel" class="btn blue-bg btn-sm white-font" title="Excel" value="excel" id="button-excel"><i class="fa fa-file-excel" aria-hidden="true"></i> {{ 'Excel'|trans }}</button>
                                 {% endif %}
@@ -56,7 +56,6 @@
                 </form>
             </div>
         </div>
-
         <div class="row">
             <div class="card" style="overflow-x: scroll; max-height: 90vh">
                 <div id="data-load" class="card-body p-0">
@@ -70,7 +69,7 @@
                         </tr>
 
                         <tr>
-                            <td data-a-h="center" class="border-0" colspan="{{ totalColumns }}" align="center"><h6>{{ 'Monthly New Farms Report Report'|upper }} </h6></td>
+                            <td data-a-h="center" class="border-0" colspan="{{ totalColumns }}" align="center"><h6>{{ 'Monthly Closed Farms Capacity Report'|upper }} </h6></td>
                         </tr>
                         </thead>
                         <thead class="thead-dark">
@@ -93,21 +92,15 @@
 
                         <tbody>
 
-
                         {% if entities is not empty %}
                             {% set regionIndex = 1 %}
 
-
-
-{#                            {% for m in filterBy.start_month..filterBy.end_month %}#}
-{#                                {{ dump(#}
-{#                                    'Checking month:',#}
-{#                                    m,#}
-{#                                    (entities|first).teamMembers[8].lineManagerNewFarm[m] ?? 'NO DATA'#}
-{#                                ) }}#}
-{#                            {% endfor %}#}
-
                             {% for employeeId, employeeData in entities %}
+                                {% set monthlyTotals = {
+                                    1: 0, 2: 0, 3: 0, 4: 0,
+                                    5: 0, 6: 0, 7: 0, 8: 0,
+                                    9: 0, 10: 0, 11: 0, 12: 0
+                                } %}
 
 
                                 {% set totalEmployees = 0 %}
@@ -117,15 +110,19 @@
                                 {% set totalConvert = 0 %}
                                 {% set totalClosed = 0 %}
 
+                                {% set monthlyTotals = employeeData.teamMembers[1].lineManagerClosedFarmCap%}
 
-                                {% set monthlyTotals = {
-                                    1: 0, 2: 0, 3: 0, 4: 0,
-                                    5: 0, 6: 0, 7: 0, 8: 0,
-                                    9: 0, 10: 0, 11: 0, 12: 0
-                                } %}
-{#                                {{ dump(employeeData.teamMembers) }}#}
+{#                                {% for teamMember in employeeData.teamMembers %}#}
 
-                                {% set monthlyTotals = employeeData.teamMembers[1].lineManagerNewFarm%}
+{#                                    {% for m in range(filterBy.start_month, filterBy.end_month) %}#}
+{#                                        {% set value = teamMember.monthlyCapacity[m] ?? 0 %}#}
+
+{#                                        {% set monthlyTotals = monthlyTotals|merge({#}
+{#                                            (m): (monthlyTotals[m] ?? 0) + value#}
+{#                                        }) %}#}
+
+{#                                    {% endfor %}#}
+{#                                {% endfor %}#}
 
                                 <tr class="font-weight-bold">
                                     <td data-t="n">{{ regionIndex }}</td>
@@ -231,7 +228,7 @@
                 e.preventDefault();
                 let table = document.querySelector(".download-excel");
                 TableToExcel.convert(table, {
-                    name: "new_farmer_report.xlsx",
+                    name: "closed_farmer_capacity_report.xlsx",
                     sheet: {
                         name: "Sheet 1"
                     }

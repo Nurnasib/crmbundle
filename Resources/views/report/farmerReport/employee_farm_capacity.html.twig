@@ -1,8 +1,8 @@
 {% extends 'admin/layout.html.twig' %}
-{% import '@TerminalbdCrm/macros/column_count.html.twig' as report %}
-    {% set totalColumns = report.totalColumns(filterBy, 4) %}
 
 {% block body %}
+    {% import '@TerminalbdCrm/macros/column_count.html.twig' as report %}
+    {% set totalColumns = report.monthColumns(filterBy, 4) %}
     <div class="pcoded-inner-content">
 
         <!-- [ Main Content ] start -->

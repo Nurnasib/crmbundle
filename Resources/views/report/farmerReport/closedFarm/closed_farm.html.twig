@@ -42,7 +42,7 @@
                         <th colspan="1">
                             <div class="btn-group" style="margin-top: 25px">
                                 <button type="submit" name="search" class="btn btn-primary btn-sm" title="Search" value="search"><i class="fa fa-search" aria-hidden="true"></i></button>
-                                <a href="{{ path('new_farm_report') }}" class="btn purple-bg btn-sm white-font" title="Reset" value="reset"><i class="fa fa-refresh" aria-hidden="true"></i></a>
+                                <a href="{{ path('closed_farm_report') }}" class="btn purple-bg btn-sm white-font" title="Reset" value="reset"><i class="fa fa-refresh" aria-hidden="true"></i></a>
                                 {% if entities is defined and entities is not empty %}
                                     <button type="submit" name="excel" class="btn blue-bg btn-sm white-font" title="Excel" value="excel" id="button-excel"><i class="fa fa-file-excel" aria-hidden="true"></i> {{ 'Excel'|trans }}</button>
                                 {% endif %}
@@ -70,7 +70,7 @@
                         </tr>
 
                         <tr>
-                            <td data-a-h="center" class="border-0" colspan="{{ totalColumns }}" align="center"><h6>{{ 'Monthly New Farms Report Report'|upper }} </h6></td>
+                            <td data-a-h="center" class="border-0" colspan="{{ totalColumns }}" align="center"><h6>{{ 'Monthly Closed Farms Report Report'|upper }} </h6></td>
                         </tr>
                         </thead>
                         <thead class="thead-dark">
@@ -125,7 +125,7 @@
                                 } %}
 {#                                {{ dump(employeeData.teamMembers) }}#}
 
-                                {% set monthlyTotals = employeeData.teamMembers[1].lineManagerNewFarm%}
+                                {% set monthlyTotals = employeeData.teamMembers[1].lineManagerClosedFarm%}
 
                                 <tr class="font-weight-bold">
                                     <td data-t="n">{{ regionIndex }}</td>
@@ -231,7 +231,7 @@
                 e.preventDefault();
                 let table = document.querySelector(".download-excel");
                 TableToExcel.convert(table, {
-                    name: "new_farmer_report.xlsx",
+                    name: "closed_farmer_report.xlsx",
                     sheet: {
                         name: "Sheet 1"
                     }

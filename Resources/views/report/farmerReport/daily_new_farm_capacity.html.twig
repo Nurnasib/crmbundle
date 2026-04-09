@@ -1,6 +1,6 @@
 {% extends 'admin/layout.html.twig' %}
     {% import '@TerminalbdCrm/macros/column_count.html.twig' as report %}
-    {% set totalColumns = report.totalColumns(filterBy, 4) %}
+    {% set totalColumns = report.dayColumns(filterBy, 4) %}
 
 {% block body %}
 

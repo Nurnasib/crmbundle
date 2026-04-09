@@ -1,6 +1,6 @@
 {% extends 'admin/layout.html.twig' %}
 {% import '@TerminalbdCrm/macros/column_count.html.twig' as report %}
-    {% set totalColumns = report.monthColumns(filterBy, 4) %}
+    {% set totalColumns = report.dayColumns(filterBy, 4) %}
 
 {% block body %}
     <div class="pcoded-inner-content">
@@ -23,16 +23,12 @@
                             {{ form_widget(form.region) }}
                         </th>
                         <th>
-                            {{ form_label(form.year, 'Year') }}
-                            {{ form_widget(form.year) }}
+                            {{ form_label(form.startDate, 'Start Date:') }}
+                            {{ form_widget(form.startDate,{'id':'start-date', 'attr':{'placeholder': 'dd-mm-YYYY'}}) }}
                         </th>
                         <th>
-                            {{ form_label(form.start_month, 'Start Month') }}
-                            {{ form_widget(form.start_month) }}
-                        </th>
-                        <th>
-                            {{ form_label(form.end_month, 'End Month') }}
-                            {{ form_widget(form.end_month) }}
+                            {{ form_label(form.endDate, 'End Date:') }}
+                            {{ form_widget(form.endDate,{'id':'end-date', 'attr':{'placeholder': 'dd-mm-YYYY'}}) }}
                         </th>
                         <th>
                             {{ form_label(form.type, 'Type') }}
@@ -42,7 +38,7 @@
                         <th colspan="1">
                             <div class="btn-group" style="margin-top: 25px">
                                 <button type="submit" name="search" class="btn btn-primary btn-sm" title="Search" value="search"><i class="fa fa-search" aria-hidden="true"></i></button>
-                                <a href="{{ path('new_farm_report') }}" class="btn purple-bg btn-sm white-font" title="Reset" value="reset"><i class="fa fa-refresh" aria-hidden="true"></i></a>
+                                <a href="{{ path('employee_daily_closed_farm_capacity_report') }}" class="btn purple-bg btn-sm white-font" title="Reset" value="reset"><i class="fa fa-refresh" aria-hidden="true"></i></a>
                                 {% if entities is defined and entities is not empty %}
                                     <button type="submit" name="excel" class="btn blue-bg btn-sm white-font" title="Excel" value="excel" id="button-excel"><i class="fa fa-file-excel" aria-hidden="true"></i> {{ 'Excel'|trans }}</button>
                                 {% endif %}
@@ -56,7 +52,6 @@
                 </form>
             </div>
         </div>
-
         <div class="row">
             <div class="card" style="overflow-x: scroll; max-height: 90vh">
                 <div id="data-load" class="card-body p-0">
@@ -70,21 +65,19 @@
                         </tr>
 
                         <tr>
-                            <td data-a-h="center" class="border-0" colspan="{{ totalColumns }}" align="center"><h6>{{ 'Monthly New Farms Report Report'|upper }} </h6></td>
+                            <td data-a-h="center" class="border-0" colspan="{{ totalColumns }}" align="center"><h6>{{ 'Employee Wise Daily Closed Farms Capacity Report'|upper }} </h6></td>
                         </tr>
                         </thead>
                         <thead class="thead-dark">
 
                         <tr>
                             <th scope="col">Sl.</th>
-{#                            <th scope="col">Month</th>#}
-                            <th scope="col">Region</th>
-                            <th scope="col">Line Manager ID</th>
-                            <th scope="col">Line Manager Name</th>
-                            {% if filterBy.start_month is defined and filterBy.end_month is defined %}
-                                {% for m in filterBy.start_month..filterBy.end_month %}
+                            <th scope="col">Employee ID</th>
+                            <th scope="col">Employee Name</th>
+                            {% if filterBy.startDate is defined and filterBy.endDate is defined %}
+                                {% for d in filterBy.startDate|date('j')..filterBy.endDate|date('j') %}
                                     <th scope="col">
-                                        {{ date(filterBy.year ~ '-' ~ m ~ '-01')|date('M') }}
+                                        {{ d }}
                                     </th>
                                 {% endfor %}
                             {% endif %}
@@ -93,19 +86,8 @@
 
                         <tbody>
 
-
                         {% if entities is not empty %}
                             {% set regionIndex = 1 %}
-
-
-
-{#                            {% for m in filterBy.start_month..filterBy.end_month %}#}
-{#                                {{ dump(#}
-{#                                    'Checking month:',#}
-{#                                    m,#}
-{#                                    (entities|first).teamMembers[8].lineManagerNewFarm[m] ?? 'NO DATA'#}
-{#                                ) }}#}
-{#                            {% endfor %}#}
 
                             {% for employeeId, employeeData in entities %}
 
@@ -117,29 +99,21 @@
                                 {% set totalConvert = 0 %}
                                 {% set totalClosed = 0 %}
 
+                                {% for teamMember in employeeData.teamMembers %}
 
-                                {% set monthlyTotals = {
-                                    1: 0, 2: 0, 3: 0, 4: 0,
-                                    5: 0, 6: 0, 7: 0, 8: 0,
-                                    9: 0, 10: 0, 11: 0, 12: 0
-                                } %}
-{#                                {{ dump(employeeData.teamMembers) }}#}
+                                    <tr class="font-weight-bold">
+                                        <td data-t="n">{{ regionIndex }}</td>
+                                        <td>{{ teamMember.userId }}</td>
+                                        <td>{{ teamMember.name }}</td>
+                                        {% if filterBy.startDate is defined and filterBy.endDate is defined %}
+                                            {% for d in filterBy.startDate|date('j')..filterBy.endDate|date('j') %}
+                                                <td data-t="n">{{ teamMember.dailyCapacity[d] ?? 0 }}</td>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </tr>
 
-                                {% set monthlyTotals = employeeData.teamMembers[1].lineManagerNewFarm%}
-
-                                <tr class="font-weight-bold">
-                                    <td data-t="n">{{ regionIndex }}</td>
-                                    <td>{{ employeeData.regionName }}</td>
-                                    <td>{{ employeeData.userId }}</td>
-                                    <td>{{ employeeData.name }}</td>
-                                    {% if filterBy.start_month is defined and filterBy.end_month is defined %}
-                                        {% for m in filterBy.start_month..filterBy.end_month %}
-                                            <td data-t="n">{{ monthlyTotals[m] ?? 0 }}</td>
-                                        {% endfor %}
-                                    {% endif %}
-                                </tr>
-
-                                {% set regionIndex = regionIndex + 1 %}
+                                    {% set regionIndex = regionIndex + 1 %}
+                                {% endfor %}
 
                             {% endfor %}
                         {% else %}
@@ -185,42 +159,48 @@
             dateFormat: 'dd-mm-yy'
         });
 
-        let startDate = null;
-        let endDate = null;
-
         function parseDateDMY(val) {
-            const parts = val.split('-'); // dd-mm-yy
-            return new Date(parts[2], parts[1] - 1, parts[0]);
+            return $.datepicker.parseDate('dd-mm-yy', val);
         }
 
-        // when START changes → limit END
         $('#start-date').on('change', function () {
             const val = $(this).val();
             if (!val) return;
 
-            startDate = parseDateDMY(val);
+            const startDate = parseDateDMY(val);
 
-            let maxEnd = new Date(startDate);
-            maxEnd.setMonth(maxEnd.getMonth() + 6);
+            const firstDay = new Date(startDate.getFullYear(), startDate.getMonth(), 1);
+            const lastDay = new Date(startDate.getFullYear(), startDate.getMonth() + 1, 0);
 
             $('#end-date')
                 .datepicker('option', 'minDate', startDate)
-                .datepicker('option', 'maxDate', maxEnd);
+                .datepicker('option', 'maxDate', lastDay);
+
+            const endVal = $('#end-date').val();
+            if (endVal) {
+                const endDate = parseDateDMY(endVal);
+                if (endDate < startDate || endDate > lastDay) {
+                    $('#end-date').val('');
+                }
+            }
         });
 
-        // when END changes → limit START
         $('#end-date').on('change', function () {
-            const val = $(this).val();
-            if (!val) return;
+            const startVal = $('#start-date').val();
+            const endVal = $(this).val();
 
-            endDate = parseDateDMY(val);
+            if (!startVal || !endVal) return;
 
-            let minStart = new Date(endDate);
-            minStart.setMonth(minStart.getMonth() - 6);
+            const startDate = parseDateDMY(startVal);
+            const endDate = parseDateDMY(endVal);
 
-            $('#start-date')
-                .datepicker('option', 'maxDate', endDate)
-                .datepicker('option', 'minDate', minStart);
+            if (
+                startDate.getFullYear() !== endDate.getFullYear() ||
+                startDate.getMonth() !== endDate.getMonth()
+            ) {
+                alert('Start Date and End Date must be in the same month.');
+                $(this).val('');
+            }
         });
 
         let button = document.querySelector("#button-excel");
@@ -231,7 +211,7 @@
                 e.preventDefault();
                 let table = document.querySelector(".download-excel");
                 TableToExcel.convert(table, {
-                    name: "new_farmer_report.xlsx",
+                    name: "employee_daily_closed_farmer_capacity_report.xlsx",
                     sheet: {
                         name: "Sheet 1"
                     }

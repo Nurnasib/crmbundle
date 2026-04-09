@@ -1,8 +1,8 @@
 {% extends 'admin/layout.html.twig' %}
-{% import '@TerminalbdCrm/macros/column_count.html.twig' as report %}
-    {% set totalColumns = report.monthColumns(filterBy, 4) %}
 
 {% block body %}
+    {% import '@TerminalbdCrm/macros/column_count.html.twig' as report %}
+    {% set totalColumns = report.monthColumns(filterBy, 4) %}
     <div class="pcoded-inner-content">
 
         <!-- [ Main Content ] start -->
@@ -42,7 +42,7 @@
                         <th colspan="1">
                             <div class="btn-group" style="margin-top: 25px">
                                 <button type="submit" name="search" class="btn btn-primary btn-sm" title="Search" value="search"><i class="fa fa-search" aria-hidden="true"></i></button>
-                                <a href="{{ path('new_farm_report') }}" class="btn purple-bg btn-sm white-font" title="Reset" value="reset"><i class="fa fa-refresh" aria-hidden="true"></i></a>
+                                <a href="{{ path('employee_closed_farm_capacity_report') }}" class="btn purple-bg btn-sm white-font" title="Reset" value="reset"><i class="fa fa-refresh" aria-hidden="true"></i></a>
                                 {% if entities is defined and entities is not empty %}
                                     <button type="submit" name="excel" class="btn blue-bg btn-sm white-font" title="Excel" value="excel" id="button-excel"><i class="fa fa-file-excel" aria-hidden="true"></i> {{ 'Excel'|trans }}</button>
                                 {% endif %}
@@ -56,7 +56,6 @@
                 </form>
             </div>
         </div>
-
         <div class="row">
             <div class="card" style="overflow-x: scroll; max-height: 90vh">
                 <div id="data-load" class="card-body p-0">
@@ -70,7 +69,7 @@
                         </tr>
 
                         <tr>
-                            <td data-a-h="center" class="border-0" colspan="{{ totalColumns }}" align="center"><h6>{{ 'Monthly New Farms Report Report'|upper }} </h6></td>
+                            <td data-a-h="center" class="border-0" colspan="{{ totalColumns }}" align="center"><h6>{{ 'Employee Closed Farms Capacity Report'|upper }} </h6></td>
                         </tr>
                         </thead>
                         <thead class="thead-dark">
@@ -78,9 +77,8 @@
                         <tr>
                             <th scope="col">Sl.</th>
 {#                            <th scope="col">Month</th>#}
-                            <th scope="col">Region</th>
-                            <th scope="col">Line Manager ID</th>
-                            <th scope="col">Line Manager Name</th>
+                            <th scope="col">Employee ID</th>
+                            <th scope="col">Employee Name</th>
                             {% if filterBy.start_month is defined and filterBy.end_month is defined %}
                                 {% for m in filterBy.start_month..filterBy.end_month %}
                                     <th scope="col">
@@ -93,19 +91,8 @@
 
                         <tbody>
 
-
                         {% if entities is not empty %}
                             {% set regionIndex = 1 %}
-
-
-
-{#                            {% for m in filterBy.start_month..filterBy.end_month %}#}
-{#                                {{ dump(#}
-{#                                    'Checking month:',#}
-{#                                    m,#}
-{#                                    (entities|first).teamMembers[8].lineManagerNewFarm[m] ?? 'NO DATA'#}
-{#                                ) }}#}
-{#                            {% endfor %}#}
 
                             {% for employeeId, employeeData in entities %}
 
@@ -117,29 +104,23 @@
                                 {% set totalConvert = 0 %}
                                 {% set totalClosed = 0 %}
 
+{#                                {% set monthlyTotals = employeeData.teamMembers[1].lineManagerNewFarmCap%}#}
 
-                                {% set monthlyTotals = {
-                                    1: 0, 2: 0, 3: 0, 4: 0,
-                                    5: 0, 6: 0, 7: 0, 8: 0,
-                                    9: 0, 10: 0, 11: 0, 12: 0
-                                } %}
-{#                                {{ dump(employeeData.teamMembers) }}#}
+                                {% for teamMember in employeeData.teamMembers %}
 
-                                {% set monthlyTotals = employeeData.teamMembers[1].lineManagerNewFarm%}
+                                    <tr class="font-weight-bold">
+                                        <td data-t="n">{{ regionIndex }}</td>
+                                        <td>{{ teamMember.userId }}</td>
+                                        <td>{{ teamMember.name }}</td>
+                                        {% if filterBy.start_month is defined and filterBy.end_month is defined %}
+                                            {% for m in filterBy.start_month..filterBy.end_month %}
+                                                <td data-t="n">{{ teamMember.monthlyCapacity[m] ?? 0 }}</td>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </tr>
+                                    {% set regionIndex = regionIndex + 1 %}
+                                {% endfor %}
 
-                                <tr class="font-weight-bold">
-                                    <td data-t="n">{{ regionIndex }}</td>
-                                    <td>{{ employeeData.regionName }}</td>
-                                    <td>{{ employeeData.userId }}</td>
-                                    <td>{{ employeeData.name }}</td>
-                                    {% if filterBy.start_month is defined and filterBy.end_month is defined %}
-                                        {% for m in filterBy.start_month..filterBy.end_month %}
-                                            <td data-t="n">{{ monthlyTotals[m] ?? 0 }}</td>
-                                        {% endfor %}
-                                    {% endif %}
-                                </tr>
-
-                                {% set regionIndex = regionIndex + 1 %}
 
                             {% endfor %}
                         {% else %}
@@ -231,7 +212,7 @@
                 e.preventDefault();
                 let table = document.querySelector(".download-excel");
                 TableToExcel.convert(table, {
-                    name: "new_farmer_report.xlsx",
+                    name: "employee_closed_farmer_capacity_report.xlsx",
                     sheet: {
                         name: "Sheet 1"
                     }
