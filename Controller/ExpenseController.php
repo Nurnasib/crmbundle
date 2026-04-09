@@ -267,6 +267,8 @@ class ExpenseController extends AbstractController
             }
         }
 
+        $ratePerMilage = $employee->getExpenseChart() && $employee->getExpenseChart()->getTypeOfVehicle() && $employee->getExpenseChart()->getTypeOfVehicle() == 'car'? 0: 3.5;
+
         $typeOfVehicles = $this->typeOfVehicle($employee);
 
         $statusIsOneEntities = array_filter($entities, function($n) { if($n->getStatus()==1) return $n; });
@@ -285,6 +287,7 @@ class ExpenseController extends AbstractController
             'conveyanceDetailsTotalAmount' => $conveyanceDetailsTotalAmount,
             'typeOfVehicles' => $typeOfVehicles,
             'statusIsOneEntities' => $statusIsOneEntities,
+            'ratePerMilage' => $ratePerMilage,
         ]);
     }
 

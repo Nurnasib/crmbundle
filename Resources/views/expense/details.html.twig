@@ -153,7 +153,7 @@
                                                     <td class="text-right">
                                                         {% set conveyanceAmount = conveyanceDetailsTotalAmount['data'] is defined and conveyanceDetailsTotalAmount['data'][entity.id] is defined and conveyanceDetailsTotalAmount['data'][entity.id][typeOfVehicle.slug] is defined?conveyanceDetailsTotalAmount['data'][entity.id][typeOfVehicle.slug]['totalAmount']|number_format(2,'.',''):0 %}
 
-                                                        {% if typeOfVehicle.slug=='motorcycle' %}
+                                                        {% if typeOfVehicle.slug=='motorcycle' or typeOfVehicle.slug=='car' %}
                                                             {% set totalMileageKm = conveyanceDetailsTotalAmount['data'] is defined and conveyanceDetailsTotalAmount['data'][entity.id] is defined and conveyanceDetailsTotalAmount['data'][entity.id][typeOfVehicle.slug] is defined?conveyanceDetailsTotalAmount['data'][entity.id][typeOfVehicle.slug]['totalMileage']:0 %}
                                                             {% set totalMilage = totalMilage + totalMileageKm %}
                                                             {% set grandTotalMilage=grandTotalMilage+totalMilage %}
@@ -167,7 +167,7 @@
                                             {% endif %}
 
                                             <td class="text-right">
-                                                {{ (totalMilage*3.5)|number_format(2,'.',',') }}
+                                                {{ (totalMilage*ratePerMilage)|number_format(2,'.',',') }}
                                             </td>
                                             <td class="text-right">{{ totalMilage }}</td>
                                             <td class="text-right">{{ (lineTotal+(totalMilage*3.5))|number_format(2,'.',',') }}</td>
