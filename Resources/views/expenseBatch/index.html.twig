@@ -88,7 +88,7 @@
                                             <td>{{ employee.userId }}</td>
                                             <td>{{ employee.name }}</td>
                                             <td class="text-center" scope="col">
-                                                {{ entities is defined and entities is not empty and entities[requestDate] is defined and entities[requestDate][employee.id] is defined and entities[requestDate][employee.id]  is not empty ? entities[requestDate][employee.id]['expenseDate']|date('F, Y') : '<span style="color:red">X</span>'}}
+                                                {{ entities is defined and entities is not empty and entities[requestDate] is defined and entities[requestDate][employee.id] is defined and entities[requestDate][employee.id]  is not empty ? entities[requestDate][employee.id]['expenseDate']|date('F, Y') : ''}}
                                             </td>
                                             <td class="hidden-print">
                                                 {% if entities is defined and entities is not empty and entities[requestDate] is defined and entities[requestDate][employee.id] is defined and entities[requestDate][employee.id]  is not empty %}

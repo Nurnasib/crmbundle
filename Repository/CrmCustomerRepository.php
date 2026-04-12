@@ -616,7 +616,8 @@ ORDER BY `c`.`agent_id` ASC";
         $qb->andWhere('e.deletedAt IS NULL');
         $qb->andWhere('e.deletedBy IS NULL');
         $qb->andWhere('e.created IS NOT NULL');
-        $qb->andWhere('e.status = :status')->setParameter('status', 'closed');
+        $qb->andWhere('e.status IN (:statuses)')
+            ->setParameter('statuses', ['closed', 'close']);
         $qb->andWhere('employee.id IN (:employeeIds)')
             ->setParameter('employeeIds', $employeeIds);
         $qb->andWhere('e.created BETWEEN :startDate AND :endDate')
@@ -676,7 +677,8 @@ ORDER BY `c`.`agent_id` ASC";
         $qb->where('s.slug = :slug')->setParameter('slug', 'farmer');
         $qb->andWhere('e.deletedAt IS NULL');
         $qb->andWhere('e.deletedBy IS NULL');
-        $qb->andWhere('e.status = :status')->setParameter('status', 'closed');
+        $qb->andWhere('e.status IN (:statuses)')
+            ->setParameter('statuses', ['closed', 'close']);
         if (isset($typeId)){
             $qb->andWhere('fi.cultureSpeciesItemAndQty LIKE :type')->setParameter('type', '%' . $typeId . '%');
         }
@@ -731,7 +733,8 @@ ORDER BY `c`.`agent_id` ASC";
         $qb->andWhere('e.deletedAt IS NULL');
         $qb->andWhere('e.deletedBy IS NULL');
         $qb->andWhere('e.created IS NOT NULL');
-        $qb->andWhere('e.status = :status')->setParameter('status', 'closed');
+        $qb->andWhere('e.status IN (:statuses)')
+            ->setParameter('statuses', ['closed', 'close']);
         $qb->andWhere('employee.id IN (:employeeIds)')
             ->setParameter('employeeIds', $employeeIds);
         $qb->andWhere('e.created BETWEEN :startDate AND :endDate')
@@ -792,7 +795,8 @@ ORDER BY `c`.`agent_id` ASC";
         $qb->where('s.slug = :slug')->setParameter('slug', 'farmer');
         $qb->andWhere('e.deletedAt IS NULL');
         $qb->andWhere('e.deletedBy IS NULL');
-        $qb->andWhere('e.status = :status')->setParameter('status', 'closed');
+        $qb->andWhere('e.status IN (:statuses)')
+            ->setParameter('statuses', ['closed', 'close']);
         if (isset($typeId)){
             $qb->andWhere('fi.cultureSpeciesItemAndQty LIKE :type')->setParameter('type', '%' . $typeId . '%');
         }
@@ -845,7 +849,8 @@ ORDER BY `c`.`agent_id` ASC";
         $qb->where('s.slug = :slug')->setParameter('slug', 'farmer');
         $qb->andWhere('e.deletedAt IS NULL');
         $qb->andWhere('e.deletedBy IS NULL');
-        $qb->andWhere('e.status = :status')->setParameter('status', 'closed');
+        $qb->andWhere('e.status IN (:statuses)')
+            ->setParameter('statuses', ['closed', 'close']);
 
         $qb->andWhere('employee.id IN (:employeeIds)')
             ->setParameter('employeeIds', $employeeIds);
