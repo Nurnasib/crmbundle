@@ -15,6 +15,7 @@ use App\Entity\User;
 use Doctrine\ORM\EntityRepository;
 use Terminalbd\CrmBundle\Entity\ChickLifeCycle;
 use Terminalbd\CrmBundle\Entity\Setting;
+use Doctrine\DBAL\Types\Types;
 
 /**
  * This custom Doctrine repository contains some methods which are useful when
@@ -204,6 +205,124 @@ ORDER BY `c`.`agent_id` ASC";
 
     }
 
+    public function getCustomerFarmVisitInfoByEmployeeIds( $employeeIds, $filterBy )
+    {
+
+        $startDate = !empty($filterBy['startDate'])
+            ? \DateTime::createFromFormat('!d-m-Y', $filterBy['startDate'])
+            : new \DateTime(date('Y-m-01'));
+
+        $endDate = !empty($filterBy['endDate'])
+            ? \DateTime::createFromFormat('!d-m-Y', $filterBy['endDate'])
+            : new \DateTime(date('Y-m-t'));
+        $typeId = isset($filterBy['type']) ? $filterBy['type']->getId() : null;
+
+
+        $qb = $this->createQueryBuilder('e');
+        $qb->join('e.customerGroup','s');
+        $qb->join('e.farmerIntroduce','farmerIntroduce');
+        $qb->join('e.crmVisitDetails','visit_details');
+        $qb->join('visit_details.crmVisit','visit');
+        $qb->join('farmerIntroduce.employee','employee');
+        $qb->join('farmerIntroduce.farmerType','farmerType');
+
+        $qb->select('e.id as id','e.name as name','e.address as address','e.mobile as mobile','e.status as status' ,'e.created as month' );
+
+        $qb->addSelect('farmerIntroduce.cultureSpeciesItemAndQty');
+        $qb->addSelect('employee.id as employeeId', 'employee.name as employeeName', 'employee.userId as employeeUserId');
+        $qb->addSelect('farmerType.name as farmerTypeName', 'farmerType.slug as farmerTypeSlug');
+        $qb->addSelect('visit_details.farmCapacity as farmCapacity', 'visit_details.comments as comments', 'visit.visitDate as visit_date');
+
+        $qb->where('s.slug = :slug')->setParameter('slug','farmer');
+        if (isset($filterBy['status'])){
+            $qb->join('e.statusLog','slog');
+            $qb->addSelect('slog.reason as reason');
+            $qb->andWhere('e.status IN (:statuses)')
+                ->setParameter('statuses', ['closed', 'close']);
+        }
+
+        if (isset($typeId)){
+            $qb->andWhere('farmerIntroduce.cultureSpeciesItemAndQty LIKE :type')->setParameter('type', '%' . $typeId . '%');
+        }
+
+        $qb->andWhere('e.deletedAt IS NULL');
+        $qb->andWhere('e.deletedBy IS NULL');
+        $qb->andWhere('employee.id IN (:employeeIds)')->setParameter('employeeIds', $employeeIds);
+
+//        dd($startDate, $endDate);
+        $qb->andWhere('visit.visitDate >= :startDate')
+            ->andWhere('visit.visitDate <= :endDate')
+            ->setParameter('startDate', $startDate, Types::DATE_MUTABLE)
+            ->setParameter('endDate', $endDate, Types::DATE_MUTABLE);
+        $results = $qb->getQuery()->getArrayResult();
+//        dd($results);
+
+        //group by employee
+        $returnArray = [];
+//        foreach ($results as $result) {
+//            $empId = (int)$result['employeeId'];
+//            $cultureSpeciesItemAndQty = [];
+//            if (isset($result['cultureSpeciesItemAndQty']) && $result['cultureSpeciesItemAndQty'] && $result['cultureSpeciesItemAndQty'] != null) {
+//                $cultureSpeciesItemAndQty = json_decode($result['cultureSpeciesItemAndQty'], true);
+//                if (is_array($cultureSpeciesItemAndQty)) {
+//                    if (isset($typeId) && isset($cultureSpeciesItemAndQty[$typeId])) {
+//                        $cultureSpeciesItemAndQty = [$typeId => $cultureSpeciesItemAndQty[$typeId]];
+//                    }
+//                    $cultureSpeciesItemAndQty = array_filter($cultureSpeciesItemAndQty, function ($value) {
+//                        return $value !== null && $value !== '';
+//                    });
+//                } else {
+//                    $cultureSpeciesItemAndQty = [];
+//                }
+//                $arrayValues = array_values($cultureSpeciesItemAndQty);
+//                $numericValues = array_map('intval', $arrayValues);
+//                $result['cultureSpeciesItemAndQtySum'] = sizeof($numericValues) > 0 ? array_sum($numericValues) : 0;
+//            } else {
+//                $result['cultureSpeciesItemAndQtySum'] = 0;
+//            }
+//
+//            $result['decodedCultureSpeciesItemAndQty'] = $cultureSpeciesItemAndQty;
+//            $returnArray[$empId][] = $result;
+//        }
+        foreach ($results as $result) {
+            $empId = (int)$result['employeeId'];
+            $farmId = (int)$result['id'];
+            $farmCap = $result['farmCapacity'];
+            $farmName= $result['name'];
+            $address= $result['address'];
+            $employeeName= $result['employeeName'];
+            $employeeUserId= $result['employeeUserId'];
+            $day = $result['visit_date']->format('d');
+            $day = (int)$day;
+
+            if (!empty($result['cultureSpeciesItemAndQty'])) {
+                $cultureSpeciesItemAndQty = json_decode($result['cultureSpeciesItemAndQty'], true);
+
+                if (is_array($cultureSpeciesItemAndQty)) {
+                    if (isset($typeId) && isset($cultureSpeciesItemAndQty[$typeId])) {
+                        $returnArray[$empId][$farmId]['decodedCultureSpeciesItemAndQty'] = $cultureSpeciesItemAndQty;
+                        $returnArray[$empId][$farmId]['employeeName'] = $employeeName;
+                        $returnArray[$empId][$farmId]['employeeUserId'] = $employeeUserId;
+                        $returnArray[$empId][$farmId]['area'] = $address;
+                        $returnArray[$empId][$farmId]['name'] = $farmName;
+                        $returnArray[$empId][$farmId]['capacity'] = $farmCap;
+                        $returnArray[$empId][$farmId][$day] = 'yes';
+                    }else{
+                        $returnArray[$empId][$farmId]['decodedCultureSpeciesItemAndQty'] = $cultureSpeciesItemAndQty;
+                        $returnArray[$empId][$farmId]['employeeName'] = $employeeName;
+                        $returnArray[$empId][$farmId]['employeeUserId'] = $employeeUserId;
+                        $returnArray[$empId][$farmId]['area'] = $address;
+                        $returnArray[$empId][$farmId]['name'] = $farmName;
+                        $returnArray[$empId][$farmId]['capacity'] = $farmCap;
+                        $returnArray[$empId][$farmId][$day] = 'yes';
+                    }
+                }
+            }
+        }
+//        dd($returnArray[41]);
+        return    $returnArray;
+
+    }
 
     public function getCustomerByEmployeeIds( $employeeIds, $filterBy )
     {
@@ -219,13 +338,19 @@ ORDER BY `c`.`agent_id` ASC";
         $qb->join('farmerIntroduce.employee','employee');
         $qb->join('farmerIntroduce.farmerType','farmerType');
 
-        $qb->select('e.id as id','e.name as name','e.address as address','e.mobile as mobile','e.status as status' );
-        
+        $qb->select('e.id as id','e.name as name','e.address as address','e.mobile as mobile','e.status as status' ,'e.created as month' );
+
         $qb->addSelect('farmerIntroduce.cultureSpeciesItemAndQty');
         $qb->addSelect('employee.id as employeeId', 'employee.name as employeeName', 'employee.userId as employeeUserId');
         $qb->addSelect('farmerType.name as farmerTypeName', 'farmerType.slug as farmerTypeSlug');
 
         $qb->where('s.slug = :slug')->setParameter('slug','farmer');
+        if (isset($filterBy['status'])){
+            $qb->join('e.statusLog','slog');
+            $qb->addSelect('slog.reason as reason');
+            $qb->andWhere('e.status IN (:statuses)')
+                ->setParameter('statuses', ['closed', 'close']);
+        }
 
         if (isset($typeId)){
             $qb->andWhere('farmerIntroduce.cultureSpeciesItemAndQty LIKE :type')->setParameter('type', '%' . $typeId . '%');
@@ -240,7 +365,7 @@ ORDER BY `c`.`agent_id` ASC";
             ->setParameter('endDate', $endDate .' 23:59:59');
         
         $results = $qb->getQuery()->getArrayResult();
-        //dd($results);
+//        dd($results);
         
         //group by employee
         $returnArray = [];
@@ -270,7 +395,7 @@ ORDER BY `c`.`agent_id` ASC";
 
             $returnArray[$empId][] = $result;
         }
-        //dd($returnArray);
+//        dd($returnArray);
         return    $returnArray;
 
     }

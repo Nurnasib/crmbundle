@@ -70,7 +70,7 @@
                         </tr>
 
                         <tr>
-                            <td data-a-h="center" class="border-0" colspan="{{ totalColumns }}" align="center"><h6>{{ 'Monthly Closed Farms Report Report'|upper }} </h6></td>
+                            <td data-a-h="center" class="border-0" colspan="{{ totalColumns }}" align="center"><h6>{{ 'Monthly Closed Farms Report'|upper }} </h6></td>
                         </tr>
                         </thead>
                         <thead class="thead-dark">
@@ -81,6 +81,7 @@
                             <th scope="col">Region</th>
                             <th scope="col">Line Manager ID</th>
                             <th scope="col">Line Manager Name</th>
+                            <th scope="col">Designation</th>
                             {% if filterBy.start_month is defined and filterBy.end_month is defined %}
                                 {% for m in filterBy.start_month..filterBy.end_month %}
                                     <th scope="col">
@@ -132,6 +133,7 @@
                                     <td>{{ employeeData.regionName }}</td>
                                     <td>{{ employeeData.userId }}</td>
                                     <td>{{ employeeData.name }}</td>
+                                    <td>{{ employeeData.designationName }}</td>
                                     {% if filterBy.start_month is defined and filterBy.end_month is defined %}
                                         {% for m in filterBy.start_month..filterBy.end_month %}
                                             <td data-t="n">{{ monthlyTotals[m] ?? 0 }}</td>

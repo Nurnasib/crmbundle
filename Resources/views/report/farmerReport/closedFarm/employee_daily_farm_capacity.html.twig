@@ -74,6 +74,7 @@
                             <th scope="col">Sl.</th>
                             <th scope="col">Employee ID</th>
                             <th scope="col">Employee Name</th>
+                            <th scope="col">Designation</th>
                             {% if filterBy.startDate is defined and filterBy.endDate is defined %}
                                 {% for d in filterBy.startDate|date('j')..filterBy.endDate|date('j') %}
                                     <th scope="col">
@@ -105,6 +106,7 @@
                                         <td data-t="n">{{ regionIndex }}</td>
                                         <td>{{ teamMember.userId }}</td>
                                         <td>{{ teamMember.name }}</td>
+                                        <td>{{ teamMember.designationName }}</td>
                                         {% if filterBy.startDate is defined and filterBy.endDate is defined %}
                                             {% for d in filterBy.startDate|date('j')..filterBy.endDate|date('j') %}
                                                 <td data-t="n">{{ teamMember.dailyCapacity[d] ?? 0 }}</td>

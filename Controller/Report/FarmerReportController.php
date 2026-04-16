@@ -1221,6 +1221,128 @@ class FarmerReportController extends AbstractController
             'arrayMonth' => $arrayMonth,
         ]);
     }
+    /**
+     * @Route("/closed_farm_info_report", name="closed_farm_info_report")
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function closedFarmsInfoReport(Request $request)
+    {
+        $gg = $request->get('status');
+        $filterBy = [];
+        $entities = [];
+        $species = [];
+        $trainingMaterials = [];
+        $employee = null;
+        $speciesTypesByParent=[];
+        $arrFishSizes=[];
+        $arrayMonth=[];
+
+//        $form = $this->createForm(SearchFilterFormType::class, null, ['loggedUser' => $this->getUser()]);
+        $loggedUser = $this->getUser();
+        $userRepo = $this->getDoctrine()->getRepository(User::class);
+        $form = $this->createForm(SearchFilterFormType::class, null, ['loggedUser' => $this->getUser(),'userRepo'=>$userRepo]);
+        $form->handleRequest($request);
+
+        if($form->isSubmitted()){
+            $filterBy = $form->getData();
+
+            $employee = $form->getData()['employee'];
+
+            $filterBy['employeeId'] = $form->getData()['employee'] ? $form->getData()['employee']->getId() : '';
+            $filterBy['loggedUser'] = $loggedUser;
+            if ($gg)$filterBy['status'] = $gg;
+
+            $entities = $userRepo->getClosedFarmsInfo( $filterBy );
+
+//            dd($entities[6] ?? null);
+
+        }
+        $speciesTypes = $this->getDoctrine()->getRepository(Setting::class)->getSpeciesTypeOfPoultryCattleFish();
+        $filterableSpeciesType = [];
+        //dd($filterBy['type']);
+        if (isset($filterBy['type'])) {
+            $filterableSpeciesType = [[
+                'id' => $filterBy['type']->getId(),
+                'name' => $filterBy['type']->getName()
+            ]];
+        }
+
+        return $this->render('@TerminalbdCrm/report/farmerReport/closedFarm/closed_farm_info.html.twig',[
+            'form' => $form->createView(),
+            'entities' => $entities,
+            'filterBy' => $filterBy,
+            'species' => $species,
+            'speciesTypes' => $speciesTypes,
+            'filterableSpeciesType' => $filterableSpeciesType,
+            'trainingMaterials' => $trainingMaterials,
+            'employee'=> $employee,
+            'fishSizes' => $arrFishSizes,
+            'arrayMonth' => $arrayMonth,
+        ]);
+    }
+    /**
+     * @Route("/farm_visit_status_report", name="farm_visit_status_report")
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function farmVisitStatusReport(Request $request)
+    {
+        $gg = $request->get('status');
+        $visit = $request->get('visit');
+        $filterBy = [];
+        $entities = [];
+        $species = [];
+        $trainingMaterials = [];
+        $employee = null;
+        $speciesTypesByParent=[];
+        $arrFishSizes=[];
+        $arrayMonth=[];
+
+//        $form = $this->createForm(SearchFilterFormType::class, null, ['loggedUser' => $this->getUser()]);
+        $loggedUser = $this->getUser();
+        $userRepo = $this->getDoctrine()->getRepository(User::class);
+        $form = $this->createForm(SearchFilterFormType::class, null, ['loggedUser' => $this->getUser(),'userRepo'=>$userRepo]);
+        $form->handleRequest($request);
+
+        if($form->isSubmitted()){
+            $filterBy = $form->getData();
+
+            $employee = $form->getData()['employee'];
+
+            $filterBy['employeeId'] = $form->getData()['employee'] ? $form->getData()['employee']->getId() : '';
+            $filterBy['loggedUser'] = $loggedUser;
+            if ($gg)$filterBy['status'] = $gg;
+            if ($visit)$filterBy['visit'] = $visit;
+
+            $entities = $userRepo->getFarmVisitsInfo( $filterBy );
+
+//            dd($entities[5] ?? null);
+
+        }
+        $speciesTypes = $this->getDoctrine()->getRepository(Setting::class)->getSpeciesTypeOfPoultryCattleFish();
+        $filterableSpeciesType = [];
+        //dd($filterBy['type']);
+        if (isset($filterBy['type'])) {
+            $filterableSpeciesType = [[
+                'id' => $filterBy['type']->getId(),
+                'name' => $filterBy['type']->getName()
+            ]];
+        }
+
+        return $this->render('@TerminalbdCrm/report/farmerReport/farm_visit_status.html.twig',[
+            'form' => $form->createView(),
+            'entities' => $entities,
+            'filterBy' => $filterBy,
+            'species' => $species,
+            'speciesTypes' => $speciesTypes,
+            'filterableSpeciesType' => $filterableSpeciesType,
+            'trainingMaterials' => $trainingMaterials,
+            'employee'=> $employee,
+            'fishSizes' => $arrFishSizes,
+            'arrayMonth' => $arrayMonth,
+        ]);
+    }
 
 
 }

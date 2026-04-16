@@ -13,6 +13,7 @@
                     <thead class="thead-dark">
 
                     <tr>
+                        <input type="hidden" name="status" value="closed">
                         <th style="min-width: 200px">
                             {{ form_label(form.line_managers, 'Employee:') }}
                             {{ form_widget(form.line_managers) }}
@@ -29,15 +30,15 @@
                             {{ form_label(form.year, 'Year') }}
                             {{ form_widget(form.year) }}
                         </th>
-                        <th>
-                            {{ form_label(form.type, 'Type') }}
-                            {{ form_widget(form.type) }}
-                        </th>
+{#                        <th>#}
+{#                            {{ form_label(form.type, 'Type') }}#}
+{#                            {{ form_widget(form.type) }}#}
+{#                        </th>#}
 
                         <th colspan="1">
                             <div class="btn-group" style="margin-top: 25px">
                                 <button type="submit" name="search" class="btn btn-primary btn-sm" title="Search" value="search"><i class="fa fa-search" aria-hidden="true"></i></button>
-                                <a href="{{ path('employee_farmer_report') }}" class="btn purple-bg btn-sm white-font" title="Reset" value="reset"><i class="fa fa-refresh" aria-hidden="true"></i></a>
+                                <a href="{{ path('closed_farm_info_report', {'status': 'close'}) }}" class="btn purple-bg btn-sm white-font" title="Reset" value="reset"><i class="fa fa-refresh" aria-hidden="true"></i></a>
                                 {% if entities is defined and entities is not empty %}
                                     <button type="submit" name="excel" class="btn blue-bg btn-sm white-font" title="Excel" value="excel" id="button-excel"><i class="fa fa-file-excel" aria-hidden="true"></i> {{ 'Excel'|trans }}</button>
                                 {% endif %}
@@ -70,27 +71,30 @@
                         <thead class="thead-dark">
 
                         <tr>
+{#                            <th scope="col">Sl.</th>#}
+{#                            <th scope="col">Region</th>#}
+{#                            <th scope="col">Line Manager ID</th>#}
+{#                            <th scope="col">Line Manager Name</th>#}
+{#                            <th scope="col">Employee ID</th>#}
+{#                            <th scope="col">Employee Name</th>#}
+{#                            <th scope="col">Designation</th>#}
                             <th scope="col">Sl.</th>
-                            <th scope="col">Region</th>
-                            <th scope="col">Line Manager ID</th>
-                            <th scope="col">Line Manager Name</th>
-                            <th scope="col">Employee ID</th>
-                            <th scope="col">Employee Name</th>
-                            <th scope="col">Designation</th>
-                            <th scope="col">Sl.</th>
+                            <th scope="col">Farmer ID</th>
                             <th scope="col">Farmer Name</th>
-                            <th scope="col">Address</th>
-                            <th scope="col">Mobile</th>
-                            <th scope="col">Total Capacity</th>
-                            {% if filterableSpeciesType is not empty %}
-                                {% for speciesType in filterableSpeciesType %}
-                                    <th scope="col">{{ speciesType.name }}</th>
-                                {% endfor %}
-                            {% endif %}
+                            <th scope="col">Area</th>
+                            <th scope="col">Capacity</th>
+                            <th scope="col">Farm On</th>
+                            <th scope="col">Reason for Closed</th>
+                            <th scope="col">Month</th>
+{#                            {% if filterableSpeciesType is not empty %}#}
+{#                                {% for speciesType in filterableSpeciesType %}#}
+{#                                    <th scope="col">{{ speciesType.name }}</th>#}
+{#                                {% endfor %}#}
+{#                            {% endif %}#}
 
-{#                            <th scope="col">Poultry</th>#}
-{#                            <th scope="col">Cattle</th>#}
-{#                            <th scope="col">Fish</th>#}
+                            {#                            <th scope="col">Poultry</th>#}
+                            {#                            <th scope="col">Cattle</th>#}
+                            {#                            <th scope="col">Fish</th>#}
                             {#                            <th scope="col">Convert</th>#}
                         </tr>
                         </thead>
@@ -112,49 +116,59 @@
                                                 <tr>
                                                     {#                                            first loop index#}
                                                     {% if loopCount ==1  %}
-                                                        <td data-a-v="middle" data-t="n" rowspan="{{ grandTotalTeamMembers }}">{{ regionIndex }} </td>
-                                                        <td data-a-v="middle" rowspan="{{ grandTotalTeamMembers }}">{{ employeeData.regionName }}</td>
-                                                        <td data-a-v="middle" rowspan="{{ grandTotalTeamMembers }}">{{ employeeData.userId }}</td>
-                                                        <td data-a-v="middle" rowspan="{{ grandTotalTeamMembers }}">{{ employeeData.name }}</td>
+{#                                                        <td data-a-v="middle" data-t="n" rowspan="{{ grandTotalTeamMembers }}">{{ regionIndex }} </td>#}
+{#                                                        <td data-a-v="middle" rowspan="{{ grandTotalTeamMembers }}">{{ employeeData.regionName }}</td>#}
+{#                                                        <td data-a-v="middle" rowspan="{{ grandTotalTeamMembers }}">{{ employeeData.userId }}</td>#}
+{#                                                        <td data-a-v="middle" rowspan="{{ grandTotalTeamMembers }}">{{ employeeData.name }}</td>#}
                                                         {#                                            <td rowspan="{{ totalTeamMembers }}">{{ totalTeamMembers }}</td>#}
                                                     {% endif %}
 
                                                     {% if loop.index ==1 %}
 
-                                                        <td rowspan="{{ teamMember.noOfCustomer }}">{{ teamMember.userId }}</td>
-                                                        <td rowspan="{{ teamMember.noOfCustomer }}">{{ teamMember.name }}</td>
-                                                        <td rowspan="{{ teamMember.noOfCustomer }}">{{ teamMember.designationName }}</td>
+{#                                                        <td rowspan="{{ teamMember.noOfCustomer }}">{{ teamMember.userId }}</td>#}
+{#                                                        <td rowspan="{{ teamMember.noOfCustomer }}">{{ teamMember.name }}</td>#}
+{#                                                        <td rowspan="{{ teamMember.noOfCustomer }}">{{ teamMember.designationName }}</td>#}
 
                                                     {% endif %}
 
-                                                    <td data-t="n">{{ loop.index }}</td>
+                                                    <td data-t="n">{{ regionIndex }}</td>
+                                                    <td data-t="n">{{ customer.id }}</td>
                                                     <td data-t="n">{{ customer.name }}</td>
                                                     <td data-t="n">{{ customer.address }}</td>
-                                                    <td data-t="n">{{ customer.mobile }}</td>
                                                     <td data-t="n">{{ customer.cultureSpeciesItemAndQtySum }}</td>
-
-                                                    {% if filterableSpeciesType is not empty %}
-                                                        {% for speciesType in filterableSpeciesType %}
-                                                            <td data-t="n">
-{#                                                                {% if customer.farmerTypeSlug == 'poultry-breed' %}#}
-{#                                                                                                                                        check in array decodedCultureSpeciesItemAndQty#}
-                                                                    {% if customer.decodedCultureSpeciesItemAndQty[speciesType.id] is defined %}
-                                                                        {{ customer.decodedCultureSpeciesItemAndQty[speciesType.id] }}
-                                                                    {% endif %}
+                                                    <td data-t="n">
+                                                        {% if speciesTypes is not empty %}
+                                                            {% for speciesType in speciesTypes %}
+                                                                {% if customer.decodedCultureSpeciesItemAndQty[speciesType.id] is defined %}
+                                                                    {{ speciesType.name }},
+                                                                {% endif %}
+                                                            {% endfor %}
+                                                        {% endif %}
+                                                    </td>
+                                                    <td data-t="n">{{ customer.reason ?? 'n/a' }}</td>
+                                                    <td>{{ customer.month is not null ? customer.month|date('F, Y') : 'n/a' }}</td>
+{#                                                    {% if filterableSpeciesType is not empty %}#}
+{#                                                        {% for speciesType in filterableSpeciesType %}#}
+{#                                                            <td data-t="n">#}
+{#                                                                #}{#                                                                {% if customer.farmerTypeSlug == 'poultry-breed' %}#}
+{#                                                                #}{#                                                                                                                                        check in array decodedCultureSpeciesItemAndQty#}
+{#                                                                {% if customer.decodedCultureSpeciesItemAndQty[speciesType.id] is defined %}#}
+{#                                                                    {{ customer.decodedCultureSpeciesItemAndQty[speciesType.id] }}#}
 {#                                                                {% endif %}#}
-                                                            </td>
-                                                        {% endfor %}
-                                                    {% endif %}
+{#                                                                #}{#                                                                {% endif %}#}
+{#                                                            </td>#}
+{#                                                        {% endfor %}#}
+{#                                                    {% endif %}#}
 
-{#                                                    <td data-t="n">{{ customer.farmerTypeSlug == 'poultry-breed' ? customer.cultureSpeciesItemAndQtySum : '' }}</td>#}
-{#                                                    <td data-t="n">{{ customer.farmerTypeSlug == 'cattle-breed' ? customer.cultureSpeciesItemAndQtySum : '' }}</td>#}
-{#                                                    <td data-t="n">{{ customer.farmerTypeSlug == 'fish-breed' ? customer.cultureSpeciesItemAndQtySum : '' }}</td>#}
+                                                    {#                                                    <td data-t="n">{{ customer.farmerTypeSlug == 'poultry-breed' ? customer.cultureSpeciesItemAndQtySum : '' }}</td>#}
+                                                    {#                                                    <td data-t="n">{{ customer.farmerTypeSlug == 'cattle-breed' ? customer.cultureSpeciesItemAndQtySum : '' }}</td>#}
+                                                    {#                                                    <td data-t="n">{{ customer.farmerTypeSlug == 'fish-breed' ? customer.cultureSpeciesItemAndQtySum : '' }}</td>#}
 
                                                     {#                                                    <td data-t="n">{{ teamMember.noOfCustomerintroduceBy }}</td>#}
 
                                                 </tr>
-                                                {% set loopCount = loopCount + 1 %}
-
+{#                                                {% set loopCount = loopCount + 1 %}#}
+                                                {% set regionIndex = regionIndex + 1 %}
                                             {% endfor %}
 
                                         {% endif %}
@@ -162,13 +176,13 @@
 
                                     {% endfor %}
                                 {% endif %}
-                                {% set regionIndex = regionIndex + 1 %}
+
 
                             {% endfor %}
                         {% else %}
-{#                            <tr>#}
-{#                                <td colspan="11" class="text-center">No data found</td>#}
-{#                            </tr>#}
+                            {#                            <tr>#}
+                            {#                                <td colspan="11" class="text-center">No data found</td>#}
+                            {#                            </tr>#}
                         {% endif %}
 
 
@@ -255,7 +269,7 @@
                 e.preventDefault();
                 let table = document.querySelector(".download-excel");
                 TableToExcel.convert(table, {
-                    name: "employee_farmer_report.xlsx",
+                    name: "closed_farmer_info_report.xlsx",
                     sheet: {
                         name: "Sheet 1"
                     }

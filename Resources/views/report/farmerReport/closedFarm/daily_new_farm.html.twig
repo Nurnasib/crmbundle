@@ -77,6 +77,7 @@
                             <th scope="col">Region</th>
                             <th scope="col">Line Manager ID</th>
                             <th scope="col">Line Manager Name</th>
+                            <th scope="col">Designation</th>
                             {% if filterBy.startDate is defined and filterBy.endDate is defined %}
                                 {% for d in filterBy.startDate|date('j')..filterBy.endDate|date('j') %}
                                     <th scope="col">
@@ -128,6 +129,7 @@
                                     <td>{{ employeeData.regionName }}</td>
                                     <td>{{ employeeData.userId }}</td>
                                     <td>{{ employeeData.name }}</td>
+                                    <td>{{ employeeData.designationName }}</td>
                                     {% if filterBy.startDate is defined and filterBy.endDate is defined %}
                                         {% for d in filterBy.startDate|date('j')..filterBy.endDate|date('j') %}
                                             <td data-t="n">{{ monthlyTotals[d] ?? 0 }}</td>

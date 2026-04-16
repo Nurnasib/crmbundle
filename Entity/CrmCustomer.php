@@ -95,6 +95,11 @@ class CrmCustomer
     private $farmerIntroduce;
 
     /**
+     * @ORM\OneToOne(targetEntity="Terminalbd\CrmBundle\Entity\CrmCustomerStatusLog", mappedBy="customer")
+     */
+    private $statusLog;
+
+    /**
      * @var string
      * @ORM\Column(name="status", type="string", nullable=true)
      */

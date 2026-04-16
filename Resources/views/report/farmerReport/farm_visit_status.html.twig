@@ -13,11 +13,12 @@
                     <thead class="thead-dark">
 
                     <tr>
+                        <input type="hidden" name="visit" value="yes">
+{#                        <input type="hidden" name="status" value="closed">#}
                         <th style="min-width: 200px">
-                            {{ form_label(form.line_managers, 'Line Manager:') }}
+                            {{ form_label(form.line_managers, 'Employee:') }}
                             {{ form_widget(form.line_managers) }}
                         </th>
-
                         <th>
                             {{ form_label(form.region, 'Region:') }}
                             {{ form_widget(form.region) }}
@@ -30,15 +31,15 @@
                             {{ form_label(form.endDate, 'End Date:') }}
                             {{ form_widget(form.endDate,{'id':'end-date', 'attr':{'placeholder': 'dd-mm-YYYY'}}) }}
                         </th>
-                        <th>
-                            {{ form_label(form.type, 'Type') }}
-                            {{ form_widget(form.type) }}
-                        </th>
+{#                        <th>#}
+{#                            {{ form_label(form.type, 'Type') }}#}
+{#                            {{ form_widget(form.type) }}#}
+{#                        </th>#}
 
                         <th colspan="1">
                             <div class="btn-group" style="margin-top: 25px">
                                 <button type="submit" name="search" class="btn btn-primary btn-sm" title="Search" value="search"><i class="fa fa-search" aria-hidden="true"></i></button>
-                                <a href="{{ path('employee_daily_closed_farm_report') }}" class="btn purple-bg btn-sm white-font" title="Reset" value="reset"><i class="fa fa-refresh" aria-hidden="true"></i></a>
+                                <a href="{{ path('farm_visit_status_report',{'visit': 'yes'}) }}" class="btn purple-bg btn-sm white-font" title="Reset" value="reset"><i class="fa fa-refresh" aria-hidden="true"></i></a>
                                 {% if entities is defined and entities is not empty %}
                                     <button type="submit" name="excel" class="btn blue-bg btn-sm white-font" title="Excel" value="excel" id="button-excel"><i class="fa fa-file-excel" aria-hidden="true"></i> {{ 'Excel'|trans }}</button>
                                 {% endif %}
@@ -52,7 +53,6 @@
                 </form>
             </div>
         </div>
-
         <div class="row">
             <div class="card" style="overflow-x: scroll; max-height: 90vh">
                 <div id="data-load" class="card-body p-0">
@@ -66,17 +66,27 @@
                         </tr>
 
                         <tr>
-                            <td data-a-h="center" class="border-0" colspan="{{ totalColumns }}" align="center"><h6>{{ 'Employee Wise Daily Closed Farms Report'|upper }} </h6></td>
+                            <td data-a-h="center" class="border-0" colspan="{{ totalColumns }}" align="center"><h6>{{ 'Farmer Details Report'|upper }} </h6></td>
                         </tr>
                         </thead>
                         <thead class="thead-dark">
 
                         <tr>
+{#                            <th scope="col">Sl.</th>#}
+{#                            <th scope="col">Region</th>#}
+{#                            <th scope="col">Line Manager ID</th>#}
+{#                            <th scope="col">Line Manager Name</th>#}
+{#                            <th scope="col">Employee ID</th>#}
+{#                            <th scope="col">Employee Name</th>#}
+{#                            <th scope="col">Designation</th>#}
                             <th scope="col">Sl.</th>
-{#                            <th scope="col">Month</th>#}
                             <th scope="col">Employee ID</th>
                             <th scope="col">Employee Name</th>
-                            <th scope="col">Designation</th>
+                            <th scope="col">Farmer ID</th>
+                            <th scope="col">Farmer Name</th>
+                            <th scope="col">Area</th>
+                            <th scope="col">Capacity</th>
+                            <th scope="col">Farm On</th>
                             {% if filterBy.startDate is defined and filterBy.endDate is defined %}
                                 {% for d in filterBy.startDate|date('j')..filterBy.endDate|date('j') %}
                                     <th scope="col">
@@ -89,43 +99,84 @@
 
                         <tbody>
 
-
                         {% if entities is not empty %}
                             {% set regionIndex = 1 %}
-
                             {% for employeeId, employeeData in entities %}
+                                {% set loopCount = 1 %}
+                                {% set monthlyTotals = {} %}
+                                {% set totalTeamMembers = employeeData.teamMembers|length %}
+                                {% if totalTeamMembers > 0 %}
 
+                                    {% for teamMember in employeeData.teamMembers %}
 
-                                {% set totalEmployees = 0 %}
-                                {% set totalFarms = 0 %}
-                                {% set totalCapacity = 0 %}
-                                {% set totalNew = 0 %}
-                                {% set totalConvert = 0 %}
-                                {% set totalClosed = 0 %}
+                                        {% if teamMember|length > 0 %}
+                                            {% for customerId,customer in teamMember %}
+{#                                                {{ dump(customer) }}#}
+                                                <tr>
+                                                    {#                                            first loop index#}
+                                                    {% if loopCount ==1  %}
+{#                                                        <td data-a-v="middle" data-t="n" rowspan="{{ grandTotalTeamMembers }}">{{ regionIndex }} </td>#}
+{#                                                        <td data-a-v="middle" rowspan="{{ grandTotalTeamMembers }}">{{ employeeData.regionName }}</td>#}
+{#                                                        <td data-a-v="middle" rowspan="{{ grandTotalTeamMembers }}">{{ employeeData.userId }}</td>#}
+{#                                                        <td data-a-v="middle" rowspan="{{ grandTotalTeamMembers }}">{{ employeeData.name }}</td>#}
+                                                        {#                                            <td rowspan="{{ totalTeamMembers }}">{{ totalTeamMembers }}</td>#}
+                                                    {% endif %}
 
-                                {% for teamMember in employeeData.teamMembers %}
+                                                    {% if loop.index ==1 %}
 
-                                    <tr class="font-weight-bold">
-                                        <td data-t="n">{{ regionIndex }}</td>
-                                        <td>{{ teamMember.userId }}</td>
-                                        <td>{{ teamMember.name }}</td>
-                                        <td>{{ teamMember.designationName }}</td>
-                                        {% if filterBy.startDate is defined and filterBy.endDate is defined %}
-                                            {% for d in filterBy.startDate|date('j')..filterBy.endDate|date('j') %}
-                                                <td data-t="n">{{ teamMember.newFarm[d] ?? 0 }}</td>
+{#                                                        <td rowspan="{{ teamMember.noOfCustomer }}">{{ teamMember.userId }}</td>#}
+{#                                                        <td rowspan="{{ teamMember.noOfCustomer }}">{{ teamMember.name }}</td>#}
+{#                                                        <td rowspan="{{ teamMember.noOfCustomer }}">{{ teamMember.designationName }}</td>#}
+
+                                                    {% endif %}
+
+                                                    <td data-t="n">{{ regionIndex }}</td>
+                                                    <td data-t="n">{{ customer.employeeUserId }}</td>
+                                                    <td data-t="n">{{ customer.employeeName }}</td>
+                                                    <td data-t="n">{{ customerId }}</td>
+                                                    <td data-t="n">{{ customer.name }}</td>
+                                                    <td data-t="n">{{ customer.area }}</td>
+                                                    <td data-t="n">{{ customer.capacity }}</td>
+                                                    <td data-t="n">
+                                                        {% if speciesTypes is not empty %}
+                                                            {% for speciesType in speciesTypes %}
+                                                                {% if customer.decodedCultureSpeciesItemAndQty[speciesType.id] is defined %}
+                                                                    {{ speciesType.name }},
+                                                                {% endif %}
+                                                            {% endfor %}
+                                                        {% endif %}
+                                                    </td>
+                                                    {% if filterBy.startDate is defined and filterBy.endDate is defined %}
+                                                        {% for d in filterBy.startDate|date('j')..filterBy.endDate|date('j') %}
+                                                            <td data-t="n">{{ customer[d] ?? '' }}</td>
+                                                        {% endfor %}
+                                                    {% endif %}
+
+                                                    {#                                                    <td data-t="n">{{ customer.farmerTypeSlug == 'poultry-breed' ? customer.cultureSpeciesItemAndQtySum : '' }}</td>#}
+                                                    {#                                                    <td data-t="n">{{ customer.farmerTypeSlug == 'cattle-breed' ? customer.cultureSpeciesItemAndQtySum : '' }}</td>#}
+                                                    {#                                                    <td data-t="n">{{ customer.farmerTypeSlug == 'fish-breed' ? customer.cultureSpeciesItemAndQtySum : '' }}</td>#}
+
+                                                    {#                                                    <td data-t="n">{{ teamMember.noOfCustomerintroduceBy }}</td>#}
+
+                                                </tr>
+{#                                                {% set loopCount = loopCount + 1 %}#}
+                                                {% set regionIndex = regionIndex + 1 %}
                                             {% endfor %}
+
                                         {% endif %}
-                                    </tr>
 
-                                    {% set regionIndex = regionIndex + 1 %}
 
-                                {% endfor %}
+                                    {% endfor %}
+                                {% endif %}
+
+
                             {% endfor %}
                         {% else %}
-{#                            <tr>#}
-{#                                <td colspan="9" class="text-center">No data found</td>#}
-{#                            </tr>#}
+                            {#                            <tr>#}
+                            {#                                <td colspan="11" class="text-center">No data found</td>#}
+                            {#                            </tr>#}
                         {% endif %}
+
 
                         </tbody>
                     </table>
@@ -216,7 +267,7 @@
                 e.preventDefault();
                 let table = document.querySelector(".download-excel");
                 TableToExcel.convert(table, {
-                    name: "employee_daily_closed_farmer_report.xlsx",
+                    name: "closed_farmer_info_report.xlsx",
                     sheet: {
                         name: "Sheet 1"
                     }

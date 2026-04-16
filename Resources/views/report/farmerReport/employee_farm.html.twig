@@ -78,6 +78,7 @@
                             <th scope="col">Sl.</th>
                             <th scope="col">Employee ID</th>
                             <th scope="col">Employee Name</th>
+                            <th scope="col">Designation</th>
                             {% if filterBy.start_month is defined and filterBy.end_month is defined %}
                                 {% for m in filterBy.start_month..filterBy.end_month %}
                                     <th scope="col">
@@ -110,6 +111,7 @@
                                         <td data-t="n">{{ regionIndex }}</td>
                                         <td>{{ teamMember.userId }}</td>
                                         <td>{{ teamMember.name }}</td>
+                                        <td>{{ teamMember.designationName }}</td>
                                         {% if filterBy.start_month is defined and filterBy.end_month is defined %}
                                             {% for m in filterBy.start_month..filterBy.end_month %}
                                                 <td data-t="n">{{ teamMember.newFarm[m] ?? 0 }}</td>
