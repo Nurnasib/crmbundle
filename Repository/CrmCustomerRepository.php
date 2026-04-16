@@ -259,31 +259,7 @@ ORDER BY `c`.`agent_id` ASC";
 
         //group by employee
         $returnArray = [];
-//        foreach ($results as $result) {
-//            $empId = (int)$result['employeeId'];
-//            $cultureSpeciesItemAndQty = [];
-//            if (isset($result['cultureSpeciesItemAndQty']) && $result['cultureSpeciesItemAndQty'] && $result['cultureSpeciesItemAndQty'] != null) {
-//                $cultureSpeciesItemAndQty = json_decode($result['cultureSpeciesItemAndQty'], true);
-//                if (is_array($cultureSpeciesItemAndQty)) {
-//                    if (isset($typeId) && isset($cultureSpeciesItemAndQty[$typeId])) {
-//                        $cultureSpeciesItemAndQty = [$typeId => $cultureSpeciesItemAndQty[$typeId]];
-//                    }
-//                    $cultureSpeciesItemAndQty = array_filter($cultureSpeciesItemAndQty, function ($value) {
-//                        return $value !== null && $value !== '';
-//                    });
-//                } else {
-//                    $cultureSpeciesItemAndQty = [];
-//                }
-//                $arrayValues = array_values($cultureSpeciesItemAndQty);
-//                $numericValues = array_map('intval', $arrayValues);
-//                $result['cultureSpeciesItemAndQtySum'] = sizeof($numericValues) > 0 ? array_sum($numericValues) : 0;
-//            } else {
-//                $result['cultureSpeciesItemAndQtySum'] = 0;
-//            }
-//
-//            $result['decodedCultureSpeciesItemAndQty'] = $cultureSpeciesItemAndQty;
-//            $returnArray[$empId][] = $result;
-//        }
+
         foreach ($results as $result) {
             $empId = (int)$result['employeeId'];
             $farmId = (int)$result['id'];
@@ -306,7 +282,7 @@ ORDER BY `c`.`agent_id` ASC";
                         $returnArray[$empId][$farmId]['area'] = $address;
                         $returnArray[$empId][$farmId]['name'] = $farmName;
                         $returnArray[$empId][$farmId]['capacity'] = $farmCap;
-                        $returnArray[$empId][$farmId][$day] = 'yes';
+                        $returnArray[$empId][$farmId][$day] = 'Yes';
                     }else{
                         $returnArray[$empId][$farmId]['decodedCultureSpeciesItemAndQty'] = $cultureSpeciesItemAndQty;
                         $returnArray[$empId][$farmId]['employeeName'] = $employeeName;
@@ -314,7 +290,7 @@ ORDER BY `c`.`agent_id` ASC";
                         $returnArray[$empId][$farmId]['area'] = $address;
                         $returnArray[$empId][$farmId]['name'] = $farmName;
                         $returnArray[$empId][$farmId]['capacity'] = $farmCap;
-                        $returnArray[$empId][$farmId][$day] = 'yes';
+                        $returnArray[$empId][$farmId][$day] = 'Yes';
                     }
                 }
             }
