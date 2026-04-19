@@ -224,12 +224,13 @@ ORDER BY `c`.`agent_id` ASC";
         $qb->join('e.crmVisitDetails','visit_details');
         $qb->join('visit_details.crmVisit','visit');
         $qb->join('farmerIntroduce.employee','employee');
+        $qb->join('employee.designation','designation');
         $qb->join('farmerIntroduce.farmerType','farmerType');
 
         $qb->select('e.id as id','e.name as name','e.address as address','e.mobile as mobile','e.status as status' ,'e.created as month' );
 
         $qb->addSelect('farmerIntroduce.cultureSpeciesItemAndQty');
-        $qb->addSelect('employee.id as employeeId', 'employee.name as employeeName', 'employee.userId as employeeUserId');
+        $qb->addSelect('employee.id as employeeId', 'employee.name as employeeName', 'employee.userId as employeeUserId', 'designation.name as designationName');
         $qb->addSelect('farmerType.name as farmerTypeName', 'farmerType.slug as farmerTypeSlug');
         $qb->addSelect('visit_details.farmCapacity as farmCapacity', 'visit_details.comments as comments', 'visit.visitDate as visit_date');
 
@@ -265,9 +266,11 @@ ORDER BY `c`.`agent_id` ASC";
             $farmId = (int)$result['id'];
             $farmCap = $result['farmCapacity'];
             $farmName= $result['name'];
+            $farmPhone= $result['mobile'];
             $address= $result['address'];
             $employeeName= $result['employeeName'];
             $employeeUserId= $result['employeeUserId'];
+            $designationName= $result['designationName'];
             $day = $result['visit_date']->format('d');
             $day = (int)$day;
 
@@ -279,16 +282,20 @@ ORDER BY `c`.`agent_id` ASC";
                         $returnArray[$empId][$farmId]['decodedCultureSpeciesItemAndQty'] = $cultureSpeciesItemAndQty;
                         $returnArray[$empId][$farmId]['employeeName'] = $employeeName;
                         $returnArray[$empId][$farmId]['employeeUserId'] = $employeeUserId;
+                        $returnArray[$empId][$farmId]['designationName'] = $designationName;
                         $returnArray[$empId][$farmId]['area'] = $address;
                         $returnArray[$empId][$farmId]['name'] = $farmName;
+                        $returnArray[$empId][$farmId]['cell'] = $farmPhone;
                         $returnArray[$empId][$farmId]['capacity'] = $farmCap;
                         $returnArray[$empId][$farmId][$day] = 'Yes';
                     }else{
                         $returnArray[$empId][$farmId]['decodedCultureSpeciesItemAndQty'] = $cultureSpeciesItemAndQty;
                         $returnArray[$empId][$farmId]['employeeName'] = $employeeName;
                         $returnArray[$empId][$farmId]['employeeUserId'] = $employeeUserId;
+                        $returnArray[$empId][$farmId]['designationName'] = $designationName;
                         $returnArray[$empId][$farmId]['area'] = $address;
                         $returnArray[$empId][$farmId]['name'] = $farmName;
+                        $returnArray[$empId][$farmId]['cell'] = $farmPhone;
                         $returnArray[$empId][$farmId]['capacity'] = $farmCap;
                         $returnArray[$empId][$farmId][$day] = 'Yes';
                     }
