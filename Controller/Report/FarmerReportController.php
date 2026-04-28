@@ -157,10 +157,12 @@ class FarmerReportController extends AbstractController
         $userRepo = $this->getDoctrine()->getRepository(User::class);
         $loggedUser = $this->getUser();
         //$loggedUserDesignation = $loggedUser?->getDesignation()?->getName() ?? 'N/A';
-        $form = $this->createForm(SearchFilterFormType::class, null, ['loggedUser' => $loggedUser,'userRepo'=>$userRepo]);
+//        $form = $this->createForm(SearchFilterFormType::class, null, ['loggedUser' => $loggedUser,'userRepo'=>$userRepo]);
+        $form = $this->createForm(SearchFilterFormType::class, null, [
+            'validation_groups' => ['year_only', 'month_only'],
+            'loggedUser' => $loggedUser,'userRepo'=>$userRepo]);
         $form->handleRequest($request);
-
-        if($form->isSubmitted()){
+        if($form->isSubmitted() && $form->isValid()){
             $filterBy = $form->getData();
 
             $employee = $form->getData()['employee'];
@@ -203,10 +205,13 @@ class FarmerReportController extends AbstractController
 //        $form = $this->createForm(SearchFilterFormType::class, null, ['loggedUser' => $this->getUser()]);
         $loggedUser = $this->getUser();
         $userRepo = $this->getDoctrine()->getRepository(User::class);
-        $form = $this->createForm(SearchFilterFormType::class, null, ['loggedUser' => $loggedUser,'userRepo'=>$userRepo]);
+//        $form = $this->createForm(SearchFilterFormType::class, null, ['loggedUser' => $loggedUser,'userRepo'=>$userRepo]);
+        $form = $this->createForm(SearchFilterFormType::class, null, [
+            'validation_groups' => ['year_only', 'month_only'],
+            'loggedUser' => $loggedUser,'userRepo'=>$userRepo]);
         $form->handleRequest($request);
 
-        if($form->isSubmitted()){
+        if($form->isSubmitted() && $form->isValid()){
             $filterBy = $form->getData();
 
             $employee = $form->getData()['employee'];
@@ -250,10 +255,13 @@ class FarmerReportController extends AbstractController
 //        $form = $this->createForm(SearchFilterFormType::class, null, ['loggedUser' => $this->getUser()]);
         $loggedUser = $this->getUser();
         $userRepo = $this->getDoctrine()->getRepository(User::class);
-        $form = $this->createForm(SearchFilterFormType::class, null, ['loggedUser' => $this->getUser(),'userRepo'=>$userRepo]);
+//        $form = $this->createForm(SearchFilterFormType::class, null, ['loggedUser' => $this->getUser(),'userRepo'=>$userRepo]);
+        $form = $this->createForm(SearchFilterFormType::class, null, [
+            'validation_groups' => ['year_only', 'month_only'],
+            'loggedUser' => $loggedUser,'userRepo'=>$userRepo]);
         $form->handleRequest($request);
 
-        if($form->isSubmitted()){
+        if($form->isSubmitted() && $form->isValid()){
             $filterBy = $form->getData();
 
             $employee = $form->getData()['employee'];
@@ -316,10 +324,13 @@ class FarmerReportController extends AbstractController
 //        $form = $this->createForm(SearchFilterFormType::class, null, ['loggedUser' => $this->getUser()]);
         $loggedUser = $this->getUser();
         $userRepo = $this->getDoctrine()->getRepository(User::class);
-        $form = $this->createForm(SearchFilterFormType::class, null, ['loggedUser' => $this->getUser(),'userRepo'=>$userRepo]);
+//        $form = $this->createForm(SearchFilterFormType::class, null, ['loggedUser' => $this->getUser(),'userRepo'=>$userRepo]);
+        $form = $this->createForm(SearchFilterFormType::class, null, [
+            'validation_groups' => ['year_only', 'month_only'],
+            'loggedUser' => $loggedUser,'userRepo'=>$userRepo]);
         $form->handleRequest($request);
 
-        if($form->isSubmitted()){
+        if($form->isSubmitted() && $form->isValid()){
             $filterBy = $form->getData();
 
             $employee = $form->getData()['employee'];
@@ -382,10 +393,13 @@ class FarmerReportController extends AbstractController
 //        $form = $this->createForm(SearchFilterFormType::class, null, ['loggedUser' => $this->getUser()]);
         $loggedUser = $this->getUser();
         $userRepo = $this->getDoctrine()->getRepository(User::class);
-        $form = $this->createForm(SearchFilterFormType::class, null, ['loggedUser' => $loggedUser,'userRepo'=>$userRepo]);
+//        $form = $this->createForm(SearchFilterFormType::class, null, ['loggedUser' => $loggedUser,'userRepo'=>$userRepo]);
+        $form = $this->createForm(SearchFilterFormType::class, null, [
+            'validation_groups' => ['year_only', 'start_end_month_only'],
+            'loggedUser' => $loggedUser,'userRepo'=>$userRepo]);
         $form->handleRequest($request);
 
-        if($form->isSubmitted()){
+        if($form->isSubmitted() && $form->isValid()){
             $filterBy = $form->getData();
 
             $employee = $form->getData()['employee'];
@@ -429,10 +443,12 @@ class FarmerReportController extends AbstractController
 //        $form = $this->createForm(SearchFilterFormType::class, null, ['loggedUser' => $this->getUser()]);
         $loggedUser = $this->getUser();
         $userRepo = $this->getDoctrine()->getRepository(User::class);
-        $form = $this->createForm(SearchFilterFormType::class, null, ['loggedUser' => $loggedUser,'userRepo'=>$userRepo]);
+        $form = $this->createForm(SearchFilterFormType::class, null, [
+            'validation_groups' => ['year_only', 'start_end_month_only'],
+            'loggedUser' => $loggedUser,'userRepo'=>$userRepo]);
         $form->handleRequest($request);
 
-        if($form->isSubmitted()){
+        if($form->isSubmitted() && $form->isValid()){
             $filterBy = $form->getData();
 
             $employee = $form->getData()['employee'];
@@ -476,10 +492,12 @@ class FarmerReportController extends AbstractController
 //        $form = $this->createForm(SearchFilterFormType::class, null, ['loggedUser' => $this->getUser()]);
         $loggedUser = $this->getUser();
         $userRepo = $this->getDoctrine()->getRepository(User::class);
-        $form = $this->createForm(SearchFilterFormType::class, null, ['loggedUser' => $loggedUser,'userRepo'=>$userRepo]);
+        $form = $this->createForm(SearchFilterFormType::class, null, [
+            'validation_groups' => ['start_end_date_only'],
+            'loggedUser' => $loggedUser,'userRepo'=>$userRepo]);
         $form->handleRequest($request);
 
-        if($form->isSubmitted()){
+        if($form->isSubmitted() && $form->isValid()){
             $filterBy = $form->getData();
 
             $employee = $form->getData()['employee'];
@@ -523,10 +541,12 @@ class FarmerReportController extends AbstractController
 //        $form = $this->createForm(SearchFilterFormType::class, null, ['loggedUser' => $this->getUser()]);
         $loggedUser = $this->getUser();
         $userRepo = $this->getDoctrine()->getRepository(User::class);
-        $form = $this->createForm(SearchFilterFormType::class, null, ['loggedUser' => $loggedUser,'userRepo'=>$userRepo]);
+        $form = $this->createForm(SearchFilterFormType::class, null, [
+            'validation_groups' => ['start_end_date_only'],
+            'loggedUser' => $loggedUser,'userRepo'=>$userRepo]);
         $form->handleRequest($request);
 
-        if($form->isSubmitted()){
+        if($form->isSubmitted() && $form->isValid()){
             $filterBy = $form->getData();
 
             $employee = $form->getData()['employee'];
@@ -570,10 +590,12 @@ class FarmerReportController extends AbstractController
 //        $form = $this->createForm(SearchFilterFormType::class, null, ['loggedUser' => $this->getUser()]);
         $loggedUser = $this->getUser();
         $userRepo = $this->getDoctrine()->getRepository(User::class);
-        $form = $this->createForm(SearchFilterFormType::class, null, ['loggedUser' => $loggedUser,'userRepo'=>$userRepo]);
+        $form = $this->createForm(SearchFilterFormType::class, null, [
+            'validation_groups' => ['year_only','start_end_month_only'],
+            'loggedUser' => $loggedUser,'userRepo'=>$userRepo]);
         $form->handleRequest($request);
 
-        if($form->isSubmitted()){
+        if($form->isSubmitted() && $form->isValid()){
             $filterBy = $form->getData();
 
             $employee = $form->getData()['employee'];
@@ -617,10 +639,12 @@ class FarmerReportController extends AbstractController
 //        $form = $this->createForm(SearchFilterFormType::class, null, ['loggedUser' => $this->getUser()]);
         $loggedUser = $this->getUser();
         $userRepo = $this->getDoctrine()->getRepository(User::class);
-        $form = $this->createForm(SearchFilterFormType::class, null, ['loggedUser' => $loggedUser,'userRepo'=>$userRepo]);
+        $form = $this->createForm(SearchFilterFormType::class, null, [
+            'validation_groups' => ['year_only','start_end_month_only'],
+            'loggedUser' => $loggedUser,'userRepo'=>$userRepo]);
         $form->handleRequest($request);
 
-        if($form->isSubmitted()){
+        if($form->isSubmitted() && $form->isValid()){
             $filterBy = $form->getData();
 
             $employee = $form->getData()['employee'];
@@ -664,10 +688,12 @@ class FarmerReportController extends AbstractController
 //        $form = $this->createForm(SearchFilterFormType::class, null, ['loggedUser' => $this->getUser()]);
         $loggedUser = $this->getUser();
         $userRepo = $this->getDoctrine()->getRepository(User::class);
-        $form = $this->createForm(SearchFilterFormType::class, null, ['loggedUser' => $loggedUser,'userRepo'=>$userRepo]);
+        $form = $this->createForm(SearchFilterFormType::class, null, [
+            'validation_groups' => ['start_end_date_only'],
+            'loggedUser' => $loggedUser,'userRepo'=>$userRepo]);
         $form->handleRequest($request);
 
-        if($form->isSubmitted()){
+        if($form->isSubmitted() && $form->isValid()){
             $filterBy = $form->getData();
 
             $employee = $form->getData()['employee'];
@@ -711,10 +737,12 @@ class FarmerReportController extends AbstractController
 //        $form = $this->createForm(SearchFilterFormType::class, null, ['loggedUser' => $this->getUser()]);
         $loggedUser = $this->getUser();
         $userRepo = $this->getDoctrine()->getRepository(User::class);
-        $form = $this->createForm(SearchFilterFormType::class, null, ['loggedUser' => $loggedUser,'userRepo'=>$userRepo]);
+        $form = $this->createForm(SearchFilterFormType::class, null, [
+            'validation_groups' => ['start_end_date_only'],
+            'loggedUser' => $loggedUser,'userRepo'=>$userRepo]);
         $form->handleRequest($request);
 
-        if($form->isSubmitted()){
+        if($form->isSubmitted() && $form->isValid()){
             $filterBy = $form->getData();
 
             $employee = $form->getData()['employee'];
@@ -758,13 +786,15 @@ class FarmerReportController extends AbstractController
 //        $form = $this->createForm(SearchFilterFormType::class, null, ['loggedUser' => $this->getUser()]);
         $loggedUser = $this->getUser();
         $userRepo = $this->getDoctrine()->getRepository(User::class);
-        $form = $this->createForm(SearchFilterFormType::class, null, ['loggedUser' => $loggedUser,'userRepo'=>$userRepo]);
+        $form = $this->createForm(SearchFilterFormType::class, null, [
+            'validation_groups' => ['year_only'],
+            'loggedUser' => $loggedUser,'userRepo'=>$userRepo]);
         $form->handleRequest($request);
 
         $species = $this->getDoctrine()->getRepository(Setting::class)->getSpeciesTypeIds();
         $speciesIds = array_map('intval', array_column($species, 'id'));
 
-        if($form->isSubmitted()){
+        if($form->isSubmitted() && $form->isValid()){
             $filterBy = $form->getData();
 
             $employee = $form->getData()['employee'];
@@ -811,10 +841,12 @@ class FarmerReportController extends AbstractController
 //        $form = $this->createForm(SearchFilterFormType::class, null, ['loggedUser' => $this->getUser()]);
         $loggedUser = $this->getUser();
         $userRepo = $this->getDoctrine()->getRepository(User::class);
-        $form = $this->createForm(SearchFilterFormType::class, null, ['loggedUser' => $loggedUser,'userRepo'=>$userRepo]);
+        $form = $this->createForm(SearchFilterFormType::class, null, [
+            'validation_groups' => ['year_only','start_end_month_only'],
+            'loggedUser' => $loggedUser,'userRepo'=>$userRepo]);
         $form->handleRequest($request);
 
-        if($form->isSubmitted()){
+        if($form->isSubmitted() && $form->isValid()){
             $filterBy = $form->getData();
 
             $employee = $form->getData()['employee'];
@@ -858,10 +890,12 @@ class FarmerReportController extends AbstractController
 //        $form = $this->createForm(SearchFilterFormType::class, null, ['loggedUser' => $this->getUser()]);
         $loggedUser = $this->getUser();
         $userRepo = $this->getDoctrine()->getRepository(User::class);
-        $form = $this->createForm(SearchFilterFormType::class, null, ['loggedUser' => $loggedUser,'userRepo'=>$userRepo]);
+        $form = $this->createForm(SearchFilterFormType::class, null, [
+            'validation_groups' => ['year_only','start_end_month_only'],
+            'loggedUser' => $loggedUser,'userRepo'=>$userRepo]);
         $form->handleRequest($request);
 
-        if($form->isSubmitted()){
+        if($form->isSubmitted() && $form->isValid()){
             $filterBy = $form->getData();
 
             $employee = $form->getData()['employee'];
@@ -905,10 +939,12 @@ class FarmerReportController extends AbstractController
 //        $form = $this->createForm(SearchFilterFormType::class, null, ['loggedUser' => $this->getUser()]);
         $loggedUser = $this->getUser();
         $userRepo = $this->getDoctrine()->getRepository(User::class);
-        $form = $this->createForm(SearchFilterFormType::class, null, ['loggedUser' => $loggedUser,'userRepo'=>$userRepo]);
+        $form = $this->createForm(SearchFilterFormType::class, null, [
+            'validation_groups' => ['start_end_date_only'],
+            'loggedUser' => $loggedUser,'userRepo'=>$userRepo]);
         $form->handleRequest($request);
 
-        if($form->isSubmitted()){
+        if($form->isSubmitted() && $form->isValid()){
             $filterBy = $form->getData();
 
             $employee = $form->getData()['employee'];
@@ -952,10 +988,12 @@ class FarmerReportController extends AbstractController
 //        $form = $this->createForm(SearchFilterFormType::class, null, ['loggedUser' => $this->getUser()]);
         $loggedUser = $this->getUser();
         $userRepo = $this->getDoctrine()->getRepository(User::class);
-        $form = $this->createForm(SearchFilterFormType::class, null, ['loggedUser' => $loggedUser,'userRepo'=>$userRepo]);
+        $form = $this->createForm(SearchFilterFormType::class, null, [
+            'validation_groups' => ['start_end_date_only'],
+            'loggedUser' => $loggedUser,'userRepo'=>$userRepo]);
         $form->handleRequest($request);
 
-        if($form->isSubmitted()){
+        if($form->isSubmitted() && $form->isValid()){
             $filterBy = $form->getData();
 
             $employee = $form->getData()['employee'];
@@ -999,10 +1037,12 @@ class FarmerReportController extends AbstractController
 //        $form = $this->createForm(SearchFilterFormType::class, null, ['loggedUser' => $this->getUser()]);
         $loggedUser = $this->getUser();
         $userRepo = $this->getDoctrine()->getRepository(User::class);
-        $form = $this->createForm(SearchFilterFormType::class, null, ['loggedUser' => $loggedUser,'userRepo'=>$userRepo]);
+        $form = $this->createForm(SearchFilterFormType::class, null, [
+            'validation_groups' => ['year_only','start_end_month_only'],
+            'loggedUser' => $loggedUser,'userRepo'=>$userRepo]);
         $form->handleRequest($request);
 
-        if($form->isSubmitted()){
+        if($form->isSubmitted() && $form->isValid()){
             $filterBy = $form->getData();
 
             $employee = $form->getData()['employee'];
@@ -1046,10 +1086,12 @@ class FarmerReportController extends AbstractController
 //        $form = $this->createForm(SearchFilterFormType::class, null, ['loggedUser' => $this->getUser()]);
         $loggedUser = $this->getUser();
         $userRepo = $this->getDoctrine()->getRepository(User::class);
-        $form = $this->createForm(SearchFilterFormType::class, null, ['loggedUser' => $loggedUser,'userRepo'=>$userRepo]);
+        $form = $this->createForm(SearchFilterFormType::class, null, [
+            'validation_groups' => ['year_only','start_end_month_only'],
+            'loggedUser' => $loggedUser,'userRepo'=>$userRepo]);
         $form->handleRequest($request);
 
-        if($form->isSubmitted()){
+        if($form->isSubmitted() && $form->isValid()){
             $filterBy = $form->getData();
 
             $employee = $form->getData()['employee'];
@@ -1093,10 +1135,12 @@ class FarmerReportController extends AbstractController
 //        $form = $this->createForm(SearchFilterFormType::class, null, ['loggedUser' => $this->getUser()]);
         $loggedUser = $this->getUser();
         $userRepo = $this->getDoctrine()->getRepository(User::class);
-        $form = $this->createForm(SearchFilterFormType::class, null, ['loggedUser' => $loggedUser,'userRepo'=>$userRepo]);
+        $form = $this->createForm(SearchFilterFormType::class, null, [
+            'validation_groups' => ['start_end_date_only'],
+            'loggedUser' => $loggedUser,'userRepo'=>$userRepo]);
         $form->handleRequest($request);
 
-        if($form->isSubmitted()){
+        if($form->isSubmitted() && $form->isValid()){
             $filterBy = $form->getData();
 
             $employee = $form->getData()['employee'];
@@ -1140,10 +1184,12 @@ class FarmerReportController extends AbstractController
 //        $form = $this->createForm(SearchFilterFormType::class, null, ['loggedUser' => $this->getUser()]);
         $loggedUser = $this->getUser();
         $userRepo = $this->getDoctrine()->getRepository(User::class);
-        $form = $this->createForm(SearchFilterFormType::class, null, ['loggedUser' => $loggedUser,'userRepo'=>$userRepo]);
+        $form = $this->createForm(SearchFilterFormType::class, null, [
+            'validation_groups' => ['start_end_date_only'],
+            'loggedUser' => $loggedUser,'userRepo'=>$userRepo]);
         $form->handleRequest($request);
 
-        if($form->isSubmitted()){
+        if($form->isSubmitted() && $form->isValid()){
             $filterBy = $form->getData();
 
             $employee = $form->getData()['employee'];
@@ -1187,13 +1233,15 @@ class FarmerReportController extends AbstractController
 //        $form = $this->createForm(SearchFilterFormType::class, null, ['loggedUser' => $this->getUser()]);
         $loggedUser = $this->getUser();
         $userRepo = $this->getDoctrine()->getRepository(User::class);
-        $form = $this->createForm(SearchFilterFormType::class, null, ['loggedUser' => $loggedUser,'userRepo'=>$userRepo]);
+        $form = $this->createForm(SearchFilterFormType::class, null, [
+            'validation_groups' => ['year_only'],
+            'loggedUser' => $loggedUser,'userRepo'=>$userRepo]);
         $form->handleRequest($request);
 
         $species = $this->getDoctrine()->getRepository(Setting::class)->getSpeciesTypeIds();
         $speciesIds = array_map('intval', array_column($species, 'id'));
 
-        if($form->isSubmitted()){
+        if($form->isSubmitted() && $form->isValid()){
             $filterBy = $form->getData();
 
             $employee = $form->getData()['employee'];
@@ -1241,10 +1289,12 @@ class FarmerReportController extends AbstractController
 //        $form = $this->createForm(SearchFilterFormType::class, null, ['loggedUser' => $this->getUser()]);
         $loggedUser = $this->getUser();
         $userRepo = $this->getDoctrine()->getRepository(User::class);
-        $form = $this->createForm(SearchFilterFormType::class, null, ['loggedUser' => $this->getUser(),'userRepo'=>$userRepo]);
+        $form = $this->createForm(SearchFilterFormType::class, null, [
+            'validation_groups' => ['month_only', 'year_only'],
+            'loggedUser' => $loggedUser,'userRepo'=>$userRepo]);
         $form->handleRequest($request);
 
-        if($form->isSubmitted()){
+        if($form->isSubmitted() && $form->isValid()){
             $filterBy = $form->getData();
 
             $employee = $form->getData()['employee'];
@@ -1302,10 +1352,12 @@ class FarmerReportController extends AbstractController
 //        $form = $this->createForm(SearchFilterFormType::class, null, ['loggedUser' => $this->getUser()]);
         $loggedUser = $this->getUser();
         $userRepo = $this->getDoctrine()->getRepository(User::class);
-        $form = $this->createForm(SearchFilterFormType::class, null, ['loggedUser' => $this->getUser(),'userRepo'=>$userRepo]);
+        $form = $this->createForm(SearchFilterFormType::class, null, [
+            'validation_groups' => ['start_end_date_only'],
+            'loggedUser' => $loggedUser,'userRepo'=>$userRepo]);
         $form->handleRequest($request);
 
-        if($form->isSubmitted()){
+        if($form->isSubmitted() && $form->isValid()){
             $filterBy = $form->getData();
 
             $employee = $form->getData()['employee'];

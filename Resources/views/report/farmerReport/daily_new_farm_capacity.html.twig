@@ -26,10 +26,12 @@
                         <th>
                             {{ form_label(form.startDate, 'Start Date:') }}
                             {{ form_widget(form.startDate,{'id':'start-date', 'attr':{'placeholder': 'dd-mm-YYYY'}}) }}
+                            {{ form_errors(form.startDate) }}
                         </th>
                         <th>
                             {{ form_label(form.endDate, 'End Date:') }}
                             {{ form_widget(form.endDate,{'id':'end-date', 'attr':{'placeholder': 'dd-mm-YYYY'}}) }}
+                            {{ form_errors(form.endDate) }}
                         </th>
                         <th>
                             {{ form_label(form.type, 'Type') }}
@@ -50,7 +52,8 @@
 
                     </thead>
                 </table>
-                </form>
+                {{ form_widget(form._token) }}
+</form>
             </div>
         </div>
         <div class="row">

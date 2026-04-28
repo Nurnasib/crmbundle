@@ -26,6 +26,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Terminalbd\CrmBundle\Entity\CrmCustomer;
 use Terminalbd\CrmBundle\Entity\Fcr;
 use Terminalbd\CrmBundle\Entity\Setting;
+use Symfony\Component\Validator\Constraints\NotBlank;
 use function Doctrine\ORM\QueryBuilder;
 
 
@@ -264,7 +265,10 @@ class SearchFilterFormType extends AbstractType
                     'autocomplete' => 'off',
                     'class' => 'datepicker'
                 ],
-                'required' => false
+                'required' => false,
+                'constraints' => [
+                    new NotBlank(['message' => 'Start Date is required.', 'groups' => ['start_end_date_only']]),
+                ],
             ])
             ->add('endDate', TextType::class,[
                 'attr'=>[
@@ -273,7 +277,10 @@ class SearchFilterFormType extends AbstractType
                     'class' => 'datepicker'
 
                 ],
-                'required' => false
+                'required' => false,
+                'constraints' => [
+                    new NotBlank(['message' => 'End Date is required.', 'groups' => ['start_end_date_only']]),
+                ],
             ])
             ->add('startDateCreated', TextType::class,[
                 'attr'=>[
@@ -501,6 +508,9 @@ class SearchFilterFormType extends AbstractType
                 ],
                 'placeholder' => '- Select month -',
                 'required' => false,
+                'constraints' => [
+                    new NotBlank(['message' => 'Month is required.', 'groups' => ['month_only']]),
+                ],
 //                'data' => date('m')
             ])
             ->add('start_month', ChoiceType::class,[
@@ -520,6 +530,9 @@ class SearchFilterFormType extends AbstractType
                 ],
                 'placeholder' => '- Select month -',
                 'required' => false,
+                'constraints' => [
+                    new NotBlank(['message' => 'Start Month is required.', 'groups' => ['start_end_month_only']]),
+                ],
 //                'data' => date('m')
             ])
             ->add('end_month', ChoiceType::class,[
@@ -539,6 +552,9 @@ class SearchFilterFormType extends AbstractType
                 ],
                 'placeholder' => '- Select month -',
                 'required' => false,
+                'constraints' => [
+                    new NotBlank(['message' => 'End Month is required.', 'groups' => ['start_end_month_only']]),
+                ],
 //                'data' => date('m')
             ])
             ->add('monthName', ChoiceType::class,[
@@ -558,7 +574,10 @@ class SearchFilterFormType extends AbstractType
                 ],
                 'placeholder' => '- Select month -',
                 'required' => false,
-                'data' => date('F')
+                'data' => date('F'),
+                'constraints' => [
+                    new NotBlank(['message' => 'Month is required.', 'groups' => ['month_name_only']]),
+                ],
             ])
             ->add('year', ChoiceType::class,[
                 'choices' => $this->getYears(2020),
@@ -566,6 +585,9 @@ class SearchFilterFormType extends AbstractType
                 'required' => false,
                 'attr' => [
                     'class' => 'select2'
+                ],
+                'constraints' => [
+                    new NotBlank(['message' => 'Year is required.', 'groups' => ['year_only']]),
                 ],
 //                'data' => date('Y')
             ])
@@ -704,6 +726,7 @@ class SearchFilterFormType extends AbstractType
             'data_class' => null,
             'loggedUser' => User::class,
             'userRepo' => UserRepository::class,
+            'validation_groups' => ['Default'],
         ]);
     }
 }
