@@ -18,6 +18,8 @@
                         <th>
                             {{ form_label(form.year, 'Year') }}
                             {{ form_widget(form.year) }}
+                            {{ form_errors(form.year) }}
+
                         </th>
 
                         <th colspan="1">
@@ -34,6 +36,8 @@
 
                     </thead>
                 </table>
+                {{ form_widget(form._token) }}
+
                 </form>
             </div>
         </div>

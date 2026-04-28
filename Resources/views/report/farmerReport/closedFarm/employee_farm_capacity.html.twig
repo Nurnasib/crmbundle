@@ -25,14 +25,17 @@
                         <th>
                             {{ form_label(form.year, 'Year') }}
                             {{ form_widget(form.year) }}
+                            {{ form_errors(form.year) }}
                         </th>
                         <th>
                             {{ form_label(form.start_month, 'Start Month') }}
                             {{ form_widget(form.start_month) }}
+                            {{ form_errors(form.start_month) }}
                         </th>
                         <th>
                             {{ form_label(form.end_month, 'End Month') }}
                             {{ form_widget(form.end_month) }}
+                            {{ form_errors(form.end_month) }}
                         </th>
                         <th>
                             {{ form_label(form.type, 'Type') }}
@@ -53,6 +56,8 @@
 
                     </thead>
                 </table>
+                {{ form_widget(form._token) }}
+
                 </form>
             </div>
         </div>
