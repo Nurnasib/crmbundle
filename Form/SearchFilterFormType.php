@@ -437,13 +437,18 @@ class SearchFilterFormType extends AbstractType
                     'class' => 'select2'
                 ]
             ])
-//            ->add('type', ChoiceType::class,[
-//                'choices' => [
-//                    'pp'=>'uu'
-//                ],
-//                'placeholder' => '- Select Type -',
-//                'required' => false,
-//            ])
+            ->add('farm_type', ChoiceType::class,[
+                'choices' => [
+                    'Poultry'=>'poultry-breed',
+                    'Cattle'=>'cattle-breed',
+                    'Fish'=>'fish-breed'
+                ],
+                'placeholder' => '- Select Type -',
+                'required' => false,
+                'constraints' => [
+                    new NotBlank(['message' => 'Farm Type is required.', 'groups' => ['farm_type_only']]),
+                ],
+            ])
             ->add('type', EntityType::class,[
                 'class' => Setting::class,
                 'choice_label' => 'name',
