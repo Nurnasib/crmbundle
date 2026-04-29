@@ -12,6 +12,7 @@
 namespace Terminalbd\CrmBundle\Repository;
 use App\Entity\Core\Agent;
 use App\Entity\User;
+use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\EntityRepository;
 use Terminalbd\CrmBundle\Entity\ChickLifeCycle;
 use Terminalbd\CrmBundle\Entity\Setting;
@@ -27,7 +28,6 @@ use Doctrine\DBAL\Types\Types;
  */
 class CrmCustomerRepository extends EntityRepository
 {
-
     public function getLocationWise(User $user,$pram)
     {
         $rolesString = implode('_', $user->getRoles());
@@ -278,16 +278,18 @@ ORDER BY `c`.`agent_id` ASC";
                 $cultureSpeciesItemAndQty = json_decode($result['cultureSpeciesItemAndQty'], true);
 
                 if (is_array($cultureSpeciesItemAndQty)) {
-                    if (isset($typeId) && isset($cultureSpeciesItemAndQty[$typeId])) {
-                        $returnArray[$empId][$farmId]['decodedCultureSpeciesItemAndQty'] = $cultureSpeciesItemAndQty;
-                        $returnArray[$empId][$farmId]['employeeName'] = $employeeName;
-                        $returnArray[$empId][$farmId]['employeeUserId'] = $employeeUserId;
-                        $returnArray[$empId][$farmId]['designationName'] = $designationName;
-                        $returnArray[$empId][$farmId]['area'] = $address;
-                        $returnArray[$empId][$farmId]['name'] = $farmName;
-                        $returnArray[$empId][$farmId]['cell'] = $farmPhone;
-                        $returnArray[$empId][$farmId]['capacity'] = $farmCap;
-                        $returnArray[$empId][$farmId][$day] = 'Yes';
+                    if (isset($typeId)) {
+                        if (isset($cultureSpeciesItemAndQty[$typeId])){
+                            $returnArray[$empId][$farmId]['decodedCultureSpeciesItemAndQty'] = $cultureSpeciesItemAndQty;
+                            $returnArray[$empId][$farmId]['employeeName'] = $employeeName;
+                            $returnArray[$empId][$farmId]['employeeUserId'] = $employeeUserId;
+                            $returnArray[$empId][$farmId]['designationName'] = $designationName;
+                            $returnArray[$empId][$farmId]['area'] = $address;
+                            $returnArray[$empId][$farmId]['name'] = $farmName;
+                            $returnArray[$empId][$farmId]['cell'] = $farmPhone;
+                            $returnArray[$empId][$farmId]['capacity'] = $farmCap;
+                            $returnArray[$empId][$farmId][$day] = 'Yes';
+                        }
                     }else{
                         $returnArray[$empId][$farmId]['decodedCultureSpeciesItemAndQty'] = $cultureSpeciesItemAndQty;
                         $returnArray[$empId][$farmId]['employeeName'] = $employeeName;
@@ -358,8 +360,12 @@ ORDER BY `c`.`agent_id` ASC";
             if (isset($result['cultureSpeciesItemAndQty']) && $result['cultureSpeciesItemAndQty'] && $result['cultureSpeciesItemAndQty'] != null) {
                 $cultureSpeciesItemAndQty = json_decode($result['cultureSpeciesItemAndQty'], true);
                 if (is_array($cultureSpeciesItemAndQty)) {
-                    if (isset($typeId) && isset($cultureSpeciesItemAndQty[$typeId])) {
-                        $cultureSpeciesItemAndQty = [$typeId => $cultureSpeciesItemAndQty[$typeId]];
+                    if (isset($typeId)) {
+                        if (isset($cultureSpeciesItemAndQty[$typeId])){
+                            $cultureSpeciesItemAndQty = [$typeId=> $cultureSpeciesItemAndQty[$typeId]];
+                        }else{
+                            $cultureSpeciesItemAndQty = [];
+                        }
                     }
                     $cultureSpeciesItemAndQty = array_filter($cultureSpeciesItemAndQty, function ($value) {
                         return $value !== null && $value !== '';
@@ -435,7 +441,7 @@ ORDER BY `c`.`agent_id` ASC";
             : date('Y-m-t');
 
         $typeId = isset($filterBy['type']) ? $filterBy['type']->getId() : null;
-
+//        dd($typeId);
         $qb = $this->createQueryBuilder('e');
         $qb->join('e.customerGroup', 's');
         $qb->join('e.farmerIntroduce', 'fi');
@@ -454,6 +460,7 @@ ORDER BY `c`.`agent_id` ASC";
             ->setParameter('endDate', $endDate . ' 23:59:59');
 
         $results = $qb->getQuery()->getArrayResult();
+//        dd($results);
 
         $returnArray = [];
 
@@ -468,9 +475,12 @@ ORDER BY `c`.`agent_id` ASC";
                 $cultureSpeciesItemAndQty = json_decode($result['cultureSpeciesItemAndQty'], true);
 
                 if (is_array($cultureSpeciesItemAndQty)) {
-                    // Apply type filter if set
-                    if (isset($typeId) && isset($cultureSpeciesItemAndQty[$typeId])) {
-                        $cultureSpeciesItemAndQty = [$typeId=> $cultureSpeciesItemAndQty[$typeId]];
+                    if (isset($typeId)) {
+                        if (isset($cultureSpeciesItemAndQty[$typeId])){
+                            $cultureSpeciesItemAndQty = [$typeId=> $cultureSpeciesItemAndQty[$typeId]];
+                        }else{
+                            $cultureSpeciesItemAndQty = [];
+                        }
                     }
                     $cultureSpeciesItemAndQty = array_filter($cultureSpeciesItemAndQty, function ($value) {
                         return $value !== null && $value !== '';
@@ -482,7 +492,7 @@ ORDER BY `c`.`agent_id` ASC";
 
             $monthlyCapacity[$empId][$month] = ($monthlyCapacity[$empId][$month] ?? 0) + $capacity;
         }
-        //dd($monthlyCapacity);
+//        dd($monthlyCapacity);
         return $monthlyCapacity;
     }
     public function getFarmByEmployeeIds($employeeIds, $filterBy)
@@ -525,8 +535,12 @@ ORDER BY `c`.`agent_id` ASC";
                 $cultureSpeciesItemAndQty = json_decode($result['cultureSpeciesItemAndQty'], true);
 
                 if (is_array($cultureSpeciesItemAndQty)) {
-                    if (isset($typeId) && isset($cultureSpeciesItemAndQty[$typeId])) {
-                        $returnArray[$empId][$month] = ($returnArray[$empId][$month] ?? 0) + 1;
+                    if (isset($typeId)) {
+                        if (isset($cultureSpeciesItemAndQty[$typeId])){
+                            $returnArray[$empId][$month] = ($returnArray[$empId][$month] ?? 0) + 1;
+                        }else{
+                            $returnArray[$empId][$month] = ($returnArray[$empId][$month] ?? 0);
+                        }
                     }else{
                         $returnArray[$empId][$month] = ($returnArray[$empId][$month] ?? 0) + 1;
                     }
@@ -583,8 +597,12 @@ ORDER BY `c`.`agent_id` ASC";
 
                 if (is_array($cultureSpeciesItemAndQty)) {
                     // Apply type filter if set
-                    if (isset($typeId) && isset($cultureSpeciesItemAndQty[$typeId])) {
-                        $cultureSpeciesItemAndQty = [$typeId=> $cultureSpeciesItemAndQty[$typeId]];
+                    if (isset($typeId)) {
+                        if (isset($cultureSpeciesItemAndQty[$typeId])){
+                            $cultureSpeciesItemAndQty = [$typeId=> $cultureSpeciesItemAndQty[$typeId]];
+                        }else{
+                            $cultureSpeciesItemAndQty = [];
+                        }
                     }
                     $cultureSpeciesItemAndQty = array_filter($cultureSpeciesItemAndQty, function ($value) {
                         return $value !== null && $value !== '';
@@ -640,10 +658,14 @@ ORDER BY `c`.`agent_id` ASC";
                 $cultureSpeciesItemAndQty = json_decode($result['cultureSpeciesItemAndQty'], true);
 
                 if (is_array($cultureSpeciesItemAndQty)) {
-                    if (isset($typeId) && isset($cultureSpeciesItemAndQty[$typeId])) {
-                        $returnArray[$empId][$day] = ($returnArray[$empId][$day] ?? 0) + 1;
+                    if (isset($typeId)) {
+                        if (isset($cultureSpeciesItemAndQty[$typeId])){
+                            $returnArray[$empId][$month] = ($returnArray[$empId][$month] ?? 0) + 1;
+                        }else{
+                            $returnArray[$empId][$month] = ($returnArray[$empId][$month] ?? 0);
+                        }
                     }else{
-                        $returnArray[$empId][$day] = ($returnArray[$empId][$day] ?? 0) + 1;
+                        $returnArray[$empId][$month] = ($returnArray[$empId][$month] ?? 0) + 1;
                     }
                 }
             }
@@ -747,9 +769,12 @@ ORDER BY `c`.`agent_id` ASC";
                 $cultureSpeciesItemAndQty = json_decode($result['cultureSpeciesItemAndQty'], true);
 
                 if (is_array($cultureSpeciesItemAndQty)) {
-                    // Apply type filter if set
-                    if (isset($typeId) && isset($cultureSpeciesItemAndQty[$typeId])) {
-                        $cultureSpeciesItemAndQty = [$typeId=> $cultureSpeciesItemAndQty[$typeId]];
+                    if (isset($typeId)) {
+                        if (isset($cultureSpeciesItemAndQty[$typeId])){
+                            $cultureSpeciesItemAndQty = [$typeId=> $cultureSpeciesItemAndQty[$typeId]];
+                        }else{
+                            $cultureSpeciesItemAndQty = [];
+                        }
                     }
                     $cultureSpeciesItemAndQty = array_filter($cultureSpeciesItemAndQty, function ($value) {
                         return $value !== null && $value !== '';
@@ -806,8 +831,12 @@ ORDER BY `c`.`agent_id` ASC";
                 $cultureSpeciesItemAndQty = json_decode($result['cultureSpeciesItemAndQty'], true);
 
                 if (is_array($cultureSpeciesItemAndQty)) {
-                    if (isset($typeId) && isset($cultureSpeciesItemAndQty[$typeId])) {
-                        $returnArray[$empId][$month] = ($returnArray[$empId][$month] ?? 0) + 1;
+                    if (isset($typeId)) {
+                        if (isset($cultureSpeciesItemAndQty[$typeId])){
+                            $returnArray[$empId][$month] = ($returnArray[$empId][$month] ?? 0) + 1;
+                        }else{
+                            $returnArray[$empId][$month] = ($returnArray[$empId][$month] ?? 0);
+                        }
                     }else{
                         $returnArray[$empId][$month] = ($returnArray[$empId][$month] ?? 0) + 1;
                     }
@@ -865,9 +894,12 @@ ORDER BY `c`.`agent_id` ASC";
                 $cultureSpeciesItemAndQty = json_decode($result['cultureSpeciesItemAndQty'], true);
 
                 if (is_array($cultureSpeciesItemAndQty)) {
-                    // Apply type filter if set
-                    if (isset($typeId) && isset($cultureSpeciesItemAndQty[$typeId])) {
-                        $cultureSpeciesItemAndQty = [$typeId=> $cultureSpeciesItemAndQty[$typeId]];
+                    if (isset($typeId)) {
+                        if (isset($cultureSpeciesItemAndQty[$typeId])){
+                            $cultureSpeciesItemAndQty = [$typeId=> $cultureSpeciesItemAndQty[$typeId]];
+                        }else{
+                            $cultureSpeciesItemAndQty = [];
+                        }
                     }
                     $cultureSpeciesItemAndQty = array_filter($cultureSpeciesItemAndQty, function ($value) {
                         return $value !== null && $value !== '';
@@ -925,10 +957,14 @@ ORDER BY `c`.`agent_id` ASC";
                 $cultureSpeciesItemAndQty = json_decode($result['cultureSpeciesItemAndQty'], true);
 
                 if (is_array($cultureSpeciesItemAndQty)) {
-                    if (isset($typeId) && isset($cultureSpeciesItemAndQty[$typeId])) {
-                        $returnArray[$empId][$day] = ($returnArray[$empId][$day] ?? 0) + 1;
+                    if (isset($typeId)) {
+                        if (isset($cultureSpeciesItemAndQty[$typeId])){
+                            $returnArray[$empId][$month] = ($returnArray[$empId][$month] ?? 0) + 1;
+                        }else{
+                            $returnArray[$empId][$month] = ($returnArray[$empId][$month] ?? 0);
+                        }
                     }else{
-                        $returnArray[$empId][$day] = ($returnArray[$empId][$day] ?? 0) + 1;
+                        $returnArray[$empId][$month] = ($returnArray[$empId][$month] ?? 0) + 1;
                     }
                 }
             }
