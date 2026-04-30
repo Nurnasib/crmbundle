@@ -10,7 +10,7 @@
                 <table class="table ">
                     <thead class="thead-dark">
                     <tr>
-                        <input type="hidden" name="agent_focus" value="yes">
+                        <input type="hidden" name="intro_focus" value="yes">
                         <th style="min-width: 200px">
                             {{ form_label(form.employee, 'Employee:') }}
                             {{ form_widget(form.employee) }}
@@ -38,7 +38,7 @@
                         <th colspan="1">
                             <div class="btn-group" style="margin-top: 25px">
                                 <button type="submit" name="search" class="btn btn-primary btn-sm" title="Search" value="search"><i class="fa fa-search" aria-hidden="true"></i></button>
-                                <a href="{{ path('new_farm_customer_report') }}" class="btn purple-bg btn-sm white-font" title="Reset" value="reset"><i class="fa fa-refresh" aria-hidden="true"></i></a>
+                                <a href="{{ path('new_farm_introduce_report') }}" class="btn purple-bg btn-sm white-font" title="Reset" value="reset"><i class="fa fa-refresh" aria-hidden="true"></i></a>
                                 {% if entities is defined and entities is not empty %}
                                     <button type="submit" name="excel" class="btn blue-bg btn-sm white-font" title="Excel" value="excel" id="button-excel"><i class="fa fa-file-excel" aria-hidden="true"></i> {{ 'Excel'|trans }}</button>
                                 {% endif %}
@@ -59,39 +59,52 @@
                     <table class="table table-striped table-bordered table-hover download-excel" id="datatable">
                         <thead>
                         <tr>
-                            <th data-a-h="center" class="border-0" colspan="{{ 12 }}"><h3 class="text-center">NOURISH POULTRY AND HATCHERY LTD</h3></th>
+                            <th data-a-h="center" class="border-0" colspan="{{ 15 }}"><h3 class="text-center">NOURISH POULTRY AND HATCHERY LTD</h3></th>
                         </tr>
                         <tr>
-                            <th data-a-h="center" class="border-0" colspan="{{ 12 }}"><h5 class="text-center">UTTARA, DHAKA.</h5></th>
+                            <th data-a-h="center" class="border-0" colspan="{{ 15 }}"><h5 class="text-center">UTTARA, DHAKA.</h5></th>
                         </tr>
 
                         <tr>
-                            <td data-a-h="center" class="border-0" colspan="{{ 12 }}" align="center"><h6>{{ 'New Farmer Customer Report'|upper }} </h6></td>
+                            <td data-a-h="center" class="border-0" colspan="{{ 15 }}" align="center"><h6>{{ 'New Farmer Introduce Report'|upper }} </h6></td>
                         </tr>
                         </thead>
                         <thead class="thead-dark">
                         <tr>
-                            <th scope="col" rowspan="2">Sl.</th>
+                            <th scope="col" rowspan="2">Region</th>
+                            <th scope="col" rowspan="2">Employee</th>
+                            <th scope="col" rowspan="2">SL No.</th>
                             <th scope="col" rowspan="2">Farmer Name</th>
                             <th scope="col" rowspan="2">Mobile</th>
                             <th scope="col" rowspan="2">Address</th>
                             <th scope="col" rowspan="2">Location</th>
-                            <th scope="col" rowspan="2">Agent ID</th>
-                            <th scope="col" rowspan="2">Agent Name</th>
-                            <th scope="col" rowspan="2">Agent Location</th>
-                            <th scope="col" rowspan="2">Feed</th>
 
                             <th class="text-center" data-a-h="center" colspan="{{ filterableSpeciesType|length }}" scope="col">
                                 {{ 'Capacity'|trans }}
                             </th>
+                            <th class="text-center" data-a-h="center" colspan="3" scope="col">
+                                {{ 'Present Agent Info'|trans }}
+                            </th>
+                            <th class="text-center" data-a-h="center" colspan="3" scope="col">
+                                {{ 'Previous Agent Info'|trans }}
+                            </th>
+                            <th scope="col" rowspan="2">Remarks</th>
                         </tr>
-
                         <tr>
                             {% for speciesType in filterableSpeciesType %}
-                                <th data-a-h="center" class="text-center" style="width: 10%" scope="col">
+                                <th data-a-h="center" class="text-center" style="width: 4%" scope="col">
                                     {{ speciesType.name }}
                                 </th>
                             {% endfor %}
+
+                            <th data-a-h="center" class="text-center" style="width: 4%" scope="col">Name</th>
+                            <th data-a-h="center" class="text-center" style="width: 4%" scope="col">Address</th>
+                            <th data-a-h="center" class="text-center" style="width: 4%" scope="col">Feed</th>
+
+                            <th data-a-h="center" class="text-center" style="width: 4%" scope="col">Name</th>
+                            <th data-a-h="center" class="text-center" style="width: 4%" scope="col">Address</th>
+                            <th data-a-h="center" class="text-center" style="width: 4%" scope="col">Feed</th>
+
                         </tr>
                         </thead>
 
@@ -110,16 +123,15 @@
                                         {% if teamMember.customers|length > 0 %}
                                             {% for customer in teamMember.customers %}
                                                 <tr>
-
-                                                    <td data-t="n">{{ regionIndex }}</td>
+                                                    {% if loopCount ==1  %}
+                                                        <td data-a-v="middle" rowspan="{{ grandTotalTeamMembers }}">{{ employeeData.regionName }}</td>
+                                                        <td data-a-v="middle" rowspan="{{ grandTotalTeamMembers }}">{{ employeeData.name }}</td>
+                                                    {% endif %}
+                                                    <td data-t="n">{{ loop.index }}</td>
                                                     <td data-t="n">{{ customer.name }}</td>
                                                     <td data-t="n">{{ customer.mobile }}</td>
                                                     <td data-t="n">{{ customer.address }}</td>
                                                     <td data-t="n">{{ customer.locationName??'' }}</td>
-                                                    <td data-t="n">{{ customer.agentGroupSlug and ( customer.agentGroupSlug =='other-agent' or customer.agentGroupSlug=='sub-agent' ) ? customer.otherAndSubAgentId  : customer.agentId }}</td>
-                                                    <td data-t="n">{{ customer.agentName??'' }}</td>
-                                                    <td data-t="n">{{ customer.agentLocation??'' }}</td>
-                                                    <td data-t="n">{{ customer.feedName??'' }}</td>
                                                     {% if filterableSpeciesType is not empty %}
                                                         {% for speciesType in filterableSpeciesType %}
                                                             <td data-t="n" class="text-right">
@@ -129,6 +141,15 @@
                                                             </td>
                                                         {% endfor %}
                                                     {% endif %}
+                                                    <td data-t="n" class="text-right">{{ customer.agentName??'' }}</td>
+                                                    <td data-t="n" class="text-right">{{ customer.agentLocation??'' }}</td>
+                                                    <td data-t="n" class="text-right">{{ customer.feedName??'' }}</td>
+
+                                                    <td data-t="n" class="text-right">{{ customer.otherAgentName??'' }}</td>
+                                                    <td data-t="n" class="text-right">{{ customer.otherAgentLocation??'' }}</td>
+                                                    <td data-t="n" class="text-right">{{ customer.otherFeedName??'' }}</td>
+
+                                                    <td data-t="n" class="text-right">{{ customer.remarks??'' }}</td>
 
 
 
@@ -241,7 +262,7 @@
                 e.preventDefault();
                 let table = document.querySelector(".download-excel");
                 TableToExcel.convert(table, {
-                    name: "new_farm_customer_report.xlsx",
+                    name: "new_farm_introduce_report.xlsx",
                     sheet: {
                         name: "Sheet 1"
                     }

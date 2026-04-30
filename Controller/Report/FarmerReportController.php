@@ -1451,6 +1451,64 @@ class FarmerReportController extends AbstractController
             'arrayMonth' => $arrayMonth,
         ]);
     }
+    /**
+     * @Route("/new_farm_introduce_report", name="new_farm_introduce_report")
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function NewFarmerIntroduce(Request $request)
+    {
+        $filterBy = [];
+        $entities = [];
+        $if = $request->get('intro_focus');
+        $species = [];
+        $trainingMaterials = [];
+        $employee = null;
+        $speciesTypesByParent=[];
+        $arrFishSizes=[];
+        $arrayMonth=[];
+
+        $loggedUser = $this->getUser();
+        $userRepo = $this->getDoctrine()->getRepository(User::class);
+        $form = $this->createForm(SearchFilterFormType::class, null, [
+            'validation_groups' => ['year_only', 'month_only', 'farm_type_only'],
+            'loggedUser' => $loggedUser,'userRepo'=>$userRepo]);
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid()){
+            $filterBy = $form->getData();
+
+            $employee = $form->getData()['employee'];
+
+            $filterBy['employeeId'] = $form->getData()['employee'] ? $form->getData()['employee']->getId() : '';
+            $filterBy['loggedUser'] = $loggedUser;
+            if ($if)$filterBy['intro_focus'] = $if;
+
+            $entities = $userRepo->getNewFarmCustomerReport( $filterBy );
+        }
+        $speciesTypes = [];
+        $filterableSpeciesType = [];
+        if (isset($filterBy['farm_type'])) {
+            if ($filterBy['farm_type']=='poultry-breed') $filterableSpeciesType = $this->getDoctrine()->getRepository(Setting::class)->getSpeciesTypeByParentSlug('poultry-breed');
+            if ($filterBy['farm_type']=='cattle-breed') $filterableSpeciesType = $this->getDoctrine()->getRepository(Setting::class)->getSpeciesTypeByParentSlug('cattle-breed');
+            if ($filterBy['farm_type']=='fish-breed') $filterableSpeciesType = $this->getDoctrine()->getRepository(Setting::class)->getSpeciesTypeByParentSlug('fish-breed');
+        }
+
+//        dd($entities[17]);
+
+        return $this->render('@TerminalbdCrm/report/farmerReport/new_farm_introduce_report.html.twig',[
+            'form' => $form->createView(),
+            'entities' => $entities,
+            'filterBy' => $filterBy,
+            'species' => $species,
+            'speciesTypes' => $speciesTypes,
+            'filterableSpeciesType' => $filterableSpeciesType,
+            'trainingMaterials' => $trainingMaterials,
+            'employee'=> $employee,
+            'fishSizes' => $arrFishSizes,
+            'arrayMonth' => $arrayMonth,
+        ]);
+    }
 
 
 }

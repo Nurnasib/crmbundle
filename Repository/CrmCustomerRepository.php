@@ -324,13 +324,14 @@ ORDER BY `c`.`agent_id` ASC";
         $qb->join('farmerIntroduce.employee','employee');
         $qb->join('farmerIntroduce.farmerType','farmerType');
         $qb->join('farmerIntroduce.agent','agent');
+        $qb->join('agent.agentGroup','agentGroup');
         $qb->join('farmerIntroduce.feed','feed');
 
         $qb->select('e.id as id','e.name as name','e.address as address','e.mobile as mobile','e.status as status' ,'e.created as month' );
 
         $qb->addSelect('farmerIntroduce.cultureSpeciesItemAndQty');
         $qb->addSelect('employee.id as employeeId', 'employee.name as employeeName', 'employee.userId as employeeUserId');
-        $qb->addSelect('agent.name as agentName', 'agent.agentId as agentId', 'agent.address as agentLocation');
+        $qb->addSelect('agent.name as agentName', 'agentGroup.slug as agentGroupSlug', 'agent.otherAndSubAgentId as otherAndSubAgentId', 'agent.agentId as agentId', 'agent.address as agentLocation');
         $qb->addSelect('feed.name as feedName');
         $qb->addSelect('location.name as locationName');
         $qb->addSelect('farmerType.name as farmerTypeName', 'farmerType.slug as farmerTypeSlug');
@@ -355,6 +356,100 @@ ORDER BY `c`.`agent_id` ASC";
         $qb->andWhere('employee.id IN (:employeeIds)')->setParameter('employeeIds', $employeeIds);
 
         $qb->andWhere('e.created BETWEEN :startDate AND :endDate')
+            ->setParameter('startDate', $startDate .' 00:00:00')
+            ->setParameter('endDate', $endDate .' 23:59:59');
+        
+        $results = $qb->getQuery()->getArrayResult();
+//        dd($results);
+        
+        //group by employee
+        $returnArray = [];
+        foreach ($results as $result) {
+            $empId = (int)$result['employeeId'];
+            $cultureSpeciesItemAndQty = [];
+            if (isset($result['cultureSpeciesItemAndQty']) && $result['cultureSpeciesItemAndQty'] && $result['cultureSpeciesItemAndQty'] != null) {
+                $cultureSpeciesItemAndQty = json_decode($result['cultureSpeciesItemAndQty'], true);
+                if (is_array($cultureSpeciesItemAndQty)) {
+                    if (isset($typeId)) {
+                        if (isset($cultureSpeciesItemAndQty[$typeId])){
+                            $cultureSpeciesItemAndQty = [$typeId=> $cultureSpeciesItemAndQty[$typeId]];
+                        }else{
+                            $cultureSpeciesItemAndQty = [];
+                        }
+                    }
+                    $cultureSpeciesItemAndQty = array_filter($cultureSpeciesItemAndQty, function ($value) {
+                        return $value !== null && $value !== '';
+                    });
+                } else {
+                    $cultureSpeciesItemAndQty = [];
+                }
+                $arrayValues = array_values($cultureSpeciesItemAndQty);
+                $numericValues = array_map('intval', $arrayValues);
+                $result['cultureSpeciesItemAndQtySum'] = sizeof($numericValues) > 0 ? array_sum($numericValues) : 0;
+            } else {
+                $result['cultureSpeciesItemAndQtySum'] = 0;
+            }
+
+            $result['decodedCultureSpeciesItemAndQty'] = $cultureSpeciesItemAndQty;
+
+            $returnArray[$empId][] = $result;
+        }
+//        dd($returnArray);
+        return    $returnArray;
+
+    }
+    public function getCustomerIntroInfoByEmployeeIds( $employeeIds, $filterBy )
+    {
+        $startDate = isset($filterBy['startDate']) ? date('Y-m-d', strtotime($filterBy['startDate'])) : date('Y-m-01');
+        $endDate = isset($filterBy['endDate']) ? date('Y-m-d', strtotime($filterBy['endDate'])) : date('Y-m-t');
+        $typeId = isset($filterBy['type']) ? $filterBy['type']->getId() : null;
+        $farmType = isset($filterBy['farm_type']) ? $filterBy['farm_type']: null;
+
+
+        $qb = $this->createQueryBuilder('e');
+        $qb->join('e.customerGroup','s');
+        $qb->join('e.farmerIntroduce','farmerIntroduce');
+        $qb->join('e.location','location');
+        $qb->join('farmerIntroduce.employee','employee');
+        $qb->join('farmerIntroduce.farmerType','farmerType');
+        $qb->join('farmerIntroduce.agent','agent');
+        $qb->join('farmerIntroduce.otherAgent','otherAgent');
+        $qb->join('agent.agentGroup','agentGroup');
+        $qb->join('farmerIntroduce.feed','feed');
+        $qb->join('farmerIntroduce.otherFeed','otherFeed');
+
+        $qb->select('e.id as id','e.name as name','e.address as address','e.mobile as mobile','e.status as status' ,'e.created as month' );
+
+        $qb->addSelect('farmerIntroduce.cultureSpeciesItemAndQty', 'farmerIntroduce.remarks as remarks');
+        $qb->addSelect('employee.id as employeeId', 'employee.name as employeeName', 'employee.userId as employeeUserId');
+        $qb->addSelect('agent.name as agentName', 'agentGroup.slug as agentGroupSlug', 'agent.otherAndSubAgentId as otherAndSubAgentId', 'agent.agentId as agentId', 'agent.address as agentLocation');
+        $qb->addSelect('otherAgent.name as otherAgentName', 'otherAgent.address as otherAgentLocation');
+        $qb->addSelect('feed.name as feedName');
+        $qb->addSelect('otherFeed.name as otherFeedName');
+        $qb->addSelect('location.name as locationName');
+        $qb->addSelect('farmerType.name as farmerTypeName', 'farmerType.slug as farmerTypeSlug');
+
+        $qb->where('s.slug = :slug')->setParameter('slug','farmer');
+        if (isset($filterBy['status'])){
+            $qb->join('e.statusLog','slog');
+            $qb->addSelect('slog.reason as reason');
+            $qb->andWhere('e.status IN (:statuses)')
+                ->setParameter('statuses', ['closed', 'close']);
+        }
+
+        if (isset($farmType)){
+            $qb->andWhere('farmerType.slug = :f_type')->setParameter('f_type', $farmType);
+        }
+        if (isset($typeId)){
+            $qb->andWhere('farmerIntroduce.cultureSpeciesItemAndQty LIKE :type')->setParameter('type', '%' . $typeId . '%');
+        }
+        
+        $qb->andWhere('e.deletedAt IS NULL');
+        $qb->andWhere('e.deletedBy IS NULL');
+        $qb->andWhere('employee.id IN (:employeeIds)')->setParameter('employeeIds', $employeeIds);
+
+        $qb->andWhere('farmerIntroduce.introduceDate IS NOT NULL');
+        $qb->andWhere('farmerIntroduce.introduceDate BETWEEN :startDate AND :endDate')
             ->setParameter('startDate', $startDate .' 00:00:00')
             ->setParameter('endDate', $endDate .' 23:59:59');
         
@@ -748,12 +843,12 @@ ORDER BY `c`.`agent_id` ASC";
                 if (is_array($cultureSpeciesItemAndQty)) {
                     if (isset($typeId)) {
                         if (isset($cultureSpeciesItemAndQty[$typeId])){
-                            $returnArray[$empId][$month] = ($returnArray[$empId][$month] ?? 0) + 1;
+                            $returnArray[$empId][$day] = ($returnArray[$empId][$day] ?? 0) + 1;
                         }else{
-                            $returnArray[$empId][$month] = ($returnArray[$empId][$month] ?? 0);
+                            $returnArray[$empId][$day] = ($returnArray[$empId][$day] ?? 0);
                         }
                     }else{
-                        $returnArray[$empId][$month] = ($returnArray[$empId][$month] ?? 0) + 1;
+                        $returnArray[$empId][$day] = ($returnArray[$empId][$day] ?? 0) + 1;
                     }
                 }
             }
@@ -1047,12 +1142,12 @@ ORDER BY `c`.`agent_id` ASC";
                 if (is_array($cultureSpeciesItemAndQty)) {
                     if (isset($typeId)) {
                         if (isset($cultureSpeciesItemAndQty[$typeId])){
-                            $returnArray[$empId][$month] = ($returnArray[$empId][$month] ?? 0) + 1;
+                            $returnArray[$empId][$day] = ($returnArray[$empId][$day] ?? 0) + 1;
                         }else{
-                            $returnArray[$empId][$month] = ($returnArray[$empId][$month] ?? 0);
+                            $returnArray[$empId][$day] = ($returnArray[$empId][$day] ?? 0);
                         }
                     }else{
-                        $returnArray[$empId][$month] = ($returnArray[$empId][$month] ?? 0) + 1;
+                        $returnArray[$empId][$day] = ($returnArray[$empId][$day] ?? 0) + 1;
                     }
                 }
             }
