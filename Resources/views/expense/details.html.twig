@@ -170,7 +170,7 @@
                                                 {{ (totalMilage*ratePerMilage)|number_format(2,'.',',') }}
                                             </td>
                                             <td class="text-right">{{ totalMilage }}</td>
-                                            <td class="text-right">{{ (lineTotal+(totalMilage*3.5))|number_format(2,'.',',') }}</td>
+                                            <td class="text-right">{{ (lineTotal+(totalMilage*ratePerMilage))|number_format(2,'.',',') }}</td>
                                             <td class="hidden-print">
                                                 {% if entity.status==1 %}
                                                     <input type="hidden" name="expense[{{ entity.id }}]" value="{{ entity.id }}">
@@ -210,9 +210,9 @@
                                         {% endfor %}
                                     {% endif %}
 
-                                    <td>{{ (grandTotalMilage*3.5)|number_format(2,'.',',') }}</td>
+                                    <td>{{ (grandTotalMilage*ratePerMilage)|number_format(2,'.',',') }}</td>
                                     <td>{{ grandTotalMilage }}</td>
-                                    <th class="text-right">{{ (totalLineTotal+(grandTotalMilage*3.5))|number_format(2,'.',',') }}</th>
+                                    <th class="text-right">{{ (totalLineTotal+(grandTotalMilage*ratePerMilage))|number_format(2,'.',',') }}</th>
                                     <th class="hidden-print"></th>
 
                                 </tr>

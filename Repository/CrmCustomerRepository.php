@@ -216,11 +216,12 @@ ORDER BY `c`.`agent_id` ASC";
             ? \DateTime::createFromFormat('!d-m-Y', $filterBy['endDate'])
             : new \DateTime(date('Y-m-t'));
         $typeId = isset($filterBy['type']) ? $filterBy['type']->getId() : null;
-
+        $farmType = isset($filterBy['farm_type']) ? $filterBy['farm_type']: null;
 
         $qb = $this->createQueryBuilder('e');
         $qb->join('e.customerGroup','s');
         $qb->join('e.farmerIntroduce','farmerIntroduce');
+        $qb->join('farmerIntroduce.farmerType','farmerType');
         $qb->join('e.crmVisitDetails','visit_details');
         $qb->join('visit_details.crmVisit','visit');
         $qb->join('farmerIntroduce.employee','employee');
@@ -242,6 +243,9 @@ ORDER BY `c`.`agent_id` ASC";
                 ->setParameter('statuses', ['closed', 'close']);
         }
 
+        if (isset($farmType)){
+            $qb->andWhere('farmerType.slug = :f_type')->setParameter('f_type', $farmType);
+        }
         if (isset($typeId)){
             $qb->andWhere('farmerIntroduce.cultureSpeciesItemAndQty LIKE :type')->setParameter('type', '%' . $typeId . '%');
         }
@@ -498,11 +502,12 @@ ORDER BY `c`.`agent_id` ASC";
         $startDate = isset($filterBy['startDate']) ? date('Y-m-d', strtotime($filterBy['startDate'])) : date('Y-m-01');
         $endDate = isset($filterBy['endDate']) ? date('Y-m-d', strtotime($filterBy['endDate'])) : date('Y-m-t');
         $typeId = isset($filterBy['type']) ? $filterBy['type']->getId() : null;
-
+        $farmType = isset($filterBy['farm_type']) ? $filterBy['farm_type']: null;
 
         $qb = $this->createQueryBuilder('e');
         $qb->join('e.customerGroup','s');
         $qb->join('e.farmerIntroduce','farmerIntroduce');
+        $qb->join('farmerIntroduce.farmerType','farmerType');
         $qb->join('farmerIntroduce.employee','employee');
         $qb->join('farmerIntroduce.farmerType','farmerType');
 
@@ -518,6 +523,9 @@ ORDER BY `c`.`agent_id` ASC";
             $qb->addSelect('slog.reason as reason');
             $qb->andWhere('e.status IN (:statuses)')
                 ->setParameter('statuses', ['closed', 'close']);
+        }
+        if (isset($farmType)){
+            $qb->andWhere('farmerType.slug = :f_type')->setParameter('f_type', $farmType);
         }
 
         if (isset($typeId)){
@@ -624,10 +632,12 @@ ORDER BY `c`.`agent_id` ASC";
             : date('Y-m-t');
 
         $typeId = isset($filterBy['type']) ? $filterBy['type']->getId() : null;
+        $farmType = isset($filterBy['farm_type']) ? $filterBy['farm_type'] : null;
 //        dd($typeId);
         $qb = $this->createQueryBuilder('e');
         $qb->join('e.customerGroup', 's');
         $qb->join('e.farmerIntroduce', 'fi');
+        $qb->join('fi.farmerType','farmerType');
         $qb->join('fi.employee', 'employee');
         $qb->select('employee.id AS employeeId');
         $qb->addSelect('MONTH(e.created) AS month');
@@ -636,6 +646,9 @@ ORDER BY `c`.`agent_id` ASC";
         $qb->andWhere('e.deletedAt IS NULL');
         $qb->andWhere('e.deletedBy IS NULL');
         $qb->andWhere('e.created IS NOT NULL');
+        if (isset($farmType)){
+            $qb->andWhere('farmerType.slug = :f_type')->setParameter('f_type', $farmType);
+        }
         $qb->andWhere('employee.id IN (:employeeIds)')
             ->setParameter('employeeIds', $employeeIds);
         $qb->andWhere('e.created BETWEEN :startDate AND :endDate')
@@ -688,10 +701,12 @@ ORDER BY `c`.`agent_id` ASC";
             : date('Y-m-t');
 
         $typeId = isset($filterBy['type']) ? $filterBy['type']->getId() : null;
+        $farmType = isset($filterBy['farm_type']) ? $filterBy['farm_type'] : null;
 
         $qb = $this->createQueryBuilder('e');
         $qb->join('e.customerGroup', 's');
         $qb->join('e.farmerIntroduce', 'fi');
+        $qb->join('fi.farmerType','farmerType');
         $qb->join('fi.employee','employee');
         $qb->select('employee.id AS employeeId, e.id as farmerId');
         $qb->addSelect('MONTH(e.created) AS month');
@@ -699,6 +714,9 @@ ORDER BY `c`.`agent_id` ASC";
         $qb->where('s.slug = :slug')->setParameter('slug', 'farmer');
         $qb->andWhere('e.deletedAt IS NULL');
         $qb->andWhere('e.deletedBy IS NULL');
+        if (isset($farmType)){
+            $qb->andWhere('farmerType.slug = :f_type')->setParameter('f_type', $farmType);
+        }
         if (isset($typeId)){
             $qb->andWhere('fi.cultureSpeciesItemAndQty LIKE :type')->setParameter('type', '%' . $typeId . '%');
         }
@@ -745,10 +763,12 @@ ORDER BY `c`.`agent_id` ASC";
             : date('Y-m-t');
 
         $typeId = isset($filterBy['type']) ? $filterBy['type']->getId() : null;
+        $farmType = isset($filterBy['farm_type']) ? $filterBy['farm_type']: null;
 
         $qb = $this->createQueryBuilder('e');
         $qb->join('e.customerGroup', 's');
         $qb->join('e.farmerIntroduce', 'fi');
+        $qb->join('fi.farmerType','farmerType');
         $qb->join('fi.employee', 'employee');
         $qb->select('employee.id AS employeeId');
         $qb->addSelect('e.created AS created');
@@ -759,6 +779,9 @@ ORDER BY `c`.`agent_id` ASC";
         $qb->andWhere('e.created IS NOT NULL');
         $qb->andWhere('employee.id IN (:employeeIds)')
             ->setParameter('employeeIds', $employeeIds);
+        if (isset($farmType)){
+            $qb->andWhere('farmerType.slug = :f_type')->setParameter('f_type', $farmType);
+        }
         $qb->andWhere('e.created BETWEEN :startDate AND :endDate')
             ->setParameter('startDate', $startDate . ' 00:00:00')
             ->setParameter('endDate', $endDate . ' 23:59:59');
@@ -810,10 +833,12 @@ ORDER BY `c`.`agent_id` ASC";
             : date('Y-m-t');
 
         $typeId = isset($filterBy['type']) ? $filterBy['type']->getId() : null;
+        $farmType = isset($filterBy['farm_type']) ? $filterBy['farm_type'] : null;
 
         $qb = $this->createQueryBuilder('e');
         $qb->join('e.customerGroup', 's');
         $qb->join('e.farmerIntroduce', 'fi');
+        $qb->join('fi.farmerType','farmerType');
         $qb->join('fi.employee','employee');
         $qb->select('employee.id AS employeeId, e.id as farmerId');
         $qb->addSelect('e.created AS created');
@@ -821,6 +846,9 @@ ORDER BY `c`.`agent_id` ASC";
         $qb->where('s.slug = :slug')->setParameter('slug', 'farmer');
         $qb->andWhere('e.deletedAt IS NULL');
         $qb->andWhere('e.deletedBy IS NULL');
+        if (isset($farmType)){
+            $qb->andWhere('farmerType.slug = :f_type')->setParameter('f_type', $farmType);
+        }
         if (isset($typeId)){
             $qb->andWhere('fi.cultureSpeciesItemAndQty LIKE :type')->setParameter('type', '%' . $typeId . '%');
         }
@@ -917,10 +945,12 @@ ORDER BY `c`.`agent_id` ASC";
             : date('Y-m-t');
 
         $typeId = isset($filterBy['type']) ? $filterBy['type']->getId() : null;
+        $farmType = isset($filterBy['farm_type']) ? $filterBy['farm_type']: null;
 
         $qb = $this->createQueryBuilder('e');
         $qb->join('e.customerGroup', 's');
         $qb->join('e.farmerIntroduce', 'fi');
+        $qb->join('fi.farmerType','farmerType');
         $qb->join('fi.employee', 'employee');
         $qb->select('employee.id AS employeeId');
         $qb->addSelect('MONTH(e.created) AS month');
@@ -933,6 +963,9 @@ ORDER BY `c`.`agent_id` ASC";
             ->setParameter('statuses', ['closed', 'close']);
         $qb->andWhere('employee.id IN (:employeeIds)')
             ->setParameter('employeeIds', $employeeIds);
+        if (isset($farmType)){
+            $qb->andWhere('farmerType.slug = :f_type')->setParameter('f_type', $farmType);
+        }
         $qb->andWhere('e.created BETWEEN :startDate AND :endDate')
             ->setParameter('startDate', $startDate . ' 00:00:00')
             ->setParameter('endDate', $endDate . ' 23:59:59');
@@ -982,10 +1015,12 @@ ORDER BY `c`.`agent_id` ASC";
             : date('Y-m-t');
 
         $typeId = isset($filterBy['type']) ? $filterBy['type']->getId() : null;
+        $farmType = isset($filterBy['farm_type']) ? $filterBy['farm_type']: null;
 
         $qb = $this->createQueryBuilder('e');
         $qb->join('e.customerGroup', 's');
         $qb->join('e.farmerIntroduce', 'fi');
+        $qb->join('fi.farmerType','farmerType');
         $qb->join('fi.employee','employee');
         $qb->select('employee.id AS employeeId, e.id as farmerId');
         $qb->addSelect('MONTH(e.created) AS month');
@@ -995,6 +1030,9 @@ ORDER BY `c`.`agent_id` ASC";
         $qb->andWhere('e.deletedBy IS NULL');
         $qb->andWhere('e.status IN (:statuses)')
             ->setParameter('statuses', ['closed', 'close']);
+        if (isset($farmType)){
+            $qb->andWhere('farmerType.slug = :f_type')->setParameter('f_type', $farmType);
+        }
         if (isset($typeId)){
             $qb->andWhere('fi.cultureSpeciesItemAndQty LIKE :type')->setParameter('type', '%' . $typeId . '%');
         }
@@ -1041,10 +1079,13 @@ ORDER BY `c`.`agent_id` ASC";
             : date('Y-m-t');
 
         $typeId = isset($filterBy['type']) ? $filterBy['type']->getId() : null;
+        $farmType = isset($filterBy['farm_type']) ? $filterBy['farm_type']: null;
+
 
         $qb = $this->createQueryBuilder('e');
         $qb->join('e.customerGroup', 's');
         $qb->join('e.farmerIntroduce', 'fi');
+        $qb->join('fi.farmerType','farmerType');
         $qb->join('fi.employee', 'employee');
         $qb->select('employee.id AS employeeId');
         $qb->addSelect('e.created AS created');
@@ -1053,6 +1094,9 @@ ORDER BY `c`.`agent_id` ASC";
         $qb->andWhere('e.deletedAt IS NULL');
         $qb->andWhere('e.deletedBy IS NULL');
         $qb->andWhere('e.created IS NOT NULL');
+        if (isset($farmType)){
+            $qb->andWhere('farmerType.slug = :f_type')->setParameter('f_type', $farmType);
+        }
         $qb->andWhere('e.status IN (:statuses)')
             ->setParameter('statuses', ['closed', 'close']);
         $qb->andWhere('employee.id IN (:employeeIds)')
@@ -1107,10 +1151,12 @@ ORDER BY `c`.`agent_id` ASC";
             : date('Y-m-t');
 
         $typeId = isset($filterBy['type']) ? $filterBy['type']->getId() : null;
+        $farmType = isset($filterBy['farm_type']) ? $filterBy['farm_type']: null;
 
         $qb = $this->createQueryBuilder('e');
         $qb->join('e.customerGroup', 's');
         $qb->join('e.farmerIntroduce', 'fi');
+        $qb->join('fi.farmerType','farmerType');
         $qb->join('fi.employee','employee');
         $qb->select('employee.id AS employeeId, e.id as farmerId');
         $qb->addSelect('e.created AS created');
@@ -1120,6 +1166,9 @@ ORDER BY `c`.`agent_id` ASC";
         $qb->andWhere('e.deletedBy IS NULL');
         $qb->andWhere('e.status IN (:statuses)')
             ->setParameter('statuses', ['closed', 'close']);
+        if (isset($farmType)){
+            $qb->andWhere('farmerType.slug = :f_type')->setParameter('f_type', $farmType);
+        }
         if (isset($typeId)){
             $qb->andWhere('fi.cultureSpeciesItemAndQty LIKE :type')->setParameter('type', '%' . $typeId . '%');
         }
@@ -1165,10 +1214,13 @@ ORDER BY `c`.`agent_id` ASC";
         $endDate = isset($filterBy['endDate'])
             ? date('Y-m-d', strtotime($filterBy['endDate']))
             : date('Y-m-t');
+        
+        $farmType = isset($filterBy['farm_type']) ? $filterBy['farm_type']: null;
 
         $qb = $this->createQueryBuilder('e');
         $qb->join('e.customerGroup', 's');
         $qb->join('e.farmerIntroduce', 'fi');
+        $qb->join('fi.farmerType','farmerType');
         $qb->join('fi.employee','employee');
         $qb->select('employee.id AS employeeId, e.id as farmerId');
         $qb->addSelect('MONTH(e.created) AS month');
@@ -1178,6 +1230,9 @@ ORDER BY `c`.`agent_id` ASC";
         $qb->andWhere('e.deletedBy IS NULL');
         $qb->andWhere('e.status IN (:statuses)')
             ->setParameter('statuses', ['closed', 'close']);
+        if (isset($farmType)){
+            $qb->andWhere('farmerType.slug = :f_type')->setParameter('f_type', $farmType);
+        }
 
         $qb->andWhere('employee.id IN (:employeeIds)')
             ->setParameter('employeeIds', $employeeIds);
