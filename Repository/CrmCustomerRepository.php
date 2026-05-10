@@ -221,7 +221,7 @@ ORDER BY `c`.`agent_id` ASC";
         $qb = $this->createQueryBuilder('e');
         $qb->join('e.customerGroup','s');
         $qb->join('e.farmerIntroduce','farmerIntroduce');
-        $qb->join('farmerIntroduce.farmerType','farmerType');
+//        $qb->join('farmerIntroduce.farmerType','farmerType');
         $qb->join('e.crmVisitDetails','visit_details');
         $qb->join('visit_details.crmVisit','visit');
         $qb->join('farmerIntroduce.employee','employee');
@@ -509,7 +509,7 @@ ORDER BY `c`.`agent_id` ASC";
         $qb->join('e.farmerIntroduce','farmerIntroduce');
         $qb->join('farmerIntroduce.farmerType','farmerType');
         $qb->join('farmerIntroduce.employee','employee');
-        $qb->join('farmerIntroduce.farmerType','farmerType');
+//        $qb->join('farmerIntroduce.farmerType','farmerType');
 
         $qb->select('e.id as id','e.name as name','e.address as address','e.mobile as mobile','e.status as status' ,'e.created as month' );
 
