@@ -4473,7 +4473,21 @@ class ApiController extends AbstractController
                                 }
                             }else{
                                 $expenseConveyanceDetails = new ExpenseConveyanceDetails();
-                                
+
+                                // Server-authoritative bonus calculation.
+                                // Every 1000-km crossing → mobil_bill = 500 and maintenance_bill = 500.
+                                // Every 2000-km crossing → servicing_bill = 500.
+                                // App-side values for these three fields are ignored.
+                                $prev1000 = ($getLastMileageRecords && isset($getLastMileageRecords['cumulativeTotalMileageOneHundred'])) ? $getLastMileageRecords['cumulativeTotalMileageOneHundred'] : 0;
+                                $prev2000 = ($getLastMileageRecords && isset($getLastMileageRecords['cumulativeTotalMileageTwoHundred'])) ? $getLastMileageRecords['cumulativeTotalMileageTwoHundred'] : 0;
+                                $crossed1000 = ($total_reading > 0) && (($prev1000 + $total_reading) >= 1000);
+                                $crossed2000 = ($total_reading > 0) && (($prev2000 + $total_reading) >= 2000);
+                                if (in_array($transport_type, ['car', 'motorcycle'], true)) {
+                                    $mobil_bill       = $crossed1000 ? 500 : 0;
+                                    $maintenance_bill = $crossed1000 ? 500 : 0;
+                                    $servicing_bill   = $crossed2000 ? 500 : 0;
+                                }
+
                                 $expenseConveyanceDetails->setExpense($expense);
                                 $expenseConveyanceDetails->setAmount(isset($value['amount']) && $value['amount']!=''?(float)$value['amount']:0);
                                 $expenseConveyanceDetails->setFuelBill((float)$fuel_bill);
