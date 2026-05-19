@@ -4482,7 +4482,7 @@ class ApiController extends AbstractController
                                 $prev2000 = ($getLastMileageRecords && isset($getLastMileageRecords['cumulativeTotalMileageTwoHundred'])) ? $getLastMileageRecords['cumulativeTotalMileageTwoHundred'] : 0;
                                 $crossed1000 = ($total_reading > 0) && (($prev1000 + $total_reading) >= 1000);
                                 $crossed2000 = ($total_reading > 0) && (($prev2000 + $total_reading) >= 2000);
-                                if (in_array($transport_type, ['car', 'motorcycle'], true)) {
+                                if ($transport_type === 'motorcycle') {
                                     $mobil_bill       = $crossed1000 ? 500 : 0;
                                     $maintenance_bill = $crossed1000 ? 500 : 0;
                                     $servicing_bill   = $crossed2000 ? 500 : 0;
