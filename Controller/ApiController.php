@@ -4476,18 +4476,32 @@ class ApiController extends AbstractController
                             }else{
                                 $expenseConveyanceDetails = new ExpenseConveyanceDetails();
 
-                                // Server-authoritative bonus calculation.
+                                // Server-authoritative bonus calculation (motorcycle only).
                                 // Every 1000-km crossing → mobil_bill = 500 and maintenance_bill = 500.
                                 // Every 2000-km crossing → servicing_bill = 500.
-                                // App-side values for these three fields are ignored.
-                                $prev1000 = ($getLastMileageRecords && isset($getLastMileageRecords['cumulativeTotalMileageOneHundred'])) ? $getLastMileageRecords['cumulativeTotalMileageOneHundred'] : 0;
-                                $prev2000 = ($getLastMileageRecords && isset($getLastMileageRecords['cumulativeTotalMileageTwoHundred'])) ? $getLastMileageRecords['cumulativeTotalMileageTwoHundred'] : 0;
-                                $crossed1000 = ($total_reading > 0) && (($prev1000 + $total_reading) >= 1000);
-                                $crossed2000 = ($total_reading > 0) && (($prev2000 + $total_reading) >= 2000);
+                                // App-side mobil/maintenance/servicing values are ignored for motorcycle.
+                                //
+                                // The bonus and the running remainder are derived from the SAME running
+                                // sums below, so they can never disagree. floor() awards one bonus per
+                                // threshold crossed, so a single entry that crosses a threshold more than
+                                // once (e.g. a large backfilled reading) is counted correctly.
+                                //
+                                // A motorcycle bonus must be based on motorcycle-only mileage, so for a
+                                // motorcycle use a motorcycle-only previous record; other vehicles keep
+                                // the existing (mixed car+motorcycle) lookup.
+                                $prevMileageRecord = $transport_type === 'motorcycle'
+                                    ? $this->getDoctrine()->getRepository(ExpenseConveyanceDetails::class)->getLastMileageByEmployeeDate($employeeId, $vistingDate, 'motorcycle')
+                                    : $getLastMileageRecords;
+                                $prev1000 = ($prevMileageRecord && isset($prevMileageRecord['cumulativeTotalMileageOneHundred'])) ? (float)$prevMileageRecord['cumulativeTotalMileageOneHundred'] : 0;
+                                $prev2000 = ($prevMileageRecord && isset($prevMileageRecord['cumulativeTotalMileageTwoHundred'])) ? (float)$prevMileageRecord['cumulativeTotalMileageTwoHundred'] : 0;
+                                $sum1000 = $prev1000 + $total_reading;
+                                $sum2000 = $prev2000 + $total_reading;
+                                $crossings1000 = $total_reading > 0 ? (int)floor($sum1000 / 1000) : 0;
+                                $crossings2000 = $total_reading > 0 ? (int)floor($sum2000 / 2000) : 0;
                                 if ($transport_type === 'motorcycle') {
-                                    $mobil_bill       = $crossed1000 ? 500 : 0;
-                                    $maintenance_bill = $crossed1000 ? 500 : 0;
-                                    $servicing_bill   = $crossed2000 ? 500 : 0;
+                                    $mobil_bill       = 500 * $crossings1000;
+                                    $maintenance_bill = 500 * $crossings1000;
+                                    $servicing_bill   = 500 * $crossings2000;
                                 }
 
                                 $expenseConveyanceDetails->setExpense($expense);
@@ -4507,30 +4521,12 @@ class ApiController extends AbstractController
                                 $expenseConveyanceDetails->setDetails($details);
                                 $expenseConveyanceDetails->setTotalAmount($expenseConveyanceDetails->calculateTotalAmount());
 
-                                $cumulativeTotalMileageOneHundred = $getLastMileageRecords && isset($getLastMileageRecords['cumulativeTotalMileageOneHundred']) ? $getLastMileageRecords['cumulativeTotalMileageOneHundred'] : 0;
-                                $mileageOneHundred = 0;
-
+                                // Running remainder, derived from the SAME sums used for the bonus above.
+                                // fmod keeps each counter in [0, threshold) regardless of how many
+                                // crossings happened, so the remainder can never drift out of range.
                                 if($total_reading>0){
-                                    if(($cumulativeTotalMileageOneHundred + $total_reading) == 0) {
-                                        $mileageOneHundred = 0;
-                                    }elseif (($cumulativeTotalMileageOneHundred + $total_reading) > 0 && ($cumulativeTotalMileageOneHundred + $total_reading) < 1000) {
-                                        $mileageOneHundred = $cumulativeTotalMileageOneHundred + $total_reading;
-                                    }elseif (($cumulativeTotalMileageOneHundred + $total_reading) >= 1000) {
-                                        $mileageOneHundred = ($cumulativeTotalMileageOneHundred + $total_reading) - 1000;
-                                    }
-                                    $expenseConveyanceDetails->setCumulativeTotalMileageOneHundred($mileageOneHundred);
-
-                                    $cumulativeTotalMileageTwoHundred = $getLastMileageRecords && isset($getLastMileageRecords['cumulativeTotalMileageTwoHundred']) ? $getLastMileageRecords['cumulativeTotalMileageTwoHundred'] : 0;
-                                    $mileageTwoHundred = 0;
-
-                                    if(($cumulativeTotalMileageTwoHundred + $total_reading) == 0) {
-                                        $mileageTwoHundred = 0;
-                                    }elseif (($cumulativeTotalMileageTwoHundred + $total_reading) > 0 && ($cumulativeTotalMileageTwoHundred + $total_reading) < 2000) {
-                                        $mileageTwoHundred = $cumulativeTotalMileageTwoHundred + $total_reading;
-                                    }elseif (($cumulativeTotalMileageTwoHundred + $total_reading) >= 2000) {
-                                        $mileageTwoHundred = ($cumulativeTotalMileageTwoHundred + $total_reading) - 2000;
-                                    }
-                                    $expenseConveyanceDetails->setCumulativeTotalMileageTwoHundred($mileageTwoHundred);
+                                    $expenseConveyanceDetails->setCumulativeTotalMileageOneHundred(fmod($sum1000, 1000));
+                                    $expenseConveyanceDetails->setCumulativeTotalMileageTwoHundred(fmod($sum2000, 2000));
                                 }
 
                                 $this->getDoctrine()->getManager()->persist($expenseConveyanceDetails);

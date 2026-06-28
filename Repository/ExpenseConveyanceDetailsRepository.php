@@ -103,7 +103,7 @@ class ExpenseConveyanceDetailsRepository extends EntityRepository
         return $returnArray;
     }
 
-    public function getLastMileageByEmployeeDate($employeeId, $expenseDate)
+    public function getLastMileageByEmployeeDate($employeeId, $expenseDate, $transportType = null)
     {
         $qb = $this->createQueryBuilder('e');
         $qb->select('e.id', 'e.transportType', 'e.meterReadingFrom', 'e.meterReadingTo', 'e.totalMileage', 'e.cumulativeTotalMileageOneHundred', 'e.cumulativeTotalMileageTwoHundred');
@@ -116,7 +116,10 @@ class ExpenseConveyanceDetailsRepository extends EntityRepository
 
         $qb->andWhere('employee.id =:employeeId')->setParameter('employeeId', $employeeId);
 
-        $qb->andWhere('e.transportType IN (:transportType)')->setParameter('transportType', ['car','motorcycle']);
+        // When a specific transport type is requested, restrict the running total to that
+        // vehicle only (the motorcycle bonus must be based on motorcycle mileage alone).
+        $transportTypes = $transportType ? [$transportType] : ['car','motorcycle'];
+        $qb->andWhere('e.transportType IN (:transportType)')->setParameter('transportType', $transportTypes);
 
         $qb->orderBy('expense.expenseDate', 'DESC');
         $qb->setMaxResults(1);
