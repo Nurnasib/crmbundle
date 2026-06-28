@@ -4400,8 +4400,10 @@ class ApiController extends AbstractController
 
                 if ($existingExpense) {
                     $expense = $existingExpense;
+                    $isNewExpense = false;
                 }else{
                     $expense = new Expense();
+                    $isNewExpense = true;
                 }
 
                     $getLastMileageRecords = $this->getDoctrine()->getRepository(ExpenseConveyanceDetails::class)->getLastMileageByEmployeeDate($employeeId, $vistingDate);
@@ -4538,6 +4540,19 @@ class ApiController extends AbstractController
                         }
                     }
 
+
+                    // Guard against a concurrent double-submit (slow load, then resubmit):
+                    // if this request created a NEW expense, re-check just before flush in case
+                    // another request already inserted one for the same employee+date.
+                    if ($isNewExpense) {
+                        $duplicateCheck = $this->getDoctrine()->getRepository(Expense::class)->getExpenseByEmployeeAndDate($employeeId, $vistingDate);
+                        if ($duplicateCheck && sizeof($duplicateCheck) > 0) {
+                            return new JsonResponse([
+                                'status' => 200,
+                                'message' => 'Success'
+                            ]);
+                        }
+                    }
 
                     $this->getDoctrine()->getManager()->flush();
 
