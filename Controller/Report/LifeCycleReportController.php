@@ -88,6 +88,8 @@ class LifeCycleReportController extends AbstractController
             }
 
         }
+//        dd($entities['records']['01-January-2026']['41'][0]->getCustomer()->getName());
+
         return $this->render('@TerminalbdCrm/report/lifeCycle/index.html.twig',[
             'form' => $form->createView(),
             'entities' => $entities,

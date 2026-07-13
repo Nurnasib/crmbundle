@@ -25,7 +25,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Terminalbd\CrmBundle\Entity\CrmCustomer;
 use Terminalbd\CrmBundle\Entity\Fcr;
-use Terminalbd\CrmBundle\Entity\Setting;
+use App\Entity\Core\Setting;
 use function Doctrine\ORM\QueryBuilder;
 
 
@@ -133,6 +133,19 @@ class SearchFilterFormTypeForVisitSummeryReport extends AbstractType
                         ])
                         ->orderBy('e.name', 'ASC');
                     return $qb;
+                },
+            ))
+            ->add('reportMode', EntityType::class, array(
+                'required'     => false,
+                'class' => Setting::class,
+                'placeholder'  => '- Select Report Mode -',
+                'choice_label' => 'name',
+                'attr'=>array('class'=>'select2'),
+                'query_builder' => function(EntityRepository $er){
+                    return $er->createQueryBuilder('e')
+                        ->join('e.settingType', 'st')
+                        ->where("st.slug = 'report-mode'")
+                        ->orderBy('e.name', 'ASC');
                 },
             ))
             ->add('filter', SubmitType::class,[

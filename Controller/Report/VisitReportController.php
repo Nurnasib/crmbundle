@@ -392,9 +392,11 @@ class VisitReportController extends AbstractController
             $requestData = $form->getData();
             $lineManager = isset($requestData['lineManager']) && $requestData['lineManager'] != '' ? $requestData['lineManager'] : null;
             $employee = isset($requestData['employee']) && $requestData['employee'] != '' ? $requestData['employee'] : null;
+            $reportMode = isset($requestData['reportMode']) && $requestData['reportMode'] != '' ? $requestData['reportMode'] : null;
 
             $filterBy['employee'] = $employee;
             $filterBy['lineManager'] = $lineManager;
+            $filterBy['reportMode'] = $reportMode;
             $filterBy['year'] = (int)$form->get('year')->getData();
             $filterBy['months'] = $months;
             $filterBy['startMonth'] = $form->get('startMonth')->getData();
@@ -433,6 +435,12 @@ class VisitReportController extends AbstractController
             $uniqueEmployees = [];
             if(isset($employeeArray['employee']) && sizeof($employeeArray['employee'])>0){
                 $uniqueEmployees = $this->unique_array($employeeArray['employee'], 'id');
+            }
+            if($reportMode && sizeof($uniqueEmployees)>0){
+                $allowedIds = $userRepo->getEmployeeIdsByReportMode(array_column($uniqueEmployees, 'id'), $reportMode->getId());
+                $uniqueEmployees = array_values(array_filter($uniqueEmployees, function ($e) use ($allowedIds) {
+                    return in_array($e['id'], $allowedIds);
+                }));
             }
             if(sizeof($uniqueEmployees)>0){
                 foreach ($uniqueEmployees as $employee) {
