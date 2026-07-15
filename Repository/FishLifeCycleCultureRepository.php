@@ -40,6 +40,7 @@ class FishLifeCycleCultureRepository extends EntityRepository
         $qb->leftJoin('employee.regional', 'regional');
         $qb->join('e.report', 'report');
         $qb->join('e.customer', 'customer');
+        $qb->leftJoin('customer.location', 'customerLocation');
         $qb->leftJoin('e.agent', 'agent');
         $qb->leftJoin('e.mainCultureSpecies', 'mainCultureSpecies');
         $qb->leftJoin('e.otherCultureSpecies', 'otherCultureSpecies');
@@ -49,6 +50,7 @@ class FishLifeCycleCultureRepository extends EntityRepository
         $qb->addSelect('details as detail');
         $qb->addSelect('employee');
         $qb->addSelect('customer');
+        $qb->addSelect('customerLocation');
         $qb->addSelect('agent');
         $qb->addSelect('feed');
         $qb->addSelect('hatchery');

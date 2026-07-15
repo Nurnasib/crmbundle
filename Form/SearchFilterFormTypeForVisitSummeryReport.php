@@ -138,9 +138,10 @@ class SearchFilterFormTypeForVisitSummeryReport extends AbstractType
             ->add('reportMode', EntityType::class, array(
                 'required'     => false,
                 'class' => Setting::class,
-                'placeholder'  => '- Select Report Mode -',
+                'multiple'     => true,
+                'expanded'     => false,
                 'choice_label' => 'name',
-                'attr'=>array('class'=>'select2'),
+                'attr'=>array('class'=>'select2', 'multiple'=>'multiple', 'data-placeholder'=>'- Select Report Mode -'),
                 'query_builder' => function(EntityRepository $er){
                     return $er->createQueryBuilder('e')
                         ->join('e.settingType', 'st')
