@@ -1510,5 +1510,69 @@ class FarmerReportController extends AbstractController
         ]);
     }
 
+    /**
+     * @Route("/new_farm_introduce_single_report", name="new_farm_introduce_single_report")
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function NewFarmerIntroduceSingle(Request $request)
+    {
+        $filterBy = [];
+        $entities = [];
+        $if = $request->get('intro_focus');
+        $species = [];
+        $trainingMaterials = [];
+        $employee = null;
+        $arrFishSizes=[];
+        $arrayMonth=[];
+
+        $loggedUser = $this->getUser();
+        $userRepo = $this->getDoctrine()->getRepository(User::class);
+        $form = $this->createForm(SearchFilterFormType::class, null, [
+            'validation_groups' => ['year_only', 'start_end_month_only', 'farm_type_only', 'employee_only'],
+            'loggedUser' => $loggedUser,'userRepo'=>$userRepo]);
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid()){
+            $filterBy = $form->getData();
+
+            $employee = $form->getData()['employee'];
+
+            $filterBy['employeeId'] = $form->getData()['employee'] ? $form->getData()['employee']->getId() : '';
+            $filterBy['loggedUser'] = $loggedUser;
+            if ($if)$filterBy['intro_focus'] = $if;
+
+            // month range is resolved here so the shared repository methods stay untouched
+            unset($filterBy['month']);
+            $startDate = \DateTime::createFromFormat('Y-m-d', $filterBy['year'].'-'.$filterBy['start_month'].'-01');
+            $endDate = (\DateTime::createFromFormat('Y-m-d', $filterBy['year'].'-'.$filterBy['end_month'].'-01'))
+                ->modify('last day of this month');
+            $filterBy['startDate'] = $startDate->format('d-m-Y');
+            $filterBy['endDate']   = $endDate->format('d-m-Y');
+
+            $entities = $userRepo->getNewFarmCustomerReport( $filterBy );
+        }
+        $speciesTypes = [];
+        $filterableSpeciesType = [];
+        if (isset($filterBy['farm_type'])) {
+            if ($filterBy['farm_type']=='poultry-breed') $filterableSpeciesType = $this->getDoctrine()->getRepository(Setting::class)->getSpeciesTypeByParentSlug('poultry-breed');
+            if ($filterBy['farm_type']=='cattle-breed') $filterableSpeciesType = $this->getDoctrine()->getRepository(Setting::class)->getSpeciesTypeByParentSlug('cattle-breed');
+            if ($filterBy['farm_type']=='fish-breed') $filterableSpeciesType = $this->getDoctrine()->getRepository(Setting::class)->getSpeciesTypeByParentSlug('fish-breed');
+        }
+
+        return $this->render('@TerminalbdCrm/report/farmerReport/new_farm_introduce_single_report.html.twig',[
+            'form' => $form->createView(),
+            'entities' => $entities,
+            'filterBy' => $filterBy,
+            'species' => $species,
+            'speciesTypes' => $speciesTypes,
+            'filterableSpeciesType' => $filterableSpeciesType,
+            'trainingMaterials' => $trainingMaterials,
+            'employee'=> $employee,
+            'fishSizes' => $arrFishSizes,
+            'arrayMonth' => $arrayMonth,
+        ]);
+    }
+
 
 }

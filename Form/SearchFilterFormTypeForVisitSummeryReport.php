@@ -97,9 +97,12 @@ class SearchFilterFormTypeForVisitSummeryReport extends AbstractType
                     return '(' . $user->getUserId() . ') ' . $user->getName();
                 },
                 'query_builder' => function (EntityRepository $er) {
+                    // only KPI employees can appear in this report, so non-KPI accounts
+                    // (SMS_CENTER etc.) must not be selectable
                     return $er->createQueryBuilder('e')
                         ->join('e.userGroup', 'userGroup')
                         ->andWhere("userGroup.slug = :slug")->setParameter('slug', 'employee')
+                        ->andWhere("e.userMode = :userMode")->setParameter('userMode', 'KPI')
                         ->orderBy('e.name', 'ASC');
 
                 },

@@ -320,6 +320,7 @@ class SearchFilterFormType extends AbstractType
                     $qb->join('e.userGroup', 'userGroup');
                     $qb->where("userGroup.slug = 'employee'");
                     $qb->andWhere("e.enabled = 1");
+                    $qb->andWhere("e.userMode = 'KPI'");
 
                     $rolesString = implode('_', $user->getRoles());
 
@@ -370,7 +371,10 @@ class SearchFilterFormType extends AbstractType
                 'required' => false,
                 'attr' => [
                     'class' => 'select2'
-                ]
+                ],
+                'constraints' => [
+                    new NotBlank(['message' => 'Employee is required.', 'groups' => ['employee_only']]),
+                ],
             ])
             ->add('line_managers', EntityType::class,[
                 'class' => User::class,
@@ -379,6 +383,7 @@ class SearchFilterFormType extends AbstractType
                     $qb->join('e.userGroup', 'userGroup');
                     $qb->where("userGroup.slug = 'employee'");
                     $qb->andWhere("e.enabled = 1");
+                    $qb->andWhere("e.userMode = 'KPI'");
                     $qb->andWhere($qb->expr()->orX(
                         $qb->expr()->like("e.roles", ':lineManager')
                     ))

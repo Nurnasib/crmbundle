@@ -429,7 +429,12 @@ class VisitReportController extends AbstractController
                 $employeeArray = $this->getDoctrine()->getRepository(User::class)->getEmployeesByEmployeeIds($lineManager);
             }
             if($employee){
-                $employeeArray = $this->getDoctrine()->getRepository(User::class)->getEmployeesByEmployeeIds($employee->getLineManager(), $employee->getId());
+                if($employee->getLineManager()){
+                    $employeeArray = $this->getDoctrine()->getRepository(User::class)->getEmployeesByEmployeeIds($employee->getLineManager(), $employee->getId());
+                }else{
+                    // employee has no line manager (non-KPI account), nothing to report on
+                    $employeeArray = [];
+                }
             }
 
             $uniqueEmployees = [];

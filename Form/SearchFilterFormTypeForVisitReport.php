@@ -70,6 +70,7 @@ class SearchFilterFormTypeForVisitReport extends AbstractType
                     $qb->join('e.userGroup', 'userGroup');
                     $qb->where("userGroup.slug = 'employee'");
                     $qb->andWhere("e.enabled = 1");
+                    $qb->andWhere("e.userMode = 'KPI'");
 
                     $rolesString = implode('_', $user->getRoles());
 
