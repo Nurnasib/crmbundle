@@ -298,10 +298,11 @@
                     <a class="dropdown-item" href="{{ path('new_farm_customer_report') }}">{{ 'New Farmer Customer'|trans }}</a>
                 </li>
                 <li>
-                    <a class="dropdown-item" href="{{ path('new_farm_introduce_report') }}">{{ 'New Farmer Introduce (All)'|trans }}</a>
-                </li>
-                <li>
-                    <a class="dropdown-item" href="{{ path('new_farm_introduce_single_report') }}">{{ 'New Farmer Introduce (Single)'|trans }}</a>
+                    <a class="dropdown-item" href="javascript:">{{ 'New Farmer Introduce'|trans }}</a>
+                    <ul class="sub-menu">
+                        <li><a class="dropdown-item" href="{{ path('new_farm_introduce_report') }}">{{ 'All Employee'|trans }}</a></li>
+                        <li><a class="dropdown-item" href="{{ path('new_farm_introduce_single_report') }}">{{ 'Single Employee'|trans }}</a></li>
+                    </ul>
                 </li>
 
             </ul>

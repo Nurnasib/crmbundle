@@ -16,6 +16,9 @@
                 <table class="table ">
                     <thead class="thead-dark">
                     <tr>
+                        <th colspan="6" class="border-0 p-0">{{ form_errors(form) }}</th>
+                    </tr>
+                    <tr>
                         <input type="hidden" name="intro_focus" value="yes">
                         <th style="min-width: 200px">
                             {{ form_label(form.employee, 'Employee:') }}
@@ -23,19 +26,14 @@
                             {{ form_errors(form.employee) }}
                         </th>
                         <th>
-                            {{ form_label(form.start_month, 'Start Month') }}
-                            {{ form_widget(form.start_month) }}
-                            {{ form_errors(form.start_month) }}
+                            {{ form_label(form.start_month_year, 'Start Month') }}
+                            {{ form_widget(form.start_month_year, {'type': 'month'}) }}
+                            {{ form_errors(form.start_month_year) }}
                         </th>
                         <th>
-                            {{ form_label(form.end_month, 'End Month') }}
-                            {{ form_widget(form.end_month) }}
-                            {{ form_errors(form.end_month) }}
-                        </th>
-                        <th>
-                            {{ form_label(form.year, 'Year') }}
-                            {{ form_widget(form.year) }}
-                            {{ form_errors(form.year) }}
+                            {{ form_label(form.end_month_year, 'End Month') }}
+                            {{ form_widget(form.end_month_year, {'type': 'month'}) }}
+                            {{ form_errors(form.end_month_year) }}
                         </th>
                         <th>
                             {{ form_label(form.farm_type, 'Type') }}

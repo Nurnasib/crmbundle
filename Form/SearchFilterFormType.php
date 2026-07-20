@@ -27,6 +27,7 @@ use Terminalbd\CrmBundle\Entity\CrmCustomer;
 use Terminalbd\CrmBundle\Entity\Fcr;
 use Terminalbd\CrmBundle\Entity\Setting;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Regex;
 use function Doctrine\ORM\QueryBuilder;
 
 
@@ -367,7 +368,7 @@ class SearchFilterFormType extends AbstractType
                     /**  @var User $employee */
                 return '(' . $employee->getUserId() . ') ' . $employee->getName();
                 },
-                'placeholder' => '- All Employee -',
+                'placeholder' => $options['employeePlaceholder'],
                 'required' => false,
                 'attr' => [
                     'class' => 'select2'
@@ -601,6 +602,31 @@ class SearchFilterFormType extends AbstractType
                 ],
 //                'data' => date('Y')
             ])
+            // month + year in one native <input type="month">, rendered with {'type': 'month'}
+            ->add('start_month_year', TextType::class,[
+                'required' => false,
+                'attr' => [
+                    'min' => '2020-01',
+                    'max' => date('Y-m'),
+                ],
+                'constraints' => [
+                    new NotBlank(['message' => 'Start Month is required.', 'groups' => ['start_end_month_year_only']]),
+                    new Regex(['pattern' => '/^\d{4}-(0[1-9]|1[0-2])$/', 'message' => 'Start Month is invalid.', 'groups' => ['start_end_month_year_only']]),
+                ],
+                'data' => date('Y-m'),
+            ])
+            ->add('end_month_year', TextType::class,[
+                'required' => false,
+                'attr' => [
+                    'min' => '2020-01',
+                    'max' => date('Y-m'),
+                ],
+                'constraints' => [
+                    new NotBlank(['message' => 'End Month is required.', 'groups' => ['start_end_month_year_only']]),
+                    new Regex(['pattern' => '/^\d{4}-(0[1-9]|1[0-2])$/', 'message' => 'End Month is invalid.', 'groups' => ['start_end_month_year_only']]),
+                ],
+                'data' => date('Y-m'),
+            ])
             ->add('reportStatus', ChoiceType::class,[
                 'choices' => [
                     'In Progress' => 'IN_PROGRESS',
@@ -737,6 +763,7 @@ class SearchFilterFormType extends AbstractType
             'loggedUser' => User::class,
             'userRepo' => UserRepository::class,
             'validation_groups' => ['Default'],
+            'employeePlaceholder' => '- All Employee -',
         ]);
     }
 }
