@@ -425,6 +425,7 @@ ORDER BY `c`.`agent_id` ASC";
         $qb->select('e.id as id','e.name as name','e.address as address','e.mobile as mobile','e.status as status' ,'e.created as month' );
 
         $qb->addSelect('farmerIntroduce.cultureSpeciesItemAndQty', 'farmerIntroduce.remarks as remarks');
+        $qb->addSelect('farmerIntroduce.introduceDate as introduceDate');
         $qb->addSelect('employee.id as employeeId', 'employee.name as employeeName', 'employee.userId as employeeUserId');
         $qb->addSelect('agent.name as agentName', 'agentGroup.slug as agentGroupSlug', 'agent.otherAndSubAgentId as otherAndSubAgentId', 'agent.agentId as agentId', 'agent.address as agentLocation');
         $qb->addSelect('otherAgent.name as otherAgentName', 'otherAgent.address as otherAgentLocation');

@@ -5,7 +5,7 @@
     {% else %}
         {% set dynamicColumn = filterableSpeciesType|length %}
     {% endif %}
-    {% set totalColumns = dynamicColumn + 13 %}
+    {% set totalColumns = dynamicColumn + 14 %}
 {% block body %}
     <div class="pcoded-inner-content">
 
@@ -81,6 +81,7 @@
                             <th scope="col" rowspan="2">Employee</th>
                             <th scope="col" rowspan="2">SL No.</th>
                             <th scope="col" rowspan="2">Farmer Name</th>
+                            <th scope="col" rowspan="2">Introduce Date</th>
                             <th scope="col" rowspan="2">Mobile</th>
                             <th scope="col" rowspan="2">Address</th>
 {#                            <th scope="col" rowspan="2">Location</th>#}
@@ -135,6 +136,7 @@
                                                     {% endif %}
                                                     <td data-t="n">{{ loop.index }}</td>
                                                     <td data-t="n">{{ customer.name }}</td>
+                                                    <td data-t="n">{{ customer.introduceDate ? customer.introduceDate|date('d-m-Y') : '' }}</td>
                                                     <td data-t="n">{{ customer.mobile }}</td>
                                                     <td data-t="n">{{ customer.address }}</td>
 {#                                                    <td data-t="n">{{ customer.locationName??'' }}</td>#}
