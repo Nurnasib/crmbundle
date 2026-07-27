@@ -10,6 +10,8 @@
     'holiday': 'Holiday'
 } %}
 {% set parameterOrder = ['agent', 'sub-agent', 'farmer', 'other-agent', 'leave', 'office-work', 'holiday'] %}
+{# Flag rows render a letter on the days they apply and stay blank otherwise. #}
+{% set flagSymbols = {'leave': 'L', 'office-work': 'OW', 'holiday': 'H'} %}
 {% set totalColumns = 34 %}
 
 {% block body %}
@@ -108,7 +110,11 @@
                                                 <td style="background-color: #e9ecef;"></td>
                                             {% else %}
                                                 {% set value = block.rows[parameter][d] %}
-                                                <td data-t="n">{{ value is null ? '' : value }}</td>
+                                                {% if flagSymbols[parameter] is defined %}
+                                                    <td class="text-center">{{ value ? flagSymbols[parameter] : '' }}</td>
+                                                {% else %}
+                                                    <td data-t="n">{{ value is null ? '' : value }}</td>
+                                                {% endif %}
                                             {% endif %}
                                         {% endfor %}
                                     </tr>
