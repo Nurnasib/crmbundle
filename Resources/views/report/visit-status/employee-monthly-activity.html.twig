@@ -120,7 +120,10 @@
                                                 {% if flagSymbols[parameter] is defined %}
                                                     <td class="text-center">{{ value ? flagSymbols[parameter] : '' }}</td>
                                                 {% else %}
-                                                    <td data-t="n">{{ value is null ? '' : value }}</td>
+                                                    {# Blank is the single "no visits" marker - a zero count and a day
+                                                       with nothing filed both render empty. Swap to
+                                                       `value is null ? '' : value` to show explicit zeros instead. #}
+                                                    <td data-t="n">{{ value ? value : '' }}</td>
                                                 {% endif %}
                                             {% endif %}
                                         {% endfor %}
