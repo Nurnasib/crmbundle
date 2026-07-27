@@ -29,14 +29,19 @@
                             {{ form_widget(form.employee) }}
                         </th>
                         <th>
-                            {{ form_label(form.startDate, 'Start Date:') }}
-                            {{ form_widget(form.startDate,{'id':'start-date', 'attr':{'placeholder': 'dd-mm-YYYY'}}) }}
-                            {{ form_errors(form.startDate) }}
+                            {{ form_label(form.startMonth, 'Start Month:') }}
+                            {{ form_widget(form.startMonth) }}
+                            {{ form_errors(form.startMonth) }}
                         </th>
                         <th>
-                            {{ form_label(form.endDate, 'End Date:') }}
-                            {{ form_widget(form.endDate,{'id':'end-date', 'attr':{'placeholder': 'dd-mm-YYYY'}}) }}
-                            {{ form_errors(form.endDate) }}
+                            {{ form_label(form.endMonth, 'End Month:') }}
+                            {{ form_widget(form.endMonth) }}
+                            {{ form_errors(form.endMonth) }}
+                        </th>
+                        <th>
+                            {{ form_label(form.year, 'Year:') }}
+                            {{ form_widget(form.year) }}
+                            {{ form_errors(form.year) }}
                         </th>
                         <th colspan="1">
                             <div class="btn-group" style="margin-top: 25px">
@@ -76,9 +81,11 @@
                                     &nbsp;&nbsp;|&nbsp;&nbsp;
                                     <strong>Emp Name:</strong> {{ selectedEmployee.name }}
                                     &nbsp;&nbsp;|&nbsp;&nbsp;
-                                    <strong>Start Date:</strong> {{ startDate|date('d-m-Y') }}
+                                    <strong>Start Month:</strong> {{ startMonth }}
                                     &nbsp;&nbsp;|&nbsp;&nbsp;
-                                    <strong>End Date:</strong> {{ endDate|date('d-m-Y') }}
+                                    <strong>End Month:</strong> {{ endMonth }}
+                                    &nbsp;&nbsp;|&nbsp;&nbsp;
+                                    <strong>Year:</strong> {{ year }}
                                 </td>
                             </tr>
                         {% endif %}
@@ -159,13 +166,6 @@
     <script type="application/javascript" src="{{ asset('assets/module/js/app.js') }}"></script>
     <script src="{{ asset('assets/js/tableToExcel.js') }}"></script>
     <script>
-
-        $('#start-date, #end-date').datepicker({
-            changeMonth: true,
-            changeYear: true,
-            yearRange: "2020:" + new Date().getFullYear(),
-            dateFormat: 'dd-mm-yy'
-        });
 
         let button = document.querySelector("#button-excel");
 

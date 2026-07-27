@@ -11,6 +11,7 @@ use Dompdf\Dompdf;
 use Dompdf\Options;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Terminalbd\CrmBundle\Entity\CrmVisit;
@@ -374,48 +375,87 @@ class VisitReportController extends AbstractController
         $form = $this->createForm(SearchFilterFormTypeForVisitReport::class, null, [
             'loggedUser' => $this->getUser(), 'userRepo' => $userRepo
         ]);
-        // Removed on this instance only - the shared form type itself is untouched.
+
+        // All of the following act on this form instance only - the shared form type
+        // itself is untouched, so the reports that share it keep their own fields.
+        // The employee field is kept because it carries the role-based scoping that
+        // limits a line manager to their own team.
         $form->remove('process');
         $form->remove('serviceMode');
+        $form->remove('startDate');
+        $form->remove('endDate');
+
+        $monthChoices = [];
+        foreach (range(1, 12) as $monthNumber) {
+            $monthName = date('F', mktime(0, 0, 0, $monthNumber, 1));
+            $monthChoices[$monthName] = $monthName;
+        }
+        $yearChoices = [];
+        foreach (range((int) date('Y'), 2020) as $yearNumber) {
+            $yearChoices[$yearNumber] = $yearNumber;
+        }
+
+        $form->add('startMonth', ChoiceType::class, [
+            'choices' => $monthChoices,
+            'required' => false,
+            'placeholder' => 'Select a Month',
+            'data' => date('F'),
+            'attr' => ['class' => 'form-control'],
+        ]);
+        $form->add('endMonth', ChoiceType::class, [
+            'choices' => $monthChoices,
+            'required' => false,
+            'placeholder' => 'Select a Month',
+            'data' => date('F'),
+            'attr' => ['class' => 'form-control'],
+        ]);
+        $form->add('year', ChoiceType::class, [
+            'choices' => $yearChoices,
+            'required' => false,
+            'placeholder' => 'Select Year',
+            'data' => (int) date('Y'),
+            'attr' => ['class' => 'form-control'],
+        ]);
+
         $form->handleRequest($request);
 
         $selectedEmployee = null;
-        $startDate = new DateTime(date('Y-m-01'));
-        $endDate = new DateTime(date('Y-m-t'));
+        $year = (int) date('Y');
+        $startMonth = date('F');
+        $endMonth = date('F');
         $blocks = [];
 
         if ($form->isSubmitted()) {
             $data = $form->getData();
             $selectedEmployee = !empty($data['employee']) ? $data['employee'] : null;
+            $year = !empty($data['year']) ? (int) $data['year'] : $year;
+            $startMonth = !empty($data['startMonth']) ? $data['startMonth'] : $startMonth;
+            $endMonth = !empty($data['endMonth']) ? $data['endMonth'] : $endMonth;
+        }
 
-            if (!empty($data['startDate'])) {
-                $parsedStart = DateTime::createFromFormat('!d-m-Y', $data['startDate']);
-                if ($parsedStart) {
-                    $startDate = $parsedStart;
-                }
-            }
-            if (!empty($data['endDate'])) {
-                $parsedEnd = DateTime::createFromFormat('!d-m-Y', $data['endDate']);
-                if ($parsedEnd) {
-                    $endDate = $parsedEnd;
-                }
-            }
-            if ($endDate < $startDate) {
-                $endDate = clone $startDate;
-            }
+        $startMonthNumber = (int) date('n', strtotime($startMonth . ' 1 ' . $year));
+        $endMonthNumber = (int) date('n', strtotime($endMonth . ' 1 ' . $year));
+        if ($endMonthNumber < $startMonthNumber) {
+            // Guard against an end month earlier than the start month within the year.
+            $endMonthNumber = $startMonthNumber;
+            $endMonth = $startMonth;
+        }
 
-            if ($selectedEmployee) {
-                $blocks = $this->getDoctrine()->getRepository(CrmVisit::class)
-                    ->getEmployeeMonthlyActivity($selectedEmployee->getId(), $startDate, $endDate);
-            }
+        $startDate = new DateTime(sprintf('%d-%02d-01', $year, $startMonthNumber));
+        $endDate = new DateTime(date('Y-m-t', mktime(0, 0, 0, $endMonthNumber, 1, $year)));
+
+        if ($form->isSubmitted() && $selectedEmployee) {
+            $blocks = $this->getDoctrine()->getRepository(CrmVisit::class)
+                ->getEmployeeMonthlyActivity($selectedEmployee->getId(), $startDate, $endDate);
         }
 
         return $this->render('@TerminalbdCrm/report/visit-status/employee-monthly-activity.html.twig', [
             'form' => $form->createView(),
             'blocks' => $blocks,
             'selectedEmployee' => $selectedEmployee,
-            'startDate' => $startDate,
-            'endDate' => $endDate,
+            'startMonth' => $startMonth,
+            'endMonth' => $endMonth,
+            'year' => $year,
             'submitted' => $form->isSubmitted(),
         ]);
     }
