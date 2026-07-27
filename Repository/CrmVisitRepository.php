@@ -190,4 +190,106 @@ class CrmVisitRepository extends EntityRepository
 
 
     }
+
+    /**
+     * Employee Monthly Activity Report.
+     *
+     * Additive helper - used only by the employee_monthly_activity_report route.
+     * Nothing else calls it, so no existing report is affected.
+     *
+     * Returns one block per calendar month covered by the range. Each block holds the
+     * seven parameter rows keyed by day-of-month:
+     *   agent | sub-agent | farmer | other-agent  -> visit counts from CrmVisitDetails.process
+     *   leave | office-work | holiday             -> day flags from CrmVisit.workingMode
+     *
+     * Visit rows distinguish blank from zero:
+     *   null -> employee filed nothing that day, or the day is leave/office work/holiday
+     *   0    -> employee worked but logged no visit of that type
+     *
+     * @return array<int, array<string, mixed>>
+     */
+    public function getEmployeeMonthlyActivity($employeeId, \DateTime $startDate, \DateTime $endDate): array
+    {
+        $processRows = $this->createQueryBuilder('v')
+            ->select('v.visitDate AS visitDate', 'vd.process AS process', 'COUNT(vd.id) AS total')
+            ->join('v.crmVisitDetails', 'vd')
+            ->where('v.employee = :employee')->setParameter('employee', $employeeId)
+            ->andWhere('v.visitDate >= :startDate')->setParameter('startDate', $startDate)
+            ->andWhere('v.visitDate <= :endDate')->setParameter('endDate', $endDate)
+            ->groupBy('v.visitDate')->addGroupBy('vd.process')
+            ->getQuery()->getArrayResult();
+
+        $modeRows = $this->createQueryBuilder('v')
+            ->select('v.visitDate AS visitDate', 'workingMode.slug AS slug')
+            ->join('v.workingMode', 'workingMode')
+            ->where('v.employee = :employee')->setParameter('employee', $employeeId)
+            ->andWhere('v.visitDate >= :startDate')->setParameter('startDate', $startDate)
+            ->andWhere('v.visitDate <= :endDate')->setParameter('endDate', $endDate)
+            ->groupBy('v.visitDate')->addGroupBy('workingMode.slug')
+            ->getQuery()->getArrayResult();
+
+        $counts = [];
+        foreach ($processRows as $row) {
+            if (empty($row['visitDate']) || !$row['visitDate'] instanceof \DateTimeInterface) {
+                continue;
+            }
+            $counts[$row['visitDate']->format('Y-n-j')][$row['process']] = (int) $row['total'];
+        }
+
+        $modes = [];
+        foreach ($modeRows as $row) {
+            if (empty($row['visitDate']) || !$row['visitDate'] instanceof \DateTimeInterface) {
+                continue;
+            }
+            $modes[$row['visitDate']->format('Y-n-j')][] = $row['slug'];
+        }
+
+        $visitKeys = ['agent', 'sub-agent', 'farmer', 'other-agent'];
+        $flagKeys = ['leave', 'office-work', 'holiday'];
+
+        $months = new \DatePeriod(
+            new \DateTime($startDate->format('Y-m-01')),
+            new \DateInterval('P1M'),
+            new \DateTime($endDate->format('Y-m-t'))
+        );
+
+        $blocks = [];
+        foreach ($months as $month) {
+            $daysInMonth = (int) $month->format('t');
+            $rows = array_fill_keys(array_merge($visitKeys, $flagKeys), []);
+
+            for ($day = 1; $day <= $daysInMonth; $day++) {
+                $key = $month->format('Y-n-') . $day;
+                $dayModes = $modes[$key] ?? [];
+                $nonWorking = (bool) array_intersect($flagKeys, $dayModes);
+                $hasRecord = isset($modes[$key]) || isset($counts[$key]);
+
+                foreach ($visitKeys as $process) {
+                    if (isset($counts[$key])) {
+                        // Details exist, so always show them - this also keeps the
+                        // count visible on days carrying more than one working mode.
+                        $rows[$process][$day] = $counts[$key][$process] ?? 0;
+                    } elseif ($nonWorking || !$hasRecord) {
+                        $rows[$process][$day] = null;
+                    } else {
+                        $rows[$process][$day] = 0;
+                    }
+                }
+
+                foreach ($flagKeys as $flag) {
+                    $rows[$flag][$day] = in_array($flag, $dayModes, true) ? 1 : 0;
+                }
+            }
+
+            $blocks[] = [
+                'year' => (int) $month->format('Y'),
+                'month' => (int) $month->format('n'),
+                'label' => $month->format('M'),
+                'daysInMonth' => $daysInMonth,
+                'rows' => $rows,
+            ];
+        }
+
+        return $blocks;
+    }
 }

@@ -359,6 +359,68 @@ class VisitReportController extends AbstractController
     }
 
     /**
+     * Employee Monthly Activity Report.
+     *
+     * Day-by-day activity grid for a single employee: visit counts split by agent /
+     * sub agent / farmer / other agent, plus leave, office work and holiday flags.
+     * Backed by CrmVisitRepository::getEmployeeMonthlyActivity(), which is used
+     * nowhere else, so no other report is touched.
+     *
+     * @Route("/crm/employee-monthly-activity", name="employee_monthly_activity_report")
+     */
+    public function employeeMonthlyActivityReport(Request $request)
+    {
+        $userRepo = $this->getDoctrine()->getRepository(User::class);
+        $form = $this->createForm(SearchFilterFormTypeForVisitReport::class, null, [
+            'loggedUser' => $this->getUser(), 'userRepo' => $userRepo
+        ]);
+        // Removed on this instance only - the shared form type itself is untouched.
+        $form->remove('process');
+        $form->remove('serviceMode');
+        $form->handleRequest($request);
+
+        $selectedEmployee = null;
+        $startDate = new DateTime(date('Y-m-01'));
+        $endDate = new DateTime(date('Y-m-t'));
+        $blocks = [];
+
+        if ($form->isSubmitted()) {
+            $data = $form->getData();
+            $selectedEmployee = !empty($data['employee']) ? $data['employee'] : null;
+
+            if (!empty($data['startDate'])) {
+                $parsedStart = DateTime::createFromFormat('!d-m-Y', $data['startDate']);
+                if ($parsedStart) {
+                    $startDate = $parsedStart;
+                }
+            }
+            if (!empty($data['endDate'])) {
+                $parsedEnd = DateTime::createFromFormat('!d-m-Y', $data['endDate']);
+                if ($parsedEnd) {
+                    $endDate = $parsedEnd;
+                }
+            }
+            if ($endDate < $startDate) {
+                $endDate = clone $startDate;
+            }
+
+            if ($selectedEmployee) {
+                $blocks = $this->getDoctrine()->getRepository(CrmVisit::class)
+                    ->getEmployeeMonthlyActivity($selectedEmployee->getId(), $startDate, $endDate);
+            }
+        }
+
+        return $this->render('@TerminalbdCrm/report/visit-status/employee-monthly-activity.html.twig', [
+            'form' => $form->createView(),
+            'blocks' => $blocks,
+            'selectedEmployee' => $selectedEmployee,
+            'startDate' => $startDate,
+            'endDate' => $endDate,
+            'submitted' => $form->isSubmitted(),
+        ]);
+    }
+
+    /**
      * @Route("/crm/visit-summery-report", name="visit_summery_report")
      */
     public function visitSummeryReport(Request $request)
