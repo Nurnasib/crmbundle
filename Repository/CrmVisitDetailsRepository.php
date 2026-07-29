@@ -389,18 +389,32 @@ class CrmVisitDetailsRepository extends EntityRepository
         $results = $qb->getQuery()->getArrayResult();
 
         $data = [];
+
         foreach ($results as $result) {
-            if ($result['farmerId']){
-                $data[$result['employeeAutoId']]['farmer'][$result['visitCreatedDate']->format('F')][$result['farmerId']] = $result;
-            }
-            if ($result['agentAutoId'] && ( $result['agentGroupSlug'] == 'feed' || $result['agentGroupSlug'] == 'chick')){
-                $data[$result['employeeAutoId']]['agent'][$result['visitCreatedDate']->format('F')][$result['agentAutoId']] = $result;
-            }elseif ($result['agentAutoId'] && $result['agentGroupSlug'] == 'other-agent'){
-                $data[$result['employeeAutoId']]['other-agent'][$result['visitCreatedDate']->format('F')][$result['agentAutoId']] = $result;
-            }elseif ($result['agentAutoId'] && $result['agentGroupSlug'] == 'sub-agent'){
-                $data[$result['employeeAutoId']]['sub-agent'][$result['visitCreatedDate']->format('F')][$result['agentAutoId']] = $result;
+            $month    = $result['visitCreatedDate']->format('F');
+            $employee = $result['employeeAutoId'];
+
+            // e.process is the line's own type - bucket on it so a line lands in
+            // exactly one column, never both farmer and its agent's group.
+            if ($result['process'] == 'farmer' && $result['farmerId']) {
+                $data[$employee]['farmer'][$month][$result['farmerId']] = $result;
+            } elseif (in_array($result['process'], ['agent', 'sub-agent', 'other-agent']) && $result['agentAutoId']) {
+                $data[$employee][$result['process']][$month][$result['agentAutoId']] = $result;
             }
         }
+
+//        foreach ($results as $result) {
+//            if ($result['farmerId']){
+//                $data[$result['employeeAutoId']]['farmer'][$result['visitCreatedDate']->format('F')][$result['farmerId']] = $result;
+//            }
+//            if ($result['agentAutoId'] && ( $result['agentGroupSlug'] == 'feed' || $result['agentGroupSlug'] == 'chick')){
+//                $data[$result['employeeAutoId']]['agent'][$result['visitCreatedDate']->format('F')][$result['agentAutoId']] = $result;
+//            }elseif ($result['agentAutoId'] && $result['agentGroupSlug'] == 'other-agent'){
+//                $data[$result['employeeAutoId']]['other-agent'][$result['visitCreatedDate']->format('F')][$result['agentAutoId']] = $result;
+//            }elseif ($result['agentAutoId'] && $result['agentGroupSlug'] == 'sub-agent'){
+//                $data[$result['employeeAutoId']]['sub-agent'][$result['visitCreatedDate']->format('F')][$result['agentAutoId']] = $result;
+//            }
+//        }
         return $data;
     }
 }

@@ -561,8 +561,8 @@ class VisitReportController extends AbstractController
 
             $employeeIds = array_column($uniqueEmployees, 'id');
 
-            $startDate = date('Y-m-d', strtotime($filterBy['year'] . '-' . $filterBy['startMonth'] . '-01'));
-            $endDate = date('Y-m-t', strtotime($filterBy['year'] . '-' . $filterBy['endMonth'] . '-01'));
+            $startDate = date('Y-m-d', strtotime($filterBy['year'] . '-' . $filterBy['startMonth'] . '-01')) . ' 00:00:00';
+            $endDate   = date('Y-m-t', strtotime($filterBy['year'] . '-' . $filterBy['endMonth'] . '-01')) . ' 23:59:59';
             $records = $this->getDoctrine()->getRepository(CrmVisitDetails::class)->getVisitDetailsSummery($startDate, $endDate, $employeeIds);
         }
         $processes = ['agent', 'sub-agent', 'other-agent', 'farmer'];
