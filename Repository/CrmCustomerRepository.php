@@ -224,7 +224,9 @@ ORDER BY `c`.`agent_id` ASC";
 //        $qb->join('farmerIntroduce.farmerType','farmerType');
         $qb->join('e.crmVisitDetails','visit_details');
         $qb->join('visit_details.crmVisit','visit');
-        $qb->join('farmerIntroduce.employee','employee');
+        // TEMP (revert later): attribute the farm to the employee who MADE the visit.
+        // ORIGINAL: $qb->join('farmerIntroduce.employee','employee');   // employee who INTRODUCED the farmer
+        $qb->join('visit.employee','employee');
         $qb->join('employee.designation','designation');
         $qb->join('farmerIntroduce.farmerType','farmerType');
 
@@ -233,7 +235,9 @@ ORDER BY `c`.`agent_id` ASC";
         $qb->addSelect('farmerIntroduce.cultureSpeciesItemAndQty');
         $qb->addSelect('employee.id as employeeId', 'employee.name as employeeName', 'employee.userId as employeeUserId', 'designation.name as designationName');
         $qb->addSelect('farmerType.name as farmerTypeName', 'farmerType.slug as farmerTypeSlug');
-        $qb->addSelect('visit_details.farmCapacity as farmCapacity', 'visit_details.comments as comments', 'visit.visitDate as visit_date');
+        // TEMP (revert later): day column comes from visit.created instead of visit.visitDate.
+        // ORIGINAL: $qb->addSelect('visit_details.farmCapacity as farmCapacity', 'visit_details.comments as comments', 'visit.visitDate as visit_date');
+        $qb->addSelect('visit_details.farmCapacity as farmCapacity', 'visit_details.comments as comments', 'visit.created as visit_date');
 
         $qb->where('s.slug = :slug')->setParameter('slug','farmer');
         if (isset($filterBy['status'])){
@@ -255,10 +259,17 @@ ORDER BY `c`.`agent_id` ASC";
         $qb->andWhere('employee.id IN (:employeeIds)')->setParameter('employeeIds', $employeeIds);
 
 //        dd($startDate, $endDate);
-        $qb->andWhere('visit.visitDate >= :startDate')
-            ->andWhere('visit.visitDate <= :endDate')
-            ->setParameter('startDate', $startDate, Types::DATE_MUTABLE)
-            ->setParameter('endDate', $endDate, Types::DATE_MUTABLE);
+        // TEMP (revert later): filter on visit.created (datetime) instead of visit.visitDate (date).
+        // endDate is pushed to 23:59:59 so visits created late on the last day are not cut off.
+        // ORIGINAL:
+        //        $qb->andWhere('visit.visitDate >= :startDate')
+        //            ->andWhere('visit.visitDate <= :endDate')
+        //            ->setParameter('startDate', $startDate, Types::DATE_MUTABLE)
+        //            ->setParameter('endDate', $endDate, Types::DATE_MUTABLE);
+        $qb->andWhere('visit.created >= :startDate')
+            ->andWhere('visit.created <= :endDate')
+            ->setParameter('startDate', (clone $startDate)->setTime(0, 0, 0), Types::DATETIME_MUTABLE)
+            ->setParameter('endDate', (clone $endDate)->setTime(23, 59, 59), Types::DATETIME_MUTABLE);
         $results = $qb->getQuery()->getArrayResult();
 //        dd($results);
 
