@@ -602,31 +602,6 @@ class SearchFilterFormType extends AbstractType
                 ],
 //                'data' => date('Y')
             ])
-            // month + year in one native <input type="month">, rendered with {'type': 'month'}
-            ->add('start_month_year', TextType::class,[
-                'required' => false,
-                'attr' => [
-                    'min' => '2020-01',
-                    'max' => date('Y-m'),
-                ],
-                'constraints' => [
-                    new NotBlank(['message' => 'Start Month is required.', 'groups' => ['start_end_month_year_only']]),
-                    new Regex(['pattern' => '/^\d{4}-(0[1-9]|1[0-2])$/', 'message' => 'Start Month is invalid.', 'groups' => ['start_end_month_year_only']]),
-                ],
-                'data' => date('Y-m'),
-            ])
-            ->add('end_month_year', TextType::class,[
-                'required' => false,
-                'attr' => [
-                    'min' => '2020-01',
-                    'max' => date('Y-m'),
-                ],
-                'constraints' => [
-                    new NotBlank(['message' => 'End Month is required.', 'groups' => ['start_end_month_year_only']]),
-                    new Regex(['pattern' => '/^\d{4}-(0[1-9]|1[0-2])$/', 'message' => 'End Month is invalid.', 'groups' => ['start_end_month_year_only']]),
-                ],
-                'data' => date('Y-m'),
-            ])
             ->add('reportStatus', ChoiceType::class,[
                 'choices' => [
                     'In Progress' => 'IN_PROGRESS',

@@ -26,14 +26,19 @@
                             {{ form_errors(form.employee) }}
                         </th>
                         <th>
-                            {{ form_label(form.start_month_year, 'Start Month') }}
-                            {{ form_widget(form.start_month_year, {'type': 'month'}) }}
-                            {{ form_errors(form.start_month_year) }}
+                            {{ form_label(form.year, 'Year') }}
+                            {{ form_widget(form.year) }}
+                            {{ form_errors(form.year) }}
                         </th>
                         <th>
-                            {{ form_label(form.end_month_year, 'End Month') }}
-                            {{ form_widget(form.end_month_year, {'type': 'month'}) }}
-                            {{ form_errors(form.end_month_year) }}
+                            {{ form_label(form.start_month, 'Start Month') }}
+                            {{ form_widget(form.start_month) }}
+                            {{ form_errors(form.start_month) }}
+                        </th>
+                        <th>
+                            {{ form_label(form.end_month, 'End Month') }}
+                            {{ form_widget(form.end_month) }}
+                            {{ form_errors(form.end_month) }}
                         </th>
                         <th>
                             {{ form_label(form.farm_type, 'Type') }}

@@ -1530,7 +1530,7 @@ class FarmerReportController extends AbstractController
         $loggedUser = $this->getUser();
         $userRepo = $this->getDoctrine()->getRepository(User::class);
         $form = $this->createForm(SearchFilterFormType::class, null, [
-            'validation_groups' => ['start_end_month_year_only', 'farm_type_only', 'employee_only'],
+            'validation_groups' => ['year_only', 'start_end_month_only', 'farm_type_only', 'employee_only'],
             'loggedUser' => $loggedUser,'userRepo'=>$userRepo,
             'employeePlaceholder' => '- Select Employee -']);
         $form->handleRequest($request);
@@ -1544,14 +1544,14 @@ class FarmerReportController extends AbstractController
             $filterBy['loggedUser'] = $loggedUser;
             if ($if)$filterBy['intro_focus'] = $if;
 
-            // month/year range is resolved here so the shared repository methods stay untouched
-            unset($filterBy['month'], $filterBy['year'], $filterBy['start_month'], $filterBy['end_month']);
-            $startDate = \DateTime::createFromFormat('Y-m-d', $filterBy['start_month_year'].'-01');
-            $endDate = (\DateTime::createFromFormat('Y-m-d', $filterBy['end_month_year'].'-01'))
+            // month range is resolved here so the shared repository methods stay untouched
+            $startDate = \DateTime::createFromFormat('Y-m-d', $filterBy['year'].'-'.$filterBy['start_month'].'-01');
+            $endDate = (\DateTime::createFromFormat('Y-m-d', $filterBy['year'].'-'.$filterBy['end_month'].'-01'))
                 ->modify('last day of this month');
+            unset($filterBy['month'], $filterBy['year'], $filterBy['start_month'], $filterBy['end_month']);
 
             if ($startDate > $endDate) {
-                $form->addError(new FormError('End month/year must not be earlier than start month/year.'));
+                $form->addError(new FormError('End month must not be earlier than start month.'));
             } else {
                 $filterBy['startDate'] = $startDate->format('d-m-Y');
                 $filterBy['endDate']   = $endDate->format('d-m-Y');
