@@ -278,14 +278,16 @@ class VisitReportController extends AbstractController
         $form->handleRequest($request);
         $records = [];
         $agentSales=[];
+        $agentType = 'all';
         if ($form->isSubmitted()){
             $selectedEmployee = $form->getData()['employee'];
+            $agentType = $form->getData()['agentType'] ?: 'all';
             $startDate = $form->getData()['startDate'] ? new \DateTime($form->getData()['startDate']) : new \DateTime('now');
             $endDate = $form->getData()['endDate'] ? new \DateTime($form->getData()['endDate']) : new \DateTime('now');
 
             $startDate = $startDate->format('Y-m-d 00:00:00');
             $endDate = $endDate->format('Y-m-d 23:59:59');
-          $records = $this->getDoctrine()->getRepository(CrmVisitDetails::class)->getAgentVisitMonitors( $startDate, $endDate, $selectedEmployee);
+          $records = $this->getDoctrine()->getRepository(CrmVisitDetails::class)->getAgentVisitMonitors( $startDate, $endDate, $selectedEmployee, $agentType);
           $agentIds = isset($records['records']) && sizeof($records['records'])>0 ? array_keys($records['records']) : [];
 
            if( sizeof($agentIds) > 0 ){
@@ -299,6 +301,7 @@ class VisitReportController extends AbstractController
             'form' => $form->createView(),
             'selectedEmployee' => $selectedEmployee,
             'agentSales' => $agentSales,
+            'agentType' => $agentType,
 
         ]);
     }
@@ -317,8 +320,10 @@ class VisitReportController extends AbstractController
         $records = [];
         $agentSales=[];
         $getAllDates=[];
+        $agentType = 'all';
         if ($form->isSubmitted()){
             $selectedEmployee = $form->getData()['employee'];
+            $agentType = $form->getData()['agentType'] ?: 'all';
             $startDate = $form->getData()['startDate'] ? new \DateTime($form->getData()['startDate']) : new \DateTime('now');
             $endDate = $form->getData()['endDate'] ? new \DateTime($form->getData()['endDate']) : new \DateTime('now');
 
@@ -327,15 +332,16 @@ class VisitReportController extends AbstractController
 
             $getAllDates = $this->getDatesBetween($startDate, $endDate);
 
-          $records = $this->getDoctrine()->getRepository(CrmVisitDetails::class)->getAgentVisitMonitorsDateWise( $startDate, $endDate, $selectedEmployee);
+          $records = $this->getDoctrine()->getRepository(CrmVisitDetails::class)->getAgentVisitMonitorsDateWise( $startDate, $endDate, $selectedEmployee, $agentType);
         }
-        
+
         return $this->render("@TerminalbdCrm/report/visit-status/agent-visit-monitor-date-wise.html.twig",[
             'records' => $records,
             'form' => $form->createView(),
             'selectedEmployee' => $selectedEmployee,
 //            'agentSales' => $agentSales,
             'allDates' => $getAllDates,
+            'agentType' => $agentType,
 
         ]);
     }

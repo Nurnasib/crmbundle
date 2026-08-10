@@ -257,7 +257,26 @@ class CrmVisitDetailsRepository extends EntityRepository
         }
         return $data;
     }
-    public function getAgentVisitMonitors($begin,$end,$employeeId)
+    /**
+     * Restrict a visit-details query to one agent type, using the same agent
+     * group the report already shows in its "Agent ID" column. "Agent" means
+     * every group that is neither Other Agent nor Sub Agent (feed, chick ...).
+     * Expects the query to already have "agentGroup" joined.
+     */
+    private function handleAgentTypeFilter($qb, $agentType)
+    {
+        if (!$agentType || $agentType == 'all'){
+            return;
+        }
+        if ($agentType == 'agent'){
+            $qb->andWhere('(agentGroup.slug IS NULL OR agentGroup.slug NOT IN (:agentTypeSlugs))')
+                ->setParameter('agentTypeSlugs', ['other-agent', 'sub-agent']);
+        }else{
+            $qb->andWhere('agentGroup.slug =:agentTypeSlug')->setParameter('agentTypeSlug', $agentType);
+        }
+    }
+
+    public function getAgentVisitMonitors($begin,$end,$employeeId,$agentType = null)
     {
         $qb = $this->createQueryBuilder('e');
         $qb->join('e.crmVisit', 'crmVisit');
@@ -279,6 +298,8 @@ class CrmVisitDetailsRepository extends EntityRepository
         $qb->andWhere('crmVisit.created <=:end')->setParameter('end', $end);
 
         $qb->andWhere('employee.id =:employeeId')->setParameter('employeeId', $employeeId);
+
+        $this->handleAgentTypeFilter($qb, $agentType);
 
         $qb->orderBy('crmVisit.created', 'ASC');
 
@@ -319,7 +340,7 @@ class CrmVisitDetailsRepository extends EntityRepository
         return $data;
     }
 
-    public function getAgentVisitMonitorsDateWise($begin,$end,$employeeId)
+    public function getAgentVisitMonitorsDateWise($begin,$end,$employeeId,$agentType = null)
     {
         $qb = $this->createQueryBuilder('e');
         $qb->join('e.crmVisit', 'crmVisit');
@@ -343,6 +364,8 @@ class CrmVisitDetailsRepository extends EntityRepository
         $qb->andWhere('crmVisit.created <=:end')->setParameter('end', $end);
 
         $qb->andWhere('employee.id =:employeeId')->setParameter('employeeId', $employeeId);
+
+        $this->handleAgentTypeFilter($qb, $agentType);
 
         $qb->orderBy('crmVisit.created', 'ASC');
 

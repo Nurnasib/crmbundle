@@ -14,6 +14,11 @@
                         </th>
 
                         <th>
+                            {{ form_label(form.agentType, 'Agent Type:') }}
+                            {{ form_widget(form.agentType) }}
+                        </th>
+
+                        <th>
                             {{ form_label(form.startDate, 'Start Date:') }}
                             {{ form_widget(form.startDate,{'id':'start-date', 'attr':{'placeholder':'dd-mm-YYYY'}}) }}
                         </th>
@@ -50,7 +55,7 @@
                         </tr>
 
                         <tr>
-                            <td data-a-h="center" class="border-0" colspan="{{ 7 }}" align="center"><h5 class="text-center">Visit Status Report </h5></td>
+                            <td data-a-h="center" class="border-0" colspan="{{ 7 }}" align="center"><h5 class="text-center">Visit Status Report {% if agentType is defined and agentType != 'all' %}({{ agentType|replace({'-': ' '})|title }}){% endif %}</h5></td>
                         </tr>
                         {% if selectedEmployee is defined and selectedEmployee is not empty %}
 

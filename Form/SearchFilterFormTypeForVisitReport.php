@@ -133,6 +133,16 @@ class SearchFilterFormTypeForVisitReport extends AbstractType
                 'placeholder' => '- Select Group -',
                 'required' => false,
             ])
+            ->add('agentType', ChoiceType::class,[
+                'choices' => [
+                    'All' => 'all',
+                    'Agent' => 'agent',
+                    'Other Agent' => 'other-agent',
+                    'Sub Agent' => 'sub-agent',
+                ],
+                'data' => 'all',
+                'required' => false,
+            ])
             ->add('serviceMode', EntityType::class, array(
                 'required'    => false,
                 'class' => \App\Entity\Core\Setting::class,
