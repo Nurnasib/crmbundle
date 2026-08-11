@@ -2200,7 +2200,9 @@ class ApiController extends AbstractController
         if ($request->getMethod() == 'POST' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')) {
 
             //max code for sub-agent
-            $maxCodeEntity = $this->getDoctrine()->getRepository(Agent::class)->findOneBy(array('agentGroup' => $this->getDoctrine()->getRepository(Setting::class)->findOneBy(array('slug' => 'sub-agent'))), array('otherAndSubAgentId' => 'DESC'));
+            // agentGroup points at App\Entity\Core\Setting (core_setting), not the
+            // CrmBundle Setting this file imports - keep it fully qualified.
+            $maxCodeEntity = $this->getDoctrine()->getRepository(Agent::class)->findOneBy(array('agentGroup' => $this->getDoctrine()->getRepository(\App\Entity\Core\Setting::class)->findOneBy(array('slug' => 'sub-agent'))), array('otherAndSubAgentId' => 'DESC'));
             if ($maxCodeEntity && $maxCodeEntity->getOtherAndSubAgentId()) {
                 $code = $this->incrementCode($maxCodeEntity->getOtherAndSubAgentId());
             } else {
@@ -2262,7 +2264,9 @@ class ApiController extends AbstractController
 
         if ($request->getMethod() == 'POST' && $request->headers->get('X-API-KEY') == $parameterBag->get('crm_api_key')) {
 
-            $maxCodeEntity = $this->getDoctrine()->getRepository(Agent::class)->findOneBy(array('agentGroup' => $this->getDoctrine()->getRepository(Setting::class)->findOneBy(array('slug' => 'other-agent'))), array('otherAndSubAgentId' => 'DESC'));
+            // agentGroup points at App\Entity\Core\Setting (core_setting), not the
+            // CrmBundle Setting this file imports - keep it fully qualified.
+            $maxCodeEntity = $this->getDoctrine()->getRepository(Agent::class)->findOneBy(array('agentGroup' => $this->getDoctrine()->getRepository(\App\Entity\Core\Setting::class)->findOneBy(array('slug' => 'other-agent'))), array('otherAndSubAgentId' => 'DESC'));
             if ($maxCodeEntity && $maxCodeEntity->getOtherAndSubAgentId()) {
                 $code = $this->incrementCode($maxCodeEntity->getOtherAndSubAgentId());
             } else {

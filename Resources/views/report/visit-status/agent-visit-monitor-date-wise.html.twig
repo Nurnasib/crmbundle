@@ -190,11 +190,13 @@
                                         {% set shownAgentIds = [] %}
                                         {% for key, agents in records['agent_info'] %}
                                             {% for agent in agents %}
-                                                {% if key == date.date and agent.agentId is not empty and agent.agentId not in shownAgentIds %}
+                                                {# de-duplicate on the agent row, not on the printed code:
+                                                   several Other Agents can currently share one code #}
+                                                {% if key == date.date and agent.agentAutoId not in shownAgentIds %}
                                                     <span style="display: inline-block; margin-right: 2px; margin-bottom: 2px; padding: 2px 4px; border: 1px solid grey; border-radius: 5px">
-                    {{ agent.agentId }}
+                    {{ agent.agentId|default('') }}
                 </span>
-                                                    {% set shownAgentIds = shownAgentIds | merge([agent.agentId]) %}
+                                                    {% set shownAgentIds = shownAgentIds | merge([agent.agentAutoId]) %}
                                                     {% set totalCount = shownAgentIds|length %}
                                                 {% endif %}
                                             {% endfor %}

@@ -263,6 +263,18 @@ class CrmVisitDetailsRepository extends EntityRepository
      * every group that is neither Other Agent nor Sub Agent (feed, chick ...).
      * Expects the query to already have "agentGroup" joined.
      */
+    /**
+     * Other Agent / Sub Agent keep their code in "otherAndSubAgentId"; every
+     * other group (feed, chick ...) uses "agentId". Same rule the agent excel
+     * and farmer reports use.
+     */
+    private function resolveAgentDisplayId($row)
+    {
+        $isOtherOrSub = isset($row['agentGroupSlug']) && in_array($row['agentGroupSlug'], ['other-agent', 'sub-agent']);
+
+        return $isOtherOrSub ? $row['otherAndSubAgentId'] : $row['agentId'];
+    }
+
     private function handleAgentTypeFilter($qb, $agentType)
     {
         if (!$agentType || $agentType == 'all'){
@@ -287,7 +299,7 @@ class CrmVisitDetailsRepository extends EntityRepository
         $qb->leftJoin('agent.district', 'agentDistrict');
         $qb->leftJoin('agent.parent', 'nourishAgent');
         $qb->select('e.farmCapacity', 'e.process', 'e.comments', 'e.purposeMultiple', 'e.reportDesc');
-        $qb->addSelect('agent.id AS agentAutoId','agent.name AS agentName','agent.agentId', 'agent.address AS agentAddress', 'agent.mobile AS agentMobile');
+        $qb->addSelect('agent.id AS agentAutoId','agent.name AS agentName','agent.agentId', 'agent.otherAndSubAgentId', 'agent.address AS agentAddress', 'agent.mobile AS agentMobile');
         $qb->addSelect('agentGroup.name AS agentGroupName', 'agentGroup.slug AS agentGroupSlug');
         $qb->addSelect('employee.id as employeeAutoId','employee.userId','employee.name AS employeeName');
         $qb->addSelect('crmVisit.created AS visitCreatedDate', 'crmVisit.visitDate', 'crmVisit.visitTime');
@@ -316,7 +328,7 @@ class CrmVisitDetailsRepository extends EntityRepository
                 $data['agentInfo'][$result['agentAutoId']]= [
                     'agentName'=> $result['agentName'],
                     'agentAutoId'=> $result['agentAutoId'],
-                    'agentId'=> $result['agentGroupSlug']=='other-agent' || $result['agentGroupSlug']=='sub-agent' ? $result['agentGroupName'] : $result['agentId'],
+                    'agentId'=> $this->resolveAgentDisplayId($result),
                     'agentAddress'=> $result['agentAddress'],
                     'agentMobile'=> $result['agentMobile'],
                     'nourishAgentName'=> $result['nourishAgentName'],
@@ -352,7 +364,7 @@ class CrmVisitDetailsRepository extends EntityRepository
         $qb->leftJoin('agent.district', 'agentDistrict');
         $qb->leftJoin('agent.parent', 'nourishAgent');
         $qb->select('e.farmCapacity', 'e.process', 'e.comments', 'e.purposeMultiple', 'e.reportDesc');
-        $qb->addSelect('agent.id AS agentAutoId','agent.name AS agentName','agent.agentId', 'agent.address AS agentAddress', 'agent.mobile AS agentMobile');
+        $qb->addSelect('agent.id AS agentAutoId','agent.name AS agentName','agent.agentId', 'agent.otherAndSubAgentId', 'agent.address AS agentAddress', 'agent.mobile AS agentMobile');
         $qb->addSelect('agentGroup.name AS agentGroupName', 'agentGroup.slug AS agentGroupSlug');
         $qb->addSelect('employee.id as employeeAutoId','employee.userId','employee.name AS employeeName');
         $qb->addSelect('crmVisit.created AS visitCreatedDate', 'crmVisit.visitDate', 'crmVisit.visitTime');
@@ -376,6 +388,7 @@ class CrmVisitDetailsRepository extends EntityRepository
         if($results){
             foreach ($results as $result) {
                 $dateKey = $result['visitCreatedDate']->format('d-m-Y');
+                $result['agentId'] = $this->resolveAgentDisplayId($result);
                 $data['agent_info'][$dateKey][] = $result;
 
             }
