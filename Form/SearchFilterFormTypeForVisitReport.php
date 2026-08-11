@@ -23,6 +23,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\NotBlank;
 use Terminalbd\CrmBundle\Entity\CrmCustomer;
 use Terminalbd\CrmBundle\Entity\Fcr;
 use Terminalbd\CrmBundle\Entity\Setting;
@@ -46,13 +47,19 @@ class SearchFilterFormTypeForVisitReport extends AbstractType
         $userRepo = $options['userRepo'];
         $builder
 
+            // The NotBlank constraints only bite for callers that pass the
+            // 'start_end_date_only' validation group; every other report using
+            // this form keeps its optional dates.
             ->add('startDate', TextType::class,[
                 'attr'=>[
                     'placeholder' => 'dd-mm-YYYY',
                     'autocomplete' => 'off',
                     'class' => 'datepicker'
                 ],
-                'required' => false
+                'required' => false,
+                'constraints' => [
+                    new NotBlank(['message' => 'Start Date is required.', 'groups' => ['start_end_date_only']]),
+                ]
             ])
             ->add('endDate', TextType::class,[
                 'attr'=>[
@@ -61,7 +68,10 @@ class SearchFilterFormTypeForVisitReport extends AbstractType
                     'class' => 'datepicker'
 
                 ],
-                'required' => false
+                'required' => false,
+                'constraints' => [
+                    new NotBlank(['message' => 'End Date is required.', 'groups' => ['start_end_date_only']]),
+                ]
             ])
             ->add('employee', EntityType::class,[
                 'class' => User::class,
@@ -254,6 +264,7 @@ class SearchFilterFormTypeForVisitReport extends AbstractType
             'data_class' => null,
             'loggedUser' => User::class,
             'userRepo' => UserRepository::class,
+            'validation_groups' => ['Default'],
         ]);
     }
 }

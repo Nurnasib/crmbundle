@@ -21,10 +21,12 @@
                         <th>
                             {{ form_label(form.startDate, 'Start Date:') }}
                             {{ form_widget(form.startDate,{'id':'start-date', 'attr':{'placeholder':'dd-mm-YYYY'}}) }}
+                            <div class="text-danger small">{{ form_errors(form.startDate) }}</div>
                         </th>
                         <th>
                             {{ form_label(form.endDate, 'End Date:') }}
                             {{ form_widget(form.endDate,{'id':'end-date', 'attr':{'placeholder':'dd-mm-YYYY'}}) }}
+                            <div class="text-danger small">{{ form_errors(form.endDate) }}</div>
                         </th>
                         <th rowspan="2">
                             <div class="btn-group" style="margin-top: 25px">

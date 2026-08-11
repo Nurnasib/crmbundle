@@ -274,12 +274,14 @@ class VisitReportController extends AbstractController
         $startDate = date('Y-m-01');
         $endDate = date('Y-m-t');
         $userRepo = $this->getDoctrine()->getRepository(User::class);
-        $form = $this->createForm(SearchFilterFormTypeForVisitReport::class, null, ['loggedUser' => $this->getUser(),'userRepo'=>$userRepo]);
+        $form = $this->createForm(SearchFilterFormTypeForVisitReport::class, null, [
+            'validation_groups' => ['Default', 'start_end_date_only'],
+            'loggedUser' => $this->getUser(),'userRepo'=>$userRepo]);
         $form->handleRequest($request);
         $records = [];
         $agentSales=[];
         $agentType = 'all';
-        if ($form->isSubmitted()){
+        if ($form->isSubmitted() && $form->isValid()){
             $selectedEmployee = $form->getData()['employee'];
             $agentType = $form->getData()['agentType'] ?: 'all';
             $startDate = $form->getData()['startDate'] ? new \DateTime($form->getData()['startDate']) : new \DateTime('now');
@@ -315,13 +317,15 @@ class VisitReportController extends AbstractController
         $startDate = date('Y-m-01');
         $endDate = date('Y-m-t');
         $userRepo = $this->getDoctrine()->getRepository(User::class);
-        $form = $this->createForm(SearchFilterFormTypeForVisitReport::class, null, ['loggedUser' => $this->getUser(),'userRepo'=>$userRepo]);
+        $form = $this->createForm(SearchFilterFormTypeForVisitReport::class, null, [
+            'validation_groups' => ['Default', 'start_end_date_only'],
+            'loggedUser' => $this->getUser(),'userRepo'=>$userRepo]);
         $form->handleRequest($request);
         $records = [];
         $agentSales=[];
         $getAllDates=[];
         $agentType = 'all';
-        if ($form->isSubmitted()){
+        if ($form->isSubmitted() && $form->isValid()){
             $selectedEmployee = $form->getData()['employee'];
             $agentType = $form->getData()['agentType'] ?: 'all';
             $startDate = $form->getData()['startDate'] ? new \DateTime($form->getData()['startDate']) : new \DateTime('now');
