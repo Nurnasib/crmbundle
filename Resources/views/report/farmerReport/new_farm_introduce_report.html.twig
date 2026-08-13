@@ -134,11 +134,13 @@
                                                         <td data-a-v="middle" rowspan="{{ grandTotalTeamMembers }}">{{ employeeData.regionName }}</td>
                                                         <td data-a-v="middle" rowspan="{{ grandTotalTeamMembers }}">{{ employeeData.name }}</td>
                                                     {% endif %}
+                                                    {# only genuinely numeric cells may carry data-t="n" -- the Excel
+                                                       export runs Number() on them, so text would become NaN #}
                                                     <td data-t="n">{{ loop.index }}</td>
-                                                    <td data-t="n">{{ customer.name }}</td>
-                                                    <td data-t="n">{{ customer.introduceDate ? customer.introduceDate|date('d-m-Y') : '' }}</td>
-                                                    <td data-t="n">{{ customer.mobile }}</td>
-                                                    <td data-t="n">{{ customer.address }}</td>
+                                                    <td>{{ customer.name }}</td>
+                                                    <td>{{ customer.introduceDate ? customer.introduceDate|date('d-m-Y') : '' }}</td>
+                                                    <td>{{ customer.mobile }}</td>
+                                                    <td>{{ customer.address }}</td>
 {#                                                    <td data-t="n">{{ customer.locationName??'' }}</td>#}
                                                     {% if filterableSpeciesType is not empty %}
                                                         {% for speciesType in filterableSpeciesType %}
@@ -149,15 +151,15 @@
                                                             </td>
                                                         {% endfor %}
                                                     {% endif %}
-                                                    <td data-t="n" class="text-right">{{ customer.agentName??'' }}</td>
-                                                    <td data-t="n" class="text-right">{{ customer.agentLocation??'' }}</td>
-                                                    <td data-t="n" class="text-right">{{ customer.feedName??'' }}</td>
+                                                    <td class="text-right">{{ customer.agentName??'' }}</td>
+                                                    <td class="text-right">{{ customer.agentLocation??'' }}</td>
+                                                    <td class="text-right">{{ customer.feedName??'' }}</td>
 
-                                                    <td data-t="n" class="text-right">{{ customer.otherAgentName??'' }}</td>
-                                                    <td data-t="n" class="text-right">{{ customer.otherAgentLocation??'' }}</td>
-                                                    <td data-t="n" class="text-right">{{ customer.otherFeedName??'' }}</td>
+                                                    <td class="text-right">{{ customer.otherAgentName??'' }}</td>
+                                                    <td class="text-right">{{ customer.otherAgentLocation??'' }}</td>
+                                                    <td class="text-right">{{ customer.otherFeedName??'' }}</td>
 
-                                                    <td data-t="n" >{{ customer.remarks??'' }}</td>
+                                                    <td>{{ customer.remarks??'' }}</td>
 
 
 
