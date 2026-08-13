@@ -35,6 +35,7 @@ use Terminalbd\CrmBundle\Entity\NewFarmerIntroduce\FarmerIntroduceDetails;
 use Terminalbd\CrmBundle\Entity\PoultryMeatEggPrice;
 use Terminalbd\CrmBundle\Entity\Setting;
 use Terminalbd\CrmBundle\Entity\TilapiaFrySales;
+use Terminalbd\CrmBundle\Form\ConvertFarmerCapacitySearchFormType;
 use Terminalbd\CrmBundle\Form\SearchFilterFormType;
 use Terminalbd\CrmBundle\Repository\AntibioticFreeFarmRepository;
 
@@ -1597,9 +1598,8 @@ class FarmerReportController extends AbstractController
 
         $loggedUser = $this->getUser();
         $userRepo = $this->getDoctrine()->getRepository(User::class);
-        $form = $this->createForm(SearchFilterFormType::class, null, [
-            'validation_groups' => ['year_only', 'month_only', 'farm_type_only'],
-            'loggedUser' => $loggedUser, 'userRepo' => $userRepo]);
+        $form = $this->createForm(ConvertFarmerCapacitySearchFormType::class, null, [
+            'validation_groups' => ['year_only', 'month_only', 'farm_type_only']]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -1643,9 +1643,8 @@ class FarmerReportController extends AbstractController
 
         $loggedUser = $this->getUser();
         $userRepo = $this->getDoctrine()->getRepository(User::class);
-        $form = $this->createForm(SearchFilterFormType::class, null, [
-            'validation_groups' => ['year_only', 'start_end_month_only', 'farm_type_only'],
-            'loggedUser' => $loggedUser, 'userRepo' => $userRepo]);
+        $form = $this->createForm(ConvertFarmerCapacitySearchFormType::class, null, [
+            'validation_groups' => ['year_only', 'start_end_month_only', 'farm_type_only']]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
