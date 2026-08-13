@@ -1581,5 +1581,125 @@ class FarmerReportController extends AbstractController
         ]);
     }
 
+    /**
+     * Convert Farmer Capacity Report - Daily.
+     * "Convert" means introduce, so this counts capacity against farmerIntroduce.introduceDate.
+     *
+     * @Route("/convert_farmer_capacity_daily_report", name="convert_farmer_capacity_daily_report")
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function convertFarmerCapacityDailyReport(Request $request)
+    {
+        $filterBy = [];
+        $entities = [];
+        $lineManager = null;
+
+        $loggedUser = $this->getUser();
+        $userRepo = $this->getDoctrine()->getRepository(User::class);
+        $form = $this->createForm(SearchFilterFormType::class, null, [
+            'validation_groups' => ['year_only', 'month_only', 'farm_type_only'],
+            'loggedUser' => $loggedUser, 'userRepo' => $userRepo]);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $filterBy = $form->getData();
+            $lineManager = $filterBy['line_managers'];
+            $filterBy['loggedUser'] = $loggedUser;
+
+            // a daily report always covers exactly one month
+            $startDate = \DateTime::createFromFormat('Y-m-d', $filterBy['year'] . '-' . $filterBy['month'] . '-01');
+            $endDate = (clone $startDate)->modify('last day of this month');
+
+            $filterBy['startDate'] = $startDate->format('d-m-Y');
+            $filterBy['endDate'] = $endDate->format('d-m-Y');
+            $filterBy['daysInMonth'] = (int)$endDate->format('j');
+
+            $entities = $userRepo->getConvertFarmerCapacityReport($filterBy, 'day');
+        }
+
+        return $this->render('@TerminalbdCrm/report/farmerReport/convert_farmer_capacity_daily.html.twig', [
+            'form' => $form->createView(),
+            'entities' => $entities,
+            'filterBy' => $filterBy,
+            'filterableSpeciesType' => $this->getConvertFarmerSpeciesType($filterBy),
+            'lineManager' => $lineManager,
+        ]);
+    }
+
+    /**
+     * Convert Farmer Capacity Report - Monthly.
+     * "Convert" means introduce, so this counts capacity against farmerIntroduce.introduceDate.
+     *
+     * @Route("/convert_farmer_capacity_monthly_report", name="convert_farmer_capacity_monthly_report")
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function convertFarmerCapacityMonthlyReport(Request $request)
+    {
+        $filterBy = [];
+        $entities = [];
+        $lineManager = null;
+
+        $loggedUser = $this->getUser();
+        $userRepo = $this->getDoctrine()->getRepository(User::class);
+        $form = $this->createForm(SearchFilterFormType::class, null, [
+            'validation_groups' => ['year_only', 'start_end_month_only', 'farm_type_only'],
+            'loggedUser' => $loggedUser, 'userRepo' => $userRepo]);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $filterBy = $form->getData();
+            $lineManager = $filterBy['line_managers'];
+            $filterBy['loggedUser'] = $loggedUser;
+
+            $startDate = \DateTime::createFromFormat('Y-m-d', $filterBy['year'] . '-' . $filterBy['start_month'] . '-01');
+            $endDate = (\DateTime::createFromFormat('Y-m-d', $filterBy['year'] . '-' . $filterBy['end_month'] . '-01'))
+                ->modify('last day of this month');
+
+            if ($startDate > $endDate) {
+                $form->addError(new FormError('End month must not be earlier than start month.'));
+            } else {
+                $filterBy['startDate'] = $startDate->format('d-m-Y');
+                $filterBy['endDate'] = $endDate->format('d-m-Y');
+
+                $entities = $userRepo->getConvertFarmerCapacityReport($filterBy, 'month');
+            }
+        }
+
+        return $this->render('@TerminalbdCrm/report/farmerReport/convert_farmer_capacity_monthly.html.twig', [
+            'form' => $form->createView(),
+            'entities' => $entities,
+            'filterBy' => $filterBy,
+            'filterableSpeciesType' => $this->getConvertFarmerSpeciesType($filterBy),
+            'lineManager' => $lineManager,
+        ]);
+    }
+
+    /**
+     * Species (sub-type) columns of the selected farm type, used by the Convert Farmer Capacity reports.
+     * Poultry -> Broiler/Layer/Sonali, Cattle -> Dairy/Bull/Calf, Fish -> the fish species.
+     *
+     * @param array $filterBy
+     * @return array
+     */
+    private function getConvertFarmerSpeciesType($filterBy)
+    {
+        if (empty($filterBy['farm_type'])) {
+            return [];
+        }
+
+        // an explicit species filter narrows the rows down to that single species
+        if (!empty($filterBy['type'])) {
+            return [[
+                'id' => $filterBy['type']->getId(),
+                'name' => $filterBy['type']->getName(),
+                'slug' => $filterBy['type']->getSlug(),
+            ]];
+        }
+
+        return $this->getDoctrine()->getRepository(Setting::class)
+            ->getSpeciesTypeByParentSlug($filterBy['farm_type']);
+    }
 
 }
