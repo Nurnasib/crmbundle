@@ -132,6 +132,10 @@ class ExpenseRepository extends EntityRepository
 //        $qb->select('SUM(e.conveyance) as totalConveyance','SUM(e.mobile) as totalMobile','SUM(e.dailyAllowance) as totalDailyAllowance','SUM(e.hotelRent) as totalHotelRent','SUM(e.tollBill) as totalTollBill','SUM(e.food) as totalFood','SUM(e.courier) as totalCourier','SUM(e.maintenace) as totalMaintenace','SUM(e.serviceCharge) as totalServiceCharge','SUM(e.photostate) as totalPhotostate','SUM(e.others) as totalOthers');
         $qb->select( "e.expenseDate", "DATE_FORMAT(e.expenseDate,'%Y-%m') as expenseMonthYear", 'YEAR(e.expenseDate) as expenseYear');
         $qb->addSelect('employee.id as employeeAutoId','employee.userId as employeeId','employee.name as employeeName');
+        // the row is grouped per employee per month, so aggregate the status rather than
+        // letting the group pick one arbitrarily
+        $qb->addSelect('MIN(e.status) as status');
+        $qb->addSelect('COUNT(e.id) as totalExpenses');
         $qb->join('e.employee','employee');
 
         $qb->where('e.status >=:status')->setParameter('status',1);

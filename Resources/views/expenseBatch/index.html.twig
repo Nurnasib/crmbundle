@@ -65,6 +65,7 @@
                             <th rowspan="2" style="width: 3%" scope="col">S/N</th>
                             <th class="text-center" colspan="2" scope="col">{{ 'Employee'|trans }}</th>
                             <th class="text-center" rowspan="2" scope="col">Expense Month</th>
+                            <th rowspan="2" style="width: 3%" scope="col">status</th>
                             <th class="text-center hidden-print" rowspan="2" scope="col"><i class="feather icon-settings"></i></th>
                         </tr>
                         <tr>
@@ -79,20 +80,41 @@
                             {% for lineManagerId, lineManagerData in employees %}
                                 {% if lineManagerData is not empty %}
                                     {% for index, employee in lineManagerData %}
+                                        {# the status lives on the expense row, not on the employee row #}
+                                        {% set expense = null %}
+                                        {% if entities is defined and entities is not empty
+                                            and entities[requestDate] is defined
+                                            and entities[requestDate][employee.id] is defined
+                                            and entities[requestDate][employee.id] is not empty %}
+                                            {% set expense = entities[requestDate][employee.id] %}
+                                        {% endif %}
+
+                                        {% set status = '' %}
+                                        {% if expense %}
+                                            {% if expense.status == 1 %}
+                                                {% set status = 'waiting' %}
+                                            {% elseif expense.status == 2 %}
+                                                {% set status = 'processed' %}
+                                            {% elseif expense.status == 3 %}
+                                                {% set status = 'approved' %}
+                                            {% else %}
+                                                {% set status = 'draft' %}
+                                            {% endif %}
+                                        {% endif %}
                                         <tr>
                                             {% if loop.first %}
                                                 <td rowspan="{{ lineManagerData|length }}">{{ employee.lineManagerName }}</td>
                                             {% endif %}
-                                            {#                                            <td>{{ employee.lineManagerName }} == {{ lineManagerData|length }}</td>#}
                                             <td>{{ index+1 }}</td>
                                             <td>{{ employee.userId }}</td>
                                             <td>{{ employee.name }}</td>
                                             <td class="text-center" scope="col">
-                                                {{ entities is defined and entities is not empty and entities[requestDate] is defined and entities[requestDate][employee.id] is defined and entities[requestDate][employee.id]  is not empty ? entities[requestDate][employee.id]['expenseDate']|date('F, Y') : ''}}
+                                                {{ expense ? expense.expenseDate|date('F, Y') : '' }}
                                             </td>
+                                            <td>{{ status }}</td>
                                             <td class="hidden-print">
-                                                {% if entities is defined and entities is not empty and entities[requestDate] is defined and entities[requestDate][employee.id] is defined and entities[requestDate][employee.id]  is not empty %}
-                                                    <a title="Details" class="btn btn-mini blue-bg white-font" href="{{ path('crm_expense_details',{'employee':employee.id, 'monthYear':entities[requestDate][employee.id]['expenseMonthYear']}) }}"><i class="feather icon-eye"></i> Details</a>
+                                                {% if expense %}
+                                                    <a title="Details" class="btn btn-mini blue-bg white-font" href="{{ path('crm_expense_details',{'employee':employee.id, 'monthYear':expense.expenseMonthYear}) }}"><i class="feather icon-eye"></i> Details</a>
                                                 {% endif %}
                                             </td>
                                         </tr>
