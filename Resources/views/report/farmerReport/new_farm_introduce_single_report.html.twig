@@ -182,6 +182,17 @@
 
 
                             {% endfor %}
+
+                            {# capacity column totals across every farmer on the report #}
+                            <tr class="font-weight-bold">
+                                <td data-a-h="right" class="text-right" colspan="7">{{ 'Total Capacity'|trans }}</td>
+                                {% for speciesType in filterableSpeciesType %}
+                                    <td data-t="n" class="text-right">
+                                        {{ capacityTotals[speciesType.id] is defined ? capacityTotals[speciesType.id] : 0 }}
+                                    </td>
+                                {% endfor %}
+                                <td colspan="7"></td>
+                            </tr>
                         {% endif %}
 
 

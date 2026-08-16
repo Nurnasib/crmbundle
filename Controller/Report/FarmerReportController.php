@@ -1527,6 +1527,7 @@ class FarmerReportController extends AbstractController
         $employee = null;
         $arrFishSizes=[];
         $arrayMonth=[];
+        $capacityTotals = [];
 
         $loggedUser = $this->getUser();
         $userRepo = $this->getDoctrine()->getRepository(User::class);
@@ -1558,6 +1559,12 @@ class FarmerReportController extends AbstractController
                 $filterBy['endDate']   = $endDate->format('d-m-Y');
 
                 $entities = $userRepo->getNewFarmCustomerReport( $filterBy );
+
+                // column totals for the Capacity block, summed over every farmer on the report.
+                // Done here rather than in Twig because a {% set %} inside a for loop does not
+                // survive the loop, so the nested employee/teamMember/customer walk cannot
+                // accumulate in the template.
+                $capacityTotals = $this->sumCapacityBySpecies($entities);
             }
         }
         $speciesTypes = [];
@@ -1579,7 +1586,41 @@ class FarmerReportController extends AbstractController
             'employee'=> $employee,
             'fishSizes' => $arrFishSizes,
             'arrayMonth' => $arrayMonth,
+            'capacityTotals' => $capacityTotals,
         ]);
+    }
+
+    /**
+     * Sums decodedCultureSpeciesItemAndQty across every farmer in a
+     * getNewFarmCustomerReport() result, keyed by species id.
+     *
+     * @param array $entities
+     * @return array speciesId => total quantity
+     */
+    private function sumCapacityBySpecies($entities)
+    {
+        $totals = [];
+
+        foreach ($entities as $employeeData) {
+            if (empty($employeeData['teamMembers'])) {
+                continue;
+            }
+            foreach ($employeeData['teamMembers'] as $teamMember) {
+                if (empty($teamMember['customers'])) {
+                    continue;
+                }
+                foreach ($teamMember['customers'] as $customer) {
+                    if (empty($customer['decodedCultureSpeciesItemAndQty'])) {
+                        continue;
+                    }
+                    foreach ($customer['decodedCultureSpeciesItemAndQty'] as $speciesId => $qty) {
+                        $totals[$speciesId] = (isset($totals[$speciesId]) ? $totals[$speciesId] : 0) + (int)$qty;
+                    }
+                }
+            }
+        }
+
+        return $totals;
     }
 
     /**
