@@ -1,12 +1,12 @@
 {% extends 'admin/layout.html.twig' %}
 
-{# SL + ID + Name + Species, then one column per month in the selected range #}
+{# Employee + SL + ID + Farmer Name + Species, then one column per month in the selected range #}
 {% set speciesCount = filterableSpeciesType|length %}
 {# an invalid range (end before start) is rejected in the controller, so never build columns for it #}
 {% set hasMonthRange = filterBy.start_month is defined and filterBy.end_month is defined
     and filterBy.start_month and filterBy.end_month
     and filterBy.end_month >= filterBy.start_month %}
-{% set totalColumns = hasMonthRange ? 4 + (filterBy.end_month - filterBy.start_month + 1) : 4 %}
+{% set totalColumns = hasMonthRange ? 5 + (filterBy.end_month - filterBy.start_month + 1) : 5 %}
 
 {% block body %}
     <div class="pcoded-inner-content">
@@ -87,9 +87,10 @@
                         </thead>
                         <thead class="thead-dark">
                         <tr>
+                            <th scope="col" style="min-width: 160px">{{ 'Employee'|trans }}</th>
                             <th scope="col">SL</th>
                             <th scope="col">ID</th>
-                            <th scope="col" style="min-width: 160px">Name</th>
+                            <th scope="col" style="min-width: 160px">{{ 'Farmer Name'|trans }}</th>
                             <th scope="col">{{ filterBy.farm_type is defined and filterBy.farm_type ? filterBy.farm_type|replace({'-breed': ''})|capitalize : 'Type' }}</th>
                             {% if hasMonthRange %}
                                 {% for m in filterBy.start_month..filterBy.end_month %}
@@ -109,11 +110,15 @@
                                 {% for speciesType in filterableSpeciesType %}
                                     <tr class="font-weight-bold">
                                         {% if loop.first %}
-                                            <td data-a-v="middle" rowspan="{{ speciesCount }}"></td>
-                                            <td data-a-v="middle" rowspan="{{ speciesCount }}">{{ lineManagerData.userId }}</td>
                                             <td data-a-v="middle" rowspan="{{ speciesCount }}">
                                                 {{ lineManagerData.name }}
                                                 <small class="d-block text-muted">{{ 'Line Manager'|trans }}</small>
+                                            </td>
+                                            <td data-a-v="middle" rowspan="{{ speciesCount }}"></td>
+                                            <td data-a-v="middle" rowspan="{{ speciesCount }}">{{ lineManagerData.userId }}</td>
+                                            <td data-a-v="middle" rowspan="{{ speciesCount }}">
+                                                {{ 'Group Total'|trans }}
+                                                <small class="d-block text-muted">{{ lineManagerData.totalFarmers }} {{ 'farmers'|trans }}</small>
                                             </td>
                                         {% endif %}
                                         <td>{{ speciesType.name }}</td>
@@ -126,23 +131,34 @@
                                     </tr>
                                 {% endfor %}
 
-                                {# then every farmer converted by that line manager's employees #}
-                                {% for farmer in lineManagerData.farmers %}
-                                    {% for speciesType in filterableSpeciesType %}
-                                        <tr>
-                                            {% if loop.first %}
-                                                <td data-a-v="middle" rowspan="{{ speciesCount }}">{{ loop.parent.loop.index }}</td>
-                                                <td data-a-v="middle" rowspan="{{ speciesCount }}">{{ farmer.id }}</td>
-                                                <td data-a-v="middle" rowspan="{{ speciesCount }}">{{ farmer.name }}</td>
-                                            {% endif %}
-                                            <td>{{ speciesType.name }}</td>
-                                            {% if hasMonthRange %}
-                                                {% for m in filterBy.start_month..filterBy.end_month %}
-                                                    {% set qty = farmer.capacity[speciesType.id][m] is defined ? farmer.capacity[speciesType.id][m] : 0 %}
-                                                    <td data-t="n" class="text-right">{{ qty ?: '' }}</td>
-                                                {% endfor %}
-                                            {% endif %}
-                                        </tr>
+                                {# then each employee under that line manager, spanning their own farmers #}
+                                {% for employee in lineManagerData.employees %}
+                                    {% for farmer in employee.farmers %}
+                                        {% for speciesType in filterableSpeciesType %}
+                                            <tr>
+                                                {# the employee cell spans every row of every farmer they converted #}
+                                                {% if loop.first and loop.parent.loop.first %}
+                                                    <td data-a-v="middle" rowspan="{{ employee.farmers|length * speciesCount }}">
+                                                        {{ employee.name }}
+                                                        <small class="d-block text-muted">
+                                                            {{ employee.userId }} &mdash; {{ employee.totalFarmers }} {{ 'farmers'|trans }}
+                                                        </small>
+                                                    </td>
+                                                {% endif %}
+                                                {% if loop.first %}
+                                                    <td data-a-v="middle" rowspan="{{ speciesCount }}">{{ loop.parent.loop.index }}</td>
+                                                    <td data-a-v="middle" rowspan="{{ speciesCount }}">{{ farmer.id }}</td>
+                                                    <td data-a-v="middle" rowspan="{{ speciesCount }}">{{ farmer.name }}</td>
+                                                {% endif %}
+                                                <td>{{ speciesType.name }}</td>
+                                                {% if hasMonthRange %}
+                                                    {% for m in filterBy.start_month..filterBy.end_month %}
+                                                        {% set qty = farmer.capacity[speciesType.id][m] is defined ? farmer.capacity[speciesType.id][m] : 0 %}
+                                                        <td data-t="n" class="text-right">{{ qty ?: '' }}</td>
+                                                    {% endfor %}
+                                                {% endif %}
+                                            </tr>
+                                        {% endfor %}
                                     {% endfor %}
                                 {% endfor %}
 

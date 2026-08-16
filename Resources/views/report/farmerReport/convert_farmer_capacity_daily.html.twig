@@ -1,9 +1,9 @@
 {% extends 'admin/layout.html.twig' %}
 
-{# SL + ID + Name + Species, then one column per day of the selected month #}
+{# Employee + SL + ID + Farmer Name + Species, then one column per day of the selected month #}
 {% set speciesCount = filterableSpeciesType|length %}
 {% set daysInMonth = filterBy.daysInMonth is defined ? filterBy.daysInMonth : 0 %}
-{% set totalColumns = 4 + daysInMonth %}
+{% set totalColumns = 5 + daysInMonth %}
 
 {% block body %}
     <div class="pcoded-inner-content">
@@ -79,9 +79,10 @@
                         </thead>
                         <thead class="thead-dark">
                         <tr>
+                            <th scope="col" style="min-width: 160px">{{ 'Employee'|trans }}</th>
                             <th scope="col">SL</th>
                             <th scope="col">ID</th>
-                            <th scope="col" style="min-width: 160px">Name</th>
+                            <th scope="col" style="min-width: 160px">{{ 'Farmer Name'|trans }}</th>
                             <th scope="col">{{ filterBy.farm_type is defined and filterBy.farm_type ? filterBy.farm_type|replace({'-breed': ''})|capitalize : 'Type' }}</th>
                             {% if daysInMonth > 0 %}
                                 {% for d in 1..daysInMonth %}
@@ -99,11 +100,15 @@
                                 {% for speciesType in filterableSpeciesType %}
                                     <tr class="font-weight-bold">
                                         {% if loop.first %}
-                                            <td data-a-v="middle" rowspan="{{ speciesCount }}"></td>
-                                            <td data-a-v="middle" rowspan="{{ speciesCount }}">{{ lineManagerData.userId }}</td>
                                             <td data-a-v="middle" rowspan="{{ speciesCount }}">
                                                 {{ lineManagerData.name }}
                                                 <small class="d-block text-muted">{{ 'Line Manager'|trans }}</small>
+                                            </td>
+                                            <td data-a-v="middle" rowspan="{{ speciesCount }}"></td>
+                                            <td data-a-v="middle" rowspan="{{ speciesCount }}">{{ lineManagerData.userId }}</td>
+                                            <td data-a-v="middle" rowspan="{{ speciesCount }}">
+                                                {{ 'Group Total'|trans }}
+                                                <small class="d-block text-muted">{{ lineManagerData.totalFarmers }} {{ 'farmers'|trans }}</small>
                                             </td>
                                         {% endif %}
                                         <td>{{ speciesType.name }}</td>
@@ -116,23 +121,34 @@
                                     </tr>
                                 {% endfor %}
 
-                                {# then every farmer converted by that line manager's employees #}
-                                {% for farmer in lineManagerData.farmers %}
-                                    {% for speciesType in filterableSpeciesType %}
-                                        <tr>
-                                            {% if loop.first %}
-                                                <td data-a-v="middle" rowspan="{{ speciesCount }}">{{ loop.parent.loop.index }}</td>
-                                                <td data-a-v="middle" rowspan="{{ speciesCount }}">{{ farmer.id }}</td>
-                                                <td data-a-v="middle" rowspan="{{ speciesCount }}">{{ farmer.name }}</td>
-                                            {% endif %}
-                                            <td>{{ speciesType.name }}</td>
-                                            {% if daysInMonth > 0 %}
-                                                {% for d in 1..daysInMonth %}
-                                                    {% set qty = farmer.capacity[speciesType.id][d] is defined ? farmer.capacity[speciesType.id][d] : 0 %}
-                                                    <td data-t="n" class="text-right">{{ qty ?: '' }}</td>
-                                                {% endfor %}
-                                            {% endif %}
-                                        </tr>
+                                {# then each employee under that line manager, spanning their own farmers #}
+                                {% for employee in lineManagerData.employees %}
+                                    {% for farmer in employee.farmers %}
+                                        {% for speciesType in filterableSpeciesType %}
+                                            <tr>
+                                                {# the employee cell spans every row of every farmer they converted #}
+                                                {% if loop.first and loop.parent.loop.first %}
+                                                    <td data-a-v="middle" rowspan="{{ employee.farmers|length * speciesCount }}">
+                                                        {{ employee.name }}
+                                                        <small class="d-block text-muted">
+                                                            {{ employee.userId }} &mdash; {{ employee.totalFarmers }} {{ 'farmers'|trans }}
+                                                        </small>
+                                                    </td>
+                                                {% endif %}
+                                                {% if loop.first %}
+                                                    <td data-a-v="middle" rowspan="{{ speciesCount }}">{{ loop.parent.loop.index }}</td>
+                                                    <td data-a-v="middle" rowspan="{{ speciesCount }}">{{ farmer.id }}</td>
+                                                    <td data-a-v="middle" rowspan="{{ speciesCount }}">{{ farmer.name }}</td>
+                                                {% endif %}
+                                                <td>{{ speciesType.name }}</td>
+                                                {% if daysInMonth > 0 %}
+                                                    {% for d in 1..daysInMonth %}
+                                                        {% set qty = farmer.capacity[speciesType.id][d] is defined ? farmer.capacity[speciesType.id][d] : 0 %}
+                                                        <td data-t="n" class="text-right">{{ qty ?: '' }}</td>
+                                                    {% endfor %}
+                                                {% endif %}
+                                            </tr>
+                                        {% endfor %}
                                     {% endfor %}
                                 {% endfor %}
 
