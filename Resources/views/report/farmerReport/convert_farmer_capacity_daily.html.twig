@@ -1,9 +1,9 @@
 {% extends 'admin/layout.html.twig' %}
 
-{# SL + ID + Employee + Farmers + Species, then one column per day of the selected month #}
+{# SL + ID + Employee + Species, then one column per day of the selected month #}
 {% set speciesCount = filterableSpeciesType|length %}
 {% set daysInMonth = filterBy.daysInMonth is defined ? filterBy.daysInMonth : 0 %}
-{% set totalColumns = 5 + daysInMonth %}
+{% set totalColumns = 4 + daysInMonth %}
 
 {% block body %}
     <div class="pcoded-inner-content">
@@ -82,7 +82,6 @@
                             <th scope="col">SL</th>
                             <th scope="col">ID</th>
                             <th scope="col" style="min-width: 180px">{{ 'Employee'|trans }}</th>
-                            <th data-a-h="center" class="text-center" scope="col">{{ 'Farmers'|trans }}</th>
                             <th scope="col">{{ filterBy.farm_type is defined and filterBy.farm_type ? filterBy.farm_type|replace({'-breed': ''})|capitalize : 'Type' }}</th>
                             {% if daysInMonth > 0 %}
                                 {% for d in 1..daysInMonth %}
@@ -106,7 +105,6 @@
                                                 {{ lineManagerData.name }}
                                                 <small class="d-block text-muted">{{ 'Line Manager'|trans }}</small>
                                             </td>
-                                            <td data-a-v="middle" data-t="n" class="text-center" rowspan="{{ speciesCount }}">{{ lineManagerData.totalFarmers }}</td>
                                         {% endif %}
                                         <td>{{ speciesType.name }}</td>
                                         {% if daysInMonth > 0 %}
@@ -126,7 +124,6 @@
                                                 <td data-a-v="middle" rowspan="{{ speciesCount }}">{{ loop.parent.loop.index }}</td>
                                                 <td data-a-v="middle" rowspan="{{ speciesCount }}">{{ employee.userId }}</td>
                                                 <td data-a-v="middle" rowspan="{{ speciesCount }}">{{ employee.name }}</td>
-                                                <td data-a-v="middle" data-t="n" class="text-center" rowspan="{{ speciesCount }}">{{ employee.totalFarmers }}</td>
                                             {% endif %}
                                             <td>{{ speciesType.name }}</td>
                                             {% if daysInMonth > 0 %}
