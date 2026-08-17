@@ -1,9 +1,9 @@
 {% extends 'admin/layout.html.twig' %}
 
-{# SL + ID + Employee + Species, then one column per day of the selected month #}
+{# SL + ID + Employee + Species + Total, then one column per day of the selected month #}
 {% set speciesCount = filterableSpeciesType|length %}
 {% set daysInMonth = filterBy.daysInMonth is defined ? filterBy.daysInMonth : 0 %}
-{% set totalColumns = 4 + daysInMonth %}
+{% set totalColumns = 5 + daysInMonth %}
 
 {% block body %}
     <div class="pcoded-inner-content">
@@ -83,6 +83,7 @@
                             <th scope="col">ID</th>
                             <th scope="col" style="min-width: 180px">{{ 'Employee'|trans }}</th>
                             <th scope="col">{{ filterBy.farm_type is defined and filterBy.farm_type ? filterBy.farm_type|replace({'-breed': ''})|capitalize : 'Type' }}</th>
+                            <th data-a-h="center" class="text-center" scope="col">{{ 'Total'|trans }}</th>
                             {% if daysInMonth > 0 %}
                                 {% for d in 1..daysInMonth %}
                                     <th data-a-h="center" class="text-center" scope="col">{{ d }}</th>
@@ -95,30 +96,39 @@
                         {% if entities is not empty and speciesCount > 0 %}
                             {% for lineManagerId, lineManagerData in entities %}
 
-                                {# the line manager comes first, carrying the whole group's totals #}
-                                {% for speciesType in filterableSpeciesType %}
-                                    <tr class="font-weight-bold">
-                                        {% if loop.first %}
-                                            <td data-a-v="middle" rowspan="{{ speciesCount }}"></td>
-                                            <td data-a-v="middle" rowspan="{{ speciesCount }}">{{ lineManagerData.userId }}</td>
-                                            <td data-a-v="middle" rowspan="{{ speciesCount }}">
-                                                {{ lineManagerData.name }}
-                                                <small class="d-block text-muted">{{ 'Line Manager'|trans }}</small>
-                                            </td>
-                                        {% endif %}
-                                        <td>{{ speciesType.name }}</td>
-                                        {% if daysInMonth > 0 %}
-                                            {% for d in 1..daysInMonth %}
-                                                {% set qty = lineManagerData.speciesTotals[speciesType.id][d] is defined ? lineManagerData.speciesTotals[speciesType.id][d] : 0 %}
-                                                <td data-t="n" class="text-right">{{ qty ?: '' }}</td>
-                                            {% endfor %}
-                                        {% endif %}
-                                    </tr>
-                                {% endfor %}
+                                {# the group header carries the whole group's totals. Skipped when a single
+                                   line manager is filtered: the manager already shows up as an ordinary
+                                   employee row below and the Total footer carries the same subtree total.
+                                   Kept when several groups are listed, otherwise nothing separates them. #}
+                                {% if lineManager is null %}
+                                    {% for speciesType in filterableSpeciesType %}
+                                        {# every bucket in the map is a day of the selected month, so the whole map is the row total #}
+                                        {% set dailyQty = lineManagerData.speciesTotals[speciesType.id] is defined ? lineManagerData.speciesTotals[speciesType.id] : {} %}
+                                        <tr class="font-weight-bold">
+                                            {% if loop.first %}
+                                                <td data-a-v="middle" rowspan="{{ speciesCount }}"></td>
+                                                <td data-a-v="middle" rowspan="{{ speciesCount }}">{{ lineManagerData.userId }}</td>
+                                                <td data-a-v="middle" rowspan="{{ speciesCount }}">
+                                                    {{ lineManagerData.name }}
+                                                    <small class="d-block text-muted">{{ 'Line Manager'|trans }}</small>
+                                                </td>
+                                            {% endif %}
+                                            <td>{{ speciesType.name }}</td>
+                                            <td data-t="n" class="text-right">{{ dailyQty|reduce((carry, qty) => carry + qty, 0) ?: '' }}</td>
+                                            {% if daysInMonth > 0 %}
+                                                {% for d in 1..daysInMonth %}
+                                                    {% set qty = dailyQty[d] is defined ? dailyQty[d] : 0 %}
+                                                    <td data-t="n" class="text-right">{{ qty ?: '' }}</td>
+                                                {% endfor %}
+                                            {% endif %}
+                                        </tr>
+                                    {% endfor %}
+                                {% endif %}
 
                                 {# then one block per employee under that line manager, totals only #}
                                 {% for employee in lineManagerData.employees %}
                                     {% for speciesType in filterableSpeciesType %}
+                                        {% set dailyQty = employee.speciesTotals[speciesType.id] is defined ? employee.speciesTotals[speciesType.id] : {} %}
                                         <tr>
                                             {% if loop.first %}
                                                 <td data-a-v="middle" rowspan="{{ speciesCount }}">{{ loop.parent.loop.index }}</td>
@@ -126,9 +136,10 @@
                                                 <td data-a-v="middle" rowspan="{{ speciesCount }}">{{ employee.name }}</td>
                                             {% endif %}
                                             <td>{{ speciesType.name }}</td>
+                                            <td data-t="n" class="text-right font-weight-bold">{{ dailyQty|reduce((carry, qty) => carry + qty, 0) ?: '' }}</td>
                                             {% if daysInMonth > 0 %}
                                                 {% for d in 1..daysInMonth %}
-                                                    {% set qty = employee.speciesTotals[speciesType.id][d] is defined ? employee.speciesTotals[speciesType.id][d] : 0 %}
+                                                    {% set qty = dailyQty[d] is defined ? dailyQty[d] : 0 %}
                                                     <td data-t="n" class="text-right">{{ qty ?: '' }}</td>
                                                 {% endfor %}
                                             {% endif %}
@@ -136,6 +147,25 @@
                                     {% endfor %}
                                 {% endfor %}
 
+                            {% endfor %}
+
+                            {# counted once per farmer in the repository: nested line managers share
+                               farmers, so adding the group rows up here would double count them #}
+                            {% for speciesType in filterableSpeciesType %}
+                                {% set totalQty = grandTotals[speciesType.id] is defined ? grandTotals[speciesType.id] : {} %}
+                                <tr class="font-weight-bold thead-dark">
+                                    {% if loop.first %}
+                                        <td data-a-v="middle" data-a-h="right" class="text-right" colspan="3" rowspan="{{ speciesCount }}">{{ 'Total'|trans }}</td>
+                                    {% endif %}
+                                    <td>{{ speciesType.name }}</td>
+                                    <td data-t="n" class="text-right">{{ totalQty|reduce((carry, qty) => carry + qty, 0) ?: '' }}</td>
+                                    {% if daysInMonth > 0 %}
+                                        {% for d in 1..daysInMonth %}
+                                            {% set qty = totalQty[d] is defined ? totalQty[d] : 0 %}
+                                            <td data-t="n" class="text-right">{{ qty ?: '' }}</td>
+                                        {% endfor %}
+                                    {% endif %}
+                                </tr>
                             {% endfor %}
                         {% endif %}
                         </tbody>

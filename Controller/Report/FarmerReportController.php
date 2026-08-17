@@ -1636,6 +1636,7 @@ class FarmerReportController extends AbstractController
         $filterBy = [];
         $entities = [];
         $lineManager = null;
+        $grandTotals = [];
 
         $loggedUser = $this->getUser();
         $userRepo = $this->getDoctrine()->getRepository(User::class);
@@ -1656,7 +1657,7 @@ class FarmerReportController extends AbstractController
             $filterBy['endDate'] = $endDate->format('d-m-Y');
             $filterBy['daysInMonth'] = (int)$endDate->format('j');
 
-            $entities = $userRepo->getConvertFarmerCapacityReport($filterBy, 'day');
+            $entities = $userRepo->getConvertFarmerCapacityReport($filterBy, 'day', $grandTotals);
         }
 
         return $this->render('@TerminalbdCrm/report/farmerReport/convert_farmer_capacity_daily.html.twig', [
@@ -1665,6 +1666,7 @@ class FarmerReportController extends AbstractController
             'filterBy' => $filterBy,
             'filterableSpeciesType' => $this->getConvertFarmerSpeciesType($filterBy),
             'lineManager' => $lineManager,
+            'grandTotals' => $grandTotals,
         ]);
     }
 
@@ -1681,6 +1683,7 @@ class FarmerReportController extends AbstractController
         $filterBy = [];
         $entities = [];
         $lineManager = null;
+        $grandTotals = [];
 
         $loggedUser = $this->getUser();
         $userRepo = $this->getDoctrine()->getRepository(User::class);
@@ -1703,7 +1706,7 @@ class FarmerReportController extends AbstractController
                 $filterBy['startDate'] = $startDate->format('d-m-Y');
                 $filterBy['endDate'] = $endDate->format('d-m-Y');
 
-                $entities = $userRepo->getConvertFarmerCapacityReport($filterBy, 'month');
+                $entities = $userRepo->getConvertFarmerCapacityReport($filterBy, 'month', $grandTotals);
             }
         }
 
@@ -1713,6 +1716,7 @@ class FarmerReportController extends AbstractController
             'filterBy' => $filterBy,
             'filterableSpeciesType' => $this->getConvertFarmerSpeciesType($filterBy),
             'lineManager' => $lineManager,
+            'grandTotals' => $grandTotals,
         ]);
     }
 

@@ -428,10 +428,10 @@ ORDER BY `c`.`agent_id` ASC";
         $qb->join('farmerIntroduce.employee','employee');
         $qb->join('farmerIntroduce.farmerType','farmerType');
         $qb->join('farmerIntroduce.agent','agent');
-        $qb->join('farmerIntroduce.otherAgent','otherAgent');
+        $qb->leftjoin('farmerIntroduce.otherAgent','otherAgent');
         $qb->join('agent.agentGroup','agentGroup');
         $qb->join('farmerIntroduce.feed','feed');
-        $qb->join('farmerIntroduce.otherFeed','otherFeed');
+        $qb->leftjoin('farmerIntroduce.otherFeed','otherFeed');
 
         $qb->select('e.id as id','e.name as name','e.address as address','e.mobile as mobile','e.status as status' ,'e.created as month' );
 
