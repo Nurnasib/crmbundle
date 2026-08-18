@@ -69,7 +69,7 @@
                         </tr>
 
                         <tr>
-                            <td data-a-h="center" class="border-0" colspan="{{ totalColumns }}" align="center"><h6>{{ 'Farmer Details Report'|upper }} </h6></td>
+                            <td data-a-h="center" class="border-0" colspan="{{ totalColumns }}" align="center"><h6>{{ 'Farmer Visit Status Report'|upper }} </h6></td>
                         </tr>
                         </thead>
                         <thead class="thead-dark">
@@ -253,7 +253,7 @@
                 e.preventDefault();
                 let table = document.querySelector(".download-excel");
                 TableToExcel.convert(table, {
-                    name: "closed_farmer_info_report.xlsx",
+                    name: "farmer_visit_status_report.xlsx",
                     sheet: {
                         name: "Sheet 1"
                     }
