@@ -1,5 +1,9 @@
 {% extends 'admin/layout.html.twig' %}
 
+{# The working-mode keys below mirror $flagKeys in
+   CrmVisitRepository::getEmployeeMonthlyActivity(). They are the slugs of the ten
+   crm_setting rows of setting_type WORKING_MODE; add a mode there and it needs a
+   label plus a symbol here, otherwise its row renders without either. #}
 {% set parameterLabels = {
     'agent': 'Agents Visit Number',
     'sub-agent': 'S Agents No.',
@@ -7,11 +11,33 @@
     'other-agent': 'Others Agents No.',
     'leave': 'Leave',
     'office-work': 'Office Work',
-    'holiday': 'Holiday'
+    'holiday': 'Holiday',
+    'meeting': 'Meeting',
+    'training': 'Training',
+    'workshop': 'Workshop',
+    'conference': 'Conference',
+    'traveling': 'Traveling',
+    'other-1': 'Other',
+    'working': 'Working'
 } %}
-{% set parameterOrder = ['agent', 'sub-agent', 'farmer', 'other-agent', 'leave', 'office-work', 'holiday'] %}
+{% set parameterOrder = [
+    'agent', 'sub-agent', 'farmer', 'other-agent',
+    'leave', 'office-work', 'holiday',
+    'meeting', 'training', 'workshop', 'conference', 'traveling', 'other-1', 'working'
+] %}
 {# Flag rows render a letter on the days they apply and stay blank otherwise. #}
-{% set flagSymbols = {'leave': 'L', 'office-work': 'OW', 'holiday': 'H'} %}
+{% set flagSymbols = {
+    'leave': 'L',
+    'office-work': 'OW',
+    'holiday': 'H',
+    'meeting': 'M',
+    'training': 'T',
+    'workshop': 'WS',
+    'conference': 'C',
+    'traveling': 'TR',
+    'other-1': 'O',
+    'working': 'W'
+} %}
 {% set totalColumns = 34 %}
 
 {% block body %}

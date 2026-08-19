@@ -198,9 +198,16 @@ class CrmVisitRepository extends EntityRepository
      * Nothing else calls it, so no existing report is affected.
      *
      * Returns one block per calendar month covered by the range. Each block holds the
-     * seven parameter rows keyed by day-of-month:
+     * parameter rows keyed by day-of-month:
      *   agent | sub-agent | farmer | other-agent  -> visit counts from CrmVisitDetails.process
-     *   leave | office-work | holiday             -> day flags from CrmVisit.workingMode
+     *   one flag row per WORKING_MODE            -> day flags from CrmVisit.workingMode
+     *
+     * $flagKeys carries every crm_setting row of setting_type WORKING_MODE, so all ten
+     * modes get a row. Keep it in step with parameterOrder/parameterLabels/flagSymbols in
+     * employee-monthly-activity.html.twig - a key missing there renders an unlabelled row.
+     *
+     * $nonWorkingKeys stays the original three on purpose: it drives only the blank-vs-zero
+     * rule below, not which rows are drawn, so widening the row list leaves counts untouched.
      *
      * Visit rows distinguish blank from zero:
      *   null -> employee filed nothing that day, or the day is leave/office work/holiday
@@ -245,7 +252,13 @@ class CrmVisitRepository extends EntityRepository
         }
 
         $visitKeys = ['agent', 'sub-agent', 'farmer', 'other-agent'];
-        $flagKeys = ['leave', 'office-work', 'holiday'];
+        $flagKeys = [
+            'leave', 'office-work', 'holiday',
+            'meeting', 'training', 'workshop', 'conference', 'traveling', 'other-1', 'working',
+        ];
+        // Only these three suppress the visit counts; the modes added above are still
+        // field-work days, so their counts keep rendering exactly as before.
+        $nonWorkingKeys = ['leave', 'office-work', 'holiday'];
 
         $months = new \DatePeriod(
             new \DateTime($startDate->format('Y-m-01')),
@@ -261,7 +274,7 @@ class CrmVisitRepository extends EntityRepository
             for ($day = 1; $day <= $daysInMonth; $day++) {
                 $key = $month->format('Y-n-') . $day;
                 $dayModes = $modes[$key] ?? [];
-                $nonWorking = (bool) array_intersect($flagKeys, $dayModes);
+                $nonWorking = (bool) array_intersect($nonWorkingKeys, $dayModes);
                 $hasRecord = isset($modes[$key]) || isset($counts[$key]);
 
                 foreach ($visitKeys as $process) {
