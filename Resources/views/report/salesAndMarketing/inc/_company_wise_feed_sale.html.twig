@@ -9,7 +9,7 @@
       </tr>
 
       <tr>
-          <th data-a-h="center" class="border-0" colspan="14" align="center"><h6 class="text-center">{{ reportSlug|replace({'-': ' '}) |upper }}</h6></th>
+          <th data-a-h="center" class="border-0" colspan="14" align="center"><h6 class="text-center">{{ (reportSlug == 'company-wise-layer-chick' ? 'DOC Production' : reportSlug|replace({'-': ' '})) |upper }}</h6></th>
       </tr>
       </thead>
       {% if entities is defined and entities is not empty %}

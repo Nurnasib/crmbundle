@@ -62,7 +62,7 @@
                         </tr>
 
                         <tr>
-                            <td data-a-h="center" class="border-0" colspan="{{ months|length +8 }}" align="center"><h5 class="text-center">Visit Report Summery</h5></td>
+                            <td data-a-h="center" class="border-0" colspan="{{ months|length +8 }}" align="center"><h5 class="text-center">Visit Summery Report</h5></td>
                         </tr>
                         {% if selectedEmployee is defined and selectedEmployee is not empty %}
 
@@ -168,7 +168,7 @@
                 e.preventDefault();
                 let table = document.querySelector(".download-excel");
                 TableToExcel.convert(table, {
-                    name: "{{ 'visit_report_summery_'~date().timestamp}}.xlsx",
+                    name: "{{ 'visit_summery_report_'~date().timestamp}}.xlsx",
                     sheet: {
                         name: "Sheet 1"
                     }

@@ -57,7 +57,7 @@
                         </tr>
 
                         <tr>
-                            <td data-a-h="center" class="border-0" colspan="{{ 9 }}" align="center"><h5 class="text-center">Date Wise Visit Status Report {% if agentType is defined and agentType != 'all' %}({{ agentType|replace({'-': ' '})|title }}){% endif %}</h5></td>
+                            <td data-a-h="center" class="border-0" colspan="{{ 9 }}" align="center"><h5 class="text-center">Date Wise Visit Monitor Report {% if agentType is defined and agentType != 'all' %}({{ agentType|replace({'-': ' '})|title }}){% endif %}</h5></td>
                         </tr>
                         {% if selectedEmployee is defined and selectedEmployee is not empty %}
 
@@ -266,7 +266,7 @@
                 e.preventDefault();
                 let table = document.querySelector(".download-excel");
                 TableToExcel.convert(table, {
-                    name: "{{ 'agent_visit_monitor'}}.xlsx",
+                    name: "{{ 'agent_visit_monitor_date_wise'}}.xlsx",
                     sheet: {
                         name: "Sheet 1"
                     }

@@ -77,7 +77,7 @@
                         </tr>
 
                         <tr>
-                            <td data-a-h="center" class="border-0" colspan="{{ totalColumns }}" align="center"><h6>{{ 'New Farmer Introduce Report (Single)'|upper }} </h6></td>
+                            <td data-a-h="center" class="border-0" colspan="{{ totalColumns }}" align="center"><h6>{{ 'New Farmer Convert Report (Single Employee)'|upper }} </h6></td>
                         </tr>
                         {% if filterBy.startDate is defined and filterBy.endDate is defined %}
                             <tr>
@@ -234,7 +234,7 @@
                 e.preventDefault();
                 let table = document.querySelector(".download-excel");
                 TableToExcel.convert(table, {
-                    name: "new_farm_introduce_single_report.xlsx",
+                    name: "new_farmer_convert_single_report.xlsx",
                     sheet: {
                         name: "Sheet 1"
                     }

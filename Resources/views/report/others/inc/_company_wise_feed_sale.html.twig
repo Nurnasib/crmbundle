@@ -9,7 +9,7 @@
         </tr>
 
         <tr>
-            <th data-a-h="center" class="border-0" colspan="14" align="center"><h6 class="text-center">{{ filterBy['otherReport']|replace({'-': ' '}) |upper }}</h6></th>
+            <th data-a-h="center" class="border-0" colspan="14" align="center"><h6 class="text-center">{{ (filterBy['otherReport'] == 'company-wise-layer-chick' ? 'DOC Production' : filterBy['otherReport']|replace({'-': ' '})) |upper }}</h6></th>
         </tr>
         <tr style="position: sticky; top: -1px; background-color: #dbdee3">
             <th data-a-v="middle" scope="col" rowspan="2" width="50">S/N</th>
