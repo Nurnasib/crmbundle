@@ -159,7 +159,18 @@
                             <div style="background-color: #dbdee3; width: 100%; height: 100%">
                                 <h3 class="text-center">NOURISH POULTRY AND HATCHERY LTD</h3>
                                 <h5 class="text-center">UTTARA, DHAKA.</h5>
-                                <h6 class="text-center">{{ report.name|default('') }}</h6>
+                                {# mirror the breed suffix / disabled-setting fallback the data views use #}
+                                <h6 class="text-center">
+                                    {%- if reportSlug == 'company-species-wise-average-fcr-before' -%}
+                                        {{ report.name|default('Company & Species wise Average FCR (Culture)') }}
+                                    {%- elseif reportSlug == 'farmer-introduce-report-cattle' -%}
+                                        {{ report.name|default('New Farmer Introduce') }} (Cattle)
+                                    {%- elseif reportSlug == 'farmer-introduce-report-fish' -%}
+                                        {{ report.name|default('New Farmer Introduce') }} (Fish)
+                                    {%- else -%}
+                                        {{ report.name|default(reportSlug|replace({'-': ' '})|title) }}
+                                    {%- endif -%}
+                                </h6>
                             </div>
                         {% endif %}
                     </div>

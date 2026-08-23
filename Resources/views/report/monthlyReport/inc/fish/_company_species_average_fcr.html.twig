@@ -25,7 +25,7 @@
         <tr>
             <th data-a-h="center"
                 colspan="{{ totalColSpan }}"
-                class="border-0"><h6 class="text-center">{{ report.name|default('') }}</h6></th>
+                class="border-0"><h6 class="text-center">{{ report.name|default(reportSlug == 'company-species-wise-average-fcr-after' ? 'Company & Species wise Average FCR (Harvest)' : 'Company & Species wise Average FCR (Culture)') }}</h6></th>
         </tr>
         </thead>
         {% if entities['feedTypeIds'] is defined %}
