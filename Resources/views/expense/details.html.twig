@@ -175,7 +175,9 @@
                                                 {% if entity.status==1 %}
                                                     <input type="hidden" name="expense[{{ entity.id }}]" value="{{ entity.id }}">
                                                 <div class="btn-group">
+                                                {% if not is_granted('ROLE_VIEW_ONLY') %}
                                                 <a style="margin-right: 2px" class="btn btn-primary btn-mini white-font" href="{{ path('crm_expense_edit',{'id':entity.id}) }}"><i class="fa fa-edit"></i></a>
+                                                {% endif %}
 {#                                                <a class="btn btn-danger btn-mini white-font removeReload" href="javascript:" data-action="{{ path('crm_expense_delete',{'id':entity.id}) }}"><i class="fa fa-remove"></i></a>#}
                                                 </div>
                                                 {% endif %}

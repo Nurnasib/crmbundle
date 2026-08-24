@@ -21,7 +21,9 @@
                     <h5>{{ 'Settings'|trans }}</h5>
                     <div class="card-header-right">
                         <div class="btn-group btn-group-sm" role="group" aria-label="Button group with nested dropdown">
+                            {% if not is_granted('ROLE_VIEW_ONLY') %}
                             <a href="{{ path('crm_expense_vehicle_new') }}" class="btn btn-sm  green-bg white-font"><i class="fas fa-plus"></i>{{ 'Add New'|trans }}</a>
+                            {% endif %}
                             <a href="{{ path('crm_expense_particular_type') }}" class="btn btn-sm gray-bg white-font"><i class="fa fa-th-list"></i>{{ 'Particular'|trans }}</a>
                         </div>
                     </div>
@@ -69,8 +71,10 @@
                             {#<td>{% if entity.settingType is defined and  entity.settingType is not empty %}{{ entity.settingType.name }}{% endif %}</td>#}
                             <td>{% if entity.status is not empty %}Yes {% else %}No {% endif %}</td>
                             <td>
+                                {% if not is_granted('ROLE_VIEW_ONLY') %}
                                 <a class="btn btn-mini yellow-bg white-font" href="{{ path('crm_expense_vehicle_edit',{'id':entity.id}) }}"><i class="feather icon-edit"></i> Edit</a>
                                 <a class="btn  btn-transparent btn-mini red-font remove" href="javascript:" data-action="{{ path('crm_setting_delete',{'id':entity.id}) }}"><i class="fa fa-remove"></i></a>
+                                {% endif %}
                             </td>
 
                         </tr>
