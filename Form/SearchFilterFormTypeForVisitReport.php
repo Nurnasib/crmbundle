@@ -158,6 +158,9 @@ class SearchFilterFormTypeForVisitReport extends AbstractType
                 ],
                 'data' => 'all',
                 'required' => false,
+                // 'All' already covers the unfiltered case - suppress the blank
+                // option a non-required ChoiceType would otherwise render.
+                'placeholder' => false,
             ])
             ->add('serviceMode', EntityType::class, array(
                 'required'    => false,
