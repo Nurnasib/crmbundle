@@ -68,7 +68,7 @@
                                 <thead>
                                 <tr>
                                     <td colspan="12" class="text-center border-0" data-a-h="center">
-                                        <h4>{{ companyObj is defined ? companyObj.companyName:'' }}</h4>
+                                        <h4>{{ companyName|default('') }}</h4>
                                     </td>
                                 </tr>
                                 <tr class="border-0">

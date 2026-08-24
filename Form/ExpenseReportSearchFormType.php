@@ -40,6 +40,11 @@ use Terminalbd\CrmBundle\Entity\Setting;
  */
 class ExpenseReportSearchFormType extends AbstractType
 {
+    /** Heading and picker label for the merged company. */
+    public const MERGED_COMPANY_LABEL = 'Nourish Poultry & Hatchery';
+
+    /** Submitted in place of a core_company id; ExpenseController resolves it. */
+    public const MERGED_COMPANY_VALUE = 'merged';
 
 
     /**
@@ -48,17 +53,19 @@ class ExpenseReportSearchFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('company', EntityType::class, [
-                'class' => Company::class,
+            // Nourish Agro, Nourish Feeds and Nourish Poultry & Hatchery are reported as
+            // one company here, so the picker offers the group rather than the three
+            // rows of core_company. ExpenseController expands this value into the
+            // company ids the three report queries filter on.
+            ->add('company', ChoiceType::class, [
+                'choices' => [
+                    self::MERGED_COMPANY_LABEL => self::MERGED_COMPANY_VALUE,
+                ],
                 'mapped' => false,
                 'required' => true,
-                'placeholder' => 'Select Company',
-                'choice_label' => 'companyName',
+                'placeholder' => false,
+                'data' => self::MERGED_COMPANY_VALUE,
                 'attr'=>array('class'=>'span12 m-wrap'),
-                'query_builder' => function(EntityRepository $er){
-                    return $er->createQueryBuilder('e')
-                        ->orderBy('e.companyName', 'ASC');
-                },
             ])
             ->add($builder->create('visitDate', TextType::class, array(
                 'label' => 'Date',

@@ -206,6 +206,9 @@ class ExpenseParticularRepository extends EntityRepository
 
 
 
+    /**
+     * @param int|int[] $companyId one company, or the set of companies reported as one
+     */
     public function getExpenseParticularTotalAmount($companyId, $monthYear, $employeeIds=null){
         $qb = $this->createQueryBuilder('e');
         $qb->select('SUM(e.amount) as totalAmount');
@@ -214,11 +217,23 @@ class ExpenseParticularRepository extends EntityRepository
         $qb->join('e.expense','expense');
         $qb->join('expense.expenseBatch','expenseBatch');
         $qb->join('expense.employee','employee');
-        $qb->join('employee.company','company');
+        $qb->leftJoin('employee.company','company');
         $qb->where('expense.expenseDate IS NOT NULL');
         $qb->andWhere('expenseBatch.status >=:status')->setParameter('status',2);
 
-        $qb->andWhere('company.id =:companyId')->setParameter('companyId', $companyId);
+        // Left join: the merged group stands for the whole organisation, so employees
+        // with no company assigned are reported with it. A single-company filter still
+        // excludes them, exactly as before. orX() is used rather than a raw "a OR b"
+        // string because Doctrine does not parenthesise string parts, which would let
+        // the OR escape the surrounding ANDs.
+        if (is_array($companyId)) {
+            $qb->andWhere($qb->expr()->orX(
+                $qb->expr()->in('company.id', ':companyId'),
+                $qb->expr()->isNull('company.id')
+            ))->setParameter('companyId', $companyId);
+        } else {
+            $qb->andWhere('company.id =:companyId')->setParameter('companyId', $companyId);
+        }
         $qb->andWhere("DATE_FORMAT(expense.expenseDate,'%Y-%m') =:monthYear")->setParameter('monthYear', $monthYear);
 
         if($employeeIds){

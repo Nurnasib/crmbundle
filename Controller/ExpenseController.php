@@ -599,7 +599,7 @@ class ExpenseController extends AbstractController
         $convenceDetails = [];
 
         $company = null;
-        $companyObj = null;
+        $companyName = '';
         $employeeIds = null;
         if ($form->isSubmitted()) {
             $filterBy = $form->getData();
@@ -607,6 +607,17 @@ class ExpenseController extends AbstractController
 
             $yearMonth = isset($data['expense_report_search_form']['visitDate'])&&$data['expense_report_search_form']['visitDate']!=''?date('Y-m', strtotime('01-'.$data['expense_report_search_form']['visitDate'])):date('Y-m');
             $company = isset($data['expense_report_search_form']['company'])&&$data['expense_report_search_form']['company']!=''?$data['expense_report_search_form']['company']:null;
+
+            // Nourish Agro, Nourish Feeds and Nourish Poultry & Hatchery are reported as
+            // a single company, so the picker submits one value standing for all of them.
+            // The three queries below take an id or a list, and filter with IN either way.
+            if ($company === ExpenseReportSearchFormType::MERGED_COMPANY_VALUE) {
+                $company = array_column(
+                    $this->getDoctrine()->getRepository(Company::class)
+                        ->createQueryBuilder('c')->select('c.id')->getQuery()->getArrayResult(),
+                    'id'
+                );
+            }
 
             $employeeIds = isset($data['employeeId']) && sizeof($data['employeeId']) > 0 ? $data['employeeId'] : null;
 
@@ -625,7 +636,11 @@ class ExpenseController extends AbstractController
                     $entities[$entity['employeeAutoId']]['totalConvenceAmount']= isset($convenceDetails[$entity['employeeAutoId']]) ? $convenceDetails[$entity['employeeAutoId']]['totalAmount']: 0;
                 }
             }*/
-            $companyObj = $this->getDoctrine()->getRepository(Company::class)->find($company);
+            // The merged group spans several core_company rows, so there is no single
+            // record to take the heading from - name it from the one label instead.
+            $companyName = is_array($company)
+                ? ExpenseReportSearchFormType::MERGED_COMPANY_LABEL
+                : (($found = $this->getDoctrine()->getRepository(Company::class)->find($company)) ? $found->getCompanyName() : '');
         }
 
 
@@ -637,7 +652,7 @@ class ExpenseController extends AbstractController
             'convenceDetails' => $convenceDetails,
             'expenseParticulars' => $expenseParticulars,
             'employeeIds' => $employeeIds,
-            'companyObj' => $companyObj,
+            'companyName' => $companyName,
         ]);
 
     }
