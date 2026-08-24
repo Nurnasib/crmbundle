@@ -4,13 +4,15 @@
     <div class="pcoded-inner-content">
         <div class="row">
             <div class="col p-0">
+                {{ form_start(form) }}
+                <div class="text-danger">{{ form_errors(form) }}</div>
                 <table class="table table-striped table-bordered table-hover">
                     <thead class="thead-dark">
-                    {{ form_start(form) }}
                     <tr>
                         <th>
                             {{ form_label(form.employee, 'Employee:') }}
                             {{ form_widget(form.employee) }}
+                            <div class="text-danger small">{{ form_errors(form.employee) }}</div>
                         </th>
 
                         <th>
@@ -38,10 +40,10 @@
                             </div>
                         </th>
                     </tr>
-                    </form>
-
                     </thead>
                 </table>
+                {{ form_widget(form._token) }}
+                </form>
             </div>
         </div>
         <div class="row">

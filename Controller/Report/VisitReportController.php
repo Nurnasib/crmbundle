@@ -275,7 +275,7 @@ class VisitReportController extends AbstractController
         $endDate = date('Y-m-t');
         $userRepo = $this->getDoctrine()->getRepository(User::class);
         $form = $this->createForm(SearchFilterFormTypeForVisitReport::class, null, [
-            'validation_groups' => ['Default', 'start_end_date_only'],
+            'validation_groups' => ['Default', 'start_end_date_only', 'employee_required'],
             'loggedUser' => $this->getUser(),'userRepo'=>$userRepo]);
         $form->handleRequest($request);
         $records = [];
@@ -318,7 +318,7 @@ class VisitReportController extends AbstractController
         $endDate = date('Y-m-t');
         $userRepo = $this->getDoctrine()->getRepository(User::class);
         $form = $this->createForm(SearchFilterFormTypeForVisitReport::class, null, [
-            'validation_groups' => ['Default', 'start_end_date_only'],
+            'validation_groups' => ['Default', 'start_end_date_only', 'employee_required'],
             'loggedUser' => $this->getUser(),'userRepo'=>$userRepo]);
         $form->handleRequest($request);
         $records = [];

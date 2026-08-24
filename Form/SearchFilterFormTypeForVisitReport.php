@@ -129,6 +129,12 @@ class SearchFilterFormTypeForVisitReport extends AbstractType
                 },
                 'placeholder' => '- All Employee -',
                 'required' => false,
+                // Only bites for callers that pass the 'employee_required'
+                // group; the agent visit monitors filter on a single employee,
+                // so an empty pick can only ever produce an empty report.
+                'constraints' => [
+                    new NotBlank(['message' => 'Employee is required.', 'groups' => ['employee_required']]),
+                ],
                 'attr' => [
                     'class' => 'select2'
                 ]
