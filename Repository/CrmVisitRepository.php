@@ -197,8 +197,26 @@ class CrmVisitRepository extends EntityRepository
      * Additive helper - used only by the employee_monthly_activity_report route.
      * Nothing else calls it, so no existing report is affected.
      *
-     * Returns one block per calendar month covered by the range. Each block holds the
-     * parameter rows keyed by day-of-month:
+     * Thin wrapper around getTeamMonthlyActivity() for the "Single Employee" mode
+     * of that report; see that method for the query and block shape.
+     *
+     * @return array<int, array<string, mixed>>
+     */
+    public function getEmployeeMonthlyActivity($employeeId, \DateTime $startDate, \DateTime $endDate): array
+    {
+        return $this->getTeamMonthlyActivity([$employeeId], $startDate, $endDate)[$employeeId] ?? [];
+    }
+
+    /**
+     * Employee Monthly Activity Report - "Line Manager" mode.
+     *
+     * Same shape as getEmployeeMonthlyActivity(), but for many employees at once via
+     * two grouped queries instead of one pair per employee, so a large team doesn't
+     * turn into an N+1.
+     *
+     * Returns one block list per employee id. Each block list holds one block per
+     * calendar month covered by the range, and each block holds the parameter rows
+     * keyed by day-of-month:
      *   agent | sub-agent | farmer | other-agent  -> visit counts from CrmVisitDetails.process
      *   one flag row per WORKING_MODE            -> day flags from CrmVisit.workingMode
      *
@@ -213,44 +231,72 @@ class CrmVisitRepository extends EntityRepository
      *   null -> employee filed nothing that day, or the day is leave/office work/holiday
      *   0    -> employee worked but logged no visit of that type
      *
-     * @return array<int, array<string, mixed>>
+     * @param int[] $employeeIds
+     * @return array<int, array<int, array<string, mixed>>>
      */
-    public function getEmployeeMonthlyActivity($employeeId, \DateTime $startDate, \DateTime $endDate): array
+    public function getTeamMonthlyActivity(array $employeeIds, \DateTime $startDate, \DateTime $endDate): array
     {
+        if (!$employeeIds) {
+            return [];
+        }
+
         $processRows = $this->createQueryBuilder('v')
-            ->select('v.visitDate AS visitDate', 'vd.process AS process', 'COUNT(vd.id) AS total')
+            ->select('IDENTITY(v.employee) AS employeeId', 'v.visitDate AS visitDate', 'vd.process AS process', 'COUNT(vd.id) AS total')
             ->join('v.crmVisitDetails', 'vd')
-            ->where('v.employee = :employee')->setParameter('employee', $employeeId)
+            ->where('v.employee IN (:employeeIds)')->setParameter('employeeIds', $employeeIds)
             ->andWhere('v.visitDate >= :startDate')->setParameter('startDate', $startDate)
             ->andWhere('v.visitDate <= :endDate')->setParameter('endDate', $endDate)
-            ->groupBy('v.visitDate')->addGroupBy('vd.process')
+            ->groupBy('v.employee')->addGroupBy('v.visitDate')->addGroupBy('vd.process')
             ->getQuery()->getArrayResult();
 
         $modeRows = $this->createQueryBuilder('v')
-            ->select('v.visitDate AS visitDate', 'workingMode.slug AS slug')
+            ->select('IDENTITY(v.employee) AS employeeId', 'v.visitDate AS visitDate', 'workingMode.slug AS slug')
             ->join('v.workingMode', 'workingMode')
-            ->where('v.employee = :employee')->setParameter('employee', $employeeId)
+            ->where('v.employee IN (:employeeIds)')->setParameter('employeeIds', $employeeIds)
             ->andWhere('v.visitDate >= :startDate')->setParameter('startDate', $startDate)
             ->andWhere('v.visitDate <= :endDate')->setParameter('endDate', $endDate)
-            ->groupBy('v.visitDate')->addGroupBy('workingMode.slug')
+            ->groupBy('v.employee')->addGroupBy('v.visitDate')->addGroupBy('workingMode.slug')
             ->getQuery()->getArrayResult();
 
-        $counts = [];
+        $countsByEmployee = [];
         foreach ($processRows as $row) {
             if (empty($row['visitDate']) || !$row['visitDate'] instanceof \DateTimeInterface) {
                 continue;
             }
-            $counts[$row['visitDate']->format('Y-n-j')][$row['process']] = (int) $row['total'];
+            $countsByEmployee[$row['employeeId']][$row['visitDate']->format('Y-n-j')][$row['process']] = (int) $row['total'];
         }
 
-        $modes = [];
+        $modesByEmployee = [];
         foreach ($modeRows as $row) {
             if (empty($row['visitDate']) || !$row['visitDate'] instanceof \DateTimeInterface) {
                 continue;
             }
-            $modes[$row['visitDate']->format('Y-n-j')][] = $row['slug'];
+            $modesByEmployee[$row['employeeId']][$row['visitDate']->format('Y-n-j')][] = $row['slug'];
         }
 
+        $blocksByEmployee = [];
+        foreach ($employeeIds as $employeeId) {
+            $blocksByEmployee[$employeeId] = $this->buildMonthlyActivityBlocks(
+                $countsByEmployee[$employeeId] ?? [],
+                $modesByEmployee[$employeeId] ?? [],
+                $startDate,
+                $endDate
+            );
+        }
+
+        return $blocksByEmployee;
+    }
+
+    /**
+     * Turns the per-day counts/modes gathered by getTeamMonthlyActivity() into the
+     * month blocks the template renders. Pulled out of getEmployeeMonthlyActivity()
+     * so both the single-employee and team queries share the same block shape.
+     *
+     * @param array<string, array<string, int>> $counts day key ("Y-n-j") -> process -> total
+     * @param array<string, string[]> $modes day key ("Y-n-j") -> working-mode slugs
+     */
+    private function buildMonthlyActivityBlocks(array $counts, array $modes, \DateTime $startDate, \DateTime $endDate): array
+    {
         $visitKeys = ['agent', 'sub-agent', 'farmer', 'other-agent'];
         $flagKeys = [
             'leave', 'office-work', 'holiday',

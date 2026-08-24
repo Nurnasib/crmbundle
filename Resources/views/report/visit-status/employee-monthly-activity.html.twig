@@ -50,16 +50,24 @@
                 <table class="table">
                     <thead class="thead-dark">
                     <tr>
-                        <th style="min-width: 200px">
+                        <th>
+                            {{ form_label(form.reportType, 'Report Type:') }}
+                            {{ form_widget(form.reportType) }}
+                        </th>
+                        <th id="monthly-activity-employee-filter" style="min-width: 200px">
                             {{ form_label(form.employee, 'Employee:') }}
                             {{ form_widget(form.employee) }}
+                        </th>
+                        <th id="monthly-activity-line-manager-filter" style="min-width: 200px">
+                            {{ form_label(form.lineManager, 'Line Manager:') }}
+                            {{ form_widget(form.lineManager) }}
                         </th>
                         <th>
                             {{ form_label(form.startMonth, 'Start Month:') }}
                             {{ form_widget(form.startMonth) }}
                             {{ form_errors(form.startMonth) }}
                         </th>
-                        <th>
+                        <th id="monthly-activity-end-month-filter">
                             {{ form_label(form.endMonth, 'End Month:') }}
                             {{ form_widget(form.endMonth) }}
                             {{ form_errors(form.endMonth) }}
@@ -73,7 +81,7 @@
                             <div class="btn-group" style="margin-top: 25px">
                                 <button type="submit" name="search" class="btn btn-primary btn-sm" title="Search" value="search"><i class="fa fa-search" aria-hidden="true"></i></button>
                                 <a href="{{ path('employee_monthly_activity_report') }}" class="btn purple-bg btn-sm white-font" title="Reset" value="reset"><i class="fa fa-refresh" aria-hidden="true"></i></a>
-                                {% if blocks is not empty %}
+                                {% if employeeBlocks is not empty %}
                                     <button type="submit" name="excel" class="btn blue-bg btn-sm white-font" title="Excel" value="excel" id="button-excel"><i class="fa fa-file-excel" aria-hidden="true"></i> {{ 'Excel'|trans }}</button>
                                 {% endif %}
                             </div>
@@ -100,7 +108,21 @@
                         <tr>
                             <td data-a-h="center" class="border-0" colspan="{{ totalColumns }}" align="center"><h6>{{ 'Employee Monthly Activity Report'|upper }}</h6></td>
                         </tr>
-                        {% if selectedEmployee %}
+                        {% if reportType == 'line_manager' and selectedLineManager %}
+                            <tr>
+                                <td class="border-0" colspan="{{ totalColumns }}">
+                                    <strong>Line Manager ID:</strong> {{ selectedLineManager.userId }}
+                                    &nbsp;&nbsp;|&nbsp;&nbsp;
+                                    <strong>Line Manager Name:</strong> {{ selectedLineManager.name }}
+                                    &nbsp;&nbsp;|&nbsp;&nbsp;
+                                    <strong>Month:</strong> {{ startMonth }}
+                                    &nbsp;&nbsp;|&nbsp;&nbsp;
+                                    <strong>Year:</strong> {{ year }}
+                                    &nbsp;&nbsp;|&nbsp;&nbsp;
+                                    <strong>Employees:</strong> {{ employeeBlocks|length }}
+                                </td>
+                            </tr>
+                        {% elseif selectedEmployee %}
                             <tr>
                                 <td class="border-0" colspan="{{ totalColumns }}">
                                     <strong>Emp ID:</strong> {{ selectedEmployee.userId }}
@@ -129,37 +151,60 @@
                         </thead>
 
                         <tbody>
-                        {% if blocks is not empty %}
-                            {% for block in blocks %}
-                                {% for parameter in parameterOrder %}
+                        {% if employeeBlocks is not empty %}
+                            {% for employeeId, entry in employeeBlocks %}
+                                {% if reportType == 'line_manager' %}
                                     <tr>
-                                        {% if loop.first %}
-                                            <td data-t="n" rowspan="{{ parameterOrder|length }}">{{ block.year }}</td>
-                                            <td rowspan="{{ parameterOrder|length }}">{{ block.label }}</td>
-                                        {% endif %}
-                                        <td>{{ parameterLabels[parameter] }}</td>
-                                        {% for d in 1..31 %}
-                                            {% if d > block.daysInMonth %}
-                                                <td style="background-color: #e9ecef;"></td>
-                                            {% else %}
-                                                {% set value = block.rows[parameter][d] %}
-                                                {% if flagSymbols[parameter] is defined %}
-                                                    <td class="text-center">{{ value ? flagSymbols[parameter] : '' }}</td>
-                                                {% else %}
-                                                    {# Blank is the single "no visits" marker - a zero count and a day
-                                                       with nothing filed both render empty. Swap to
-                                                       `value is null ? '' : value` to show explicit zeros instead. #}
-                                                    <td data-t="n">{{ value ? value : '' }}</td>
-                                                {% endif %}
-                                            {% endif %}
-                                        {% endfor %}
+                                        <td colspan="{{ totalColumns }}" style="background-color: #f4f4f4;">
+                                            <strong>Emp ID:</strong> {{ entry.employee.userId }}
+                                            &nbsp;&nbsp;|&nbsp;&nbsp;
+                                            <strong>Emp Name:</strong> {{ entry.employee.name }}
+                                            &nbsp;&nbsp;|&nbsp;&nbsp;
+                                            <strong>Designation:</strong> {{ entry.employee.designation.name|default('') }}
+                                        </td>
                                     </tr>
-                                {% endfor %}
+                                {% endif %}
+                                {% if entry.blocks is not empty %}
+                                    {% for block in entry.blocks %}
+                                        {% for parameter in parameterOrder %}
+                                            <tr>
+                                                {% if loop.first %}
+                                                    <td data-t="n" rowspan="{{ parameterOrder|length }}">{{ block.year }}</td>
+                                                    <td rowspan="{{ parameterOrder|length }}">{{ block.label }}</td>
+                                                {% endif %}
+                                                <td>{{ parameterLabels[parameter] }}</td>
+                                                {% for d in 1..31 %}
+                                                    {% if d > block.daysInMonth %}
+                                                        <td style="background-color: #e9ecef;"></td>
+                                                    {% else %}
+                                                        {% set value = block.rows[parameter][d] %}
+                                                        {% if flagSymbols[parameter] is defined %}
+                                                            <td class="text-center">{{ value ? flagSymbols[parameter] : '' }}</td>
+                                                        {% else %}
+                                                            {# Blank is the single "no visits" marker - a zero count and a day
+                                                               with nothing filed both render empty. Swap to
+                                                               `value is null ? '' : value` to show explicit zeros instead. #}
+                                                            <td data-t="n">{{ value ? value : '' }}</td>
+                                                        {% endif %}
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </tr>
+                                        {% endfor %}
+                                    {% endfor %}
+                                {% else %}
+                                    <tr>
+                                        <td colspan="{{ totalColumns }}" class="text-center">No data found</td>
+                                    </tr>
+                                {% endif %}
                             {% endfor %}
                         {% else %}
                             <tr>
                                 <td colspan="{{ totalColumns }}" class="text-center">
-                                    {% if submitted and not selectedEmployee %}
+                                    {% if submitted and reportType == 'line_manager' and not selectedLineManager %}
+                                        Please select a line manager.
+                                    {% elseif submitted and reportType == 'line_manager' and selectedLineManager %}
+                                        No employees found under this line manager.
+                                    {% elseif submitted and reportType == 'employee' and not selectedEmployee %}
                                         Please select an employee.
                                     {% else %}
                                         No data found
@@ -195,6 +240,28 @@
     <script type="application/javascript" src="{{ asset('assets/module/js/app.js') }}"></script>
     <script src="{{ asset('assets/js/tableToExcel.js') }}"></script>
     <script>
+
+        {# Symfony already renders an id on this widget - a second 'id' in the field's
+           'attr' would render as a duplicate id="" attribute, which the HTML parser
+           resolves by keeping only the first (auto-generated) one, so a hardcoded
+           selector for a custom id would silently never match. Read the real id back
+           from the form view instead. #}
+        let monthlyActivityReportType = document.getElementById('{{ form.reportType.vars.id }}');
+
+        function syncMonthlyActivityReportType() {
+            if (!monthlyActivityReportType) {
+                return;
+            }
+            let isLineManager = monthlyActivityReportType.value === 'line_manager';
+            document.querySelector('#monthly-activity-employee-filter').style.display = isLineManager ? 'none' : '';
+            document.querySelector('#monthly-activity-line-manager-filter').style.display = isLineManager ? '' : 'none';
+            document.querySelector('#monthly-activity-end-month-filter').style.display = isLineManager ? 'none' : '';
+        }
+
+        syncMonthlyActivityReportType();
+        if (monthlyActivityReportType) {
+            monthlyActivityReportType.addEventListener('change', syncMonthlyActivityReportType);
+        }
 
         let button = document.querySelector("#button-excel");
 

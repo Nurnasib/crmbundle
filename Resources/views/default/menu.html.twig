@@ -233,7 +233,13 @@
                 <li><a class="dropdown-item" href="{{ path('visit_report') }}">{{ 'Visit Report'|trans }}</a></li>
                 <li><a class="dropdown-item" href="{{ path('visit_status') }}">{{ 'Visit Status'|trans }}</a></li>
                 <li><a class="dropdown-item" href="{{ path('visit_summery_report') }}">{{ 'Visit Summery Report'|trans }}</a></li>
-                <li><a class="dropdown-item" href="{{ path('employee_monthly_activity_report') }}">{{ 'Employee Monthly Activity Report'|trans }}</a></li>
+                <li>
+                    <a class="dropdown-item" href="javascript:">{{ 'Employee Monthly Activity Report'|trans }}</a>
+                    <ul class="sub-menu">
+                        <li><a class="dropdown-item" href="{{ path('employee_monthly_activity_report', {'reportType': 'employee'}) }}">{{ 'Single Employee'|trans }}</a></li>
+                        <li><a class="dropdown-item" href="{{ path('employee_monthly_activity_report', {'reportType': 'line_manager'}) }}">{{ 'Line Manager'|trans }}</a></li>
+                    </ul>
+                </li>
 
                 <li>
                     <a class="dropdown-item" href="javascript:">{{ 'Agent Visit'|trans }}</a>

@@ -10,6 +10,8 @@ use App\Entity\User;
 use Dompdf\Dompdf;
 use Dompdf\Options;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Doctrine\ORM\EntityRepository;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\HttpFoundation\Request;
@@ -372,18 +374,30 @@ class VisitReportController extends AbstractController
     /**
      * Employee Monthly Activity Report.
      *
-     * Day-by-day activity grid for a single employee: visit counts split by agent /
+     * Day-by-day activity grid for one or many employees: visit counts split by agent /
      * sub agent / farmer / other agent, plus leave, office work and holiday flags.
-     * Backed by CrmVisitRepository::getEmployeeMonthlyActivity(), which is used
-     * nowhere else, so no other report is touched.
+     * Backed by CrmVisitRepository::getEmployeeMonthlyActivity()/getTeamMonthlyActivity(),
+     * which are used nowhere else, so no other report is touched.
      *
-     * @Route("/crm/employee-monthly-activity", name="employee_monthly_activity_report")
+     * {reportType} only preselects which filters the page opens with, for the two
+     * "Employee Monthly Activity Report" submenu links (menu.html.twig) - it does not
+     * gate anything server-side, the reportType form field submitted on search is what
+     * actually drives the query below.
+     *
+     * @Route(
+     *     "/crm/employee-monthly-activity/{reportType}",
+     *     name="employee_monthly_activity_report",
+     *     requirements={"reportType": "employee|line_manager"},
+     *     defaults={"reportType": "employee"}
+     * )
      */
-    public function employeeMonthlyActivityReport(Request $request)
+    public function employeeMonthlyActivityReport(Request $request, string $reportType = 'employee')
     {
+        $initialReportType = $reportType;
+        $loggedUser = $this->getUser();
         $userRepo = $this->getDoctrine()->getRepository(User::class);
         $form = $this->createForm(SearchFilterFormTypeForVisitReport::class, null, [
-            'loggedUser' => $this->getUser(), 'userRepo' => $userRepo
+            'loggedUser' => $loggedUser, 'userRepo' => $userRepo
         ]);
 
         // All of the following act on this form instance only - the shared form type
@@ -405,6 +419,72 @@ class VisitReportController extends AbstractController
             $yearChoices[$yearNumber] = $yearNumber;
         }
 
+        $form->add('reportType', ChoiceType::class, [
+            'choices' => [
+                'Single Employee' => 'employee',
+                'Line Manager' => 'line_manager',
+            ],
+            'required' => false,
+            'placeholder' => false,
+            'data' => $initialReportType,
+            'attr' => ['class' => 'form-control'],
+        ]);
+        // Mirrors the 'employee' field's own role scoping above: a plain employee
+        // sees nobody here (they have no team), a line manager sees their own CRM
+        // subtree's line managers plus themselves, an admin sees their domain's.
+        $form->add('lineManager', EntityType::class, [
+            'class' => User::class,
+            'required' => false,
+            'placeholder' => '- Select Line Manager -',
+            'choice_label' => function (User $lineManager) {
+                return '(' . $lineManager->getUserId() . ') ' . $lineManager->getName();
+            },
+            'query_builder' => function (EntityRepository $repository) use ($loggedUser, $userRepo) {
+                $qb = $repository->createQueryBuilder('e');
+                $qb->join('e.userGroup', 'userGroup');
+                $qb->where("userGroup.slug = 'employee'");
+                $qb->andWhere('e.enabled = 1');
+                $qb->andWhere("e.userMode = 'KPI'");
+                $qb->andWhere($qb->expr()->like('e.roles', ':lineManagerRole'))
+                    ->setParameter('lineManagerRole', '%ROLE_LINE_MANAGER%');
+
+                $rolesString = implode('_', $loggedUser->getRoles());
+
+                if (!str_contains($rolesString, 'ADMIN')) {
+                    $teamIds = $userRepo->getEmployeesByLineManager($loggedUser);
+                    $teamIds[] = $loggedUser->getId();
+                    $qb->andWhere('e.id IN (:teamIds)')->setParameter('teamIds', $teamIds);
+                } else {
+                    $userRole = [];
+                    if (in_array('ROLE_CRM_POULTRY_ADMIN', $loggedUser->getRoles())) {
+                        array_push($userRole, 'ROLE_CRM_POULTRY_USER');
+                    }
+                    if (in_array('ROLE_CRM_CATTLE_ADMIN', $loggedUser->getRoles())) {
+                        array_push($userRole, 'ROLE_CRM_CATTLE_USER');
+                    }
+                    if (in_array('ROLE_CRM_AQUA_ADMIN', $loggedUser->getRoles())) {
+                        array_push($userRole, 'ROLE_CRM_AQUA_USER');
+                    }
+                    if (in_array('ROLE_CRM_SALES_MARKETING_ADMIN', $loggedUser->getRoles())) {
+                        array_push($userRole, 'ROLE_CRM_SALES_MARKETING_USER');
+                    }
+                    if ($userRole) {
+                        $query = '';
+                        foreach ($userRole as $key => $role) {
+                            if ($key !== 0) {
+                                $query .= ' OR ';
+                            }
+                            $query .= "e.roles LIKE '%" . $role . "%'";
+                        }
+                        $qb->andWhere($query);
+                    }
+                }
+
+                $qb->orderBy('e.name');
+                return $qb;
+            },
+            'attr' => ['class' => 'select2'],
+        ]);
         $form->add('startMonth', ChoiceType::class, [
             'choices' => $monthChoices,
             'required' => false,
@@ -429,18 +509,29 @@ class VisitReportController extends AbstractController
 
         $form->handleRequest($request);
 
+        $reportType = $initialReportType;
         $selectedEmployee = null;
+        $selectedLineManager = null;
         $year = (int) date('Y');
         $startMonth = date('F');
         $endMonth = date('F');
-        $blocks = [];
+        // employeeId => ['employee' => User, 'blocks' => <getEmployeeMonthlyActivity() shape>]
+        $employeeBlocks = [];
 
         if ($form->isSubmitted()) {
             $data = $form->getData();
+            $reportType = !empty($data['reportType']) ? $data['reportType'] : $reportType;
             $selectedEmployee = !empty($data['employee']) ? $data['employee'] : null;
+            $selectedLineManager = !empty($data['lineManager']) ? $data['lineManager'] : null;
             $year = !empty($data['year']) ? (int) $data['year'] : $year;
             $startMonth = !empty($data['startMonth']) ? $data['startMonth'] : $startMonth;
             $endMonth = !empty($data['endMonth']) ? $data['endMonth'] : $endMonth;
+        }
+
+        if ($reportType === 'line_manager') {
+            // The team view is single-month only - collapse a stray end-month value
+            // rather than adding a second date field just for this mode.
+            $endMonth = $startMonth;
         }
 
         $startMonthNumber = (int) date('n', strtotime($startMonth . ' 1 ' . $year));
@@ -454,15 +545,39 @@ class VisitReportController extends AbstractController
         $startDate = new DateTime(sprintf('%d-%02d-01', $year, $startMonthNumber));
         $endDate = new DateTime(date('Y-m-t', mktime(0, 0, 0, $endMonthNumber, 1, $year)));
 
-        if ($form->isSubmitted() && $selectedEmployee) {
-            $blocks = $this->getDoctrine()->getRepository(CrmVisit::class)
-                ->getEmployeeMonthlyActivity($selectedEmployee->getId(), $startDate, $endDate);
+        $crmVisitRepo = $this->getDoctrine()->getRepository(CrmVisit::class);
+
+        if ($form->isSubmitted() && $reportType === 'employee' && $selectedEmployee) {
+            $employeeBlocks[$selectedEmployee->getId()] = [
+                'employee' => $selectedEmployee,
+                'blocks' => $crmVisitRepo->getEmployeeMonthlyActivity($selectedEmployee->getId(), $startDate, $endDate),
+            ];
+        } elseif ($form->isSubmitted() && $reportType === 'line_manager' && $selectedLineManager) {
+            $teamEmployeeIds = $userRepo->getAllEmployeeIdsByLineManagerId($selectedLineManager->getId());
+
+            if ($teamEmployeeIds) {
+                $teamEmployees = $userRepo->createQueryBuilder('e')
+                    ->where('e.id IN (:ids)')->setParameter('ids', $teamEmployeeIds)
+                    ->orderBy('e.name')
+                    ->getQuery()->getResult();
+
+                $teamBlocks = $crmVisitRepo->getTeamMonthlyActivity($teamEmployeeIds, $startDate, $endDate);
+
+                foreach ($teamEmployees as $teamEmployee) {
+                    $employeeBlocks[$teamEmployee->getId()] = [
+                        'employee' => $teamEmployee,
+                        'blocks' => $teamBlocks[$teamEmployee->getId()] ?? [],
+                    ];
+                }
+            }
         }
 
         return $this->render('@TerminalbdCrm/report/visit-status/employee-monthly-activity.html.twig', [
             'form' => $form->createView(),
-            'blocks' => $blocks,
+            'employeeBlocks' => $employeeBlocks,
+            'reportType' => $reportType,
             'selectedEmployee' => $selectedEmployee,
+            'selectedLineManager' => $selectedLineManager,
             'startMonth' => $startMonth,
             'endMonth' => $endMonth,
             'year' => $year,
