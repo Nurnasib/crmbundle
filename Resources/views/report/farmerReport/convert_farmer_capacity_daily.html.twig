@@ -1,9 +1,9 @@
 {% extends 'admin/layout.html.twig' %}
 
-{# SL + ID + Employee + Species + Total, then one column per day of the selected month #}
+{# SL + ID + Employee + Line Manager Id + Line Manager + Species + Total, then one column per day of the selected month #}
 {% set speciesCount = filterableSpeciesType|length %}
 {% set daysInMonth = filterBy.daysInMonth is defined ? filterBy.daysInMonth : 0 %}
-{% set totalColumns = 5 + daysInMonth %}
+{% set totalColumns = 7 + daysInMonth %}
 
 {% block body %}
     <div class="pcoded-inner-content">
@@ -82,6 +82,8 @@
                             <th scope="col">SL</th>
                             <th scope="col">ID</th>
                             <th scope="col" style="min-width: 180px">{{ 'Employee'|trans }}</th>
+                            <th scope="col">{{ 'Line Manager Id'|trans }}</th>
+                            <th scope="col" style="min-width: 180px">{{ 'Line Manager Name'|trans }}</th>
                             <th scope="col">{{ filterBy.farm_type is defined and filterBy.farm_type ? filterBy.farm_type|replace({'-breed': ''})|capitalize : 'Type' }}</th>
                             <th data-a-h="center" class="text-center" scope="col">{{ 'Total'|trans }}</th>
                             {% if daysInMonth > 0 %}
@@ -112,6 +114,8 @@
                                                     {{ lineManagerData.name }}
                                                     <small class="d-block text-muted">{{ 'Line Manager'|trans }}</small>
                                                 </td>
+                                                <td data-a-v="middle" rowspan="{{ speciesCount }}"></td>
+                                                <td data-a-v="middle" rowspan="{{ speciesCount }}"></td>
                                             {% endif %}
                                             <td>{{ speciesType.name }}</td>
                                             <td data-t="n" class="text-right">{{ dailyQty|reduce((carry, qty) => carry + qty, 0) ?: '' }}</td>
@@ -134,6 +138,8 @@
                                                 <td data-a-v="middle" rowspan="{{ speciesCount }}">{{ loop.parent.loop.index }}</td>
                                                 <td data-a-v="middle" rowspan="{{ speciesCount }}">{{ employee.userId }}</td>
                                                 <td data-a-v="middle" rowspan="{{ speciesCount }}">{{ employee.name }}</td>
+                                                <td data-a-v="middle" rowspan="{{ speciesCount }}">{{ employee.lineManagerUserId }}</td>
+                                                <td data-a-v="middle" rowspan="{{ speciesCount }}">{{ employee.lineManagerName }}</td>
                                             {% endif %}
                                             <td>{{ speciesType.name }}</td>
                                             <td data-t="n" class="text-right font-weight-bold">{{ dailyQty|reduce((carry, qty) => carry + qty, 0) ?: '' }}</td>
@@ -155,7 +161,7 @@
                                 {% set totalQty = grandTotals[speciesType.id] is defined ? grandTotals[speciesType.id] : {} %}
                                 <tr class="font-weight-bold thead-dark">
                                     {% if loop.first %}
-                                        <td data-a-v="middle" data-a-h="right" class="text-right" colspan="3" rowspan="{{ speciesCount }}">{{ 'Total'|trans }}</td>
+                                        <td data-a-v="middle" data-a-h="right" class="text-right" colspan="5" rowspan="{{ speciesCount }}">{{ 'Total'|trans }}</td>
                                     {% endif %}
                                     <td>{{ speciesType.name }}</td>
                                     <td data-t="n" class="text-right">{{ totalQty|reduce((carry, qty) => carry + qty, 0) ?: '' }}</td>

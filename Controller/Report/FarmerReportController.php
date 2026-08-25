@@ -1721,6 +1721,63 @@ class FarmerReportController extends AbstractController
     }
 
     /**
+     * Convert Farmer Capacity Report - National.
+     * "Convert" means introduce, so this counts capacity against farmerIntroduce.introduceDate.
+     *
+     * One row per month of the selected range, one column per species of every farm type, holding
+     * the whole country's converted capacity -- no line manager and no farm type filter, and no
+     * scoping to the logged in user either: the numbers are national by definition.
+     *
+     * @Route("/convert_farmer_capacity_national_report", name="convert_farmer_capacity_national_report")
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function convertFarmerCapacityNationalReport(Request $request)
+    {
+        $filterBy = [];
+        $capacityByMonth = [];
+        $grandTotals = [];
+
+        $customerRepo = $this->getDoctrine()->getRepository(CrmCustomer::class);
+        $form = $this->createForm(ConvertFarmerCapacitySearchFormType::class, null, [
+            'validation_groups' => ['year_only', 'start_end_month_only']]);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $filterBy = $form->getData();
+
+            $startDate = \DateTime::createFromFormat('Y-m-d', $filterBy['year'] . '-' . $filterBy['start_month'] . '-01');
+            $endDate = (\DateTime::createFromFormat('Y-m-d', $filterBy['year'] . '-' . $filterBy['end_month'] . '-01'))
+                ->modify('last day of this month');
+
+            if ($startDate > $endDate) {
+                $form->addError(new FormError('End month must not be earlier than start month.'));
+            } else {
+                $filterBy['startDate'] = $startDate->format('d-m-Y');
+                $filterBy['endDate'] = $endDate->format('d-m-Y');
+
+                $capacityByMonth = $customerRepo->getNationalConvertFarmerCapacityByMonth($filterBy);
+
+                // footer row: the same farmer never lands in two month buckets, so the months add up
+                foreach ($capacityByMonth as $speciesQty) {
+                    foreach ($speciesQty as $speciesId => $qty) {
+                        $grandTotals[$speciesId] = ($grandTotals[$speciesId] ?? 0) + $qty;
+                    }
+                }
+            }
+        }
+
+        return $this->render('@TerminalbdCrm/report/farmerReport/convert_farmer_capacity_national.html.twig', [
+            'form' => $form->createView(),
+            'capacityByMonth' => $capacityByMonth,
+            'filterBy' => $filterBy,
+            'filterableSpeciesType' => $this->getDoctrine()->getRepository(Setting::class)
+                ->getAllSpeciesTypeOrderedByFarmType(),
+            'grandTotals' => $grandTotals,
+        ]);
+    }
+
+    /**
      * Species (sub-type) columns of the selected farm type, used by the Convert Farmer Capacity reports.
      * Poultry -> Broiler/Layer/Sonali, Cattle -> Dairy/Bull/Calf, Fish -> the fish species.
      *

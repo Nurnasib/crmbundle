@@ -1393,6 +1393,87 @@ ORDER BY `c`.`agent_id` ASC";
         return $returnArray;
     }
 
+    /**
+     * Convert Farmer Capacity Report - National.
+     *
+     * Same "convert" definition as getConvertFarmerCapacityByEmployeeIds() -- the reporting date is
+     * farmerIntroduce.introduceDate -- but with no employee scoping at all: the national report is the
+     * whole country's converted capacity, so it deliberately ignores the line manager tree and the
+     * farm type, and every species of every farm type ends up in the same row.
+     *
+     * Aggregated straight into the month buckets instead of returning farmer rows: a full year
+     * nationally is far too many farmers to hold on to when the report only prints 12 rows.
+     *
+     * @param array $filterBy needs startDate, endDate
+     *
+     * @return array [month 1..12][speciesId] => qty
+     */
+    public function getNationalConvertFarmerCapacityByMonth($filterBy)
+    {
+        $startDate = isset($filterBy['startDate'])
+            ? date('Y-m-d', strtotime($filterBy['startDate']))
+            : date('Y-m-01');
+        $endDate = isset($filterBy['endDate'])
+            ? date('Y-m-d', strtotime($filterBy['endDate']))
+            : date('Y-m-t');
+
+        $qb = $this->createQueryBuilder('e');
+        $qb->join('e.customerGroup', 's');
+        $qb->join('e.farmerIntroduce', 'farmerIntroduce');
+
+        $qb->select('e.id AS id');
+        $qb->addSelect('farmerIntroduce.introduceDate AS introduceDate');
+        $qb->addSelect('farmerIntroduce.cultureSpeciesItemAndQty AS cultureSpeciesItemAndQty');
+
+        $qb->where('s.slug = :slug')->setParameter('slug', 'farmer');
+        $qb->andWhere('e.deletedAt IS NULL');
+        $qb->andWhere('e.deletedBy IS NULL');
+        $qb->andWhere('farmerIntroduce.introduceDate IS NOT NULL');
+        $qb->andWhere('farmerIntroduce.introduceDate BETWEEN :startDate AND :endDate')
+            ->setParameter('startDate', $startDate . ' 00:00:00')
+            ->setParameter('endDate', $endDate . ' 23:59:59');
+
+        $qb->orderBy('farmerIntroduce.introduceDate', 'ASC');
+        $qb->addOrderBy('e.id', 'ASC');
+
+        $results = $qb->getQuery()->getArrayResult();
+
+        $byMonth = [];
+        $countedFarmers = [];
+
+        foreach ($results as $result) {
+            $customerId = (int)$result['id'];
+
+            // a farmer is converted once; a second introduce row for the same farmer is a data
+            // artefact and must not add their capacity to a second month
+            if (isset($countedFarmers[$customerId])) {
+                continue;
+            }
+            $countedFarmers[$customerId] = true;
+
+            if (empty($result['cultureSpeciesItemAndQty'])) {
+                continue;
+            }
+
+            $decoded = json_decode($result['cultureSpeciesItemAndQty'], true);
+            if (!is_array($decoded)) {
+                continue;
+            }
+
+            $month = (int)$result['introduceDate']->format('n');
+
+            foreach ($decoded as $speciesId => $qty) {
+                if ($qty === null || $qty === '') {
+                    continue;
+                }
+                $speciesId = (int)$speciesId;
+                $byMonth[$month][$speciesId] = ($byMonth[$month][$speciesId] ?? 0) + (int)$qty;
+            }
+        }
+
+        return $byMonth;
+    }
+
 //    public function broilerLifeCycleReport()
 //    {
 //        $qb = $this->_em->createQueryBuilder();

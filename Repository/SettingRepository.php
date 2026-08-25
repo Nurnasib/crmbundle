@@ -422,6 +422,40 @@ class SettingRepository extends EntityRepository
         return $qb->getQuery()->getArrayResult();
     }
 
+    /**
+     * Every species of all three farm types, ordered the way the National Convert Farmer Capacity
+     * report prints its columns: poultry first, then cattle, then fish, and inside each farm type
+     * in the order the species were set up (Dairy/Bull/Calf, not alphabetical).
+     *
+     * @return array [['id','name','slug'], ...]
+     */
+    public function getAllSpeciesTypeOrderedByFarmType(): array
+    {
+        return $this->createQueryBuilder('e')
+            ->select('e.id', 'e.name', 'e.slug')
+            ->join('e.parent', 'parent')
+            ->addSelect("
+            CASE 
+                WHEN parent.slug = 'poultry-breed' THEN 1
+                WHEN parent.slug = 'cattle-breed' THEN 2
+                WHEN parent.slug = 'fish-breed' THEN 3
+                ELSE 4
+            END AS HIDDEN farmTypeOrder
+        ")
+            ->where("e.settingType = 'SPECIES_TYPE'")
+            ->andWhere('e.status = 1')
+            ->andWhere('parent.slug IN (:parentSlug)')
+            ->setParameter('parentSlug', [
+                'poultry-breed',
+                'cattle-breed',
+                'fish-breed',
+            ])
+            ->orderBy('farmTypeOrder', 'ASC')
+            ->addOrderBy('e.id', 'ASC')
+            ->getQuery()
+            ->getArrayResult();
+    }
+
     public function getSpeciesTypeIds(): array
     {
         $rows = $this->createQueryBuilder('e')
