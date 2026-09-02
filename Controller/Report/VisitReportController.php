@@ -418,6 +418,13 @@ class VisitReportController extends AbstractController
             $yearChoices[$yearNumber] = $yearNumber;
         }
 
+        // Re-added with its own resolved options so the role-scoped query_builder and
+        // choice_label survive; only the placeholder changes. This report never covers
+        // every employee, so the shared '- All Employee -' wording would be a lie here.
+        $employeeOptions = $form->get('employee')->getConfig()->getOptions();
+        $employeeOptions['placeholder'] = '- Select Employee -';
+        $form->add('employee', EntityType::class, $employeeOptions);
+
         // Mirrors the 'employee' field's own role scoping above: a plain employee
         // sees nobody here (they have no team), a line manager sees their own CRM
         // subtree's line managers plus themselves, an admin sees their domain's.
