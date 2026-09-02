@@ -379,10 +379,9 @@ class VisitReportController extends AbstractController
      * Backed by CrmVisitRepository::getEmployeeMonthlyActivity()/getTeamMonthlyActivity(),
      * which are used nowhere else, so no other report is touched.
      *
-     * {reportType} only preselects which filters the page opens with, for the two
-     * "Employee Monthly Activity Report" submenu links (menu.html.twig) - it does not
-     * gate anything server-side, the reportType form field submitted on search is what
-     * actually drives the query below.
+     * {reportType} is the only thing that selects the mode, for the two "Employee
+     * Monthly Activity Report" submenu links (menu.html.twig). There is no report-type
+     * form field - the page posts back to its own URL, so the segment survives a search.
      *
      * @Route(
      *     "/crm/employee-monthly-activity/{reportType}",
@@ -419,16 +418,6 @@ class VisitReportController extends AbstractController
             $yearChoices[$yearNumber] = $yearNumber;
         }
 
-        $form->add('reportType', ChoiceType::class, [
-            'choices' => [
-                'Single Employee' => 'employee',
-                'Line Manager' => 'line_manager',
-            ],
-            'required' => false,
-            'placeholder' => false,
-            'data' => $initialReportType,
-            'attr' => ['class' => 'form-control'],
-        ]);
         // Mirrors the 'employee' field's own role scoping above: a plain employee
         // sees nobody here (they have no team), a line manager sees their own CRM
         // subtree's line managers plus themselves, an admin sees their domain's.
@@ -520,7 +509,6 @@ class VisitReportController extends AbstractController
 
         if ($form->isSubmitted()) {
             $data = $form->getData();
-            $reportType = !empty($data['reportType']) ? $data['reportType'] : $reportType;
             $selectedEmployee = !empty($data['employee']) ? $data['employee'] : null;
             $selectedLineManager = !empty($data['lineManager']) ? $data['lineManager'] : null;
             $year = !empty($data['year']) ? (int) $data['year'] : $year;

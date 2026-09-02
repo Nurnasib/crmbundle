@@ -50,28 +50,33 @@
                 <table class="table">
                     <thead class="thead-dark">
                     <tr>
-                        <th>
-                            {{ form_label(form.reportType, 'Report Type:') }}
-                            {{ form_widget(form.reportType) }}
-                        </th>
-                        <th id="monthly-activity-employee-filter" style="min-width: 200px">
-                            {{ form_label(form.employee, 'Employee:') }}
-                            {{ form_widget(form.employee) }}
-                        </th>
-                        <th id="monthly-activity-line-manager-filter" style="min-width: 200px">
-                            {{ form_label(form.lineManager, 'Line Manager:') }}
-                            {{ form_widget(form.lineManager) }}
-                        </th>
+                        {# The mode comes from the route segment alone, so only that mode's
+                           filters render - there is no report type selector to switch on. #}
+                        {% if reportType == 'line_manager' %}
+                            <th style="min-width: 200px">
+                                {{ form_label(form.lineManager, 'Line Manager:') }}
+                                {{ form_widget(form.lineManager) }}
+                            </th>
+                        {% else %}
+                            <th style="min-width: 200px">
+                                {{ form_label(form.employee, 'Employee:') }}
+                                {{ form_widget(form.employee) }}
+                            </th>
+                        {% endif %}
                         <th>
                             {{ form_label(form.startMonth, 'Start Month:') }}
                             {{ form_widget(form.startMonth) }}
                             {{ form_errors(form.startMonth) }}
                         </th>
-                        <th id="monthly-activity-end-month-filter">
-                            {{ form_label(form.endMonth, 'End Month:') }}
-                            {{ form_widget(form.endMonth) }}
-                            {{ form_errors(form.endMonth) }}
-                        </th>
+                        {# Team view is single-month only - the controller collapses endMonth
+                           onto startMonth there, so the field would be a no-op. #}
+                        {% if reportType != 'line_manager' %}
+                            <th>
+                                {{ form_label(form.endMonth, 'End Month:') }}
+                                {{ form_widget(form.endMonth) }}
+                                {{ form_errors(form.endMonth) }}
+                            </th>
+                        {% endif %}
                         <th>
                             {{ form_label(form.year, 'Year:') }}
                             {{ form_widget(form.year) }}
@@ -80,7 +85,7 @@
                         <th colspan="1">
                             <div class="btn-group" style="margin-top: 25px">
                                 <button type="submit" name="search" class="btn btn-primary btn-sm" title="Search" value="search"><i class="fa fa-search" aria-hidden="true"></i></button>
-                                <a href="{{ path('employee_monthly_activity_report') }}" class="btn purple-bg btn-sm white-font" title="Reset" value="reset"><i class="fa fa-refresh" aria-hidden="true"></i></a>
+                                <a href="{{ path('employee_monthly_activity_report', {'reportType': reportType}) }}" class="btn purple-bg btn-sm white-font" title="Reset" value="reset"><i class="fa fa-refresh" aria-hidden="true"></i></a>
                                 {% if employeeBlocks is not empty %}
                                     <button type="submit" name="excel" class="btn blue-bg btn-sm white-font" title="Excel" value="excel" id="button-excel"><i class="fa fa-file-excel" aria-hidden="true"></i> {{ 'Excel'|trans }}</button>
                                 {% endif %}
@@ -240,28 +245,6 @@
     <script type="application/javascript" src="{{ asset('assets/module/js/app.js') }}"></script>
     <script src="{{ asset('assets/js/tableToExcel.js') }}"></script>
     <script>
-
-        {# Symfony already renders an id on this widget - a second 'id' in the field's
-           'attr' would render as a duplicate id="" attribute, which the HTML parser
-           resolves by keeping only the first (auto-generated) one, so a hardcoded
-           selector for a custom id would silently never match. Read the real id back
-           from the form view instead. #}
-        let monthlyActivityReportType = document.getElementById('{{ form.reportType.vars.id }}');
-
-        function syncMonthlyActivityReportType() {
-            if (!monthlyActivityReportType) {
-                return;
-            }
-            let isLineManager = monthlyActivityReportType.value === 'line_manager';
-            document.querySelector('#monthly-activity-employee-filter').style.display = isLineManager ? 'none' : '';
-            document.querySelector('#monthly-activity-line-manager-filter').style.display = isLineManager ? '' : 'none';
-            document.querySelector('#monthly-activity-end-month-filter').style.display = isLineManager ? 'none' : '';
-        }
-
-        syncMonthlyActivityReportType();
-        if (monthlyActivityReportType) {
-            monthlyActivityReportType.addEventListener('change', syncMonthlyActivityReportType);
-        }
 
         let button = document.querySelector("#button-excel");
 
