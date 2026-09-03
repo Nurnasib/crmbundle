@@ -1474,6 +1474,110 @@ ORDER BY `c`.`agent_id` ASC";
         return $byMonth;
     }
 
+    /**
+     * Same "convert" definition as getNationalConvertFarmerCapacityByMonth() -- the reporting date is
+     * farmerIntroduce.introduceDate and every species of every farm type shares one row -- but broken
+     * down by the employee who introduced the farmer, so the report can show an Employee ID and name.
+     *
+     * Aggregated straight into per-employee month buckets rather than returning farmer rows, for the
+     * same reason as the national report: a full year is far too many farmers to hold on to.
+     *
+     * @param array $filterBy needs startDate, endDate; optional 'employees' (a User) narrows to one
+     *
+     * @return array [employeeId] => ['userId','name','byMonth' => [month => [speciesId => qty]],
+     *                                'totals' => [speciesId => qty]], ordered by employee name
+     */
+    public function getEmployeeWiseConvertFarmerCapacityByMonth($filterBy)
+    {
+        $startDate = isset($filterBy['startDate'])
+            ? date('Y-m-d', strtotime($filterBy['startDate']))
+            : date('Y-m-01');
+        $endDate = isset($filterBy['endDate'])
+            ? date('Y-m-d', strtotime($filterBy['endDate']))
+            : date('Y-m-t');
+
+        $selectedEmployee = !empty($filterBy['employees']) ? $filterBy['employees'] : null;
+
+        $qb = $this->createQueryBuilder('e');
+        $qb->join('e.customerGroup', 's');
+        $qb->join('e.farmerIntroduce', 'farmerIntroduce');
+        $qb->join('farmerIntroduce.employee', 'employee');
+
+        $qb->select('e.id AS id');
+        $qb->addSelect('employee.id AS employeeId', 'employee.userId AS employeeUserId', 'employee.name AS employeeName');
+        $qb->addSelect('farmerIntroduce.introduceDate AS introduceDate');
+        $qb->addSelect('farmerIntroduce.cultureSpeciesItemAndQty AS cultureSpeciesItemAndQty');
+
+        $qb->where('s.slug = :slug')->setParameter('slug', 'farmer');
+        $qb->andWhere('e.deletedAt IS NULL');
+        $qb->andWhere('e.deletedBy IS NULL');
+        $qb->andWhere('farmerIntroduce.introduceDate IS NOT NULL');
+        $qb->andWhere('farmerIntroduce.introduceDate BETWEEN :startDate AND :endDate')
+            ->setParameter('startDate', $startDate . ' 00:00:00')
+            ->setParameter('endDate', $endDate . ' 23:59:59');
+
+        if ($selectedEmployee) {
+            $qb->andWhere('employee.id = :employeeId')->setParameter('employeeId', $selectedEmployee->getId());
+        }
+
+        $qb->orderBy('employee.name', 'ASC');
+        $qb->addOrderBy('farmerIntroduce.introduceDate', 'ASC');
+        $qb->addOrderBy('e.id', 'ASC');
+
+        $results = $qb->getQuery()->getArrayResult();
+
+        $byEmployee = [];
+        $countedFarmers = [];
+
+        foreach ($results as $result) {
+            $customerId = (int)$result['id'];
+
+            // a farmer is converted once; a second introduce row for the same farmer is a data
+            // artefact and must not add their capacity to a second month or a second employee
+            if (isset($countedFarmers[$customerId])) {
+                continue;
+            }
+            $countedFarmers[$customerId] = true;
+
+            if (empty($result['cultureSpeciesItemAndQty'])) {
+                continue;
+            }
+
+            $decoded = json_decode($result['cultureSpeciesItemAndQty'], true);
+            if (!is_array($decoded)) {
+                continue;
+            }
+
+            $employeeId = (int)$result['employeeId'];
+            $month = (int)$result['introduceDate']->format('n');
+
+            if (!isset($byEmployee[$employeeId])) {
+                $byEmployee[$employeeId] = [
+                    'id' => $employeeId,
+                    'userId' => $result['employeeUserId'],
+                    'name' => $result['employeeName'],
+                    'byMonth' => [],
+                    'totals' => [],
+                ];
+            }
+
+            foreach ($decoded as $speciesId => $qty) {
+                if ($qty === null || $qty === '') {
+                    continue;
+                }
+                $speciesId = (int)$speciesId;
+                $qty = (int)$qty;
+
+                $byEmployee[$employeeId]['byMonth'][$month][$speciesId] =
+                    ($byEmployee[$employeeId]['byMonth'][$month][$speciesId] ?? 0) + $qty;
+                $byEmployee[$employeeId]['totals'][$speciesId] =
+                    ($byEmployee[$employeeId]['totals'][$speciesId] ?? 0) + $qty;
+            }
+        }
+
+        return $byEmployee;
+    }
+
 //    public function broilerLifeCycleReport()
 //    {
 //        $qb = $this->_em->createQueryBuilder();

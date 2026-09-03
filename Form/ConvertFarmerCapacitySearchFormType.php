@@ -56,6 +56,31 @@ class ConvertFarmerCapacitySearchFormType extends AbstractType
                     return $qb;
                 },
             ])
+            ->add('employees', EntityType::class, [
+                'class' => User::class,
+                'placeholder' => '- All Employee -',
+                'required' => false,
+                'choice_label' => function ($employee) {
+                    /** @var User $employee */
+                    return '(' . $employee->getUserId() . ') ' . $employee->getName();
+                },
+                'attr' => [
+                    'class' => 'select2'
+                ],
+                // same population as line_managers above, minus the ROLE_LINE_MANAGER clause:
+                // the employee wise report lists every employee, not only the ones who manage others
+                'query_builder' => function (EntityRepository $er) {
+                    $qb = $er->createQueryBuilder('e');
+                    $qb->join('e.userGroup', 'userGroup');
+                    $qb->where('e.enabled = 1')
+                        ->andWhere('e.isDelete = 0')
+                        ->andWhere("userGroup.slug = 'employee'")
+                        ->andWhere("e.userMode = 'KPI'")
+                        ->orderBy('e.name', 'ASC');
+
+                    return $qb;
+                },
+            ])
             ->add('month', ChoiceType::class, [
                 'choices' => $this->getMonths(),
                 'placeholder' => '- Select month -',

@@ -1778,6 +1778,64 @@ class FarmerReportController extends AbstractController
     }
 
     /**
+     * Convert Farmer Capacity Report - Employee Wise.
+     * "Convert" means introduce, so this counts capacity against farmerIntroduce.introduceDate.
+     *
+     * The national report with the introducing employee added: one block per employee holding a row
+     * per month of the selected range, one column per species of every farm type. The employee filter
+     * lists every employee rather than line managers only, and like the national report there is no
+     * farm type filter and no scoping to the logged in user.
+     *
+     * @Route("/convert_farmer_capacity_employee_report", name="convert_farmer_capacity_employee_report")
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function convertFarmerCapacityEmployeeReport(Request $request)
+    {
+        $filterBy = [];
+        $capacityByEmployee = [];
+        $grandTotals = [];
+
+        $customerRepo = $this->getDoctrine()->getRepository(CrmCustomer::class);
+        $form = $this->createForm(ConvertFarmerCapacitySearchFormType::class, null, [
+            'validation_groups' => ['year_only', 'start_end_month_only']]);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $filterBy = $form->getData();
+
+            $startDate = \DateTime::createFromFormat('Y-m-d', $filterBy['year'] . '-' . $filterBy['start_month'] . '-01');
+            $endDate = (\DateTime::createFromFormat('Y-m-d', $filterBy['year'] . '-' . $filterBy['end_month'] . '-01'))
+                ->modify('last day of this month');
+
+            if ($startDate > $endDate) {
+                $form->addError(new FormError('End month must not be earlier than start month.'));
+            } else {
+                $filterBy['startDate'] = $startDate->format('d-m-Y');
+                $filterBy['endDate'] = $endDate->format('d-m-Y');
+
+                $capacityByEmployee = $customerRepo->getEmployeeWiseConvertFarmerCapacityByMonth($filterBy);
+
+                // footer row: the repository counts each farmer once, so the employees add up
+                foreach ($capacityByEmployee as $employee) {
+                    foreach ($employee['totals'] as $speciesId => $qty) {
+                        $grandTotals[$speciesId] = ($grandTotals[$speciesId] ?? 0) + $qty;
+                    }
+                }
+            }
+        }
+
+        return $this->render('@TerminalbdCrm/report/farmerReport/convert_farmer_capacity_employee.html.twig', [
+            'form' => $form->createView(),
+            'capacityByEmployee' => $capacityByEmployee,
+            'filterBy' => $filterBy,
+            'filterableSpeciesType' => $this->getDoctrine()->getRepository(Setting::class)
+                ->getAllSpeciesTypeOrderedByFarmType(),
+            'grandTotals' => $grandTotals,
+        ]);
+    }
+
+    /**
      * Species (sub-type) columns of the selected farm type, used by the Convert Farmer Capacity reports.
      * Poultry -> Broiler/Layer/Sonali, Cattle -> Dairy/Bull/Calf, Fish -> the fish species.
      *
