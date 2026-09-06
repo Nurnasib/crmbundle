@@ -98,8 +98,11 @@
                                 {% for m in filterBy.start_month..filterBy.end_month %}
                                     {% set monthQty = employee.byMonth[m] is defined ? employee.byMonth[m] : {} %}
                                     <tr>
-                                        <td>{{ employee.userId|default('') }}</td>
-                                        <td>{{ employee.name|default('') }}</td>
+                                        {# the block already carries one row per month, so the employee is named once and merged down #}
+                                        {% if loop.first %}
+                                            <td data-a-v="middle" rowspan="{{ loop.length }}">{{ employee.userId|default('') }}</td>
+                                            <td data-a-v="middle" rowspan="{{ loop.length }}">{{ employee.name|default('') }}</td>
+                                        {% endif %}
                                         <td data-t="n" class="text-right">{{ filterBy.year }}</td>
                                         <td>{{ date(filterBy.year ~ '-' ~ m ~ '-01')|date('M') }}</td>
                                         {% for speciesType in filterableSpeciesType %}
