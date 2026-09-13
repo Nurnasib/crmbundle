@@ -1503,9 +1503,11 @@ ORDER BY `c`.`agent_id` ASC";
         $qb->join('e.customerGroup', 's');
         $qb->join('e.farmerIntroduce', 'farmerIntroduce');
         $qb->join('farmerIntroduce.employee', 'employee');
+        $qb->leftJoin('employee.crmLineManager', 'crmLineManager');
 
         $qb->select('e.id AS id');
         $qb->addSelect('employee.id AS employeeId', 'employee.userId AS employeeUserId', 'employee.name AS employeeName');
+        $qb->addSelect('crmLineManager.userId AS lineManagerUserId', 'crmLineManager.name AS lineManagerName');
         $qb->addSelect('farmerIntroduce.introduceDate AS introduceDate');
         $qb->addSelect('farmerIntroduce.cultureSpeciesItemAndQty AS cultureSpeciesItemAndQty');
 
@@ -1567,6 +1569,8 @@ ORDER BY `c`.`agent_id` ASC";
                     'id' => $employeeId,
                     'userId' => $result['employeeUserId'],
                     'name' => $result['employeeName'],
+                    'lineManagerUserId' => $result['lineManagerUserId'] ?? '',
+                    'lineManagerName' => $result['lineManagerName'] ?? '',
                     'byMonth' => [],
                     'totals' => [],
                 ];

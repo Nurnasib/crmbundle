@@ -1,12 +1,12 @@
 {% extends 'admin/layout.html.twig' %}
 
-{# Employee ID + Name + Year + Month, then one column per species of every farm type (poultry, cattle, fish) #}
+{# Employee ID + Name + Line Manager ID + Name + Year + Month, then one column per species of every farm type (poultry, cattle, fish) #}
 {% set speciesCount = filterableSpeciesType|length %}
 {# an invalid range (end before start) is rejected in the controller, so never build rows for it #}
 {% set hasMonthRange = filterBy.start_month is defined and filterBy.end_month is defined
     and filterBy.start_month and filterBy.end_month
     and filterBy.end_month >= filterBy.start_month %}
-{% set totalColumns = 4 + speciesCount %}
+{% set totalColumns = 6 + speciesCount %}
 
 {% block body %}
     <div class="pcoded-inner-content">
@@ -89,6 +89,8 @@
                         <tr>
                             <th scope="col">{{ 'Employee ID'|trans }}</th>
                             <th scope="col">{{ 'Employee Name'|trans }}</th>
+                            <th scope="col">{{ 'Line Manager ID'|trans }}</th>
+                            <th scope="col">{{ 'Line Manager Name'|trans }}</th>
                             <th scope="col">{{ 'Year'|trans }}</th>
                             <th scope="col">{{ 'Month'|trans }}</th>
                             {% for speciesType in filterableSpeciesType %}
@@ -107,6 +109,8 @@
                                         {% if loop.first %}
                                             <td data-a-v="middle" rowspan="{{ loop.length }}">{{ employee.userId|default('') }}</td>
                                             <td data-a-v="middle" rowspan="{{ loop.length }}">{{ employee.name|default('') }}</td>
+                                            <td data-a-v="middle" rowspan="{{ loop.length }}">{{ employee.lineManagerUserId|default('') }}</td>
+                                            <td data-a-v="middle" rowspan="{{ loop.length }}">{{ employee.lineManagerName|default('') }}</td>
                                         {% endif %}
                                         <td data-t="n" class="text-right">{{ filterBy.year }}</td>
                                         <td>{{ date(filterBy.year ~ '-' ~ m ~ '-01')|date('M') }}</td>
@@ -119,7 +123,7 @@
 
                                 {# every farmer sits in exactly one month bucket, so this employee's months add up #}
                                 <tr class="font-weight-bold">
-                                    <td data-a-h="right" class="text-right" colspan="4">{{ 'Total'|trans }}</td>
+                                    <td data-a-h="right" class="text-right" colspan="6">{{ 'Total'|trans }}</td>
                                     {% for speciesType in filterableSpeciesType %}
                                         {% set qty = employee.totals[speciesType.id] is defined ? employee.totals[speciesType.id] : 0 %}
                                         <td data-t="n" class="text-right">{{ qty ?: '' }}</td>
@@ -134,7 +138,7 @@
                             {# each farmer is counted once, so the employees add up here #}
                             {% if capacityByEmployee is not empty %}
                                 <tr class="font-weight-bold thead-dark">
-                                    <td data-a-h="right" class="text-right" colspan="4">{{ 'Grand Total'|trans }}</td>
+                                    <td data-a-h="right" class="text-right" colspan="6">{{ 'Grand Total'|trans }}</td>
                                     {% for speciesType in filterableSpeciesType %}
                                         {% set qty = grandTotals[speciesType.id] is defined ? grandTotals[speciesType.id] : 0 %}
                                         <td data-t="n" class="text-right">{{ qty ?: '' }}</td>
