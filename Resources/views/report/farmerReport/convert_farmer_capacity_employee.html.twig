@@ -18,10 +18,15 @@
                 <table class="table ">
                     <thead class="thead-dark">
                     <tr>
-                        <th colspan="5" class="border-0 p-0">{{ form_errors(form) }}</th>
+                        <th colspan="6" class="border-0 p-0">{{ form_errors(form) }}</th>
                     </tr>
                     <tr>
-                        <th>
+                        <th style="min-width: 200px">
+                            {{ form_label(form.line_managers, 'Line Manager:') }}
+                            {{ form_widget(form.line_managers) }}
+                            {{ form_errors(form.line_managers) }}
+                        </th>
+                        <th style="min-width: 200px">
                             {{ form_label(form.employees, 'Employee') }}
                             {{ form_widget(form.employees) }}
                             {{ form_errors(form.employees) }}
@@ -182,6 +187,45 @@
                 });
             });
         }
+
+        // Employee dropdown follows the Line Manager: with a manager chosen it lists only that
+        // manager's CRM chain (plus the manager), with none chosen it lists every employee again.
+        (function () {
+            const $lineManager = $('#{{ form.line_managers.vars.id }}');
+            const $employee = $('#{{ form.employees.vars.id }}');
+            // the route requires a numeric id, so generate it with 0 and swap the last segment at call time
+            const employeesUrl = '{{ path('convert_farmer_capacity_line_manager_employees', {'id': 0}) }}'.replace(/\/0$/, '/');
+            const allEmployeeOptions = $employee.find('option').clone();
+
+            function fillEmployees(options, selected) {
+                $employee.empty();
+                options.forEach(function (option) {
+                    $employee.append(new Option(option.text, option.id, false, String(option.id) === String(selected)));
+                });
+                $employee.trigger('change');
+            }
+
+            function refreshEmployees(selected) {
+                const lineManagerId = $lineManager.val();
+                if (!lineManagerId) {
+                    $employee.empty().append(allEmployeeOptions.clone()).val(selected || '').trigger('change');
+                    return;
+                }
+                $.getJSON(employeesUrl + lineManagerId, function (employees) {
+                    // keep the placeholder as the first, empty option so select2 still shows it
+                    fillEmployees([{id: '', text: '{{ form.employees.vars.placeholder|e('js') }}'}].concat(employees), selected);
+                });
+            }
+
+            $lineManager.on('change', function () {
+                refreshEmployees('');
+            });
+
+            // after a search the page comes back with both values set: narrow the list but keep the choice
+            if ($lineManager.val()) {
+                refreshEmployees($employee.val());
+            }
+        })();
 
     </script>
 {% endblock  %}

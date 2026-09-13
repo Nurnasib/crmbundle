@@ -1497,6 +1497,7 @@ ORDER BY `c`.`agent_id` ASC";
             : date('Y-m-t');
 
         $selectedEmployee = !empty($filterBy['employees']) ? $filterBy['employees'] : null;
+        $selectedLineManager = !empty($filterBy['line_managers']) ? $filterBy['line_managers'] : null;
 
         $qb = $this->createQueryBuilder('e');
         $qb->join('e.customerGroup', 's');
@@ -1515,6 +1516,16 @@ ORDER BY `c`.`agent_id` ASC";
         $qb->andWhere('farmerIntroduce.introduceDate BETWEEN :startDate AND :endDate')
             ->setParameter('startDate', $startDate . ' 00:00:00')
             ->setParameter('endDate', $endDate . ' 23:59:59');
+
+        // a line manager scopes the report to their whole CRM chain: direct reports, their
+        // reports and so on, plus the manager themself. A selected employee narrows it further.
+        if ($selectedLineManager) {
+            $employeeIds = $this->_em->getRepository(User::class)
+                ->getAllEmployeeIdsByLineManagerId($selectedLineManager->getId(), true);
+            $employeeIds[] = $selectedLineManager->getId();
+            $qb->andWhere('employee.id IN (:employeeIds)')
+                ->setParameter('employeeIds', array_values(array_unique(array_map('intval', $employeeIds))));
+        }
 
         if ($selectedEmployee) {
             $qb->andWhere('employee.id = :employeeId')->setParameter('employeeId', $selectedEmployee->getId());

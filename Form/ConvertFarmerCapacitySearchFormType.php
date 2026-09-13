@@ -35,6 +35,9 @@ class ConvertFarmerCapacitySearchFormType extends AbstractType
                 'class' => User::class,
                 'placeholder' => '- Select Line Manager -',
                 'required' => false,
+                'constraints' => [
+                    new NotBlank(['message' => 'Line Manager is required.', 'groups' => ['line_manager_only']]),
+                ],
                 'choice_label' => function ($lineManager) {
                     /** @var User $lineManager */
                     return '(' . $lineManager->getUserId() . ') ' . $lineManager->getName();
@@ -58,7 +61,7 @@ class ConvertFarmerCapacitySearchFormType extends AbstractType
             ])
             ->add('employees', EntityType::class, [
                 'class' => User::class,
-                'placeholder' => '- All Employee -',
+                'placeholder' => '- Select Employee -',
                 'required' => false,
                 'choice_label' => function ($employee) {
                     /** @var User $employee */

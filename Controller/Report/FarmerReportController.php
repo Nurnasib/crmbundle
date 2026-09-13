@@ -1688,7 +1688,7 @@ class FarmerReportController extends AbstractController
         $loggedUser = $this->getUser();
         $userRepo = $this->getDoctrine()->getRepository(User::class);
         $form = $this->createForm(ConvertFarmerCapacitySearchFormType::class, null, [
-            'validation_groups' => ['year_only', 'start_end_month_only', 'farm_type_only']]);
+            'validation_groups' => ['year_only', 'start_end_month_only', 'farm_type_only', 'line_manager_only']]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -1782,9 +1782,10 @@ class FarmerReportController extends AbstractController
      * "Convert" means introduce, so this counts capacity against farmerIntroduce.introduceDate.
      *
      * The national report with the introducing employee added: one block per employee holding a row
-     * per month of the selected range, one column per species of every farm type. The employee filter
-     * lists every employee rather than line managers only, and like the national report there is no
-     * farm type filter and no scoping to the logged in user.
+     * per month of the selected range, one column per species of every farm type. The line manager
+     * filter scopes it to that manager's whole CRM chain (children, grandchildren, ...), the employee
+     * filter lists every employee rather than line managers only, and like the national report there
+     * is no farm type filter and no scoping to the logged in user.
      *
      * @Route("/convert_farmer_capacity_employee_report", name="convert_farmer_capacity_employee_report")
      * @param Request $request
@@ -1833,6 +1834,45 @@ class FarmerReportController extends AbstractController
                 ->getAllSpeciesTypeOrderedByFarmType(),
             'grandTotals' => $grandTotals,
         ]);
+    }
+
+    /**
+     * Employees of one line manager's whole CRM chain, for the dependent Employee dropdown on the
+     * employee wise Convert Farmer Capacity report. Same population as the form's employee list
+     * (enabled KPI employees), narrowed to the manager's subtree plus the manager themself.
+     *
+     * @Route("/convert_farmer_capacity_employee_report/line_manager_employees/{id}",
+     *        name="convert_farmer_capacity_line_manager_employees", methods={"GET"}, requirements={"id"="\d+"})
+     * @param User $lineManager
+     * @return JsonResponse [{id, text}] in select2 shape
+     */
+    public function convertFarmerCapacityLineManagerEmployees(User $lineManager)
+    {
+        $userRepo = $this->getDoctrine()->getRepository(User::class);
+
+        $employeeIds = $userRepo->getAllEmployeeIdsByLineManagerId($lineManager->getId());
+        $employeeIds[] = $lineManager->getId();
+
+        $qb = $userRepo->createQueryBuilder('e');
+        $qb->select('e.id', 'e.userId', 'e.name')
+            ->join('e.userGroup', 'userGroup')
+            ->where('e.enabled = 1')
+            ->andWhere('e.isDelete = 0')
+            ->andWhere("userGroup.slug = 'employee'")
+            ->andWhere("e.userMode = 'KPI'")
+            ->andWhere('e.id IN (:employeeIds)')
+            ->setParameter('employeeIds', array_values(array_unique(array_map('intval', $employeeIds))))
+            ->orderBy('e.name', 'ASC');
+
+        $options = [];
+        foreach ($qb->getQuery()->getArrayResult() as $employee) {
+            $options[] = [
+                'id' => $employee['id'],
+                'text' => '(' . $employee['userId'] . ') ' . $employee['name'],
+            ];
+        }
+
+        return new JsonResponse($options);
     }
 
     /**
