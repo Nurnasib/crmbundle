@@ -30,6 +30,10 @@ class ConvertFarmerCapacitySearchFormType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        // employee ids the logged in user may see; null = unrestricted (every report but the
+        // employee wise one leaves it null, so their dropdowns are unchanged)
+        $allowedEmployeeIds = $options['allowedEmployeeIds'];
+
         $builder
             ->add('line_managers', EntityType::class, [
                 'class' => User::class,
@@ -45,7 +49,7 @@ class ConvertFarmerCapacitySearchFormType extends AbstractType
                 'attr' => [
                     'class' => 'select2'
                 ],
-                'query_builder' => function (EntityRepository $er) {
+                'query_builder' => function (EntityRepository $er) use ($allowedEmployeeIds) {
                     $qb = $er->createQueryBuilder('e');
                     $qb->join('e.userGroup', 'userGroup');
                     $qb->where('e.enabled = 1')
@@ -55,6 +59,9 @@ class ConvertFarmerCapacitySearchFormType extends AbstractType
                         ->andWhere($qb->expr()->like('e.roles', ':lineManager'))
                         ->setParameter('lineManager', '%ROLE_LINE_MANAGER%')
                         ->orderBy('e.name', 'ASC');
+                    if (null !== $allowedEmployeeIds) {
+                        $qb->andWhere('e.id IN (:allowedEmployeeIds)')->setParameter('allowedEmployeeIds', $allowedEmployeeIds);
+                    }
 
                     return $qb;
                 },
@@ -72,7 +79,7 @@ class ConvertFarmerCapacitySearchFormType extends AbstractType
                 ],
                 // same population as line_managers above, minus the ROLE_LINE_MANAGER clause:
                 // the employee wise report lists every employee, not only the ones who manage others
-                'query_builder' => function (EntityRepository $er) {
+                'query_builder' => function (EntityRepository $er) use ($allowedEmployeeIds) {
                     $qb = $er->createQueryBuilder('e');
                     $qb->join('e.userGroup', 'userGroup');
                     $qb->where('e.enabled = 1')
@@ -80,6 +87,9 @@ class ConvertFarmerCapacitySearchFormType extends AbstractType
                         ->andWhere("userGroup.slug = 'employee'")
                         ->andWhere("e.userMode = 'KPI'")
                         ->orderBy('e.name', 'ASC');
+                    if (null !== $allowedEmployeeIds) {
+                        $qb->andWhere('e.id IN (:allowedEmployeeIds)')->setParameter('allowedEmployeeIds', $allowedEmployeeIds);
+                    }
 
                     return $qb;
                 },
@@ -166,6 +176,7 @@ class ConvertFarmerCapacitySearchFormType extends AbstractType
         $resolver->setDefaults([
             'data_class' => null,
             'validation_groups' => ['Default'],
+            'allowedEmployeeIds' => null,
         ]);
     }
 }

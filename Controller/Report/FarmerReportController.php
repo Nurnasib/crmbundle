@@ -1785,7 +1785,8 @@ class FarmerReportController extends AbstractController
      * per month of the selected range, one column per species of every farm type. The line manager
      * filter scopes it to that manager's whole CRM chain (children, grandchildren, ...), the employee
      * filter lists every employee rather than line managers only, and like the national report there
-     * is no farm type filter and no scoping to the logged in user.
+     * is no farm type filter. Unlike it, results are scoped to the logged in user - see
+     * getConvertFarmerCapacityScope().
      *
      * @Route("/convert_farmer_capacity_employee_report", name="convert_farmer_capacity_employee_report")
      * @param Request $request
@@ -1798,8 +1799,10 @@ class FarmerReportController extends AbstractController
         $grandTotals = [];
 
         $customerRepo = $this->getDoctrine()->getRepository(CrmCustomer::class);
+        $scope = $this->getConvertFarmerCapacityScope();
         $form = $this->createForm(ConvertFarmerCapacitySearchFormType::class, null, [
-            'validation_groups' => ['year_only', 'start_end_month_only']]);
+            'validation_groups' => ['year_only', 'start_end_month_only'],
+            'allowedEmployeeIds' => $scope]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -1814,6 +1817,7 @@ class FarmerReportController extends AbstractController
             } else {
                 $filterBy['startDate'] = $startDate->format('d-m-Y');
                 $filterBy['endDate'] = $endDate->format('d-m-Y');
+                $filterBy['scopeEmployeeIds'] = $scope;
 
                 $capacityByEmployee = $customerRepo->getEmployeeWiseConvertFarmerCapacityByMonth($filterBy);
 
@@ -1837,6 +1841,30 @@ class FarmerReportController extends AbstractController
     }
 
     /**
+     * Who the logged in user may see on the employee wise Convert Farmer Capacity report:
+     * null (everyone) for system users - the 'administrator' user group. Otherwise a line
+     * manager sees their whole CRM chain plus themself, and anyone else only themself.
+     *
+     * @return int[]|null
+     */
+    private function getConvertFarmerCapacityScope(): ?array
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+        if ($user->getUserGroup() && 'administrator' === $user->getUserGroup()->getSlug()) {
+            return null;
+        }
+
+        $employeeIds = [$user->getId()];
+        if (in_array('ROLE_LINE_MANAGER', $user->getRoles(), true)) {
+            $employeeIds = array_merge($employeeIds, $this->getDoctrine()->getRepository(User::class)
+                ->getAllEmployeeIdsByLineManagerId($user->getId(), true));
+        }
+
+        return array_values(array_unique(array_map('intval', $employeeIds)));
+    }
+
+    /**
      * Employees of one line manager's whole CRM chain, for the dependent Employee dropdown on the
      * employee wise Convert Farmer Capacity report. Same population as the form's employee list
      * (enabled KPI employees), narrowed to the manager's subtree plus the manager themself.
@@ -1848,6 +1876,12 @@ class FarmerReportController extends AbstractController
      */
     public function convertFarmerCapacityLineManagerEmployees(User $lineManager)
     {
+        // the dependent dropdown must not reveal a chain the user cannot select in the form
+        $scope = $this->getConvertFarmerCapacityScope();
+        if (null !== $scope && !in_array($lineManager->getId(), $scope, true)) {
+            throw $this->createAccessDeniedException();
+        }
+
         $userRepo = $this->getDoctrine()->getRepository(User::class);
 
         $employeeIds = $userRepo->getAllEmployeeIdsByLineManagerId($lineManager->getId());

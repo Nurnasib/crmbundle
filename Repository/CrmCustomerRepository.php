@@ -1519,6 +1519,12 @@ ORDER BY `c`.`agent_id` ASC";
             ->setParameter('startDate', $startDate . ' 00:00:00')
             ->setParameter('endDate', $endDate . ' 23:59:59');
 
+        // the logged in user's visibility, applied whatever is selected (null = unrestricted)
+        if (isset($filterBy['scopeEmployeeIds'])) {
+            $qb->andWhere('employee.id IN (:scopeEmployeeIds)')
+                ->setParameter('scopeEmployeeIds', $filterBy['scopeEmployeeIds']);
+        }
+
         // a line manager scopes the report to their whole CRM chain: direct reports, their
         // reports and so on, plus the manager themself. A selected employee narrows it further.
         if ($selectedLineManager) {
