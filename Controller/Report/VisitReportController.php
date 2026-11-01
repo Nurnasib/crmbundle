@@ -581,6 +581,103 @@ class VisitReportController extends AbstractController
     }
 
     /**
+     * Employee Agent & Sub-Agent Activity Report.
+     * Activity-based (not territory): every agent/sub-agent the employee actually
+     * engaged with over the date range, grouped by agent group, with per-type
+     * counts and a dated timeline. Excel/print are client-side in the template.
+     *
+     * @Route("/crm/employee-agent-activity", name="employee_agent_activity_report")
+     */
+    public function employeeAgentActivity(Request $request)
+    {
+        $loggedUser = $this->getUser();
+        $userRepo = $this->getDoctrine()->getRepository(User::class);
+
+        $form = $this->createForm(SearchFilterFormTypeForVisitReport::class, null, [
+            'loggedUser' => $loggedUser, 'userRepo' => $userRepo,
+        ]);
+        // Same filter shape as the Employee Monthly Activity report: employee +
+        // Start Month / End Month / Year dropdowns. Drop the shared form's other fields.
+        $form->remove('process');
+        $form->remove('agentType');
+        $form->remove('serviceMode');
+        $form->remove('startDate');
+        $form->remove('endDate');
+
+        $employeeOptions = $form->get('employee')->getConfig()->getOptions();
+        $employeeOptions['placeholder'] = '- Select Employee -';
+        $form->add('employee', EntityType::class, $employeeOptions);
+
+        $monthChoices = [];
+        foreach (range(1, 12) as $monthNumber) {
+            $monthName = date('F', mktime(0, 0, 0, $monthNumber, 1));
+            $monthChoices[$monthName] = $monthName;
+        }
+        $yearChoices = [];
+        foreach (range((int) date('Y'), 2020) as $yearNumber) {
+            $yearChoices[$yearNumber] = $yearNumber;
+        }
+        $form->add('startMonth', ChoiceType::class, [
+            'choices' => $monthChoices, 'required' => false,
+            'placeholder' => 'Select a Month', 'data' => date('F'),
+            'attr' => ['class' => 'form-control'],
+        ]);
+        $form->add('endMonth', ChoiceType::class, [
+            'choices' => $monthChoices, 'required' => false,
+            'placeholder' => 'Select a Month', 'data' => date('F'),
+            'attr' => ['class' => 'form-control'],
+        ]);
+        $form->add('year', ChoiceType::class, [
+            'choices' => $yearChoices, 'required' => false,
+            'placeholder' => 'Select Year', 'data' => (int) date('Y'),
+            'attr' => ['class' => 'form-control'],
+        ]);
+
+        $form->handleRequest($request);
+
+        $selectedEmployee = null;
+        $year = (int) date('Y');
+        $startMonth = date('F');
+        $endMonth = date('F');
+        $activity = ['groups' => [], 'totalAgents' => 0];
+
+        if ($form->isSubmitted()) {
+            $data = $form->getData();
+            $selectedEmployee = !empty($data['employee']) ? $data['employee'] : null;
+            $year = !empty($data['year']) ? (int) $data['year'] : $year;
+            $startMonth = !empty($data['startMonth']) ? $data['startMonth'] : $startMonth;
+            $endMonth = !empty($data['endMonth']) ? $data['endMonth'] : $endMonth;
+        }
+
+        $startMonthNumber = (int) date('n', strtotime($startMonth . ' 1 ' . $year));
+        $endMonthNumber = (int) date('n', strtotime($endMonth . ' 1 ' . $year));
+        if ($endMonthNumber < $startMonthNumber) {
+            // Guard against an end month earlier than the start month within the year.
+            $endMonthNumber = $startMonthNumber;
+            $endMonth = $startMonth;
+        }
+        $startDate = new DateTime(sprintf('%d-%02d-01', $year, $startMonthNumber));
+        $endDate = new DateTime(date('Y-m-t', mktime(0, 0, 0, $endMonthNumber, 1, $year)));
+
+        if ($form->isSubmitted() && $selectedEmployee) {
+            $activity = $this->getDoctrine()->getRepository(CrmVisit::class)
+                ->getEmployeeAgentActivity($selectedEmployee->getId(), $startDate, $endDate);
+        }
+
+        return $this->render('@TerminalbdCrm/report/visit-status/employee-agent-activity.html.twig', [
+            'form' => $form->createView(),
+            'activity' => $activity,
+            'selectedEmployee' => $selectedEmployee,
+            'startDate' => $startDate,
+            'endDate' => $endDate,
+            'startMonth' => $startMonth,
+            'endMonth' => $endMonth,
+            'year' => $year,
+            'submitted' => $form->isSubmitted(),
+        ]);
+    }
+
+    /**
      * @Route("/crm/visit-summery-report", name="visit_summery_report")
      */
     public function visitSummeryReport(Request $request)

@@ -351,4 +351,121 @@ class CrmVisitRepository extends EntityRepository
 
         return $blocks;
     }
+
+    /**
+     * Employee Agent & Sub-Agent Activity Report.
+     *
+     * For one employee over a date range, gathers every agent/sub-agent the
+     * employee actually engaged with across the activity sources that carry BOTH
+     * an employee and an agent (visits, service reports, farmer/fish-feed
+     * complaints, farmer-touch, agent upgradation). Linkage is by real activity,
+     * not territory. Orders are NOT included (kpi_agent_order has no employee).
+     *
+     * Returns:
+     *   ['groups' => [ groupSlug => ['label' => ..., 'agents' => [
+     *          ['agent' => Agent, 'counts' => [type=>n], 'events' => [ ['date'=>,'type'=>,'detail'=>] ] ]
+     *      ]]], 'totalAgents' => int]
+     */
+    public function getEmployeeAgentActivity($employeeId, \DateTime $startDate, \DateTime $endDate): array
+    {
+        $em = $this->_em;
+        $endOfDay = (clone $endDate)->setTime(23, 59, 59);
+
+        $buckets = [];
+        $add = function ($agentId, $type, $date, $detail = '') use (&$buckets) {
+            if (!$agentId) {
+                return;
+            }
+            if (!isset($buckets[$agentId])) {
+                $buckets[$agentId] = ['counts' => [], 'events' => []];
+            }
+            $buckets[$agentId]['counts'][$type] = ($buckets[$agentId]['counts'][$type] ?? 0) + 1;
+            $buckets[$agentId]['events'][] = ['date' => $date, 'type' => $type, 'detail' => $detail];
+        };
+
+        // 1) Visits (crm_visit.employee + crm_visit_details.agent, by visit_date)
+        $rows = $this->createQueryBuilder('v')
+            ->select('IDENTITY(vd.agent) AS agentId', 'v.visitDate AS date', 'purpose.name AS detail')
+            ->join('v.crmVisitDetails', 'vd')
+            ->leftJoin('vd.purpose', 'purpose')
+            ->where('IDENTITY(v.employee) = :emp')->setParameter('emp', $employeeId)
+            ->andWhere('v.visitDate BETWEEN :s AND :e')->setParameter('s', $startDate)->setParameter('e', $endDate)
+            ->andWhere('vd.agent IS NOT NULL')
+            ->getQuery()->getArrayResult();
+        foreach ($rows as $r) {
+            $add($r['agentId'], 'visit', $r['date'], $r['detail'] ?? '');
+        }
+
+        // 2-5) createdAt-based sources
+        $simple = [
+            'service'       => \Terminalbd\CrmBundle\Entity\CustomerServiceReport::class,
+            'complain'      => \Terminalbd\CrmBundle\Entity\FarmerComplain::class,
+            'fish_complain' => \Terminalbd\CrmBundle\Entity\FishFeedComplain::class,
+            'upgrade'       => \Terminalbd\CrmBundle\Entity\AgentUpgradationReport::class,
+        ];
+        foreach ($simple as $type => $class) {
+            $rows = $em->getRepository($class)->createQueryBuilder('a')
+                ->select('IDENTITY(a.agent) AS agentId', 'a.createdAt AS date')
+                ->where('IDENTITY(a.employee) = :emp')->setParameter('emp', $employeeId)
+                ->andWhere('a.createdAt BETWEEN :s AND :e')->setParameter('s', $startDate)->setParameter('e', $endOfDay)
+                ->andWhere('a.agent IS NOT NULL')
+                ->getQuery()->getArrayResult();
+            foreach ($rows as $r) {
+                $add($r['agentId'], $type, $r['date'], '');
+            }
+        }
+
+        // 6) Farmer touch (visiting_date; agent OR other_agent)
+        $rows = $em->getRepository(\Terminalbd\CrmBundle\Entity\NewFarmerTouch\FarmerTouchReport::class)->createQueryBuilder('t')
+            ->select('IDENTITY(t.agent) AS agentId', 'IDENTITY(t.otherAgent) AS otherAgentId', 't.visitingDate AS date')
+            ->where('IDENTITY(t.employee) = :emp')->setParameter('emp', $employeeId)
+            ->andWhere('t.visitingDate BETWEEN :s AND :e')->setParameter('s', $startDate)->setParameter('e', $endDate)
+            ->getQuery()->getArrayResult();
+        foreach ($rows as $r) {
+            $add($r['agentId'] ?: $r['otherAgentId'], 'touch', $r['date'], '');
+        }
+
+        if (empty($buckets)) {
+            return ['groups' => [], 'totalAgents' => 0];
+        }
+
+        $agents = $em->getRepository(\App\Entity\Core\Agent::class)->createQueryBuilder('ag')
+            ->leftJoin('ag.agentGroup', 'grp')->addSelect('grp')
+            ->leftJoin('ag.parent', 'par')->addSelect('par')
+            ->leftJoin('ag.upozila', 'up')->addSelect('up')
+            ->where('ag.id IN (:ids)')->setParameter('ids', array_keys($buckets))
+            ->getQuery()->getResult();
+
+        $groupLabels = [
+            'feed'        => 'Feed Agent',
+            'chick'       => 'Chick Agent',
+            'other-agent' => 'Other Agent',
+            'sub-agent'   => 'Sub-Agent',
+        ];
+        $groupOrder = ['feed', 'chick', 'other-agent', 'sub-agent'];
+
+        $groups = [];
+        foreach ($agents as $agent) {
+            $gslug = $agent->getAgentGroup() ? $agent->getAgentGroup()->getSlug() : 'other';
+            $b = $buckets[$agent->getId()];
+            usort($b['events'], function ($x, $y) {
+                return $y['date'] <=> $x['date'];
+            });
+            if (!isset($groups[$gslug])) {
+                $groups[$gslug] = ['label' => $groupLabels[$gslug] ?? ucwords(str_replace('-', ' ', $gslug)), 'agents' => []];
+            }
+            $groups[$gslug]['agents'][] = ['agent' => $agent, 'counts' => $b['counts'], 'events' => $b['events']];
+        }
+
+        // deterministic group ordering: known groups first, then any extras
+        uksort($groups, function ($x, $y) use ($groupOrder) {
+            $ix = array_search($x, $groupOrder, true);
+            $iy = array_search($y, $groupOrder, true);
+            $ix = $ix === false ? 99 : $ix;
+            $iy = $iy === false ? 99 : $iy;
+            return $ix <=> $iy;
+        });
+
+        return ['groups' => $groups, 'totalAgents' => count($agents)];
+    }
 }

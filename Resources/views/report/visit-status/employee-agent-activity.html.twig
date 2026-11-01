@@ -1,0 +1,182 @@
+{% extends 'admin/layout.html.twig' %}
+
+{# Employee Agent & Sub-Agent Activity Report.
+   Activity-based linkage (not territory): agents the employee actually engaged
+   with. Counts + dated timeline per agent, grouped by agent group. Excel + print
+   are client-side. Keys below mirror the $type values set in
+   CrmVisitRepository::getEmployeeAgentActivity(). #}
+{% set typeLabels = {
+    'visit': 'Visits',
+    'service': 'Service',
+    'complain': 'Farmer Complain',
+    'fish_complain': 'Fish Complain',
+    'touch': 'Farmer Touch',
+    'upgrade': 'Upgradation'
+} %}
+{% set typeOrder = ['visit', 'service', 'complain', 'fish_complain', 'touch', 'upgrade'] %}
+
+{% block body %}
+    <div class="row">
+        <div class="card">
+            <div class="card-body">
+                {{ form_start(form) }}
+                <table class="table" width="100%">
+                    <thead>
+                    <tr>
+                        <th>
+                            {{ form_label(form.employee, 'Employee:') }}
+                            {{ form_widget(form.employee) }}
+                            {{ form_errors(form.employee) }}
+                        </th>
+                        <th>
+                            {{ form_label(form.startMonth, 'Start Month:') }}
+                            {{ form_widget(form.startMonth) }}
+                            {{ form_errors(form.startMonth) }}
+                        </th>
+                        <th>
+                            {{ form_label(form.endMonth, 'End Month:') }}
+                            {{ form_widget(form.endMonth) }}
+                            {{ form_errors(form.endMonth) }}
+                        </th>
+                        <th>
+                            {{ form_label(form.year, 'Year:') }}
+                            {{ form_widget(form.year) }}
+                            {{ form_errors(form.year) }}
+                        </th>
+                        <th colspan="1">
+                            <div class="btn-group" style="margin-top: 25px">
+                                <button type="submit" name="search" class="btn btn-primary btn-sm" title="Search" value="search"><i class="fa fa-search"></i></button>
+                                <a href="{{ path('employee_agent_activity_report') }}" class="btn purple-bg btn-sm white-font" title="Reset"><i class="fa fa-refresh"></i></a>
+                                {% if activity.groups is not empty %}
+                                    <button type="button" class="btn blue-bg btn-sm white-font" id="button-excel"><i class="fa fa-file-excel"></i> {{ 'Excel'|trans }}</button>
+                                    <button type="button" class="btn gray-bg btn-sm white-font" onclick="window.print()"><i class="fa fa-print"></i> {{ 'Print'|trans }}</button>
+                                {% endif %}
+                            </div>
+                        </th>
+                    </tr>
+                    </thead>
+                </table>
+                {{ form_widget(form._token) }}
+                </form>
+            </div>
+        </div>
+    </div>
+
+    {% if submitted and selectedEmployee %}
+        <div class="row">
+            <div class="card" style="overflow-x: auto">
+                <div class="card-body p-2">
+                    <h6 class="mb-2">
+                        {{ 'Employee Agent & Sub-Agent Activity'|trans }}:
+                        <strong>({{ selectedEmployee.userId }}) {{ selectedEmployee.name }}</strong>
+                        {% if startDate and endDate %}
+                            &mdash; {{ startDate|date('d M Y') }} to {{ endDate|date('d M Y') }}
+                        {% endif %}
+                        &mdash; {{ 'Agents engaged'|trans }}: <strong>{{ activity.totalAgents }}</strong>
+                    </h6>
+
+                    {% if activity.groups is empty %}
+                        <div class="alert alert-warning">{{ 'No agent activity found for this employee in the selected period.'|trans }}</div>
+                    {% else %}
+                        <table class="table table-striped table-bordered table-hover download-excel" id="datatable">
+                            <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>{{ 'Agent Code'|trans }}</th>
+                                <th>{{ 'Agent Name'|trans }}</th>
+                                <th>{{ 'Upozila'|trans }}</th>
+                                <th>{{ 'Parent Agent'|trans }}</th>
+                                <th>{{ 'Created'|trans }}</th>
+                                {% for t in typeOrder %}<th>{{ typeLabels[t]|trans }}</th>{% endfor %}
+                                <th>{{ 'Total'|trans }}</th>
+                                <th class="no-print">{{ 'Timeline'|trans }}</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for groupSlug, group in activity.groups %}
+                                <tr>
+                                    <th colspan="{{ 8 + typeOrder|length }}" class="gray-bg">
+                                        {{ group.label }} ({{ group.agents|length }})
+                                    </th>
+                                </tr>
+                                {% for row in group.agents %}
+                                    {% set agent = row.agent %}
+                                    {% set rid = 'tl-' ~ agent.id %}
+                                    <tr>
+                                        <td>{{ loop.index }}</td>
+                                        <td>{{ agent.otherAndSubAgentId|default(agent.agentId)|default('—') }}</td>
+                                        <td>{{ agent.name }}</td>
+                                        <td>{{ agent.upozila ? agent.upozila.name : '' }}</td>
+                                        <td>{{ agent.parent ? agent.parent.name : '' }}</td>
+                                        <td>{{ agent.created ? agent.created|date('d M Y') : '—' }}</td>
+                                        {% for t in typeOrder %}
+                                            <td>{{ row.counts[t]|default(0) }}</td>
+                                        {% endfor %}
+                                        <td><strong>{{ row.events|length }}</strong></td>
+                                        <td class="no-print">
+                                            <a href="javascript:" onclick="toggleTimeline('{{ rid }}')"><i class="fa fa-list"></i> {{ 'View'|trans }}</a>
+                                        </td>
+                                    </tr>
+                                    <tr id="{{ rid }}" class="timeline-row no-print" style="display:none">
+                                        <td></td>
+                                        <td colspan="{{ 7 + typeOrder|length }}">
+                                            <table class="table table-sm mb-0">
+                                                <tbody>
+                                                {% for ev in row.events %}
+                                                    <tr>
+                                                        <td style="width:120px">{{ ev.date ? ev.date|date('d M Y') : '' }}</td>
+                                                        <td style="width:140px">{{ typeLabels[ev.type]|default(ev.type)|trans }}</td>
+                                                        <td>{{ ev.detail }}</td>
+                                                    </tr>
+                                                {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% block cssBlock %}
+    {{ parent() }}
+    <style>
+        @media print {
+            .no-print { display: none !important; }
+        }
+        table.download-excel th.gray-bg { background: #e9ecef; }
+    </style>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('assets/js/tableToExcel.js') }}"></script>
+    <script>
+        function toggleTimeline(id) {
+            var el = document.getElementById(id);
+            if (el) {
+                el.style.display = (el.style.display === 'none' || el.style.display === '') ? 'table-row' : 'none';
+            }
+        }
+
+        var button = document.querySelector("#button-excel");
+        if (button) {
+            button.addEventListener("click", function (e) {
+                e.preventDefault();
+                // reveal timeline rows so they are included in the export, then convert
+                document.querySelectorAll(".timeline-row").forEach(function (r) { r.style.display = 'table-row'; });
+                var table = document.querySelector(".download-excel");
+                TableToExcel.convert(table, {
+                    name: "employee_agent_activity_report.xlsx",
+                    sheet: { name: "Sheet 1" }
+                });
+            });
+        }
+    </script>
+{% endblock %}
