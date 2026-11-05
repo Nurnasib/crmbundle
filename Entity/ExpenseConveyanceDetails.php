@@ -157,6 +157,14 @@ class ExpenseConveyanceDetails
     private $cumulativeTotalMileageTwoHundred=0; //200 basis
 
     /**
+     * Snapshot of the employee's high-cc flag at the time this row's bills were generated.
+     * null = row written before this column existed (unknown).
+     *
+     * @ORM\Column(name="high_cc_bike", type="boolean", nullable=true)
+     */
+    private $highCcBike;
+
+    /**
      * @return int
      */
     public function getId()
@@ -495,6 +503,16 @@ class ExpenseConveyanceDetails
     {
         $this->cumulativeTotalMileageTwoHundred = $cumulativeTotalMileageTwoHundred;
     }
-    
+
+    public function getHighCcBike(): ?bool
+    {
+        return $this->highCcBike;
+    }
+
+    public function setHighCcBike(?bool $highCcBike): void
+    {
+        $this->highCcBike = $highCcBike;
+    }
+
 
 }

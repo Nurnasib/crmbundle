@@ -50,6 +50,7 @@ use Terminalbd\CrmBundle\Entity\LayerLifeCycleDetails;
 use Terminalbd\CrmBundle\Entity\NewFarmerIntroduce\FarmerIntroduceDetails;
 use Terminalbd\CrmBundle\Entity\Setting;
 use Terminalbd\CrmBundle\Service\MileageRate;
+use Terminalbd\CrmBundle\Service\BikeBillRate;
 use Terminalbd\CrmBundle\Entity\SonaliStandard;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -4441,7 +4442,15 @@ class ApiController extends AbstractController
                     }
 
                     if(isset($expenseData['mode_of_transport'])){
+                        // High-cc status the old motorcycle row was saved with. A re-sent entry keeps it,
+                        // so re-sending an old entry does not pick up today's flag.
+                        $previousHighCc = null;
                         if($expense->getExpenseConveyanceDetails() && sizeof($expense->getExpenseConveyanceDetails())>0){
+                            foreach ($expense->getExpenseConveyanceDetails() as $oldDetail) {
+                                if ($oldDetail->getTransportType() === 'motorcycle' && $oldDetail->getHighCcBike() !== null) {
+                                    $previousHighCc = $oldDetail->getHighCcBike();
+                                }
+                            }
                             $this->getDoctrine()->getRepository(ExpenseConveyanceDetails::class)->deleteAllConveyanceDetailByExpense($expense);
                         }
 
@@ -4503,10 +4512,14 @@ class ApiController extends AbstractController
                                 $sum2000 = $prev2000 + $total_reading;
                                 $crossings1000 = $total_reading > 0 ? (int)floor($sum1000 / 1000) : 0;
                                 $crossings2000 = $total_reading > 0 ? (int)floor($sum2000 / 2000) : 0;
+                                // Mobil and servicing amounts come from BikeBillRate (dated; mobil depends on the
+                                // employee's high-cc flag). Maintenance is unchanged at 500 per 1000 km.
+                                $highCc = null;
                                 if ($transport_type === 'motorcycle') {
-                                    $mobil_bill       = 500 * $crossings1000;
+                                    $highCc           = $previousHighCc !== null ? $previousHighCc : ($employee ? $employee->isHighCcBike() : false);
+                                    $mobil_bill       = BikeBillRate::mobilFor($vistingDate, $highCc) * $crossings1000;
                                     $maintenance_bill = 500 * $crossings1000;
-                                    $servicing_bill   = 500 * $crossings2000;
+                                    $servicing_bill   = BikeBillRate::servicingFor($vistingDate) * $crossings2000;
                                 }
 
                                 $expenseConveyanceDetails->setExpense($expense);
@@ -4525,6 +4538,8 @@ class ApiController extends AbstractController
                                 $expenseConveyanceDetails->setTotalMileage($total_reading);
                                 $expenseConveyanceDetails->setDetails($details);
                                 $expenseConveyanceDetails->setTotalAmount($expenseConveyanceDetails->calculateTotalAmount());
+                                // cc snapshot, so history never depends on the employee's current flag
+                                $expenseConveyanceDetails->setHighCcBike($transport_type === 'motorcycle' ? $highCc : null);
 
                                 // Running remainder, derived from the SAME sums used for the bonus above.
                                 // fmod keeps each counter in [0, threshold) regardless of how many
@@ -4678,9 +4693,9 @@ class ApiController extends AbstractController
                         'cumulativeTotalMileageOneThousand' => (string)$getLastMileageRecord['cumulativeTotalMileageOneHundred'],
                         'cumulativeTotalMileageTwoThousand' =>  (string)$getLastMileageRecord['cumulativeTotalMileageTwoHundred'],
                         'perKmRate' => $employee->getExpenseChart() && $employee->getExpenseChart()->getTypeOfVehicle()=='motorcycle' ? number_format(MileageRate::rateFor(), 2, '.', ''):'0.00',
-                        'mobil_bill' => '500',
+                        'mobil_bill' => (string) BikeBillRate::mobilFor($visitDate, $employee && $employee->isHighCcBike()),
                         'maintenance_bill' => '500',
-                        'servicing_bill' => '500',
+                        'servicing_bill' => (string) BikeBillRate::servicingFor($visitDate),
                     ];
                 }else{
                     $getLastMileageRecords = [
@@ -4692,9 +4707,9 @@ class ApiController extends AbstractController
                         "cumulativeTotalMileageOneThousand"=> "0",
                         "cumulativeTotalMileageTwoThousand"=> "0",
                         'perKmRate' => $employee->getExpenseChart() && $employee->getExpenseChart()->getTypeOfVehicle()=='motorcycle' ? number_format(MileageRate::rateFor(), 2, '.', ''):'0.00',
-                        'mobil_bill' => '500',
+                        'mobil_bill' => (string) BikeBillRate::mobilFor($visitDate, $employee && $employee->isHighCcBike()),
                         'maintenance_bill' => '500',
-                        'servicing_bill' => '500',
+                        'servicing_bill' => (string) BikeBillRate::servicingFor($visitDate),
                     ];
                 }
             }
