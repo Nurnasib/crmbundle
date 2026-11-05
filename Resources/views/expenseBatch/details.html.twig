@@ -1,5 +1,7 @@
 {% extends 'admin/layout.html.twig' %}
 {% block body %}
+    {# approved batch: frozen stored rate; otherwise rate for the batch month #}
+    {% set mileageRate = expenseBatch.status > 1 and expenseBatch.perMilesAmount > 0 ? expenseBatch.perMilesAmount : mileage_rate(expenseBatch.expenseMonth) %}
 
     <div class="pcoded-inner-content">
         <!-- [ breadcrumb ] start -->
@@ -239,7 +241,7 @@
                                     <th class="text-right hidden-print" colspan="{{ 6 + (areaWiseExpenseParticulars['chartDetails'] is defined? areaWiseExpenseParticulars['chartDetails']|multiArrayLength: 0)+ typeOfVehicles|length }}">
                                         Bike Miles Amount (Total reading {{ totalMilage }} KM, Per KM = {{ expenseBatch.perMilesAmount }} Tk.)
                                     </th>
-                                    <th class="text-right">{{ (totalMilage*3.5)|number_format(2) }}</th>
+                                    <th class="text-right">{{ (totalMilage*mileageRate)|number_format(2) }}</th>
                                     <th class="hidden-print"></th>
                                 </tr>
 
@@ -252,7 +254,7 @@
                                     </th>
 
                                     {#                                    <th colspan="{{ dailyExpenseParticularAttributes|length + typeOfVehicles|length }}" class="text-right hidden-print">Grand Total</th>#}
-                                    <th class="text-right">{{ (totalLineTotal+(totalMilage*3.5))|number_format(2,'.',',') }}</th>
+                                    <th class="text-right">{{ (totalLineTotal+(totalMilage*mileageRate))|number_format(2,'.',',') }}</th>
                                     <th class="hidden-print"></th>
                                 </tr>
                                 </tfoot>
@@ -316,7 +318,7 @@
 
                                         {% set previousReading = previousReadingArray is defined and previousReadingArray|length >0 and previousReadingArray[0] is not null  ? previousReadingArray[0] : 0 %}
 
-                                        {% set usedReadingBill = (transportTypeConveyanceDetails[typeOfVehicle.slug]|arraySumColWise('totalMileage') * 3.5)|number_format(2,'.','') %}
+                                        {% set usedReadingBill = (transportTypeConveyanceDetails[typeOfVehicle.slug]|arraySumColWise('totalMileage') * mileageRate)|number_format(2,'.','') %}
                                         {% set totalMobileBill = transportTypeConveyanceDetails[typeOfVehicle.slug]|arraySumColWise('totalMobileBill')|number_format(2,'.','')   %}
                                         {% set totalMaintenanceBill = transportTypeConveyanceDetails[typeOfVehicle.slug]|arraySumColWise('totalMaintenanceBill')|number_format(2,'.','') %}
                                         {% set totalServicingBill = transportTypeConveyanceDetails[typeOfVehicle.slug]|arraySumColWise('totalServicingBill')|number_format(2,'.','') %}

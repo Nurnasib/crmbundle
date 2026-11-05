@@ -38,6 +38,7 @@ use Terminalbd\CrmBundle\Form\ExpenseFormType;
 use Terminalbd\CrmBundle\Form\ExpenseReportSearchFormType;
 use Terminalbd\CrmBundle\Form\ExpenseVehicleFormType;
 use Terminalbd\CrmBundle\Form\SettingFormType;
+use Terminalbd\CrmBundle\Service\MileageRate;
 
 /**
  * @Route("/crm/expense")
@@ -267,7 +268,7 @@ class ExpenseController extends AbstractController
             }
         }
 
-        $ratePerMilage = $employee->getExpenseChart() && $employee->getExpenseChart()->getTypeOfVehicle() && $employee->getExpenseChart()->getTypeOfVehicle() == 'car'? 0: 3.5;
+        $ratePerMilage = $employee->getExpenseChart() && $employee->getExpenseChart()->getTypeOfVehicle() && $employee->getExpenseChart()->getTypeOfVehicle() == 'car'? 0: MileageRate::rateFor($yearMonth.'-01');
 
         $typeOfVehicles = $this->typeOfVehicle($employee);
 
@@ -324,7 +325,7 @@ class ExpenseController extends AbstractController
             $totalReading = isset($requestData['totalRiding']) && $requestData['totalRiding'] != '' && $requestData['totalRiding'] > 0 ? $requestData['totalRiding'] : '0';
             $expenseBatch->setTotalRiding($totalReading);
 
-            $perMilesAmount = $crmConfig && $crmConfig->getValue() && $crmConfig->getValue() > 0 ? $crmConfig->getValue() : 0;
+            $perMilesAmount = MileageRate::rateFor($expenseMonth);
 
             $expenseBatch->setPerMilesAmount($perMilesAmount);
 

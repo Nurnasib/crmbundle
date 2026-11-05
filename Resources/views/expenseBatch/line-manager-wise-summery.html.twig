@@ -257,8 +257,8 @@
                                                     {% endfor %}
                                                 {% endif %}
                                                 <td class="text-right">
-                                                    {{ (lineTotalMilage*3.5)|number_format(2,'.',',') }}
-                                                    {% set lineTotal = lineTotal + (lineTotalMilage*3.5) %}
+                                                    {{ (lineTotalMilage*mileage_rate(monthKey))|number_format(2,'.',',') }}
+                                                    {% set lineTotal = lineTotal + (lineTotalMilage*mileage_rate(monthKey)) %}
                                                 </td>
                                                 <td class="text-right">{{ lineTotalMilage }}</td>
                                                 <td class="text-right">

@@ -126,12 +126,12 @@
 
                                 {% if employeeVehicleType == 'motorcycle' %}
                                     <td>
-                                        {{ (totalMilage*3.5)|number_format(2,'.',',') }}
+                                        {{ (totalMilage*mileage_rate(entity.expenseMonthYear))|number_format(2,'.',',') }}
                                     </td>
                                 {% endif %}
 
                                 <td class="text-right">
-                                    {{ (totalAmount+(totalMilage*3.5))|number_format(2,'.',',') }}
+                                    {{ (totalAmount+(totalMilage*mileage_rate(entity.expenseMonthYear)))|number_format(2,'.',',') }}
                                 </td>
                                 <td>
                                     <a title="Details" class="btn btn-mini blue-bg white-font" href="{{ path('crm_expense_details',{'employee':entity.employeeAutoId, 'monthYear':entity.expenseMonthYear}) }}"><i class="feather icon-eye"></i> Details</a>

@@ -49,6 +49,7 @@ use Terminalbd\CrmBundle\Entity\LayerLifeCycle;
 use Terminalbd\CrmBundle\Entity\LayerLifeCycleDetails;
 use Terminalbd\CrmBundle\Entity\NewFarmerIntroduce\FarmerIntroduceDetails;
 use Terminalbd\CrmBundle\Entity\Setting;
+use Terminalbd\CrmBundle\Service\MileageRate;
 use Terminalbd\CrmBundle\Entity\SonaliStandard;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -4326,7 +4327,7 @@ class ApiController extends AbstractController
                     "id" => $entity->getId(),
                     "employee_id" => $entity->getEmployee() ? $entity->getEmployee()->getId() : null,
                     "typeOfVehicle" => $entity->getTypeOfVehicle() ? $entity->getTypeOfVehicle() : null,
-                    "perKmRate" => $entity->getPerKmRate() ? $entity->getPerKmRate() : null,
+                    "perKmRate" => $entity->getPerKmRate() ? number_format(MileageRate::rateFor(), 2, '.', '') : null,
                 ];
 
                 if ($entity->getExpenseChartDetails() && sizeof($entity->getExpenseChartDetails()) > 0) {
@@ -4676,7 +4677,7 @@ class ApiController extends AbstractController
                         'lastMeterEndReading' => (string)$getLastMileageRecord['meterReadingTo'],
                         'cumulativeTotalMileageOneThousand' => (string)$getLastMileageRecord['cumulativeTotalMileageOneHundred'],
                         'cumulativeTotalMileageTwoThousand' =>  (string)$getLastMileageRecord['cumulativeTotalMileageTwoHundred'],
-                        'perKmRate' => $employee->getExpenseChart() && $employee->getExpenseChart()->getTypeOfVehicle()=='motorcycle' ? '3.50':'0.00',
+                        'perKmRate' => $employee->getExpenseChart() && $employee->getExpenseChart()->getTypeOfVehicle()=='motorcycle' ? number_format(MileageRate::rateFor(), 2, '.', ''):'0.00',
                         'mobil_bill' => '500',
                         'maintenance_bill' => '500',
                         'servicing_bill' => '500',
@@ -4690,7 +4691,7 @@ class ApiController extends AbstractController
                         'lastMeterEndReading' => "0",
                         "cumulativeTotalMileageOneThousand"=> "0",
                         "cumulativeTotalMileageTwoThousand"=> "0",
-                        'perKmRate' => $employee->getExpenseChart() && $employee->getExpenseChart()->getTypeOfVehicle()=='motorcycle' ? '3.50':'0.00',
+                        'perKmRate' => $employee->getExpenseChart() && $employee->getExpenseChart()->getTypeOfVehicle()=='motorcycle' ? number_format(MileageRate::rateFor(), 2, '.', ''):'0.00',
                         'mobil_bill' => '500',
                         'maintenance_bill' => '500',
                         'servicing_bill' => '500',
