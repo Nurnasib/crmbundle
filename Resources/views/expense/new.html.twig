@@ -218,6 +218,7 @@
                                                     <th>Mobil Bill</th>
                                                     <th>Maintenance Bill</th>
                                                     <th>Servicing Bill</th>
+                                                    <th>Personal Bike Allowance</th>
                                                     <th>Toll Bill</th>
                                                     <th>Fuel Bill</th>
                                                     <th>Parking Bill</th>
@@ -292,6 +293,20 @@
                                                                             data-value="{{ expenseConveyanceDetail.servicingBill|default('') }}"
                                                                             data-original-title="Enter amount">
                                                                         {{ expenseConveyanceDetail.servicingBill }}
+                                                                    </a>
+                                                                </td>
+                                                                <td>
+                                                                    <a
+                                                                            data-type="text"
+                                                                            class="editable"
+                                                                            id="personalBikeAllowance-{{ expenseConveyanceDetail.id|default('') }}"
+                                                                            data-name="PersonalBikeAllowance"
+                                                                            href="#"
+                                                                            data-url="{{ path('crm_expense_convence_details',{'id':expenseConveyanceDetail.id}) }}"
+                                                                            data-pk="{{ expenseConveyanceDetail.id|default('') }}"
+                                                                            data-value="{{ expenseConveyanceDetail.personalBikeAllowance|default('') }}"
+                                                                            data-original-title="Enter amount">
+                                                                        {{ expenseConveyanceDetail.personalBikeAllowance|default(0) }}
                                                                     </a>
                                                                 </td>
                                                                 <td>

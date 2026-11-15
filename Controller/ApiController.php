@@ -4515,11 +4515,13 @@ class ApiController extends AbstractController
                                 // Mobil and servicing amounts come from BikeBillRate (dated; mobil depends on the
                                 // employee's high-cc flag). Maintenance is unchanged at 500 per 1000 km.
                                 $highCc = null;
+                                $personal_bike_allowance = 0;
                                 if ($transport_type === 'motorcycle') {
                                     $highCc           = $previousHighCc !== null ? $previousHighCc : ($employee ? $employee->isHighCcBike() : false);
                                     $mobil_bill       = BikeBillRate::mobilFor($vistingDate, $highCc) * $crossings1000;
                                     $maintenance_bill = 500 * $crossings1000;
                                     $servicing_bill   = BikeBillRate::servicingFor($vistingDate) * $crossings2000;
+                                    $personal_bike_allowance = BikeBillRate::personalBikeAllowanceFor($vistingDate, (bool) $highCc) * $crossings1000;
                                 }
 
                                 $expenseConveyanceDetails->setExpense($expense);
@@ -4530,6 +4532,7 @@ class ApiController extends AbstractController
                                 $expenseConveyanceDetails->setMaintenanceBill((float)$maintenance_bill);
                                 $expenseConveyanceDetails->setParkingBill((float)$parking_bill);
                                 $expenseConveyanceDetails->setServicingBill((float)$servicing_bill);
+                                $expenseConveyanceDetails->setPersonalBikeAllowance((float)$personal_bike_allowance);
                                 $expenseConveyanceDetails->setTransportType($transport_type);
                                 $expenseConveyanceDetails->setOthersBill((float)$other_bill);
                                 $expenseConveyanceDetails->setDestination($destination);
@@ -4696,6 +4699,7 @@ class ApiController extends AbstractController
                         'mobil_bill' => (string) BikeBillRate::mobilFor($visitDate, $employee && $employee->isHighCcBike()),
                         'maintenance_bill' => '500',
                         'servicing_bill' => (string) BikeBillRate::servicingFor($visitDate),
+                        'personal_bike_allowance' => (string) BikeBillRate::personalBikeAllowanceFor($visitDate, $employee && $employee->isHighCcBike()),
                     ];
                 }else{
                     $getLastMileageRecords = [
@@ -4710,6 +4714,7 @@ class ApiController extends AbstractController
                         'mobil_bill' => (string) BikeBillRate::mobilFor($visitDate, $employee && $employee->isHighCcBike()),
                         'maintenance_bill' => '500',
                         'servicing_bill' => (string) BikeBillRate::servicingFor($visitDate),
+                        'personal_bike_allowance' => (string) BikeBillRate::personalBikeAllowanceFor($visitDate, $employee && $employee->isHighCcBike()),
                     ];
                 }
             }

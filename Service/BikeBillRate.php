@@ -17,7 +17,7 @@ class BikeBillRate
     /** effective-from date => [normal bike, high cc bike]. Keep ascending by date. */
     const MOBIL = [
         '2000-01-01' => [500, 500],
-        '2026-10-01' => [900, 1000],
+        '2026-10-01' => [900, 900],
     ];
 
     /** effective-from date => amount. Keep ascending by date. */
@@ -25,6 +25,18 @@ class BikeBillRate
         '2000-01-01' => 500,
         '2026-10-01' => 1000,
     ];
+
+    /** effective-from date => amount per 1,000 km crossing, high cc (125cc) bikes only. */
+    const PERSONAL_BIKE_ALLOWANCE = [
+        '2000-01-01' => 0,
+        '2026-10-01' => 1000,
+    ];
+
+    /** Personal bike allowance for ONE 1,000 km crossing; 0 for a normal bike. */
+    public static function personalBikeAllowanceFor($date, bool $highCc): float
+    {
+        return $highCc ? (float) self::pick(self::PERSONAL_BIKE_ALLOWANCE, $date) : 0.0;
+    }
 
     /** Mobil bill for ONE 1,000 km crossing. */
     public static function mobilFor($date, bool $highCc = false): float

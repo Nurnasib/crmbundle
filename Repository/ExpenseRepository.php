@@ -365,6 +365,7 @@ class ExpenseRepository extends EntityRepository
                             "mobil_bill" => (string)$expenseConveyanceDetail->getMobilBill(),
                             "maintenance_bill" => (string)$expenseConveyanceDetail->getMaintenanceBill(),
                             "servicing_bill" => (string)$expenseConveyanceDetail->getServicingBill(),
+                            "personal_bike_allowance" => (string)$expenseConveyanceDetail->getPersonalBikeAllowance(),
                             "meter_reading_start" => (string)$expenseConveyanceDetail->getMeterReadingFrom(),
                             "meter_reading_end" => (string)$expenseConveyanceDetail->getMeterReadingTo(),
                             "total_reading" => (string)$expenseConveyanceDetail->getTotalMileage(),
@@ -380,6 +381,7 @@ class ExpenseRepository extends EntityRepository
                             "mobil_bill" => (string)$expenseConveyanceDetail->getMobilBill(),
                             "maintenance_bill" => (string)$expenseConveyanceDetail->getMaintenanceBill(),
                             "servicing_bill" => (string)$expenseConveyanceDetail->getServicingBill(),
+                            "personal_bike_allowance" => (string)$expenseConveyanceDetail->getPersonalBikeAllowance(),
                             "meter_reading_start" => (string)$expenseConveyanceDetail->getMeterReadingFrom(),
                             "meter_reading_end" => (string)$expenseConveyanceDetail->getMeterReadingTo(),
                             "total_reading" => (string)$expenseConveyanceDetail->getTotalMileage(),
@@ -395,6 +397,7 @@ class ExpenseRepository extends EntityRepository
                             "mobil_bill" => (string)$expenseConveyanceDetail->getMobilBill(),
                             "maintenance_bill" => (string)$expenseConveyanceDetail->getMaintenanceBill(),
                             "servicing_bill" => (string)$expenseConveyanceDetail->getServicingBill(),
+                            "personal_bike_allowance" => (string)$expenseConveyanceDetail->getPersonalBikeAllowance(),
                             "details" => $expenseConveyanceDetail->getDetails(),
                         ];
                     } elseif ($expenseConveyanceDetail->getTransportType() == 'local-conveyance' ){
@@ -698,6 +701,7 @@ class ExpenseRepository extends EntityRepository
                     'mobilBill' => $conveyanceDetail->getMobilBill(),
                     'maintenanceBill' => $conveyanceDetail->getMaintenanceBill(),
                     'servicingBill' => $conveyanceDetail->getServicingBill(),
+                    'personalBikeAllowance' => $conveyanceDetail->getPersonalBikeAllowance(),
                     'meterReadingFrom' => $conveyanceDetail->getMeterReadingFrom(),
                     'meterReadingTo' => $conveyanceDetail->getMeterReadingTo(),
                     'totalMileage' => $conveyanceDetail->getTotalMileage(),

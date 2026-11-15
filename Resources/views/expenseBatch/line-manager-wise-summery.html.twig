@@ -138,7 +138,7 @@
                                         {% if typeOfVehicle.slug=='car' %}
                                             <th class="text-center" colspan="4">{{ typeOfVehicle.name }}</th>
                                         {% elseif typeOfVehicle.slug=='motorcycle' %}
-                                            <th class="text-center" colspan="5">{{ typeOfVehicle.name }}</th>
+                                            <th class="text-center" colspan="6">{{ typeOfVehicle.name }}</th>
                                         {% else %}
                                             <th rowspan="2">{{ typeOfVehicle.name }}</th>
                                         {% endif %}
@@ -177,6 +177,7 @@
                                             <th>Mobil</th>
                                             <th>Maintence</th>
                                             <th>Servicing</th>
+                                            <th>Personal Bike Allowance</th>
                                         {% endif %}
                                     {% endfor %}
                                 {% endif %}
@@ -250,6 +251,7 @@
                                                             <td>{{ totalMobileBill|number_format(2, '.', '') }}</td>
                                                             <td>{{ totalMaintenanceBill|number_format(2, '.', '') }}</td>
                                                             <td>{{ totalServicingBill|number_format(2, '.', '') }}</td>
+                                                            <td>{{ (conveyanceDetailsTotalAmount[employee.id][monthKey][typeOfVehicle.slug]['totalPersonalBikeAllowance'] ?? 0)|number_format(2, '.', '') }}</td>
                                                         {% else %}
                                                                 <td class="text-right">{{ conveyanceAmount|number_format(2,'.','') }}</td>
                                                         {% endif %}

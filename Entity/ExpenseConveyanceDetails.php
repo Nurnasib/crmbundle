@@ -165,6 +165,13 @@ class ExpenseConveyanceDetails
     private $highCcBike;
 
     /**
+     * 125cc bikes only: paid per 1,000 km crossing, beside mobil/maintenance/servicing.
+     *
+     * @ORM\Column(name="personal_bike_allowance", type="float", nullable=true, options={"default": 0})
+     */
+    private $personalBikeAllowance = 0;
+
+    /**
      * @return int
      */
     public function getId()
@@ -456,6 +463,7 @@ class ExpenseConveyanceDetails
         $totalAmount += $this->getMobilBill();
         $totalAmount += $this->getMaintenanceBill();
         $totalAmount += $this->getServicingBill();
+        $totalAmount += $this->getPersonalBikeAllowance();
         $totalAmount += $this->getTollBill();
         $totalAmount += $this->getFuelBill();
         $totalAmount += $this->getParkingBill();
@@ -512,6 +520,16 @@ class ExpenseConveyanceDetails
     public function setHighCcBike(?bool $highCcBike): void
     {
         $this->highCcBike = $highCcBike;
+    }
+
+    public function getPersonalBikeAllowance()
+    {
+        return $this->personalBikeAllowance ?? 0;
+    }
+
+    public function setPersonalBikeAllowance($personalBikeAllowance): void
+    {
+        $this->personalBikeAllowance = $personalBikeAllowance;
     }
 
 

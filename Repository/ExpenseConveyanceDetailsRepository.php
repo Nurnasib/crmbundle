@@ -73,7 +73,7 @@ class ExpenseConveyanceDetailsRepository extends EntityRepository
     public function getTotalAmountMonthlyByEmployeeYear(User $user, $year=null){
         $qb = $this->createQueryBuilder('e');
         $qb->select('e.id', 'e.transportType', 'CAST(SUM(e.totalAmount) as decimal(10,2)) as totalAmount');
-        $qb->addSelect('CAST(SUM(e.mobilBill) as decimal(10,2)) as totalMobileBill','CAST(SUM(e.maintenanceBill) as decimal(10,2)) as totalMaintenanceBill','CAST(SUM(e.tollBill) as decimal(10,2)) as totalTollBill','CAST(SUM(e.servicingBill) as decimal(10,2)) as totalServicingBill','CAST(SUM(e.fuelBill) as decimal(10,2)) as totalFuelBill', 'CAST(SUM(e.parkingBill) as decimal(10,2)) as totalParkingBill', 'CAST(SUM(e.othersBill) as decimal(10,2)) as totalOthersBill', 'CAST(SUM(e.amount) as decimal(10,2)) as amount', 'CAST(SUM(e.totalMileage) as decimal(10,2)) as totalMileage');
+        $qb->addSelect('CAST(SUM(e.mobilBill) as decimal(10,2)) as totalMobileBill','CAST(SUM(e.maintenanceBill) as decimal(10,2)) as totalMaintenanceBill','CAST(SUM(e.tollBill) as decimal(10,2)) as totalTollBill','CAST(SUM(e.servicingBill) as decimal(10,2)) as totalServicingBill','CAST(SUM(COALESCE(e.personalBikeAllowance,0)) as decimal(10,2)) as totalPersonalBikeAllowance','CAST(SUM(e.fuelBill) as decimal(10,2)) as totalFuelBill', 'CAST(SUM(e.parkingBill) as decimal(10,2)) as totalParkingBill', 'CAST(SUM(e.othersBill) as decimal(10,2)) as totalOthersBill', 'CAST(SUM(e.amount) as decimal(10,2)) as amount', 'CAST(SUM(e.totalMileage) as decimal(10,2)) as totalMileage');
         $qb->addSelect('expense.id as expenseId');
         $qb->addSelect("DATE_FORMAT(expense.expenseDate,'%b,%y') as expenseWordMonthYear", "DATE_FORMAT(expense.expenseDate,'%Y-%m') as expenseMonthYear", 'YEAR(expense.expenseDate) as expenseYear', 'MONTH(expense.expenseDate) as expenseMonth');
         $qb->addSelect('employee.id as employeeAutoId');
@@ -132,7 +132,7 @@ class ExpenseConveyanceDetailsRepository extends EntityRepository
     {
         $qb = $this->createQueryBuilder('e');
         $qb->select('e.id', 'e.transportType', 'e.totalAmount', 'e.totalMileage', 'e.cumulativeTotalMileageOneHundred', 'e.cumulativeTotalMileageTwoHundred');
-        $qb->addSelect('e.amount','e.maintenanceBill', 'e.mobilBill', 'e.servicingBill', 'e.fuelBill', 'e.parkingBill', 'e.othersBill', 'e.tollBill');
+        $qb->addSelect('e.amount','e.maintenanceBill', 'e.mobilBill', 'e.servicingBill', 'e.personalBikeAllowance', 'e.fuelBill', 'e.parkingBill', 'e.othersBill', 'e.tollBill');
         $qb->addSelect('expense.id as expenseId');
         $qb->join('e.expense', 'expense');
         $qb->where('expense.id =:expenseId')->setParameter('expenseId', $entity->getId());
@@ -210,7 +210,7 @@ class ExpenseConveyanceDetailsRepository extends EntityRepository
     IF(e.totalMileage > 0, e.meterReadingFrom, NULL)) as meterReadingFromConcat', 'group_concat(
     IF(e.meterReadingTo > 0, e.meterReadingTo, NULL)) as meterReadingToConcat', 'CAST(SUM(e.totalAmount) as decimal(10,2)) as grandTotalAmount');
         $qb->addSelect('group_concat(e.details) as detailsConcat', 'group_concat(e.destination) AS destinationConcat', 'group_concat(e.totalAmount) as totalAmountConcat');
-        $qb->addSelect('CAST(SUM(e.mobilBill) as decimal(10,2)) as totalMobileBill','CAST(SUM(e.maintenanceBill) as decimal(10,2)) as totalMaintenanceBill','CAST(SUM(e.tollBill) as decimal(10,2)) as totalTollBill','CAST(SUM(e.servicingBill) as decimal(10,2)) as totalServicingBill','CAST(SUM(e.fuelBill) as decimal(10,2)) as totalFuelBill', 'CAST(SUM(e.parkingBill) as decimal(10,2)) as totalParkingBill', 'CAST(SUM(e.othersBill) as decimal(10,2)) as totalOthersBill', 'CAST(SUM(e.amount) as decimal(10,2)) as amount', 'CAST(SUM(e.totalMileage) as decimal(10,2)) as totalMileage');
+        $qb->addSelect('CAST(SUM(e.mobilBill) as decimal(10,2)) as totalMobileBill','CAST(SUM(e.maintenanceBill) as decimal(10,2)) as totalMaintenanceBill','CAST(SUM(e.tollBill) as decimal(10,2)) as totalTollBill','CAST(SUM(e.servicingBill) as decimal(10,2)) as totalServicingBill','CAST(SUM(COALESCE(e.personalBikeAllowance,0)) as decimal(10,2)) as totalPersonalBikeAllowance','CAST(SUM(e.fuelBill) as decimal(10,2)) as totalFuelBill', 'CAST(SUM(e.parkingBill) as decimal(10,2)) as totalParkingBill', 'CAST(SUM(e.othersBill) as decimal(10,2)) as totalOthersBill', 'CAST(SUM(e.amount) as decimal(10,2)) as amount', 'CAST(SUM(e.totalMileage) as decimal(10,2)) as totalMileage');
 
 //        $qb->select('e.id', 'e.transportType', 'e.details', 'e.destination', 'e.totalAmount', 'e.totalMileage', 'e.cumulativeTotalMileageOneHundred', 'e.cumulativeTotalMileageTwoHundred');
 //        $qb->addSelect('e.amount','e.maintenanceBill', 'e.mobilBill', 'e.servicingBill', 'e.fuelBill', 'e.parkingBill', 'e.othersBill', 'e.tollBill');
@@ -266,7 +266,7 @@ class ExpenseConveyanceDetailsRepository extends EntityRepository
     public function getTotalAmountMonthlyByDateRange($employeeIds, $startDate, $endDate){
         $qb = $this->createQueryBuilder('e');
         $qb->select('e.id', 'e.transportType', 'CAST(SUM(e.totalAmount) as decimal(10,2)) as totalAmount');
-        $qb->addSelect('CAST(SUM(e.mobilBill) as decimal(10,2)) as totalMobileBill','CAST(SUM(e.maintenanceBill) as decimal(10,2)) as totalMaintenanceBill','CAST(SUM(e.tollBill) as decimal(10,2)) as totalTollBill','CAST(SUM(e.servicingBill) as decimal(10,2)) as totalServicingBill','CAST(SUM(e.fuelBill) as decimal(10,2)) as totalFuelBill', 'CAST(SUM(e.parkingBill) as decimal(10,2)) as totalParkingBill', 'CAST(SUM(e.othersBill) as decimal(10,2)) as totalOthersBill', 'CAST(SUM(e.amount) as decimal(10,2)) as amount', 'CAST(SUM(e.totalMileage) as decimal(10,2)) as totalMileage');
+        $qb->addSelect('CAST(SUM(e.mobilBill) as decimal(10,2)) as totalMobileBill','CAST(SUM(e.maintenanceBill) as decimal(10,2)) as totalMaintenanceBill','CAST(SUM(e.tollBill) as decimal(10,2)) as totalTollBill','CAST(SUM(e.servicingBill) as decimal(10,2)) as totalServicingBill','CAST(SUM(COALESCE(e.personalBikeAllowance,0)) as decimal(10,2)) as totalPersonalBikeAllowance','CAST(SUM(e.fuelBill) as decimal(10,2)) as totalFuelBill', 'CAST(SUM(e.parkingBill) as decimal(10,2)) as totalParkingBill', 'CAST(SUM(e.othersBill) as decimal(10,2)) as totalOthersBill', 'CAST(SUM(e.amount) as decimal(10,2)) as amount', 'CAST(SUM(e.totalMileage) as decimal(10,2)) as totalMileage');
         $qb->addSelect('SUM(IF(e.transportType=\'motorcycle\', e.totalMileage, 0)) as totalMotorcycleMileage', 'SUM(IF(e.transportType=\'car\', e.totalMileage, 0)) as totalCarMileage');
         $qb->addSelect('expense.id as expenseId');
         $qb->addSelect("DATE_FORMAT(expense.expenseDate,'%b,%y') as expenseWordMonthYear", "DATE_FORMAT(expense.expenseDate,'%Y-%m') as expenseMonthYear", 'YEAR(expense.expenseDate) as expenseYear', 'MONTH(expense.expenseDate) as expenseMonth');
