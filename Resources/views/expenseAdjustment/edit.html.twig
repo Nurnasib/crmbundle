@@ -1,0 +1,115 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block body %}
+    <div class="pcoded-inner-content">
+        <div class="page-header hidden-print">
+            <div class="page-block">
+                <div class="row align-items-center">
+                    <ul class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/"><i class="feather icon-home"></i></a></li>
+                        <li class="breadcrumb-item"><a href="{{ path('crm_expense_adjustment') }}">{{ 'Expense Adjustment'|trans }}</a></li>
+                        <li class="breadcrumb-item"><strong>Edit</strong></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="card">
+                <div class="card-body">
+                    <h4>
+                        Edit expense &mdash;
+                        {% if expense.employee %}({{ expense.employee.userId }}) {{ expense.employee.name }},{% endif %}
+                        {{ expense.expenseDate|date('d-m-Y') }}
+                    </h4>
+                    {% for type, messages in app.flashes %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ type == 'error' ? 'danger' : type }}">{{ message }}</div>
+                        {% endfor %}
+                    {% endfor %}
+
+                    {% if rows is empty %}
+                        <p>This expense has no motorcycle conveyance row.</p>
+                    {% else %}
+                        <form method="post">
+                            <input type="hidden" name="_token" value="{{ csrf_token('expense_adjust_' ~ expense.id) }}">
+
+                            {% for row in rows %}
+                                <h5 class="mt-3">Motorcycle row #{{ row.id }}</h5>
+                                <p class="text-muted">Current total: {{ row.totalAmount|number_format(2, '.', '') }}</p>
+                                <div class="row meter-row">
+                                    {% for field, label in meterFields %}
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label>{{ label }}</label>
+                                                <input type="number" step="any" min="0" class="form-control meter-{{ field }}" name="fields[{{ row.id }}][{{ field }}]" value="{{ attribute(row, 'get' ~ field) }}">
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label>Mileage (km, not editable)</label>
+                                            <input type="text" class="form-control meter-mileage" value="{{ row.totalMileage }}" data-mileage="{{ row.totalMileage }}" readonly>
+                                            <small class="meter-diff"></small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    {% for field, label in editableFields %}
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label>{{ label }}</label>
+                                                <input type="number" step="any" min="0" class="form-control" name="fields[{{ row.id }}][{{ field }}]" value="{{ attribute(row, 'get' ~ field) }}">
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Details</label>
+                                            <input type="text" class="form-control" name="fields[{{ row.id }}][Details]" value="{{ row.details }}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <p class="text-muted">Meter Start/End are saved to both the meter columns and the destination JSON.</p>
+                            {% endfor %}
+
+                            <div class="form-group">
+                                <label>Reason for this change <span class="text-danger">*</span></label>
+                                <textarea name="reason" class="form-control" rows="2" required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Save</button>
+                            <a href="{{ path('crm_expense_adjustment', {'crm_tour_plan_search_form': {'employee': expense.employee ? expense.employee.id : '', 'visitDate': expense.expenseDate|date('m-Y')}}) }}" class="btn btn-secondary">Cancel</a>
+                        </form>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block cssBlock %}
+    <link rel="stylesheet" href="{{ asset('assets/module/css/app.css') }}">
+    <link rel="stylesheet" href="{{ asset('bundles/terminalbdcrm/css/crm.css') }}">
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        // Live "End - Start" next to the stored mileage, so the meters can be kept matching it.
+        document.querySelectorAll('.meter-row').forEach(function (row) {
+            var start = row.querySelector('.meter-MeterReadingFrom');
+            var end = row.querySelector('.meter-MeterReadingTo');
+            var mileage = parseFloat(row.querySelector('.meter-mileage').dataset.mileage) || 0;
+            var out = row.querySelector('.meter-diff');
+            function update() {
+                var diff = Math.round(((parseFloat(end.value) || 0) - (parseFloat(start.value) || 0)) * 100) / 100;
+                var ok = diff === mileage;
+                out.textContent = 'End - Start = ' + diff + (ok ? ' (matches)' : ' (does not match mileage)');
+                out.style.color = ok ? 'green' : 'red';
+            }
+            start.addEventListener('input', update);
+            end.addEventListener('input', update);
+            update();
+        });
+    </script>
+{% endblock %}

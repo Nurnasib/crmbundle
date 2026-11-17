@@ -1,0 +1,166 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block body %}
+    <div class="pcoded-inner-content">
+        <div class="page-header hidden-print">
+            <div class="page-block">
+                <div class="row align-items-center">
+                    <ul class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/"><i class="feather icon-home"></i></a></li>
+                        <li class="breadcrumb-item"><a href="{{ path('crm_expense') }}">{{ 'Expense'|trans }}</a></li>
+                        <li class="breadcrumb-item"><strong>{{ 'Expense Adjustment'|trans }}</strong></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="card">
+                <div class="card-body">
+                    <h4>Expense Adjustment</h4>
+                    {% for type, messages in app.flashes %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ type == 'error' ? 'danger' : type }}">{{ message }}</div>
+                        {% endfor %}
+                    {% endfor %}
+
+                    <div class="row hidden-print">
+                        <div class="col-md-12">
+                            {{ form_start(form, {'attr': {'class': 'sales_marketing_search_form'}}) }}
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        {{ form_widget(form.employee) }}
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        {{ form_widget(form.visitDate) }}
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    {{ form_widget(form._token) }}
+                                    <button type="submit" name="search" class="btn btn-primary btn-sm" title="Search" value="search"><i class="fa fa-search" aria-hidden="true"></i></button>
+                                </div>
+                            </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    {% if employee %}
+                        <h5 class="text-center">({{ employee.userId }}) {{ employee.name }} &mdash; {{ (requestDate ~ '-01')|date('F, Y') }}</h5>
+
+                        <table class="table table-striped table-bordered table-hover">
+                            <thead class="thead-dark">
+                            <tr>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th class="text-right">Mileage (km)</th>
+                                {% for field, label in editableFields %}
+                                    <th class="text-right">{{ label }}</th>
+                                {% endfor %}
+                                <th class="text-right">Motorcycle Total</th>
+                                <th class="text-center"><i class="feather icon-settings"></i></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for expense in expenses %}
+                                {% set motorcycleRows = expense.expenseConveyanceDetails|filter(d => d.transportType == 'motorcycle') %}
+                                <tr>
+                                    <td>{{ expense.expenseDate|date('d-m-Y') }}</td>
+                                    <td>{{ expense.status }}</td>
+                                    <td class="text-right">{{ motorcycleRows|reduce((sum, d) => sum + d.totalMileage, 0) }}</td>
+                                    {% for field, label in editableFields %}
+                                        <td class="text-right">{{ motorcycleRows|reduce((sum, d) => sum + attribute(d, 'get' ~ field), 0)|number_format(2, '.', '') }}</td>
+                                    {% endfor %}
+                                    <td class="text-right">{{ motorcycleRows|reduce((sum, d) => sum + d.totalAmount, 0)|number_format(2, '.', '') }}</td>
+                                    <td class="text-center" style="white-space: nowrap">
+                                        <a href="{{ path('crm_expense_adjustment_edit', {'id': expense.id}) }}" class="btn btn-primary btn-sm"><i class="feather icon-edit"></i> Edit</a>
+                                        {% if loop.first and expense.id == latestExpenseId %}
+                                            <form method="post" action="{{ path('crm_expense_adjustment_delete', {'id': expense.id}) }}" class="d-inline-block adjustment-delete-form">
+                                                <input type="hidden" name="_token" value="{{ csrf_token('expense_adjust_delete_' ~ expense.id) }}">
+                                                <input type="text" name="reason" class="form-control form-control-sm d-inline-block" style="width: 180px" placeholder="Reason for delete" required>
+                                                <button type="submit" class="btn btn-danger btn-sm"><i class="feather icon-trash-2"></i> Delete</button>
+                                            </form>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% else %}
+                                <tr><td colspan="{{ editableFields|length + 5 }}" class="text-center">No expense found</td></tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                        {% if expenses is not empty and expenses|first.id != latestExpenseId %}
+                            <p class="text-muted">Delete is only offered on the employee's latest expense, which is not in this month.</p>
+                        {% endif %}
+
+                        <h5 class="mt-4">Adjustment history</h5>
+                        <table class="table table-bordered table-sm">
+                            <thead>
+                            <tr>
+                                <th>When</th>
+                                <th>By</th>
+                                <th>Action</th>
+                                <th>Expense date</th>
+                                <th>Reason</th>
+                                <th>Before</th>
+                                <th>After</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for log in logs %}
+                                <tr>
+                                    <td>{{ log.changedAt|date('d-m-Y H:i') }}</td>
+                                    <td>{{ log.changedBy ? log.changedBy.name : '' }}</td>
+                                    <td>{{ log.action }}</td>
+                                    <td>{{ log.expenseDate ? log.expenseDate|date('d-m-Y') : '' }}</td>
+                                    <td>{{ log.reason }}</td>
+                                    {% if log.action == 'delete' %}
+                                        <td colspan="2"><details><summary>Full copy of deleted expense</summary><pre style="white-space: pre-wrap; max-width: 700px">{{ log.oldData|json_encode(constant('JSON_PRETTY_PRINT') b-or constant('JSON_UNESCAPED_UNICODE')) }}</pre></details></td>
+                                    {% else %}
+                                        <td><pre style="white-space: pre-wrap">{{ log.oldData|json_encode(constant('JSON_PRETTY_PRINT') b-or constant('JSON_UNESCAPED_UNICODE')) }}</pre></td>
+                                        <td><pre style="white-space: pre-wrap">{{ log.newData|json_encode(constant('JSON_PRETTY_PRINT') b-or constant('JSON_UNESCAPED_UNICODE')) }}</pre></td>
+                                    {% endif %}
+                                </tr>
+                            {% else %}
+                                <tr><td colspan="7" class="text-center">No adjustments this month</td></tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block cssBlock %}
+    <link rel="stylesheet" href="{{ asset('assets/module/css/app.css') }}">
+    <link rel="stylesheet" href="{{ asset('bundles/terminalbdcrm/css/crm.css') }}">
+    <style>
+        .hide-calendar .ui-datepicker-calendar { display: none; }
+    </style>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="application/javascript" src="{{ asset('assets/module/js/app.js') }}"></script>
+    <script>
+        $(document).ready(function () {
+            $('.monthYearPicker').datepicker({
+                changeMonth: true,
+                changeYear: true,
+                dateFormat: 'mm-yy',
+                onClose: function () {
+                    $(this).datepicker('widget').removeClass('hide-calendar');
+                    var iMonth = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
+                    var iYear = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
+                    $(this).datepicker('setDate', new Date(iYear, iMonth, 1));
+                },
+                beforeShow: function (input) {
+                    $(input).datepicker('widget').addClass('hide-calendar');
+                }
+            });
+        });
+    </script>
+{% endblock %}
