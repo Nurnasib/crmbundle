@@ -26,13 +26,13 @@ class BikeBillRate
         '2026-10-01' => 1000,
     ];
 
-    /** effective-from date => amount per 1,000 km crossing, high cc (125cc) bikes only. */
+    /** effective-from date => flat amount per month, high cc (125cc) bikes only, paid only if the rider rode km that month. */
     const PERSONAL_BIKE_ALLOWANCE = [
         '2000-01-01' => 0,
         '2026-10-01' => 1000,
     ];
 
-    /** Personal bike allowance for ONE 1,000 km crossing; 0 for a normal bike. */
+    /** Monthly personal bike allowance; 0 for a normal bike. The once-per-month rule lives in the ingest code. */
     public static function personalBikeAllowanceFor($date, bool $highCc): float
     {
         return $highCc ? (float) self::pick(self::PERSONAL_BIKE_ALLOWANCE, $date) : 0.0;

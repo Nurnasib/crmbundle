@@ -128,6 +128,19 @@ class ExpenseConveyanceDetailsRepository extends EntityRepository
         return $resutl;
     }
 
+    /** True if the employee already got the monthly 125cc personal bike allowance in $date's month. */
+    public function hasPersonalBikeAllowanceInMonth($employeeId, $date): bool
+    {
+        $qb = $this->createQueryBuilder('e');
+        $qb->select('COUNT(e.id)');
+        $qb->join('e.expense', 'expense');
+        $qb->where('expense.employee = :employeeId')->setParameter('employeeId', $employeeId);
+        $qb->andWhere("DATE_FORMAT(expense.expenseDate,'%Y-%m') = :month")->setParameter('month', date('Y-m', strtotime($date)));
+        $qb->andWhere('e.personalBikeAllowance > 0');
+
+        return (int) $qb->getQuery()->getSingleScalarResult() > 0;
+    }
+
     public function getConveyanceDetailsByExpense(Expense $entity)
     {
         $qb = $this->createQueryBuilder('e');

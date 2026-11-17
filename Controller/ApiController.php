@@ -4521,7 +4521,10 @@ class ApiController extends AbstractController
                                     $mobil_bill       = BikeBillRate::mobilFor($vistingDate, $highCc) * $crossings1000;
                                     $maintenance_bill = 500 * $crossings1000;
                                     $servicing_bill   = BikeBillRate::servicingFor($vistingDate) * $crossings2000;
-                                    $personal_bike_allowance = BikeBillRate::personalBikeAllowanceFor($vistingDate, (bool) $highCc) * $crossings1000;
+                                    // Flat once per month for a 125cc rider who rode any km. This expense's old rows
+                                    // were deleted above, so a re-send is not counted as already paid.
+                                    $personal_bike_allowance = ($total_reading > 0 && !$this->getDoctrine()->getRepository(ExpenseConveyanceDetails::class)->hasPersonalBikeAllowanceInMonth($employeeId, $vistingDate))
+                                        ? BikeBillRate::personalBikeAllowanceFor($vistingDate, (bool) $highCc) : 0;
                                 }
 
                                 $expenseConveyanceDetails->setExpense($expense);
@@ -4699,7 +4702,8 @@ class ApiController extends AbstractController
                         'mobil_bill' => (string) BikeBillRate::mobilFor($visitDate, $employee && $employee->isHighCcBike()),
                         'maintenance_bill' => '500',
                         'servicing_bill' => (string) BikeBillRate::servicingFor($visitDate),
-                        'personal_bike_allowance' => (string) BikeBillRate::personalBikeAllowanceFor($visitDate, $employee && $employee->isHighCcBike()),
+                        'personal_bike_allowance' => (string) ($this->getDoctrine()->getRepository(ExpenseConveyanceDetails::class)->hasPersonalBikeAllowanceInMonth($employeeId, $visitDate)
+                            ? 0 : BikeBillRate::personalBikeAllowanceFor($visitDate, $employee && $employee->isHighCcBike())),
                     ];
                 }else{
                     $getLastMileageRecords = [
@@ -4714,7 +4718,8 @@ class ApiController extends AbstractController
                         'mobil_bill' => (string) BikeBillRate::mobilFor($visitDate, $employee && $employee->isHighCcBike()),
                         'maintenance_bill' => '500',
                         'servicing_bill' => (string) BikeBillRate::servicingFor($visitDate),
-                        'personal_bike_allowance' => (string) BikeBillRate::personalBikeAllowanceFor($visitDate, $employee && $employee->isHighCcBike()),
+                        'personal_bike_allowance' => (string) ($this->getDoctrine()->getRepository(ExpenseConveyanceDetails::class)->hasPersonalBikeAllowanceInMonth($employeeId, $visitDate)
+                            ? 0 : BikeBillRate::personalBikeAllowanceFor($visitDate, $employee && $employee->isHighCcBike())),
                     ];
                 }
             }
