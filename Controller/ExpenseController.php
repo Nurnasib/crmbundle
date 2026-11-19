@@ -289,7 +289,31 @@ class ExpenseController extends AbstractController
             'typeOfVehicles' => $typeOfVehicles,
             'statusIsOneEntities' => $statusIsOneEntities,
             'ratePerMilage' => $ratePerMilage,
+            'nextEmployeeId' => $this->nextUnprocessedEmployeeId($employee, $yearMonth),
         ]);
+    }
+
+    // Next employee in the "Expense for Process" list for this month, same scope as that list.
+    private function nextUnprocessedEmployeeId(User $employee, $yearMonth)
+    {
+        $isProcessor = $this->isGranted('ROLE_DEVELOPER') || $this->isGranted('ROLE_LINE_MANAGER') || $this->isGranted('ROLE_CRM_POULTRY_ADMIN') || $this->isGranted('ROLE_CRM_CATTLE_ADMIN') || $this->isGranted('ROLE_CRM_AQUA_ADMIN') || $this->isGranted('ROLE_CRM_SALES_MARKETING_ADMIN');
+        if (!$isProcessor) {
+            return null;
+        }
+        $rows = $this->getDoctrine()->getRepository(Expense::class)->getExpensesByLineManager($this->getUser(), null, $yearMonth);
+        $employeeIds = array_keys($rows[$yearMonth] ?? []);
+        sort($employeeIds);
+        foreach ($employeeIds as $id) {
+            if ($id > $employee->getId()) {
+                return $id;
+            }
+        }
+        foreach ($employeeIds as $id) { // wrap around to the start
+            if ($id != $employee->getId()) {
+                return $id;
+            }
+        }
+        return null;
     }
 
     /**
@@ -349,8 +373,11 @@ class ExpenseController extends AbstractController
             $em->flush();
 
             $this->addFlash('success', 'Expense has been process successfully');
-
-            return $this->redirectToRoute('crm_expense_details', ['employee' => $employee->getId(), 'monthYear' => $yearMonth]);
+            $nextId = $this->nextUnprocessedEmployeeId($employee, $yearMonth);
+            if ($nextId) {
+                return $this->redirectToRoute('crm_expense_details', ['employee' => $nextId, 'monthYear' => $yearMonth] + $request->query->all());
+            }
+            return $this->redirectToRoute('crm_expense_batch', $request->query->all());
         }else{
             $this->addFlash('error', 'This month expense already process.');
             return $this->redirectToRoute('crm_expense_details', ['employee' => $employee->getId(), 'monthYear' => $yearMonth]);

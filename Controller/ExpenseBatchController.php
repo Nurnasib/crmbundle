@@ -242,6 +242,7 @@ class ExpenseBatchController extends AbstractController
             'conveyanceDetailsTotalAmount' => $conveyanceDetailsTotalAmount,
             'typeOfVehicles' => $typeOfVehicles,
             'transportTypeConveyanceDetails' => $transportTypeConveyanceDetails,
+            'nextBatchId' => $this->nextPendingBatchId($entity),
         ]);
     }
 
@@ -509,7 +510,32 @@ class ExpenseBatchController extends AbstractController
         $em->flush();
 
         $this->addFlash('success', 'Expense has been approved.');
-        return $this->redirectToRoute('crm_expense_batch_list');
+        $nextId = $this->nextPendingBatchId($entity);
+        if ($nextId) {
+            return $this->redirectToRoute('crm_expense_batch_details', $request->query->all() + ['id' => $nextId]);
+        }
+        return $this->redirectToRoute('crm_expense_batch_list', $request->query->all());
+    }
+
+    // Next "Waiting for approved" batch in the same month, using the list's own access scope.
+    private function nextPendingBatchId(ExpenseBatch $entity)
+    {
+        $month = $entity->getExpenseMonth()->format('Y-m');
+        $batches = $this->getDoctrine()->getRepository(ExpenseBatch::class)->getExpenseBatches($this->getUser(), null, 1, $month);
+        $batches = $batches[$month] ?? [];
+        ksort($batches);
+        $currentEmployeeId = $entity->getEmployee()->getId();
+        foreach ($batches as $employeeId => $batch) {
+            if ($employeeId > $currentEmployeeId) {
+                return $batch['id'];
+            }
+        }
+        foreach ($batches as $batch) { // wrap around to the start
+            if ($batch['id'] != $entity->getId()) {
+                return $batch['id'];
+            }
+        }
+        return null;
     }
 
 

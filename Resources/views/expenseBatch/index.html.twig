@@ -114,7 +114,7 @@
                                             <td>{{ status }}</td>
                                             <td class="hidden-print">
                                                 {% if expense %}
-                                                    <a title="Details" class="btn btn-mini blue-bg white-font" href="{{ path('crm_expense_details',{'employee':employee.id, 'monthYear':expense.expenseMonthYear}) }}"><i class="feather icon-eye"></i> Details</a>
+                                                    <a title="Details" class="btn btn-mini blue-bg white-font" href="{{ path('crm_expense_details', app.request.query.all|merge({'employee':employee.id, 'monthYear':expense.expenseMonthYear})) }}"><i class="feather icon-eye"></i> Details</a>
                                                 {% endif %}
                                             </td>
                                         </tr>

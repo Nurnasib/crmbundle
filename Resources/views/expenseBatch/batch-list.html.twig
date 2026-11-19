@@ -115,7 +115,7 @@
                                             </td>
                                             <td class="hidden-print">
                                                 {% if entities is defined and entities is not empty and entities[requestDate] is defined and entities[requestDate][employee.id] is defined and entities[requestDate][employee.id]  is not empty %}
-                                                <a title="Details" class="btn btn-mini blue-bg white-font" href="{{ path('crm_expense_batch_details',{'id':entities is defined and entities is not empty and entities[requestDate] is defined and entities[requestDate][employee.id] is defined and entities[requestDate][employee.id]  is not empty?entities[requestDate][employee.id]['id']:""}) }}"><i class="feather icon-eye"></i> Details</a>
+                                                <a title="Details" class="btn btn-mini blue-bg white-font" href="{{ path('crm_expense_batch_details', app.request.query.all|merge({'id':entities is defined and entities is not empty and entities[requestDate] is defined and entities[requestDate][employee.id] is defined and entities[requestDate][employee.id]  is not empty?entities[requestDate][employee.id]['id']:""})) }}"><i class="feather icon-eye"></i> Details</a>
                                                 {% endif %}
                                             </td>
                                         </tr>

@@ -10,7 +10,7 @@
                 <div class="row align-items-center">
                     <ul class="breadcrumb">
                         <li class="breadcrumb-item"><a href="/"><i class="feather icon-home"></i></a></li>
-                        <li class="breadcrumb-item"> <a href="{{ path('crm_expense_batch_list') }}">  {{ 'Expense Batch'|trans }}</a></li>
+                        <li class="breadcrumb-item"> <a href="{{ path('crm_expense_batch_list', app.request.query.all) }}">  {{ 'Expense Batch'|trans }}</a></li>
                         <li class="breadcrumb-item"> <a href="javascript:">{{ 'Details'|trans }}</a></li>
                     </ul>
                 </div>
@@ -24,7 +24,10 @@
                     <h5>{{ 'Monthly Expense'|trans }}</h5>
                     <div class="card-header-right">
                         <div class="btn-group btn-group-sm" role="group" aria-label="Button group with nested dropdown">
-                            <a href="{{ path('crm_expense_batch_list') }}" class="btn btn-sm gray-bg white-font"><i class="fa fa-th-list"></i>{{ 'Monthly Expense'|trans }}</a>
+                            <a href="{{ path('crm_expense_batch_list', app.request.query.all) }}" class="btn btn-sm gray-bg white-font"><i class="fa fa-arrow-left"></i>{{ 'Back to List'|trans }}</a>
+                            {% if nextBatchId %}
+                                <a style="margin-left: 5px" href="{{ path('crm_expense_batch_details', app.request.query.all|merge({'id': nextBatchId})) }}" class="btn btn-sm btn-primary white-font">{{ 'Next'|trans }} <i class="fa fa-arrow-right"></i></a>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
@@ -71,7 +74,7 @@
                                             <strong>Designation:</strong> {{ expenseBatch.employee.designation.name|default('') }}
                                         </td>
                                         <td class="text-center">
-                                            <strong>Vehicle Type:</strong> {{ expenseBatch.employee.typeOfVehicle|default('')|capitalize }} /  No: {{ expenseBatch.employee.vehicleNo|default('') }}
+                                            <strong>Vehicle Type:</strong> {{ expenseBatch.employee.typeOfVehicle|default('')|capitalize }}{% if expenseBatch.employee.highCcBike %} (Above 125cc){% endif %} /  No: {{ expenseBatch.employee.vehicleNo|default('') }}
                                         </td>
                                         <td>
                                             <strong>Responsible of:</strong> {{ expenseBatch.employee.responsibleOf.name|default('') }}
@@ -265,7 +268,7 @@
                             <div class="hidden-print" style="padding-bottom: 20px">
                                 <div class="col-md-12 text-right">
                                     <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
-                                        <a class="btn btn-sm btn-primary" href="{{ path('crm_expense_batch_approved',{'id':expenseBatch.id}) }}">Approved</a>
+                                        <a class="btn btn-sm btn-primary" href="{{ path('crm_expense_batch_approved', app.request.query.all|merge({'id':expenseBatch.id})) }}">Approved</a>
                                     </div>
                                 </div>
                                 <div class="clearfix"></div>
@@ -436,7 +439,7 @@
                                                 </tr>
                                                 <tr>
                                                     <td>
-                                                        Personal Bike Allowance (125cc)
+                                                        Personal Bike Allowance (Above 125cc)
                                                     </td>
                                                     <td>
                                                         {{ totalPersonalBikeAllowance }}

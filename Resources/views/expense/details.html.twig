@@ -25,7 +25,10 @@
 {#                            <a href="{{ path('crm_expense_new') }}" class="btn btn-sm  green-bg white-font"><i class="fas fa-plus"></i>{{ 'Add New'|trans }}</a>#}
                             <a href="{{ path('crm_expense') }}" class="btn btn-sm gray-bg white-font"><i class="fa fa-th-list"></i>{{ 'Expense'|trans }}</a>
                             {% if is_granted('ROLE_DEVELOPER') or is_granted('ROLE_LINE_MANAGER') or is_granted('ROLE_CRM_POULTRY_ADMIN') or is_granted('ROLE_CRM_CATTLE_ADMIN') or is_granted('ROLE_CRM_AQUA_ADMIN') or is_granted('ROLE_CRM_SALES_MARKETING_ADMIN') %}
-                                <a style="margin-left: 5px" href="{{ path('crm_expense_batch') }}" class="btn btn-sm gray-bg white-font"><i class="fa fa-th-list"></i>{{ 'Expense for Process'|trans }}</a>
+                                <a style="margin-left: 5px" href="{{ path('crm_expense_batch', app.request.query.all) }}" class="btn btn-sm gray-bg white-font"><i class="fa fa-arrow-left"></i>{{ 'Expense for Process'|trans }}</a>
+                                {% if nextEmployeeId %}
+                                    <a style="margin-left: 5px" href="{{ path('crm_expense_details', app.request.query.all|merge({'employee': nextEmployeeId, 'monthYear': yearMonth})) }}" class="btn btn-sm btn-primary white-font">{{ 'Next'|trans }} <i class="fa fa-arrow-right"></i></a>
+                                {% endif %}
                             {% endif %}
                         </div>
                     </div>
@@ -62,11 +65,11 @@
                             </div>
                             <div class="col-md-6 text-center">
                                 <h6>Employee Id: {{ employee.userId|default('') }}</h6>
-                                <h6>Vehicle Type: {{ employee.typeOfVehicle|default('')|capitalize }} /  No: {{ employee.vehicleNo|default('') }}</h6>
+                                <h6>Vehicle Type: {{ employee.typeOfVehicle|default('')|capitalize }}{% if employee.highCcBike %} (Above 125cc){% endif %} /  No: {{ employee.vehicleNo|default('') }}</h6>
                             </div>
                         </div>
                         {% if statusIsOneEntities is defined and statusIsOneEntities|length > 0 %}
-                        <form class="form-horizontal right" method="post" enctype="multipart/form-data" action="{{ path('crm_expense_process',{'employee':employee.id}) }}">
+                        <form class="form-horizontal right" method="post" enctype="multipart/form-data" action="{{ path('crm_expense_process', app.request.query.all|merge({'employee':employee.id})) }}">
                             <input type="hidden" name="monthYear" value="{{ yearMonth }}">
                       {% endif %}
                         <table class="table table-bordered">
